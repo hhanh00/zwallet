@@ -44,3 +44,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+target/
+jniLibs/
+assets/
+native/zcash-sync

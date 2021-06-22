@@ -1,0 +1,20 @@
+[package]
+name = "warp_api_ffi"
+version = "0.1.0"
+authors = ["Hanh <hanh425@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "warp_api_ffi"
+crate-type = ["rlib"]
+
+[dependencies]
+sync = { path = "../zcash-sync" }
+tokio = { version = "1.7.1", features = ["macros", "rt-multi-thread"] }
+android_logger = "0.10.0"
+
+[build-dependencies]
+cbindgen = "0.19.0"
+
