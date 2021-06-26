@@ -1,0 +1,3 @@
+[submodule "native/zcash-sync"]
+	path = native/zcash-sync
+	url = https://github.com/hhanh00/zcash-sync.git

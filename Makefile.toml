@@ -42,7 +42,7 @@ dependencies = [
 [tasks.build]
 description = "Runs the rust compiler."
 category = "Build"
-dependencies = ["android-arm"]
+dependencies = ["android"]
 # TODO replace with "android"
 
 [tasks.build.mac]

@@ -48,4 +48,4 @@ app.*.map.json
 target/
 jniLibs/
 assets/
-native/zcash-sync
+*.g.dart

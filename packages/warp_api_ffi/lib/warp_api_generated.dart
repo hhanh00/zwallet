@@ -18,214 +18,272 @@ class NativeLibrary {
           lookup)
       : _lookup = lookup;
 
-  int get_from_rust() {
-    return _get_from_rust();
+  void init_wallet(
+    ffi.Pointer<ffi.Int8> db_path,
+  ) {
+    return _init_wallet(
+      db_path,
+    );
   }
 
-  late final _get_from_rust_ptr =
-      _lookup<ffi.NativeFunction<_c_get_from_rust>>('get_from_rust');
-  late final _dart_get_from_rust _get_from_rust =
-      _get_from_rust_ptr.asFunction<_dart_get_from_rust>();
+  late final _init_wallet_ptr =
+      _lookup<ffi.NativeFunction<_c_init_wallet>>('init_wallet');
+  late final _dart_init_wallet _init_wallet =
+      _init_wallet_ptr.asFunction<_dart_init_wallet>();
+
+  void warp_sync(
+    int port,
+  ) {
+    return _warp_sync(
+      port,
+    );
+  }
+
+  late final _warp_sync_ptr =
+      _lookup<ffi.NativeFunction<_c_warp_sync>>('warp_sync');
+  late final _dart_warp_sync _warp_sync =
+      _warp_sync_ptr.asFunction<_dart_warp_sync>();
+
+  void dart_post_cobject(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _dart_post_cobject(
+      ptr,
+    );
+  }
+
+  late final _dart_post_cobject_ptr =
+      _lookup<ffi.NativeFunction<_c_dart_post_cobject>>('dart_post_cobject');
+  late final _dart_dart_post_cobject _dart_post_cobject =
+      _dart_post_cobject_ptr.asFunction<_dart_dart_post_cobject>();
+
+  int get_latest_height() {
+    return _get_latest_height();
+  }
+
+  late final _get_latest_height_ptr =
+      _lookup<ffi.NativeFunction<_c_get_latest_height>>('get_latest_height');
+  late final _dart_get_latest_height _get_latest_height =
+      _get_latest_height_ptr.asFunction<_dart_get_latest_height>();
+
+  int is_valid_key(
+    ffi.Pointer<ffi.Int8> seed,
+  ) {
+    return _is_valid_key(
+      seed,
+    );
+  }
+
+  late final _is_valid_key_ptr =
+      _lookup<ffi.NativeFunction<_c_is_valid_key>>('is_valid_key');
+  late final _dart_is_valid_key _is_valid_key =
+      _is_valid_key_ptr.asFunction<_dart_is_valid_key>();
+
+  int valid_address(
+    ffi.Pointer<ffi.Int8> address,
+  ) {
+    return _valid_address(
+      address,
+    );
+  }
+
+  late final _valid_address_ptr =
+      _lookup<ffi.NativeFunction<_c_valid_address>>('valid_address');
+  late final _dart_valid_address _valid_address =
+      _valid_address_ptr.asFunction<_dart_valid_address>();
+
+  void set_mempool_account(
+    int account,
+  ) {
+    return _set_mempool_account(
+      account,
+    );
+  }
+
+  late final _set_mempool_account_ptr =
+      _lookup<ffi.NativeFunction<_c_set_mempool_account>>(
+          'set_mempool_account');
+  late final _dart_set_mempool_account _set_mempool_account =
+      _set_mempool_account_ptr.asFunction<_dart_set_mempool_account>();
+
+  int new_account(
+    ffi.Pointer<ffi.Int8> name,
+    ffi.Pointer<ffi.Int8> data,
+  ) {
+    return _new_account(
+      name,
+      data,
+    );
+  }
+
+  late final _new_account_ptr =
+      _lookup<ffi.NativeFunction<_c_new_account>>('new_account');
+  late final _dart_new_account _new_account =
+      _new_account_ptr.asFunction<_dart_new_account>();
+
+  int get_mempool_balance() {
+    return _get_mempool_balance();
+  }
+
+  late final _get_mempool_balance_ptr =
+      _lookup<ffi.NativeFunction<_c_get_mempool_balance>>(
+          'get_mempool_balance');
+  late final _dart_get_mempool_balance _get_mempool_balance =
+      _get_mempool_balance_ptr.asFunction<_dart_get_mempool_balance>();
+
+  ffi.Pointer<ffi.Int8> send_payment(
+    int account,
+    ffi.Pointer<ffi.Int8> address,
+    int amount,
+  ) {
+    return _send_payment(
+      account,
+      address,
+      amount,
+    );
+  }
+
+  late final _send_payment_ptr =
+      _lookup<ffi.NativeFunction<_c_send_payment>>('send_payment');
+  late final _dart_send_payment _send_payment =
+      _send_payment_ptr.asFunction<_dart_send_payment>();
+
+  int try_warp_sync() {
+    return _try_warp_sync();
+  }
+
+  late final _try_warp_sync_ptr =
+      _lookup<ffi.NativeFunction<_c_try_warp_sync>>('try_warp_sync');
+  late final _dart_try_warp_sync _try_warp_sync =
+      _try_warp_sync_ptr.asFunction<_dart_try_warp_sync>();
+
+  void skip_to_last_height() {
+    return _skip_to_last_height();
+  }
+
+  late final _skip_to_last_height_ptr =
+      _lookup<ffi.NativeFunction<_c_skip_to_last_height>>(
+          'skip_to_last_height');
+  late final _dart_skip_to_last_height _skip_to_last_height =
+      _skip_to_last_height_ptr.asFunction<_dart_skip_to_last_height>();
+
+  void rewind_to_height(
+    int height,
+  ) {
+    return _rewind_to_height(
+      height,
+    );
+  }
+
+  late final _rewind_to_height_ptr =
+      _lookup<ffi.NativeFunction<_c_rewind_to_height>>('rewind_to_height');
+  late final _dart_rewind_to_height _rewind_to_height =
+      _rewind_to_height_ptr.asFunction<_dart_rewind_to_height>();
+
+  int mempool_sync() {
+    return _mempool_sync();
+  }
+
+  late final _mempool_sync_ptr =
+      _lookup<ffi.NativeFunction<_c_mempool_sync>>('mempool_sync');
+  late final _dart_mempool_sync _mempool_sync =
+      _mempool_sync_ptr.asFunction<_dart_mempool_sync>();
 }
 
-class __fsid_t extends ffi.Opaque {}
+typedef _c_init_wallet = ffi.Void Function(
+  ffi.Pointer<ffi.Int8> db_path,
+);
 
-const int _STDINT_H = 1;
+typedef _dart_init_wallet = void Function(
+  ffi.Pointer<ffi.Int8> db_path,
+);
 
-const int _FEATURES_H = 1;
+typedef _c_warp_sync = ffi.Void Function(
+  ffi.Int64 port,
+);
 
-const int _DEFAULT_SOURCE = 1;
+typedef _dart_warp_sync = void Function(
+  int port,
+);
 
-const int __USE_ISOC11 = 1;
+typedef _c_dart_post_cobject = ffi.Void Function(
+  ffi.Pointer<ffi.Void> ptr,
+);
 
-const int __USE_ISOC99 = 1;
+typedef _dart_dart_post_cobject = void Function(
+  ffi.Pointer<ffi.Void> ptr,
+);
 
-const int __USE_ISOC95 = 1;
+typedef _c_get_latest_height = ffi.Uint32 Function();
 
-const int _POSIX_SOURCE = 1;
+typedef _dart_get_latest_height = int Function();
 
-const int _POSIX_C_SOURCE = 200809;
+typedef _c_is_valid_key = ffi.Int8 Function(
+  ffi.Pointer<ffi.Int8> seed,
+);
 
-const int __USE_POSIX = 1;
+typedef _dart_is_valid_key = int Function(
+  ffi.Pointer<ffi.Int8> seed,
+);
 
-const int __USE_POSIX2 = 1;
+typedef _c_valid_address = ffi.Int8 Function(
+  ffi.Pointer<ffi.Int8> address,
+);
 
-const int __USE_POSIX199309 = 1;
+typedef _dart_valid_address = int Function(
+  ffi.Pointer<ffi.Int8> address,
+);
 
-const int __USE_POSIX199506 = 1;
+typedef _c_set_mempool_account = ffi.Void Function(
+  ffi.Uint32 account,
+);
 
-const int __USE_XOPEN2K = 1;
+typedef _dart_set_mempool_account = void Function(
+  int account,
+);
 
-const int __USE_XOPEN2K8 = 1;
+typedef _c_new_account = ffi.Uint32 Function(
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> data,
+);
 
-const int _ATFILE_SOURCE = 1;
+typedef _dart_new_account = int Function(
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> data,
+);
 
-const int __USE_MISC = 1;
+typedef _c_get_mempool_balance = ffi.Int64 Function();
 
-const int __USE_ATFILE = 1;
+typedef _dart_get_mempool_balance = int Function();
 
-const int __USE_FORTIFY_LEVEL = 0;
+typedef _c_send_payment = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint32 account,
+  ffi.Pointer<ffi.Int8> address,
+  ffi.Uint64 amount,
+);
 
-const int __GLIBC_USE_DEPRECATED_GETS = 0;
+typedef _dart_send_payment = ffi.Pointer<ffi.Int8> Function(
+  int account,
+  ffi.Pointer<ffi.Int8> address,
+  int amount,
+);
 
-const int _STDC_PREDEF_H = 1;
+typedef _c_try_warp_sync = ffi.Int8 Function();
 
-const int __STDC_IEC_559__ = 1;
+typedef _dart_try_warp_sync = int Function();
 
-const int __STDC_IEC_559_COMPLEX__ = 1;
+typedef _c_skip_to_last_height = ffi.Void Function();
 
-const int __STDC_ISO_10646__ = 201706;
+typedef _dart_skip_to_last_height = void Function();
 
-const int __GNU_LIBRARY__ = 6;
+typedef _c_rewind_to_height = ffi.Void Function(
+  ffi.Uint32 height,
+);
 
-const int __GLIBC__ = 2;
+typedef _dart_rewind_to_height = void Function(
+  int height,
+);
 
-const int __GLIBC_MINOR__ = 27;
+typedef _c_mempool_sync = ffi.Int64 Function();
 
-const int _SYS_CDEFS_H = 1;
-
-const int __glibc_c99_flexarr_available = 1;
-
-const int __WORDSIZE = 64;
-
-const int __WORDSIZE_TIME64_COMPAT32 = 1;
-
-const int __SYSCALL_WORDSIZE = 64;
-
-const int __HAVE_GENERIC_SELECTION = 0;
-
-const int __GLIBC_USE_LIB_EXT2 = 1;
-
-const int __GLIBC_USE_IEC_60559_BFP_EXT = 1;
-
-const int __GLIBC_USE_IEC_60559_FUNCS_EXT = 1;
-
-const int __GLIBC_USE_IEC_60559_TYPES_EXT = 1;
-
-const int _BITS_TYPES_H = 1;
-
-const int _BITS_TYPESIZES_H = 1;
-
-const int __OFF_T_MATCHES_OFF64_T = 1;
-
-const int __INO_T_MATCHES_INO64_T = 1;
-
-const int __RLIM_T_MATCHES_RLIM64_T = 1;
-
-const int __FD_SETSIZE = 1024;
-
-const int _BITS_WCHAR_H = 1;
-
-const int __WCHAR_MAX = 2147483647;
-
-const int __WCHAR_MIN = -2147483648;
-
-const int _BITS_STDINT_INTN_H = 1;
-
-const int _BITS_STDINT_UINTN_H = 1;
-
-const int INT8_MIN = -128;
-
-const int INT16_MIN = -32768;
-
-const int INT32_MIN = -2147483648;
-
-const int INT64_MIN = -9223372036854775808;
-
-const int INT8_MAX = 127;
-
-const int INT16_MAX = 32767;
-
-const int INT32_MAX = 2147483647;
-
-const int INT64_MAX = 9223372036854775807;
-
-const int UINT8_MAX = 255;
-
-const int UINT16_MAX = 65535;
-
-const int UINT32_MAX = 4294967295;
-
-const int UINT64_MAX = -1;
-
-const int INT_LEAST8_MIN = -128;
-
-const int INT_LEAST16_MIN = -32768;
-
-const int INT_LEAST32_MIN = -2147483648;
-
-const int INT_LEAST64_MIN = -9223372036854775808;
-
-const int INT_LEAST8_MAX = 127;
-
-const int INT_LEAST16_MAX = 32767;
-
-const int INT_LEAST32_MAX = 2147483647;
-
-const int INT_LEAST64_MAX = 9223372036854775807;
-
-const int UINT_LEAST8_MAX = 255;
-
-const int UINT_LEAST16_MAX = 65535;
-
-const int UINT_LEAST32_MAX = 4294967295;
-
-const int UINT_LEAST64_MAX = -1;
-
-const int INT_FAST8_MIN = -128;
-
-const int INT_FAST16_MIN = -9223372036854775808;
-
-const int INT_FAST32_MIN = -9223372036854775808;
-
-const int INT_FAST64_MIN = -9223372036854775808;
-
-const int INT_FAST8_MAX = 127;
-
-const int INT_FAST16_MAX = 9223372036854775807;
-
-const int INT_FAST32_MAX = 9223372036854775807;
-
-const int INT_FAST64_MAX = 9223372036854775807;
-
-const int UINT_FAST8_MAX = 255;
-
-const int UINT_FAST16_MAX = -1;
-
-const int UINT_FAST32_MAX = -1;
-
-const int UINT_FAST64_MAX = -1;
-
-const int INTPTR_MIN = -9223372036854775808;
-
-const int INTPTR_MAX = 9223372036854775807;
-
-const int UINTPTR_MAX = -1;
-
-const int INTMAX_MIN = -9223372036854775808;
-
-const int INTMAX_MAX = 9223372036854775807;
-
-const int UINTMAX_MAX = -1;
-
-const int PTRDIFF_MIN = -9223372036854775808;
-
-const int PTRDIFF_MAX = 9223372036854775807;
-
-const int SIG_ATOMIC_MIN = -2147483648;
-
-const int SIG_ATOMIC_MAX = 2147483647;
-
-const int SIZE_MAX = -1;
-
-const int WCHAR_MIN = -2147483648;
-
-const int WCHAR_MAX = 2147483647;
-
-const int WINT_MIN = 0;
-
-const int WINT_MAX = 4294967295;
-
-typedef _c_get_from_rust = ffi.Int32 Function();
-
-typedef _dart_get_from_rust = int Function();
+typedef _dart_mempool_sync = int Function();
