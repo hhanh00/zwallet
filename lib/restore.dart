@@ -66,8 +66,11 @@ class _RestorePageState extends State<RestorePage> {
       if (accountManager.accounts.length == 1) {
         if (_keyController.text == "")
           WarpApi.skipToLastHeight(); // single new account -> quick sync
-        else
+        else {
+          final snackBar = SnackBar(content: Text("Scan starting momentarily"));
+          rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
           WarpApi.rewindToHeight(0);
+        }
       }
       Navigator.of(context).pop();
       Navigator.of(context).pushReplacementNamed('/account');

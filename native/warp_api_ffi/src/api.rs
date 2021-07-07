@@ -122,15 +122,42 @@ pub fn get_latest_height() -> u32 {
     })
 }
 
-pub fn send_payment(account: u32, address: &str, amount: u64) -> String {
+pub fn send_payment(
+    account: u32,
+    address: &str,
+    amount: u64,
+    max_amount_per_note: u64,
+    port: i64,
+) -> String {
     let r = Runtime::new().unwrap();
     r.block_on(async {
         let wallet = WALLET.get().unwrap().lock().unwrap();
-        let res = wallet.send_payment(account, address, amount).await;
+        let res = wallet
+            .send_payment(
+                account,
+                address,
+                amount,
+                max_amount_per_note,
+                move |progress| {
+                    if port != 0 {
+                        let progress = match progress.end() {
+                            Some(end) => (progress.cur() * 100 / end) as i32,
+                            None => -(progress.cur() as i32),
+                        };
+                        let mut progress = progress.into_dart();
+                        unsafe {
+                            POST_COBJ.map(|p| {
+                                p(port, &mut progress);
+                            });
+                        }
+                    }
+                },
+            )
+            .await;
         match res {
             Err(err) => {
                 log::error!("{}", err);
-                "".to_string()
+                err.to_string()
             }
             Ok(tx_id) => tx_id,
         }

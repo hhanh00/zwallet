@@ -61,9 +61,11 @@ pub unsafe extern "C" fn send_payment(
     account: u32,
     address: *mut c_char,
     amount: u64,
+    max_amount_per_note: u64,
+    port: i64,
 ) -> *const c_char {
     let address = CStr::from_ptr(address).to_string_lossy();
-    let tx_id = api::send_payment(account, &address, amount);
+    let tx_id = api::send_payment(account, &address, amount, max_amount_per_note, port);
     CString::new(tx_id).unwrap().into_raw()
 }
 

@@ -54,12 +54,13 @@ class AccountManagerState extends State<AccountManagerPage> {
   }
 
   Future<bool> _onAccountDelete(DismissDirection _direction) async {
+    if (accountManager.accounts.length == 1) return false;
     final confirm = showDialog<bool>(
       context: this.context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
           title: Text('Seed'),
-          content: Text('Are you SURE you want to DELETE this account?'),
+          content: Text('Are you SURE you want to DELETE this account? You MUST have a BACKUP to recover it. This operation is NOT reversible.'),
           actions: [
             TextButton(
               child: Text('Cancel'),
@@ -68,7 +69,7 @@ class AccountManagerState extends State<AccountManagerPage> {
               },
             ),
             TextButton(
-              child: Text('OK'),
+              child: Text('DELETE'),
               onPressed: () {
                 Navigator.of(this.context).pop(true);
               },

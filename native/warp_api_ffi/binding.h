@@ -24,7 +24,7 @@ uint32_t new_account(char *name, char *data);
 
 int64_t get_mempool_balance(void);
 
-const char *send_payment(uint32_t account, char *address, uint64_t amount);
+const char *send_payment(uint32_t account, char *address, uint64_t amount, uint64_t max_amount_per_note, int64_t port);
 
 int8_t try_warp_sync(void);
 

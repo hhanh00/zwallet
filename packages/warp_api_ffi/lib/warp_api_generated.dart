@@ -135,11 +135,15 @@ class NativeLibrary {
     int account,
     ffi.Pointer<ffi.Int8> address,
     int amount,
+    int max_amount_per_note,
+    int port,
   ) {
     return _send_payment(
       account,
       address,
       amount,
+      max_amount_per_note,
+      port,
     );
   }
 
@@ -260,12 +264,16 @@ typedef _c_send_payment = ffi.Pointer<ffi.Int8> Function(
   ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> address,
   ffi.Uint64 amount,
+  ffi.Uint64 max_amount_per_note,
+  ffi.Int64 port,
 );
 
 typedef _dart_send_payment = ffi.Pointer<ffi.Int8> Function(
   int account,
   ffi.Pointer<ffi.Int8> address,
   int amount,
+  int max_amount_per_note,
+  int port,
 );
 
 typedef _c_try_warp_sync = ffi.Int8 Function();

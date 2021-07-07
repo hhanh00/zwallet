@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'about.dart';
@@ -20,29 +20,33 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage>
     with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   Timer _timerSync;
+  int _progress = 0;
+  StreamSubscription _sub;
 
   @override
   bool get wantKeepAlive => true;
 
   @override
   initState() {
+    super.initState();
+    print("INITSTATE");
     Future.microtask(() async {
-      if (await accountManager.isEmpty())
-        Navigator.of(this.context).pushReplacementNamed('/accounts');
-      else {
-        await accountManager.updateUnconfirmedBalance();
-        await accountManager.fetchNotesAndHistory();
-        _sync();
-        _setupTimer();
-      }
+      await accountManager.updateUnconfirmedBalance();
+      await accountManager.fetchNotesAndHistory();
+      _setupTimer();
       await showAboutOnce(this.context);
     });
     WidgetsBinding.instance.addObserver(this);
-    super.initState();
+    progressStream.listen((percent) {
+      setState(() {
+        _progress = percent;
+      });
+    });
   }
 
   @override
   void dispose() {
+    print("DISPOSE");
     _timerSync?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -73,25 +77,31 @@ class _AccountPageState extends State<AccountPage>
         child: Scaffold(
             appBar: AppBar(
               title: Observer(
-                  builder: (context) =>
-                      Text("\u24E9 Wallet - ${accountManager.active.name}")),
+                  builder: (context) => Text(
+                      "\u24E9 Wallet - ${accountManager.active.name}")),
               bottom: TabBar(tabs: [
                 Tab(text: "Account"),
                 Tab(text: "Notes"),
                 Tab(text: "History"),
               ]),
               actions: [
-                PopupMenuButton<String>(
-                  itemBuilder: (context) => [
-                    PopupMenuItem(child: Text("Accounts"), value: "Accounts"),
-                    PopupMenuItem(child: Text("Backup"), value: "Backup"),
-                    PopupMenuItem(child: Text("Rescan"), value: "Rescan"),
-                    PopupMenuItem(
-                        child: Text(settings.nextMode()), value: "Theme"),
-                    PopupMenuItem(child: Text("About"), value: "About"),
-                  ],
-                  onSelected: _onMenu,
-                )
+                Observer(builder: (context) {
+                  accountManager.canPay;
+                  return PopupMenuButton<String>(
+                    itemBuilder: (context) => [
+                      PopupMenuItem(child: Text("Accounts"), value: "Accounts"),
+                      PopupMenuItem(child: Text("Backup"), value: "Backup"),
+                      PopupMenuItem(child: Text("Rescan"), value: "Rescan"),
+                      if (accountManager.canPay)
+                        PopupMenuItem(
+                            child: Text("Cold Storage"), value: "Cold"),
+                      PopupMenuItem(
+                          child: Text(settings.nextMode()), value: "Theme"),
+                      PopupMenuItem(child: Text("About"), value: "About"),
+                    ],
+                    onSelected: _onMenu,
+                  );
+                })
               ],
             ),
             body: TabBarView(children: [
@@ -100,10 +110,15 @@ class _AccountPageState extends State<AccountPage>
                   child: Center(
                       child: Column(children: [
                     Observer(
-                        builder: (context) => syncStatus.isSynced()
-                            ? Text('${syncStatus.syncedHeight}', style: Theme.of(this.context).textTheme.caption)
-                            : Text(
-                                '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}')),
+                        builder: (context) => syncStatus.syncedHeight <= 0
+                            ? Text('Synching')
+                            : syncStatus.isSynced()
+                                ? Text('${syncStatus.syncedHeight}',
+                                    style: Theme.of(this.context)
+                                        .textTheme
+                                        .caption)
+                                : Text(
+                                    '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}')),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                     Observer(builder: (context) {
                       return Column(children: [
@@ -115,16 +130,20 @@ class _AccountPageState extends State<AccountPage>
                         SelectableText('${accountManager.active.address}'),
                       ]);
                     }),
-                    Observer(builder: (context) => Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.ideographic,
-                        children: <Widget>[
-                          Text(
-                              '\u24E9 ${_getBalance_hi(accountManager.balance)}',
-                              style: Theme.of(context).textTheme.headline2),
-                          Text('${_getBalance_lo(accountManager.balance)}'),
-                        ])),
+                    Observer(
+                        builder: (context) => Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.ideographic,
+                                children: <Widget>[
+                                  Text(
+                                      '\u24E9 ${_getBalance_hi(accountManager.balance)}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline2),
+                                  Text(
+                                      '${_getBalance_lo(accountManager.balance)}'),
+                                ])),
                     Observer(builder: (context) {
                       final zecPrice = priceStore.zecPrice;
                       final balanceUSD =
@@ -139,23 +158,28 @@ class _AccountPageState extends State<AccountPage>
                       ]);
                     }),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                    Observer(builder: (context) =>
-                    (accountManager.unconfirmedBalance != 0) ?
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.ideographic,
-                          children: <Widget>[
-                            Text(
-                                '${_sign(accountManager.unconfirmedBalance)} ${_getBalance_hi(accountManager.unconfirmedBalance)}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline4
-                                    ?.merge(_unconfirmedStyle())),
-                            Text(
-                                '${_getBalance_lo(accountManager.unconfirmedBalance)}',
-                                style: _unconfirmedStyle()),
-                          ]) : Container()),
+                    Observer(
+                        builder: (context) =>
+                            (accountManager.unconfirmedBalance != 0)
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.baseline,
+                                    textBaseline: TextBaseline.ideographic,
+                                    children: <Widget>[
+                                        Text(
+                                            '${_sign(accountManager.unconfirmedBalance)} ${_getBalance_hi(accountManager.unconfirmedBalance)}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline4
+                                                ?.merge(_unconfirmedStyle())),
+                                        Text(
+                                            '${_getBalance_lo(accountManager.unconfirmedBalance)}',
+                                            style: _unconfirmedStyle()),
+                                      ])
+                                : Container()),
+                    if (_progress > 0)
+                      LinearProgressIndicator(value: _progress / 100.0),
                   ]))),
               NoteWidget(),
               HistoryWidget(),
@@ -190,6 +214,7 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _setupTimer() {
+    _sync();
     _timerSync = Timer.periodic(Duration(seconds: 15), (Timer t) {
       _trySync();
     });
@@ -199,6 +224,7 @@ class _AccountPageState extends State<AccountPage>
     WarpApi.warpSync((int height) async {
       setState(() {
         syncStatus.setSyncHeight(height);
+        if (syncStatus.isSynced()) accountManager.fetchNotesAndHistory();
       });
     });
   }
@@ -218,8 +244,9 @@ class _AccountPageState extends State<AccountPage>
       } else if (res == 0) {
         syncStatus.setSyncHeight(syncStatus.latestHeight);
       }
-      await accountManager.fetchNotesAndHistory();
     }
+    await accountManager.fetchNotesAndHistory();
+    await accountManager.updateBalance();
     await accountManager.updateUnconfirmedBalance();
   }
 
@@ -238,6 +265,9 @@ class _AccountPageState extends State<AccountPage>
       case "Rescan":
         _rescan();
         break;
+      case "Cold":
+        _cold();
+        break;
       case "Theme":
         settings.toggle();
         break;
@@ -250,8 +280,7 @@ class _AccountPageState extends State<AccountPage>
   _backup() async {
     final localAuth = LocalAuthentication();
     final didAuthenticate = await localAuth.authenticate(
-        localizedReason: "Please authenticate to show account seed",
-        biometricOnly: true);
+        localizedReason: "Please authenticate to show account seed");
     if (didAuthenticate) {
       final seed = await accountManager.getBackup();
       showDialog(
@@ -300,6 +329,31 @@ class _AccountPageState extends State<AccountPage>
           ]),
     );
   }
+
+  _cold() {
+    showDialog(
+        context: this.context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+                title: Text('Cold Storage'),
+                content: Text(
+                    'Do you want to DELETE the secret key and convert this account to a watch-only account? '
+                    'You will not be able to spend from this device anymore. This operation is NOT reversible.'),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Cancel')),
+                  TextButton(
+                      onPressed: _convertToWatchOnly, child: Text('DELETE'))
+                ]));
+  }
+
+  _convertToWatchOnly() {
+    accountManager.convertToWatchOnly();
+    Navigator.of(context).pop();
+  }
 }
 
 class NoteWidget extends StatefulWidget {
@@ -309,7 +363,6 @@ class NoteWidget extends StatefulWidget {
 
 class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
   final DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
-  final latestHeight = syncStatus.latestHeight;
 
   @override
   bool get wantKeepAlive => true; //Set to true
@@ -330,7 +383,7 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
       .toList();
 
   bool _confirmed(int height) {
-    return latestHeight - height >= 10;
+    return syncStatus.latestHeight - height >= 10;
   }
 
   @override
@@ -338,6 +391,7 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return SingleChildScrollView(
         scrollDirection: Axis.vertical,
+        padding: EdgeInsets.only(bottom: 32),
         child: Observer(
             builder: (context) => DataTable(
                   columns: [
@@ -376,6 +430,7 @@ class _HistoryState extends State<HistoryWidget>
     super.build(context);
     return SingleChildScrollView(
         scrollDirection: Axis.vertical,
+        padding: EdgeInsets.only(bottom: 64),
         child: Observer(
             builder: (context) => DataTable(
                   columns: [

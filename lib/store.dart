@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
@@ -26,7 +28,7 @@ abstract class _Settings with Store {
   @action
   Future<void> restore() async {
     final prefs = await SharedPreferences.getInstance();
-    final prefMode = await prefs.getString('theme') ?? "light";
+    final prefMode = prefs.getString('theme') ?? "light";
     if (prefMode == "light")
       mode = ThemeMode.light;
     else
@@ -65,7 +67,7 @@ abstract class _AccountManager with Store {
   List<Tx> txs = [];
 
   @observable
-  List<Account> accounts;
+  List<Account> accounts = [];
 
   Future<void> init() async {
     db = await getDatabase();
@@ -87,11 +89,13 @@ abstract class _AccountManager with Store {
 
   @action
   Future<void> setActiveAccount(Account account) async {
+    if (account == null) return;
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('account', account.id);
     this.active = account;
     WarpApi.setMempoolAccount(account.id);
-    final List<Map> res = await db.rawQuery("SELECT sk FROM accounts WHERE id_account = ?1", [active.id]);
+    final List<Map> res = await db
+        .rawQuery("SELECT sk FROM accounts WHERE id_account = ?1", [active.id]);
     canPay = res.isNotEmpty && res[0]['sk'] != null;
     await fetchNotesAndHistory();
   }
@@ -99,12 +103,14 @@ abstract class _AccountManager with Store {
   @action
   setActiveAccountId(int idAccount) {
     final account = accounts.firstWhere((account) => account.id == idAccount,
-        orElse: () => accounts[0]);
+        orElse: () => accounts.isNotEmpty ? accounts[0] : null);
     setActiveAccount(account);
   }
 
   Future<String> getBackup() async {
-    final List<Map> res = await db.rawQuery("SELECT seed, sk, ivk FROM accounts WHERE id_account = ?1", [active.id]);
+    final List<Map> res = await db.rawQuery(
+        "SELECT seed, sk, ivk FROM accounts WHERE id_account = ?1",
+        [active.id]);
     if (res.isEmpty) return null;
     final row = res[0];
     final backup = row['seed'] ?? row['sk'] ?? row['ivk'];
@@ -112,13 +118,17 @@ abstract class _AccountManager with Store {
   }
 
   Future<int> _getBalance() async {
-    final List<Map> res = await db.rawQuery("SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND (spent IS NULL OR spent = 0)", [active.id]);
+    final List<Map> res = await db.rawQuery(
+        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND (spent IS NULL OR spent = 0)",
+        [active.id]);
     if (res.isEmpty) return 0;
     return res[0]['value'] ?? 0;
   }
 
   Future<int> getBalanceSpendable(int height) async {
-    final List<Map> res = await db.rawQuery("SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND (spent IS NULL OR spent = 0) AND height <= ?2", [active.id, height]);
+    final List<Map> res = await db.rawQuery(
+        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND (spent IS NULL OR spent = 0) AND height <= ?2",
+        [active.id, height]);
     if (res.isEmpty) return 0;
     return res[0]['value'] ?? 0;
   }
@@ -129,16 +139,19 @@ abstract class _AccountManager with Store {
   }
 
   isEmpty() async {
-    final List<Map> res = await db.rawQuery("SELECT 1 FROM accounts", []);
+    final List<Map> res = await db.rawQuery("SELECT name FROM accounts", []);
     return res.isEmpty;
   }
 
   Future<List<Account>> _list() async {
     final List<Map> res = await db.rawQuery(
-        "SELECT a.id_account AS account, a.name, a.address, COALESCE(SUM(n.value), 0) AS balance FROM accounts a LEFT JOIN received_notes n ON n.account = a.id_account WHERE "
-            "n.spent IS NULL OR n.spent = 0 "
-            "GROUP BY name", []);
-    return res.map((r) => Account(r['account'], r['name'], r['address'], r['balance'])).toList();
+        "WITH notes AS (SELECT a.id_account, a.name, a.address, CASE WHEN r.spent IS NULL THEN r.value ELSE 0 END AS nv FROM accounts a LEFT JOIN received_notes r ON a.id_account = r.account) "
+        "SELECT id_account, name, address, COALESCE(sum(nv), 0) AS balance FROM notes GROUP by id_account",
+        []);
+    return res
+        .map((r) =>
+            Account(r['id_account'], r['name'], r['address'], r['balance']))
+        .toList();
   }
 
   @action
@@ -146,17 +159,25 @@ abstract class _AccountManager with Store {
     await db.rawDelete("DELETE FROM accounts WHERE id_account = ?1", [account]);
   }
 
+  @action
+  Future<void> updateBalance() async {
+    if (active == null) return;
+    balance = await _getBalance();
+  }
+
   final DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
 
-  @action Future<void> fetchNotesAndHistory() async {
-    balance = await _getBalance();
+  @action
+  Future<void> fetchNotesAndHistory() async {
+    if (active == null) return;
+    await updateBalance();
     final List<Map> res = await db.rawQuery(
         "SELECT n.height, n.value, t.timestamp FROM received_notes n, transactions t WHERE n.account = ?1 AND (n.spent IS NULL OR n.spent = 0) AND n.tx = t.id_tx",
         [active.id]);
     notes = res.map((row) {
       final height = row['height'];
-      final timestamp = dateFormat.format(
-          DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
+      final timestamp = dateFormat
+          .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
       return Note(height, timestamp, row['value'] / ZECUNIT);
     }).toList();
 
@@ -165,10 +186,16 @@ abstract class _AccountManager with Store {
         [active.id]);
     txs = res2.map((row) {
       final txid = hex.encode(row['txid']).substring(0, 8);
-      final timestamp = dateFormat.format(
-          DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
+      final timestamp = dateFormat
+          .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
       return Tx(row['height'], timestamp, txid, row['value'] / ZECUNIT);
     }).toList();
+  }
+
+  @action
+  Future<void> convertToWatchOnly() async {
+    await db.rawUpdate("UPDATE accounts SET seed = NULL, sk = NULL WHERE id_account = ?1", [active.id]);
+    canPay = false;
   }
 }
 
@@ -186,11 +213,11 @@ class PriceStore = _PriceStore with _$PriceStore;
 abstract class _PriceStore with Store {
   @observable
   double zecPrice = 0.0;
-  
+
   @action
   Future<void> fetchZecPrice() async {
     final base = "api.binance.com";
-    final uri = Uri.https(base, '/api/v3/avgPrice', { 'symbol': 'ZECUSDT' });
+    final uri = Uri.https(base, '/api/v3/avgPrice', {'symbol': 'ZECUSDT'});
     final rep = await http.get(uri);
     if (rep.statusCode == 200) {
       final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
@@ -224,13 +251,13 @@ abstract class _SyncStatus with Store {
 
   @action
   setSyncHeight(int height) {
-      syncedHeight = height;
+    syncedHeight = height;
   }
 
   @action
   Future<bool> update() async {
     final _syncedHeight = Sqflite.firstIntValue(
-        await _db.rawQuery("SELECT MAX(height) FROM blocks")) ??
+            await _db.rawQuery("SELECT MAX(height) FROM blocks")) ??
         0;
     if (_syncedHeight > 0) syncedHeight = _syncedHeight;
     latestHeight = await WarpApi.getLatestHeight();
@@ -238,6 +265,9 @@ abstract class _SyncStatus with Store {
     return syncedHeight == latestHeight;
   }
 }
+
+var progressPort = ReceivePort();
+var progressStream = progressPort.asBroadcastStream();
 
 class Note {
   int height;

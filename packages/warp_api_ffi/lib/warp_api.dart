@@ -17,6 +17,16 @@ class SyncParams {
   SyncParams(this.port);
 }
 
+class PaymentParams {
+  int account;
+  String address;
+  int amount;
+  int maxAmountPerNote;
+  SendPort port;
+
+  PaymentParams(this.account, this.address, this.amount, this.maxAmountPerNote, this.port);
+}
+
 const DEFAULT_ACCOUNT = 1;
 
 final warp_api_lib = init();
@@ -98,10 +108,19 @@ class WarpApi {
     return warp_api_lib.get_mempool_balance();
   }
 
-  static String sendPayment(int account, String address, int amount) {
-    final txId = warp_api_lib.send_payment(account, address.toNativeUtf8().cast<Int8>(), amount);
-    return txId.cast<Utf8>().toDartString();
+  static Future<String> sendPayment(int account, String address, int amount, int maxAmountPerNote, void Function(int) f) async {
+    var receivePort = ReceivePort();
+    receivePort.listen((progress) {
+      f(progress);
+    });
+
+    return await compute(sendPaymentIsolateFn, PaymentParams(account, address, amount, maxAmountPerNote, receivePort.sendPort));
   }
+}
+
+String sendPaymentIsolateFn(PaymentParams params) {
+  final txId = warp_api_lib.send_payment(params.account, params.address.toNativeUtf8().cast<Int8>(), params.amount, params.maxAmountPerNote, params.port.nativePort);
+  return txId.cast<Utf8>().toDartString();
 }
 
 void warpSyncIsolateFn(SyncParams params) {

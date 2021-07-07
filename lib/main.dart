@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path/path.dart';
@@ -12,6 +13,9 @@ import 'send.dart';
 import 'store.dart';
 
 const ZECUNIT = 100000000.0;
+var ZECUNIT_DECIMAL = Decimal.parse('100000000');
+const mZECUNIT = 100000;
+const DEFAULT_FEE = 1000;
 
 var accountManager = AccountManager();
 var priceStore = PriceStore();
@@ -58,7 +62,8 @@ class _ZWalletState extends State<ZWalletApp> {
     await accountManager.init();
     await syncStatus.init();
     await settings.restore();
-    return Future.value(AccountPage());
+    return Future.value(
+        accountManager.accounts.isNotEmpty ? AccountPage() : AccountManagerPage());
   }
 
   @override
