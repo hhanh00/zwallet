@@ -18,13 +18,19 @@ bool is_valid_key(char *seed);
 
 bool valid_address(char *address);
 
+char *new_address(uint32_t account);
+
 void set_mempool_account(uint32_t account);
 
 uint32_t new_account(char *name, char *data);
 
 int64_t get_mempool_balance(void);
 
-const char *send_payment(uint32_t account, char *address, uint64_t amount, uint64_t max_amount_per_note, int64_t port);
+const char *send_payment(uint32_t account,
+                         char *address,
+                         uint64_t amount,
+                         uint64_t max_amount_per_note,
+                         int64_t port);
 
 int8_t try_warp_sync(void);
 

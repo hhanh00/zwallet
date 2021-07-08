@@ -107,6 +107,10 @@ abstract class _AccountManager with Store {
     setActiveAccount(account);
   }
 
+  String newAddress() {
+    return WarpApi.newAddress(active.id);
+  }
+
   Future<String> getBackup() async {
     final List<Map> res = await db.rawQuery(
         "SELECT seed, sk, ivk FROM accounts WHERE id_account = ?1",

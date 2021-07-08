@@ -92,6 +92,19 @@ class NativeLibrary {
   late final _dart_valid_address _valid_address =
       _valid_address_ptr.asFunction<_dart_valid_address>();
 
+  ffi.Pointer<ffi.Int8> new_address(
+    int account,
+  ) {
+    return _new_address(
+      account,
+    );
+  }
+
+  late final _new_address_ptr =
+      _lookup<ffi.NativeFunction<_c_new_address>>('new_address');
+  late final _dart_new_address _new_address =
+      _new_address_ptr.asFunction<_dart_new_address>();
+
   void set_mempool_account(
     int account,
   ) {
@@ -236,6 +249,14 @@ typedef _c_valid_address = ffi.Int8 Function(
 
 typedef _dart_valid_address = int Function(
   ffi.Pointer<ffi.Int8> address,
+);
+
+typedef _c_new_address = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint32 account,
+);
+
+typedef _dart_new_address = ffi.Pointer<ffi.Int8> Function(
+  int account,
 );
 
 typedef _c_set_mempool_account = ffi.Void Function(

@@ -3,6 +3,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:warp/main.dart';
 import 'package:warp/store.dart';
 
+import 'about.dart';
+
 class AccountManagerPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => AccountManagerState();
@@ -11,8 +13,9 @@ class AccountManagerPage extends StatefulWidget {
 class AccountManagerState extends State<AccountManagerPage> {
   @override
   initState() {
-    Future.microtask(accountManager.refresh);
     super.initState();
+    Future.microtask(accountManager.refresh);
+    showAboutOnce(this.context);
   }
 
   @override

@@ -21,7 +21,8 @@ class _AccountPageState extends State<AccountPage>
     with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   Timer _timerSync;
   int _progress = 0;
-  StreamSubscription _sub;
+  bool _useSnapAddress = false;
+  String _snapAddress = "";
 
   @override
   bool get wantKeepAlive => true;
@@ -34,7 +35,6 @@ class _AccountPageState extends State<AccountPage>
       await accountManager.updateUnconfirmedBalance();
       await accountManager.fetchNotesAndHistory();
       _setupTimer();
-      await showAboutOnce(this.context);
     });
     WidgetsBinding.instance.addObserver(this);
     progressStream.listen((percent) {
@@ -72,6 +72,8 @@ class _AccountPageState extends State<AccountPage>
     super.build(context);
     if (!syncStatus.isSynced()) _trySync();
     if (accountManager.active == null) return CircularProgressIndicator();
+    final address = _useSnapAddress ? _snapAddress : accountManager.active.address;
+
     return DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -120,16 +122,15 @@ class _AccountPageState extends State<AccountPage>
                                 : Text(
                                     '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}')),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                    Observer(builder: (context) {
-                      return Column(children: [
+                    Column(children: [
                         QrImage(
-                            data: accountManager.active.address,
+                            data: address,
                             size: 200,
                             backgroundColor: Colors.white),
                         Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                        SelectableText('${accountManager.active.address}'),
-                      ]);
-                    }),
+                        SelectableText('$address'),
+                        TextButton(child: Text('New Snap Address'), onPressed: _onSnapAddress)
+                    ]),
                     Observer(
                         builder: (context) => Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -250,6 +251,19 @@ class _AccountPageState extends State<AccountPage>
     await accountManager.updateUnconfirmedBalance();
   }
 
+  _onSnapAddress() {
+    final address = accountManager.newAddress();
+    setState(() {
+      _useSnapAddress = true;
+      _snapAddress = address;
+    });
+    Timer(Duration(seconds: 15), () {
+      setState(() {
+        _useSnapAddress = false;
+      });
+    });
+  }
+  
   _onSend() {
     Navigator.of(this.context).pushNamed('/send');
   }

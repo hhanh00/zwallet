@@ -40,6 +40,12 @@ pub unsafe extern "C" fn valid_address(address: *mut c_char) -> bool {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn new_address(account: u32) -> *mut c_char {
+    let address = api::new_address(account);
+    CString::new(address).unwrap().into_raw()
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn set_mempool_account(account: u32) {
     api::set_mempool_account(account);
 }

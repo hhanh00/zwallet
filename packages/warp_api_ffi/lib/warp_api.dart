@@ -100,6 +100,11 @@ class WarpApi {
     return warp_api_lib.valid_address(address.toNativeUtf8().cast<Int8>()) != 0;
   }
 
+  static String newAddress(int account) {
+    final address = warp_api_lib.new_address(account);
+    return address.cast<Utf8>().toDartString();
+  }
+
   static void setMempoolAccount(int account) {
     return warp_api_lib.set_mempool_account(account);
   }

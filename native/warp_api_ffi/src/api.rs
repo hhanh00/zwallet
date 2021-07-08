@@ -114,6 +114,11 @@ pub fn valid_address(address: &str) -> bool {
     Wallet::valid_address(address)
 }
 
+pub fn new_address(account: u32) -> String {
+    let wallet = WALLET.get().unwrap().lock().unwrap();
+    wallet.new_diversified_address(account).unwrap()
+}
+
 pub fn get_latest_height() -> u32 {
     let r = Runtime::new().unwrap();
     r.block_on(async {
