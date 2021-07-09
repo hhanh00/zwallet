@@ -87,8 +87,8 @@ class AccountManagerState extends State<AccountManagerPage> {
     accountManager.refresh();
   }
 
-  _selectAccount(Account account) {
-    accountManager.setActiveAccount(account);
+  _selectAccount(Account account) async {
+    await accountManager.setActiveAccount(account);
     final navigator = Navigator.of(context);
     if (navigator.canPop())
       navigator.pop();

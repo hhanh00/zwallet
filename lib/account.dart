@@ -23,6 +23,7 @@ class _AccountPageState extends State<AccountPage>
   int _progress = 0;
   bool _useSnapAddress = false;
   String _snapAddress = "";
+  bool _showTAddr = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -30,7 +31,6 @@ class _AccountPageState extends State<AccountPage>
   @override
   initState() {
     super.initState();
-    print("INITSTATE");
     Future.microtask(() async {
       await accountManager.updateUnconfirmedBalance();
       await accountManager.fetchNotesAndHistory();
@@ -72,15 +72,14 @@ class _AccountPageState extends State<AccountPage>
     super.build(context);
     if (!syncStatus.isSynced()) _trySync();
     if (accountManager.active == null) return CircularProgressIndicator();
-    final address = _useSnapAddress ? _snapAddress : accountManager.active.address;
 
     return DefaultTabController(
         length: 3,
         child: Scaffold(
             appBar: AppBar(
               title: Observer(
-                  builder: (context) => Text(
-                      "\u24E9 Wallet - ${accountManager.active.name}")),
+                  builder: (context) =>
+                      Text("\u24E9 Wallet - ${accountManager.active.name}")),
               bottom: TabBar(tabs: [
                 Tab(text: "Account"),
                 Tab(text: "Notes"),
@@ -99,6 +98,8 @@ class _AccountPageState extends State<AccountPage>
                             child: Text("Cold Storage"), value: "Cold"),
                       PopupMenuItem(
                           child: Text(settings.nextMode()), value: "Theme"),
+                      PopupMenuItem(
+                          child: Text('Settings'), value: "Settings"),
                       PopupMenuItem(child: Text("About"), value: "About"),
                     ],
                     onSelected: _onMenu,
@@ -122,33 +123,57 @@ class _AccountPageState extends State<AccountPage>
                                 : Text(
                                     '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}')),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                    Column(children: [
-                        QrImage(
-                            data: address,
-                            size: 200,
-                            backgroundColor: Colors.white),
+                    Observer(builder: (context) {
+                      final _ = accountManager.active.address;
+                      final address = _showTAddr
+                          ? accountManager.taddress
+                          : (_useSnapAddress
+                              ? _snapAddress
+                              : accountManager.active.address);
+                      return Column(children: [
+                        Text(_showTAddr
+                            ? 'Tap QR Code for Shielded Address'
+                            : 'Tap QR Code for Transparent Address'),
+                        Padding(padding: EdgeInsets.symmetric(vertical: 4)),
+                        GestureDetector(
+                            onTap: _onQRTap,
+                            child: QrImage(
+                                data: address,
+                                size: 200,
+                                backgroundColor: Colors.white)),
                         Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                         SelectableText('$address'),
-                        TextButton(child: Text('New Snap Address'), onPressed: _onSnapAddress)
-                    ]),
-                    Observer(
-                        builder: (context) => Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.baseline,
-                                textBaseline: TextBaseline.ideographic,
-                                children: <Widget>[
-                                  Text(
-                                      '\u24E9 ${_getBalance_hi(accountManager.balance)}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline2),
-                                  Text(
-                                      '${_getBalance_lo(accountManager.balance)}'),
-                                ])),
+                        if (!_showTAddr)
+                          TextButton(
+                              child: Text('New Snap Address'),
+                              onPressed: _onSnapAddress),
+                        if (_showTAddr)
+                          TextButton(
+                            child: Text('Shield Transp. Balance'),
+                            onPressed: _onShieldTAddr,
+                          )
+                      ]);
+                    }),
                     Observer(builder: (context) {
+                      final balance = _showTAddr
+                          ? accountManager.tbalance
+                          : accountManager.balance;
+                      return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.ideographic,
+                          children: <Widget>[
+                            Text('\u24E9 ${_getBalance_hi(balance)}',
+                                style: Theme.of(context).textTheme.headline2),
+                            Text('${_getBalance_lo(balance)}'),
+                          ]);
+                    }),
+                    Observer(builder: (context) {
+                      final balance = _showTAddr
+                          ? accountManager.tbalance
+                          : accountManager.balance;
                       final zecPrice = priceStore.zecPrice;
-                      final balanceUSD =
-                          accountManager.balance * zecPrice / ZECUNIT;
+                      final balanceUSD = balance * zecPrice / ZECUNIT;
                       return Column(children: [
                         if (zecPrice != 0.0)
                           Text("${balanceUSD.toStringAsFixed(2)} USDT",
@@ -200,6 +225,44 @@ class _AccountPageState extends State<AccountPage>
     return b < 0 ? '-' : '+';
   }
 
+  _onQRTap() {
+    setState(() {
+      _showTAddr = !_showTAddr;
+    });
+  }
+
+  _onShieldTAddr() {
+    showDialog(
+      context: this.context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+          title: Text('Shield Transparent Balance'),
+          content: Text(
+              'Do you want to transfer your entire transparent balance to your shielded address?'),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(this.context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () async {
+                Navigator.of(this.context).pop();
+                final snackBar1 =
+                    SnackBar(content: Text('Shielding in progress...'));
+                rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
+                final txid =
+                    await WarpApi.shieldTAddr(accountManager.active.id);
+                final snackBar2 = SnackBar(content: Text(txid));
+                rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+              },
+            )
+          ]),
+    );
+  }
+
   _unconfirmedStyle() {
     return accountManager.unconfirmedBalance > 0
         ? TextStyle(color: Colors.green)
@@ -249,6 +312,7 @@ class _AccountPageState extends State<AccountPage>
     await accountManager.fetchNotesAndHistory();
     await accountManager.updateBalance();
     await accountManager.updateUnconfirmedBalance();
+    accountManager.updateTBalance();
   }
 
   _onSnapAddress() {
@@ -263,7 +327,7 @@ class _AccountPageState extends State<AccountPage>
       });
     });
   }
-  
+
   _onSend() {
     Navigator.of(this.context).pushNamed('/send');
   }
@@ -284,6 +348,9 @@ class _AccountPageState extends State<AccountPage>
         break;
       case "Theme":
         settings.toggle();
+        break;
+      case "Settings":
+        _settings();
         break;
       case "About":
         showAbout(this.context);
@@ -368,6 +435,10 @@ class _AccountPageState extends State<AccountPage>
     accountManager.convertToWatchOnly();
     Navigator.of(context).pop();
   }
+
+  _settings() {
+    Navigator.of(this.context).pushNamed('/settings');
+  }
 }
 
 class NoteWidget extends StatefulWidget {
@@ -397,7 +468,7 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
       .toList();
 
   bool _confirmed(int height) {
-    return syncStatus.latestHeight - height >= 10;
+    return syncStatus.latestHeight - height >= settings.anchorOffset;
   }
 
   @override
@@ -405,7 +476,7 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        padding: EdgeInsets.only(bottom: 32),
+        padding: EdgeInsets.only(bottom: 64),
         child: Observer(
             builder: (context) => DataTable(
                   columns: [

@@ -7,9 +7,10 @@ mod api;
 static mut POST_COBJ: Option<ffi::DartPostCObjectFnType> = None;
 
 #[no_mangle]
-pub unsafe extern "C" fn init_wallet(db_path: *mut c_char) {
+pub unsafe extern "C" fn init_wallet(db_path: *mut c_char, ld_url: *mut c_char) {
     let db_path = CStr::from_ptr(db_path).to_string_lossy();
-    api::init_wallet(&db_path);
+    let ld_url = CStr::from_ptr(ld_url).to_string_lossy();
+    api::init_wallet(&db_path, &ld_url);
 }
 
 #[no_mangle]
@@ -68,10 +69,18 @@ pub unsafe extern "C" fn send_payment(
     address: *mut c_char,
     amount: u64,
     max_amount_per_note: u64,
+    anchor_offset: u32,
     port: i64,
 ) -> *const c_char {
     let address = CStr::from_ptr(address).to_string_lossy();
-    let tx_id = api::send_payment(account, &address, amount, max_amount_per_note, port);
+    let tx_id = api::send_payment(
+        account,
+        &address,
+        amount,
+        max_amount_per_note,
+        anchor_offset,
+        port,
+    );
     CString::new(tx_id).unwrap().into_raw()
 }
 
@@ -93,4 +102,21 @@ pub unsafe extern "C" fn rewind_to_height(height: u32) {
 #[no_mangle]
 pub unsafe extern "C" fn mempool_sync() -> i64 {
     api::mempool_sync()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn get_taddr_balance(account: u32) -> u64 {
+    api::get_taddr_balance(account)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn shield_taddr(account: u32) -> *mut c_char {
+    let tx_id = api::shield_taddr(account);
+    CString::new(tx_id).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn set_lwd_url(url: *mut c_char) {
+    let url = CStr::from_ptr(url).to_string_lossy();
+    api::set_lwd_url(&url);
 }

@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
@@ -22,9 +21,11 @@ class PaymentParams {
   String address;
   int amount;
   int maxAmountPerNote;
+  int anchorOffset;
   SendPort port;
 
-  PaymentParams(this.account, this.address, this.amount, this.maxAmountPerNote, this.port);
+  PaymentParams(this.account, this.address, this.amount, this.maxAmountPerNote,
+      this.anchorOffset, this.port);
 }
 
 const DEFAULT_ACCOUNT = 1;
@@ -38,8 +39,7 @@ NativeLibrary init() {
 }
 
 class WarpApi {
-  static const MethodChannel _channel =
-      const MethodChannel('warp_api');
+  static const MethodChannel _channel = const MethodChannel('warp_api');
 
   static Future<String?> get platformVersion async {
     final String? version = await _channel.invokeMethod('getPlatformVersion');
@@ -52,14 +52,14 @@ class WarpApi {
     throw UnsupportedError('This platform is not supported.');
   }
 
-  static initWallet(String dbPath) {
-    warp_api_lib.init_wallet(dbPath.toNativeUtf8().cast<Int8>());
+  static initWallet(String dbPath, String ldUrl) {
+    warp_api_lib.init_wallet(
+        dbPath.toNativeUtf8().cast<Int8>(), ldUrl.toNativeUtf8().cast<Int8>());
   }
 
   static int newAccount(String name, String key) {
-    return warp_api_lib.new_account(name.toNativeUtf8().cast<Int8>(),
-        key.toNativeUtf8().cast<Int8>()
-    );
+    return warp_api_lib.new_account(
+        name.toNativeUtf8().cast<Int8>(), key.toNativeUtf8().cast<Int8>());
   }
 
   static void skipToLastHeight() {
@@ -113,18 +113,42 @@ class WarpApi {
     return warp_api_lib.get_mempool_balance();
   }
 
-  static Future<String> sendPayment(int account, String address, int amount, int maxAmountPerNote, void Function(int) f) async {
+  static Future<String> sendPayment(int account, String address, int amount,
+      int maxAmountPerNote, int anchorOffset, void Function(int) f) async {
     var receivePort = ReceivePort();
     receivePort.listen((progress) {
       f(progress);
     });
 
-    return await compute(sendPaymentIsolateFn, PaymentParams(account, address, amount, maxAmountPerNote, receivePort.sendPort));
+    return await compute(
+        sendPaymentIsolateFn,
+        PaymentParams(
+            account, address, amount, maxAmountPerNote, anchorOffset, receivePort.sendPort));
+  }
+
+  static int getTBalance(int account) {
+    final balance = warp_api_lib.get_taddr_balance(account);
+    return balance;
+  }
+
+  static Future<String> shieldTAddr(int account) async {
+    final txId = compute(shieldTAddrIsolateFn, account);
+    return txId;
+  }
+
+  static updateLWD(String url) {
+    warp_api_lib.set_lwd_url(url.toNativeUtf8().cast<Int8>());
   }
 }
 
 String sendPaymentIsolateFn(PaymentParams params) {
-  final txId = warp_api_lib.send_payment(params.account, params.address.toNativeUtf8().cast<Int8>(), params.amount, params.maxAmountPerNote, params.port.nativePort);
+  final txId = warp_api_lib.send_payment(
+      params.account,
+      params.address.toNativeUtf8().cast<Int8>(),
+      params.amount,
+      params.maxAmountPerNote,
+      params.anchorOffset,
+      params.port.nativePort);
   return txId.cast<Utf8>().toDartString();
 }
 
@@ -142,4 +166,9 @@ int getLatestHeightIsolateFn(Null _dummy) {
 
 int mempoolSyncIsolateFn(Null _dummy) {
   return warp_api_lib.mempool_sync();
+}
+
+String shieldTAddrIsolateFn(int account) {
+  final txId = warp_api_lib.shield_taddr(account);
+  return txId.cast<Utf8>().toDartString();
 }

@@ -36,7 +36,7 @@ class SendState extends State<SendPage> {
   initState() {
     Future.microtask(() async {
       final balance = await accountManager
-          .getBalanceSpendable(syncStatus.latestHeight - 10);
+          .getBalanceSpendable(syncStatus.latestHeight - settings.anchorOffset);
       setState(() {
         _balance = math.max(balance - DEFAULT_FEE, 0);
       });
@@ -229,9 +229,12 @@ class SendState extends State<SendPage> {
         final tx = await compute(
             sendPayment,
             SendPaymentParam(
-                accountManager.active.id, _address, amount, maxAmountPerNote,
-              progressPort.sendPort
-            ));
+                accountManager.active.id,
+                _address,
+                amount,
+                maxAmountPerNote,
+                settings.anchorOffset,
+                progressPort.sendPort));
 
         final snackBar2 = SnackBar(content: Text("TX ID: $tx"));
         rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
@@ -251,17 +254,17 @@ class SendPaymentParam {
   String address;
   int amount;
   int maxAmountPerNote;
+  int anchorOffset;
   SendPort sendPort;
 
-  SendPaymentParam(
-      this.account, this.address, this.amount, this.maxAmountPerNote, this.sendPort);
+  SendPaymentParam(this.account, this.address, this.amount,
+      this.maxAmountPerNote, this.anchorOffset, this.sendPort);
 }
 
 sendPayment(SendPaymentParam param) async {
   param.sendPort.send(0);
-  final tx = await WarpApi.sendPayment(
-      param.account, param.address, param.amount, param.maxAmountPerNote,
-      (percent) {
+  final tx = await WarpApi.sendPayment(param.account, param.address,
+      param.amount, param.maxAmountPerNote, param.anchorOffset, (percent) {
     param.sendPort.send(percent);
   });
   param.sendPort.send(0);

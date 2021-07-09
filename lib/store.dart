@@ -21,6 +21,15 @@ abstract class _Settings with Store {
   @observable
   ThemeMode mode;
 
+  @observable
+  String ldUrl;
+
+  @observable
+  String ldUrlChoice;
+
+  @observable
+  int anchorOffset;
+
   nextMode() {
     return mode == ThemeMode.light ? "Dark Mode" : "Light Mode";
   }
@@ -33,6 +42,11 @@ abstract class _Settings with Store {
       mode = ThemeMode.light;
     else
       mode = ThemeMode.dark;
+    ldUrlChoice = prefs.getString('lightwalletd_choice') ?? "lightwalletd";
+    ldUrl = prefs.getString('lightwalletd_custom') ?? "";
+    prefs.setString('lightwalletd_choice', ldUrlChoice);
+    prefs.setString('lightwalletd_custom', ldUrl);
+    anchorOffset = prefs.getInt('anchor_offset') ?? 3;
   }
 
   @action
@@ -40,6 +54,41 @@ abstract class _Settings with Store {
     mode = mode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('theme', mode == ThemeMode.light ? "light" : "dark");
+  }
+
+  @action
+  Future<void> setURLChoice(String choice) async {
+    ldUrlChoice = choice;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('lightwalletd_choice', ldUrlChoice);
+    updateLWD();
+  }
+
+  @action
+  Future<void> setURL(String url) async {
+    ldUrl = url;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('lightwalletd_custom', ldUrl);
+    updateLWD();
+  }
+
+  @action
+  Future<void> setAnchorOffset(int offset) async {
+    final prefs = await SharedPreferences.getInstance();
+    anchorOffset = offset;
+    prefs.setInt('anchor_offset', offset);
+  }
+
+  String getLWD() {
+    switch (ldUrlChoice) {
+      case "custom": return ldUrl;
+      case "lightwalletd": return "https://mainnet.lightwalletd.com:9067";
+      case "zecwallet": return "https://lwdv3.zecwallet.co";
+    }
+  }
+
+  void updateLWD() {
+    WarpApi.updateLWD(getLWD());
   }
 }
 
@@ -59,6 +108,12 @@ abstract class _AccountManager with Store {
 
   @observable
   int unconfirmedBalance = 0;
+
+  @observable
+  String taddress = "";
+
+  @observable
+  int tbalance = 0;
 
   @observable
   List<Note> notes = [];
@@ -92,19 +147,24 @@ abstract class _AccountManager with Store {
     if (account == null) return;
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('account', account.id);
-    this.active = account;
+    final List<Map> res1 = await db.rawQuery(
+        "SELECT address FROM taddrs WHERE account = ?1", [account.id]);
+    if (res1.isNotEmpty) taddress = res1[0]['address'];
+
     WarpApi.setMempoolAccount(account.id);
-    final List<Map> res = await db
-        .rawQuery("SELECT sk FROM accounts WHERE id_account = ?1", [active.id]);
-    canPay = res.isNotEmpty && res[0]['sk'] != null;
-    await fetchNotesAndHistory();
+    final List<Map> res2 = await db.rawQuery(
+        "SELECT sk FROM accounts WHERE id_account = ?1", [account.id]);
+    canPay = res2.isNotEmpty && res2[0]['sk'] != null;
+    await _fetchNotesAndHistory(account.id);
+    active = account;
+    print("Active account = ${account.id}");
   }
 
   @action
-  setActiveAccountId(int idAccount) {
+  Future<void> setActiveAccountId(int idAccount) async {
     final account = accounts.firstWhere((account) => account.id == idAccount,
         orElse: () => accounts.isNotEmpty ? accounts[0] : null);
-    setActiveAccount(account);
+    await setActiveAccount(account);
   }
 
   String newAddress() {
@@ -121,10 +181,10 @@ abstract class _AccountManager with Store {
     return backup;
   }
 
-  Future<int> _getBalance() async {
+  Future<int> _getBalance(int accountId) async {
     final List<Map> res = await db.rawQuery(
         "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND (spent IS NULL OR spent = 0)",
-        [active.id]);
+        [accountId]);
     if (res.isEmpty) return 0;
     return res[0]['value'] ?? 0;
   }
@@ -161,23 +221,33 @@ abstract class _AccountManager with Store {
   @action
   Future<void> delete(int account) async {
     await db.rawDelete("DELETE FROM accounts WHERE id_account = ?1", [account]);
+    await db.rawDelete("DELETE FROM taddrs WHERE account = ?1", [account]);
   }
 
   @action
   Future<void> updateBalance() async {
     if (active == null) return;
-    balance = await _getBalance();
+    balance = await _getBalance(active.id);
   }
-
-  final DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
 
   @action
   Future<void> fetchNotesAndHistory() async {
     if (active == null) return;
-    await updateBalance();
+    await _fetchNotesAndHistory(active.id);
+  }
+
+  final DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+
+  Future<void> _updateBalance(int accountId) async {
+    balance = await _getBalance(accountId);
+  }
+
+  @action
+  Future<void> _fetchNotesAndHistory(int accountId) async {
+    await _updateBalance(accountId);
     final List<Map> res = await db.rawQuery(
         "SELECT n.height, n.value, t.timestamp FROM received_notes n, transactions t WHERE n.account = ?1 AND (n.spent IS NULL OR n.spent = 0) AND n.tx = t.id_tx",
-        [active.id]);
+        [accountId]);
     notes = res.map((row) {
       final height = row['height'];
       final timestamp = dateFormat
@@ -187,7 +257,7 @@ abstract class _AccountManager with Store {
 
     final List<Map> res2 = await db.rawQuery(
         "SELECT txid, height, timestamp, value FROM transactions WHERE account = ?1",
-        [active.id]);
+        [accountId]);
     txs = res2.map((row) {
       final txid = hex.encode(row['txid']).substring(0, 8);
       final timestamp = dateFormat
@@ -198,8 +268,16 @@ abstract class _AccountManager with Store {
 
   @action
   Future<void> convertToWatchOnly() async {
-    await db.rawUpdate("UPDATE accounts SET seed = NULL, sk = NULL WHERE id_account = ?1", [active.id]);
+    await db.rawUpdate(
+        "UPDATE accounts SET seed = NULL, sk = NULL WHERE id_account = ?1",
+        [active.id]);
     canPay = false;
+  }
+
+  void updateTBalance() {
+    if (active == null) return;
+    int balance = WarpApi.getTBalance(active.id);
+    if (balance != tbalance) tbalance = balance;
   }
 }
 

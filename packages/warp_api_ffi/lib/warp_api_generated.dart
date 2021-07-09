@@ -20,9 +20,11 @@ class NativeLibrary {
 
   void init_wallet(
     ffi.Pointer<ffi.Int8> db_path,
+    ffi.Pointer<ffi.Int8> ld_url,
   ) {
     return _init_wallet(
       db_path,
+      ld_url,
     );
   }
 
@@ -149,6 +151,7 @@ class NativeLibrary {
     ffi.Pointer<ffi.Int8> address,
     int amount,
     int max_amount_per_note,
+    int anchor_offset,
     int port,
   ) {
     return _send_payment(
@@ -156,6 +159,7 @@ class NativeLibrary {
       address,
       amount,
       max_amount_per_note,
+      anchor_offset,
       port,
     );
   }
@@ -205,14 +209,55 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_mempool_sync>>('mempool_sync');
   late final _dart_mempool_sync _mempool_sync =
       _mempool_sync_ptr.asFunction<_dart_mempool_sync>();
+
+  int get_taddr_balance(
+    int account,
+  ) {
+    return _get_taddr_balance(
+      account,
+    );
+  }
+
+  late final _get_taddr_balance_ptr =
+      _lookup<ffi.NativeFunction<_c_get_taddr_balance>>('get_taddr_balance');
+  late final _dart_get_taddr_balance _get_taddr_balance =
+      _get_taddr_balance_ptr.asFunction<_dart_get_taddr_balance>();
+
+  ffi.Pointer<ffi.Int8> shield_taddr(
+    int account,
+  ) {
+    return _shield_taddr(
+      account,
+    );
+  }
+
+  late final _shield_taddr_ptr =
+      _lookup<ffi.NativeFunction<_c_shield_taddr>>('shield_taddr');
+  late final _dart_shield_taddr _shield_taddr =
+      _shield_taddr_ptr.asFunction<_dart_shield_taddr>();
+
+  void set_lwd_url(
+    ffi.Pointer<ffi.Int8> url,
+  ) {
+    return _set_lwd_url(
+      url,
+    );
+  }
+
+  late final _set_lwd_url_ptr =
+      _lookup<ffi.NativeFunction<_c_set_lwd_url>>('set_lwd_url');
+  late final _dart_set_lwd_url _set_lwd_url =
+      _set_lwd_url_ptr.asFunction<_dart_set_lwd_url>();
 }
 
 typedef _c_init_wallet = ffi.Void Function(
   ffi.Pointer<ffi.Int8> db_path,
+  ffi.Pointer<ffi.Int8> ld_url,
 );
 
 typedef _dart_init_wallet = void Function(
   ffi.Pointer<ffi.Int8> db_path,
+  ffi.Pointer<ffi.Int8> ld_url,
 );
 
 typedef _c_warp_sync = ffi.Void Function(
@@ -286,6 +331,7 @@ typedef _c_send_payment = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> address,
   ffi.Uint64 amount,
   ffi.Uint64 max_amount_per_note,
+  ffi.Uint32 anchor_offset,
   ffi.Int64 port,
 );
 
@@ -294,6 +340,7 @@ typedef _dart_send_payment = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> address,
   int amount,
   int max_amount_per_note,
+  int anchor_offset,
   int port,
 );
 
@@ -316,3 +363,27 @@ typedef _dart_rewind_to_height = void Function(
 typedef _c_mempool_sync = ffi.Int64 Function();
 
 typedef _dart_mempool_sync = int Function();
+
+typedef _c_get_taddr_balance = ffi.Uint64 Function(
+  ffi.Uint32 account,
+);
+
+typedef _dart_get_taddr_balance = int Function(
+  int account,
+);
+
+typedef _c_shield_taddr = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint32 account,
+);
+
+typedef _dart_shield_taddr = ffi.Pointer<ffi.Int8> Function(
+  int account,
+);
+
+typedef _c_set_lwd_url = ffi.Void Function(
+  ffi.Pointer<ffi.Int8> url,
+);
+
+typedef _dart_set_lwd_url = void Function(
+  ffi.Pointer<ffi.Int8> url,
+);

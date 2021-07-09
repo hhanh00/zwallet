@@ -62,7 +62,7 @@ class _RestorePageState extends State<RestorePage> {
       final account = WarpApi.newAccount(
           _nameController.text, _keyController.text);
       await accountManager.refresh();
-      accountManager.setActiveAccountId(account);
+      await accountManager.setActiveAccountId(account);
       if (accountManager.accounts.length == 1) {
         if (_keyController.text == "")
           WarpApi.skipToLastHeight(); // single new account -> quick sync

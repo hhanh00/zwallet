@@ -8,6 +8,7 @@ import 'package:splashscreen/splashscreen.dart';
 
 import 'account.dart';
 import 'account_manager.dart';
+import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
 import 'store.dart';
@@ -30,13 +31,14 @@ Future<Database> getDatabase() async {
 }
 
 void main() {
+  final home = ZWalletApp();
   runApp(Observer(
       builder: (context) => MaterialApp(
             title: 'Warp Sync Demo',
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
             themeMode: settings.mode,
-            home: ZWalletApp(),
+            home: home,
             scaffoldMessengerKey: rootScaffoldMessengerKey,
             onGenerateRoute: (RouteSettings settings) {
               var routes = <String, WidgetBuilder>{
@@ -44,24 +46,20 @@ void main() {
                 '/restore': (context) => RestorePage(),
                 '/send': (context) => SendPage(),
                 '/accounts': (context) => AccountManagerPage(),
+                '/settings': (context) => SettingsPage(),
               };
               return MaterialPageRoute(builder: routes[settings.name]);
             },
           )));
 }
 
-class ZWalletApp extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _ZWalletState();
-}
-
-class _ZWalletState extends State<ZWalletApp> {
+class ZWalletApp extends StatelessWidget {
   Future<Widget> _init() async {
     final dbPath = await getDatabasesPath();
-    WarpApi.initWallet(dbPath + "/zec.db");
+    await settings.restore();
+    WarpApi.initWallet(dbPath + "/zec.db", settings.getLWD());
     await accountManager.init();
     await syncStatus.init();
-    await settings.restore();
     return Future.value(
         accountManager.accounts.isNotEmpty ? AccountPage() : AccountManagerPage());
   }

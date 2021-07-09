@@ -6,7 +6,7 @@ typedef long int uint32_t;
 typedef char bool;
 typedef void *DartPostCObjectFnType;
 
-void init_wallet(char *db_path);
+void init_wallet(char *db_path, char *ld_url);
 
 void warp_sync(int64_t port);
 
@@ -30,6 +30,7 @@ const char *send_payment(uint32_t account,
                          char *address,
                          uint64_t amount,
                          uint64_t max_amount_per_note,
+                         uint32_t anchor_offset,
                          int64_t port);
 
 int8_t try_warp_sync(void);
@@ -39,3 +40,9 @@ void skip_to_last_height(void);
 void rewind_to_height(uint32_t height);
 
 int64_t mempool_sync(void);
+
+uint64_t get_taddr_balance(uint32_t account);
+
+char *shield_taddr(uint32_t account);
+
+void set_lwd_url(char *url);
