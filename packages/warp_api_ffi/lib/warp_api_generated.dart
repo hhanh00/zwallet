@@ -34,9 +34,13 @@ class NativeLibrary {
       _init_wallet_ptr.asFunction<_dart_init_wallet>();
 
   void warp_sync(
+    int get_tx,
+    int anchor_offset,
     int port,
   ) {
     return _warp_sync(
+      get_tx,
+      anchor_offset,
       port,
     );
   }
@@ -150,6 +154,7 @@ class NativeLibrary {
     int account,
     ffi.Pointer<ffi.Int8> address,
     int amount,
+    ffi.Pointer<ffi.Int8> memo,
     int max_amount_per_note,
     int anchor_offset,
     int port,
@@ -158,6 +163,7 @@ class NativeLibrary {
       account,
       address,
       amount,
+      memo,
       max_amount_per_note,
       anchor_offset,
       port,
@@ -169,8 +175,14 @@ class NativeLibrary {
   late final _dart_send_payment _send_payment =
       _send_payment_ptr.asFunction<_dart_send_payment>();
 
-  int try_warp_sync() {
-    return _try_warp_sync();
+  int try_warp_sync(
+    int get_tx,
+    int anchor_offset,
+  ) {
+    return _try_warp_sync(
+      get_tx,
+      anchor_offset,
+    );
   }
 
   late final _try_warp_sync_ptr =
@@ -261,10 +273,14 @@ typedef _dart_init_wallet = void Function(
 );
 
 typedef _c_warp_sync = ffi.Void Function(
+  ffi.Int8 get_tx,
+  ffi.Uint32 anchor_offset,
   ffi.Int64 port,
 );
 
 typedef _dart_warp_sync = void Function(
+  int get_tx,
+  int anchor_offset,
   int port,
 );
 
@@ -330,6 +346,7 @@ typedef _c_send_payment = ffi.Pointer<ffi.Int8> Function(
   ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> address,
   ffi.Uint64 amount,
+  ffi.Pointer<ffi.Int8> memo,
   ffi.Uint64 max_amount_per_note,
   ffi.Uint32 anchor_offset,
   ffi.Int64 port,
@@ -339,14 +356,21 @@ typedef _dart_send_payment = ffi.Pointer<ffi.Int8> Function(
   int account,
   ffi.Pointer<ffi.Int8> address,
   int amount,
+  ffi.Pointer<ffi.Int8> memo,
   int max_amount_per_note,
   int anchor_offset,
   int port,
 );
 
-typedef _c_try_warp_sync = ffi.Int8 Function();
+typedef _c_try_warp_sync = ffi.Int8 Function(
+  ffi.Int8 get_tx,
+  ffi.Uint32 anchor_offset,
+);
 
-typedef _dart_try_warp_sync = int Function();
+typedef _dart_try_warp_sync = int Function(
+  int get_tx,
+  int anchor_offset,
+);
 
 typedef _c_skip_to_last_height = ffi.Void Function();
 

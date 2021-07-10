@@ -26,6 +26,7 @@ class SendState extends State<SendPage> {
   var _maxAmountPerNote = Decimal.zero;
   var _balance = 0;
   final _addressController = TextEditingController();
+  final _memoController = TextEditingController();
   var _mZEC = true;
   var _currencyController = _makeMoneyMaskedTextController(true);
   var _maxAmountPerNoteController = _makeMoneyMaskedTextController(true);
@@ -90,6 +91,13 @@ class SendState extends State<SendPage> {
                             headerBuilder: (_, __) =>
                                 ListTile(title: Text('Advanced Options')),
                             body: Column(children: [
+                              ListTile(title: TextFormField(
+                                decoration: InputDecoration(labelText: 'Memo'),
+                                minLines: 4,
+                                maxLines: null,
+                                keyboardType: TextInputType.multiline,
+                                controller: _memoController,
+                              )),
                               CheckboxListTile(
                                   title: Text('Round to mZEC'),
                                   value: _mZEC,
@@ -106,7 +114,7 @@ class SendState extends State<SendPage> {
                                 controller: _maxAmountPerNoteController,
                                 validator: _checkMaxAmountPerNote,
                                 onSaved: _onSavedMaxAmountPerNote,
-                              ))
+                              )),
                             ]),
                             isExpanded: _isExpanded)
                       ]),
@@ -226,12 +234,14 @@ class SendState extends State<SendPage> {
         int amount = (_amount * ZECUNIT_DECIMAL).toInt();
         if (_includeFee) amount -= DEFAULT_FEE;
         int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toInt();
+        final memo = _memoController.text;
         final tx = await compute(
             sendPayment,
-            SendPaymentParam(
+            PaymentParams(
                 accountManager.active.id,
                 _address,
                 amount,
+                memo,
                 maxAmountPerNote,
                 settings.anchorOffset,
                 progressPort.sendPort));
@@ -249,24 +259,17 @@ class SendState extends State<SendPage> {
           precision: mZEC ? 3 : 8);
 }
 
-class SendPaymentParam {
-  int account;
-  String address;
-  int amount;
-  int maxAmountPerNote;
-  int anchorOffset;
-  SendPort sendPort;
-
-  SendPaymentParam(this.account, this.address, this.amount,
-      this.maxAmountPerNote, this.anchorOffset, this.sendPort);
-}
-
-sendPayment(SendPaymentParam param) async {
-  param.sendPort.send(0);
-  final tx = await WarpApi.sendPayment(param.account, param.address,
-      param.amount, param.maxAmountPerNote, param.anchorOffset, (percent) {
-    param.sendPort.send(percent);
+sendPayment(PaymentParams param) async {
+  param.port.send(0);
+  final tx = await WarpApi.sendPayment(
+      param.account,
+      param.address,
+      param.amount,
+      param.memo,
+      param.maxAmountPerNote,
+      param.anchorOffset, (percent) {
+    param.port.send(percent);
   });
-  param.sendPort.send(0);
+  param.port.send(0);
   return tx;
 }

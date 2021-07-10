@@ -8,7 +8,7 @@ typedef void *DartPostCObjectFnType;
 
 void init_wallet(char *db_path, char *ld_url);
 
-void warp_sync(int64_t port);
+void warp_sync(bool get_tx, uint32_t anchor_offset, int64_t port);
 
 void dart_post_cobject(DartPostCObjectFnType ptr);
 
@@ -29,11 +29,12 @@ int64_t get_mempool_balance(void);
 const char *send_payment(uint32_t account,
                          char *address,
                          uint64_t amount,
+                         char *memo,
                          uint64_t max_amount_per_note,
                          uint32_t anchor_offset,
                          int64_t port);
 
-int8_t try_warp_sync(void);
+int8_t try_warp_sync(bool get_tx, uint32_t anchor_offset);
 
 void skip_to_last_height(void);
 

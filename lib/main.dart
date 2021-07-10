@@ -12,6 +12,7 @@ import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
 import 'store.dart';
+import 'transaction.dart';
 
 const ZECUNIT = 100000000.0;
 var ZECUNIT_DECIMAL = Decimal.parse('100000000');
@@ -47,6 +48,7 @@ void main() {
                 '/send': (context) => SendPage(),
                 '/accounts': (context) => AccountManagerPage(),
                 '/settings': (context) => SettingsPage(),
+                '/tx': (context) => TransactionPage(settings.arguments),
               };
               return MaterialPageRoute(builder: routes[settings.name]);
             },

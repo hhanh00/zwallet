@@ -42,9 +42,17 @@ pub fn new_account(name: &str, data: &str) -> u32 {
     log_result(wallet.new_account(name, data))
 }
 
-async fn warp(db_path: &str, ld_url: &str, port: i64) -> anyhow::Result<()> {
+async fn warp(
+    get_tx: bool,
+    anchor_offset: u32,
+    db_path: &str,
+    ld_url: &str,
+    port: i64,
+) -> anyhow::Result<()> {
     info!("Sync started");
     Wallet::sync_ex(
+        get_tx,
+        anchor_offset,
         &db_path,
         move |height| {
             let mut height = height.into_dart();
@@ -82,7 +90,7 @@ fn convert_sync_result(result: anyhow::Result<()>) -> i8 {
     }
 }
 
-pub fn warp_sync(port: i64) -> i8 {
+pub fn warp_sync(get_tx: bool, anchor_offset: u32, port: i64) -> i8 {
     let r = Runtime::new().unwrap();
     let res = r.block_on(async {
         android_logger::init_once(Config::default().with_min_level(Level::Info));
@@ -91,13 +99,13 @@ pub fn warp_sync(port: i64) -> i8 {
         let db_path = wallet.db_path.clone();
         let ld_url = wallet.ld_url.clone();
         drop(wallet);
-        warp(&db_path, &ld_url, port).await?;
+        warp(get_tx, anchor_offset, &db_path, &ld_url, port).await?;
         Ok::<_, anyhow::Error>(())
     });
     convert_sync_result(res)
 }
 
-pub fn try_warp_sync() -> i8 {
+pub fn try_warp_sync(get_tx: bool, anchor_offset: u32) -> i8 {
     let r = Runtime::new().unwrap();
     let res = r.block_on(async {
         android_logger::init_once(Config::default().with_min_level(Level::Info));
@@ -107,7 +115,7 @@ pub fn try_warp_sync() -> i8 {
             let db_path = wallet.db_path.clone();
             let ld_url = wallet.ld_url.clone();
             drop(wallet);
-            warp(&db_path, &ld_url, 0).await?;
+            warp(get_tx, anchor_offset, &db_path, &ld_url, 0).await?;
             Ok::<_, anyhow::Error>(())
         } else {
             Err(anyhow::anyhow!(ChainError::Busy))
@@ -138,6 +146,7 @@ pub fn send_payment(
     account: u32,
     address: &str,
     amount: u64,
+    memo: &str,
     max_amount_per_note: u64,
     anchor_offset: u32,
     port: i64,
@@ -150,6 +159,7 @@ pub fn send_payment(
                 account,
                 address,
                 amount,
+                memo,
                 max_amount_per_note,
                 anchor_offset,
                 move |progress| {

@@ -14,8 +14,8 @@ pub unsafe extern "C" fn init_wallet(db_path: *mut c_char, ld_url: *mut c_char) 
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn warp_sync(port: i64) {
-    api::warp_sync(port);
+pub unsafe extern "C" fn warp_sync(get_tx: bool, anchor_offset: u32, port: i64) {
+    api::warp_sync(get_tx, anchor_offset, port);
 }
 
 #[no_mangle]
@@ -68,15 +68,18 @@ pub unsafe extern "C" fn send_payment(
     account: u32,
     address: *mut c_char,
     amount: u64,
+    memo: *mut c_char,
     max_amount_per_note: u64,
     anchor_offset: u32,
     port: i64,
 ) -> *const c_char {
     let address = CStr::from_ptr(address).to_string_lossy();
+    let memo = CStr::from_ptr(memo).to_string_lossy();
     let tx_id = api::send_payment(
         account,
         &address,
         amount,
+        &memo,
         max_amount_per_note,
         anchor_offset,
         port,
@@ -85,8 +88,8 @@ pub unsafe extern "C" fn send_payment(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn try_warp_sync() -> i8 {
-    api::try_warp_sync()
+pub unsafe extern "C" fn try_warp_sync(get_tx: bool, anchor_offset: u32) -> i8 {
+    api::try_warp_sync(get_tx, anchor_offset)
 }
 
 #[no_mangle]

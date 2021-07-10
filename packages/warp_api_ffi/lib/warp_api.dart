@@ -11,20 +11,23 @@ import './warp_api_generated.dart';
 typedef report_callback = Void Function(Int32);
 
 class SyncParams {
-  SendPort port;
+  bool getTx;
+  int anchorOffset;
+  SendPort? port;
 
-  SyncParams(this.port);
+  SyncParams(this.getTx, this.anchorOffset, this.port);
 }
 
 class PaymentParams {
   int account;
   String address;
   int amount;
+  String memo;
   int maxAmountPerNote;
   int anchorOffset;
   SendPort port;
 
-  PaymentParams(this.account, this.address, this.amount, this.maxAmountPerNote,
+  PaymentParams(this.account, this.address, this.amount, this.memo, this.maxAmountPerNote,
       this.anchorOffset, this.port);
 }
 
@@ -70,17 +73,17 @@ class WarpApi {
     warp_api_lib.rewind_to_height(height);
   }
 
-  static void warpSync(void Function(int) f) {
+  static void warpSync(bool getTx, int anchorOffset, void Function(int) f) {
     var receivePort = ReceivePort();
-    Isolate.spawn(warpSyncIsolateFn, SyncParams(receivePort.sendPort));
+    Isolate.spawn(warpSyncIsolateFn, SyncParams(getTx, anchorOffset, receivePort.sendPort));
 
     receivePort.listen((height) {
       f(height);
     });
   }
 
-  static Future<int> tryWarpSync() async {
-    final res = await compute(tryWarpSyncIsolateFn, null);
+  static Future<int> tryWarpSync(bool getTx, int anchorOffset) async {
+    final res = await compute(tryWarpSyncIsolateFn, SyncParams(getTx, anchorOffset, null));
     return res;
   }
 
@@ -113,7 +116,7 @@ class WarpApi {
     return warp_api_lib.get_mempool_balance();
   }
 
-  static Future<String> sendPayment(int account, String address, int amount,
+  static Future<String> sendPayment(int account, String address, int amount, String memo,
       int maxAmountPerNote, int anchorOffset, void Function(int) f) async {
     var receivePort = ReceivePort();
     receivePort.listen((progress) {
@@ -123,7 +126,7 @@ class WarpApi {
     return await compute(
         sendPaymentIsolateFn,
         PaymentParams(
-            account, address, amount, maxAmountPerNote, anchorOffset, receivePort.sendPort));
+            account, address, amount, memo, maxAmountPerNote, anchorOffset, receivePort.sendPort));
   }
 
   static int getTBalance(int account) {
@@ -146,6 +149,7 @@ String sendPaymentIsolateFn(PaymentParams params) {
       params.account,
       params.address.toNativeUtf8().cast<Int8>(),
       params.amount,
+      params.memo.toNativeUtf8().cast<Int8>(),
       params.maxAmountPerNote,
       params.anchorOffset,
       params.port.nativePort);
@@ -153,11 +157,11 @@ String sendPaymentIsolateFn(PaymentParams params) {
 }
 
 void warpSyncIsolateFn(SyncParams params) {
-  warp_api_lib.warp_sync(params.port.nativePort);
+  warp_api_lib.warp_sync(params.getTx ? 1 : 0, params.anchorOffset, params.port!.nativePort);
 }
 
-int tryWarpSyncIsolateFn(Null _dummy) {
-  return warp_api_lib.try_warp_sync();
+int tryWarpSyncIsolateFn(SyncParams params) {
+  return warp_api_lib.try_warp_sync(params.getTx ? 1 : 0, params.anchorOffset);
 }
 
 int getLatestHeightIsolateFn(Null _dummy) {

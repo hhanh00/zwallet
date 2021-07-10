@@ -13,54 +13,65 @@ class SettingsPage extends StatefulWidget {
 final _settingsFormKey = GlobalKey<FormBuilderState>();
 
 class SettingsState extends State<SettingsPage> {
-  var _anchorController = MaskedTextController(mask: "00", text: "${settings.anchorOffset}");
+  var _anchorController =
+      MaskedTextController(mask: "00", text: "${settings.anchorOffset}");
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Connection Settings')),
         body: Padding(
-          padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: FormBuilder(
                 key: _settingsFormKey,
-                child: Observer(builder: (context) => Column(children: [
-                  FormBuilderRadioGroup(
-                      orientation: OptionsOrientation.vertical,
-                      name: 'servers',
-                      decoration: InputDecoration(labelText: 'Select a server'),
-                      initialValue: settings.ldUrlChoice,
-                      onSaved: _onChoice,
-                      options: [
-                        FormBuilderFieldOption(
-                            child:
-                                Text('Lightwalletd'),
-                            value: 'lightwalletd'),
-                        FormBuilderFieldOption(
-                            child:
-                            Text('ZECWallet'),
-                            value: 'zecwallet'),
-                        FormBuilderFieldOption(
-                            value: 'custom',
-                        child: FormBuilderTextField(
-                          decoration: InputDecoration(labelText: 'Custom'),
-                          initialValue: settings.ldUrl,
-                          onSaved: _onURL,
-                        )),
-                      ]),
-                  FormBuilderTextField(
-                      decoration: InputDecoration(labelText: 'Anchor Offset'),
-                    name: 'anchor',
-                    keyboardType: TextInputType.number,
-                    controller: _anchorController,
-                    onSaved: _onAnchorOffset
-                  ),
-                  ButtonBar(children: [
-                    ElevatedButton(child: Text('Cancel'), onPressed: () {
-                      Navigator.of(context).pop();
-                    }),
-                    ElevatedButton(child: Text('OK'), onPressed: _onSave),
-                  ])
-                ])))));
+                child: Observer(
+                    builder: (context) => Column(children: [
+                          FormBuilderRadioGroup(
+                              orientation: OptionsOrientation.vertical,
+                              name: 'servers',
+                              decoration:
+                                  InputDecoration(labelText: 'Select a server'),
+                              initialValue: settings.ldUrlChoice,
+                              onSaved: _onChoice,
+                              options: [
+                                FormBuilderFieldOption(
+                                    child: Text('Lightwalletd'),
+                                    value: 'lightwalletd'),
+                                FormBuilderFieldOption(
+                                    child: Text('ZECWallet'),
+                                    value: 'zecwallet'),
+                                FormBuilderFieldOption(
+                                    value: 'custom',
+                                    child: FormBuilderTextField(
+                                      decoration:
+                                          InputDecoration(labelText: 'Custom'),
+                                      initialValue: settings.ldUrl,
+                                      onSaved: _onURL,
+                                    )),
+                              ]),
+                          FormBuilderTextField(
+                              decoration:
+                                  InputDecoration(labelText: 'Anchor Offset'),
+                              name: 'anchor',
+                              keyboardType: TextInputType.number,
+                              controller: _anchorController,
+                              onSaved: _onAnchorOffset),
+                          FormBuilderCheckbox(
+                              name: 'get_tx',
+                              title: Text('Retrieve Transaction Details'),
+                            initialValue: settings.getTx,
+                            onSaved: _onGetTx
+                          ),
+                          ButtonBar(children: [
+                            ElevatedButton(
+                                child: Text('Cancel'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                }),
+                            ElevatedButton(
+                                child: Text('OK'), onPressed: _onSave),
+                          ])
+                        ])))));
   }
 
   _onChoice(v) {
@@ -78,5 +89,9 @@ class SettingsState extends State<SettingsPage> {
 
   _onAnchorOffset(v) {
     settings.anchorOffset = int.parse(v);
+  }
+
+  _onGetTx(v) {
+    settings.updateGetTx(v);
   }
 }

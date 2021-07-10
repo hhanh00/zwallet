@@ -98,8 +98,7 @@ class _AccountPageState extends State<AccountPage>
                             child: Text("Cold Storage"), value: "Cold"),
                       PopupMenuItem(
                           child: Text(settings.nextMode()), value: "Theme"),
-                      PopupMenuItem(
-                          child: Text('Settings'), value: "Settings"),
+                      PopupMenuItem(child: Text('Settings'), value: "Settings"),
                       PopupMenuItem(child: Text("About"), value: "About"),
                     ],
                     onSelected: _onMenu,
@@ -285,7 +284,7 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _sync() {
-    WarpApi.warpSync((int height) async {
+    WarpApi.warpSync(settings.getTx, settings.anchorOffset, (int height) async {
       setState(() {
         syncStatus.setSyncHeight(height);
         if (syncStatus.isSynced()) accountManager.fetchNotesAndHistory();
@@ -299,7 +298,8 @@ class _AccountPageState extends State<AccountPage>
     await syncStatus.update();
     await accountManager.updateUnconfirmedBalance();
     if (!syncStatus.isSynced()) {
-      final res = await WarpApi.tryWarpSync();
+      final res =
+          await WarpApi.tryWarpSync(settings.getTx, settings.anchorOffset);
       if (res == 1) {
         // Reorg
         final targetHeight = syncStatus.syncedHeight - 10;
@@ -502,12 +502,16 @@ class _HistoryState extends State<HistoryWidget>
   bool get wantKeepAlive => true; //Set to true
 
   _txs() => accountManager.txs
-      .map((tx) => DataRow(cells: [
-            DataCell(Text("${tx.height}")),
-            DataCell(Text("${tx.timestamp}")),
-            DataCell(Text("${tx.txid}")),
-            DataCell(Text("${tx.value}")),
-          ]))
+      .map((tx) => DataRow(
+              cells: [
+                DataCell(Text("${tx.height}")),
+                DataCell(Text("${tx.timestamp}")),
+                DataCell(Text("${tx.txid}")),
+                DataCell(Text("${tx.value}")),
+              ],
+              onSelectChanged: (_) {
+                Navigator.of(this.context).pushNamed('/tx', arguments: tx);
+              }))
       .toList();
 
   @override
@@ -525,6 +529,7 @@ class _HistoryState extends State<HistoryWidget>
                     DataColumn(label: Text('Amount')),
                   ],
                   columnSpacing: 32,
+                  showCheckboxColumn: false,
                   rows: _txs(),
                 )));
   }

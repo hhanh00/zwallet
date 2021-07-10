@@ -30,6 +30,9 @@ abstract class _Settings with Store {
   @observable
   int anchorOffset;
 
+  @observable
+  bool getTx;
+
   nextMode() {
     return mode == ThemeMode.light ? "Dark Mode" : "Light Mode";
   }
@@ -47,6 +50,7 @@ abstract class _Settings with Store {
     prefs.setString('lightwalletd_choice', ldUrlChoice);
     prefs.setString('lightwalletd_custom', ldUrl);
     anchorOffset = prefs.getInt('anchor_offset') ?? 3;
+    getTx = prefs.getBool('get_txinfo') ?? true;
   }
 
   @action
@@ -89,6 +93,13 @@ abstract class _Settings with Store {
 
   void updateLWD() {
     WarpApi.updateLWD(getLWD());
+  }
+
+  @action
+  Future<void> updateGetTx(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    getTx = v;
+    prefs.setBool('get_txinfo', v);
   }
 }
 
@@ -256,13 +267,14 @@ abstract class _AccountManager with Store {
     }).toList();
 
     final List<Map> res2 = await db.rawQuery(
-        "SELECT txid, height, timestamp, value FROM transactions WHERE account = ?1",
+        "SELECT id_tx, txid, height, timestamp, address, value, memo FROM transactions WHERE account = ?1",
         [accountId]);
     txs = res2.map((row) {
-      final txid = hex.encode(row['txid']).substring(0, 8);
+      final fullTxId = hex.encode(row['txid']);
+      final txid = fullTxId.substring(0, 8);
       final timestamp = dateFormat
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
-      return Tx(row['height'], timestamp, txid, row['value'] / ZECUNIT);
+      return Tx(row['id_tx'], row['height'], timestamp, txid, fullTxId, row['value'] / ZECUNIT, row['address'], row['memo']);
     }).toList();
   }
 
@@ -360,10 +372,14 @@ class Note {
 }
 
 class Tx {
+  int id;
   int height;
   String timestamp;
   String txid;
+  String fullTxId;
   double value;
+  String address;
+  String memo;
 
-  Tx(this.height, this.timestamp, this.txid, this.value);
+  Tx(this.id, this.height, this.timestamp, this.txid, this.fullTxId, this.value, this.address, this.memo);
 }
