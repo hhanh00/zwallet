@@ -1,4 +1,5 @@
 import 'dart:isolate';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:convert/convert.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 import 'main.dart';
 
@@ -18,9 +20,6 @@ part 'store.g.dart';
 class Settings = _Settings with _$Settings;
 
 abstract class _Settings with Store {
-  @observable
-  ThemeMode mode;
-
   @observable
   String ldUrl;
 
@@ -33,31 +32,32 @@ abstract class _Settings with Store {
   @observable
   bool getTx;
 
-  nextMode() {
-    return mode == ThemeMode.light ? "Dark Mode" : "Light Mode";
-  }
+  @observable
+  int rowsPerPage;
+
+  @observable
+  String theme;
+
+  @observable
+  String themeBrightness;
+
+  @observable
+  ThemeData themeData;
 
   @action
   Future<void> restore() async {
     final prefs = await SharedPreferences.getInstance();
     final prefMode = prefs.getString('theme') ?? "light";
-    if (prefMode == "light")
-      mode = ThemeMode.light;
-    else
-      mode = ThemeMode.dark;
     ldUrlChoice = prefs.getString('lightwalletd_choice') ?? "lightwalletd";
     ldUrl = prefs.getString('lightwalletd_custom') ?? "";
     prefs.setString('lightwalletd_choice', ldUrlChoice);
     prefs.setString('lightwalletd_custom', ldUrl);
     anchorOffset = prefs.getInt('anchor_offset') ?? 3;
     getTx = prefs.getBool('get_txinfo') ?? true;
-  }
-
-  @action
-  Future<void> toggle() async {
-    mode = mode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('theme', mode == ThemeMode.light ? "light" : "dark");
+    rowsPerPage = prefs.getInt('rows_per_age') ?? 10;
+    theme = prefs.getString('theme') ?? "zcash";
+    themeBrightness = prefs.getString('theme_brightness') ?? "dark";
+    _updateThemeData();
   }
 
   @action
@@ -83,6 +83,37 @@ abstract class _Settings with Store {
     prefs.setInt('anchor_offset', offset);
   }
 
+  @action
+  Future<void> setTheme(String thm) async {
+    final prefs = await SharedPreferences.getInstance();
+    theme = thm;
+    prefs.setString('theme', thm);
+    _updateThemeData();
+  }
+
+  @action
+  Future<void> setThemeBrightness(String brightness) async {
+    print(brightness);
+    final prefs = await SharedPreferences.getInstance();
+    themeBrightness = brightness;
+    prefs.setString('theme_brightness', brightness);
+    _updateThemeData();
+  }
+
+  void _updateThemeData() {
+    FlexScheme scheme;
+    switch (theme) {
+      case 'zcash': scheme = FlexScheme.mango; break;
+      case 'blue': scheme = FlexScheme.bahamaBlue; break;
+      case 'pink': scheme = FlexScheme.sakura; break;
+      case 'coffee': scheme = FlexScheme.espresso; break;
+    }
+    switch (themeBrightness) {
+      case 'light': themeData = FlexColorScheme.light(scheme: scheme).toTheme; break;
+      case 'dark': themeData = FlexColorScheme.dark(scheme: scheme).toTheme; break;
+    }
+  }
+
   String getLWD() {
     switch (ldUrlChoice) {
       case "custom": return ldUrl;
@@ -100,6 +131,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     getTx = v;
     prefs.setBool('get_txinfo', v);
+  }
+
+  @action
+  Future<void> setRowsPerPage(int v) async {
+    final prefs = await SharedPreferences.getInstance();
+    rowsPerPage = v;
+    prefs.setInt('rows_per_age', v);
   }
 }
 
@@ -247,7 +285,8 @@ abstract class _AccountManager with Store {
     await _fetchNotesAndHistory(active.id);
   }
 
-  final DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+  final DateFormat noteDateFormat = DateFormat("yy-MM-dd HH:mm");
+  final DateFormat txDateFormat = DateFormat("MM-dd HH:mm");
 
   Future<void> _updateBalance(int accountId) async {
     balance = await _getBalance(accountId);
@@ -261,7 +300,7 @@ abstract class _AccountManager with Store {
         [accountId]);
     notes = res.map((row) {
       final height = row['height'];
-      final timestamp = dateFormat
+      final timestamp = noteDateFormat
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
       return Note(height, timestamp, row['value'] / ZECUNIT);
     }).toList();
@@ -270,11 +309,12 @@ abstract class _AccountManager with Store {
         "SELECT id_tx, txid, height, timestamp, address, value, memo FROM transactions WHERE account = ?1",
         [accountId]);
     txs = res2.map((row) {
-      final fullTxId = hex.encode(row['txid']);
-      final txid = fullTxId.substring(0, 8);
-      final timestamp = dateFormat
+      Uint8List txid = row['txid'];
+      final fullTxId = hex.encode(txid.reversed.toList());
+      final shortTxid = fullTxId.substring(0, 8);
+      final timestamp = txDateFormat
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
-      return Tx(row['id_tx'], row['height'], timestamp, txid, fullTxId, row['value'] / ZECUNIT, row['address'], row['memo']);
+      return Tx(row['id_tx'], row['height'], timestamp, shortTxid, fullTxId, row['value'] / ZECUNIT, row['address'], row['memo']);
     }).toList();
   }
 

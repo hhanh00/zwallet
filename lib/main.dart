@@ -36,9 +36,7 @@ void main() {
   runApp(Observer(
       builder: (context) => MaterialApp(
             title: 'Warp Sync Demo',
-            theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
-            themeMode: settings.mode,
+            theme: settings.themeData,
             home: home,
             scaffoldMessengerKey: rootScaffoldMessengerKey,
             onGenerateRoute: (RouteSettings settings) {

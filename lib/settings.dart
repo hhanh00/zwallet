@@ -30,7 +30,7 @@ class SettingsState extends State<SettingsPage> {
                               orientation: OptionsOrientation.vertical,
                               name: 'servers',
                               decoration:
-                                  InputDecoration(labelText: 'Select a server'),
+                                  InputDecoration(labelText: 'Server'),
                               initialValue: settings.ldUrlChoice,
                               onSaved: _onChoice,
                               options: [
@@ -49,9 +49,44 @@ class SettingsState extends State<SettingsPage> {
                                       onSaved: _onURL,
                                     )),
                               ]),
+                    FormBuilderRadioGroup(
+                        orientation: OptionsOrientation.horizontal,
+                        name: 'themes',
+                        decoration:
+                        InputDecoration(labelText: 'Theme'),
+                        initialValue: settings.theme,
+                        onChanged: _onTheme,
+                        options: [
+                          FormBuilderFieldOption(
+                              child: Text('Zcash'),
+                              value: 'zcash'),
+                          FormBuilderFieldOption(
+                              child: Text('Blue'),
+                              value: 'blue'),
+                          FormBuilderFieldOption(
+                              child: Text('Pink'),
+                              value: 'pink'),
+                          FormBuilderFieldOption(
+                              child: Text('Coffee'),
+                              value: 'coffee'),
+                          ]
+                    ),
+                    FormBuilderRadioGroup(
+                        orientation: OptionsOrientation.horizontal,
+                        name: 'brightness',
+                        initialValue: settings.themeBrightness,
+                        onChanged: _onThemeBrightness,
+                        options: [
+                          FormBuilderFieldOption(
+                              child: Text('Light'),
+                              value: 'light'),
+                          FormBuilderFieldOption(
+                              child: Text('Dark'),
+                              value: 'dark'),
+                        ]),
                           FormBuilderTextField(
                               decoration:
-                                  InputDecoration(labelText: 'Anchor Offset'),
+                                  InputDecoration(labelText: 'Number of Confirmations Needed before Spending'),
                               name: 'anchor',
                               keyboardType: TextInputType.number,
                               controller: _anchorController,
@@ -80,6 +115,14 @@ class SettingsState extends State<SettingsPage> {
 
   _onURL(v) {
     settings.setURL(v);
+  }
+
+  _onTheme(v) {
+    settings.setTheme(v);
+  }
+
+  _onThemeBrightness(v) {
+    settings.setThemeBrightness(v);
   }
 
   _onSave() {

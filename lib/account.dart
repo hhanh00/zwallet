@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
@@ -18,12 +19,17 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage>
-    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
+    with
+        WidgetsBindingObserver,
+        AutomaticKeepAliveClientMixin,
+        SingleTickerProviderStateMixin {
   Timer _timerSync;
   int _progress = 0;
   bool _useSnapAddress = false;
   String _snapAddress = "";
   bool _showTAddr = false;
+  TabController _tabController;
+  bool _accountTab = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -31,6 +37,12 @@ class _AccountPageState extends State<AccountPage>
   @override
   initState() {
     super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+        _accountTab = _tabController.index == 0;
+      });
+    });
     Future.microtask(() async {
       await accountManager.updateUnconfirmedBalance();
       await accountManager.fetchNotesAndHistory();
@@ -46,7 +58,6 @@ class _AccountPageState extends State<AccountPage>
 
   @override
   void dispose() {
-    print("DISPOSE");
     _timerSync?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -73,152 +84,152 @@ class _AccountPageState extends State<AccountPage>
     if (!syncStatus.isSynced()) _trySync();
     if (accountManager.active == null) return CircularProgressIndicator();
 
-    return DefaultTabController(
-        length: 3,
-        child: Scaffold(
-            appBar: AppBar(
-              title: Observer(
-                  builder: (context) =>
-                      Text("\u24E9 Wallet - ${accountManager.active.name}")),
-              bottom: TabBar(tabs: [
-                Tab(text: "Account"),
-                Tab(text: "Notes"),
-                Tab(text: "History"),
-              ]),
-              actions: [
+    return Scaffold(
+        appBar: AppBar(
+          title: Observer(
+              builder: (context) =>
+                  Text("\u24E9 Wallet - ${accountManager.active.name}")),
+          bottom: TabBar(controller: _tabController, tabs: [
+            Tab(text: "Account"),
+            Tab(text: "Notes"),
+            Tab(text: "History"),
+          ]),
+          actions: [
+            Observer(builder: (context) {
+              accountManager.canPay;
+              return PopupMenuButton<String>(
+                itemBuilder: (context) => [
+                  PopupMenuItem(child: Text("Accounts"), value: "Accounts"),
+                  PopupMenuItem(child: Text("Backup"), value: "Backup"),
+                  PopupMenuItem(child: Text("Rescan"), value: "Rescan"),
+                  if (accountManager.canPay)
+                    PopupMenuItem(child: Text("Cold Storage"), value: "Cold"),
+                  PopupMenuItem(child: Text('Settings'), value: "Settings"),
+                  PopupMenuItem(child: Text("About"), value: "About"),
+                ],
+                onSelected: _onMenu,
+              );
+            })
+          ],
+        ),
+        body: TabBarView(controller: _tabController, children: [
+          Container(
+              padding: EdgeInsets.all(20),
+              child: Center(
+                  child: Column(children: [
+                Observer(
+                    builder: (context) => syncStatus.syncedHeight <= 0
+                        ? Text('Synching')
+                        : syncStatus.isSynced()
+                            ? Text('${syncStatus.syncedHeight}',
+                                style: Theme.of(this.context).textTheme.caption)
+                            : Text(
+                                '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}')),
+                Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                 Observer(builder: (context) {
-                  accountManager.canPay;
-                  return PopupMenuButton<String>(
-                    itemBuilder: (context) => [
-                      PopupMenuItem(child: Text("Accounts"), value: "Accounts"),
-                      PopupMenuItem(child: Text("Backup"), value: "Backup"),
-                      PopupMenuItem(child: Text("Rescan"), value: "Rescan"),
-                      if (accountManager.canPay)
-                        PopupMenuItem(
-                            child: Text("Cold Storage"), value: "Cold"),
-                      PopupMenuItem(
-                          child: Text(settings.nextMode()), value: "Theme"),
-                      PopupMenuItem(child: Text('Settings'), value: "Settings"),
-                      PopupMenuItem(child: Text("About"), value: "About"),
-                    ],
-                    onSelected: _onMenu,
-                  );
-                })
-              ],
-            ),
-            body: TabBarView(children: [
-              Container(
-                  padding: EdgeInsets.all(20),
-                  child: Center(
-                      child: Column(children: [
-                    Observer(
-                        builder: (context) => syncStatus.syncedHeight <= 0
-                            ? Text('Synching')
-                            : syncStatus.isSynced()
-                                ? Text('${syncStatus.syncedHeight}',
-                                    style: Theme.of(this.context)
-                                        .textTheme
-                                        .caption)
-                                : Text(
-                                    '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}')),
+                  final _ = accountManager.active.address;
+                  final address = _address();
+                  return Column(children: [
+                    Text(_showTAddr
+                        ? 'Tap QR Code for Shielded Address'
+                        : 'Tap QR Code for Transparent Address'),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 4)),
+                    GestureDetector(
+                        onTap: _onQRTap,
+                        child: QrImage(
+                            data: address,
+                            size: 200,
+                            backgroundColor: Colors.white)),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                    Observer(builder: (context) {
-                      final _ = accountManager.active.address;
-                      final address = _showTAddr
-                          ? accountManager.taddress
-                          : (_useSnapAddress
-                              ? _snapAddress
-                              : accountManager.active.address);
-                      return Column(children: [
-                        Text(_showTAddr
-                            ? 'Tap QR Code for Shielded Address'
-                            : 'Tap QR Code for Transparent Address'),
-                        Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-                        GestureDetector(
-                            onTap: _onQRTap,
-                            child: QrImage(
-                                data: address,
-                                size: 200,
-                                backgroundColor: Colors.white)),
-                        Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                        SelectableText('$address'),
-                        if (!_showTAddr)
-                          TextButton(
-                              child: Text('New Snap Address'),
-                              onPressed: _onSnapAddress),
-                        if (_showTAddr)
-                          TextButton(
-                            child: Text('Shield Transp. Balance'),
-                            onPressed: _onShieldTAddr,
-                          )
+                    RichText(
+                        text: TextSpan(children: [
+                      TextSpan(
+                          text: '$address ',
+                          style: Theme.of(context).textTheme.bodyText2),
+                      WidgetSpan(
+                          child: GestureDetector(
+                              child: Icon(Icons.content_copy),
+                              onTap: _onAddressCopy)),
+                    ])),
+                    if (!_showTAddr)
+                      TextButton(
+                          child: Text('New Snap Address'),
+                          onPressed: _onSnapAddress),
+                    if (_showTAddr)
+                      TextButton(
+                        child: Text('Shield Transp. Balance'),
+                        onPressed: _onShieldTAddr,
+                      )
+                  ]);
+                }),
+                Observer(builder: (context) {
+                  final balance = _showTAddr
+                      ? accountManager.tbalance
+                      : accountManager.balance;
+                  return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.ideographic,
+                      children: <Widget>[
+                        Text('\u24E9 ${_getBalance_hi(balance)}',
+                            style: Theme.of(context).textTheme.headline2),
+                        Text('${_getBalance_lo(balance)}'),
                       ]);
-                    }),
-                    Observer(builder: (context) {
-                      final balance = _showTAddr
-                          ? accountManager.tbalance
-                          : accountManager.balance;
-                      return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.ideographic,
-                          children: <Widget>[
-                            Text('\u24E9 ${_getBalance_hi(balance)}',
-                                style: Theme.of(context).textTheme.headline2),
-                            Text('${_getBalance_lo(balance)}'),
-                          ]);
-                    }),
-                    Observer(builder: (context) {
-                      final balance = _showTAddr
-                          ? accountManager.tbalance
-                          : accountManager.balance;
-                      final zecPrice = priceStore.zecPrice;
-                      final balanceUSD = balance * zecPrice / ZECUNIT;
-                      return Column(children: [
-                        if (zecPrice != 0.0)
-                          Text("${balanceUSD.toStringAsFixed(2)} USDT",
-                              style:
-                                  Theme.of(this.context).textTheme.headline6),
-                        if (zecPrice != 0.0)
-                          Text("1 ZEC = ${zecPrice.toStringAsFixed(2)} USDT"),
-                      ]);
-                    }),
-                    Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                    Observer(
-                        builder: (context) =>
-                            (accountManager.unconfirmedBalance != 0)
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.baseline,
-                                    textBaseline: TextBaseline.ideographic,
-                                    children: <Widget>[
-                                        Text(
-                                            '${_sign(accountManager.unconfirmedBalance)} ${_getBalance_hi(accountManager.unconfirmedBalance)}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline4
-                                                ?.merge(_unconfirmedStyle())),
-                                        Text(
-                                            '${_getBalance_lo(accountManager.unconfirmedBalance)}',
-                                            style: _unconfirmedStyle()),
-                                      ])
-                                : Container()),
-                    if (_progress > 0)
-                      LinearProgressIndicator(value: _progress / 100.0),
-                  ]))),
-              NoteWidget(),
-              HistoryWidget(),
-            ]),
-            floatingActionButton: Observer(
-              builder: (context) => accountManager.canPay
-                  ? FloatingActionButton(
-                      onPressed: _onSend,
-                      tooltip: 'Send',
-                      child: Icon(Icons.send),
-                    )
-                  : Container(), // This trailing comma makes auto-formatting nicer for build methods.
-            )));
+                }),
+                Observer(builder: (context) {
+                  final balance = _showTAddr
+                      ? accountManager.tbalance
+                      : accountManager.balance;
+                  final zecPrice = priceStore.zecPrice;
+                  final balanceUSD = balance * zecPrice / ZECUNIT;
+                  return Column(children: [
+                    if (zecPrice != 0.0)
+                      Text("${balanceUSD.toStringAsFixed(2)} USDT",
+                          style: Theme.of(this.context).textTheme.headline6),
+                    if (zecPrice != 0.0)
+                      Text("1 ZEC = ${zecPrice.toStringAsFixed(2)} USDT"),
+                  ]);
+                }),
+                Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+                Observer(
+                    builder: (context) =>
+                        (accountManager.unconfirmedBalance != 0)
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.ideographic,
+                                children: <Widget>[
+                                    Text(
+                                        '${_sign(accountManager.unconfirmedBalance)} ${_getBalance_hi(accountManager.unconfirmedBalance)}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline4
+                                            ?.merge(_unconfirmedStyle())),
+                                    Text(
+                                        '${_getBalance_lo(accountManager.unconfirmedBalance)}',
+                                        style: _unconfirmedStyle()),
+                                  ])
+                            : Container()),
+                if (_progress > 0)
+                  LinearProgressIndicator(value: _progress / 100.0),
+              ]))),
+          NoteWidget(),
+          HistoryWidget(),
+        ]),
+        floatingActionButton: Observer(
+          builder: (context) => accountManager.canPay && _accountTab
+              ? FloatingActionButton(
+                  onPressed: _onSend,
+                  tooltip: 'Send',
+                  child: Icon(Icons.send),
+                )
+              : Container(), // This trailing comma makes auto-formatting nicer for build methods.
+        ));
   }
+
+  _address() => _showTAddr
+      ? accountManager.taddress
+      : (_useSnapAddress ? _snapAddress : accountManager.active.address);
 
   _sign(int b) {
     return b < 0 ? '-' : '+';
@@ -228,6 +239,12 @@ class _AccountPageState extends State<AccountPage>
     setState(() {
       _showTAddr = !_showTAddr;
     });
+  }
+
+  _onAddressCopy() {
+    Clipboard.setData(ClipboardData(text: _address()));
+    final snackBar = SnackBar(content: Text('Address copied to clipboard'));
+    rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
   }
 
   _onShieldTAddr() {
@@ -346,9 +363,6 @@ class _AccountPageState extends State<AccountPage>
       case "Cold":
         _cold();
         break;
-      case "Theme":
-        settings.toggle();
-        break;
       case "Settings":
         _settings();
         break;
@@ -447,45 +461,65 @@ class NoteWidget extends StatefulWidget {
 }
 
 class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
-  final DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
-
   @override
   bool get wantKeepAlive => true; //Set to true
-
-  _notes() => accountManager.notes
-      .map((note) => DataRow(
-            cells: [
-              DataCell(Text("${note.height}",
-                  style: !_confirmed(note.height)
-                      ? Theme.of(this.context).textTheme.overline
-                      : null)),
-              DataCell(Text("${note.timestamp}")),
-              DataCell(Text("${note.value}")),
-            ],
-            // messes with dark theme
-            // color: MaterialStateColor.resolveWith((states) => _color(note.height)),
-          ))
-      .toList();
-
-  bool _confirmed(int height) {
-    return syncStatus.latestHeight - height >= settings.anchorOffset;
-  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final source = NotesDataSource(context);
     return SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        padding: EdgeInsets.only(bottom: 64),
-        child: Observer(
-            builder: (context) => DataTable(
-                  columns: [
-                    DataColumn(label: Text('Height')),
-                    DataColumn(label: Text('Date/Time')),
-                    DataColumn(label: Text('Amount')),
-                  ],
-                  rows: _notes(),
-                )));
+        child: Observer(builder: (context) => PaginatedDataTable(
+          columns: [
+            DataColumn(label: Text('Height')),
+            DataColumn(label: Text('Date/Time')),
+            DataColumn(label: Text('Amount'), numeric: true),
+          ],
+          columnSpacing: 16,
+          showCheckboxColumn: false,
+          availableRowsPerPage: [5, 10, 25, 100],
+          onRowsPerPageChanged: (int value) {
+            settings.setRowsPerPage(value);
+          },
+          showFirstLastButtons: true,
+          rowsPerPage: settings.rowsPerPage,
+          source: source,
+        )));
+  }
+}
+
+class NotesDataSource extends DataTableSource {
+  BuildContext context;
+
+  NotesDataSource(this.context);
+
+  @override
+  DataRow getRow(int index) {
+    final note = accountManager.notes[index];
+    return DataRow(
+      cells: [
+        DataCell(Text("${note.height}",
+            style: !_confirmed(note.height)
+                ? Theme.of(this.context).textTheme.overline
+                : null)),
+        DataCell(Text("${note.timestamp}")),
+        DataCell(Text("${note.value.toStringAsFixed(8)}")),
+      ],
+    );
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => accountManager.notes.length;
+
+  @override
+  int get selectedRowCount => 0;
+
+  bool _confirmed(int height) {
+    return syncStatus.latestHeight - height >= settings.anchorOffset;
   }
 }
 
@@ -496,44 +530,62 @@ class HistoryWidget extends StatefulWidget {
 
 class _HistoryState extends State<HistoryWidget>
     with AutomaticKeepAliveClientMixin {
-  final DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
 
   @override
   bool get wantKeepAlive => true; //Set to true
 
-  _txs() => accountManager.txs
-      .map((tx) => DataRow(
-              cells: [
-                DataCell(Text("${tx.height}")),
-                DataCell(Text("${tx.timestamp}")),
-                DataCell(Text("${tx.txid}")),
-                DataCell(Text("${tx.value}")),
-              ],
-              onSelectChanged: (_) {
-                Navigator.of(this.context).pushNamed('/tx', arguments: tx);
-              }))
-      .toList();
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final dataSource = HistoryDataSource(context);
     return SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        padding: EdgeInsets.only(bottom: 64),
-        child: Observer(
-            builder: (context) => DataTable(
-                  columns: [
-                    DataColumn(label: Text('Height')),
-                    DataColumn(label: Text('Date/Time')),
-                    DataColumn(label: Text('TXID')),
-                    DataColumn(label: Text('Amount')),
-                  ],
-                  columnSpacing: 32,
-                  showCheckboxColumn: false,
-                  rows: _txs(),
-                )));
+        child: Observer(builder: (context) => PaginatedDataTable(
+            columns: [
+              DataColumn(label: Text('Height')),
+              DataColumn(label: Text('Date/Time')),
+              DataColumn(label: Text('TXID')),
+              DataColumn(label: Text('Amount'), numeric: true),
+            ],
+            columnSpacing: 16,
+            showCheckboxColumn: false,
+            availableRowsPerPage: [5, 10, 25, 100],
+            onRowsPerPageChanged: (int value) {
+              settings.setRowsPerPage(value);
+            },
+            showFirstLastButtons: true,
+            rowsPerPage: settings.rowsPerPage,
+            source: dataSource)));
   }
 }
 
-// TODO: Fix transaction / log panel
-// transaction between account are counted properly
+class HistoryDataSource extends DataTableSource {
+  BuildContext context;
+
+  HistoryDataSource(this.context);
+
+  @override
+  DataRow getRow(int index) {
+    final tx = accountManager.txs[index];
+    return DataRow(
+        cells: [
+          DataCell(Text("${tx.height}")),
+          DataCell(Text("${tx.timestamp}")),
+          DataCell(Text("${tx.txid}")),
+          DataCell(Text("${tx.value.toStringAsFixed(8)}",
+              textAlign: TextAlign.left)),
+        ],
+        onSelectChanged: (_) {
+          Navigator.of(this.context).pushNamed('/tx', arguments: tx);
+        });
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => accountManager.txs.length;
+
+  @override
+  int get selectedRowCount => 0;
+}
