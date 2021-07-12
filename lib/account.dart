@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'about.dart';
 import 'main.dart';
@@ -30,6 +30,7 @@ class _AccountPageState extends State<AccountPage>
   bool _showTAddr = false;
   TabController _tabController;
   bool _accountTab = true;
+  bool _syncing = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -37,7 +38,7 @@ class _AccountPageState extends State<AccountPage>
   @override
   initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       setState(() {
         _accountTab = _tabController.index == 0;
@@ -45,7 +46,7 @@ class _AccountPageState extends State<AccountPage>
     });
     Future.microtask(() async {
       await accountManager.updateUnconfirmedBalance();
-      await accountManager.fetchNotesAndHistory();
+      await accountManager.fetchAccountData();
       _setupTimer();
     });
     WidgetsBinding.instance.addObserver(this);
@@ -65,7 +66,6 @@ class _AccountPageState extends State<AccountPage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print("appstate $state");
     switch (state) {
       case AppLifecycleState.detached:
       case AppLifecycleState.inactive:
@@ -81,9 +81,9 @@ class _AccountPageState extends State<AccountPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (!syncStatus.isSynced()) _trySync();
+    if (!syncStatus.isSynced() && !_syncing) _trySync();
     if (accountManager.active == null) return CircularProgressIndicator();
-
+    final theme = Theme.of(this.context);
     return Scaffold(
         appBar: AppBar(
           title: Observer(
@@ -93,6 +93,7 @@ class _AccountPageState extends State<AccountPage>
             Tab(text: "Account"),
             Tab(text: "Notes"),
             Tab(text: "History"),
+            Tab(text: "Budget"),
           ]),
           actions: [
             Observer(builder: (context) {
@@ -122,9 +123,11 @@ class _AccountPageState extends State<AccountPage>
                         ? Text('Synching')
                         : syncStatus.isSynced()
                             ? Text('${syncStatus.syncedHeight}',
-                                style: Theme.of(this.context).textTheme.caption)
+                                style: theme.textTheme.caption)
                             : Text(
-                                '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}')),
+                                '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}',
+                                style: theme.textTheme.caption
+                                    .apply(color: theme.primaryColor))),
                 Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                 Observer(builder: (context) {
                   final _ = accountManager.active.address;
@@ -144,8 +147,7 @@ class _AccountPageState extends State<AccountPage>
                     RichText(
                         text: TextSpan(children: [
                       TextSpan(
-                          text: '$address ',
-                          style: Theme.of(context).textTheme.bodyText2),
+                          text: '$address ', style: theme.textTheme.bodyText2),
                       WidgetSpan(
                           child: GestureDetector(
                               child: Icon(Icons.content_copy),
@@ -172,7 +174,7 @@ class _AccountPageState extends State<AccountPage>
                       textBaseline: TextBaseline.ideographic,
                       children: <Widget>[
                         Text('\u24E9 ${_getBalance_hi(balance)}',
-                            style: Theme.of(context).textTheme.headline2),
+                            style: theme.textTheme.headline2),
                         Text('${_getBalance_lo(balance)}'),
                       ]);
                 }),
@@ -185,7 +187,7 @@ class _AccountPageState extends State<AccountPage>
                   return Column(children: [
                     if (zecPrice != 0.0)
                       Text("${balanceUSD.toStringAsFixed(2)} USDT",
-                          style: Theme.of(this.context).textTheme.headline6),
+                          style: theme.textTheme.headline6),
                     if (zecPrice != 0.0)
                       Text("1 ZEC = ${zecPrice.toStringAsFixed(2)} USDT"),
                   ]);
@@ -201,9 +203,7 @@ class _AccountPageState extends State<AccountPage>
                                 children: <Widget>[
                                     Text(
                                         '${_sign(accountManager.unconfirmedBalance)} ${_getBalance_hi(accountManager.unconfirmedBalance)}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline4
+                                        style: theme.textTheme.headline4
                                             ?.merge(_unconfirmedStyle())),
                                     Text(
                                         '${_getBalance_lo(accountManager.unconfirmedBalance)}',
@@ -213,8 +213,9 @@ class _AccountPageState extends State<AccountPage>
                 if (_progress > 0)
                   LinearProgressIndicator(value: _progress / 100.0),
               ]))),
-          NoteWidget(),
-          HistoryWidget(),
+          NoteWidget(tabTo),
+          HistoryWidget(tabTo),
+          BudgetWidget(),
         ]),
         floatingActionButton: Observer(
           builder: (context) => accountManager.canPay && _accountTab
@@ -225,6 +226,10 @@ class _AccountPageState extends State<AccountPage>
                 )
               : Container(), // This trailing comma makes auto-formatting nicer for build methods.
         ));
+  }
+
+  void tabTo(int index) {
+    if (index != _tabController.index) _tabController.animateTo(index);
   }
 
   _address() => _showTAddr
@@ -301,10 +306,15 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _sync() {
+    _syncing = true;
     WarpApi.warpSync(settings.getTx, settings.anchorOffset, (int height) async {
       setState(() {
-        syncStatus.setSyncHeight(height);
-        if (syncStatus.isSynced()) accountManager.fetchNotesAndHistory();
+        if (height >= 0)
+          syncStatus.setSyncHeight(height);
+        else {
+          _syncing = false;
+          _trySync();
+        }
       });
     });
   }
@@ -326,7 +336,7 @@ class _AccountPageState extends State<AccountPage>
         syncStatus.setSyncHeight(syncStatus.latestHeight);
       }
     }
-    await accountManager.fetchNotesAndHistory();
+    await accountManager.fetchAccountData();
     await accountManager.updateBalance();
     await accountManager.updateUnconfirmedBalance();
     accountManager.updateTBalance();
@@ -377,22 +387,7 @@ class _AccountPageState extends State<AccountPage>
     final didAuthenticate = await localAuth.authenticate(
         localizedReason: "Please authenticate to show account seed");
     if (didAuthenticate) {
-      final seed = await accountManager.getBackup();
-      showDialog(
-        context: this.context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-            title: Text('Account Backup'),
-            content: SelectableText(seed),
-            actions: [
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(this.context).pop();
-                },
-              )
-            ]),
-      );
+      Navigator.of(context).pushNamed('/backup');
     }
   }
 
@@ -456,6 +451,10 @@ class _AccountPageState extends State<AccountPage>
 }
 
 class NoteWidget extends StatefulWidget {
+  void Function(int index) tabTo;
+
+  NoteWidget(this.tabTo);
+
   @override
   State<StatefulWidget> createState() => _NoteState();
 }
@@ -467,37 +466,68 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final source = NotesDataSource(context);
+    final source = NotesDataSource(context, _onRowSelected);
     return SingleChildScrollView(
+        padding: EdgeInsets.all(4),
         scrollDirection: Axis.vertical,
-        child: Observer(builder: (context) => PaginatedDataTable(
-          columns: [
-            DataColumn(label: Text('Height')),
-            DataColumn(label: Text('Date/Time')),
-            DataColumn(label: Text('Amount'), numeric: true),
-          ],
-          columnSpacing: 16,
-          showCheckboxColumn: false,
-          availableRowsPerPage: [5, 10, 25, 100],
-          onRowsPerPageChanged: (int value) {
-            settings.setRowsPerPage(value);
-          },
-          showFirstLastButtons: true,
-          rowsPerPage: settings.rowsPerPage,
-          source: source,
-        )));
+        child: Observer(
+            builder: (context) => NotificationListener<OverscrollNotification>(
+                onNotification: (s) {
+                  final os = s.overscroll;
+                  if (os < 0) {
+                    widget.tabTo(0);
+                    return true;
+                  }
+                  if (os > 0) {
+                    widget.tabTo(2);
+                    return true;
+                  }
+                  return false;
+                },
+                child: PaginatedDataTable(
+                  columns: [
+                    DataColumn(label: Text('Height')),
+                    DataColumn(label: Text('Date/Time')),
+                    DataColumn(
+                        label: Text('Amount'),
+                        numeric: true,
+                        onSort: (_, __) {
+                          setState(() {
+                            accountManager.sortNoteAmount();
+                          });
+                        }),
+                  ],
+                  header: Text('Select notes to EXCLUDE from payments',
+                      style: Theme.of(context).textTheme.bodyText1),
+                  columnSpacing: 16,
+                  showCheckboxColumn: false,
+                  availableRowsPerPage: [5, 10, 25, 100],
+                  onRowsPerPageChanged: (int value) {
+                    settings.setRowsPerPage(value);
+                  },
+                  showFirstLastButtons: true,
+                  rowsPerPage: settings.rowsPerPage,
+                  source: source,
+                ))));
+  }
+
+  _onRowSelected(Note note) {
+    accountManager.excludeNote(note);
   }
 }
 
 class NotesDataSource extends DataTableSource {
-  BuildContext context;
+  final BuildContext context;
+  final Function(Note) onRowSelected;
 
-  NotesDataSource(this.context);
+  NotesDataSource(this.context, this.onRowSelected);
 
   @override
   DataRow getRow(int index) {
     final note = accountManager.notes[index];
-    return DataRow(
+    return DataRow.byIndex(
+      index: index,
+      selected: note.excluded,
       cells: [
         DataCell(Text("${note.height}",
             style: !_confirmed(note.height)
@@ -506,6 +536,7 @@ class NotesDataSource extends DataTableSource {
         DataCell(Text("${note.timestamp}")),
         DataCell(Text("${note.value.toStringAsFixed(8)}")),
       ],
+      onSelectChanged: (selected) => _noteSelected(note, selected),
     );
   }
 
@@ -521,16 +552,25 @@ class NotesDataSource extends DataTableSource {
   bool _confirmed(int height) {
     return syncStatus.latestHeight - height >= settings.anchorOffset;
   }
+
+  void _noteSelected(Note note, bool selected) {
+    note.excluded = !note.excluded;
+    notifyListeners();
+    onRowSelected(note);
+  }
 }
 
 class HistoryWidget extends StatefulWidget {
+  void Function(int index) tabTo;
+
+  HistoryWidget(this.tabTo);
+
   @override
   State<StatefulWidget> createState() => _HistoryState();
 }
 
 class _HistoryState extends State<HistoryWidget>
     with AutomaticKeepAliveClientMixin {
-
   @override
   bool get wantKeepAlive => true; //Set to true
 
@@ -539,23 +579,44 @@ class _HistoryState extends State<HistoryWidget>
     super.build(context);
     final dataSource = HistoryDataSource(context);
     return SingleChildScrollView(
+        padding: EdgeInsets.all(4),
         scrollDirection: Axis.vertical,
-        child: Observer(builder: (context) => PaginatedDataTable(
-            columns: [
-              DataColumn(label: Text('Height')),
-              DataColumn(label: Text('Date/Time')),
-              DataColumn(label: Text('TXID')),
-              DataColumn(label: Text('Amount'), numeric: true),
-            ],
-            columnSpacing: 16,
-            showCheckboxColumn: false,
-            availableRowsPerPage: [5, 10, 25, 100],
-            onRowsPerPageChanged: (int value) {
-              settings.setRowsPerPage(value);
-            },
-            showFirstLastButtons: true,
-            rowsPerPage: settings.rowsPerPage,
-            source: dataSource)));
+        child: Observer(
+            builder: (context) => NotificationListener<OverscrollNotification>(
+                onNotification: (s) {
+                  if (s.overscroll < 0) {
+                    widget.tabTo(1);
+                    return true;
+                  }
+                  if (s.overscroll > 0) {
+                    widget.tabTo(3);
+                    return true;
+                  }
+                  return false;
+                },
+                child: PaginatedDataTable(
+                    columns: [
+                      DataColumn(label: Text('Height')),
+                      DataColumn(label: Text('Date/Time')),
+                      DataColumn(label: Text('TXID')),
+                      DataColumn(
+                          label: Text('Amount'),
+                          numeric: true,
+                          onSort: (_, __) {
+                            setState(() {
+                              accountManager.sortTxAmount();
+                            });
+                          }),
+                    ],
+                    columnSpacing: 16,
+                    showCheckboxColumn: false,
+                    availableRowsPerPage: [5, 10, 25, 100],
+                    onRowsPerPageChanged: (int value) {
+                      settings.setRowsPerPage(value);
+                    },
+                    showFirstLastButtons: true,
+                    rowsPerPage: settings.rowsPerPage,
+                    source: dataSource))));
   }
 }
 
@@ -588,4 +649,161 @@ class HistoryDataSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
+}
+
+class BudgetWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => BudgetState();
+}
+
+class BudgetState extends State<BudgetWidget>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true; //Set to true
+  var _showAddress = true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Padding(
+        padding: EdgeInsets.all(4),
+        child: Observer(builder: (context) {
+          final _ = accountManager.budgetEpoch;
+          return Column(
+            children: [
+              Expanded(
+                  child: Card(
+                      child: Column(children: [
+                Text('Largest Spendings by Address',
+                    style: Theme.of(context).textTheme.headline6),
+                Expanded(
+                    child: SpendingChart(accountManager.spendings, _showAddress,
+                        _toggleAddress)),
+                Text('Tap Chart to Toggle between Address and Amount',
+                    style: Theme.of(context).textTheme.caption)
+              ]))),
+              Expanded(
+                  child: Card(
+                      child: Column(children: [
+                Text('Account Balance History',
+                    style: Theme.of(context).textTheme.headline6),
+                Expanded(
+                    child:
+                        AccountBalanceTimeChart(accountManager.accountBalances))
+              ]))),
+            ],
+          );
+        }));
+  }
+
+  void _toggleAddress() {
+    setState(() {
+      _showAddress = !_showAddress;
+    });
+  }
+}
+
+class SpendingChart extends StatelessWidget {
+  final List<Spending> data;
+  final bool showAddress;
+  final void Function() onTap;
+
+  SpendingChart(this.data, this.showAddress, this.onTap);
+
+  @override
+  Widget build(BuildContext context) {
+    final seriesList = _createSeries(data, showAddress);
+    final color = charts.ColorUtil.fromDartColor(
+        Theme.of(context).textTheme.headline5.color);
+    if (seriesList[0].data.isEmpty)
+      return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('No Spending in the Last 30 Days',
+                style: Theme.of(context).textTheme.headline5)
+          ]);
+    return new charts.PieChart(seriesList,
+        animate: false,
+        selectionModels: [
+          charts.SelectionModelConfig(changedListener: (_) {
+            onTap();
+          })
+        ],
+        defaultRenderer:
+            charts.ArcRendererConfig(arcWidth: 80, arcRendererDecorators: [
+          charts.ArcLabelDecorator(
+            outsideLabelStyleSpec:
+                charts.TextStyleSpec(color: color, fontSize: 12),
+          )
+        ]));
+  }
+
+  static List<charts.Series<Spending, String>> _createSeries(
+      List<Spending> data, bool showAddress) {
+    final palette = settings.palette.makeShades(data.length + 5);
+    return [
+      new charts.Series<Spending, String>(
+        id: 'Largest Spending Last Month',
+        domainFn: (Spending sales, _) => sales.address,
+        measureFn: (Spending sales, _) => sales.amount,
+        colorFn: (_, index) => palette[index],
+        data: data,
+        labelAccessorFn: (Spending row, _) =>
+            showAddress ? row.address : row.amount.toString(),
+      )
+    ];
+  }
+}
+
+class AccountBalanceTimeChart extends StatefulWidget {
+  List<AccountBalance> data;
+
+  AccountBalanceTimeChart(this.data);
+
+  @override
+  State<StatefulWidget> createState() => AccountBalanceTimeChartState();
+}
+
+class AccountBalanceTimeChartState extends State<AccountBalanceTimeChart> {
+  @override
+  Widget build(BuildContext context) {
+    final axisColor = charts.ColorUtil.fromDartColor(
+        Theme.of(context).textTheme.headline5.color);
+    final seriesList = _createSeries(widget.data,
+        charts.ColorUtil.fromDartColor(Theme.of(context).primaryColor));
+    return new charts.TimeSeriesChart(
+      seriesList,
+      animate: false,
+      dateTimeFactory: const charts.LocalDateTimeFactory(),
+      primaryMeasureAxis: charts.NumericAxisSpec(
+          viewport: charts.NumericExtents.fromValues(
+              widget.data.map((ab) => ab.balance).toList()),
+          tickProviderSpec: charts.BasicNumericTickProviderSpec(
+              zeroBound: true,
+              dataIsInWholeNumbers: false,
+              desiredTickCount: 5),
+          renderSpec: charts.GridlineRendererSpec(
+              labelStyle: charts.TextStyleSpec(color: axisColor))),
+      domainAxis: charts.DateTimeAxisSpec(
+          renderSpec: charts.SmallTickRendererSpec(
+              labelStyle: charts.TextStyleSpec(color: axisColor))),
+      behaviors: [
+        charts.SelectNearest(),
+      ],
+    );
+  }
+
+  static List<charts.Series<AccountBalance, DateTime>> _createSeries(
+      List<AccountBalance> data, charts.Color lineColor) {
+    return [
+      new charts.Series<AccountBalance, DateTime>(
+        id: 'Balance',
+        colorFn: (_, __) => lineColor,
+        domainFn: (AccountBalance ab, _) => ab.time,
+        measureFn: (AccountBalance ab, _) => ab.balance,
+        data: data,
+      )
+    ];
+  }
 }

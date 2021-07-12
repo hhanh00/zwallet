@@ -49,5 +49,4 @@ app.*.map.json
 
 target/
 jniLibs/
-assets/
 *.g.dart

@@ -19,7 +19,7 @@ class SettingsState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Connection Settings')),
+        appBar: AppBar(title: Text('Settings')),
         body: Padding(
             padding: EdgeInsets.all(16),
             child: FormBuilder(

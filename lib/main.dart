@@ -8,6 +8,7 @@ import 'package:splashscreen/splashscreen.dart';
 
 import 'account.dart';
 import 'account_manager.dart';
+import 'backup.dart';
 import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
@@ -32,25 +33,31 @@ Future<Database> getDatabase() async {
 }
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   final home = ZWalletApp();
-  runApp(Observer(
-      builder: (context) => MaterialApp(
-            title: 'Warp Sync Demo',
-            theme: settings.themeData,
-            home: home,
-            scaffoldMessengerKey: rootScaffoldMessengerKey,
-            onGenerateRoute: (RouteSettings settings) {
-              var routes = <String, WidgetBuilder>{
-                '/account': (context) => AccountPage(),
-                '/restore': (context) => RestorePage(),
-                '/send': (context) => SendPage(),
-                '/accounts': (context) => AccountManagerPage(),
-                '/settings': (context) => SettingsPage(),
-                '/tx': (context) => TransactionPage(settings.arguments),
-              };
-              return MaterialPageRoute(builder: routes[settings.name]);
-            },
-          )));
+  runApp(FutureBuilder(
+      future: settings.restore(),
+      builder: (context, state) => state.hasData
+          ? Observer(
+              builder: (context) => MaterialApp(
+                    title: 'Warp Sync Demo',
+                    theme: settings.themeData,
+                    home: home,
+                    scaffoldMessengerKey: rootScaffoldMessengerKey,
+                    onGenerateRoute: (RouteSettings settings) {
+                      var routes = <String, WidgetBuilder>{
+                        '/account': (context) => AccountPage(),
+                        '/restore': (context) => RestorePage(),
+                        '/send': (context) => SendPage(),
+                        '/accounts': (context) => AccountManagerPage(),
+                        '/settings': (context) => SettingsPage(),
+                        '/tx': (context) => TransactionPage(settings.arguments),
+                        '/backup': (context) => BackupPage(),
+                      };
+                      return MaterialPageRoute(builder: routes[settings.name]);
+                    },
+                  ))
+          : Container()));
 }
 
 class ZWalletApp extends StatelessWidget {
@@ -60,23 +67,25 @@ class ZWalletApp extends StatelessWidget {
     WarpApi.initWallet(dbPath + "/zec.db", settings.getLWD());
     await accountManager.init();
     await syncStatus.init();
-    return Future.value(
-        accountManager.accounts.isNotEmpty ? AccountPage() : AccountManagerPage());
+    return Future.value(accountManager.accounts.isNotEmpty
+        ? AccountPage()
+        : AccountManagerPage());
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SplashScreen(
-        navigateAfterFuture: _init(),
-        title: new Text(
-          'ZWallet',
-          style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-        ),
-        image: new Image.asset('assets/zcash.png'),
-        backgroundColor: Colors.white,
-        styleTextUnderTheLoader: new TextStyle(),
-        photoSize: 50.0,
-        loaderColor: Colors.red);
+      navigateAfterFuture: _init(),
+      title: new Text(
+        'ZWallet',
+        style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+      ),
+      image: new Image.asset('assets/zcash.png'),
+      backgroundColor: theme.backgroundColor,
+      photoSize: 50.0,
+      loaderColor: theme.primaryColor,
+    );
   }
 }
 

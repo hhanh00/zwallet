@@ -158,6 +158,7 @@ String sendPaymentIsolateFn(PaymentParams params) {
 
 void warpSyncIsolateFn(SyncParams params) {
   warp_api_lib.warp_sync(params.getTx ? 1 : 0, params.anchorOffset, params.port!.nativePort);
+  params.port!.send(-1);
 }
 
 int tryWarpSyncIsolateFn(SyncParams params) {
