@@ -11,4 +11,8 @@ public class SwiftWarpApiPlugin: NSObject, FlutterPlugin {
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     result("iOS " + UIDevice.current.systemVersion)
   }
+
+  public static func dummyMethod() {
+    dummy_export();
+  }
 }

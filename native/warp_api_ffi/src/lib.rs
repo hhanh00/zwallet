@@ -123,3 +123,6 @@ pub unsafe extern "C" fn set_lwd_url(url: *mut c_char) {
     let url = CStr::from_ptr(url).to_string_lossy();
     api::set_lwd_url(&url);
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn dummy_export() {}

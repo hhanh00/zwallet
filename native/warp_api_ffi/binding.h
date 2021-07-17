@@ -47,3 +47,5 @@ uint64_t get_taddr_balance(uint32_t account);
 char *shield_taddr(uint32_t account);
 
 void set_lwd_url(char *url);
+
+void dummy_export();
