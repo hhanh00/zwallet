@@ -9,6 +9,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:grouped_list/grouped_list.dart';
 
 import 'about.dart';
 import 'main.dart';
@@ -27,6 +28,7 @@ class _AccountPageState extends State<AccountPage>
   int _progress = 0;
   bool _useSnapAddress = false;
   String _snapAddress = "";
+  bool _hasTAddr = accountManager.taddress.isNotEmpty;
   bool _showTAddr = false;
   TabController _tabController;
   bool _accountTab = true;
@@ -38,7 +40,7 @@ class _AccountPageState extends State<AccountPage>
   @override
   initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(() {
       setState(() {
         _accountTab = _tabController.index == 0;
@@ -89,11 +91,12 @@ class _AccountPageState extends State<AccountPage>
           title: Observer(
               builder: (context) =>
                   Text("\u24E9 Wallet - ${accountManager.active.name}")),
-          bottom: TabBar(controller: _tabController, tabs: [
+          bottom: TabBar(controller: _tabController, isScrollable: true, tabs: [
             Tab(text: "Account"),
             Tab(text: "Notes"),
             Tab(text: "History"),
             Tab(text: "Budget"),
+            Tab(text: "Contacts"),
           ]),
           actions: [
             Observer(builder: (context) {
@@ -133,12 +136,13 @@ class _AccountPageState extends State<AccountPage>
                   final _ = accountManager.active.address;
                   final address = _address();
                   return Column(children: [
-                    Text(_showTAddr
-                        ? 'Tap QR Code for Shielded Address'
-                        : 'Tap QR Code for Transparent Address'),
+                    if (_hasTAddr)
+                      Text(_showTAddr
+                          ? 'Tap QR Code for Shielded Address'
+                          : 'Tap QR Code for Transparent Address'),
                     Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                     GestureDetector(
-                        onTap: _onQRTap,
+                        onTap: _hasTAddr ? _onQRTap : null,
                         child: QrImage(
                             data: address,
                             size: 200,
@@ -216,6 +220,7 @@ class _AccountPageState extends State<AccountPage>
           NoteWidget(tabTo),
           HistoryWidget(tabTo),
           BudgetWidget(),
+          ContactsWidget(),
         ]),
         floatingActionButton: Observer(
           builder: (context) => accountManager.canPay && _accountTab
@@ -525,9 +530,14 @@ class NotesDataSource extends DataTableSource {
   @override
   DataRow getRow(int index) {
     final note = accountManager.notes[index];
+    final theme = Theme.of(context);
     return DataRow.byIndex(
       index: index,
       selected: note.excluded,
+      color: MaterialStateColor.resolveWith((states) =>
+          states.contains(MaterialState.selected)
+              ? theme.primaryColor.withOpacity(0.5)
+              : theme.backgroundColor),
       cells: [
         DataCell(Text("${note.height}",
             style: !_confirmed(note.height)
@@ -668,7 +678,7 @@ class BudgetState extends State<BudgetWidget>
     return Padding(
         padding: EdgeInsets.all(4),
         child: Observer(builder: (context) {
-          final _ = accountManager.budgetEpoch;
+          final _ = accountManager.dataEpoch;
           return Column(
             children: [
               Expanded(
@@ -805,5 +815,44 @@ class AccountBalanceTimeChartState extends State<AccountBalanceTimeChart> {
         data: data,
       )
     ];
+  }
+}
+
+class ContactsWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => ContactsState();
+}
+
+class ContactsState extends State<ContactsWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Observer(builder: (context) {
+      final _ = accountManager.dataEpoch;
+      final theme = Theme.of(context);
+      return Column(children: [
+        Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Text('To make a contact, send a memo with "Contact: <Name>"',
+                style: Theme.of(context).textTheme.caption)),
+        Expanded(
+            child: GroupedListView<Contact, String>(
+          elements: accountManager.contacts,
+          groupBy: (e) => e.name.isEmpty ? "" : e.name[0],
+          itemBuilder: (context, c) => ListTile(
+            title: Text(c.name),
+            subtitle: Text(c.address),
+            trailing: IconButton(
+                icon: Icon(Icons.chevron_right),
+                onPressed: () {
+                  _onContact(c);
+                })),
+              groupSeparatorBuilder: (String h) => Text(h, style: theme.textTheme.headline5),
+        )),
+      ]);
+    });
+  }
+
+  _onContact(Contact contact) {
+    Navigator.of(context).pushNamed('/send', arguments: contact);
   }
 }

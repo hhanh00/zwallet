@@ -188,7 +188,7 @@ abstract class _AccountManager with Store {
   List<Tx> txs = [];
 
   @observable
-  int budgetEpoch = 0;
+  int dataEpoch = 0;
 
   @observable
   List<Spending> spendings = [];
@@ -204,6 +204,9 @@ abstract class _AccountManager with Store {
 
   @observable
   SortOrder txSortOrder = SortOrder.Unsorted;
+
+  @observable
+  List<Contact> contacts = [];
 
   Future<void> init() async {
     db = await getDatabase();
@@ -328,7 +331,8 @@ abstract class _AccountManager with Store {
     await _fetchNotesAndHistory(accountId);
     await _fetchSpending(accountId);
     await _fetchAccountBalanceTimeSeries(accountId);
-    budgetEpoch = DateTime.now().millisecondsSinceEpoch;
+    await _fetchContacts(accountId);
+    dataEpoch = DateTime.now().millisecondsSinceEpoch;
   }
 
   final DateFormat noteDateFormat = DateFormat("yy-MM-dd HH:mm");
@@ -459,6 +463,15 @@ abstract class _AccountManager with Store {
     int balance = WarpApi.getTBalance(active.id);
     if (balance != tbalance) tbalance = balance;
   }
+
+  Future<void> _fetchContacts(int accountId) async {
+    List<Map> res = await db.rawQuery("SELECT name, address FROM contacts WHERE account = ?1 ORDER BY name", [accountId]);
+    contacts = [];
+    for (var c in res) {
+      final contact = Contact(c['name'], c['address']);
+      contacts.add(contact);
+    }
+  }
 }
 
 class Account {
@@ -585,6 +598,13 @@ class Backup {
   }
 }
 
+class Contact {
+  final String name;
+  final String address;
+
+  Contact(this.name, this.address);
+}
+
 String addressLeftTrim(String address) => "..." + address.substring(math.max(address.length - 6, 0));
 
 enum SortOrder {
@@ -594,3 +614,4 @@ enum SortOrder {
 }
 
 SortOrder nextSortOrder(SortOrder order) => SortOrder.values[(order.index + 1) % 3];
+

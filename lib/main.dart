@@ -48,7 +48,7 @@ void main() {
                       var routes = <String, WidgetBuilder>{
                         '/account': (context) => AccountPage(),
                         '/restore': (context) => RestorePage(),
-                        '/send': (context) => SendPage(),
+                        '/send': (context) => SendPage(settings.arguments),
                         '/accounts': (context) => AccountManagerPage(),
                         '/settings': (context) => SettingsPage(),
                         '/tx': (context) => TransactionPage(settings.arguments),

@@ -11,7 +11,8 @@ import 'main.dart';
 import 'store.dart';
 
 class SendPage extends StatefulWidget {
-  SendPage();
+  final Contact contact;
+  SendPage(this.contact);
 
   @override
   SendState createState() => SendState();
@@ -33,6 +34,8 @@ class SendState extends State<SendPage> {
 
   @override
   initState() {
+    if (widget.contact != null)
+      _addressController.text = widget.contact.address;
     Future.microtask(() async {
       final balance = await accountManager
           .getBalanceSpendable(syncStatus.latestHeight - settings.anchorOffset);
