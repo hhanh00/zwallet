@@ -316,6 +316,13 @@ abstract class _AccountManager with Store {
   }
 
   @action
+  Future<void> changeAccountName(String name) async {
+    await db.execute("UPDATE accounts SET name = ?2 WHERE id_account = ?1", [active.id, name]);
+    await refresh();
+    await setActiveAccountId(active.id);
+  }
+
+  @action
   Future<void> updateBalance() async {
     if (active == null) return;
     balance = await _getBalance(active.id);
@@ -531,11 +538,11 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<bool> update() async {
+    latestHeight = await WarpApi.getLatestHeight();
     final _syncedHeight = Sqflite.firstIntValue(
             await _db.rawQuery("SELECT MAX(height) FROM blocks")) ??
         0;
     if (_syncedHeight > 0) syncedHeight = _syncedHeight;
-    latestHeight = await WarpApi.getLatestHeight();
     return syncedHeight == latestHeight;
   }
 }

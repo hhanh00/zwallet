@@ -49,7 +49,7 @@ class _AccountPageState extends State<AccountPage>
     Future.microtask(() async {
       await accountManager.updateUnconfirmedBalance();
       await accountManager.fetchAccountData();
-      _setupTimer();
+      await _setupTimer();
     });
     WidgetsBinding.instance.addObserver(this);
     progressStream.listen((percent) {
@@ -303,15 +303,16 @@ class _AccountPageState extends State<AccountPage>
     return (b.abs() % 100000).toString().padLeft(5, '0');
   }
 
-  _setupTimer() {
-    _sync();
+  _setupTimer() async {
+    await _sync();
     _timerSync = Timer.periodic(Duration(seconds: 15), (Timer t) {
       _trySync();
     });
   }
 
-  _sync() {
+  _sync() async {
     _syncing = true;
+    await syncStatus.update();
     WarpApi.warpSync(settings.getTx, settings.anchorOffset, (int height) async {
       setState(() {
         if (height >= 0)
@@ -338,7 +339,7 @@ class _AccountPageState extends State<AccountPage>
         WarpApi.rewindToHeight(targetHeight);
         syncStatus.setSyncHeight(targetHeight);
       } else if (res == 0) {
-        syncStatus.setSyncHeight(syncStatus.latestHeight);
+        syncStatus.update();
       }
     }
     await accountManager.fetchAccountData();
@@ -832,7 +833,7 @@ class ContactsState extends State<ContactsWidget> {
       return Column(children: [
         Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
-            child: Text('To make a contact, send a memo with "Contact: <Name>"',
+            child: Text('To make a contact, send them a memo with "Contact: Name"',
                 style: Theme.of(context).textTheme.caption)),
         Expanded(
             child: GroupedListView<Contact, String>(
@@ -841,11 +842,11 @@ class ContactsState extends State<ContactsWidget> {
           itemBuilder: (context, c) => ListTile(
             title: Text(c.name),
             subtitle: Text(c.address),
-            trailing: IconButton(
+            trailing: accountManager.canPay ? IconButton(
                 icon: Icon(Icons.chevron_right),
                 onPressed: () {
                   _onContact(c);
-                })),
+                }): null),
               groupSeparatorBuilder: (String h) => Text(h, style: theme.textTheme.headline5),
         )),
       ]);

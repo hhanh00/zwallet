@@ -11,6 +11,8 @@ class AccountManagerPage extends StatefulWidget {
 }
 
 class AccountManagerState extends State<AccountManagerPage> {
+  var _accountNameController = TextEditingController();
+
   @override
   initState() {
     super.initState();
@@ -44,6 +46,9 @@ class AccountManagerState extends State<AccountManagerPage> {
                                           Text("${a.value.balance / ZECUNIT}"),
                                       onTap: () {
                                         _selectAccount(a.value);
+                                      },
+                                      onLongPress: () {
+                                        _editAccount(a.value);
                                       },
                                     ),
                                     confirmDismiss: _onAccountDelete,
@@ -94,6 +99,26 @@ class AccountManagerState extends State<AccountManagerPage> {
       navigator.pop();
     else
       navigator.pushReplacementNamed('/account');
+  }
+
+  _editAccount(Account account) async {
+    _accountNameController.text = account.name;
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Change Account Name'),
+        content: TextField(controller: _accountNameController),
+        actions: [
+          ElevatedButton(child: Text('Cancel'), onPressed: () { Navigator.of(context).pop(); }),
+          ElevatedButton(child: Text('OK'), onPressed: () { _changeAccountName(); },),
+        ]
+      )
+    );
+  }
+
+  _changeAccountName() {
+    accountManager.changeAccountName(_accountNameController.text);
+    Navigator.of(context).pop();
   }
 
   _onRestore() {
