@@ -1,6 +1,6 @@
 [submodule "native/zcash-sync"]
 	path = native/zcash-sync
-	url = https://github.com/hhanh00/zcash-sync.git
+	url = ssh://gitea@gitea.cryptoblog21.xyz:2200/hanh/zcash-sync.git
 [submodule "native/zcash-params"]
 	path = native/zcash-params
-	url = git@github.com:hhanh00/zcash-params.git
+	url = ssh://gitea@gitea.cryptoblog21.xyz:2200/hanh/zcash-params.git
