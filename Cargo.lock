@@ -838,7 +838,6 @@ dependencies = [
 [[package]]
 name = "equihash"
 version = "0.1.0"
-source = "git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -847,7 +846,16 @@ dependencies = [
 [[package]]
 name = "equihash"
 version = "0.1.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=ycash#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/zcash-params.git?branch=main#774d620a5df250cfd2dd4005e97c3088d4830c85"
+dependencies = [
+ "blake2b_simd",
+ "byteorder",
+]
+
+[[package]]
+name = "equihash"
+version = "0.1.0"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -2531,8 +2539,8 @@ dependencies = [
  "tonic",
  "tonic-build",
  "zcash_client_backend",
- "zcash_params 0.1.0 (git+ssh://gitea@gitea.cryptoblog21.xyz:2200/hanh/zcash-params.git?branch=main)",
- "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/librustzcash.git?branch=ycash)",
+ "zcash_params 0.1.0 (git+https://github.com/hhanh00/zcash-params.git?branch=main)",
+ "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
  "zcash_proofs",
 ]
 
@@ -3156,7 +3164,7 @@ checksum = "9fc79f4a1e39857fc00c3f662cbf2651c771f00e9c15fe2abc341806bd46bd71"
 [[package]]
 name = "zcash_client_backend"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=ycash#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
 dependencies = [
  "base64",
  "bech32",
@@ -3173,14 +3181,13 @@ dependencies = [
  "rand_core 0.6.3",
  "subtle 2.4.1",
  "time 0.2.27",
- "zcash_note_encryption 0.0.0 (git+https://github.com/hhanh00/librustzcash.git?branch=ycash)",
- "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/librustzcash.git?branch=ycash)",
+ "zcash_note_encryption 0.0.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
 ]
 
 [[package]]
 name = "zcash_note_encryption"
 version = "0.0.0"
-source = "git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -3194,7 +3201,21 @@ dependencies = [
 [[package]]
 name = "zcash_note_encryption"
 version = "0.0.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=ycash#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/zcash-params.git?branch=main#774d620a5df250cfd2dd4005e97c3088d4830c85"
+dependencies = [
+ "blake2b_simd",
+ "byteorder",
+ "crypto_api_chachapoly",
+ "ff",
+ "group",
+ "rand_core 0.6.3",
+ "subtle 2.4.1",
+]
+
+[[package]]
+name = "zcash_note_encryption"
+version = "0.0.0"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -3218,13 +3239,13 @@ dependencies = [
  "jubjub",
  "lazy_static",
  "rand 0.8.4",
- "zcash_primitives 0.5.0 (git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "zcash_primitives 0.5.0",
 ]
 
 [[package]]
 name = "zcash_params"
 version = "0.1.0"
-source = "git+ssh://gitea@gitea.cryptoblog21.xyz:2200/hanh/zcash-params.git?branch=main#d8bb59c1d137d7e2df3142b14aa9f8962ad68541"
+source = "git+https://github.com/hhanh00/zcash-params.git?branch=main#774d620a5df250cfd2dd4005e97c3088d4830c85"
 dependencies = [
  "bls12_381",
  "byteorder",
@@ -3235,13 +3256,12 @@ dependencies = [
  "jubjub",
  "lazy_static",
  "rand 0.8.4",
- "zcash_primitives 0.5.0 (git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/zcash-params.git?branch=main)",
 ]
 
 [[package]]
 name = "zcash_primitives"
 version = "0.5.0"
-source = "git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
 dependencies = [
  "aes",
  "bitvec 0.20.4",
@@ -3250,7 +3270,7 @@ dependencies = [
  "bls12_381",
  "byteorder",
  "crypto_api_chachapoly",
- "equihash 0.1.0 (git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "equihash 0.1.0",
  "ff",
  "fpe",
  "funty",
@@ -3263,13 +3283,13 @@ dependencies = [
  "rand_core 0.6.3",
  "sha2 0.9.5",
  "subtle 2.4.1",
- "zcash_note_encryption 0.0.0 (git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "zcash_note_encryption 0.0.0",
 ]
 
 [[package]]
 name = "zcash_primitives"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=ycash#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/zcash-params.git?branch=main#774d620a5df250cfd2dd4005e97c3088d4830c85"
 dependencies = [
  "aes",
  "bitvec 0.20.4",
@@ -3278,7 +3298,35 @@ dependencies = [
  "bls12_381",
  "byteorder",
  "crypto_api_chachapoly",
- "equihash 0.1.0 (git+https://github.com/hhanh00/librustzcash.git?branch=ycash)",
+ "equihash 0.1.0 (git+https://github.com/hhanh00/zcash-params.git?branch=main)",
+ "ff",
+ "fpe",
+ "funty",
+ "group",
+ "hex",
+ "jubjub",
+ "lazy_static",
+ "log",
+ "rand 0.8.4",
+ "rand_core 0.6.3",
+ "sha2 0.9.5",
+ "subtle 2.4.1",
+ "zcash_note_encryption 0.0.0 (git+https://github.com/hhanh00/zcash-params.git?branch=main)",
+]
+
+[[package]]
+name = "zcash_primitives"
+version = "0.5.0"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
+dependencies = [
+ "aes",
+ "bitvec 0.20.4",
+ "blake2b_simd",
+ "blake2s_simd",
+ "bls12_381",
+ "byteorder",
+ "crypto_api_chachapoly",
+ "equihash 0.1.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
  "ff",
  "fpe",
  "funty",
@@ -3293,13 +3341,13 @@ dependencies = [
  "secp256k1",
  "sha2 0.9.5",
  "subtle 2.4.1",
- "zcash_note_encryption 0.0.0 (git+https://github.com/hhanh00/librustzcash.git?branch=ycash)",
+ "zcash_note_encryption 0.0.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
 ]
 
 [[package]]
 name = "zcash_proofs"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=ycash#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
 dependencies = [
  "bellman",
  "blake2b_simd",
@@ -3311,7 +3359,7 @@ dependencies = [
  "jubjub",
  "lazy_static",
  "rand_core 0.6.3",
- "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/librustzcash.git?branch=ycash)",
+ "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
 ]
 
 [[package]]

@@ -390,10 +390,21 @@ class _AccountPageState extends State<AccountPage>
 
   _backup() async {
     final localAuth = LocalAuthentication();
-    final didAuthenticate = await localAuth.authenticate(
-        localizedReason: "Please authenticate to show account seed");
-    if (didAuthenticate) {
-      Navigator.of(context).pushNamed('/backup');
+    try {
+      final didAuthenticate = await localAuth.authenticate(
+          localizedReason: "Please authenticate to show account seed");
+      if (didAuthenticate) {
+        Navigator.of(context).pushNamed('/backup', arguments: true);
+      }
+    }
+    on PlatformException catch (e) {
+      await showDialog(
+        context: context,
+          barrierDismissible: true,
+          builder: (context) => AlertDialog(
+          title: Text('No Authentication Method'),
+          content: Text(e.message)
+      ));
     }
   }
 
@@ -428,7 +439,7 @@ class _AccountPageState extends State<AccountPage>
 
   _cold() {
     showDialog(
-        context: this.context,
+        context: context,
         barrierDismissible: false,
         builder: (context) => AlertDialog(
                 title: Text('Cold Storage'),
