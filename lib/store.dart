@@ -46,6 +46,9 @@ abstract class _Settings with Store {
   @observable
   ThemeData themeData = ThemeData.light();
 
+  @observable
+  bool showConfirmations = false;
+
   var palette = charts.MaterialPalette.blue;
 
   @action
@@ -61,6 +64,7 @@ abstract class _Settings with Store {
     rowsPerPage = prefs.getInt('rows_per_age') ?? 10;
     theme = prefs.getString('theme') ?? "zcash";
     themeBrightness = prefs.getString('theme_brightness') ?? "dark";
+    showConfirmations = prefs.getBool('show_confirmations') ?? false;
     _updateThemeData();
     return true;
   }
@@ -155,6 +159,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     rowsPerPage = v;
     prefs.setInt('rows_per_age', v);
+  }
+
+  @action
+  Future<void> toggleShowConfirmations() async {
+    final prefs = await SharedPreferences.getInstance();
+    showConfirmations = !showConfirmations;
+    prefs.setBool('show_confirmations', showConfirmations);
   }
 }
 
@@ -395,7 +406,7 @@ abstract class _AccountManager with Store {
         notes.sort((a, b) => -a.value.compareTo(b.value));
         break;
       case SortOrder.Unsorted:
-        notes.sort((a, b) => a.id.compareTo(b.id));
+        notes.sort((a, b) => -a.height.compareTo(b.height));
         break;
     }
   }
@@ -415,10 +426,9 @@ abstract class _AccountManager with Store {
         txs.sort((a, b) => -a.value.compareTo(b.value));
         break;
       case SortOrder.Unsorted:
-        txs.sort((a, b) => a.id.compareTo(b.id));
+        txs.sort((a, b) => -a.height.compareTo(b.height));
         break;
     }
-
   }
 
   Future<void> _fetchSpending(int accountId) async {

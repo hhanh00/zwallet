@@ -23,7 +23,14 @@ class AccountManagerState extends State<AccountManagerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Accounts')),
+        appBar: AppBar(title: Text('Accounts'), actions: [
+          PopupMenuButton<String>(
+              itemBuilder: (context) => [
+                    PopupMenuItem(child: Text('Settings'), value: "Settings"),
+                    PopupMenuItem(child: Text("About"), value: "About"),
+                  ],
+              onSelected: _onMenu)
+        ]),
         body: Observer(
             builder: (context) => Stack(children: [
                   accountManager.accounts.isEmpty
@@ -68,7 +75,8 @@ class AccountManagerState extends State<AccountManagerPage> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
           title: Text('Seed'),
-          content: Text('Are you SURE you want to DELETE this account? You MUST have a BACKUP to recover it. This operation is NOT reversible.'),
+          content: Text(
+              'Are you SURE you want to DELETE this account? You MUST have a BACKUP to recover it. This operation is NOT reversible.'),
           actions: [
             TextButton(
               child: Text('Cancel'),
@@ -104,16 +112,23 @@ class AccountManagerState extends State<AccountManagerPage> {
   _editAccount(Account account) async {
     _accountNameController.text = account.name;
     await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Change Account Name'),
-        content: TextField(controller: _accountNameController),
-        actions: [
-          ElevatedButton(child: Text('Cancel'), onPressed: () { Navigator.of(context).pop(); }),
-          ElevatedButton(child: Text('OK'), onPressed: () { _changeAccountName(); },),
-        ]
-      )
-    );
+        context: context,
+        builder: (context) => AlertDialog(
+                title: Text('Change Account Name'),
+                content: TextField(controller: _accountNameController),
+                actions: [
+                  ElevatedButton(
+                      child: Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                  ElevatedButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      _changeAccountName();
+                    },
+                  ),
+                ]));
   }
 
   _changeAccountName() {
@@ -123,5 +138,20 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   _onRestore() {
     Navigator.of(context).pushNamed('/restore');
+  }
+
+  _onMenu(String choice) {
+    switch (choice) {
+      case "Settings":
+        _settings();
+        break;
+      case "About":
+        showAbout(this.context);
+        break;
+    }
+  }
+
+  _settings() {
+    Navigator.of(this.context).pushNamed('/settings');
   }
 }

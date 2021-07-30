@@ -472,7 +472,6 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final source = NotesDataSource(context, _onRowSelected);
     return SingleChildScrollView(
         padding: EdgeInsets.all(4),
         scrollDirection: Axis.vertical,
@@ -492,7 +491,13 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
                 },
                 child: PaginatedDataTable(
                   columns: [
-                    DataColumn(label: Text('Height')),
+                    DataColumn(
+                        label: settings.showConfirmations ? Text('Confs') : Text('Height'),
+                        onSort: (_, __) {
+                          setState(() {
+                            settings.toggleShowConfirmations();
+                          });
+                        }),
                     DataColumn(label: Text('Date/Time')),
                     DataColumn(
                         label: Text('Amount'),
@@ -513,7 +518,7 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
                   },
                   showFirstLastButtons: true,
                   rowsPerPage: settings.rowsPerPage,
-                  source: source,
+                  source: NotesDataSource(context, _onRowSelected),
                 ))));
   }
 
@@ -532,6 +537,7 @@ class NotesDataSource extends DataTableSource {
   DataRow getRow(int index) {
     final note = accountManager.notes[index];
     final theme = Theme.of(context);
+    final confsOrHeight = settings.showConfirmations ? syncStatus.latestHeight - note.height + 1: note.height;
     return DataRow.byIndex(
       index: index,
       selected: note.excluded,
@@ -540,7 +546,7 @@ class NotesDataSource extends DataTableSource {
               ? theme.primaryColor.withOpacity(0.5)
               : theme.backgroundColor),
       cells: [
-        DataCell(Text("${note.height}",
+        DataCell(Text("$confsOrHeight",
             style: !_confirmed(note.height)
                 ? Theme.of(this.context).textTheme.overline
                 : null)),
@@ -588,7 +594,6 @@ class _HistoryState extends State<HistoryWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final dataSource = HistoryDataSource(context);
     return SingleChildScrollView(
         padding: EdgeInsets.all(4),
         scrollDirection: Axis.vertical,
@@ -607,7 +612,13 @@ class _HistoryState extends State<HistoryWidget>
                 },
                 child: PaginatedDataTable(
                     columns: [
-                      DataColumn(label: Text('Height')),
+                      DataColumn(
+                          label: settings.showConfirmations ? Text('Confs') : Text('Height'),
+                          onSort: (_, __) {
+                            setState(() {
+                              settings.toggleShowConfirmations();
+                            });
+                          }),
                       DataColumn(label: Text('Date/Time')),
                       DataColumn(label: Text('TXID')),
                       DataColumn(
@@ -627,7 +638,7 @@ class _HistoryState extends State<HistoryWidget>
                     },
                     showFirstLastButtons: true,
                     rowsPerPage: settings.rowsPerPage,
-                    source: dataSource))));
+                    source: HistoryDataSource(context)))));
   }
 }
 
@@ -639,9 +650,10 @@ class HistoryDataSource extends DataTableSource {
   @override
   DataRow getRow(int index) {
     final tx = accountManager.txs[index];
+    final confsOrHeight = settings.showConfirmations ? syncStatus.latestHeight - tx.height + 1: tx.height;
     return DataRow(
         cells: [
-          DataCell(Text("${tx.height}")),
+          DataCell(Text("$confsOrHeight")),
           DataCell(Text("${tx.timestamp}")),
           DataCell(Text("${tx.txid}")),
           DataCell(Text("${tx.value.toStringAsFixed(8)}",
@@ -833,21 +845,25 @@ class ContactsState extends State<ContactsWidget> {
       return Column(children: [
         Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
-            child: Text('To make a contact, send them a memo with "Contact: Name"',
+            child: Text(
+                'To make a contact, send them a memo with "Contact: Name"',
                 style: Theme.of(context).textTheme.caption)),
         Expanded(
             child: GroupedListView<Contact, String>(
           elements: accountManager.contacts,
           groupBy: (e) => e.name.isEmpty ? "" : e.name[0],
           itemBuilder: (context, c) => ListTile(
-            title: Text(c.name),
-            subtitle: Text(c.address),
-            trailing: accountManager.canPay ? IconButton(
-                icon: Icon(Icons.chevron_right),
-                onPressed: () {
-                  _onContact(c);
-                }): null),
-              groupSeparatorBuilder: (String h) => Text(h, style: theme.textTheme.headline5),
+              title: Text(c.name),
+              subtitle: Text(c.address),
+              trailing: accountManager.canPay
+                  ? IconButton(
+                      icon: Icon(Icons.chevron_right),
+                      onPressed: () {
+                        _onContact(c);
+                      })
+                  : null),
+          groupSeparatorBuilder: (String h) =>
+              Text(h, style: theme.textTheme.headline5),
         )),
       ]);
     });
