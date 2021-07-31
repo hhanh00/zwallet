@@ -2536,6 +2536,7 @@ dependencies = [
  "tiny-bip39",
  "tiny-hderive",
  "tokio",
+ "tokio-stream",
  "tonic",
  "tonic-build",
  "zcash_client_backend",

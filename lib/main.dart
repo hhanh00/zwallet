@@ -40,7 +40,7 @@ void main() {
       builder: (context, state) => state.hasData
           ? Observer(
               builder: (context) => MaterialApp(
-                    title: 'Warp Sync Demo',
+                    title: 'ZWallet',
                     theme: settings.themeData,
                     home: home,
                     scaffoldMessengerKey: rootScaffoldMessengerKey,
