@@ -117,7 +117,7 @@ class _AccountPageState extends State<AccountPage>
           ],
         ),
         body: TabBarView(controller: _tabController, children: [
-          Container(
+          SingleChildScrollView(
               padding: EdgeInsets.all(20),
               child: Center(
                   child: Column(children: [
