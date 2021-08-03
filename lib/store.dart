@@ -1,8 +1,10 @@
 import 'dart:isolate';
 import 'dart:typed_data';
 import 'dart:math' as math;
+import 'package:json_annotation/json_annotation.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts show MaterialPalette;
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
@@ -557,6 +559,28 @@ abstract class _SyncStatus with Store {
   }
 }
 
+class MultiPayStore = _MultiPayStore with _$MultiPayStore;
+
+abstract class _MultiPayStore with Store {
+  @observable
+  ObservableList<Recipient> recipients = ObservableList.of([]);
+
+  @action
+  void addRecipient(Recipient recipient) {
+    recipients.add(recipient);
+  }
+
+  @action
+  void removeRecipient(int index) {
+    recipients.removeAt(index);
+  }
+
+  @action
+  void clear() {
+    recipients.clear();
+  }
+}
+
 var progressPort = ReceivePort();
 var progressStream = progressPort.asBroadcastStream();
 
@@ -632,3 +656,14 @@ enum SortOrder {
 
 SortOrder nextSortOrder(SortOrder order) => SortOrder.values[(order.index + 1) % 3];
 
+@JsonSerializable()
+class Recipient {
+  final String address;
+  final int amount;
+  final String memo;
+
+  Recipient(this.address, this.amount, this.memo);
+
+  factory Recipient.fromJson(Map<String, dynamic> json) => _$RecipientFromJson(json);
+  Map<String, dynamic> toJson() => _$RecipientToJson(this);
+}

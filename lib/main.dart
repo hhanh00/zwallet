@@ -9,6 +9,7 @@ import 'package:splashscreen/splashscreen.dart';
 import 'account.dart';
 import 'account_manager.dart';
 import 'backup.dart';
+import 'multisend.dart';
 import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
@@ -24,6 +25,7 @@ var accountManager = AccountManager();
 var priceStore = PriceStore();
 var syncStatus = SyncStatus();
 var settings = Settings();
+var multipayData = MultiPayStore();
 
 Future<Database> getDatabase() async {
   var databasesPath = await getDatabasesPath();
@@ -53,6 +55,7 @@ void main() {
                         '/settings': (context) => SettingsPage(),
                         '/tx': (context) => TransactionPage(settings.arguments),
                         '/backup': (context) => BackupPage(),
+                        '/multipay': (context) => MultiPayPage(),
                       };
                       return MaterialPageRoute(builder: routes[settings.name]);
                     },

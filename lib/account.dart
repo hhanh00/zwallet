@@ -108,6 +108,7 @@ class _AccountPageState extends State<AccountPage>
                   PopupMenuItem(child: Text("Rescan"), value: "Rescan"),
                   if (accountManager.canPay)
                     PopupMenuItem(child: Text("Cold Storage"), value: "Cold"),
+                  PopupMenuItem(child: Text('MultiPay'), value: "MultiPay"),
                   PopupMenuItem(child: Text('Settings'), value: "Settings"),
                   PopupMenuItem(child: Text("About"), value: "About"),
                 ],
@@ -379,6 +380,9 @@ class _AccountPageState extends State<AccountPage>
       case "Cold":
         _cold();
         break;
+      case "MultiPay":
+        _multiPay();
+        break;
       case "Settings":
         _settings();
         break;
@@ -455,6 +459,10 @@ class _AccountPageState extends State<AccountPage>
                   TextButton(
                       onPressed: _convertToWatchOnly, child: Text('DELETE'))
                 ]));
+  }
+
+  _multiPay() {
+    Navigator.of(context).pushNamed('/multipay');
   }
 
   _convertToWatchOnly() {

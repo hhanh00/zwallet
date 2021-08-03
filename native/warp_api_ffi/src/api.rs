@@ -6,6 +6,7 @@ use once_cell::sync::OnceCell;
 use std::sync::Mutex;
 use sync::{ChainError, MemPool, Wallet};
 use tokio::runtime::Runtime;
+use zcash_primitives::transaction::builder::Progress;
 
 static WALLET: OnceCell<Mutex<Wallet>> = OnceCell::new();
 static MEMPOOL: OnceCell<Mutex<MemPool>> = OnceCell::new();
@@ -16,6 +17,16 @@ fn log_result<T: Default>(result: anyhow::Result<T>) -> T {
         Err(err) => {
             log::error!("{}", err);
             T::default()
+        }
+        Ok(v) => v,
+    }
+}
+
+fn log_result_string(result: anyhow::Result<String>) -> String {
+    match result {
+        Err(err) => {
+            log::error!("{}", err);
+            format!("{}", err)
         }
         Ok(v) => v,
     }
@@ -142,6 +153,21 @@ pub fn get_latest_height() -> u32 {
     })
 }
 
+fn report_progress(progress: Progress, port: i64) {
+    if port != 0 {
+        let progress = match progress.end() {
+            Some(end) => (progress.cur() * 100 / end) as i32,
+            None => -(progress.cur() as i32),
+        };
+        let mut progress = progress.into_dart();
+        unsafe {
+            POST_COBJ.map(|p| {
+                p(port, &mut progress);
+            });
+        }
+    }
+}
+
 pub fn send_payment(
     account: u32,
     address: &str,
@@ -163,18 +189,7 @@ pub fn send_payment(
                 max_amount_per_note,
                 anchor_offset,
                 move |progress| {
-                    if port != 0 {
-                        let progress = match progress.end() {
-                            Some(end) => (progress.cur() * 100 / end) as i32,
-                            None => -(progress.cur() as i32),
-                        };
-                        let mut progress = progress.into_dart();
-                        unsafe {
-                            POST_COBJ.map(|p| {
-                                p(port, &mut progress);
-                            });
-                        }
-                    }
+                    report_progress(progress, port);
                 },
             )
             .await;
@@ -185,6 +200,24 @@ pub fn send_payment(
             }
             Ok(tx_id) => tx_id,
         }
+    })
+}
+
+pub fn send_multi_payment(
+    account: u32,
+    recipients_json: &str,
+    anchor_offset: u32,
+    port: i64,
+) -> String {
+    let r = Runtime::new().unwrap();
+    r.block_on(async {
+        let wallet = WALLET.get().unwrap().lock().unwrap();
+        let res = wallet
+            .send_multi_payment(account, recipients_json, anchor_offset, move |progress| {
+                report_progress(progress, port);
+            })
+            .await;
+        log_result_string(res)
     })
 }
 

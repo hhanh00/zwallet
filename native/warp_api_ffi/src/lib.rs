@@ -88,6 +88,18 @@ pub unsafe extern "C" fn send_payment(
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn send_multi_payment(
+    account: u32,
+    recipients_json: *mut c_char,
+    anchor_offset: u32,
+    port: i64,
+) -> *const c_char {
+    let recipients_json = CStr::from_ptr(recipients_json).to_string_lossy();
+    let tx_id = api::send_multi_payment(account, &recipients_json, anchor_offset, port);
+    CString::new(tx_id).unwrap().into_raw()
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn try_warp_sync(get_tx: bool, anchor_offset: u32) -> i8 {
     api::try_warp_sync(get_tx, anchor_offset)
 }

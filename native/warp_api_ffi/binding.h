@@ -34,6 +34,11 @@ const char *send_payment(uint32_t account,
                          uint32_t anchor_offset,
                          int64_t port);
 
+const char *send_multi_payment(uint32_t account,
+                               char *recipients_json,
+                               uint32_t anchor_offset,
+                               int64_t port);
+
 int8_t try_warp_sync(bool get_tx, uint32_t anchor_offset);
 
 void skip_to_last_height(void);
@@ -48,4 +53,4 @@ char *shield_taddr(uint32_t account);
 
 void set_lwd_url(char *url);
 
-void dummy_export();
+void dummy_export(void);

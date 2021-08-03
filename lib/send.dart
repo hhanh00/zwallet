@@ -189,8 +189,8 @@ class SendState extends State<SendPage> {
     });
   }
 
-  void _onAmount(v) {
-    _amount = Decimal.parse(v);
+  void _onAmount(String v) {
+    _amount = Decimal.parse(v.replaceAll(',', ''));
   }
 
   void _onAddress(v) {

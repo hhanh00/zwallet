@@ -31,6 +31,15 @@ class PaymentParams {
       this.anchorOffset, this.port);
 }
 
+class MultiPaymentParams {
+  int account;
+  String recipientJson;
+  int anchorOffset;
+  SendPort port;
+
+  MultiPaymentParams(this.account, this.recipientJson, this.anchorOffset, this.port);
+}
+
 const DEFAULT_ACCOUNT = 1;
 
 final warp_api_lib = init();
@@ -129,6 +138,18 @@ class WarpApi {
             account, address, amount, memo, maxAmountPerNote, anchorOffset, receivePort.sendPort));
   }
 
+  static Future<String> sendMultiPayment(int account, String recipientsJson, int anchorOffset, void Function(int) f) async {
+    var receivePort = ReceivePort();
+    receivePort.listen((progress) {
+      f(progress);
+    });
+
+    return await compute(
+        sendMultiPaymentIsolateFn,
+        MultiPaymentParams(
+            account, recipientsJson, anchorOffset, receivePort.sendPort));
+  }
+
   static int getTBalance(int account) {
     final balance = warp_api_lib.get_taddr_balance(account);
     return balance;
@@ -151,6 +172,15 @@ String sendPaymentIsolateFn(PaymentParams params) {
       params.amount,
       params.memo.toNativeUtf8().cast<Int8>(),
       params.maxAmountPerNote,
+      params.anchorOffset,
+      params.port.nativePort);
+  return txId.cast<Utf8>().toDartString();
+}
+
+String sendMultiPaymentIsolateFn(MultiPaymentParams params) {
+  final txId = warp_api_lib.send_multi_payment(
+      params.account,
+      params.recipientJson.toNativeUtf8().cast<Int8>(),
       params.anchorOffset,
       params.port.nativePort);
   return txId.cast<Utf8>().toDartString();

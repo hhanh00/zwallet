@@ -175,6 +175,25 @@ class NativeLibrary {
   late final _dart_send_payment _send_payment =
       _send_payment_ptr.asFunction<_dart_send_payment>();
 
+  ffi.Pointer<ffi.Int8> send_multi_payment(
+    int account,
+    ffi.Pointer<ffi.Int8> recipients_json,
+    int anchor_offset,
+    int port,
+  ) {
+    return _send_multi_payment(
+      account,
+      recipients_json,
+      anchor_offset,
+      port,
+    );
+  }
+
+  late final _send_multi_payment_ptr =
+      _lookup<ffi.NativeFunction<_c_send_multi_payment>>('send_multi_payment');
+  late final _dart_send_multi_payment _send_multi_payment =
+      _send_multi_payment_ptr.asFunction<_dart_send_multi_payment>();
+
   int try_warp_sync(
     int get_tx,
     int anchor_offset,
@@ -260,6 +279,15 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_set_lwd_url>>('set_lwd_url');
   late final _dart_set_lwd_url _set_lwd_url =
       _set_lwd_url_ptr.asFunction<_dart_set_lwd_url>();
+
+  void dummy_export() {
+    return _dummy_export();
+  }
+
+  late final _dummy_export_ptr =
+      _lookup<ffi.NativeFunction<_c_dummy_export>>('dummy_export');
+  late final _dart_dummy_export _dummy_export =
+      _dummy_export_ptr.asFunction<_dart_dummy_export>();
 }
 
 typedef _c_init_wallet = ffi.Void Function(
@@ -362,6 +390,20 @@ typedef _dart_send_payment = ffi.Pointer<ffi.Int8> Function(
   int port,
 );
 
+typedef _c_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint32 account,
+  ffi.Pointer<ffi.Int8> recipients_json,
+  ffi.Uint32 anchor_offset,
+  ffi.Int64 port,
+);
+
+typedef _dart_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
+  int account,
+  ffi.Pointer<ffi.Int8> recipients_json,
+  int anchor_offset,
+  int port,
+);
+
 typedef _c_try_warp_sync = ffi.Int8 Function(
   ffi.Int8 get_tx,
   ffi.Uint32 anchor_offset,
@@ -411,3 +453,7 @@ typedef _c_set_lwd_url = ffi.Void Function(
 typedef _dart_set_lwd_url = void Function(
   ffi.Pointer<ffi.Int8> url,
 );
+
+typedef _c_dummy_export = ffi.Void Function();
+
+typedef _dart_dummy_export = void Function();
