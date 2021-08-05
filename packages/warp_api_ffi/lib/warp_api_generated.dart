@@ -280,6 +280,44 @@ class NativeLibrary {
   late final _dart_set_lwd_url _set_lwd_url =
       _set_lwd_url_ptr.asFunction<_dart_set_lwd_url>();
 
+  ffi.Pointer<ffi.Int8> prepare_offline_tx(
+    int account,
+    ffi.Pointer<ffi.Int8> to_address,
+    int amount,
+    ffi.Pointer<ffi.Int8> memo,
+    int max_amount_per_note,
+    int anchor_offset,
+    ffi.Pointer<ffi.Int8> tx_filename,
+  ) {
+    return _prepare_offline_tx(
+      account,
+      to_address,
+      amount,
+      memo,
+      max_amount_per_note,
+      anchor_offset,
+      tx_filename,
+    );
+  }
+
+  late final _prepare_offline_tx_ptr =
+      _lookup<ffi.NativeFunction<_c_prepare_offline_tx>>('prepare_offline_tx');
+  late final _dart_prepare_offline_tx _prepare_offline_tx =
+      _prepare_offline_tx_ptr.asFunction<_dart_prepare_offline_tx>();
+
+  ffi.Pointer<ffi.Int8> broadcast(
+    ffi.Pointer<ffi.Int8> tx_filename,
+  ) {
+    return _broadcast(
+      tx_filename,
+    );
+  }
+
+  late final _broadcast_ptr =
+      _lookup<ffi.NativeFunction<_c_broadcast>>('broadcast');
+  late final _dart_broadcast _broadcast =
+      _broadcast_ptr.asFunction<_dart_broadcast>();
+
   void dummy_export() {
     return _dummy_export();
   }
@@ -452,6 +490,34 @@ typedef _c_set_lwd_url = ffi.Void Function(
 
 typedef _dart_set_lwd_url = void Function(
   ffi.Pointer<ffi.Int8> url,
+);
+
+typedef _c_prepare_offline_tx = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint32 account,
+  ffi.Pointer<ffi.Int8> to_address,
+  ffi.Uint64 amount,
+  ffi.Pointer<ffi.Int8> memo,
+  ffi.Uint64 max_amount_per_note,
+  ffi.Uint32 anchor_offset,
+  ffi.Pointer<ffi.Int8> tx_filename,
+);
+
+typedef _dart_prepare_offline_tx = ffi.Pointer<ffi.Int8> Function(
+  int account,
+  ffi.Pointer<ffi.Int8> to_address,
+  int amount,
+  ffi.Pointer<ffi.Int8> memo,
+  int max_amount_per_note,
+  int anchor_offset,
+  ffi.Pointer<ffi.Int8> tx_filename,
+);
+
+typedef _c_broadcast = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> tx_filename,
+);
+
+typedef _dart_broadcast = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> tx_filename,
 );
 
 typedef _c_dummy_export = ffi.Void Function();

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,8 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:decimal/decimal.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dart:math' as math;
 
 import 'main.dart';
@@ -236,19 +240,34 @@ class SendState extends State<SendPage> {
         if (_includeFee) amount -= DEFAULT_FEE;
         int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toInt();
         final memo = _memoController.text;
-        final tx = await compute(
-            sendPayment,
-            PaymentParams(
-                accountManager.active.id,
-                _address,
-                amount,
-                memo,
-                maxAmountPerNote,
-                settings.anchorOffset,
-                progressPort.sendPort));
 
-        final snackBar2 = SnackBar(content: Text("TX ID: $tx"));
-        rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+        if (accountManager.canPay) {
+          final tx = await compute(
+              sendPayment,
+              PaymentParams(
+                  accountManager.active.id,
+                  _address,
+                  amount,
+                  memo,
+                  maxAmountPerNote,
+                  settings.anchorOffset,
+                  progressPort.sendPort));
+
+          final snackBar2 = SnackBar(content: Text("TX ID: $tx"));
+          rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+        }
+        else {
+          Directory tempDir = await getTemporaryDirectory();
+          String filename = "${tempDir.path}/tx.json";
+
+          WarpApi.prepareTx(accountManager.active.id, _address, amount, memo,
+              maxAmountPerNote, settings.anchorOffset, filename);
+
+          Share.shareFiles([filename], subject: "Unsigned Transaction File");
+
+          final snackBar2 = SnackBar(content: Text("TX saved to: $filename"));
+          rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+        }
       }
     }
   }

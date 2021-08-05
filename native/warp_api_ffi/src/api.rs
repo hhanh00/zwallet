@@ -3,8 +3,10 @@ use allo_isolate::IntoDart;
 use android_logger::Config;
 use log::{error, info, Level};
 use once_cell::sync::OnceCell;
+use std::fs::File;
+use std::io::{Read, Write};
 use std::sync::Mutex;
-use sync::{ChainError, MemPool, Wallet};
+use sync::{broadcast_tx, ChainError, MemPool, Wallet};
 use tokio::runtime::Runtime;
 use zcash_primitives::transaction::builder::Progress;
 
@@ -274,4 +276,57 @@ pub fn shield_taddr(account: u32) -> String {
 pub fn set_lwd_url(url: &str) {
     let mut wallet = WALLET.get().unwrap().lock().unwrap();
     log_result(wallet.set_lwd_url(url));
+}
+
+pub fn prepare_offline_tx(
+    account: u32,
+    to_address: &str,
+    amount: u64,
+    memo: &str,
+    max_amount_per_note: u64,
+    anchor_offset: u32,
+    tx_filename: &str,
+) -> String {
+    let r = Runtime::new().unwrap();
+    r.block_on(async {
+        let wallet = WALLET.get().unwrap().lock().unwrap();
+        let res = wallet
+            .prepare_payment(
+                account,
+                to_address,
+                amount,
+                memo,
+                max_amount_per_note,
+                anchor_offset,
+            )
+            .await;
+        match res {
+            Ok(tx) => {
+                let mut file = File::create(tx_filename).unwrap();
+                writeln!(file, "{}", tx).unwrap();
+                "File saved".to_string()
+            }
+            Err(err) => {
+                log::error!("{}", err);
+                format!("{}", err)
+            }
+        }
+    })
+}
+
+async fn _broadcast(tx_filename: &str, ld_url: &str) -> anyhow::Result<String> {
+    let mut file = File::open(&tx_filename)?;
+    let mut s = String::new();
+    file.read_to_string(&mut s)?;
+    let tx = hex::decode(s.trim_end())?;
+    broadcast_tx(&tx, ld_url).await
+}
+
+pub fn broadcast(tx_filename: &str) -> String {
+    let r = Runtime::new().unwrap();
+    r.block_on(async {
+        let wallet = WALLET.get().unwrap().lock().unwrap();
+        let res = _broadcast(tx_filename, &wallet.ld_url).await;
+        log_result_string(res)
+    })
 }

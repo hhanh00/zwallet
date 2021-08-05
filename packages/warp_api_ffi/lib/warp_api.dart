@@ -160,6 +160,26 @@ class WarpApi {
     return txId;
   }
 
+  static String  prepareTx(
+    int account,
+    String to_address,
+    int amount,
+    String memo,
+    int maxAmountPerNote,
+    int anchorOffset,
+    String txFilename) {
+    final res = warp_api_lib.prepare_offline_tx(account,
+        to_address.toNativeUtf8().cast<Int8>(), amount,
+        memo.toNativeUtf8().cast<Int8>(), maxAmountPerNote, anchorOffset,
+        txFilename.toNativeUtf8().cast<Int8>());
+    return res.cast<Utf8>().toDartString();
+  }
+
+  static String broadcast(String txFilename) {
+    final res = warp_api_lib.broadcast(txFilename.toNativeUtf8().cast<Int8>());
+    return res.cast<Utf8>().toDartString();
+  }
+  
   static updateLWD(String url) {
     warp_api_lib.set_lwd_url(url.toNativeUtf8().cast<Int8>());
   }

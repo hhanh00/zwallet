@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -109,6 +111,7 @@ class _AccountPageState extends State<AccountPage>
                   if (accountManager.canPay)
                     PopupMenuItem(child: Text("Cold Storage"), value: "Cold"),
                   PopupMenuItem(child: Text('MultiPay'), value: "MultiPay"),
+                  PopupMenuItem(child: Text('Broadcast'), value: "Broadcast"),
                   PopupMenuItem(child: Text('Settings'), value: "Settings"),
                   PopupMenuItem(child: Text("About"), value: "About"),
                 ],
@@ -224,10 +227,12 @@ class _AccountPageState extends State<AccountPage>
           ContactsWidget(),
         ]),
         floatingActionButton: Observer(
-          builder: (context) => accountManager.canPay && _accountTab
+          builder: (context) => _accountTab
               ? FloatingActionButton(
                   onPressed: _onSend,
                   tooltip: 'Send',
+                  backgroundColor: Theme.of(context).accentColor.withOpacity(
+                      accountManager.canPay ? 1.0 : 0.3),
                   child: Icon(Icons.send),
                 )
               : Container(), // This trailing comma makes auto-formatting nicer for build methods.
@@ -383,6 +388,9 @@ class _AccountPageState extends State<AccountPage>
       case "MultiPay":
         _multiPay();
         break;
+      case "Broadcast":
+        _broadcast();
+        break;
       case "Settings":
         _settings();
         break;
@@ -463,6 +471,16 @@ class _AccountPageState extends State<AccountPage>
 
   _multiPay() {
     Navigator.of(context).pushNamed('/multipay');
+  }
+
+  _broadcast() async {
+    final result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      final res = WarpApi.broadcast(result.files.single.path);
+      final snackBar = SnackBar(content: Text(res));
+      rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
+    }
   }
 
   _convertToWatchOnly() {

@@ -137,4 +137,36 @@ pub unsafe extern "C" fn set_lwd_url(url: *mut c_char) {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn prepare_offline_tx(
+    account: u32,
+    to_address: *mut c_char,
+    amount: u64,
+    memo: *mut c_char,
+    max_amount_per_note: u64,
+    anchor_offset: u32,
+    tx_filename: *mut c_char,
+) -> *mut c_char {
+    let to_address = CStr::from_ptr(to_address).to_string_lossy();
+    let memo = CStr::from_ptr(memo).to_string_lossy();
+    let tx_filename = CStr::from_ptr(tx_filename).to_string_lossy();
+    let res = api::prepare_offline_tx(
+        account,
+        &to_address,
+        amount,
+        &memo,
+        max_amount_per_note,
+        anchor_offset,
+        &tx_filename,
+    );
+    CString::new(res).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn broadcast(tx_filename: *mut c_char) -> *mut c_char {
+    let tx_filename = CStr::from_ptr(tx_filename).to_string_lossy();
+    let res = api::broadcast(&tx_filename);
+    CString::new(res).unwrap().into_raw()
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn dummy_export() {}

@@ -53,4 +53,14 @@ char *shield_taddr(uint32_t account);
 
 void set_lwd_url(char *url);
 
+char *prepare_offline_tx(uint32_t account,
+                         char *to_address,
+                         uint64_t amount,
+                         char *memo,
+                         uint64_t max_amount_per_note,
+                         uint32_t anchor_offset,
+                         char *tx_filename);
+
+char *broadcast(char *tx_filename);
+
 void dummy_export(void);

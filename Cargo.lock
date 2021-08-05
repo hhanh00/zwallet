@@ -3017,6 +3017,7 @@ dependencies = [
  "android_logger",
  "anyhow",
  "cbindgen",
+ "hex",
  "log",
  "once_cell",
  "sync",
