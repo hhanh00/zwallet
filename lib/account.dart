@@ -110,7 +110,8 @@ class _AccountPageState extends State<AccountPage>
                   PopupMenuItem(child: Text("Rescan"), value: "Rescan"),
                   if (accountManager.canPay)
                     PopupMenuItem(child: Text("Cold Storage"), value: "Cold"),
-                  PopupMenuItem(child: Text('MultiPay'), value: "MultiPay"),
+                  if (accountManager.canPay)
+                    PopupMenuItem(child: Text('MultiPay'), value: "MultiPay"),
                   PopupMenuItem(child: Text('Broadcast'), value: "Broadcast"),
                   PopupMenuItem(child: Text('Settings'), value: "Settings"),
                   PopupMenuItem(child: Text("About"), value: "About"),

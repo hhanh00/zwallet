@@ -4,6 +4,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:decimal/decimal.dart';
@@ -16,6 +17,7 @@ import 'store.dart';
 
 class SendPage extends StatefulWidget {
   final Contact contact;
+
   SendPage(this.contact);
 
   @override
@@ -25,12 +27,14 @@ class SendPage extends StatefulWidget {
 class SendState extends State<SendPage> {
   final _formKey = GlobalKey<FormState>();
   var _address = "";
-  var _amount = Decimal.zero;
+  var _amount = 0;
   var _maxAmountPerNote = Decimal.zero;
   var _balance = 0;
   final _addressController = TextEditingController();
   final _memoController = TextEditingController();
+  final _otherAmountController = TextEditingController();
   var _mZEC = true;
+  var _useUSDT = false;
   var _currencyController = _makeMoneyMaskedTextController(true);
   var _maxAmountPerNoteController = _makeMoneyMaskedTextController(true);
   var _includeFee = false;
@@ -47,7 +51,13 @@ class SendState extends State<SendPage> {
         _balance = math.max(balance - DEFAULT_FEE, 0);
       });
     });
+    _updateOtherAmount();
     super.initState();
+
+    autorun((_) {
+      final price = priceStore.zecPrice;
+      _updateOtherAmount();
+    });
   }
 
   @override
@@ -78,12 +88,24 @@ class SendState extends State<SendPage> {
                   Row(children: [
                     Expanded(
                         child: TextFormField(
-                            decoration: InputDecoration(labelText: 'Amount'),
+                            decoration:
+                                InputDecoration(labelText: thisAmountLabel()),
                             keyboardType: TextInputType.number,
                             controller: _currencyController,
                             validator: _checkAmount,
+                            onChanged: (_) { _updateOtherAmount(); },
                             onSaved: _onAmount)),
                     TextButton(child: Text('MAX'), onPressed: _onMax),
+                  ]),
+                  Row(children: [
+                    Expanded(
+                          child: TextFormField(
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                  labelText: otherAmountLabel()),
+                            controller: _otherAmountController,
+                              ),
+                    ),
                   ]),
                   ExpansionPanelList(
                       expansionCallback: (_, isExpanded) {
@@ -96,7 +118,8 @@ class SendState extends State<SendPage> {
                             headerBuilder: (_, __) =>
                                 ListTile(title: Text('Advanced Options')),
                             body: Column(children: [
-                              ListTile(title: TextFormField(
+                              ListTile(
+                                  title: TextFormField(
                                 decoration: InputDecoration(labelText: 'Memo'),
                                 minLines: 4,
                                 maxLines: null,
@@ -104,9 +127,13 @@ class SendState extends State<SendPage> {
                                 controller: _memoController,
                               )),
                               CheckboxListTile(
-                                  title: Text('Round to mZEC'),
+                                  title: Text('Round to millis'),
                                   value: _mZEC,
                                   onChanged: _onChangedmZEC),
+                              CheckboxListTile(
+                                  title: Text('Use USDT'),
+                                  value: _useUSDT,
+                                  onChanged: _onChangedUseUSDT),
                               CheckboxListTile(
                                   title: Text('Include Fee in Amount'),
                                   value: _includeFee,
@@ -141,10 +168,11 @@ class SendState extends State<SendPage> {
   }
 
   String _checkAmount(String vs) {
-    final v = double.tryParse(vs);
+    final vss = vs.replaceAll(',', '');
+    final v = double.tryParse(vss);
     if (v == null) return 'Amount must be a number';
     if (v <= 0.0) return 'Amount must be positive';
-    if (v > _balance) return 'Not enough balance';
+    if (amountInZAT(Decimal.parse(vss)) > _balance) return 'Not enough balance';
     return null;
   }
 
@@ -158,16 +186,27 @@ class SendState extends State<SendPage> {
   void _onMax() {
     setState(() {
       _mZEC = false;
+      _useUSDT = false;
       _currencyController = _makeMoneyMaskedTextController(false);
       _includeFee = false;
       _currencyController.updateValue(
           (Decimal.fromInt(_balance) / ZECUNIT_DECIMAL).toDouble());
+      _updateOtherAmount();
     });
   }
 
   void _onChangedIncludeFee(bool v) {
     setState(() {
       _includeFee = v;
+    });
+  }
+
+  void _onChangedUseUSDT(bool v) {
+    setState(() {
+      _useUSDT = v;
+      _currencyController
+          .updateValue(double.parse(_otherAmountController.text));
+      _updateOtherAmount();
     });
   }
 
@@ -193,8 +232,9 @@ class SendState extends State<SendPage> {
     });
   }
 
-  void _onAmount(String v) {
-    _amount = Decimal.parse(v.replaceAll(',', ''));
+  void _onAmount(String vs) {
+    final vss = vs.replaceAll(',', '');
+    _amount = amountInZAT(Decimal.parse(vss));
   }
 
   void _onAddress(v) {
@@ -205,19 +245,27 @@ class SendState extends State<SendPage> {
     _maxAmountPerNote = Decimal.parse(v);
   }
 
+  void _updateOtherAmount() {
+    final price = priceStore.zecPrice;
+    final amount = _currencyController.numberValue;
+    final otherAmount = (_useUSDT) ? (amount / price).toStringAsFixed(8) : (amount * price).toStringAsFixed(8);
+    _otherAmountController.text = otherAmount;
+  }
+
   void _onSend() async {
     final form = _formKey.currentState;
     if (form == null) return;
 
     if (form.validate()) {
       form.save();
+      final aZEC = (Decimal.fromInt(_amount) / ZECUNIT_DECIMAL).toString();
       final approved = await showDialog(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) => AlertDialog(
                 title: Text('Please Confirm'),
                 content: SingleChildScrollView(
-                    child: Text("Sending $_amount ZEC to $_address")),
+                    child: Text("Sending $aZEC ZEC to $_address")),
                 actions: <Widget>[
                   TextButton(
                       child: Text('Cancel'),
@@ -236,8 +284,7 @@ class SendState extends State<SendPage> {
         final snackBar1 = SnackBar(content: Text("Preparing transaction..."));
         rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
 
-        int amount = (_amount * ZECUNIT_DECIMAL).toInt();
-        if (_includeFee) amount -= DEFAULT_FEE;
+        if (_includeFee) _amount -= DEFAULT_FEE;
         int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toInt();
         final memo = _memoController.text;
 
@@ -247,7 +294,7 @@ class SendState extends State<SendPage> {
               PaymentParams(
                   accountManager.active.id,
                   _address,
-                  amount,
+                  _amount,
                   memo,
                   maxAmountPerNote,
                   settings.anchorOffset,
@@ -255,12 +302,11 @@ class SendState extends State<SendPage> {
 
           final snackBar2 = SnackBar(content: Text("TX ID: $tx"));
           rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
-        }
-        else {
+        } else {
           Directory tempDir = await getTemporaryDirectory();
           String filename = "${tempDir.path}/tx.json";
 
-          WarpApi.prepareTx(accountManager.active.id, _address, amount, memo,
+          WarpApi.prepareTx(accountManager.active.id, _address, _amount, memo,
               maxAmountPerNote, settings.anchorOffset, filename);
 
           Share.shareFiles([filename], subject: "Unsigned Transaction File");
@@ -277,6 +323,14 @@ class SendState extends State<SendPage> {
           decimalSeparator: '.',
           thousandSeparator: ',',
           precision: mZEC ? 3 : 8);
+
+  String thisAmountLabel() => _useUSDT ? "Amount in USDT" : "Amount in ZEC";
+
+  String otherAmountLabel() => _useUSDT ? "Amount in ZEC" : "Amount in USDT";
+
+  int amountInZAT(Decimal v) => _useUSDT
+      ? (v / Decimal.parse("${priceStore.zecPrice}") * ZECUNIT_DECIMAL).toInt()
+      : (v * ZECUNIT_DECIMAL).toInt();
 }
 
 sendPayment(PaymentParams param) async {
