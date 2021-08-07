@@ -44,7 +44,7 @@ class BackupState extends State<BackupPage> {
                 onPressed: () => _showQR(backup.value()))),
             controller: _backupController,
             minLines: 3,
-            maxLines: 5,
+            maxLines: 10,
             readOnly: true,
 
           ),
@@ -62,7 +62,7 @@ class BackupState extends State<BackupPage> {
     onPressed: () => _showQR(backup.ivk))),
             controller: _ivkController,
             minLines: 3,
-            maxLines: 8,
+            maxLines: 10,
             readOnly: true,
             style: Theme.of(context).textTheme.caption
           ),

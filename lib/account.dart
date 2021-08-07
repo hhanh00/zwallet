@@ -227,8 +227,7 @@ class _AccountPageState extends State<AccountPage>
           BudgetWidget(),
           ContactsWidget(),
         ]),
-        floatingActionButton: Observer(
-          builder: (context) => _accountTab
+        floatingActionButton: _accountTab
               ? FloatingActionButton(
                   onPressed: _onSend,
                   tooltip: 'Send',
@@ -237,7 +236,7 @@ class _AccountPageState extends State<AccountPage>
                   child: Icon(Icons.send),
                 )
               : Container(), // This trailing comma makes auto-formatting nicer for build methods.
-        ));
+        );
   }
 
   void tabTo(int index) {

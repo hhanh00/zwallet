@@ -838,14 +838,6 @@ dependencies = [
 [[package]]
 name = "equihash"
 version = "0.1.0"
-dependencies = [
- "blake2b_simd",
- "byteorder",
-]
-
-[[package]]
-name = "equihash"
-version = "0.1.0"
 source = "git+https://github.com/hhanh00/zcash-params.git?branch=main#774d620a5df250cfd2dd4005e97c3088d4830c85"
 dependencies = [
  "blake2b_simd",
@@ -3191,19 +3183,6 @@ dependencies = [
 [[package]]
 name = "zcash_note_encryption"
 version = "0.0.0"
-dependencies = [
- "blake2b_simd",
- "byteorder",
- "crypto_api_chachapoly",
- "ff",
- "group",
- "rand_core 0.6.3",
- "subtle 2.4.1",
-]
-
-[[package]]
-name = "zcash_note_encryption"
-version = "0.0.0"
 source = "git+https://github.com/hhanh00/zcash-params.git?branch=main#774d620a5df250cfd2dd4005e97c3088d4830c85"
 dependencies = [
  "blake2b_simd",
@@ -3242,7 +3221,7 @@ dependencies = [
  "jubjub",
  "lazy_static",
  "rand 0.8.4",
- "zcash_primitives 0.5.0",
+ "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
 ]
 
 [[package]]
@@ -3260,33 +3239,6 @@ dependencies = [
  "lazy_static",
  "rand 0.8.4",
  "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/zcash-params.git?branch=main)",
-]
-
-[[package]]
-name = "zcash_primitives"
-version = "0.5.0"
-dependencies = [
- "aes",
- "bitvec 0.20.4",
- "blake2b_simd",
- "blake2s_simd",
- "bls12_381",
- "byteorder",
- "crypto_api_chachapoly",
- "equihash 0.1.0",
- "ff",
- "fpe",
- "funty",
- "group",
- "hex",
- "jubjub",
- "lazy_static",
- "log",
- "rand 0.8.4",
- "rand_core 0.6.3",
- "sha2 0.9.5",
- "subtle 2.4.1",
- "zcash_note_encryption 0.0.0",
 ]
 
 [[package]]

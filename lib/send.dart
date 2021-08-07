@@ -39,6 +39,7 @@ class SendState extends State<SendPage> {
   var _maxAmountPerNoteController = _makeMoneyMaskedTextController(true);
   var _includeFee = false;
   var _isExpanded = false;
+  ReactionDisposer _priceAutorunDispose;
 
   @override
   initState() {
@@ -54,10 +55,16 @@ class SendState extends State<SendPage> {
     _updateOtherAmount();
     super.initState();
 
-    autorun((_) {
+    _priceAutorunDispose = autorun((_) {
       final price = priceStore.zecPrice;
       _updateOtherAmount();
     });
+  }
+
+  @override
+  void dispose() {
+    _priceAutorunDispose();
+    super.dispose();
   }
 
   @override
