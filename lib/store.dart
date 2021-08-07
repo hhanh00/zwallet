@@ -51,12 +51,17 @@ abstract class _Settings with Store {
   @observable
   bool showConfirmations = false;
 
+  @observable
+  String currency = "USD";
+
+  @observable
+  List<String> currencies = ["USD"];
+
   var palette = charts.MaterialPalette.blue;
 
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
-    final prefMode = prefs.getString('theme') ?? "light";
     ldUrlChoice = prefs.getString('lightwalletd_choice') ?? "lightwalletd";
     ldUrl = prefs.getString('lightwalletd_custom') ?? "";
     prefs.setString('lightwalletd_choice', ldUrlChoice);
@@ -68,6 +73,7 @@ abstract class _Settings with Store {
     themeBrightness = prefs.getString('theme_brightness') ?? "dark";
     showConfirmations = prefs.getBool('show_confirmations') ?? false;
     _updateThemeData();
+    Future.microtask(_loadCurrencies); // lazily
     return true;
   }
 
@@ -169,6 +175,25 @@ abstract class _Settings with Store {
     showConfirmations = !showConfirmations;
     prefs.setBool('show_confirmations', showConfirmations);
   }
+
+  @action
+  Future<void> setCurrency(String newCurrency) async {
+    currency = newCurrency;
+    await priceStore.fetchZecPrice();
+  }
+
+  @action
+  Future<void> _loadCurrencies() async {
+    final base = "api.coingecko.com";
+    final uri = Uri.https(base, '/api/v3/simple/supported_vs_currencies');
+    final rep = await http.get(uri);
+    if (rep.statusCode == 200) {
+      final _currencies = convert.jsonDecode(rep.body) as List<dynamic>;
+      final c = _currencies.map((v) => (v as String).toUpperCase()).toList();
+      c.sort();
+      currencies = c;
+    }
+  }
 }
 
 class AccountManager = _AccountManager with _$AccountManager;
@@ -190,6 +215,9 @@ abstract class _AccountManager with Store {
 
   @observable
   String taddress = "";
+
+  @observable
+  bool showTAddr = false;
 
   @observable
   int tbalance = 0;
@@ -246,7 +274,8 @@ abstract class _AccountManager with Store {
     prefs.setInt('account', account.id);
     final List<Map> res1 = await db.rawQuery(
         "SELECT address FROM taddrs WHERE account = ?1", [account.id]);
-    if (res1.isNotEmpty) taddress = res1[0]['address'];
+    taddress = res1.isNotEmpty ? res1[0]['address'] : "";
+    showTAddr = false;
 
     WarpApi.setMempoolAccount(account.id);
     final List<Map> res2 = await db.rawQuery(
@@ -345,6 +374,11 @@ abstract class _AccountManager with Store {
   Future<void> fetchAccountData() async {
     if (active == null) return;
     await _fetchData(active.id);
+  }
+
+  @action
+  void toggleShowTAddr() {
+    showTAddr = !showTAddr;
   }
 
   Future<void> _fetchData(int accountId) async {
@@ -510,12 +544,12 @@ abstract class _PriceStore with Store {
 
   @action
   Future<void> fetchZecPrice() async {
-    final base = "api.binance.com";
-    final uri = Uri.https(base, '/api/v3/avgPrice', {'symbol': 'ZECUSDT'});
+    final base = "api.coingecko.com";
+    final uri = Uri.https(base, '/api/v3/simple/price', {'ids': 'zcash', 'vs_currencies': settings.currency});
     final rep = await http.get(uri);
     if (rep.statusCode == 200) {
       final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
-      final price = double.parse(json['price']);
+      final price = json['zcash'][settings.currency.toLowerCase()] as double;
       zecPrice = price;
     }
   }

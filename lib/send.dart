@@ -4,6 +4,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/warp_api.dart';
@@ -34,7 +35,7 @@ class SendState extends State<SendPage> {
   final _memoController = TextEditingController();
   final _otherAmountController = TextEditingController();
   var _mZEC = true;
-  var _useUSDT = false;
+  var _useFX = false;
   var _currencyController = _makeMoneyMaskedTextController(true);
   var _maxAmountPerNoteController = _makeMoneyMaskedTextController(true);
   var _includeFee = false;
@@ -137,10 +138,10 @@ class SendState extends State<SendPage> {
                                   title: Text('Round to millis'),
                                   value: _mZEC,
                                   onChanged: _onChangedmZEC),
-                              CheckboxListTile(
-                                  title: Text('Use USDT'),
-                                  value: _useUSDT,
-                                  onChanged: _onChangedUseUSDT),
+                              Observer(builder: (context) => CheckboxListTile(
+                                  title: Text('Use ${settings.currency}'),
+                                  value: _useFX,
+                                  onChanged: _onChangedUseFX)),
                               CheckboxListTile(
                                   title: Text('Include Fee in Amount'),
                                   value: _includeFee,
@@ -193,7 +194,7 @@ class SendState extends State<SendPage> {
   void _onMax() {
     setState(() {
       _mZEC = false;
-      _useUSDT = false;
+      _useFX = false;
       _currencyController = _makeMoneyMaskedTextController(false);
       _includeFee = false;
       _currencyController.updateValue(
@@ -208,9 +209,9 @@ class SendState extends State<SendPage> {
     });
   }
 
-  void _onChangedUseUSDT(bool v) {
+  void _onChangedUseFX(bool v) {
     setState(() {
-      _useUSDT = v;
+      _useFX = v;
       _currencyController
           .updateValue(double.parse(_otherAmountController.text));
       _updateOtherAmount();
@@ -253,9 +254,9 @@ class SendState extends State<SendPage> {
   }
 
   void _updateOtherAmount() {
-    final price = priceStore.zecPrice;
+    final price = _fx().toDouble();
     final amount = _currencyController.numberValue;
-    final otherAmount = (_useUSDT) ? (amount / price).toStringAsFixed(8) : (amount * price).toStringAsFixed(8);
+    final otherAmount = (_useFX) ? (amount / price).toStringAsFixed(8) : (amount * price).toStringAsFixed(8);
     _otherAmountController.text = otherAmount;
   }
 
@@ -313,12 +314,12 @@ class SendState extends State<SendPage> {
           Directory tempDir = await getTemporaryDirectory();
           String filename = "${tempDir.path}/tx.json";
 
-          WarpApi.prepareTx(accountManager.active.id, _address, _amount, memo,
+          final msg = WarpApi.prepareTx(accountManager.active.id, _address, _amount, memo,
               maxAmountPerNote, settings.anchorOffset, filename);
 
           Share.shareFiles([filename], subject: "Unsigned Transaction File");
 
-          final snackBar2 = SnackBar(content: Text("TX saved to: $filename"));
+          final snackBar2 = SnackBar(content: Text(msg));
           rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
         }
       }
@@ -331,13 +332,15 @@ class SendState extends State<SendPage> {
           thousandSeparator: ',',
           precision: mZEC ? 3 : 8);
 
-  String thisAmountLabel() => _useUSDT ? "Amount in USDT" : "Amount in ZEC";
+  String thisAmountLabel() => _useFX ? "Amount in ${settings.currency}" : "Amount in ZEC";
 
-  String otherAmountLabel() => _useUSDT ? "Amount in ZEC" : "Amount in USDT";
+  String otherAmountLabel() => _useFX ? "Amount in ZEC" : "Amount in ${settings.currency}";
 
-  int amountInZAT(Decimal v) => _useUSDT
-      ? (v / Decimal.parse("${priceStore.zecPrice}") * ZECUNIT_DECIMAL).toInt()
+  int amountInZAT(Decimal v) => _useFX
+      ? (v / _fx() * ZECUNIT_DECIMAL).toInt()
       : (v * ZECUNIT_DECIMAL).toInt();
+
+  Decimal _fx() { return Decimal.parse("${priceStore.zecPrice}"); }
 }
 
 sendPayment(PaymentParams param) async {

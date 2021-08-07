@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +29,6 @@ class _AccountPageState extends State<AccountPage>
   int _progress = 0;
   bool _useSnapAddress = false;
   String _snapAddress = "";
-  bool _hasTAddr = accountManager.taddress.isNotEmpty;
-  bool _showTAddr = false;
   TabController _tabController;
   bool _accountTab = true;
   bool _syncing = false;
@@ -88,6 +85,8 @@ class _AccountPageState extends State<AccountPage>
     if (!syncStatus.isSynced() && !_syncing) _trySync();
     if (accountManager.active == null) return CircularProgressIndicator();
     final theme = Theme.of(this.context);
+    final hasTAddr = accountManager.taddress.isNotEmpty;
+    final showTAddr = accountManager.showTAddr;
     return Scaffold(
         appBar: AppBar(
           title: Observer(
@@ -141,13 +140,13 @@ class _AccountPageState extends State<AccountPage>
                   final _ = accountManager.active.address;
                   final address = _address();
                   return Column(children: [
-                    if (_hasTAddr)
-                      Text(_showTAddr
+                    if (hasTAddr)
+                      Text(showTAddr
                           ? 'Tap QR Code for Shielded Address'
                           : 'Tap QR Code for Transparent Address'),
                     Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                     GestureDetector(
-                        onTap: _hasTAddr ? _onQRTap : null,
+                        onTap: hasTAddr ? _onQRTap : null,
                         child: QrImage(
                             data: address,
                             size: 200,
@@ -162,11 +161,11 @@ class _AccountPageState extends State<AccountPage>
                               child: Icon(Icons.content_copy),
                               onTap: _onAddressCopy)),
                     ])),
-                    if (!_showTAddr)
+                    if (!showTAddr)
                       TextButton(
                           child: Text('New Snap Address'),
                           onPressed: _onSnapAddress),
-                    if (_showTAddr)
+                    if (showTAddr)
                       TextButton(
                         child: Text('Shield Transp. Balance'),
                         onPressed: _onShieldTAddr,
@@ -174,7 +173,7 @@ class _AccountPageState extends State<AccountPage>
                   ]);
                 }),
                 Observer(builder: (context) {
-                  final balance = _showTAddr
+                  final balance = showTAddr
                       ? accountManager.tbalance
                       : accountManager.balance;
                   return Row(
@@ -188,17 +187,17 @@ class _AccountPageState extends State<AccountPage>
                       ]);
                 }),
                 Observer(builder: (context) {
-                  final balance = _showTAddr
+                  final balance = showTAddr
                       ? accountManager.tbalance
                       : accountManager.balance;
-                  final zecPrice = priceStore.zecPrice;
-                  final balanceUSD = balance * zecPrice / ZECUNIT;
+                  final fx = _fx();
+                  final balanceFX = balance * fx / ZECUNIT;
                   return Column(children: [
-                    if (zecPrice != 0.0)
-                      Text("${balanceUSD.toStringAsFixed(2)} USDT",
+                    if (fx != 0.0)
+                      Text("${balanceFX.toStringAsFixed(2)} ${settings.currency}",
                           style: theme.textTheme.headline6),
-                    if (zecPrice != 0.0)
-                      Text("1 ZEC = ${zecPrice.toStringAsFixed(2)} USDT"),
+                    if (fx != 0.0)
+                      Text("1 ZEC = ${fx.toStringAsFixed(2)} ${settings.currency}"),
                   ]);
                 }),
                 Padding(padding: EdgeInsets.symmetric(vertical: 8)),
@@ -243,7 +242,7 @@ class _AccountPageState extends State<AccountPage>
     if (index != _tabController.index) _tabController.animateTo(index);
   }
 
-  _address() => _showTAddr
+  _address() => accountManager.showTAddr
       ? accountManager.taddress
       : (_useSnapAddress ? _snapAddress : accountManager.active.address);
 
@@ -252,9 +251,7 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _onQRTap() {
-    setState(() {
-      _showTAddr = !_showTAddr;
-    });
+    accountManager.toggleShowTAddr();
   }
 
   _onAddressCopy() {
@@ -314,6 +311,10 @@ class _AccountPageState extends State<AccountPage>
     _timerSync = Timer.periodic(Duration(seconds: 15), (Timer t) {
       _trySync();
     });
+  }
+
+  double _fx() {
+    return priceStore.zecPrice;
   }
 
   _sync() async {

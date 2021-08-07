@@ -66,7 +66,6 @@ void main() {
 class ZWalletApp extends StatelessWidget {
   Future<Widget> _init() async {
     final dbPath = await getDatabasesPath();
-    await settings.restore();
     WarpApi.initWallet(dbPath + "/zec.db", settings.getLWD());
     await accountManager.init();
     await syncStatus.init();

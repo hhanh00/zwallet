@@ -25,12 +25,11 @@ class SettingsState extends State<SettingsPage> {
             child: FormBuilder(
                 key: _settingsFormKey,
                 child: Observer(
-                    builder: (context) => Column(children: [
+                    builder: (context) => SingleChildScrollView(child: Column(children: [
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.vertical,
                               name: 'servers',
-                              decoration:
-                                  InputDecoration(labelText: 'Server'),
+                              decoration: InputDecoration(labelText: 'Server'),
                               initialValue: settings.ldUrlChoice,
                               onSaved: _onChoice,
                               options: [
@@ -49,44 +48,46 @@ class SettingsState extends State<SettingsPage> {
                                       onSaved: _onURL,
                                     )),
                               ]),
-                    FormBuilderRadioGroup(
-                        orientation: OptionsOrientation.horizontal,
-                        name: 'themes',
-                        decoration:
-                        InputDecoration(labelText: 'Theme'),
-                        initialValue: settings.theme,
-                        onChanged: _onTheme,
-                        options: [
-                          FormBuilderFieldOption(
-                              child: Text('Zcash'),
-                              value: 'zcash'),
-                          FormBuilderFieldOption(
-                              child: Text('Blue'),
-                              value: 'blue'),
-                          FormBuilderFieldOption(
-                              child: Text('Pink'),
-                              value: 'pink'),
-                          FormBuilderFieldOption(
-                              child: Text('Coffee'),
-                              value: 'coffee'),
-                          ]
-                    ),
-                    FormBuilderRadioGroup(
-                        orientation: OptionsOrientation.horizontal,
-                        name: 'brightness',
-                        initialValue: settings.themeBrightness,
-                        onChanged: _onThemeBrightness,
-                        options: [
-                          FormBuilderFieldOption(
-                              child: Text('Light'),
-                              value: 'light'),
-                          FormBuilderFieldOption(
-                              child: Text('Dark'),
-                              value: 'dark'),
-                        ]),
+                          FormBuilderRadioGroup(
+                              orientation: OptionsOrientation.horizontal,
+                              name: 'themes',
+                              decoration: InputDecoration(labelText: 'Theme'),
+                              initialValue: settings.theme,
+                              onChanged: _onTheme,
+                              options: [
+                                FormBuilderFieldOption(
+                                    child: Text('Zcash'), value: 'zcash'),
+                                FormBuilderFieldOption(
+                                    child: Text('Blue'), value: 'blue'),
+                                FormBuilderFieldOption(
+                                    child: Text('Pink'), value: 'pink'),
+                                FormBuilderFieldOption(
+                                    child: Text('Coffee'), value: 'coffee'),
+                              ]),
+                          FormBuilderRadioGroup(
+                              orientation: OptionsOrientation.horizontal,
+                              name: 'brightness',
+                              initialValue: settings.themeBrightness,
+                              onChanged: _onThemeBrightness,
+                              options: [
+                                FormBuilderFieldOption(
+                                    child: Text('Light'), value: 'light'),
+                                FormBuilderFieldOption(
+                                    child: Text('Dark'), value: 'dark'),
+                              ]),
+                          Row(children: [
+                            SizedBox(width: 100, child: DropdownButtonFormField<String>(
+                              decoration: InputDecoration(labelText: 'Currency'),
+                              value: settings.currency,
+                                items: settings.currencies.map((c) =>
+                                    DropdownMenuItem(child: Text(c), value: c)).toList(),
+                                onChanged: (v) { settings.setCurrency(v); }
+                            )),
+                          ]),
                           FormBuilderTextField(
-                              decoration:
-                                  InputDecoration(labelText: 'Number of Confirmations Needed before Spending'),
+                              decoration: InputDecoration(
+                                  labelText:
+                                      'Number of Confirmations Needed before Spending'),
                               name: 'anchor',
                               keyboardType: TextInputType.number,
                               controller: _anchorController,
@@ -94,9 +95,8 @@ class SettingsState extends State<SettingsPage> {
                           FormBuilderCheckbox(
                               name: 'get_tx',
                               title: Text('Retrieve Transaction Details'),
-                            initialValue: settings.getTx,
-                            onSaved: _onGetTx
-                          ),
+                              initialValue: settings.getTx,
+                              onSaved: _onGetTx),
                           ButtonBar(children: [
                             ElevatedButton(
                                 child: Text('Cancel'),
@@ -106,7 +106,7 @@ class SettingsState extends State<SettingsPage> {
                             ElevatedButton(
                                 child: Text('OK'), onPressed: _onSave),
                           ])
-                        ])))));
+                        ]))))));
   }
 
   _onChoice(v) {
@@ -126,8 +126,11 @@ class SettingsState extends State<SettingsPage> {
   }
 
   _onSave() {
-    _settingsFormKey.currentState.save();
-    Navigator.of(context).pop();
+    final form = _settingsFormKey.currentState;
+    if (form.validate()) {
+      form.save();
+      Navigator.of(context).pop();
+    }
   }
 
   _onAnchorOffset(v) {
@@ -136,5 +139,12 @@ class SettingsState extends State<SettingsPage> {
 
   _onGetTx(v) {
     settings.updateGetTx(v);
+  }
+
+  String _checkFx(String vs) {
+    final v = double.tryParse(vs);
+    if (v == null) return 'FX rate must be a number';
+    if (v <= 0.0) return 'FX rate must be positive';
+    return null;
   }
 }
