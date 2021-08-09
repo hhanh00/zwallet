@@ -162,14 +162,14 @@ class WarpApi {
 
   static String  prepareTx(
     int account,
-    String to_address,
+    String toAddress,
     int amount,
     String memo,
     int maxAmountPerNote,
     int anchorOffset,
     String txFilename) {
     final res = warp_api_lib.prepare_offline_tx(account,
-        to_address.toNativeUtf8().cast<Int8>(), amount,
+        toAddress.toNativeUtf8().cast<Int8>(), amount,
         memo.toNativeUtf8().cast<Int8>(), maxAmountPerNote, anchorOffset,
         txFilename.toNativeUtf8().cast<Int8>());
     return res.cast<Utf8>().toDartString();
@@ -178,6 +178,10 @@ class WarpApi {
   static String broadcast(String txFilename) {
     final res = warp_api_lib.broadcast(txFilename.toNativeUtf8().cast<Int8>());
     return res.cast<Utf8>().toDartString();
+  }
+
+  static Future<int> syncHistoricalPrices(String currency) async {
+    return await compute(syncHistoricalPricesIsolateFn, currency);
   }
   
   static updateLWD(String url) {
@@ -226,4 +230,8 @@ int mempoolSyncIsolateFn(Null _dummy) {
 String shieldTAddrIsolateFn(int account) {
   final txId = warp_api_lib.shield_taddr(account);
   return txId.cast<Utf8>().toDartString();
+}
+
+int syncHistoricalPricesIsolateFn(String currency) {
+  return warp_api_lib.sync_historical_prices(currency.toNativeUtf8().cast<Int8>());
 }

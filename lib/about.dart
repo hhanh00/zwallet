@@ -15,6 +15,7 @@ Future<void> showAbout(BuildContext context) async {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
               title: Text('About ZWallet'),
+              contentPadding: EdgeInsets.zero,
               content: Container(
                 width: double.maxFinite,
                 child: Markdown(data: content),

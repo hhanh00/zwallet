@@ -318,6 +318,20 @@ class NativeLibrary {
   late final _dart_broadcast _broadcast =
       _broadcast_ptr.asFunction<_dart_broadcast>();
 
+  int sync_historical_prices(
+    ffi.Pointer<ffi.Int8> currency,
+  ) {
+    return _sync_historical_prices(
+      currency,
+    );
+  }
+
+  late final _sync_historical_prices_ptr =
+      _lookup<ffi.NativeFunction<_c_sync_historical_prices>>(
+          'sync_historical_prices');
+  late final _dart_sync_historical_prices _sync_historical_prices =
+      _sync_historical_prices_ptr.asFunction<_dart_sync_historical_prices>();
+
   void dummy_export() {
     return _dummy_export();
   }
@@ -518,6 +532,14 @@ typedef _c_broadcast = ffi.Pointer<ffi.Int8> Function(
 
 typedef _dart_broadcast = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> tx_filename,
+);
+
+typedef _c_sync_historical_prices = ffi.Uint32 Function(
+  ffi.Pointer<ffi.Int8> currency,
+);
+
+typedef _dart_sync_historical_prices = int Function(
+  ffi.Pointer<ffi.Int8> currency,
 );
 
 typedef _c_dummy_export = ffi.Void Function();

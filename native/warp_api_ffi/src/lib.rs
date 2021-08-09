@@ -169,4 +169,10 @@ pub unsafe extern "C" fn broadcast(tx_filename: *mut c_char) -> *mut c_char {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn sync_historical_prices(currency: *mut c_char) -> u32 {
+    let currency = CStr::from_ptr(currency).to_string_lossy();
+    api::sync_historical_prices(&currency)
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn dummy_export() {}

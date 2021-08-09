@@ -63,4 +63,6 @@ char *prepare_offline_tx(uint32_t account,
 
 char *broadcast(char *tx_filename);
 
+uint32_t sync_historical_prices(char *currency);
+
 void dummy_export(void);

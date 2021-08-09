@@ -4,7 +4,6 @@ import 'dart:math' as math;
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts show MaterialPalette;
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
@@ -72,6 +71,7 @@ abstract class _Settings with Store {
     theme = prefs.getString('theme') ?? "zcash";
     themeBrightness = prefs.getString('theme_brightness') ?? "dark";
     showConfirmations = prefs.getBool('show_confirmations') ?? false;
+    currency = prefs.getString('currency') ?? "USD";
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
@@ -178,8 +178,11 @@ abstract class _Settings with Store {
 
   @action
   Future<void> setCurrency(String newCurrency) async {
+    final prefs = await SharedPreferences.getInstance();
     currency = newCurrency;
+    prefs.setString('currency', currency);
     await priceStore.fetchZecPrice();
+    await accountManager.fetchCashFlows();
   }
 
   @action
@@ -238,6 +241,9 @@ abstract class _AccountManager with Store {
   List<AccountBalance> accountBalances = [];
 
   @observable
+  List<PnL> pnls = [];
+
+  @observable
   List<Account> accounts = [];
 
   @observable
@@ -245,6 +251,9 @@ abstract class _AccountManager with Store {
 
   @observable
   SortOrder txSortOrder = SortOrder.Unsorted;
+
+  @observable
+  int pnlSeriesIndex = 0;
 
   @observable
   List<Contact> contacts = [];
@@ -281,9 +290,9 @@ abstract class _AccountManager with Store {
     final List<Map> res2 = await db.rawQuery(
         "SELECT sk FROM accounts WHERE id_account = ?1", [account.id]);
     canPay = res2.isNotEmpty && res2[0]['sk'] != null;
-    await _fetchData(account.id);
     active = account;
     print("Active account = ${account.id}");
+    await _fetchData(account.id);
   }
 
   @action
@@ -377,6 +386,12 @@ abstract class _AccountManager with Store {
   }
 
   @action
+  Future<void> fetchCashFlows() async {
+    if (active == null) return;
+    await _fetchCashFlows(active.id);
+  }
+
+  @action
   void toggleShowTAddr() {
     showTAddr = !showTAddr;
   }
@@ -386,6 +401,9 @@ abstract class _AccountManager with Store {
     await _fetchSpending(accountId);
     await _fetchAccountBalanceTimeSeries(accountId);
     await _fetchContacts(accountId);
+    int countNewPrices = await WarpApi.syncHistoricalPrices(settings.currency);
+    if (countNewPrices > 0 || pnls.isEmpty)
+      await _fetchCashFlows(accountId);
     dataEpoch = DateTime.now().millisecondsSinceEpoch;
   }
 
@@ -496,6 +514,40 @@ abstract class _AccountManager with Store {
     }
   }
 
+  Future<void> _fetchCashFlows(int accountId) async {
+    final cutoff = DateTime.now().add(Duration(days: -365)).millisecondsSinceEpoch / 1000;
+    final List<Map> res = await db.rawQuery(
+        "WITH t AS (SELECT value, timestamp/86400 AS day FROM transactions WHERE account = ?1), p AS (SELECT price, timestamp, timestamp/86400 AS day FROM historical_prices WHERE currency = ?3) "
+        "SELECT t.value, p.price, p.timestamp FROM t, p WHERE t.day = p.day AND p.timestamp >= ?2 ORDER BY p.day",
+        [accountId, cutoff, settings.currency]);
+    var cash = 0.0;
+    var balance = 0.0;
+    var realized = 0.0;
+
+    Map<int, PnL> pnlMap = {};
+
+    for (var row in res) {
+      final ts = row['timestamp'];
+      final value = (row['value'] / ZECUNIT) as double;
+      final price = row['price'] as double;
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
+
+      final closeQty = value * balance < 0 ? math.min(value.abs(), balance.abs()) * value.sign : 0.0;
+      final openQty = value - closeQty;
+      final avgPrice = balance != 0 ? cash / balance : 0.0;
+      cash += openQty * price + closeQty * avgPrice;
+      realized += closeQty * (price - avgPrice);
+      balance += value;
+      final unrealized = price * balance - cash;
+
+      pnlMap[ts] = PnL(timestamp, price, balance, realized, unrealized);
+    }
+
+    final _pnls = pnlMap.values.toList();
+    _pnls.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    pnls = _pnls;
+  }
+
   @action
   Future<void> convertToWatchOnly() async {
     await db.rawUpdate(
@@ -525,6 +577,11 @@ abstract class _AccountManager with Store {
       contacts.add(contact);
     }
   }
+
+  @action
+  void setPnlSeriesIndex(int index) {
+    pnlSeriesIndex = index;
+  }
 }
 
 class Account {
@@ -549,9 +606,10 @@ abstract class _PriceStore with Store {
     final rep = await http.get(uri);
     if (rep.statusCode == 200) {
       final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
-      final price = json['zcash'][settings.currency.toLowerCase()] as double;
-      zecPrice = price;
+      final p = json['zcash'][settings.currency.toLowerCase()];
+      zecPrice = (p is double) ? p : (p as int).toDouble();
     }
+    else zecPrice = 0.0;
   }
 }
 
@@ -700,4 +758,14 @@ class Recipient {
 
   factory Recipient.fromJson(Map<String, dynamic> json) => _$RecipientFromJson(json);
   Map<String, dynamic> toJson() => _$RecipientToJson(this);
+}
+
+class PnL {
+  final DateTime timestamp;
+  final double price;
+  final double amount;
+  final double realized;
+  final double unrealized;
+
+  PnL(this.timestamp, this.price, this.amount, this.realized, this.unrealized);
 }

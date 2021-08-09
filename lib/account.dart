@@ -4,7 +4,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp/store.dart';
@@ -39,7 +41,7 @@ class _AccountPageState extends State<AccountPage>
   @override
   initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 6, vsync: this);
     _tabController.addListener(() {
       setState(() {
         _accountTab = _tabController.index == 0;
@@ -88,154 +90,157 @@ class _AccountPageState extends State<AccountPage>
     final hasTAddr = accountManager.taddress.isNotEmpty;
     final showTAddr = accountManager.showTAddr;
     return Scaffold(
-        appBar: AppBar(
-          title: Observer(
-              builder: (context) =>
-                  Text("\u24E9 Wallet - ${accountManager.active.name}")),
-          bottom: TabBar(controller: _tabController, isScrollable: true, tabs: [
-            Tab(text: "Account"),
-            Tab(text: "Notes"),
-            Tab(text: "History"),
-            Tab(text: "Budget"),
-            Tab(text: "Contacts"),
-          ]),
-          actions: [
-            Observer(builder: (context) {
-              accountManager.canPay;
-              return PopupMenuButton<String>(
-                itemBuilder: (context) => [
-                  PopupMenuItem(child: Text("Accounts"), value: "Accounts"),
-                  PopupMenuItem(child: Text("Backup"), value: "Backup"),
-                  PopupMenuItem(child: Text("Rescan"), value: "Rescan"),
-                  if (accountManager.canPay)
-                    PopupMenuItem(child: Text("Cold Storage"), value: "Cold"),
-                  if (accountManager.canPay)
-                    PopupMenuItem(child: Text('MultiPay'), value: "MultiPay"),
-                  PopupMenuItem(child: Text('Broadcast'), value: "Broadcast"),
-                  PopupMenuItem(child: Text('Settings'), value: "Settings"),
-                  PopupMenuItem(child: Text("About"), value: "About"),
-                ],
-                onSelected: _onMenu,
-              );
-            })
-          ],
-        ),
-        body: TabBarView(controller: _tabController, children: [
-          SingleChildScrollView(
-              padding: EdgeInsets.all(20),
-              child: Center(
-                  child: Column(children: [
-                Observer(
-                    builder: (context) => syncStatus.syncedHeight <= 0
-                        ? Text('Synching')
-                        : syncStatus.isSynced()
-                            ? Text('${syncStatus.syncedHeight}',
-                                style: theme.textTheme.caption)
-                            : Text(
-                                '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}',
-                                style: theme.textTheme.caption
-                                    .apply(color: theme.primaryColor))),
-                Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                Observer(builder: (context) {
-                  final _ = accountManager.active.address;
-                  final address = _address();
-                  return Column(children: [
-                    if (hasTAddr)
-                      Text(showTAddr
-                          ? 'Tap QR Code for Shielded Address'
-                          : 'Tap QR Code for Transparent Address'),
-                    Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-                    GestureDetector(
-                        onTap: hasTAddr ? _onQRTap : null,
-                        child: QrImage(
-                            data: address,
-                            size: 200,
-                            backgroundColor: Colors.white)),
-                    Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                    RichText(
-                        text: TextSpan(children: [
-                      TextSpan(
-                          text: '$address ', style: theme.textTheme.bodyText2),
-                      WidgetSpan(
-                          child: GestureDetector(
-                              child: Icon(Icons.content_copy),
-                              onTap: _onAddressCopy)),
-                    ])),
-                    if (!showTAddr)
-                      TextButton(
-                          child: Text('New Snap Address'),
-                          onPressed: _onSnapAddress),
-                    if (showTAddr)
-                      TextButton(
-                        child: Text('Shield Transp. Balance'),
-                        onPressed: _onShieldTAddr,
-                      )
-                  ]);
-                }),
-                Observer(builder: (context) {
-                  final balance = showTAddr
-                      ? accountManager.tbalance
-                      : accountManager.balance;
-                  return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.ideographic,
-                      children: <Widget>[
-                        Text('\u24E9 ${_getBalance_hi(balance)}',
-                            style: theme.textTheme.headline2),
-                        Text('${_getBalance_lo(balance)}'),
-                      ]);
-                }),
-                Observer(builder: (context) {
-                  final balance = showTAddr
-                      ? accountManager.tbalance
-                      : accountManager.balance;
-                  final fx = _fx();
-                  final balanceFX = balance * fx / ZECUNIT;
-                  return Column(children: [
-                    if (fx != 0.0)
-                      Text("${balanceFX.toStringAsFixed(2)} ${settings.currency}",
-                          style: theme.textTheme.headline6),
-                    if (fx != 0.0)
-                      Text("1 ZEC = ${fx.toStringAsFixed(2)} ${settings.currency}"),
-                  ]);
-                }),
-                Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                Observer(
-                    builder: (context) =>
-                        (accountManager.unconfirmedBalance != 0)
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.baseline,
-                                textBaseline: TextBaseline.ideographic,
-                                children: <Widget>[
-                                    Text(
-                                        '${_sign(accountManager.unconfirmedBalance)} ${_getBalance_hi(accountManager.unconfirmedBalance)}',
-                                        style: theme.textTheme.headline4
-                                            ?.merge(_unconfirmedStyle())),
-                                    Text(
-                                        '${_getBalance_lo(accountManager.unconfirmedBalance)}',
-                                        style: _unconfirmedStyle()),
-                                  ])
-                            : Container()),
-                if (_progress > 0)
-                  LinearProgressIndicator(value: _progress / 100.0),
-              ]))),
-          NoteWidget(tabTo),
-          HistoryWidget(tabTo),
-          BudgetWidget(),
-          ContactsWidget(),
+      appBar: AppBar(
+        title: Observer(
+            builder: (context) =>
+                Text("\u24E9 Wallet - ${accountManager.active.name}")),
+        bottom: TabBar(controller: _tabController, isScrollable: true, tabs: [
+          Tab(text: "Account"),
+          Tab(text: "Notes"),
+          Tab(text: "History"),
+          Tab(text: "Budget"),
+          Tab(text: "Trading P&L"),
+          Tab(text: "Contacts"),
         ]),
-        floatingActionButton: _accountTab
-              ? FloatingActionButton(
-                  onPressed: _onSend,
-                  tooltip: 'Send',
-                  backgroundColor: Theme.of(context).accentColor.withOpacity(
-                      accountManager.canPay ? 1.0 : 0.3),
-                  child: Icon(Icons.send),
-                )
-              : Container(), // This trailing comma makes auto-formatting nicer for build methods.
-        );
+        actions: [
+          Observer(builder: (context) {
+            accountManager.canPay;
+            return PopupMenuButton<String>(
+              itemBuilder: (context) => [
+                PopupMenuItem(child: Text("Accounts"), value: "Accounts"),
+                PopupMenuItem(child: Text("Backup"), value: "Backup"),
+                PopupMenuItem(child: Text("Rescan"), value: "Rescan"),
+                if (accountManager.canPay)
+                  PopupMenuItem(child: Text("Cold Storage"), value: "Cold"),
+                if (accountManager.canPay)
+                  PopupMenuItem(child: Text('MultiPay'), value: "MultiPay"),
+                PopupMenuItem(child: Text('Broadcast'), value: "Broadcast"),
+                PopupMenuItem(child: Text('Settings'), value: "Settings"),
+                PopupMenuItem(child: Text("About"), value: "About"),
+              ],
+              onSelected: _onMenu,
+            );
+          })
+        ],
+      ),
+      body: TabBarView(controller: _tabController, children: [
+        SingleChildScrollView(
+            padding: EdgeInsets.all(20),
+            child: Center(
+                child: Column(children: [
+              Observer(
+                  builder: (context) => syncStatus.syncedHeight <= 0
+                      ? Text('Synching')
+                      : syncStatus.isSynced()
+                          ? Text('${syncStatus.syncedHeight}',
+                              style: theme.textTheme.caption)
+                          : Text(
+                              '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}',
+                              style: theme.textTheme.caption
+                                  .apply(color: theme.primaryColor))),
+              Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+              Observer(builder: (context) {
+                final _ = accountManager.active.address;
+                final address = _address();
+                return Column(children: [
+                  if (hasTAddr)
+                    Text(showTAddr
+                        ? 'Tap QR Code for Shielded Address'
+                        : 'Tap QR Code for Transparent Address'),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 4)),
+                  GestureDetector(
+                      onTap: hasTAddr ? _onQRTap : null,
+                      child: QrImage(
+                          data: address,
+                          size: 200,
+                          backgroundColor: Colors.white)),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+                  RichText(
+                      text: TextSpan(children: [
+                    TextSpan(
+                        text: '$address ', style: theme.textTheme.bodyText2),
+                    WidgetSpan(
+                        child: GestureDetector(
+                            child: Icon(Icons.content_copy),
+                            onTap: _onAddressCopy)),
+                  ])),
+                  if (!showTAddr)
+                    TextButton(
+                        child: Text('New Snap Address'),
+                        onPressed: _onSnapAddress),
+                  if (showTAddr)
+                    TextButton(
+                      child: Text('Shield Transp. Balance'),
+                      onPressed: _onShieldTAddr,
+                    )
+                ]);
+              }),
+              Observer(builder: (context) {
+                final balance = showTAddr
+                    ? accountManager.tbalance
+                    : accountManager.balance;
+                return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.ideographic,
+                    children: <Widget>[
+                      Text('\u24E9 ${_getBalance_hi(balance)}',
+                          style: theme.textTheme.headline2),
+                      Text('${_getBalance_lo(balance)}'),
+                    ]);
+              }),
+              Observer(builder: (context) {
+                final balance = showTAddr
+                    ? accountManager.tbalance
+                    : accountManager.balance;
+                final fx = _fx();
+                final balanceFX = balance * fx / ZECUNIT;
+                return Column(children: [
+                  if (fx != 0.0)
+                    Text("${balanceFX.toStringAsFixed(2)} ${settings.currency}",
+                        style: theme.textTheme.headline6),
+                  if (fx != 0.0)
+                    Text(
+                        "1 ZEC = ${fx.toStringAsFixed(2)} ${settings.currency}"),
+                ]);
+              }),
+              Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+              Observer(
+                  builder: (context) => (accountManager.unconfirmedBalance != 0)
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.ideographic,
+                          children: <Widget>[
+                              Text(
+                                  '${_sign(accountManager.unconfirmedBalance)} ${_getBalance_hi(accountManager.unconfirmedBalance)}',
+                                  style: theme.textTheme.headline4
+                                      ?.merge(_unconfirmedStyle())),
+                              Text(
+                                  '${_getBalance_lo(accountManager.unconfirmedBalance)}',
+                                  style: _unconfirmedStyle()),
+                            ])
+                      : Container()),
+              if (_progress > 0)
+                LinearProgressIndicator(value: _progress / 100.0),
+            ]))),
+        NoteWidget(tabTo),
+        HistoryWidget(tabTo),
+        BudgetWidget(),
+        PnLWidget(),
+        ContactsWidget(),
+      ]),
+      floatingActionButton: _accountTab
+          ? FloatingActionButton(
+              onPressed: _onSend,
+              tooltip: 'Send',
+              backgroundColor: Theme.of(context)
+                  .accentColor
+                  .withOpacity(accountManager.canPay ? 1.0 : 0.3),
+              child: Icon(Icons.send),
+            )
+          : Container(), // This trailing comma makes auto-formatting nicer for build methods.
+    );
   }
 
   void tabTo(int index) {
@@ -409,15 +414,13 @@ class _AccountPageState extends State<AccountPage>
       if (didAuthenticate) {
         Navigator.of(context).pushNamed('/backup', arguments: true);
       }
-    }
-    on PlatformException catch (e) {
+    } on PlatformException catch (e) {
       await showDialog(
-        context: context,
+          context: context,
           barrierDismissible: true,
           builder: (context) => AlertDialog(
-          title: Text('No Authentication Method'),
-          content: Text(e.message)
-      ));
+              title: Text('No Authentication Method'),
+              content: Text(e.message)));
     }
   }
 
@@ -530,7 +533,9 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
                 child: PaginatedDataTable(
                   columns: [
                     DataColumn(
-                        label: settings.showConfirmations ? Text('Confs') : Text('Height'),
+                        label: settings.showConfirmations
+                            ? Text('Confs')
+                            : Text('Height'),
                         onSort: (_, __) {
                           setState(() {
                             settings.toggleShowConfirmations();
@@ -575,7 +580,9 @@ class NotesDataSource extends DataTableSource {
   DataRow getRow(int index) {
     final note = accountManager.notes[index];
     final theme = Theme.of(context);
-    final confsOrHeight = settings.showConfirmations ? syncStatus.latestHeight - note.height + 1: note.height;
+    final confsOrHeight = settings.showConfirmations
+        ? syncStatus.latestHeight - note.height + 1
+        : note.height;
     return DataRow.byIndex(
       index: index,
       selected: note.excluded,
@@ -621,10 +628,10 @@ class HistoryWidget extends StatefulWidget {
   HistoryWidget(this.tabTo);
 
   @override
-  State<StatefulWidget> createState() => _HistoryState();
+  State<StatefulWidget> createState() => HistoryState();
 }
 
-class _HistoryState extends State<HistoryWidget>
+class HistoryState extends State<HistoryWidget>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; //Set to true
@@ -651,7 +658,9 @@ class _HistoryState extends State<HistoryWidget>
                 child: PaginatedDataTable(
                     columns: [
                       DataColumn(
-                          label: settings.showConfirmations ? Text('Confs') : Text('Height'),
+                          label: settings.showConfirmations
+                              ? Text('Confs')
+                              : Text('Height'),
                           onSort: (_, __) {
                             setState(() {
                               settings.toggleShowConfirmations();
@@ -688,7 +697,9 @@ class HistoryDataSource extends DataTableSource {
   @override
   DataRow getRow(int index) {
     final tx = accountManager.txs[index];
-    final confsOrHeight = settings.showConfirmations ? syncStatus.latestHeight - tx.height + 1: tx.height;
+    final confsOrHeight = settings.showConfirmations
+        ? syncStatus.latestHeight - tx.height + 1
+        : tx.height;
     return DataRow(
         cells: [
           DataCell(Text("$confsOrHeight")),
@@ -869,41 +880,200 @@ class AccountBalanceTimeChartState extends State<AccountBalanceTimeChart> {
   }
 }
 
+class PnLWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => PnLState();
+}
+
+class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true; //Set to true
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      FormBuilderRadioGroup(
+          orientation: OptionsOrientation.horizontal,
+          name: 'Pnl',
+          initialValue: accountManager.pnlSeriesIndex,
+          onChanged: (v) {
+            setState(() {
+              accountManager.setPnlSeriesIndex(v);
+            });
+          },
+          options: [
+            FormBuilderFieldOption(child: Text('Real'), value: 0),
+            FormBuilderFieldOption(child: Text('M/M'), value: 1),
+            FormBuilderFieldOption(child: Text('Total'), value: 2),
+            FormBuilderFieldOption(child: Text('Price'), value: 3),
+            FormBuilderFieldOption(child: Text('Qty'), value: 4),
+            FormBuilderFieldOption(child: Text('Table'), value: 5),
+          ]),
+      Observer(builder: (context) {
+        final _ = accountManager.pnls;
+        return Expanded(
+            child: accountManager.pnlSeriesIndex != 5
+                ? PnLChart(accountManager.pnlSeriesIndex)
+                : PnLTable());
+      })
+    ]);
+  }
+}
+
+class PnLChart extends StatelessWidget {
+  final data = accountManager.pnls;
+  final seriesIndex;
+
+  PnLChart(this.seriesIndex);
+
+  @override
+  Widget build(BuildContext context) {
+    final axisColor = charts.ColorUtil.fromDartColor(
+        Theme.of(context).textTheme.headline5.color);
+    final seriesList = _createSeries(data, seriesIndex,
+        charts.ColorUtil.fromDartColor(Theme.of(context).primaryColor));
+    return new charts.TimeSeriesChart(
+      seriesList,
+      animate: false,
+      dateTimeFactory: const charts.LocalDateTimeFactory(),
+      primaryMeasureAxis: charts.NumericAxisSpec(
+          tickProviderSpec: charts.BasicNumericTickProviderSpec(
+              zeroBound: true,
+              dataIsInWholeNumbers: false,
+              desiredTickCount: 5),
+          renderSpec: charts.GridlineRendererSpec(
+              labelStyle: charts.TextStyleSpec(color: axisColor))),
+      domainAxis: charts.DateTimeAxisSpec(
+          renderSpec: charts.SmallTickRendererSpec(
+              labelStyle: charts.TextStyleSpec(color: axisColor))),
+      behaviors: [
+        charts.SelectNearest(),
+      ],
+    );
+  }
+
+  static _seriesData(PnL pnl, int index) {
+    switch (index) {
+      case 0:
+        return pnl.realized;
+      case 1:
+        return pnl.unrealized;
+      case 2:
+        return pnl.realized + pnl.unrealized;
+      case 3:
+        return pnl.price;
+      case 4:
+        return pnl.amount;
+    }
+  }
+
+  static List<charts.Series<PnL, DateTime>> _createSeries(
+      List<PnL> data, int index, charts.Color lineColor) {
+    return [
+      new charts.Series<PnL, DateTime>(
+        id: 'P/L',
+        colorFn: (_, __) => lineColor,
+        domainFn: (PnL pnl, _) => pnl.timestamp,
+        measureFn: (PnL pnl, _) => _seriesData(pnl, index),
+        data: data,
+      ),
+    ];
+  }
+}
+
+class PnLTable extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+        child: PaginatedDataTable(
+            columns: [
+              DataColumn(label: Text('Date/Time')),
+              DataColumn(label: Text('Qty'), numeric: true),
+              DataColumn(label: Text('Price'), numeric: true),
+              DataColumn(label: Text('Realized'), numeric: true),
+              DataColumn(label: Text('M/M'), numeric: true),
+              DataColumn(label: Text('Total'), numeric: true),
+            ],
+            columnSpacing: 16,
+            showCheckboxColumn: false,
+            availableRowsPerPage: [5, 10, 25, 100],
+            onRowsPerPageChanged: (int value) {
+              settings.setRowsPerPage(value);
+            },
+            showFirstLastButtons: true,
+            rowsPerPage: settings.rowsPerPage,
+            source: PnLDataSource(context)));
+  }
+}
+
+class PnLDataSource extends DataTableSource {
+  BuildContext context;
+  final dateFormat = DateFormat("MM-dd");
+
+  PnLDataSource(this.context);
+
+  @override
+  DataRow getRow(int index) {
+    final pnl = accountManager.pnls[index];
+    final ts = dateFormat.format(pnl.timestamp);
+    return DataRow(cells: [
+      DataCell(Text("$ts")),
+      DataCell(Text("${pnl.amount.toStringAsFixed(2)}")),
+      DataCell(Text("${pnl.price.toStringAsFixed(3)}")),
+      DataCell(Text("${pnl.realized.toStringAsFixed(3)}")),
+      DataCell(Text("${pnl.unrealized.toStringAsFixed(3)}")),
+      DataCell(Text("${(pnl.realized + pnl.unrealized).toStringAsFixed(3)}")),
+    ]);
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => accountManager.pnls.length;
+
+  @override
+  int get selectedRowCount => 0;
+}
+
 class ContactsWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => ContactsState();
 }
 
-class ContactsState extends State<ContactsWidget> {
+class ContactsState extends State<ContactsWidget>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true; //Set to true
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       final _ = accountManager.dataEpoch;
       final theme = Theme.of(context);
-      return Column(children: [
-        Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-                'To make a contact, send them a memo with "Contact: Name"',
-                style: Theme.of(context).textTheme.caption)),
-        Expanded(
-            child: GroupedListView<Contact, String>(
-          elements: accountManager.contacts,
-          groupBy: (e) => e.name.isEmpty ? "" : e.name[0],
-          itemBuilder: (context, c) => ListTile(
-              title: Text(c.name),
-              subtitle: Text(c.address),
-              trailing: accountManager.canPay
-                  ? IconButton(
-                      icon: Icon(Icons.chevron_right),
-                      onPressed: () {
-                        _onContact(c);
-                      })
-                  : null),
-          groupSeparatorBuilder: (String h) =>
-              Text(h, style: theme.textTheme.headline5),
-        )),
-      ]);
+      return Padding(
+          padding: EdgeInsets.all(12),
+          child: Column(children: [
+            Text('To make a contact, send them a memo with "Contact: Name"',
+                style: Theme.of(context).textTheme.caption),
+            Expanded(
+                child: GroupedListView<Contact, String>(
+              elements: accountManager.contacts,
+              groupBy: (e) => e.name.isEmpty ? "" : e.name[0],
+              itemBuilder: (context, c) => ListTile(
+                  title: Text(c.name),
+                  subtitle: Text(c.address),
+                  trailing: accountManager.canPay
+                      ? IconButton(
+                          icon: Icon(Icons.chevron_right),
+                          onPressed: () {
+                            _onContact(c);
+                          })
+                      : null),
+              groupSeparatorBuilder: (String h) =>
+                  Text(h, style: theme.textTheme.headline5),
+            )),
+          ]));
     });
   }
 

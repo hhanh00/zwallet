@@ -63,12 +63,22 @@ void main() {
           : Container()));
 }
 
-class ZWalletApp extends StatelessWidget {
+class ZWalletApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => ZWalletAppState();
+}
+
+class ZWalletAppState extends State<ZWalletApp> {
+  bool initialized = false;
+
   Future<Widget> _init() async {
-    final dbPath = await getDatabasesPath();
-    WarpApi.initWallet(dbPath + "/zec.db", settings.getLWD());
-    await accountManager.init();
-    await syncStatus.init();
+    if (!initialized) {
+      initialized = true;
+      final dbPath = await getDatabasesPath();
+      WarpApi.initWallet(dbPath + "/zec.db", settings.getLWD());
+      await accountManager.init();
+      await syncStatus.init();
+    }
     return Future.value(accountManager.accounts.isNotEmpty
         ? AccountPage()
         : AccountManagerPage());
