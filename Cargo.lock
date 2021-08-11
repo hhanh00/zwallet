@@ -847,15 +847,6 @@ dependencies = [
 [[package]]
 name = "equihash"
 version = "0.1.0"
-source = "git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
-dependencies = [
- "blake2b_simd",
- "byteorder",
-]
-
-[[package]]
-name = "equihash"
-version = "0.1.0"
 source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
 dependencies = [
  "blake2b_simd",
@@ -1437,9 +1428,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.98"
+version = "0.2.99"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "320cfe77175da3a483efed4bc0adc1968ca050b098ce4f2f1c13a56626128790"
+checksum = "a7f823d141fe0a24df1e23b4af4e3c7ba9e5966ec514ea068c93024aa7deb765"
 
 [[package]]
 name = "libsecp256k1"
@@ -2646,7 +2637,7 @@ dependencies = [
  "tonic-build",
  "zcash_client_backend",
  "zcash_params 0.1.0 (git+https://github.com/hhanh00/zcash-params.git?branch=main)",
- "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "zcash_primitives",
  "zcash_proofs",
 ]
 
@@ -3149,7 +3140,7 @@ dependencies = [
  "once_cell",
  "sync",
  "tokio",
- "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "zcash_primitives",
 ]
 
 [[package]]
@@ -3344,22 +3335,8 @@ dependencies = [
  "rand_core 0.6.3",
  "subtle 2.4.1",
  "time 0.2.27",
- "zcash_note_encryption 0.0.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
- "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
-]
-
-[[package]]
-name = "zcash_note_encryption"
-version = "0.0.0"
-source = "git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
-dependencies = [
- "blake2b_simd",
- "byteorder",
- "crypto_api_chachapoly",
- "ff",
- "group",
- "rand_core 0.6.3",
- "subtle 2.4.1",
+ "zcash_note_encryption",
+ "zcash_primitives",
 ]
 
 [[package]]
@@ -3389,13 +3366,13 @@ dependencies = [
  "jubjub",
  "lazy_static",
  "rand 0.8.4",
- "zcash_primitives 0.5.0 (git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "zcash_primitives",
 ]
 
 [[package]]
 name = "zcash_params"
 version = "0.1.0"
-source = "git+https://github.com/hhanh00/zcash-params.git?branch=main#d8bb59c1d137d7e2df3142b14aa9f8962ad68541"
+source = "git+https://github.com/hhanh00/zcash-params.git?branch=main#768a218858b08a71f21db9944f022251adc4590c"
 dependencies = [
  "bls12_381",
  "byteorder",
@@ -3406,35 +3383,7 @@ dependencies = [
  "jubjub",
  "lazy_static",
  "rand 0.8.4",
- "zcash_primitives 0.5.0 (git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync)",
-]
-
-[[package]]
-name = "zcash_primitives"
-version = "0.5.0"
-source = "git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync#0997d456031808f2f924964644277fce31ff5215"
-dependencies = [
- "aes",
- "bitvec 0.20.4",
- "blake2b_simd",
- "blake2s_simd",
- "bls12_381",
- "byteorder",
- "crypto_api_chachapoly",
- "equihash 0.1.0 (git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync)",
- "ff",
- "fpe",
- "funty",
- "group",
- "hex",
- "jubjub",
- "lazy_static",
- "log",
- "rand 0.8.4",
- "rand_core 0.6.3",
- "sha2 0.9.5",
- "subtle 2.4.1",
- "zcash_note_encryption 0.0.0 (git+ssh://git@github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "zcash_primitives",
 ]
 
 [[package]]
@@ -3449,7 +3398,7 @@ dependencies = [
  "bls12_381",
  "byteorder",
  "crypto_api_chachapoly",
- "equihash 0.1.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "equihash",
  "ff",
  "fpe",
  "funty",
@@ -3464,7 +3413,7 @@ dependencies = [
  "secp256k1",
  "sha2 0.9.5",
  "subtle 2.4.1",
- "zcash_note_encryption 0.0.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "zcash_note_encryption",
 ]
 
 [[package]]
@@ -3482,7 +3431,7 @@ dependencies = [
  "jubjub",
  "lazy_static",
  "rand_core 0.6.3",
- "zcash_primitives 0.5.0 (git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync)",
+ "zcash_primitives",
 ]
 
 [[package]]
