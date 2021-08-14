@@ -332,7 +332,7 @@ abstract class _AccountManager with Store {
 
   Future<int> getBalanceSpendable(int height) async {
     final List<Map> res = await db.rawQuery(
-        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND (spent IS NULL OR spent = 0) "
+        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent IS NULL "
             "AND height <= ?2 AND (excluded IS NULL OR NOT excluded)",
         [active.id, height]);
     if (res.isEmpty) return 0;
@@ -417,7 +417,7 @@ abstract class _AccountManager with Store {
   Future<void> _fetchNotesAndHistory(int accountId) async {
     await _updateBalance(accountId);
     final List<Map> res = await db.rawQuery(
-        "SELECT n.id_note, n.height, n.value, t.timestamp, n.excluded FROM received_notes n, transactions t "
+        "SELECT n.id_note, n.height, n.value, t.timestamp, n.excluded, n.spent FROM received_notes n, transactions t "
             "WHERE n.account = ?1 AND (n.spent IS NULL OR n.spent = 0) "
             "AND n.tx = t.id_tx",
         [accountId]);
@@ -427,7 +427,8 @@ abstract class _AccountManager with Store {
       final timestamp = noteDateFormat
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
       final excluded = (row['excluded'] ?? 0) != 0;
-      return Note(id, height, timestamp, row['value'] / ZECUNIT, excluded);
+      final spent = row['spent'] == 0;
+      return Note(id, height, timestamp, row['value'] / ZECUNIT, excluded, spent);
     }).toList();
     _sortNoteAmount(noteSortOrder);
 
@@ -682,8 +683,9 @@ class Note {
   String timestamp;
   double value;
   bool excluded;
+  bool spent;
 
-  Note(this.id, this.height, this.timestamp, this.value, this.excluded);
+  Note(this.id, this.height, this.timestamp, this.value, this.excluded, this.spent);
 }
 
 class Tx {

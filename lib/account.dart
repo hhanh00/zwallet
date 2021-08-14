@@ -572,6 +572,11 @@ class NotesDataSource extends DataTableSource {
     final confsOrHeight = settings.showConfirmations
         ? syncStatus.latestHeight - note.height + 1
         : note.height;
+
+    var style = _confirmed(note.height) ? theme.textTheme.bodyText2 : theme.textTheme.overline;
+    if (note.spent)
+      style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
+
     return DataRow.byIndex(
       index: index,
       selected: note.excluded,
@@ -581,11 +586,9 @@ class NotesDataSource extends DataTableSource {
               : theme.backgroundColor),
       cells: [
         DataCell(Text("$confsOrHeight",
-            style: !_confirmed(note.height)
-                ? Theme.of(this.context).textTheme.overline
-                : null)),
-        DataCell(Text("${note.timestamp}")),
-        DataCell(Text("${note.value.toStringAsFixed(8)}")),
+            style: style)),
+        DataCell(Text("${note.timestamp}", style: style)),
+        DataCell(Text("${note.value.toStringAsFixed(8)}", style: style)),
       ],
       onSelectChanged: (selected) => _noteSelected(note, selected),
     );

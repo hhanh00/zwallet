@@ -27,8 +27,8 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-//def appTitle = System.getenv('APP_TITLE')
-def appTitle = "YWallet"
+def appTitle = System.getenv('APP_TITLE')
+//def appTitle = "YWallet"
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
