@@ -96,6 +96,10 @@ class WarpApi {
     return res;
   }
 
+  static void mempoolReset(int height) {
+    warp_api_lib.mempool_reset(height);
+  }
+
   static Future<int> mempoolSync() async {
     return compute(mempoolSyncIsolateFn, null);
   }
@@ -118,6 +122,7 @@ class WarpApi {
   }
 
   static void setMempoolAccount(int account) {
+    print("SET MEMPOOL $account");
     return warp_api_lib.set_mempool_account(account);
   }
 

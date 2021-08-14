@@ -32,9 +32,11 @@ RUN pacman -Sy --noconfirm git
 COPY . /zwallet
 COPY .zcash-params /root/.zcash-params
 
+ENV APP_TITLE ZWallet
+
 RUN cd /zwallet && cargo make --profile release
-RUN cd /zwallet && flutter pub get && flutter pub run build_runner build && flutter build apk
+RUN cd /zwallet && flutter pub get && flutter pub run build_runner build && flutter build appbundle
 
 FROM alpine:latest
 WORKDIR /root
-COPY --from=builder /zwallet/build/app/outputs/flutter-apk/app-release.apk ./
+COPY --from=builder /zwallet/build/app/outputs/bundle/release/app-release.aab ./

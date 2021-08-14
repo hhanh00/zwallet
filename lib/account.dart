@@ -286,7 +286,7 @@ class _AccountPageState extends State<AccountPage>
                 SnackBar(content: Text('Shielding in progress...'));
             rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
             final txid = await WarpApi.shieldTAddr(accountManager.active.id);
-            final snackBar2 = SnackBar(content: Text(txid));
+            final snackBar2 = SnackBar(content: Text("TX ID: $txid"));
             rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
           })),
     );
@@ -326,6 +326,7 @@ class _AccountPageState extends State<AccountPage>
           syncStatus.setSyncHeight(height);
         else {
           _syncing = false;
+          WarpApi.mempoolReset(syncStatus.latestHeight);
           _trySync();
         }
       });

@@ -250,6 +250,11 @@ pub fn set_mempool_account(account: u32) {
     log_result(mempool.set_account(account));
 }
 
+pub fn mempool_reset(height: u32) {
+    let mut mempool = MEMPOOL.get().unwrap().lock().unwrap();
+    log_result(mempool.clear(height));
+}
+
 pub fn get_mempool_balance() -> i64 {
     let mempool = MEMPOOL.get().unwrap().lock().unwrap();
     mempool.get_unconfirmed_balance()

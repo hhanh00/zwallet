@@ -120,6 +120,11 @@ pub unsafe extern "C" fn mempool_sync() -> i64 {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn mempool_reset(height: u32) {
+    api::mempool_reset(height)
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn get_taddr_balance(account: u32) -> u64 {
     api::get_taddr_balance(account)
 }

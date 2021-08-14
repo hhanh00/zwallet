@@ -47,6 +47,8 @@ void rewind_to_height(uint32_t height);
 
 int64_t mempool_sync(void);
 
+void mempool_reset(uint32_t height);
+
 uint64_t get_taddr_balance(uint32_t account);
 
 char *shield_taddr(uint32_t account);

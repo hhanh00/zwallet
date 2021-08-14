@@ -241,6 +241,19 @@ class NativeLibrary {
   late final _dart_mempool_sync _mempool_sync =
       _mempool_sync_ptr.asFunction<_dart_mempool_sync>();
 
+  void mempool_reset(
+    int height,
+  ) {
+    return _mempool_reset(
+      height,
+    );
+  }
+
+  late final _mempool_reset_ptr =
+      _lookup<ffi.NativeFunction<_c_mempool_reset>>('mempool_reset');
+  late final _dart_mempool_reset _mempool_reset =
+      _mempool_reset_ptr.asFunction<_dart_mempool_reset>();
+
   int get_taddr_balance(
     int account,
   ) {
@@ -481,6 +494,14 @@ typedef _dart_rewind_to_height = void Function(
 typedef _c_mempool_sync = ffi.Int64 Function();
 
 typedef _dart_mempool_sync = int Function();
+
+typedef _c_mempool_reset = ffi.Void Function(
+  ffi.Uint32 height,
+);
+
+typedef _dart_mempool_reset = void Function(
+  int height,
+);
 
 typedef _c_get_taddr_balance = ffi.Uint64 Function(
   ffi.Uint32 account,
