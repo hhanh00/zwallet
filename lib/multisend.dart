@@ -78,19 +78,9 @@ class MultiPayState extends State<MultiPayPage> {
               title: Text('Please Confirm'),
               content: SingleChildScrollView(
                   child: Text(
-                      "Sending a total of $amount ZEC to $count recipients")),
-              actions: <Widget>[
-                TextButton(
-                    child: Text('Cancel'),
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    }),
-                TextButton(
-                    child: Text('Approve'),
-                    onPressed: () {
-                      Navigator.of(context).pop(true);
-                    }),
-              ],
+                      "Sending a total of $amount ${coin.ticker} to $count recipients")),
+              actions:
+                confirmButtons(context, () => Navigator.of(context).pop(true), cancelValue: false)
             ));
 
     if (approved) {
@@ -132,7 +122,7 @@ class PayRecipientState extends State<PayRecipient> {
             Row(children: <Widget>[
               Expanded(
                 child: TextFormField(
-                  decoration: InputDecoration(labelText: 'Send ZEC to...'),
+                  decoration: InputDecoration(labelText: 'Send ${coin.ticker} to...'),
                   minLines: 4,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
@@ -148,10 +138,8 @@ class PayRecipientState extends State<PayRecipient> {
                 keyboardType: TextInputType.number,
                 controller: _currencyController,
                 validator: _checkAmount),
-            ButtonBar(children: [
-              IconButton(icon: new Icon(MdiIcons.cancel), onPressed: _onCancel),
-              IconButton(icon: new Icon(MdiIcons.plus), onPressed: _onAdd),
-            ])
+            ButtonBar(children:
+              confirmButtons(context, _onAdd, okLabel: 'ADD', okIcon: Icon(MdiIcons.plus)))
           ]),
         ));
   }

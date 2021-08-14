@@ -71,7 +71,7 @@ class SendState extends State<SendPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Send ZEC')),
+        appBar: AppBar(title: Text('Send ${coin.ticker}')),
         body: Form(
             key: _formKey,
             child: SingleChildScrollView(
@@ -81,7 +81,7 @@ class SendState extends State<SendPage> {
                     Expanded(
                       child: TextFormField(
                         decoration:
-                            InputDecoration(labelText: 'Send ZEC to...'),
+                            InputDecoration(labelText: 'Send ${coin.ticker} to...'),
                         minLines: 4,
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
@@ -159,13 +159,9 @@ class SendState extends State<SendPage> {
                             isExpanded: _isExpanded)
                       ]),
                   Padding(padding: EdgeInsets.all(8)),
-                  Text("Spendable: ${_balance / ZECUNIT} ZEC"),
-                  ButtonBar(children: [
-                    IconButton(
-                        icon: new Icon(MdiIcons.cancel), onPressed: _onCancel),
-                    IconButton(
-                        icon: new Icon(MdiIcons.send), onPressed: _onSend),
-                  ])
+                  Text("Spendable: ${_balance / ZECUNIT} ${coin.ticker}"),
+                  ButtonBar(
+                      children: confirmButtons(context, _onSend, okLabel: 'SEND', okIcon: Icon(MdiIcons.send)))
                 ]))));
   }
 
@@ -228,10 +224,6 @@ class SendState extends State<SendPage> {
     });
   }
 
-  void _onCancel() {
-    Navigator.of(context).pop();
-  }
-
   void _onScan() async {
     var code = await BarcodeScanner.scan();
     setState(() {
@@ -273,19 +265,8 @@ class SendState extends State<SendPage> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text('Please Confirm'),
                 content: SingleChildScrollView(
-                    child: Text("Sending $aZEC ZEC to $_address")),
-                actions: <Widget>[
-                  TextButton(
-                      child: Text('Cancel'),
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      }),
-                  TextButton(
-                      child: Text('Approve'),
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      }),
-                ],
+                    child: Text("Sending $aZEC ${coin.ticker} to $_address")),
+                actions: confirmButtons(context, () => Navigator.of(context).pop(true), okLabel: 'APPROVE', cancelValue: false)
               ));
       if (approved) {
         Navigator.of(context).pop();
@@ -332,9 +313,9 @@ class SendState extends State<SendPage> {
           thousandSeparator: ',',
           precision: mZEC ? 3 : 8);
 
-  String thisAmountLabel() => _useFX ? "Amount in ${settings.currency}" : "Amount in ZEC";
+  String thisAmountLabel() => _useFX ? "Amount in ${settings.currency}" : "Amount in ${coin.ticker}";
 
-  String otherAmountLabel() => _useFX ? "Amount in ZEC" : "Amount in ${settings.currency}";
+  String otherAmountLabel() => _useFX ? "Amount in ${coin.ticker}" : "Amount in ${settings.currency}";
 
   int amountInZAT(Decimal v) => _useFX
       ? (v / _fx() * ZECUNIT_DECIMAL).toInt()

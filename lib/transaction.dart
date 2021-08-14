@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'main.dart';
 import 'store.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -35,6 +36,6 @@ class TransactionState extends State<TransactionPage> {
   }
 
   _onOpen() {
-    launch("https://explorer.zcha.in/transactions/${widget.tx.fullTxId}");
+    launch("${coin.explorerUrl}${widget.tx.fullTxId}");
   }
 }

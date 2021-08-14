@@ -6,6 +6,7 @@ LIB_OUT_DIR = "debug"
 TARGET_OS = "unknown"
 DEV = true
 RELEASE = false
+FEATURES = { script = ["echo ${COIN}"] }
 
 [env.release]
 RELEASE = true
@@ -120,8 +121,10 @@ args = [
   "--platform", 
   "${ANDROID_PLATFORM_VERSION}", 
   "--target", 
-  "${ANDROID_BUILD_TARGET}", 
+  "${ANDROID_BUILD_TARGET}",
   "build",
+  "--features",
+  "${FEATURES}",
 ]
 
 [tasks.android-build-release]
@@ -135,7 +138,9 @@ args = [
   "--target", 
   "${ANDROID_BUILD_TARGET}", 
   "build",
-  "--release"
+  "--release",
+  "--features",
+  "${FEATURES}",
 ]
 
 [tasks.android-aarch64]

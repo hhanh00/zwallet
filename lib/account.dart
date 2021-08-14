@@ -88,12 +88,11 @@ class _AccountPageState extends State<AccountPage>
     if (accountManager.active == null) return CircularProgressIndicator();
     final theme = Theme.of(this.context);
     final hasTAddr = accountManager.taddress.isNotEmpty;
-    final showTAddr = accountManager.showTAddr;
     return Scaffold(
       appBar: AppBar(
         title: Observer(
             builder: (context) =>
-                Text("\u24E9 Wallet - ${accountManager.active.name}")),
+                Text("${coin.symbol} Wallet - ${accountManager.active.name}")),
         bottom: TabBar(controller: _tabController, isScrollable: true, tabs: [
           Tab(text: "Account"),
           Tab(text: "Notes"),
@@ -142,6 +141,7 @@ class _AccountPageState extends State<AccountPage>
               Observer(builder: (context) {
                 final _ = accountManager.active.address;
                 final address = _address();
+                final showTAddr = accountManager.showTAddr;
                 return Column(children: [
                   if (hasTAddr)
                     Text(showTAddr
@@ -164,19 +164,26 @@ class _AccountPageState extends State<AccountPage>
                             child: Icon(Icons.content_copy),
                             onTap: _onAddressCopy)),
                   ])),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   if (!showTAddr)
-                    TextButton(
+                    OutlinedButton(
                         child: Text('New Snap Address'),
+                        style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                                width: 1, color: theme.primaryColor)),
                         onPressed: _onSnapAddress),
                   if (showTAddr)
-                    TextButton(
+                    OutlinedButton(
                       child: Text('Shield Transp. Balance'),
+                      style: OutlinedButton.styleFrom(
+                          side:
+                              BorderSide(width: 1, color: theme.primaryColor)),
                       onPressed: _onShieldTAddr,
                     )
                 ]);
               }),
               Observer(builder: (context) {
-                final balance = showTAddr
+                final balance = accountManager.showTAddr
                     ? accountManager.tbalance
                     : accountManager.balance;
                 return Row(
@@ -184,13 +191,13 @@ class _AccountPageState extends State<AccountPage>
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.ideographic,
                     children: <Widget>[
-                      Text('\u24E9 ${_getBalance_hi(balance)}',
+                      Text('${coin.symbol} ${_getBalance_hi(balance)}',
                           style: theme.textTheme.headline2),
                       Text('${_getBalance_lo(balance)}'),
                     ]);
               }),
               Observer(builder: (context) {
-                final balance = showTAddr
+                final balance = accountManager.showTAddr
                     ? accountManager.tbalance
                     : accountManager.balance;
                 final fx = _fx();
@@ -201,7 +208,7 @@ class _AccountPageState extends State<AccountPage>
                         style: theme.textTheme.headline6),
                   if (fx != 0.0)
                     Text(
-                        "1 ZEC = ${fx.toStringAsFixed(2)} ${settings.currency}"),
+                        "1 ${coin.ticker} = ${fx.toStringAsFixed(2)} ${settings.currency}"),
                 ]);
               }),
               Padding(padding: EdgeInsets.symmetric(vertical: 8)),
@@ -273,27 +280,15 @@ class _AccountPageState extends State<AccountPage>
           title: Text('Shield Transparent Balance'),
           content: Text(
               'Do you want to transfer your entire transparent balance to your shielded address?'),
-          actions: [
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(this.context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('OK'),
-              onPressed: () async {
-                Navigator.of(this.context).pop();
-                final snackBar1 =
-                    SnackBar(content: Text('Shielding in progress...'));
-                rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
-                final txid =
-                    await WarpApi.shieldTAddr(accountManager.active.id);
-                final snackBar2 = SnackBar(content: Text(txid));
-                rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
-              },
-            )
-          ]),
+          actions: confirmButtons(context, () async {
+            Navigator.of(this.context).pop();
+            final snackBar1 =
+                SnackBar(content: Text('Shielding in progress...'));
+            rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
+            final txid = await WarpApi.shieldTAddr(accountManager.active.id);
+            final snackBar2 = SnackBar(content: Text(txid));
+            rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+          })),
     );
   }
 
@@ -462,15 +457,9 @@ class _AccountPageState extends State<AccountPage>
                 content: Text(
                     'Do you want to DELETE the secret key and convert this account to a watch-only account? '
                     'You will not be able to spend from this device anymore. This operation is NOT reversible.'),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('Cancel')),
-                  TextButton(
-                      onPressed: _convertToWatchOnly, child: Text('DELETE'))
-                ]));
+                actions:
+                    confirmButtons(context, _convertToWatchOnly, okLabel: 'DELETE')
+                ));
   }
 
   _multiPay() {

@@ -9,12 +9,15 @@ import 'package:splashscreen/splashscreen.dart';
 import 'account.dart';
 import 'account_manager.dart';
 import 'backup.dart';
+import 'coin/coindef.dart';
 import 'multisend.dart';
 import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
 import 'store.dart';
 import 'transaction.dart';
+
+var coin = Coin();
 
 const ZECUNIT = 100000000.0;
 var ZECUNIT_DECIMAL = Decimal.parse('100000000');
@@ -39,27 +42,29 @@ void main() {
   final home = ZWalletApp();
   runApp(FutureBuilder(
       future: settings.restore(),
-      builder: (context, state) => state.hasData
+      builder: (context, state) =>
+      state.hasData
           ? Observer(
-              builder: (context) => MaterialApp(
-                    title: 'ZWallet',
-                    theme: settings.themeData,
-                    home: home,
-                    scaffoldMessengerKey: rootScaffoldMessengerKey,
-                    onGenerateRoute: (RouteSettings settings) {
-                      var routes = <String, WidgetBuilder>{
-                        '/account': (context) => AccountPage(),
-                        '/restore': (context) => RestorePage(),
-                        '/send': (context) => SendPage(settings.arguments),
-                        '/accounts': (context) => AccountManagerPage(),
-                        '/settings': (context) => SettingsPage(),
-                        '/tx': (context) => TransactionPage(settings.arguments),
-                        '/backup': (context) => BackupPage(),
-                        '/multipay': (context) => MultiPayPage(),
-                      };
-                      return MaterialPageRoute(builder: routes[settings.name]);
-                    },
-                  ))
+          builder: (context) =>
+              MaterialApp(
+                title: 'ZWallet',
+                theme: settings.themeData,
+                home: home,
+                scaffoldMessengerKey: rootScaffoldMessengerKey,
+                onGenerateRoute: (RouteSettings settings) {
+                  var routes = <String, WidgetBuilder>{
+                    '/account': (context) => AccountPage(),
+                    '/restore': (context) => RestorePage(),
+                    '/send': (context) => SendPage(settings.arguments),
+                    '/accounts': (context) => AccountManagerPage(),
+                    '/settings': (context) => SettingsPage(),
+                    '/tx': (context) => TransactionPage(settings.arguments),
+                    '/backup': (context) => BackupPage(),
+                    '/multipay': (context) => MultiPayPage(),
+                  };
+                  return MaterialPageRoute(builder: routes[settings.name]);
+                },
+              ))
           : Container()));
 }
 
@@ -90,10 +95,10 @@ class ZWalletAppState extends State<ZWalletApp> {
     return SplashScreen(
       navigateAfterFuture: _init(),
       title: new Text(
-        'ZWallet',
+        'YWallet',
         style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
       ),
-      image: new Image.asset('assets/zcash.png'),
+      image: new Image.asset('assets/icon.png'),
       backgroundColor: theme.backgroundColor,
       photoSize: 50.0,
       loaderColor: theme.primaryColor,
@@ -102,4 +107,28 @@ class ZWalletAppState extends State<ZWalletApp> {
 }
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>();
+GlobalKey<ScaffoldMessengerState>();
+
+List<ElevatedButton> confirmButtons(BuildContext context, VoidCallback onPressed, {
+  String okLabel, Icon okIcon, cancelValue}) {
+  final navigator = Navigator.of(context);
+  return <ElevatedButton>[
+    ElevatedButton.icon(
+        icon: Icon(Icons.cancel),
+        label: Text('Cancel'),
+        onPressed: () {
+          cancelValue != null ? navigator.pop(cancelValue) : navigator.pop();
+        },
+        style: ElevatedButton.styleFrom(primary: Theme
+            .of(context)
+            .buttonTheme
+            .colorScheme
+            .secondary)
+    ),
+    ElevatedButton.icon(
+      icon: okIcon ?? Icon(Icons.done),
+      label: Text(okLabel ?? 'OK'),
+      onPressed: onPressed,
+    )
+  ];
+}

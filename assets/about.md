@@ -1,7 +1,7 @@
 ## Your Privacy is important
 
-- **ZWallet does not collect any information**. In fact, it does not have its own servers.
-- ZWallet connects to public lightwallet servers
+- **{{APP}} does not collect any information**. In fact, it does not have its own servers.
+- {{APP}} connects to public lightwallet servers
 for Blockchain data, and CoinGecko REST API for price info.
 - Your IP can be recorded by your ISP. Use a VPN or TOR if this is an issue for you.
 

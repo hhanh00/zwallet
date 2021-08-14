@@ -61,7 +61,7 @@ abstract class _Settings with Store {
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
-    ldUrlChoice = prefs.getString('lightwalletd_choice') ?? "lightwalletd";
+    ldUrlChoice = prefs.getString('lightwalletd_choice') ?? "Lightwalletd";
     ldUrl = prefs.getString('lightwalletd_custom') ?? "";
     prefs.setString('lightwalletd_choice', ldUrlChoice);
     prefs.setString('lightwalletd_custom', ldUrl);
@@ -146,8 +146,8 @@ abstract class _Settings with Store {
   String getLWD() {
     switch (ldUrlChoice) {
       case "custom": return ldUrl;
-      case "lightwalletd": return "https://mainnet.lightwalletd.com:9067";
-      case "zecwallet": return "https://lwdv3.zecwallet.co";
+      default: return coin.lwd.firstWhere((lwd) => lwd.name == ldUrlChoice, orElse: () =>
+      coin.lwd.first).url;
     }
   }
 
@@ -602,11 +602,11 @@ abstract class _PriceStore with Store {
   @action
   Future<void> fetchZecPrice() async {
     final base = "api.coingecko.com";
-    final uri = Uri.https(base, '/api/v3/simple/price', {'ids': 'zcash', 'vs_currencies': settings.currency});
+    final uri = Uri.https(base, '/api/v3/simple/price', {'ids': coin.currency, 'vs_currencies': settings.currency});
     final rep = await http.get(uri);
     if (rep.statusCode == 200) {
       final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
-      final p = json['zcash'][settings.currency.toLowerCase()];
+      final p = json[coin.currency][settings.currency.toLowerCase()];
       zecPrice = (p is double) ? p : (p as int).toDouble();
     }
     else zecPrice = 0.0;

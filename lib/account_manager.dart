@@ -71,26 +71,15 @@ class AccountManagerState extends State<AccountManagerPage> {
   Future<bool> _onAccountDelete(DismissDirection _direction) async {
     if (accountManager.accounts.length == 1) return false;
     final confirm = showDialog<bool>(
-      context: this.context,
+      context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
           title: Text('Seed'),
           content: Text(
               'Are you SURE you want to DELETE this account? You MUST have a BACKUP to recover it. This operation is NOT reversible.'),
-          actions: [
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(this.context).pop(false);
-              },
-            ),
-            TextButton(
-              child: Text('DELETE'),
-              onPressed: () {
-                Navigator.of(this.context).pop(true);
-              },
-            ),
-          ]),
+          actions: confirmButtons(context, () {
+            Navigator.of(context).pop(true);
+          }, okLabel: 'DELETE', cancelValue: false)),
     );
     return confirm;
   }
@@ -114,21 +103,9 @@ class AccountManagerState extends State<AccountManagerPage> {
     await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-                title: Text('Change Account Name'),
-                content: TextField(controller: _accountNameController),
-                actions: [
-                  ElevatedButton(
-                      child: Text('Cancel'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      }),
-                  ElevatedButton(
-                    child: Text('OK'),
-                    onPressed: () {
-                      _changeAccountName();
-                    },
-                  ),
-                ]));
+            title: Text('Change Account Name'),
+            content: TextField(controller: _accountNameController),
+            actions: confirmButtons(context, _changeAccountName)));
   }
 
   _changeAccountName() {

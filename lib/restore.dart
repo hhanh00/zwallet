@@ -21,7 +21,7 @@ class _RestorePageState extends State<RestorePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("\u24E9 Wallet"),
+          title: Text("\u24E8 Wallet"),
         ),
         body: Form(
             key: _formKey,
@@ -58,11 +58,8 @@ class _RestorePageState extends State<RestorePage> {
                           icon: new Icon(MdiIcons.qrcodeScan), onPressed: _onScan)
                     ],
                   ),
-                  ButtonBar(children: [
-                    ElevatedButton(onPressed: _onCancel, child: Text('Cancel')),
-                    ElevatedButton(
-                        onPressed: _validKey ? _onOK : null, child: Text('OK')),
-                  ])
+                  ButtonBar(children:
+                  confirmButtons(context, _validKey ? _onOK : null, okLabel: 'ADD', okIcon: Icon(Icons.add)))
                 ]))));
   }
 

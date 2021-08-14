@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
+import 'account.dart';
 import 'main.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -18,6 +19,22 @@ class SettingsState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<FormBuilderFieldOption> options = coin.lwd.map((lwd) =>
+        FormBuilderFieldOption<dynamic>(
+            child: Text(lwd.name),
+            value: lwd.name)
+    ).toList();
+    options.add(
+      FormBuilderFieldOption(
+          value: 'custom',
+          child: FormBuilderTextField(
+            decoration:
+            InputDecoration(labelText: 'Custom'),
+            initialValue: settings.ldUrl,
+            onSaved: _onURL,
+          )),
+    );
+
     return Scaffold(
         appBar: AppBar(title: Text('Settings')),
         body: Padding(
@@ -32,22 +49,7 @@ class SettingsState extends State<SettingsPage> {
                               decoration: InputDecoration(labelText: 'Server'),
                               initialValue: settings.ldUrlChoice,
                               onSaved: _onChoice,
-                              options: [
-                                FormBuilderFieldOption(
-                                    child: Text('Lightwalletd'),
-                                    value: 'lightwalletd'),
-                                FormBuilderFieldOption(
-                                    child: Text('ZECWallet'),
-                                    value: 'zecwallet'),
-                                FormBuilderFieldOption(
-                                    value: 'custom',
-                                    child: FormBuilderTextField(
-                                      decoration:
-                                          InputDecoration(labelText: 'Custom'),
-                                      initialValue: settings.ldUrl,
-                                      onSaved: _onURL,
-                                    )),
-                              ]),
+                              options: options),
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
                               name: 'themes',
@@ -97,15 +99,8 @@ class SettingsState extends State<SettingsPage> {
                               title: Text('Retrieve Transaction Details'),
                               initialValue: settings.getTx,
                               onSaved: _onGetTx),
-                          ButtonBar(children: [
-                            ElevatedButton(
-                                child: Text('Cancel'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                }),
-                            ElevatedButton(
-                                child: Text('OK'), onPressed: _onSave),
-                          ])
+                          ButtonBar(children:
+                          confirmButtons(context, _onSave))
                         ]))))));
   }
 
