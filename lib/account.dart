@@ -16,6 +16,7 @@ import 'package:grouped_list/grouped_list.dart';
 
 import 'about.dart';
 import 'main.dart';
+import 'generated/l10n.dart';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -94,28 +95,28 @@ class _AccountPageState extends State<AccountPage>
             builder: (context) =>
                 Text("${coin.symbol} Wallet - ${accountManager.active.name}")),
         bottom: TabBar(controller: _tabController, isScrollable: true, tabs: [
-          Tab(text: "Account"),
-          Tab(text: "Notes"),
-          Tab(text: "History"),
-          Tab(text: "Budget"),
-          Tab(text: "Trading P&L"),
-          Tab(text: "Contacts"),
+          Tab(text: S.of(context).account),
+          Tab(text: S.of(context).notes),
+          Tab(text: S.of(context).history),
+          Tab(text: S.of(context).budget),
+          Tab(text: S.of(context).tradingPl),
+          Tab(text: S.of(context).contacts),
         ]),
         actions: [
           Observer(builder: (context) {
             accountManager.canPay;
             return PopupMenuButton<String>(
               itemBuilder: (context) => [
-                PopupMenuItem(child: Text("Accounts"), value: "Accounts"),
-                PopupMenuItem(child: Text("Backup"), value: "Backup"),
-                PopupMenuItem(child: Text("Rescan"), value: "Rescan"),
+                PopupMenuItem(child: Text(S.of(context).accounts), value: "Accounts"),
+                PopupMenuItem(child: Text(S.of(context).backup), value: "Backup"),
+                PopupMenuItem(child: Text(S.of(context).rescan), value: "Rescan"),
                 if (accountManager.canPay)
-                  PopupMenuItem(child: Text("Cold Storage"), value: "Cold"),
+                  PopupMenuItem(child: Text(S.of(context).coldStorage), value: "Cold"),
                 if (accountManager.canPay)
-                  PopupMenuItem(child: Text('MultiPay'), value: "MultiPay"),
-                PopupMenuItem(child: Text('Broadcast'), value: "Broadcast"),
-                PopupMenuItem(child: Text('Settings'), value: "Settings"),
-                PopupMenuItem(child: Text("About"), value: "About"),
+                  PopupMenuItem(child: Text(S.of(context).multipay), value: "MultiPay"),
+                PopupMenuItem(child: Text(S.of(context).broadcast), value: "Broadcast"),
+                PopupMenuItem(child: Text(S.of(context).settings), value: "Settings"),
+                PopupMenuItem(child: Text(S.of(context).about), value: "About"),
               ],
               onSelected: _onMenu,
             );
@@ -129,7 +130,7 @@ class _AccountPageState extends State<AccountPage>
                 child: Column(children: [
               Observer(
                   builder: (context) => syncStatus.syncedHeight <= 0
-                      ? Text('Synching')
+                      ? Text(S.of(context).synching)
                       : syncStatus.isSynced()
                           ? Text('${syncStatus.syncedHeight}',
                               style: theme.textTheme.caption)
@@ -145,8 +146,8 @@ class _AccountPageState extends State<AccountPage>
                 return Column(children: [
                   if (hasTAddr)
                     Text(showTAddr
-                        ? 'Tap QR Code for Shielded Address'
-                        : 'Tap QR Code for Transparent Address'),
+                        ? S.of(context).tapQrCodeForShieldedAddress
+                        : S.of(context).tapQrCodeForTransparentAddress),
                   Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   GestureDetector(
                       onTap: hasTAddr ? _onQRTap : null,
@@ -167,14 +168,14 @@ class _AccountPageState extends State<AccountPage>
                   Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   if (!showTAddr)
                     OutlinedButton(
-                        child: Text('New Snap Address'),
+                        child: Text(S.of(context).newSnapAddress),
                         style: OutlinedButton.styleFrom(
                             side: BorderSide(
                                 width: 1, color: theme.primaryColor)),
                         onPressed: _onSnapAddress),
                   if (showTAddr)
                     OutlinedButton(
-                      child: Text('Shield Transp. Balance'),
+                      child: Text(S.of(context).shieldTranspBalance),
                       style: OutlinedButton.styleFrom(
                           side:
                               BorderSide(width: 1, color: theme.primaryColor)),
@@ -240,7 +241,7 @@ class _AccountPageState extends State<AccountPage>
       floatingActionButton: _accountTab
           ? FloatingActionButton(
               onPressed: _onSend,
-              tooltip: 'Send',
+              tooltip: S.of(context).send,
               backgroundColor: Theme.of(context)
                   .accentColor
                   .withOpacity(accountManager.canPay ? 1.0 : 0.3),
@@ -268,7 +269,7 @@ class _AccountPageState extends State<AccountPage>
 
   _onAddressCopy() {
     Clipboard.setData(ClipboardData(text: _address()));
-    final snackBar = SnackBar(content: Text('Address copied to clipboard'));
+    final snackBar = SnackBar(content: Text(S.of(context).addressCopiedToClipboard));
     rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
   }
 
@@ -277,16 +278,16 @@ class _AccountPageState extends State<AccountPage>
       context: this.context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-          title: Text('Shield Transparent Balance'),
+          title: Text(S.of(context).shieldTransparentBalance),
           content: Text(
-              'Do you want to transfer your entire transparent balance to your shielded address?'),
+              S.of(context).doYouWantToTransferYourEntireTransparentBalanceTo),
           actions: confirmButtons(context, () async {
             Navigator.of(this.context).pop();
             final snackBar1 =
-                SnackBar(content: Text('Shielding in progress...'));
+                SnackBar(content: Text(S.of(context).shieldingInProgress));
             rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
             final txid = await WarpApi.shieldTAddr(accountManager.active.id);
-            final snackBar2 = SnackBar(content: Text("TX ID: $txid"));
+            final snackBar2 = SnackBar(content: Text(S.of(context).txId + txid));
             rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
           })),
     );
@@ -406,7 +407,7 @@ class _AccountPageState extends State<AccountPage>
     final localAuth = LocalAuthentication();
     try {
       final didAuthenticate = await localAuth.authenticate(
-          localizedReason: "Please authenticate to show account seed");
+          localizedReason: S.of(context).pleaseAuthenticateToShowAccountSeed);
       if (didAuthenticate) {
         Navigator.of(context).pushNamed('/backup', arguments: true);
       }
@@ -415,7 +416,7 @@ class _AccountPageState extends State<AccountPage>
           context: context,
           barrierDismissible: true,
           builder: (context) => AlertDialog(
-              title: Text('No Authentication Method'),
+              title: Text(S.of(context).noAuthenticationMethod),
               content: Text(e.message)));
     }
   }
@@ -425,20 +426,20 @@ class _AccountPageState extends State<AccountPage>
       context: this.context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-          title: Text('Rescan'),
-          content: Text('Rescan wallet from the first block?'),
+          title: Text(S.of(context).rescan),
+          content: Text(S.of(context).rescanWalletFromTheFirstBlock),
           actions: [
             TextButton(
-              child: Text('Cancel'),
+              child: Text(S.of(context).cancel),
               onPressed: () {
                 Navigator.of(this.context).pop();
               },
             ),
             TextButton(
-              child: Text('OK'),
+              child: Text(S.of(context).ok),
               onPressed: () {
                 Navigator.of(this.context).pop();
-                final snackBar = SnackBar(content: Text("Rescan Requested..."));
+                final snackBar = SnackBar(content: Text(S.of(context).rescanRequested));
                 rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
                 syncStatus.setSyncHeight(0);
                 WarpApi.rewindToHeight(0);
@@ -454,12 +455,11 @@ class _AccountPageState extends State<AccountPage>
         context: context,
         barrierDismissible: false,
         builder: (context) => AlertDialog(
-                title: Text('Cold Storage'),
+                title: Text(S.of(context).coldStorage),
                 content: Text(
-                    'Do you want to DELETE the secret key and convert this account to a watch-only account? '
-                    'You will not be able to spend from this device anymore. This operation is NOT reversible.'),
+                    S.of(context).doYouWantToDeleteTheSecretKeyAndConvert),
                 actions:
-                    confirmButtons(context, _convertToWatchOnly, okLabel: 'DELETE')
+                    confirmButtons(context, _convertToWatchOnly, okLabel: S.of(context).delete)
                 ));
   }
 
@@ -524,16 +524,16 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
                   columns: [
                     DataColumn(
                         label: settings.showConfirmations
-                            ? Text('Confs')
-                            : Text('Height'),
+                            ? Text(S.of(context).confs)
+                            : Text(S.of(context).height),
                         onSort: (_, __) {
                           setState(() {
                             settings.toggleShowConfirmations();
                           });
                         }),
-                    DataColumn(label: Text('Date/Time')),
+                    DataColumn(label: Text(S.of(context).datetime)),
                     DataColumn(
-                        label: Text('Amount'),
+                        label: Text(S.of(context).amount),
                         numeric: true,
                         onSort: (_, __) {
                           setState(() {
@@ -541,7 +541,7 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
                           });
                         }),
                   ],
-                  header: Text('Select notes to EXCLUDE from payments',
+                  header: Text(S.of(context).selectNotesToExcludeFromPayments,
                       style: Theme.of(context).textTheme.bodyText1),
                   columnSpacing: 16,
                   showCheckboxColumn: false,
@@ -652,17 +652,17 @@ class HistoryState extends State<HistoryWidget>
                     columns: [
                       DataColumn(
                           label: settings.showConfirmations
-                              ? Text('Confs')
-                              : Text('Height'),
+                              ? Text(S.of(context).confs)
+                              : Text(S.of(context).height),
                           onSort: (_, __) {
                             setState(() {
                               settings.toggleShowConfirmations();
                             });
                           }),
-                      DataColumn(label: Text('Date/Time')),
-                      DataColumn(label: Text('TXID')),
+                      DataColumn(label: Text(S.of(context).datetime)),
+                      DataColumn(label: Text(S.of(context).txid)),
                       DataColumn(
-                          label: Text('Amount'),
+                          label: Text(S.of(context).amount),
                           numeric: true,
                           onSort: (_, __) {
                             setState(() {
@@ -739,18 +739,18 @@ class BudgetState extends State<BudgetWidget>
               Expanded(
                   child: Card(
                       child: Column(children: [
-                Text('Largest Spendings by Address',
+                Text(S.of(context).largestSpendingsByAddress,
                     style: Theme.of(context).textTheme.headline6),
                 Expanded(
                     child: SpendingChart(accountManager.spendings, _showAddress,
                         _toggleAddress)),
-                Text('Tap Chart to Toggle between Address and Amount',
+                Text(S.of(context).tapChartToToggleBetweenAddressAndAmount,
                     style: Theme.of(context).textTheme.caption)
               ]))),
               Expanded(
                   child: Card(
                       child: Column(children: [
-                Text('Account Balance History',
+                Text(S.of(context).accountBalanceHistory,
                     style: Theme.of(context).textTheme.headline6),
                 Expanded(
                     child:
@@ -777,7 +777,7 @@ class SpendingChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final seriesList = _createSeries(data, showAddress);
+    final seriesList = _createSeries(data, showAddress, context);
     final color = charts.ColorUtil.fromDartColor(
         Theme.of(context).textTheme.headline5.color);
     if (seriesList[0].data.isEmpty)
@@ -785,7 +785,7 @@ class SpendingChart extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('No Spending in the Last 30 Days',
+            Text(S.of(context).noSpendingInTheLast30Days,
                 style: Theme.of(context).textTheme.headline5)
           ]);
     return new charts.PieChart(seriesList,
@@ -805,11 +805,11 @@ class SpendingChart extends StatelessWidget {
   }
 
   static List<charts.Series<Spending, String>> _createSeries(
-      List<Spending> data, bool showAddress) {
+      List<Spending> data, bool showAddress, BuildContext context) {
     final palette = settings.palette.makeShades(data.length + 5);
     return [
       new charts.Series<Spending, String>(
-        id: 'Largest Spending Last Month',
+        id: S.of(context).largestSpendingLastMonth,
         domainFn: (Spending sales, _) => sales.address,
         measureFn: (Spending sales, _) => sales.amount,
         colorFn: (_, index) => palette[index],
@@ -836,7 +836,7 @@ class AccountBalanceTimeChartState extends State<AccountBalanceTimeChart> {
     final axisColor = charts.ColorUtil.fromDartColor(
         Theme.of(context).textTheme.headline5.color);
     final seriesList = _createSeries(widget.data,
-        charts.ColorUtil.fromDartColor(Theme.of(context).primaryColor));
+        charts.ColorUtil.fromDartColor(Theme.of(context).primaryColor), context);
     return new charts.TimeSeriesChart(
       seriesList,
       animate: false,
@@ -860,10 +860,10 @@ class AccountBalanceTimeChartState extends State<AccountBalanceTimeChart> {
   }
 
   static List<charts.Series<AccountBalance, DateTime>> _createSeries(
-      List<AccountBalance> data, charts.Color lineColor) {
+      List<AccountBalance> data, charts.Color lineColor, BuildContext context) {
     return [
       new charts.Series<AccountBalance, DateTime>(
-        id: 'Balance',
+        id: S.of(context).balance,
         colorFn: (_, __) => lineColor,
         domainFn: (AccountBalance ab, _) => ab.time,
         measureFn: (AccountBalance ab, _) => ab.balance,
@@ -887,7 +887,7 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
     return Column(children: [
       FormBuilderRadioGroup(
           orientation: OptionsOrientation.horizontal,
-          name: 'Pnl',
+          name: S.of(context).pnl,
           initialValue: accountManager.pnlSeriesIndex,
           onChanged: (v) {
             setState(() {
@@ -895,12 +895,12 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
             });
           },
           options: [
-            FormBuilderFieldOption(child: Text('Real'), value: 0),
-            FormBuilderFieldOption(child: Text('M/M'), value: 1),
-            FormBuilderFieldOption(child: Text('Total'), value: 2),
-            FormBuilderFieldOption(child: Text('Price'), value: 3),
-            FormBuilderFieldOption(child: Text('Qty'), value: 4),
-            FormBuilderFieldOption(child: Text('Table'), value: 5),
+            FormBuilderFieldOption(child: Text(S.of(context).real), value: 0),
+            FormBuilderFieldOption(child: Text(S.of(context).mm), value: 1),
+            FormBuilderFieldOption(child: Text(S.of(context).total), value: 2),
+            FormBuilderFieldOption(child: Text(S.of(context).price), value: 3),
+            FormBuilderFieldOption(child: Text(S.of(context).qty), value: 4),
+            FormBuilderFieldOption(child: Text(S.of(context).table), value: 5),
           ]),
       Observer(builder: (context) {
         final _ = accountManager.pnls;
@@ -924,7 +924,7 @@ class PnLChart extends StatelessWidget {
     final axisColor = charts.ColorUtil.fromDartColor(
         Theme.of(context).textTheme.headline5.color);
     final seriesList = _createSeries(data, seriesIndex,
-        charts.ColorUtil.fromDartColor(Theme.of(context).primaryColor));
+        charts.ColorUtil.fromDartColor(Theme.of(context).primaryColor), context);
     return new charts.TimeSeriesChart(
       seriesList,
       animate: false,
@@ -961,10 +961,10 @@ class PnLChart extends StatelessWidget {
   }
 
   static List<charts.Series<PnL, DateTime>> _createSeries(
-      List<PnL> data, int index, charts.Color lineColor) {
+      List<PnL> data, int index, charts.Color lineColor, BuildContext context) {
     return [
       new charts.Series<PnL, DateTime>(
-        id: 'P/L',
+        id: S.of(context).pl,
         colorFn: (_, __) => lineColor,
         domainFn: (PnL pnl, _) => pnl.timestamp,
         measureFn: (PnL pnl, _) => _seriesData(pnl, index),
@@ -980,12 +980,12 @@ class PnLTable extends StatelessWidget {
     return SingleChildScrollView(
         child: PaginatedDataTable(
             columns: [
-              DataColumn(label: Text('Date/Time')),
-              DataColumn(label: Text('Qty'), numeric: true),
-              DataColumn(label: Text('Price'), numeric: true),
-              DataColumn(label: Text('Realized'), numeric: true),
-              DataColumn(label: Text('M/M'), numeric: true),
-              DataColumn(label: Text('Total'), numeric: true),
+              DataColumn(label: Text(S.of(context).datetime)),
+              DataColumn(label: Text(S.of(context).qty), numeric: true),
+              DataColumn(label: Text(S.of(context).price), numeric: true),
+              DataColumn(label: Text(S.of(context).realized), numeric: true),
+              DataColumn(label: Text(S.of(context).mm), numeric: true),
+              DataColumn(label: Text(S.of(context).total), numeric: true),
             ],
             columnSpacing: 16,
             showCheckboxColumn: false,
@@ -1047,7 +1047,7 @@ class ContactsState extends State<ContactsWidget>
       return Padding(
           padding: EdgeInsets.all(12),
           child: Column(children: [
-            Text('To make a contact, send them a memo with "Contact: Name"',
+            Text(S.of(context).toMakeAContactSendThemAMemoWithContact,
                 style: Theme.of(context).textTheme.caption),
             Expanded(
                 child: GroupedListView<Contact, String>(

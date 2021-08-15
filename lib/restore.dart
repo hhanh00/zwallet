@@ -5,6 +5,7 @@ import 'package:warp_api/warp_api.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'main.dart';
+import 'generated/l10n.dart';
 
 class RestorePage extends StatefulWidget {
   @override
@@ -29,26 +30,22 @@ class _RestorePageState extends State<RestorePage> {
                 padding: EdgeInsets.all(8),
                 child: Column(children: [
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Account Name'),
+                    decoration: InputDecoration(labelText: S.of(context).accountName),
                     controller: _nameController,
                     validator: (String name) {
                       if (name == null || name.isEmpty)
-                        return "Account name is required";
+                        return S.of(context).accountNameIsRequired;
                       return null;
                     },
                   ),
                   Row(
-                    // padding: EdgeInsets.all(8),
-                    // decoration: BoxDecoration(
-                    //   border: Border.all(width: 2.0),
-                    // ),
                     children: [
                       Expanded(
                           child: TextFormField(
                         decoration: InputDecoration(
-                            labelText: 'Key',
+                            labelText: S.of(context).key,
                             hintText:
-                                'Enter Seed, Secret Key or Viewing Key. Leave blank for a new account'),
+                                S.of(context).enterSeed),
                         minLines: 4,
                         maxLines: 4,
                         controller: _keyController,
@@ -59,7 +56,7 @@ class _RestorePageState extends State<RestorePage> {
                     ],
                   ),
                   ButtonBar(children:
-                  confirmButtons(context, _validKey ? _onOK : null, okLabel: 'ADD', okIcon: Icon(Icons.add)))
+                  confirmButtons(context, _validKey ? _onOK : null, okLabel: S.of(context).add, okIcon: Icon(Icons.add)))
                 ]))));
   }
 
@@ -73,7 +70,7 @@ class _RestorePageState extends State<RestorePage> {
         if (_keyController.text == "")
           WarpApi.skipToLastHeight(); // single new account -> quick sync
         else {
-          final snackBar = SnackBar(content: Text("Scan starting momentarily"));
+          final snackBar = SnackBar(content: Text(S.of(context).scanStartingMomentarily));
           rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
           WarpApi.rewindToHeight(0);
         }
@@ -81,10 +78,6 @@ class _RestorePageState extends State<RestorePage> {
       Navigator.of(context).pop();
       Navigator.of(context).pushReplacementNamed('/account');
     }
-  }
-
-  _onCancel() {
-    Navigator.of(context).pop();
   }
 
   _checkKey(key) {

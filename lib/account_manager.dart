@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:warp/main.dart';
 import 'package:warp/store.dart';
+import 'generated/l10n.dart';
 
 import 'about.dart';
 
@@ -23,11 +24,11 @@ class AccountManagerState extends State<AccountManagerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Accounts'), actions: [
+        appBar: AppBar(title: Text(S.of(context).accounts), actions: [
           PopupMenuButton<String>(
               itemBuilder: (context) => [
-                    PopupMenuItem(child: Text('Settings'), value: "Settings"),
-                    PopupMenuItem(child: Text("About"), value: "About"),
+                    PopupMenuItem(child: Text(S.of(context).settings), value: "Settings"),
+                    PopupMenuItem(child: Text(S.of(context).about), value: "About"),
                   ],
               onSelected: _onMenu)
         ]),
@@ -35,7 +36,7 @@ class AccountManagerState extends State<AccountManagerPage> {
             builder: (context) => Stack(children: [
                   accountManager.accounts.isEmpty
                       ? Center(
-                          child: Text("No account",
+                          child: Text(S.of(context).noAccount,
                               style: Theme.of(context).textTheme.headline5))
                       : ListView(
                           children: accountManager.accounts
@@ -74,12 +75,12 @@ class AccountManagerState extends State<AccountManagerPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-          title: Text('Seed'),
+          title: Text(S.of(context).seed),
           content: Text(
-              'Are you SURE you want to DELETE this account? You MUST have a BACKUP to recover it. This operation is NOT reversible.'),
+              S.of(context).confirmDeleteAccount),
           actions: confirmButtons(context, () {
             Navigator.of(context).pop(true);
-          }, okLabel: 'DELETE', cancelValue: false)),
+          }, okLabel: S.of(context).delete, cancelValue: false)),
     );
     return confirm;
   }
@@ -103,7 +104,7 @@ class AccountManagerState extends State<AccountManagerPage> {
     await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-            title: Text('Change Account Name'),
+            title: Text(S.of(context).changeAccountName),
             content: TextField(controller: _accountNameController),
             actions: confirmButtons(context, _changeAccountName)));
   }

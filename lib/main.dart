@@ -5,6 +5,8 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:splashscreen/splashscreen.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'generated/l10n.dart';
 
 import 'account.dart';
 import 'account_manager.dart';
@@ -51,6 +53,13 @@ void main() {
                 theme: settings.themeData,
                 home: home,
                 scaffoldMessengerKey: rootScaffoldMessengerKey,
+                localizationsDelegates: [
+                  S.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: S.delegate.supportedLocales,
                 onGenerateRoute: (RouteSettings settings) {
                   var routes = <String, WidgetBuilder>{
                     '/account': (context) => AccountPage(),
@@ -115,7 +124,7 @@ List<ElevatedButton> confirmButtons(BuildContext context, VoidCallback onPressed
   return <ElevatedButton>[
     ElevatedButton.icon(
         icon: Icon(Icons.cancel),
-        label: Text('Cancel'),
+        label: Text(S.of(context).cancel),
         onPressed: () {
           cancelValue != null ? navigator.pop(cancelValue) : navigator.pop();
         },
@@ -127,7 +136,7 @@ List<ElevatedButton> confirmButtons(BuildContext context, VoidCallback onPressed
     ),
     ElevatedButton.icon(
       icon: okIcon ?? Icon(Icons.done),
-      label: Text(okLabel ?? 'OK'),
+      label: Text(okLabel ?? S.of(context).ok),
       onPressed: onPressed,
     )
   ];

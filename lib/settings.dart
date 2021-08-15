@@ -3,8 +3,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
-import 'account.dart';
 import 'main.dart';
+import 'generated/l10n.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -29,14 +29,14 @@ class SettingsState extends State<SettingsPage> {
           value: 'custom',
           child: FormBuilderTextField(
             decoration:
-            InputDecoration(labelText: 'Custom'),
+            InputDecoration(labelText: S.of(context).custom),
             initialValue: settings.ldUrl,
             onSaved: _onURL,
           )),
     );
 
     return Scaffold(
-        appBar: AppBar(title: Text('Settings')),
+        appBar: AppBar(title: Text(S.of(context).settings)),
         body: Padding(
             padding: EdgeInsets.all(16),
             child: FormBuilder(
@@ -46,25 +46,25 @@ class SettingsState extends State<SettingsPage> {
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.vertical,
                               name: 'servers',
-                              decoration: InputDecoration(labelText: 'Server'),
+                              decoration: InputDecoration(labelText: S.of(context).server),
                               initialValue: settings.ldUrlChoice,
                               onSaved: _onChoice,
                               options: options),
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
                               name: 'themes',
-                              decoration: InputDecoration(labelText: 'Theme'),
+                              decoration: InputDecoration(labelText: S.of(context).theme),
                               initialValue: settings.theme,
                               onChanged: _onTheme,
                               options: [
                                 FormBuilderFieldOption(
                                     child: Text('Zcash'), value: 'zcash'),
                                 FormBuilderFieldOption(
-                                    child: Text('Blue'), value: 'blue'),
+                                    child: Text(S.of(context).blue), value: 'blue'),
                                 FormBuilderFieldOption(
-                                    child: Text('Pink'), value: 'pink'),
+                                    child: Text(S.of(context).pink), value: 'pink'),
                                 FormBuilderFieldOption(
-                                    child: Text('Coffee'), value: 'coffee'),
+                                    child: Text(S.of(context).coffee), value: 'coffee'),
                               ]),
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
@@ -73,13 +73,13 @@ class SettingsState extends State<SettingsPage> {
                               onChanged: _onThemeBrightness,
                               options: [
                                 FormBuilderFieldOption(
-                                    child: Text('Light'), value: 'light'),
+                                    child: Text(S.of(context).light), value: 'light'),
                                 FormBuilderFieldOption(
-                                    child: Text('Dark'), value: 'dark'),
+                                    child: Text(S.of(context).dark), value: 'dark'),
                               ]),
                           Row(children: [
                             SizedBox(width: 100, child: DropdownButtonFormField<String>(
-                              decoration: InputDecoration(labelText: 'Currency'),
+                              decoration: InputDecoration(labelText: S.of(context).currency),
                               value: settings.currency,
                                 items: settings.currencies.map((c) =>
                                     DropdownMenuItem(child: Text(c), value: c)).toList(),
@@ -89,14 +89,14 @@ class SettingsState extends State<SettingsPage> {
                           FormBuilderTextField(
                               decoration: InputDecoration(
                                   labelText:
-                                      'Number of Confirmations Needed before Spending'),
+                                      S.of(context).numberOfConfirmationsNeededBeforeSpending),
                               name: 'anchor',
                               keyboardType: TextInputType.number,
                               controller: _anchorController,
                               onSaved: _onAnchorOffset),
                           FormBuilderCheckbox(
                               name: 'get_tx',
-                              title: Text('Retrieve Transaction Details'),
+                              title: Text(S.of(context).retrieveTransactionDetails),
                               initialValue: settings.getTx,
                               onSaved: _onGetTx),
                           ButtonBar(children:

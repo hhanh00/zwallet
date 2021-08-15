@@ -3,6 +3,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import 'main.dart';
 import 'store.dart';
+import 'generated/l10n.dart';
 
 class BackupPage extends StatefulWidget {
   @override
@@ -25,7 +26,7 @@ class BackupState extends State<BackupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text('Backup')), body:
+    return Scaffold(appBar: AppBar(title: Text(S.of(context).backup)), body:
         FutureBuilder(
           future: _init(),
           builder: _build,
@@ -40,7 +41,7 @@ class BackupState extends State<BackupPage> {
         children: [
           TextField(
             decoration: InputDecoration(
-                labelText: 'Backup Data - Required for Restore', prefixIcon: IconButton(icon: Icon(Icons.save),
+                labelText: S.of(context).backupDataRequiredForRestore, prefixIcon: IconButton(icon: Icon(Icons.save),
                 onPressed: () => _showQR(backup.value()))),
             controller: _backupController,
             minLines: 3,
@@ -49,7 +50,7 @@ class BackupState extends State<BackupPage> {
 
           ),
           if (type == 0) TextField(
-            decoration: InputDecoration(labelText: 'Secret Key', prefixIcon: IconButton(icon: Icon(Icons.vpn_key),
+            decoration: InputDecoration(labelText: S.of(context).secretKey, prefixIcon: IconButton(icon: Icon(Icons.vpn_key),
     onPressed: () => _showQR(backup.sk))),
             controller: _skController,
             minLines: 3,
@@ -58,7 +59,7 @@ class BackupState extends State<BackupPage> {
             style: Theme.of(context).textTheme.caption
           ),
           if (type != 2) TextField(
-            decoration: InputDecoration(labelText: 'Viewing Key', prefixIcon: IconButton(icon: Icon(Icons.visibility),
+            decoration: InputDecoration(labelText: S.of(context).viewingKey, prefixIcon: IconButton(icon: Icon(Icons.visibility),
     onPressed: () => _showQR(backup.ivk))),
             controller: _ivkController,
             minLines: 3,
@@ -67,7 +68,7 @@ class BackupState extends State<BackupPage> {
             style: Theme.of(context).textTheme.caption
           ),
           Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-          Text('Tap an icon to show the QR code'),
+          Text(S.of(context).tapAnIconToShowTheQrCode),
         ]
       ),
     );

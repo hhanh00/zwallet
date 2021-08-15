@@ -6,6 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:mustache_template/mustache.dart';
 
 import 'main.dart';
+import 'generated/l10n.dart';
 
 Future<void> showAbout(BuildContext context) async {
   final contentTemplate = await rootBundle.loadString('assets/about.md');
@@ -14,12 +15,12 @@ Future<void> showAbout(BuildContext context) async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   String version = packageInfo.version;
   String code = packageInfo.buildNumber;
-  content += "`Version: $version+$code`";
+  content += "`${S.of(context).version}: $version+$code`";
   showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-              title: Text('About ${coin.app}'),
+              title: Text('${S.of(context).about} ${coin.app}'),
               contentPadding: EdgeInsets.zero,
               content: Container(
                 width: double.maxFinite,
@@ -30,7 +31,7 @@ Future<void> showAbout(BuildContext context) async {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    label: Text('OK'),
+                    label: Text(S.of(context).ok),
                     icon: Icon(Icons.done))
               ]));
 }

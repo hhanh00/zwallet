@@ -10,6 +10,7 @@ import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
+import 'generated/l10n.dart';
 
 class MultiPayPage extends StatefulWidget {
   @override
@@ -17,12 +18,10 @@ class MultiPayPage extends StatefulWidget {
 }
 
 class MultiPayState extends State<MultiPayPage> {
-  final _formKey = GlobalKey();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Multi Pay')),
+      appBar: AppBar(title: Text(S.of(context).multiPay)),
       body: Observer(builder: (context) {
         final rows = multipayData.recipients.asMap().entries.map((e) {
           final index = e.key;
@@ -75,22 +74,22 @@ class MultiPayState extends State<MultiPayPage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) => AlertDialog(
-              title: Text('Please Confirm'),
+              title: Text(S.of(context).pleaseConfirm),
               content: SingleChildScrollView(
                   child: Text(
-                      "Sending a total of $amount ${coin.ticker} to $count recipients")),
+                      S.of(context).sendingATotalOfAmountCointickerToCountRecipients(amount, coin.ticker, count))),
               actions:
                 confirmButtons(context, () => Navigator.of(context).pop(true), cancelValue: false)
             ));
 
     if (approved) {
-      final snackBar1 = SnackBar(content: Text("Preparing transaction..."));
+      final snackBar1 = SnackBar(content: Text(S.of(context).preparingTransaction));
       rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
 
       final recipientsJson = jsonEncode(multipayData.recipients);
       final tx = await WarpApi.sendMultiPayment(accountManager.active.id,
           recipientsJson, settings.anchorOffset, (p) {});
-      final snackBar2 = SnackBar(content: Text("TX ID: $tx"));
+      final snackBar2 = SnackBar(content: Text(S.of(context).txId + tx));
       rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
 
       multipayData.clear();
@@ -122,7 +121,7 @@ class PayRecipientState extends State<PayRecipient> {
             Row(children: <Widget>[
               Expanded(
                 child: TextFormField(
-                  decoration: InputDecoration(labelText: 'Send ${coin.ticker} to...'),
+                  decoration: InputDecoration(labelText: S.of(context).sendCointickerTo(coin.ticker)),
                   minLines: 4,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
@@ -134,12 +133,12 @@ class PayRecipientState extends State<PayRecipient> {
                   icon: new Icon(MdiIcons.qrcodeScan), onPressed: _onScan)
             ]),
             TextFormField(
-                decoration: InputDecoration(labelText: 'Amount'),
+                decoration: InputDecoration(labelText: S.of(context).amount),
                 keyboardType: TextInputType.number,
                 controller: _currencyController,
                 validator: _checkAmount),
             ButtonBar(children:
-              confirmButtons(context, _onAdd, okLabel: 'ADD', okIcon: Icon(MdiIcons.plus)))
+              confirmButtons(context, _onAdd, okLabel: S.of(context).add, okIcon: Icon(MdiIcons.plus)))
           ]),
         ));
   }
@@ -169,15 +168,15 @@ class PayRecipientState extends State<PayRecipient> {
   }
 
   String _checkAddress(String v) {
-    if (v.isEmpty) return 'Address is empty';
-    if (!WarpApi.validAddress(v)) return 'Invalid Address';
+    if (v.isEmpty) return S.of(context).addressIsEmpty;
+    if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
     return null;
   }
 
   String _checkAmount(String vs) {
     final v = double.tryParse(vs);
-    if (v == null) return 'Amount must be a number';
-    if (v <= 0.0) return 'Amount must be positive';
+    if (v == null) return S.of(context).amountMustBeANumber;
+    if (v <= 0.0) return S.of(context).amountMustBePositive;
     return null;
   }
 }
