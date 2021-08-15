@@ -95,7 +95,7 @@ class ZWalletAppState extends State<ZWalletApp> {
     return SplashScreen(
       navigateAfterFuture: _init(),
       title: new Text(
-        'YWallet',
+        coin.app,
         style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
       ),
       image: new Image.asset('assets/icon.png'),

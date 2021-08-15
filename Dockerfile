@@ -22,10 +22,7 @@ RUN curl -o flutter.tar.xz https://storage.googleapis.com/flutter_infra_release/
 RUN tar xvf flutter.tar.xz
 ENV PATH $PATH:/flutter/bin
 
-RUN rustup target add aarch64-linux-android
-RUN rustup target add armv7-linux-androideabi
-RUN rustup target add i686-linux-android
-RUN rustup target add x86_64-linux-android
+RUN rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 
 RUN pacman -Sy --noconfirm git
 
