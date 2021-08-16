@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +16,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:grouped_list/grouped_list.dart';
 
 import 'about.dart';
+import 'chart.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 
@@ -428,25 +430,15 @@ class _AccountPageState extends State<AccountPage>
       builder: (context) => AlertDialog(
           title: Text(S.of(context).rescan),
           content: Text(S.of(context).rescanWalletFromTheFirstBlock),
-          actions: [
-            TextButton(
-              child: Text(S.of(context).cancel),
-              onPressed: () {
-                Navigator.of(this.context).pop();
-              },
-            ),
-            TextButton(
-              child: Text(S.of(context).ok),
-              onPressed: () {
-                Navigator.of(this.context).pop();
-                final snackBar = SnackBar(content: Text(S.of(context).rescanRequested));
-                rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
-                syncStatus.setSyncHeight(0);
-                WarpApi.rewindToHeight(0);
-                _sync();
-              },
-            ),
-          ]),
+          actions:
+          confirmButtons(context, () {
+            Navigator.of(this.context).pop();
+            final snackBar = SnackBar(content: Text(S.of(context).rescanRequested));
+            rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
+            syncStatus.setSyncHeight(0);
+            WarpApi.rewindToHeight(0);
+            _sync();
+          }))
     );
   }
 
@@ -568,7 +560,7 @@ class NotesDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    final note = accountManager.notes[index];
+    final note = accountManager.sortedNotes[index];
     final theme = Theme.of(context);
     final confsOrHeight = settings.showConfirmations
         ? syncStatus.latestHeight - note.height + 1
@@ -689,7 +681,7 @@ class HistoryDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    final tx = accountManager.txs[index];
+    final tx = accountManager.sortedTxs[index];
     final confsOrHeight = settings.showConfirmations
         ? syncStatus.latestHeight - tx.height + 1
         : tx.height;
@@ -725,7 +717,6 @@ class BudgetState extends State<BudgetWidget>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; //Set to true
-  var _showAddress = true;
 
   @override
   Widget build(BuildContext context) {
@@ -742,8 +733,8 @@ class BudgetState extends State<BudgetWidget>
                 Text(S.of(context).largestSpendingsByAddress,
                     style: Theme.of(context).textTheme.headline6),
                 Expanded(
-                    child: SpendingChart(accountManager.spendings, _showAddress,
-                        _toggleAddress)),
+                  child: PieChartSpending(accountManager.spendings),
+                ),
                 Text(S.of(context).tapChartToToggleBetweenAddressAndAmount,
                     style: Theme.of(context).textTheme.caption)
               ]))),
@@ -753,123 +744,11 @@ class BudgetState extends State<BudgetWidget>
                 Text(S.of(context).accountBalanceHistory,
                     style: Theme.of(context).textTheme.headline6),
                 Expanded(
-                    child:
-                        AccountBalanceTimeChart(accountManager.accountBalances))
+                    child: LineChartTimeSeries(accountManager.accountBalances))
               ]))),
             ],
           );
         }));
-  }
-
-  void _toggleAddress() {
-    setState(() {
-      _showAddress = !_showAddress;
-    });
-  }
-}
-
-class SpendingChart extends StatelessWidget {
-  final List<Spending> data;
-  final bool showAddress;
-  final void Function() onTap;
-
-  SpendingChart(this.data, this.showAddress, this.onTap);
-
-  @override
-  Widget build(BuildContext context) {
-    final seriesList = _createSeries(data, showAddress, context);
-    final color = charts.ColorUtil.fromDartColor(
-        Theme.of(context).textTheme.headline5.color);
-    if (seriesList[0].data.isEmpty)
-      return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(S.of(context).noSpendingInTheLast30Days,
-                style: Theme.of(context).textTheme.headline5)
-          ]);
-    return new charts.PieChart(seriesList,
-        animate: false,
-        selectionModels: [
-          charts.SelectionModelConfig(changedListener: (_) {
-            onTap();
-          })
-        ],
-        defaultRenderer:
-            charts.ArcRendererConfig(arcWidth: 80, arcRendererDecorators: [
-          charts.ArcLabelDecorator(
-            outsideLabelStyleSpec:
-                charts.TextStyleSpec(color: color, fontSize: 12),
-          )
-        ]));
-  }
-
-  static List<charts.Series<Spending, String>> _createSeries(
-      List<Spending> data, bool showAddress, BuildContext context) {
-    final palette = settings.palette.makeShades(data.length + 5);
-    return [
-      new charts.Series<Spending, String>(
-        id: S.of(context).largestSpendingLastMonth,
-        domainFn: (Spending sales, _) => sales.address,
-        measureFn: (Spending sales, _) => sales.amount,
-        colorFn: (_, index) => palette[index],
-        data: data,
-        labelAccessorFn: (Spending row, _) =>
-            showAddress ? row.address : row.amount.toString(),
-      )
-    ];
-  }
-}
-
-class AccountBalanceTimeChart extends StatefulWidget {
-  List<AccountBalance> data;
-
-  AccountBalanceTimeChart(this.data);
-
-  @override
-  State<StatefulWidget> createState() => AccountBalanceTimeChartState();
-}
-
-class AccountBalanceTimeChartState extends State<AccountBalanceTimeChart> {
-  @override
-  Widget build(BuildContext context) {
-    final axisColor = charts.ColorUtil.fromDartColor(
-        Theme.of(context).textTheme.headline5.color);
-    final seriesList = _createSeries(widget.data,
-        charts.ColorUtil.fromDartColor(Theme.of(context).primaryColor), context);
-    return new charts.TimeSeriesChart(
-      seriesList,
-      animate: false,
-      dateTimeFactory: const charts.LocalDateTimeFactory(),
-      primaryMeasureAxis: charts.NumericAxisSpec(
-          viewport: charts.NumericExtents.fromValues(
-              widget.data.map((ab) => ab.balance).toList()),
-          tickProviderSpec: charts.BasicNumericTickProviderSpec(
-              zeroBound: true,
-              dataIsInWholeNumbers: false,
-              desiredTickCount: 5),
-          renderSpec: charts.GridlineRendererSpec(
-              labelStyle: charts.TextStyleSpec(color: axisColor))),
-      domainAxis: charts.DateTimeAxisSpec(
-          renderSpec: charts.SmallTickRendererSpec(
-              labelStyle: charts.TextStyleSpec(color: axisColor))),
-      behaviors: [
-        charts.SelectNearest(),
-      ],
-    );
-  }
-
-  static List<charts.Series<AccountBalance, DateTime>> _createSeries(
-      List<AccountBalance> data, charts.Color lineColor, BuildContext context) {
-    return [
-      new charts.Series<AccountBalance, DateTime>(
-        id: S.of(context).balance,
-        colorFn: (_, __) => lineColor,
-        domainFn: (AccountBalance ab, _) => ab.time,
-        measureFn: (AccountBalance ab, _) => ab.balance,
-        data: data,
-      )
-    ];
   }
 }
 
@@ -906,7 +785,7 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
         final _ = accountManager.pnls;
         return Expanded(
             child: accountManager.pnlSeriesIndex != 5
-                ? PnLChart(accountManager.pnlSeriesIndex)
+                ? PnLChart(accountManager.pnls, accountManager.pnlSeriesIndex)
                 : PnLTable());
       })
     ]);
@@ -914,38 +793,18 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
 }
 
 class PnLChart extends StatelessWidget {
-  final data = accountManager.pnls;
-  final seriesIndex;
+  final List<PnL> pnls;
+  final int seriesIndex;
 
-  PnLChart(this.seriesIndex);
+  PnLChart(this.pnls, this.seriesIndex);
 
   @override
   Widget build(BuildContext context) {
-    final axisColor = charts.ColorUtil.fromDartColor(
-        Theme.of(context).textTheme.headline5.color);
-    final seriesList = _createSeries(data, seriesIndex,
-        charts.ColorUtil.fromDartColor(Theme.of(context).primaryColor), context);
-    return new charts.TimeSeriesChart(
-      seriesList,
-      animate: false,
-      dateTimeFactory: const charts.LocalDateTimeFactory(),
-      primaryMeasureAxis: charts.NumericAxisSpec(
-          tickProviderSpec: charts.BasicNumericTickProviderSpec(
-              zeroBound: true,
-              dataIsInWholeNumbers: false,
-              desiredTickCount: 5),
-          renderSpec: charts.GridlineRendererSpec(
-              labelStyle: charts.TextStyleSpec(color: axisColor))),
-      domainAxis: charts.DateTimeAxisSpec(
-          renderSpec: charts.SmallTickRendererSpec(
-              labelStyle: charts.TextStyleSpec(color: axisColor))),
-      behaviors: [
-        charts.SelectNearest(),
-      ],
-    );
+    final series = _createSeries(pnls, seriesIndex, context);
+    return LineChartTimeSeries(series);
   }
 
-  static _seriesData(PnL pnl, int index) {
+  static double _seriesData(PnL pnl, int index) {
     switch (index) {
       case 0:
         return pnl.realized;
@@ -960,17 +819,11 @@ class PnLChart extends StatelessWidget {
     }
   }
 
-  static List<charts.Series<PnL, DateTime>> _createSeries(
-      List<PnL> data, int index, charts.Color lineColor, BuildContext context) {
-    return [
-      new charts.Series<PnL, DateTime>(
-        id: S.of(context).pl,
-        colorFn: (_, __) => lineColor,
-        domainFn: (PnL pnl, _) => pnl.timestamp,
-        measureFn: (PnL pnl, _) => _seriesData(pnl, index),
-        data: data,
-      ),
-    ];
+  static List<TimeSeriesPoint<double>> _createSeries(
+      List<PnL> data, int index, BuildContext context) {
+    return data.map((pnl) =>
+        TimeSeriesPoint(pnl.timestamp.millisecondsSinceEpoch ~/ DAY_MS,
+            _seriesData(pnl, index))).toList();
   }
 }
 

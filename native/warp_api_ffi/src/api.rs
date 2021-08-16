@@ -336,11 +336,11 @@ pub fn broadcast(tx_filename: &str) -> String {
     })
 }
 
-pub fn sync_historical_prices(currency: &str) -> u32 {
+pub fn sync_historical_prices(now: i64, days: u32, currency: &str) -> u32 {
     let r = Runtime::new().unwrap();
     r.block_on(async {
         let mut wallet = WALLET.get().unwrap().lock().unwrap();
-        let res = wallet.sync_historical_prices(currency).await;
+        let res = wallet.sync_historical_prices(now, days, currency).await;
         log_result(res)
     })
 }

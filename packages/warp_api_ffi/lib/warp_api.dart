@@ -122,7 +122,6 @@ class WarpApi {
   }
 
   static void setMempoolAccount(int account) {
-    print("SET MEMPOOL $account");
     return warp_api_lib.set_mempool_account(account);
   }
 
@@ -238,5 +237,6 @@ String shieldTAddrIsolateFn(int account) {
 }
 
 int syncHistoricalPricesIsolateFn(String currency) {
-  return warp_api_lib.sync_historical_prices(currency.toNativeUtf8().cast<Int8>());
+  final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  return warp_api_lib.sync_historical_prices(now, 370, currency.toNativeUtf8().cast<Int8>());
 }

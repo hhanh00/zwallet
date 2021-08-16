@@ -107,5 +107,6 @@
   "address": "Address",
   "openInExplorer": "Open in Explorer",
   "na": "N/A",
-  "add": "ADD"
+  "add": "ADD",
+  "tradingChartRange": "Trading Chart Range"
 }

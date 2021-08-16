@@ -118,26 +118,63 @@ class ZWalletAppState extends State<ZWalletApp> {
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
 GlobalKey<ScaffoldMessengerState>();
 
-List<ElevatedButton> confirmButtons(BuildContext context, VoidCallback onPressed, {
-  String okLabel, Icon okIcon, cancelValue}) {
+List<ElevatedButton> confirmButtons(BuildContext context,
+    VoidCallback onPressed,
+    {String okLabel, Icon okIcon, cancelValue}) {
   final navigator = Navigator.of(context);
   return <ElevatedButton>[
     ElevatedButton.icon(
         icon: Icon(Icons.cancel),
-        label: Text(S.of(context).cancel),
+        label: Text(S
+            .of(context)
+            .cancel),
         onPressed: () {
           cancelValue != null ? navigator.pop(cancelValue) : navigator.pop();
         },
-        style: ElevatedButton.styleFrom(primary: Theme
-            .of(context)
-            .buttonTheme
-            .colorScheme
-            .secondary)
-    ),
+        style: ElevatedButton.styleFrom(
+            primary: Theme
+                .of(context)
+                .buttonTheme
+                .colorScheme
+                .secondary)),
     ElevatedButton.icon(
       icon: okIcon ?? Icon(Icons.done),
-      label: Text(okLabel ?? S.of(context).ok),
+      label: Text(okLabel ?? S
+          .of(context)
+          .ok),
       onPressed: onPressed,
     )
   ];
+}
+
+const DAY_MS = 24 * 3600 * 1000;
+
+List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(List<T> timeseries,
+    int start,
+    int end,
+    int Function(T) getDay,
+    Y Function(T) getY,
+    V Function(V, Y) accFn,
+    V initial) {
+  assert(start % DAY_MS == 0);
+  final s = start ~/ DAY_MS;
+  final e = end ~/ DAY_MS;
+
+  var acc = initial;
+  var j = 0;
+  while (j < timeseries.length && getDay(timeseries[j]) < s) {
+    acc = accFn(acc, getY(timeseries[j]));
+    j += 1;
+  }
+
+  List<TimeSeriesPoint<V>> ts = [];
+
+  for (var i = s; i <= e; i++) {
+    while (j < timeseries.length && getDay(timeseries[j]) == i) {
+      acc = accFn(acc, getY(timeseries[j]));
+      j += 1;
+    }
+    ts.add(TimeSeriesPoint(i, acc));
+  }
+  return ts;
 }

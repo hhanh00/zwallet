@@ -19,17 +19,15 @@ class SettingsState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<FormBuilderFieldOption> options = coin.lwd.map((lwd) =>
-        FormBuilderFieldOption<dynamic>(
-            child: Text(lwd.name),
-            value: lwd.name)
-    ).toList();
+    List<FormBuilderFieldOption> options = coin.lwd
+        .map((lwd) => FormBuilderFieldOption<dynamic>(
+            child: Text(lwd.name), value: lwd.name))
+        .toList();
     options.add(
       FormBuilderFieldOption(
           value: 'custom',
           child: FormBuilderTextField(
-            decoration:
-            InputDecoration(labelText: S.of(context).custom),
+            decoration: InputDecoration(labelText: S.of(context).custom),
             initialValue: settings.ldUrl,
             onSaved: _onURL,
           )),
@@ -42,29 +40,35 @@ class SettingsState extends State<SettingsPage> {
             child: FormBuilder(
                 key: _settingsFormKey,
                 child: Observer(
-                    builder: (context) => SingleChildScrollView(child: Column(children: [
+                    builder: (context) => SingleChildScrollView(
+                            child: Column(children: [
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.vertical,
                               name: 'servers',
-                              decoration: InputDecoration(labelText: S.of(context).server),
+                              decoration: InputDecoration(
+                                  labelText: S.of(context).server),
                               initialValue: settings.ldUrlChoice,
                               onSaved: _onChoice,
                               options: options),
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
                               name: 'themes',
-                              decoration: InputDecoration(labelText: S.of(context).theme),
+                              decoration: InputDecoration(
+                                  labelText: S.of(context).theme),
                               initialValue: settings.theme,
                               onChanged: _onTheme,
                               options: [
                                 FormBuilderFieldOption(
                                     child: Text('Zcash'), value: 'zcash'),
                                 FormBuilderFieldOption(
-                                    child: Text(S.of(context).blue), value: 'blue'),
+                                    child: Text(S.of(context).blue),
+                                    value: 'blue'),
                                 FormBuilderFieldOption(
-                                    child: Text(S.of(context).pink), value: 'pink'),
+                                    child: Text(S.of(context).pink),
+                                    value: 'pink'),
                                 FormBuilderFieldOption(
-                                    child: Text(S.of(context).coffee), value: 'coffee'),
+                                    child: Text(S.of(context).coffee),
+                                    value: 'coffee'),
                               ]),
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
@@ -73,34 +77,60 @@ class SettingsState extends State<SettingsPage> {
                               onChanged: _onThemeBrightness,
                               options: [
                                 FormBuilderFieldOption(
-                                    child: Text(S.of(context).light), value: 'light'),
+                                    child: Text(S.of(context).light),
+                                    value: 'light'),
                                 FormBuilderFieldOption(
-                                    child: Text(S.of(context).dark), value: 'dark'),
+                                    child: Text(S.of(context).dark),
+                                    value: 'dark'),
                               ]),
                           Row(children: [
-                            SizedBox(width: 100, child: DropdownButtonFormField<String>(
-                              decoration: InputDecoration(labelText: S.of(context).currency),
-                              value: settings.currency,
-                                items: settings.currencies.map((c) =>
-                                    DropdownMenuItem(child: Text(c), value: c)).toList(),
-                                onChanged: (v) { settings.setCurrency(v); }
-                            )),
+                            SizedBox(
+                                width: 100,
+                                child: DropdownButtonFormField<String>(
+                                    decoration: InputDecoration(
+                                        labelText: S.of(context).currency),
+                                    value: settings.currency,
+                                    items: settings.currencies
+                                        .map((c) => DropdownMenuItem(
+                                            child: Text(c), value: c))
+                                        .toList(),
+                                    onChanged: (v) {
+                                      settings.setCurrency(v);
+                                    })),
                           ]),
                           FormBuilderTextField(
                               decoration: InputDecoration(
-                                  labelText:
-                                      S.of(context).numberOfConfirmationsNeededBeforeSpending),
+                                  labelText: S
+                                      .of(context)
+                                      .numberOfConfirmationsNeededBeforeSpending),
                               name: 'anchor',
                               keyboardType: TextInputType.number,
                               controller: _anchorController,
                               onSaved: _onAnchorOffset),
-                          FormBuilderCheckbox(
-                              name: 'get_tx',
-                              title: Text(S.of(context).retrieveTransactionDetails),
-                              initialValue: settings.getTx,
-                              onSaved: _onGetTx),
-                          ButtonBar(children:
-                          confirmButtons(context, _onSave))
+                          FormBuilderRadioGroup(
+                              orientation: OptionsOrientation.horizontal,
+                              name: 'pnl',
+                              decoration: InputDecoration(
+                                  labelText: S.of(context).tradingChartRange),
+                              initialValue: settings.chartRange,
+                              onChanged: _onChartRange,
+                              options: [
+                                FormBuilderFieldOption(
+                                    child: Text('1 M'), value: '1M'),
+                                FormBuilderFieldOption(
+                                    child: Text('3 M'), value: '3M'),
+                                FormBuilderFieldOption(
+                                    child: Text('6 M'), value: '6M'),
+                                FormBuilderFieldOption(
+                                    child: Text('1 Y'), value: '1Y'),
+                              ]),
+                              FormBuilderCheckbox(
+                                  name: 'get_tx',
+                                  title: Text(
+                                      S.of(context).retrieveTransactionDetails),
+                                  initialValue: settings.getTx,
+                                  onSaved: _onGetTx),
+                          ButtonBar(children: confirmButtons(context, _onSave))
                         ]))))));
   }
 
@@ -118,6 +148,10 @@ class SettingsState extends State<SettingsPage> {
 
   _onThemeBrightness(v) {
     settings.setThemeBrightness(v);
+  }
+
+  _onChartRange(v) {
+    settings.setChartRange(v);
   }
 
   _onSave() {

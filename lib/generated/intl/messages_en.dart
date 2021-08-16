@@ -134,6 +134,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "timestamp" : MessageLookupByLibrary.simpleMessage("Timestamp"),
     "toMakeAContactSendThemAMemoWithContact" : MessageLookupByLibrary.simpleMessage("To make a contact, send them a memo with Contact:"),
     "total" : MessageLookupByLibrary.simpleMessage("Total"),
+    "tradingChartRange" : MessageLookupByLibrary.simpleMessage("Trading Chart Range"),
     "tradingPl" : MessageLookupByLibrary.simpleMessage("Trading P&L"),
     "transactionDetails" : MessageLookupByLibrary.simpleMessage("Transaction Details"),
     "txId" : MessageLookupByLibrary.simpleMessage("TX ID:"),

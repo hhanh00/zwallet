@@ -1124,6 +1124,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Trading Chart Range`
+  String get tradingChartRange {
+    return Intl.message(
+      'Trading Chart Range',
+      name: 'tradingChartRange',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

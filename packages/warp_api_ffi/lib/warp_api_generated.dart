@@ -332,9 +332,13 @@ class NativeLibrary {
       _broadcast_ptr.asFunction<_dart_broadcast>();
 
   int sync_historical_prices(
+    int now,
+    int days,
     ffi.Pointer<ffi.Int8> currency,
   ) {
     return _sync_historical_prices(
+      now,
+      days,
       currency,
     );
   }
@@ -556,10 +560,14 @@ typedef _dart_broadcast = ffi.Pointer<ffi.Int8> Function(
 );
 
 typedef _c_sync_historical_prices = ffi.Uint32 Function(
+  ffi.Int64 now,
+  ffi.Uint32 days,
   ffi.Pointer<ffi.Int8> currency,
 );
 
 typedef _dart_sync_historical_prices = int Function(
+  int now,
+  int days,
   ffi.Pointer<ffi.Int8> currency,
 );
 

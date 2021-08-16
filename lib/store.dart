@@ -56,6 +56,9 @@ abstract class _Settings with Store {
   @observable
   List<String> currencies = ["USD"];
 
+  @observable
+  String chartRange = '1Y';
+
   var palette = charts.MaterialPalette.blue;
 
   @action
@@ -72,6 +75,7 @@ abstract class _Settings with Store {
     themeBrightness = prefs.getString('theme_brightness') ?? "dark";
     showConfirmations = prefs.getBool('show_confirmations') ?? false;
     currency = prefs.getString('currency') ?? "USD";
+    chartRange = prefs.getString('chart_range') ?? "1Y";
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
@@ -110,7 +114,6 @@ abstract class _Settings with Store {
 
   @action
   Future<void> setThemeBrightness(String brightness) async {
-    print(brightness);
     final prefs = await SharedPreferences.getInstance();
     themeBrightness = brightness;
     prefs.setString('theme_brightness', brightness);
@@ -138,16 +141,32 @@ abstract class _Settings with Store {
         break;
     }
     switch (themeBrightness) {
-      case 'light': themeData = FlexColorScheme.light(scheme: scheme).toTheme; break;
-      case 'dark': themeData = FlexColorScheme.dark(scheme: scheme).toTheme; break;
+      case 'light':
+        themeData = FlexColorScheme.light(scheme: scheme).toTheme;
+        break;
+      case 'dark':
+        themeData = FlexColorScheme.dark(scheme: scheme).toTheme;
+        break;
     }
+  }
+
+  @action
+  Future<void> setChartRange(String v) async {
+    final prefs = await SharedPreferences.getInstance();
+    chartRange = v;
+    prefs.setString('chart_range', chartRange);
+    accountManager.fetchPNL();
   }
 
   String getLWD() {
     switch (ldUrlChoice) {
-      case "custom": return ldUrl;
-      default: return coin.lwd.firstWhere((lwd) => lwd.name == ldUrlChoice, orElse: () =>
-      coin.lwd.first).url;
+      case "custom":
+        return ldUrl;
+      default:
+        return coin.lwd
+            .firstWhere((lwd) => lwd.name == ldUrlChoice,
+                orElse: () => coin.lwd.first)
+            .url;
     }
   }
 
@@ -182,7 +201,7 @@ abstract class _Settings with Store {
     currency = newCurrency;
     prefs.setString('currency', currency);
     await priceStore.fetchZecPrice();
-    await accountManager.fetchCashFlows();
+    await accountManager.fetchPNL();
   }
 
   @action
@@ -232,13 +251,16 @@ abstract class _AccountManager with Store {
   List<Tx> txs = [];
 
   @observable
+  int lastTxHeight = 0;
+
+  @observable
   int dataEpoch = 0;
 
   @observable
   List<Spending> spendings = [];
 
   @observable
-  List<AccountBalance> accountBalances = [];
+  List<TimeSeriesPoint> accountBalances = [];
 
   @observable
   List<PnL> pnls = [];
@@ -316,8 +338,10 @@ abstract class _AccountManager with Store {
     final sk = row['sk'];
     final ivk = row['ivk'];
     int type;
-    if (seed != null) type = 0;
-    else if (sk != null) type = 1;
+    if (seed != null)
+      type = 0;
+    else if (sk != null)
+      type = 1;
     else if (ivk != null) type = 2;
     return Backup(type, seed, sk, ivk);
   }
@@ -333,7 +357,7 @@ abstract class _AccountManager with Store {
   Future<int> getBalanceSpendable(int height) async {
     final List<Map> res = await db.rawQuery(
         "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent IS NULL "
-            "AND height <= ?2 AND (excluded IS NULL OR NOT excluded)",
+        "AND height <= ?2 AND (excluded IS NULL OR NOT excluded)",
         [active.id, height]);
     if (res.isEmpty) return 0;
     return res[0]['value'] ?? 0;
@@ -368,7 +392,8 @@ abstract class _AccountManager with Store {
 
   @action
   Future<void> changeAccountName(String name) async {
-    await db.execute("UPDATE accounts SET name = ?2 WHERE id_account = ?1", [active.id, name]);
+    await db.execute("UPDATE accounts SET name = ?2 WHERE id_account = ?1",
+        [active.id, name]);
     await refresh();
     await setActiveAccountId(active.id);
   }
@@ -386,40 +411,47 @@ abstract class _AccountManager with Store {
   }
 
   @action
-  Future<void> fetchCashFlows() async {
-    if (active == null) return;
-    await _fetchCashFlows(active.id);
-  }
-
-  @action
   void toggleShowTAddr() {
     showTAddr = !showTAddr;
   }
 
   Future<void> _fetchData(int accountId) async {
-    await _fetchNotesAndHistory(accountId);
-    await _fetchSpending(accountId);
-    await _fetchAccountBalanceTimeSeries(accountId);
-    await _fetchContacts(accountId);
+    await _updateBalance(accountId);
+    final hasNewTx = await _fetchNotesAndHistory(accountId);
     int countNewPrices = await WarpApi.syncHistoricalPrices(settings.currency);
-    if (countNewPrices > 0 || pnls.isEmpty)
-      await _fetchCashFlows(accountId);
-    dataEpoch = DateTime.now().millisecondsSinceEpoch;
+    if (hasNewTx) {
+      await _fetchSpending(accountId);
+      await _fetchAccountBalanceTimeSeries(accountId);
+      await _fetchContacts(accountId);
+    }
+    if (countNewPrices > 0 || pnls.isEmpty || hasNewTx)
+      await _fetchPNL(accountId);
   }
 
   final DateFormat noteDateFormat = DateFormat("yy-MM-dd HH:mm");
   final DateFormat txDateFormat = DateFormat("MM-dd HH:mm");
 
   Future<void> _updateBalance(int accountId) async {
-    balance = await _getBalance(accountId);
+    final _balance = await _getBalance(accountId);
+    if (_balance == balance) return;
+    balance = _balance;
+    dataEpoch = DateTime.now().millisecondsSinceEpoch;
   }
 
-  Future<void> _fetchNotesAndHistory(int accountId) async {
-    await _updateBalance(accountId);
+  Future<bool> _fetchNotesAndHistory(int accountId) async {
+    final List<Map> res0 = await db.rawQuery(
+        "SELECT MAX(height) as height FROM transactions WHERE account = ?1",
+        [accountId]);
+    if (res0.isEmpty) return false;
+
+    final _lastTxHeight = res0[0]['height'] ?? 0;
+    if (lastTxHeight == _lastTxHeight) return false;
+    lastTxHeight = _lastTxHeight;
+
     final List<Map> res = await db.rawQuery(
         "SELECT n.id_note, n.height, n.value, t.timestamp, n.excluded, n.spent FROM received_notes n, transactions t "
-            "WHERE n.account = ?1 AND (n.spent IS NULL OR n.spent = 0) "
-            "AND n.tx = t.id_tx",
+        "WHERE n.account = ?1 AND (n.spent IS NULL OR n.spent = 0) "
+        "AND n.tx = t.id_tx",
         [accountId]);
     notes = res.map((row) {
       final id = row['id_note'];
@@ -428,9 +460,9 @@ abstract class _AccountManager with Store {
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
       final excluded = (row['excluded'] ?? 0) != 0;
       final spent = row['spent'] == 0;
-      return Note(id, height, timestamp, row['value'] / ZECUNIT, excluded, spent);
+      return Note(
+          id, height, timestamp, row['value'] / ZECUNIT, excluded, spent);
     }).toList();
-    _sortNoteAmount(noteSortOrder);
 
     final List<Map> res2 = await db.rawQuery(
         "SELECT id_tx, txid, height, timestamp, address, value, memo FROM transactions WHERE account = ?1",
@@ -441,18 +473,26 @@ abstract class _AccountManager with Store {
       final shortTxid = fullTxId.substring(0, 8);
       final timestamp = txDateFormat
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
-      return Tx(row['id_tx'], row['height'], timestamp, shortTxid, fullTxId, row['value'] / ZECUNIT, row['address'], row['memo']);
+      return Tx(row['id_tx'], row['height'], timestamp, shortTxid, fullTxId,
+          row['value'] / ZECUNIT, row['address'], row['memo']);
     }).toList();
-    _sortTxAmount(txSortOrder);
+
+    dataEpoch = DateTime.now().millisecondsSinceEpoch;
+    return true;
+  }
+
+  @computed
+  List<Note> get sortedNotes {
+    var notes2 = [...notes];
+    return _sortNoteAmount(notes2, noteSortOrder);
   }
 
   @action
   Future<void> sortNoteAmount() async {
     noteSortOrder = nextSortOrder(noteSortOrder);
-    _sortNoteAmount(noteSortOrder);
   }
 
-  void _sortNoteAmount(SortOrder order) {
+  List<Note> _sortNoteAmount(List<Note> notes, SortOrder order) {
     switch (order) {
       case SortOrder.Ascending:
         notes.sort((a, b) => a.value.compareTo(b.value));
@@ -464,15 +504,21 @@ abstract class _AccountManager with Store {
         notes.sort((a, b) => -a.height.compareTo(b.height));
         break;
     }
+    return notes;
+  }
+
+  @computed
+  List<Tx> get sortedTxs {
+    var txs2 = [...txs];
+    return _sortTxAmount(txs2, txSortOrder);
   }
 
   @action
   Future<void> sortTxAmount() async {
     txSortOrder = nextSortOrder(txSortOrder);
-    _sortTxAmount(txSortOrder);
   }
 
-  void _sortTxAmount(SortOrder order) {
+  List<Tx>  _sortTxAmount(List<Tx> txs, SortOrder order) {
     switch (order) {
       case SortOrder.Ascending:
         txs.sort((a, b) => a.value.compareTo(b.value));
@@ -484,10 +530,12 @@ abstract class _AccountManager with Store {
         txs.sort((a, b) => -a.height.compareTo(b.height));
         break;
     }
+    return txs;
   }
 
   Future<void> _fetchSpending(int accountId) async {
-    final cutoff = DateTime.now().add(Duration(days: -30)).millisecondsSinceEpoch / 1000;
+    final cutoff =
+        DateTime.now().add(Duration(days: -30)).millisecondsSinceEpoch / 1000;
     final List<Map> res = await db.rawQuery(
         "SELECT SUM(value) as v, address FROM transactions WHERE account = ?1 AND timestamp >= ?2 AND value < 0 GROUP BY address ORDER BY v ASC LIMIT 10",
         [accountId, cutoff]);
@@ -499,53 +547,108 @@ abstract class _AccountManager with Store {
   }
 
   Future<void> _fetchAccountBalanceTimeSeries(int accountId) async {
-    final cutoff = DateTime.now().add(Duration(days: -30)).millisecondsSinceEpoch / 1000;
+    final now = DateTime.now();
+    final today = DateTime.utc(now.year, now.month, now.day);
+    final end = today;
+    final start = today.add(Duration(days: -30));
+    final cutoff = start.millisecondsSinceEpoch ~/ 1000;
     final List<Map> res = await db.rawQuery(
         "SELECT timestamp, value FROM transactions WHERE account = ?1 AND timestamp >= ?2 ORDER BY timestamp DESC",
         [accountId, cutoff]);
-    accountBalances = [];
+    List<AccountBalance> _accountBalances = [];
     var b = balance;
-    accountBalances.add(AccountBalance(DateTime.now(), b / ZECUNIT));
+    _accountBalances.add(AccountBalance(DateTime.now(), b / ZECUNIT));
     for (var row in res) {
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
+      final timestamp =
+          DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
       final value = row['value'];
       final ab = AccountBalance(timestamp, b / ZECUNIT);
-      accountBalances.add(ab);
+      _accountBalances.add(ab);
       b -= value;
     }
+    _accountBalances.add(AccountBalance(start, b / ZECUNIT));
+    _accountBalances = _accountBalances.reversed.toList();
+    accountBalances = sampleDaily<AccountBalance, double, double>(
+        _accountBalances,
+        start.millisecondsSinceEpoch,
+        end.millisecondsSinceEpoch,
+        (AccountBalance ab) => ab.time.millisecondsSinceEpoch ~/ DAY_MS,
+        (AccountBalance ab) => ab.balance,
+        (acc, v) => v,
+        0.0);
   }
 
-  Future<void> _fetchCashFlows(int accountId) async {
-    final cutoff = DateTime.now().add(Duration(days: -365)).millisecondsSinceEpoch / 1000;
-    final List<Map> res = await db.rawQuery(
-        "WITH t AS (SELECT value, timestamp/86400 AS day FROM transactions WHERE account = ?1), p AS (SELECT price, timestamp, timestamp/86400 AS day FROM historical_prices WHERE currency = ?3) "
-        "SELECT t.value, p.price, p.timestamp FROM t, p WHERE t.day = p.day AND p.timestamp >= ?2 ORDER BY p.day",
-        [accountId, cutoff, settings.currency]);
-    var cash = 0.0;
-    var balance = 0.0;
-    var realized = 0.0;
+  @action
+  Future<void> fetchPNL() async {
+    if (active == null) return;
+    await _fetchPNL(active.id);
+  }
 
-    Map<int, PnL> pnlMap = {};
+  Future<void> _fetchPNL(int accountId) async {
+    final now = DateTime.now();
+    final today = DateTime.utc(now.year, now.month, now.day);
+    var days = 365;
+    switch (settings.chartRange) {
+      case '1M': days = 30; break;
+      case '3M': days = 90; break;
+      case '6M': days = 180; break;
+    }
+    final cutoff = today.add(Duration(days: -days));
 
-    for (var row in res) {
-      final ts = row['timestamp'];
-      final value = (row['value'] / ZECUNIT) as double;
-      final price = row['price'] as double;
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
-
-      final closeQty = value * balance < 0 ? math.min(value.abs(), balance.abs()) * value.sign : 0.0;
-      final openQty = value - closeQty;
-      final avgPrice = balance != 0 ? cash / balance : 0.0;
-      cash += openQty * price + closeQty * avgPrice;
-      realized += closeQty * (price - avgPrice);
-      balance += value;
-      final unrealized = price * balance - cash;
-
-      pnlMap[ts] = PnL(timestamp, price, balance, realized, unrealized);
+    final List<Map> res1 = await db.rawQuery(
+        "SELECT timestamp, value FROM transactions WHERE timestamp >= ?2 AND account = ?1",
+        [accountId, cutoff.millisecondsSinceEpoch ~/ 1000]);
+    final List<Trade> trades = [];
+    for (var row in res1) {
+      final dt = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
+      final qty = row['value'] / ZECUNIT;
+      trades.add(Trade(dt, qty));
     }
 
-    final _pnls = pnlMap.values.toList();
-    _pnls.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    final portfolioTimeSeries = sampleDaily<Trade, Trade, double>(
+        trades,
+        cutoff.millisecondsSinceEpoch,
+        today.millisecondsSinceEpoch,
+        (t) => t.dt.millisecondsSinceEpoch ~/ DAY_MS,
+        (t) => t,
+        (acc, t) => acc + t.qty,
+        0.0);
+
+    final List<Map> res2 = await db.rawQuery(
+        "SELECT timestamp, price FROM historical_prices WHERE timestamp >= ?2 AND currency = ?1",
+        [settings.currency, cutoff.millisecondsSinceEpoch ~/ 1000]);
+    final List<Quote> quotes = [];
+    for (var row in res2) {
+      final dt = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
+      final price = row['price'];
+      quotes.add(Quote(dt, price));
+    }
+
+    var prevBalance = 0.0;
+    var cash = 0.0;
+    var realized = 0.0;
+    final List<PnL> _pnls = [];
+    for (var i = 0; i < quotes.length; i++) {
+      final dt = quotes[i].dt;
+      final price = quotes[i].price;
+      final balance = portfolioTimeSeries[i].value;
+      final qty = balance - prevBalance;
+
+      final closeQty = qty * balance < 0
+          ? math.min(qty.abs(), prevBalance.abs()) * qty.sign
+          : 0.0;
+      final openQty = qty - closeQty;
+      final avgPrice = prevBalance != 0 ? cash / prevBalance : 0.0;
+
+      cash += openQty * price + closeQty * avgPrice;
+      realized += closeQty * (avgPrice - price);
+      final unrealized = price * balance - cash;
+
+      final pnl = PnL(dt, price, balance, realized, unrealized);
+      _pnls.add(pnl);
+
+      prevBalance = balance;
+    }
     pnls = _pnls;
   }
 
@@ -571,7 +674,9 @@ abstract class _AccountManager with Store {
   }
 
   Future<void> _fetchContacts(int accountId) async {
-    List<Map> res = await db.rawQuery("SELECT name, address FROM contacts WHERE account = ?1 ORDER BY name", [accountId]);
+    List<Map> res = await db.rawQuery(
+        "SELECT name, address FROM contacts WHERE account = ?1 ORDER BY name",
+        [accountId]);
     contacts = [];
     for (var c in res) {
       final contact = Contact(c['name'], c['address']);
@@ -603,14 +708,15 @@ abstract class _PriceStore with Store {
   @action
   Future<void> fetchZecPrice() async {
     final base = "api.coingecko.com";
-    final uri = Uri.https(base, '/api/v3/simple/price', {'ids': coin.currency, 'vs_currencies': settings.currency});
+    final uri = Uri.https(base, '/api/v3/simple/price',
+        {'ids': coin.currency, 'vs_currencies': settings.currency});
     final rep = await http.get(uri);
     if (rep.statusCode == 200) {
       final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
       final p = json[coin.currency][settings.currency.toLowerCase()];
       zecPrice = (p is double) ? p : (p as int).toDouble();
-    }
-    else zecPrice = 0.0;
+    } else
+      zecPrice = 0.0;
   }
 }
 
@@ -685,7 +791,8 @@ class Note {
   bool excluded;
   bool spent;
 
-  Note(this.id, this.height, this.timestamp, this.value, this.excluded, this.spent);
+  Note(this.id, this.height, this.timestamp, this.value, this.excluded,
+      this.spent);
 }
 
 class Tx {
@@ -698,7 +805,8 @@ class Tx {
   String address;
   String memo;
 
-  Tx(this.id, this.height, this.timestamp, this.txid, this.fullTxId, this.value, this.address, this.memo);
+  Tx(this.id, this.height, this.timestamp, this.txid, this.fullTxId, this.value,
+      this.address, this.memo);
 }
 
 class Spending {
@@ -725,9 +833,12 @@ class Backup {
 
   String value() {
     switch (type) {
-      case 0: return seed;
-      case 1: return sk;
-      case 2: return ivk;
+      case 0:
+        return seed;
+      case 1:
+        return sk;
+      case 2:
+        return ivk;
     }
     return "";
   }
@@ -740,7 +851,8 @@ class Contact {
   Contact(this.name, this.address);
 }
 
-String addressLeftTrim(String address) => "..." + address.substring(math.max(address.length - 6, 0));
+String addressLeftTrim(String address) =>
+    "..." + address.substring(math.max(address.length - 6, 0));
 
 enum SortOrder {
   Unsorted,
@@ -748,7 +860,8 @@ enum SortOrder {
   Descending,
 }
 
-SortOrder nextSortOrder(SortOrder order) => SortOrder.values[(order.index + 1) % 3];
+SortOrder nextSortOrder(SortOrder order) =>
+    SortOrder.values[(order.index + 1) % 3];
 
 @JsonSerializable()
 class Recipient {
@@ -758,7 +871,9 @@ class Recipient {
 
   Recipient(this.address, this.amount, this.memo);
 
-  factory Recipient.fromJson(Map<String, dynamic> json) => _$RecipientFromJson(json);
+  factory Recipient.fromJson(Map<String, dynamic> json) =>
+      _$RecipientFromJson(json);
+
   Map<String, dynamic> toJson() => _$RecipientToJson(this);
 }
 
@@ -770,4 +885,37 @@ class PnL {
   final double unrealized;
 
   PnL(this.timestamp, this.price, this.amount, this.realized, this.unrealized);
+
+  @override
+  String toString() {
+    return "$timestamp $price $amount $realized $unrealized";
+  }
+}
+
+class TimeSeriesPoint<V> {
+  final int day;
+  final V value;
+
+  TimeSeriesPoint(this.day, this.value);
+}
+
+class Trade {
+  final DateTime dt;
+  final qty;
+
+  Trade(this.dt, this.qty);
+}
+
+class Portfolio {
+  final DateTime dt;
+  final qty;
+
+  Portfolio(this.dt, this.qty);
+}
+
+class Quote {
+  final DateTime dt;
+  final price;
+
+  Quote(this.dt, this.price);
 }
