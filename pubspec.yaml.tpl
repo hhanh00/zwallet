@@ -73,7 +73,7 @@ dev_dependencies:
   change_app_package_name: any
 
 flutter_launcher_name:
-  name: "ZWallet"
+  name: "{{APP_TITLE}}"
 
 flutter_icons:
   android: true

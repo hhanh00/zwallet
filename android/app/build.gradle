@@ -27,9 +27,6 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def appTitle = System.getenv('APP_TITLE')
-//def appTitle = "YWallet"
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -48,7 +45,6 @@ android {
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [title:appTitle]
     }
 
     signingConfigs {

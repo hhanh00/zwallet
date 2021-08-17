@@ -16,6 +16,8 @@ esac
 cp assets/$COIN.png assets/icon.png
 cp lib/coin/$COIN.dart lib/coin/coindef.dart
 
+mo pubspec.yaml.tpl > pubspec.yaml
+
 flutter pub get
 flutter pub run change_app_package_name:main me.hanh.$APP_NAME
 flutter pub run flutter_launcher_icons:main
