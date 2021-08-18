@@ -7,6 +7,6 @@ class Coin {
   String ticker = "YEC";
   String explorerUrl = "https://yecblockexplorer.com/tx/";
   List<LWInstance> lwd = [
-    LWInstance("Lightwalletd", "http://lite.ycash.us:9067"),
+    LWInstance("Lightwalletd", "https://lite.ycash.xyz:9067"),
   ];
 }
