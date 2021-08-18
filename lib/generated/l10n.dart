@@ -1134,6 +1134,46 @@ class S {
       args: [],
     );
   }
+
+  /// `1 M`
+  String get M1 {
+    return Intl.message(
+      '1 M',
+      name: 'M1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `3 M`
+  String get M3 {
+    return Intl.message(
+      '3 M',
+      name: 'M3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `6 M`
+  String get M6 {
+    return Intl.message(
+      '6 M',
+      name: 'M6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1 Y`
+  String get Y1 {
+    return Intl.message(
+      '1 Y',
+      name: 'Y1',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -1144,6 +1184,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'es'),
       Locale.fromSubtags(languageCode: 'fr'),
+      Locale.fromSubtags(languageCode: 'zh'),
     ];
   }
 

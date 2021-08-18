@@ -116,13 +116,13 @@ class SettingsState extends State<SettingsPage> {
                               onChanged: _onChartRange,
                               options: [
                                 FormBuilderFieldOption(
-                                    child: Text('1 M'), value: '1M'),
+                                    child: Text(S.of(context).M1), value: '1M'),
                                 FormBuilderFieldOption(
-                                    child: Text('3 M'), value: '3M'),
+                                    child: Text(S.of(context).M3), value: '3M'),
                                 FormBuilderFieldOption(
-                                    child: Text('6 M'), value: '6M'),
+                                    child: Text(S.of(context).M6), value: '6M'),
                                 FormBuilderFieldOption(
-                                    child: Text('1 Y'), value: '1Y'),
+                                    child: Text(S.of(context).Y1), value: '1Y'),
                               ]),
                               FormBuilderCheckbox(
                                   name: 'get_tx',

@@ -33,6 +33,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "M1" : MessageLookupByLibrary.simpleMessage("1 M"),
+    "M3" : MessageLookupByLibrary.simpleMessage("3 M"),
+    "M6" : MessageLookupByLibrary.simpleMessage("6 M"),
+    "Y1" : MessageLookupByLibrary.simpleMessage("1 A"),
     "about" : MessageLookupByLibrary.simpleMessage("Acerca"),
     "account" : MessageLookupByLibrary.simpleMessage("Cuenta"),
     "accountBalanceHistory" : MessageLookupByLibrary.simpleMessage("Historial De Cuenta"),
