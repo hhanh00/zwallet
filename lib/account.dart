@@ -289,7 +289,7 @@ class _AccountPageState extends State<AccountPage>
                 SnackBar(content: Text(S.of(context).shieldingInProgress));
             rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
             final txid = await WarpApi.shieldTAddr(accountManager.active.id);
-            final snackBar2 = SnackBar(content: Text(S.of(context).txId + txid));
+            final snackBar2 = SnackBar(content: Text("${S.of(context).txId}: $txid"));
             rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
           })),
     );
@@ -652,7 +652,7 @@ class HistoryState extends State<HistoryWidget>
                             });
                           }),
                       DataColumn(label: Text(S.of(context).datetime)),
-                      DataColumn(label: Text(S.of(context).txid)),
+                      DataColumn(label: Text(S.of(context).txId)),
                       DataColumn(
                           label: Text(S.of(context).amount),
                           numeric: true,
@@ -774,7 +774,7 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
             });
           },
           options: [
-            FormBuilderFieldOption(child: Text(S.of(context).real), value: 0),
+            FormBuilderFieldOption(child: Text(S.of(context).realized), value: 0),
             FormBuilderFieldOption(child: Text(S.of(context).mm), value: 1),
             FormBuilderFieldOption(child: Text(S.of(context).total), value: 2),
             FormBuilderFieldOption(child: Text(S.of(context).price), value: 3),

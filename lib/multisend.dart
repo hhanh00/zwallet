@@ -89,7 +89,7 @@ class MultiPayState extends State<MultiPayPage> {
       final recipientsJson = jsonEncode(multipayData.recipients);
       final tx = await WarpApi.sendMultiPayment(accountManager.active.id,
           recipientsJson, settings.anchorOffset, (p) {});
-      final snackBar2 = SnackBar(content: Text(S.of(context).txId + tx));
+      final snackBar2 = SnackBar(content: Text("${S.of(context).txId}: $tx"));
       rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
 
       multipayData.clear();

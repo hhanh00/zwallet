@@ -290,7 +290,7 @@ class SendState extends State<SendPage> {
                   settings.anchorOffset,
                   progressPort.sendPort));
 
-          final snackBar2 = SnackBar(content: Text(S.of(context).txId + tx));
+          final snackBar2 = SnackBar(content: Text("${S.of(context).txId}: $tx"));
           rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
         } else {
           Directory tempDir = await getTemporaryDirectory();
