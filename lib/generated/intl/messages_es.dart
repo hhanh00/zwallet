@@ -62,7 +62,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "cancel" : MessageLookupByLibrary.simpleMessage("Cancelar"),
     "changeAccountName" : MessageLookupByLibrary.simpleMessage("Cambiar nombre de la cuenta"),
     "coffee" : MessageLookupByLibrary.simpleMessage("Café"),
-    "coldStorage" : MessageLookupByLibrary.simpleMessage("Cold Storage"),
+    "coldStorage" : MessageLookupByLibrary.simpleMessage("Billetera Fría"),
     "confirmDeleteAccount" : MessageLookupByLibrary.simpleMessage("¿Está SEGURO de que desea BORRAR esta cuenta? DEBE tener una COPIA DE SEGURIDAD para recuperarla. Esta operación NO es reversible."),
     "confs" : MessageLookupByLibrary.simpleMessage("Confs"),
     "contacts" : MessageLookupByLibrary.simpleMessage("Contactos"),

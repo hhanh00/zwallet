@@ -628,7 +628,8 @@ abstract class _AccountManager with Store {
     var cash = 0.0;
     var realized = 0.0;
     final List<PnL> _pnls = [];
-    for (var i = 0; i < quotes.length; i++) {
+    final len = math.min(quotes.length, portfolioTimeSeries.length);
+    for (var i = 0; i < len; i++) {
       final dt = quotes[i].dt;
       final price = quotes[i].price;
       final balance = portfolioTimeSeries[i].value;

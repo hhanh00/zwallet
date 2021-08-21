@@ -147,8 +147,6 @@ List<ElevatedButton> confirmButtons(BuildContext context,
   ];
 }
 
-const DAY_MS = 24 * 3600 * 1000;
-
 List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(List<T> timeseries,
     int start,
     int end,

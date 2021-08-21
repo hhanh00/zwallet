@@ -9,6 +9,7 @@ import 'package:ffi/ffi.dart';
 import './warp_api_generated.dart';
 
 typedef report_callback = Void Function(Int32);
+const DAY_MS = 24 * 3600 * 1000;
 
 class SyncParams {
   bool getTx;
@@ -237,6 +238,7 @@ String shieldTAddrIsolateFn(int account) {
 }
 
 int syncHistoricalPricesIsolateFn(String currency) {
-  final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-  return warp_api_lib.sync_historical_prices(now, 370, currency.toNativeUtf8().cast<Int8>());
+  final now = DateTime.now();
+  final today = DateTime.utc(now.year, now.month, now.day);
+  return warp_api_lib.sync_historical_prices(today.millisecondsSinceEpoch ~/ DAY_MS, 370, currency.toNativeUtf8().cast<Int8>());
 }

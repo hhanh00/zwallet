@@ -23,5 +23,3 @@ flutter pub run change_app_package_name:main me.hanh.$APP_NAME
 flutter pub run flutter_launcher_icons:main
 flutter pub run flutter_launcher_name:main
 flutter pub run build_runner build
-cargo make --env COIN=$FEATURE --profile release
-flutter build apk --split-per-abi
