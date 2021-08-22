@@ -1,0 +1,26 @@
+name: ExtractRelease
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - uses: shrink/actions-docker-extract@v1
+        id: extract
+        with:
+          image: '${{ secrets.DOCKER_HUB_USERNAME }}/zwallet:latest'
+          path: '/root/app-release.aab'
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ steps.extract.outputs.destination }}/app-release.aab
+
