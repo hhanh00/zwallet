@@ -1,0 +1,114 @@
+"version": "نسخه" ،
+  "about": "درباره"،
+  "ok": "OK",
+  "account": "حساب" ،
+  "notes": "یادداشت" ،
+  "history": "تاریخچه"،
+  "Budget": "بودجه",
+  "tradingPl": "معامله P&L" ،
+  "Contacts": "مخاطبین" ،
+  "accounts": "حسابها" ،
+  "Backup": "پشتیبان گیری" ،
+  "rescan": "دوباره اسکن کنید" ،
+  "coldStorage": "سردخانه" ،
+  "multipay": "چند پرداختی" ،
+  "broadcast": "پخش" ،
+  "settings": "تنظیمات"،
+  "synching": "همگام سازی" ،
+  "tapQrCodeForShieldedAddress": "روی کد QR برای آدرس محافظ ضربه بزنید" ،
+  "tapQrCodeForTransparentAddress": "روی کد QR برای آدرس شفاف ضربه بزنید" ،
+  "addressCopiedToClipboard": "آدرس در کلیپ بورد کپی شد" ،
+  "shieldTransparentBalance": "تراز شفاف حفاظ،
+  "doYouWantToTransferYourEntireTransparentBalanceTo": "آیا می خواهید کل موجودی شفاف خود را به آدرس محافظت شده خود منتقل کنید؟"،
+  "shieldingInProgress": "محافظت در حال انجام ..." ،
+  "txId": "شناسه TX:" ،
+  "PleaseAuthenticateToShowAccountSeed": "لطفاً برای نمایش حساب احراز هویت کنید"،
+  "noAuthenticationMethod": "بدون روش احراز هویت" ،
+  "rescanWalletFromTheFirstBlock": "اسکن مجدد کیف پول از اولین بلوک؟"،
+  "Cancel": "لغو" ،
+  "rescanRequested": "درخواست مجدد اسکن ..." ،
+  "doYouWantToDeleteTheSecretKeyAndConvert": "آیا می خواهید کلید مخفی را حذف کرده و این حساب را به یک حساب فقط برای ساعت تبدیل کنید؟ دیگر نمی توانید از این دستگاه هزینه کنید. این عملیات برگشت پذیر نیست."،
+  "delete": "پاک کردن" ،
+  "confs": "Confs" ،
+  "ارتفاع": "ارتفاع" ،
+  "datetime": "تاریخ/زمان" ،
+  "amount": "مبلغ" ،
+  "selectNotesToExcludeFromPayments": "یادداشت هایی را انتخاب کنید که از پرداخت خارج شوند" ،
+  "txid": "TXID" ،
+  "largeSpendingsByAddress": "بزرگترین هزینه ها بر اساس آدرس" ،
+  "tapChartToToggleBetweenAddressAndAmount": "روی نمودار ضربه بزنید تا بین آدرس و مقدار جابجا شوید" ،
+  "accountBalanceHistory": "سابقه مانده حساب" ،
+  "noSpendingInTheLast30Days": "بدون خرج در 30 روز گذشته" ،
+  "largeSpendingLastMonth": "بزرگترین هزینه در ماه گذشته" ،
+  "balance": "تعادل" ،
+  "pnl": "Pnl" ،
+  "واقعی": "واقعی" ،
+  "mm": "M/M" ،
+  "total": "مجموع" ،
+  "قیمت": "قیمت" ،
+  "qty": "تعداد" ،
+  "table": "جدول" ،
+  "pl": "P/L" ،
+  "متوجه": "تحقق یافته" ،
+  "toMakeAContactSendThemAMemoWithContact": "برای برقراری تماس ، یک یادداشت با آنها برای آنها ارسال کنید:"،
+  "newSnapAddress": "آدرس اسنپ جدید" ،
+  "shieldTranspBalance": "تراز حفاظ شفاف" ،
+  "send": "ارسال" ،
+  "noAccount": "بدون حساب" ،
+  "seed": "دانه" ،
+  "confirmDeleteAccount": "آیا مطمئن هستید که می خواهید این حساب را حذف کنید؟ برای بازیابی آن باید پشتیبان داشته باشید. این عملیات برگشت پذیر نیست."،
+  "changeAccountName": "تغییر نام حساب" ،
+  "backupDataRequiredForRestore": "پشتیبان گیری اطلاعات - مورد نیاز برای بازیابی" ،
+  "secretKey": "کلید مخفی" ،
+  "viewingKey": "مشاهده کلید" ،
+  "tapAnIconToShowTheQrCode": "برای نشان دادن کد QR روی نمادی ضربه بزنید" ،
+  "multiPay": "چند پرداخت" ،
+  "pleaseConfirm": "لطفاً تأیید کنید" ،
+  "ارسالATotalOfAmountCointickerToCountRecipients": "ارسال کل {amount} {ticker} به {count} گیرندگان" ،
+  "PrepaTransaction": "در حال آماده سازی معامله ..." ،
+  "sendCointickerTo": "ارسال {ticker} به ..." ،
+  "addressIsEmpty": "آدرس خالی است" ،
+  "invalidAddress": "آدرس نامعتبر" ،
+  "amountMustBeANumber": "مبلغ باید یک عدد باشد" ،
+  "amountMustBePositive": "مبلغ باید مثبت باشد" ،
+  "accountName": "نام حساب" ،
+  "accountNameIsRequired": "نام حساب الزامی است" ،
+  "enterSeed": "Seed ، Key Secret یا Key View را وارد کنید. برای یک حساب جدید خالی بگذارید" ،
+  "scanStartingMomentarily": "شروع اسکن لحظه ای" ،
+  "key": "کلید" ،
+  "sendCointicker": "ارسال {ticker}" ،
+  "max": "MAX" ،
+  "advancedOptions": "گزینه های پیشرفته" ،
+  "memo": "یادداشت" ،
+  "roundToMillis": "گرد تا میلی ثانیه" ،
+  "useSettingscurrency": "استفاده از {currency}" ،
+  "includeFeeInAmount": "شامل هزینه در مقدار" ،
+  "maxAmountPerNote": "حداکثر مبلغ در هر یادداشت" ،
+  "قابل مصرف": "قابل مصرف:"،
+  "notEnoughBalance": "موجودی کافی نیست" ،
+  "تصویب": "تصویب" ،
+  "sendAzecCointickerToAddress": "ارسال {aZEC} {ticker} به {address}" ،
+  "unsignedTransactionFile": "پرونده تراکنش بدون امضا" ،
+  "amountInSettingscurrency": "مبلغ در {currency}" ،
+  "سفارشی": "سفارشی" ،
+  "server": "سرور" ،
+  "آبی": "آبی" ،
+  "صورتی": "صورتی" ،
+  "قهوه": "قهوه" ،
+  "light": "روشن" ،
+  "تاریک": "تاریک" ،
+  "currency": "واحد پول" ،
+  "numberOfConfirmationsNeededBeforeSpending": "تعداد تاییدیه های مورد نیاز قبل از خرج کردن" ،
+  "retrieveTransactionDetails": "بازیابی جزئیات معامله" ،
+  "theme": "تم" ،
+  "actionDetails ":" جزئیات معامله "،
+  "timestamp": "مهر زمان" ،
+  "address": "آدرس" ،
+  "openInExplorer": "باز کردن در Explorer" ،
+  "na": "N/A" ،
+  "add": "اضافه کردن" ،
+  "tradingChartRange": "محدوده نمودار معاملاتی" ،
+
+
+
+
