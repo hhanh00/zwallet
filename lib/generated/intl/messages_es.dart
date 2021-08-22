@@ -97,7 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "notes" : MessageLookupByLibrary.simpleMessage("Notas"),
     "numberOfConfirmationsNeededBeforeSpending" : MessageLookupByLibrary.simpleMessage("Número de confirmaciones necesarias antes de gastar"),
     "ok" : MessageLookupByLibrary.simpleMessage("OK"),
-    "openInExplorer" : MessageLookupByLibrary.simpleMessage("Abre con Explorer"),
+    "openInExplorer" : MessageLookupByLibrary.simpleMessage("Abre con Explorador"),
     "pink" : MessageLookupByLibrary.simpleMessage("Rosado"),
     "pl" : MessageLookupByLibrary.simpleMessage("G/P"),
     "pleaseAuthenticateToShowAccountSeed" : MessageLookupByLibrary.simpleMessage("Autentíquese para ver la semilla de la cuenta"),
