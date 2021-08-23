@@ -22,7 +22,7 @@ class TransactionState extends State<TransactionPage> {
         appBar: AppBar(title: Text(S.of(context).transactionDetails)),
         body: ListView(padding: EdgeInsets.all(16), children: [
           ListTile(
-              title: Text(S.of(context).txid), subtitle: SelectableText('${widget.tx.fullTxId}')),
+              title: Text(S.of(context).txId), subtitle: SelectableText('${widget.tx.fullTxId}')),
           ListTile(
               title: Text(S.of(context).height), subtitle: SelectableText('${widget.tx.height}')),
           ListTile(

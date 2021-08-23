@@ -41,6 +41,7 @@ class SendState extends State<SendPage> {
   var _maxAmountPerNoteController = _makeMoneyMaskedTextController(true);
   var _includeFee = false;
   var _isExpanded = false;
+  var _shieldTransparent = settings.shieldBalance;
   ReactionDisposer _priceAutorunDispose;
 
   @override
@@ -147,6 +148,10 @@ class SendState extends State<SendPage> {
                                   title: Text(S.of(context).includeFeeInAmount),
                                   value: _includeFee,
                                   onChanged: _onChangedIncludeFee),
+                              if (accountManager.canPay) CheckboxListTile(
+                                  title: Text(S.of(context).shieldTransparentBalance),
+                                  value: _shieldTransparent,
+                                  onChanged: _onChangedShieldBalance),
                               ListTile(
                                   title: TextFormField(
                                 decoration: InputDecoration(
@@ -225,6 +230,12 @@ class SendState extends State<SendPage> {
     });
   }
 
+  void _onChangedShieldBalance(bool v) {
+    setState(() {
+      _shieldTransparent = v;
+    });
+  }
+
   void _onScan() async {
     var code = await BarcodeScanner.scan();
     setState(() {
@@ -270,8 +281,10 @@ class SendState extends State<SendPage> {
                 actions: confirmButtons(context, () => Navigator.of(context).pop(true), okLabel: S.of(context).approve, cancelValue: false)
               ));
       if (approved) {
+        final s = S.of(context);
         Navigator.of(context).pop();
-        final snackBar1 = SnackBar(content: Text(S.of(context).preparingTransaction));
+
+        final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
         rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
 
         if (_includeFee) _amount -= DEFAULT_FEE;
@@ -288,9 +301,10 @@ class SendState extends State<SendPage> {
                   memo,
                   maxAmountPerNote,
                   settings.anchorOffset,
+                  _shieldTransparent,
                   progressPort.sendPort));
 
-          final snackBar2 = SnackBar(content: Text(S.of(context).txId + tx));
+          final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
           rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
         } else {
           Directory tempDir = await getTemporaryDirectory();
@@ -299,7 +313,7 @@ class SendState extends State<SendPage> {
           final msg = WarpApi.prepareTx(accountManager.active.id, _address, _amount, memo,
               maxAmountPerNote, settings.anchorOffset, filename);
 
-          Share.shareFiles([filename], subject: S.of(context).unsignedTransactionFile);
+          Share.shareFiles([filename], subject: s.unsignedTransactionFile);
 
           final snackBar2 = SnackBar(content: Text(msg));
           rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
@@ -333,7 +347,8 @@ sendPayment(PaymentParams param) async {
       param.amount,
       param.memo,
       param.maxAmountPerNote,
-      param.anchorOffset, (percent) {
+      param.anchorOffset,
+      param.shieldBalance, (percent) {
     param.port.send(percent);
   });
   param.port.send(0);

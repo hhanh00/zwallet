@@ -22,7 +22,7 @@ class _RestorePageState extends State<RestorePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("\u24E8 Wallet"),
+          title: Text("${coin.symbol} Wallet"),
         ),
         body: Form(
             key: _formKey,

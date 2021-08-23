@@ -265,10 +265,10 @@ class S {
     );
   }
 
-  /// `TX ID:`
+  /// `TX ID`
   String get txId {
     return Intl.message(
-      'TX ID:',
+      'TX ID',
       name: 'txId',
       desc: '',
       args: [],
@@ -395,16 +395,6 @@ class S {
     );
   }
 
-  /// `TXID`
-  String get txid {
-    return Intl.message(
-      'TXID',
-      name: 'txid',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Largest Spendings by Address`
   String get largestSpendingsByAddress {
     return Intl.message(
@@ -470,16 +460,6 @@ class S {
     return Intl.message(
       'Pnl',
       name: 'pnl',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Real`
-  String get real {
-    return Intl.message(
-      'Real',
-      name: 'real',
       desc: '',
       args: [],
     );
@@ -1170,6 +1150,16 @@ class S {
     return Intl.message(
       '1 Y',
       name: 'Y1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shield Transparent Balance When Sending`
+  String get shieldTransparentBalanceWithSending {
+    return Intl.message(
+      'Shield Transparent Balance When Sending',
+      name: 'shieldTransparentBalanceWithSending',
       desc: '',
       args: [],
     );

@@ -22,7 +22,7 @@
   "shieldTransparentBalance": "Shield Transparent Balance",
   "doYouWantToTransferYourEntireTransparentBalanceTo": "Do you want to transfer your entire transparent balance to your shielded address?",
   "shieldingInProgress": "Shielding in progress...",
-  "txId": "TX ID:",
+  "txId": "TX ID",
   "pleaseAuthenticateToShowAccountSeed": "Please authenticate to show account seed",
   "noAuthenticationMethod": "No Authentication Method",
   "rescanWalletFromTheFirstBlock": "Rescan wallet from the first block?",
@@ -35,7 +35,6 @@
   "datetime": "Date/Time",
   "amount": "Amount",
   "selectNotesToExcludeFromPayments": "Select notes to EXCLUDE from payments",
-  "txid": "TXID",
   "largestSpendingsByAddress": "Largest Spendings by Address",
   "tapChartToToggleBetweenAddressAndAmount": "Tap Chart to Toggle between Address and Amount",
   "accountBalanceHistory": "Account Balance History",
@@ -43,7 +42,6 @@
   "largestSpendingLastMonth": "Largest Spending Last Month",
   "balance": "Balance",
   "pnl": "Pnl",
-  "real": "Real",
   "mm": "M/M",
   "total": "Total",
   "price": "Price",
@@ -112,5 +110,6 @@
   "M1": "1 M",
   "M3": "3 M",
   "M6": "6 M",
-  "Y1": "1 Y"
+  "Y1": "1 Y",
+  "shieldTransparentBalanceWithSending": "Shield Transparent Balance When Sending"
 }

@@ -71,6 +71,7 @@ pub unsafe extern "C" fn send_payment(
     memo: *mut c_char,
     max_amount_per_note: u64,
     anchor_offset: u32,
+    shield_transparent_balance: bool,
     port: i64,
 ) -> *const c_char {
     let address = CStr::from_ptr(address).to_string_lossy();
@@ -82,6 +83,7 @@ pub unsafe extern "C" fn send_payment(
         &memo,
         max_amount_per_note,
         anchor_offset,
+        shield_transparent_balance,
         port,
     );
     CString::new(tx_id).unwrap().into_raw()

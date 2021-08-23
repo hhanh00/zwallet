@@ -59,6 +59,12 @@ abstract class _Settings with Store {
   @observable
   String chartRange = '1Y';
 
+  @observable
+  bool shieldBalance = false;
+
+  @observable
+  double autoShieldThreshold = 0.0;
+
   var palette = charts.MaterialPalette.blue;
 
   @action
@@ -76,6 +82,8 @@ abstract class _Settings with Store {
     showConfirmations = prefs.getBool('show_confirmations') ?? false;
     currency = prefs.getString('currency') ?? "USD";
     chartRange = prefs.getString('chart_range') ?? "1Y";
+    shieldBalance = prefs.getBool('shield_balance') ?? false;
+    autoShieldThreshold = prefs.getDouble('autoshield_threshold') ?? 0.0;
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
@@ -216,6 +224,20 @@ abstract class _Settings with Store {
       currencies = c;
     }
   }
+
+  @action
+  Future<void> setShieldBalance(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    shieldBalance = v;
+    prefs.setBool('shield_balance', shieldBalance);
+  }
+
+  @action
+  Future<void> setAutoShieldThreshold(double v) async {
+    final prefs = await SharedPreferences.getInstance();
+    autoShieldThreshold = v;
+    prefs.setDouble('autoshield_threshold', autoShieldThreshold);
+  }
 }
 
 class AccountManager = _AccountManager with _$AccountManager;
@@ -313,8 +335,7 @@ abstract class _AccountManager with Store {
         "SELECT sk FROM accounts WHERE id_account = ?1", [account.id]);
     canPay = res2.isNotEmpty && res2[0]['sk'] != null;
     active = account;
-    print("Active account = ${account.id}");
-    await _fetchData(account.id);
+    await _fetchData(account.id, true);
   }
 
   @action
@@ -407,7 +428,7 @@ abstract class _AccountManager with Store {
   @action
   Future<void> fetchAccountData() async {
     if (active == null) return;
-    await _fetchData(active.id);
+    await _fetchData(active.id, false);
   }
 
   @action
@@ -415,9 +436,10 @@ abstract class _AccountManager with Store {
     showTAddr = !showTAddr;
   }
 
-  Future<void> _fetchData(int accountId) async {
+  Future<void> _fetchData(int accountId, bool force) async {
     await _updateBalance(accountId);
-    final hasNewTx = await _fetchNotesAndHistory(accountId);
+
+    final hasNewTx = await _fetchNotesAndHistory(accountId, force);
     int countNewPrices = await WarpApi.syncHistoricalPrices(settings.currency);
     if (hasNewTx) {
       await _fetchSpending(accountId);
@@ -438,14 +460,14 @@ abstract class _AccountManager with Store {
     dataEpoch = DateTime.now().millisecondsSinceEpoch;
   }
 
-  Future<bool> _fetchNotesAndHistory(int accountId) async {
+  Future<bool> _fetchNotesAndHistory(int accountId, bool force) async {
     final List<Map> res0 = await db.rawQuery(
         "SELECT MAX(height) as height FROM transactions WHERE account = ?1",
         [accountId]);
     if (res0.isEmpty) return false;
 
     final _lastTxHeight = res0[0]['height'] ?? 0;
-    if (lastTxHeight == _lastTxHeight) return false;
+    if (!force && lastTxHeight == _lastTxHeight) return false;
     lastTxHeight = _lastTxHeight;
 
     final List<Map> res = await db.rawQuery(
@@ -628,7 +650,8 @@ abstract class _AccountManager with Store {
     var cash = 0.0;
     var realized = 0.0;
     final List<PnL> _pnls = [];
-    for (var i = 0; i < quotes.length; i++) {
+    final len = math.min(quotes.length, portfolioTimeSeries.length);
+    for (var i = 0; i < len; i++) {
       final dt = quotes[i].dt;
       final price = quotes[i].price;
       final balance = portfolioTimeSeries[i].value;
@@ -671,6 +694,9 @@ abstract class _AccountManager with Store {
     if (active == null) return;
     int balance = WarpApi.getTBalance(active.id);
     if (balance != tbalance) tbalance = balance;
+    if (tbalance / ZECUNIT >= settings.autoShieldThreshold) {
+      WarpApi.shieldTAddr(active.id);
+    }
   }
 
   Future<void> _fetchContacts(int accountId) async {

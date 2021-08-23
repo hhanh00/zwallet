@@ -177,6 +177,7 @@ pub fn send_payment(
     memo: &str,
     max_amount_per_note: u64,
     anchor_offset: u32,
+    shield_transparent_balance: bool,
     port: i64,
 ) -> String {
     let r = Runtime::new().unwrap();
@@ -190,6 +191,7 @@ pub fn send_payment(
                 memo,
                 max_amount_per_note,
                 anchor_offset,
+                shield_transparent_balance,
                 move |progress| {
                     report_progress(progress, port);
                 },

@@ -16,6 +16,14 @@ final _settingsFormKey = GlobalKey<FormBuilderState>();
 class SettingsState extends State<SettingsPage> {
   var _anchorController =
       MaskedTextController(mask: "00", text: "${settings.anchorOffset}");
+  var _thresholdController = MoneyMaskedTextController(
+      decimalSeparator: '.', thousandSeparator: ',', precision: 3);
+
+  @override
+  void initState() {
+    super.initState();
+    _thresholdController.updateValue(settings.autoShieldThreshold);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +35,7 @@ class SettingsState extends State<SettingsPage> {
       FormBuilderFieldOption(
           value: 'custom',
           child: FormBuilderTextField(
+            name: 'lwd_url',
             decoration: InputDecoration(labelText: S.of(context).custom),
             initialValue: settings.ldUrl,
             onSaved: _onURL,
@@ -124,14 +133,36 @@ class SettingsState extends State<SettingsPage> {
                                 FormBuilderFieldOption(
                                     child: Text(S.of(context).Y1), value: '1Y'),
                               ]),
-                              FormBuilderCheckbox(
-                                  name: 'get_tx',
-                                  title: Text(
-                                      S.of(context).retrieveTransactionDetails),
-                                  initialValue: settings.getTx,
-                                  onSaved: _onGetTx),
+                          FormBuilderCheckbox(
+                              name: 'get_tx',
+                              title: Text(
+                                  S.of(context).retrieveTransactionDetails),
+                              initialValue: settings.getTx,
+                              onSaved: _onGetTx),
+                          TextFormField(
+                              decoration: InputDecoration(
+                                  labelText: 'Auto Shield Threshold'),
+                              keyboardType: TextInputType.number,
+                              controller: _thresholdController,
+                              onSaved: _onAutoShieldThreshold,
+                              validator: _checkAmount),
+                          FormBuilderCheckbox(
+                              name: 'shield_send',
+                              title: Text(S
+                                  .of(context)
+                                  .shieldTransparentBalanceWithSending),
+                              initialValue: settings.shieldBalance,
+                              onSaved: _shieldBalance),
                           ButtonBar(children: confirmButtons(context, _onSave))
                         ]))))));
+  }
+
+  String _checkAmount(String vs) {
+    final vss = vs.replaceAll(',', '');
+    final v = double.tryParse(vss);
+    if (v == null) return S.of(context).amountMustBeANumber;
+    if (v <= 0.0) return S.of(context).amountMustBePositive;
+    return null;
   }
 
   _onChoice(v) {
@@ -154,6 +185,15 @@ class SettingsState extends State<SettingsPage> {
     settings.setChartRange(v);
   }
 
+  _shieldBalance(v) {
+    settings.setShieldBalance(v);
+  }
+
+  _onAutoShieldThreshold(_) {
+    final v = _thresholdController.numberValue;
+    settings.setAutoShieldThreshold(v);
+  }
+
   _onSave() {
     final form = _settingsFormKey.currentState;
     if (form.validate()) {
@@ -168,12 +208,5 @@ class SettingsState extends State<SettingsPage> {
 
   _onGetTx(v) {
     settings.updateGetTx(v);
-  }
-
-  String _checkFx(String vs) {
-    final v = double.tryParse(vs);
-    if (v == null) return 'FX rate must be a number';
-    if (v <= 0.0) return 'FX rate must be positive';
-    return null;
   }
 }

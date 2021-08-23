@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_palette/flutter_palette.dart';
+import 'package:warp_api/warp_api.dart';
 
 import 'store.dart';
 import 'main.dart';
@@ -171,7 +174,7 @@ class PieChartSpendingState extends State<PieChartSpending> {
   }
 
   List<PieChartSectionData> showingSections() {
-    final palette = ColorPalette.adjacent(Theme.of(context).primaryColor, numberOfColors: widget.spendings.length);
+    final palette = ColorPalette.adjacent(Theme.of(context).primaryColor, numberOfColors: max(widget.spendings.length, 1));
     return widget.spendings.asMap().entries.map((e) {
       final i = e.key;
       final spending = e.value;
