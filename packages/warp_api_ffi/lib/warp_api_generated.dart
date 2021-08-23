@@ -157,6 +157,7 @@ class NativeLibrary {
     ffi.Pointer<ffi.Int8> memo,
     int max_amount_per_note,
     int anchor_offset,
+    int shield_transparent_balance,
     int port,
   ) {
     return _send_payment(
@@ -166,6 +167,7 @@ class NativeLibrary {
       memo,
       max_amount_per_note,
       anchor_offset,
+      shield_transparent_balance,
       port,
     );
   }
@@ -446,6 +448,7 @@ typedef _c_send_payment = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> memo,
   ffi.Uint64 max_amount_per_note,
   ffi.Uint32 anchor_offset,
+  ffi.Int8 shield_transparent_balance,
   ffi.Int64 port,
 );
 
@@ -456,6 +459,7 @@ typedef _dart_send_payment = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> memo,
   int max_amount_per_note,
   int anchor_offset,
+  int shield_transparent_balance,
   int port,
 );
 

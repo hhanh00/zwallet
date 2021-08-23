@@ -32,6 +32,7 @@ const char *send_payment(uint32_t account,
                          char *memo,
                          uint64_t max_amount_per_note,
                          uint32_t anchor_offset,
+                         bool shield_transparent_balance,
                          int64_t port);
 
 const char *send_multi_payment(uint32_t account,

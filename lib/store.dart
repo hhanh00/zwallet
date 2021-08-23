@@ -59,6 +59,9 @@ abstract class _Settings with Store {
   @observable
   String chartRange = '1Y';
 
+  @observable
+  bool shieldBalance = false;
+
   var palette = charts.MaterialPalette.blue;
 
   @action
@@ -76,6 +79,7 @@ abstract class _Settings with Store {
     showConfirmations = prefs.getBool('show_confirmations') ?? false;
     currency = prefs.getString('currency') ?? "USD";
     chartRange = prefs.getString('chart_range') ?? "1Y";
+    shieldBalance = prefs.getBool('shield_balance') ?? false;
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
@@ -215,6 +219,13 @@ abstract class _Settings with Store {
       c.sort();
       currencies = c;
     }
+  }
+
+  @action
+  Future<void> setShieldBalance(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    shieldBalance = v;
+    prefs.setBool('shield_balance', shieldBalance);
   }
 }
 

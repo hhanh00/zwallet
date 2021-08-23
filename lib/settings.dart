@@ -27,6 +27,7 @@ class SettingsState extends State<SettingsPage> {
       FormBuilderFieldOption(
           value: 'custom',
           child: FormBuilderTextField(
+            name: 'lwd_url',
             decoration: InputDecoration(labelText: S.of(context).custom),
             initialValue: settings.ldUrl,
             onSaved: _onURL,
@@ -130,7 +131,12 @@ class SettingsState extends State<SettingsPage> {
                                       S.of(context).retrieveTransactionDetails),
                                   initialValue: settings.getTx,
                                   onSaved: _onGetTx),
-                          ButtonBar(children: confirmButtons(context, _onSave))
+                              FormBuilderCheckbox(
+                                  name: 'auto_shield',
+                                  title: Text(S.of(context).shieldTransparentBalance),
+                                  initialValue: settings.shieldBalance,
+                                  onSaved: _shieldBalance),
+                              ButtonBar(children: confirmButtons(context, _onSave))
                         ]))))));
   }
 
@@ -152,6 +158,10 @@ class SettingsState extends State<SettingsPage> {
 
   _onChartRange(v) {
     settings.setChartRange(v);
+  }
+
+  _shieldBalance(v) {
+    settings.setShieldBalance(v);
   }
 
   _onSave() {

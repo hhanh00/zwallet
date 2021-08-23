@@ -41,6 +41,7 @@ class SendState extends State<SendPage> {
   var _maxAmountPerNoteController = _makeMoneyMaskedTextController(true);
   var _includeFee = false;
   var _isExpanded = false;
+  var _shieldTransparent = settings.shieldBalance;
   ReactionDisposer _priceAutorunDispose;
 
   @override
@@ -147,6 +148,10 @@ class SendState extends State<SendPage> {
                                   title: Text(S.of(context).includeFeeInAmount),
                                   value: _includeFee,
                                   onChanged: _onChangedIncludeFee),
+                              if (accountManager.canPay) CheckboxListTile(
+                                  title: Text(S.of(context).shieldTransparentBalance),
+                                  value: _shieldTransparent,
+                                  onChanged: _onChangedShieldBalance),
                               ListTile(
                                   title: TextFormField(
                                 decoration: InputDecoration(
@@ -225,6 +230,12 @@ class SendState extends State<SendPage> {
     });
   }
 
+  void _onChangedShieldBalance(bool v) {
+    setState(() {
+      _shieldTransparent = v;
+    });
+  }
+
   void _onScan() async {
     var code = await BarcodeScanner.scan();
     setState(() {
@@ -290,6 +301,7 @@ class SendState extends State<SendPage> {
                   memo,
                   maxAmountPerNote,
                   settings.anchorOffset,
+                  _shieldTransparent,
                   progressPort.sendPort));
 
           final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
@@ -335,7 +347,8 @@ sendPayment(PaymentParams param) async {
       param.amount,
       param.memo,
       param.maxAmountPerNote,
-      param.anchorOffset, (percent) {
+      param.anchorOffset,
+      param.shieldBalance, (percent) {
     param.port.send(percent);
   });
   param.port.send(0);

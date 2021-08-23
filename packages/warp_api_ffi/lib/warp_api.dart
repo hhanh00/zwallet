@@ -26,10 +26,11 @@ class PaymentParams {
   String memo;
   int maxAmountPerNote;
   int anchorOffset;
+  bool shieldBalance;
   SendPort port;
 
   PaymentParams(this.account, this.address, this.amount, this.memo, this.maxAmountPerNote,
-      this.anchorOffset, this.port);
+      this.anchorOffset, this.shieldBalance, this.port);
 }
 
 class MultiPaymentParams {
@@ -131,7 +132,7 @@ class WarpApi {
   }
 
   static Future<String> sendPayment(int account, String address, int amount, String memo,
-      int maxAmountPerNote, int anchorOffset, void Function(int) f) async {
+      int maxAmountPerNote, int anchorOffset, bool shieldTBalance, void Function(int) f) async {
     var receivePort = ReceivePort();
     receivePort.listen((progress) {
       f(progress);
@@ -140,7 +141,7 @@ class WarpApi {
     return await compute(
         sendPaymentIsolateFn,
         PaymentParams(
-            account, address, amount, memo, maxAmountPerNote, anchorOffset, receivePort.sendPort));
+            account, address, amount, memo, maxAmountPerNote, anchorOffset, shieldTBalance, receivePort.sendPort));
   }
 
   static Future<String> sendMultiPayment(int account, String recipientsJson, int anchorOffset, void Function(int) f) async {
@@ -202,6 +203,7 @@ String sendPaymentIsolateFn(PaymentParams params) {
       params.memo.toNativeUtf8().cast<Int8>(),
       params.maxAmountPerNote,
       params.anchorOffset,
+      params.shieldBalance ? 1 : 0,
       params.port.nativePort);
   return txId.cast<Utf8>().toDartString();
 }
