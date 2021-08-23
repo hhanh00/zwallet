@@ -83,17 +83,19 @@ class MultiPayState extends State<MultiPayPage> {
             ));
 
     if (approved) {
-      final snackBar1 = SnackBar(content: Text(S.of(context).preparingTransaction));
+      final s = S.of(context);
+      Navigator.of(context).pop();
+
+      final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
       rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
 
       final recipientsJson = jsonEncode(multipayData.recipients);
       final tx = await WarpApi.sendMultiPayment(accountManager.active.id,
           recipientsJson, settings.anchorOffset, (p) {});
-      final snackBar2 = SnackBar(content: Text("${S.of(context).txId}: $tx"));
+      final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
       rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
 
       multipayData.clear();
-      Navigator.of(context).pop();
     }
   }
 }

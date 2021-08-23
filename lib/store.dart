@@ -314,7 +314,7 @@ abstract class _AccountManager with Store {
     canPay = res2.isNotEmpty && res2[0]['sk'] != null;
     active = account;
     print("Active account = ${account.id}");
-    await _fetchData(account.id);
+    await _fetchData(account.id, true);
   }
 
   @action
@@ -407,7 +407,7 @@ abstract class _AccountManager with Store {
   @action
   Future<void> fetchAccountData() async {
     if (active == null) return;
-    await _fetchData(active.id);
+    await _fetchData(active.id, false);
   }
 
   @action
@@ -415,9 +415,9 @@ abstract class _AccountManager with Store {
     showTAddr = !showTAddr;
   }
 
-  Future<void> _fetchData(int accountId) async {
+  Future<void> _fetchData(int accountId, bool force) async {
     await _updateBalance(accountId);
-    final hasNewTx = await _fetchNotesAndHistory(accountId);
+    final hasNewTx = await _fetchNotesAndHistory(accountId, force);
     int countNewPrices = await WarpApi.syncHistoricalPrices(settings.currency);
     if (hasNewTx) {
       await _fetchSpending(accountId);
@@ -438,14 +438,14 @@ abstract class _AccountManager with Store {
     dataEpoch = DateTime.now().millisecondsSinceEpoch;
   }
 
-  Future<bool> _fetchNotesAndHistory(int accountId) async {
+  Future<bool> _fetchNotesAndHistory(int accountId, bool force) async {
     final List<Map> res0 = await db.rawQuery(
         "SELECT MAX(height) as height FROM transactions WHERE account = ?1",
         [accountId]);
     if (res0.isEmpty) return false;
 
     final _lastTxHeight = res0[0]['height'] ?? 0;
-    if (lastTxHeight == _lastTxHeight) return false;
+    if (!force && lastTxHeight == _lastTxHeight) return false;
     lastTxHeight = _lastTxHeight;
 
     final List<Map> res = await db.rawQuery(

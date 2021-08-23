@@ -270,8 +270,10 @@ class SendState extends State<SendPage> {
                 actions: confirmButtons(context, () => Navigator.of(context).pop(true), okLabel: S.of(context).approve, cancelValue: false)
               ));
       if (approved) {
+        final s = S.of(context);
         Navigator.of(context).pop();
-        final snackBar1 = SnackBar(content: Text(S.of(context).preparingTransaction));
+
+        final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
         rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
 
         if (_includeFee) _amount -= DEFAULT_FEE;
@@ -290,7 +292,7 @@ class SendState extends State<SendPage> {
                   settings.anchorOffset,
                   progressPort.sendPort));
 
-          final snackBar2 = SnackBar(content: Text("${S.of(context).txId}: $tx"));
+          final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
           rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
         } else {
           Directory tempDir = await getTemporaryDirectory();
@@ -299,7 +301,7 @@ class SendState extends State<SendPage> {
           final msg = WarpApi.prepareTx(accountManager.active.id, _address, _amount, memo,
               maxAmountPerNote, settings.anchorOffset, filename);
 
-          Share.shareFiles([filename], subject: S.of(context).unsignedTransactionFile);
+          Share.shareFiles([filename], subject: s.unsignedTransactionFile);
 
           final snackBar2 = SnackBar(content: Text(msg));
           rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
