@@ -125,6 +125,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "shieldTranspBalance" : MessageLookupByLibrary.simpleMessage("Shield Transp. Balance"),
     "shieldTransparentBalance" : MessageLookupByLibrary.simpleMessage("Shield Transparent Balance"),
+    "shieldTransparentBalanceWithSending" : MessageLookupByLibrary.simpleMessage("Shield Transparent Balance When Sending"),
     "shieldingInProgress" : MessageLookupByLibrary.simpleMessage("Shielding in progress..."),
     "spendable" : MessageLookupByLibrary.simpleMessage("Spendable:"),
     "synching" : MessageLookupByLibrary.simpleMessage("Synching"),

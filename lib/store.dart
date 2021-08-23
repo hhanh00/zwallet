@@ -62,6 +62,9 @@ abstract class _Settings with Store {
   @observable
   bool shieldBalance = false;
 
+  @observable
+  double autoShieldThreshold = 0.0;
+
   var palette = charts.MaterialPalette.blue;
 
   @action
@@ -80,6 +83,7 @@ abstract class _Settings with Store {
     currency = prefs.getString('currency') ?? "USD";
     chartRange = prefs.getString('chart_range') ?? "1Y";
     shieldBalance = prefs.getBool('shield_balance') ?? false;
+    autoShieldThreshold = prefs.getDouble('autoshield_threshold') ?? 0.0;
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
@@ -226,6 +230,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     shieldBalance = v;
     prefs.setBool('shield_balance', shieldBalance);
+  }
+
+  @action
+  Future<void> setAutoShieldThreshold(double v) async {
+    final prefs = await SharedPreferences.getInstance();
+    autoShieldThreshold = v;
+    prefs.setDouble('autoshield_threshold', autoShieldThreshold);
   }
 }
 
@@ -427,6 +438,7 @@ abstract class _AccountManager with Store {
 
   Future<void> _fetchData(int accountId, bool force) async {
     await _updateBalance(accountId);
+
     final hasNewTx = await _fetchNotesAndHistory(accountId, force);
     int countNewPrices = await WarpApi.syncHistoricalPrices(settings.currency);
     if (hasNewTx) {
@@ -682,6 +694,9 @@ abstract class _AccountManager with Store {
     if (active == null) return;
     int balance = WarpApi.getTBalance(active.id);
     if (balance != tbalance) tbalance = balance;
+    if (tbalance / ZECUNIT >= settings.autoShieldThreshold) {
+      WarpApi.shieldTAddr(active.id);
+    }
   }
 
   Future<void> _fetchContacts(int accountId) async {

@@ -1154,6 +1154,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Shield Transparent Balance When Sending`
+  String get shieldTransparentBalanceWithSending {
+    return Intl.message(
+      'Shield Transparent Balance When Sending',
+      name: 'shieldTransparentBalanceWithSending',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

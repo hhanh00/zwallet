@@ -110,5 +110,6 @@
   "M1": "1 M",
   "M3": "3 M",
   "M6": "6 M",
-  "Y1": "1 Y"
+  "Y1": "1 Y",
+  "shieldTransparentBalanceWithSending": "Shield Transparent Balance When Sending"
 }
