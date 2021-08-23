@@ -240,5 +240,5 @@ String shieldTAddrIsolateFn(int account) {
 int syncHistoricalPricesIsolateFn(String currency) {
   final now = DateTime.now();
   final today = DateTime.utc(now.year, now.month, now.day);
-  return warp_api_lib.sync_historical_prices(today.millisecondsSinceEpoch ~/ DAY_MS, 370, currency.toNativeUtf8().cast<Int8>());
+  return warp_api_lib.sync_historical_prices(today.millisecondsSinceEpoch ~/ 1000, 370, currency.toNativeUtf8().cast<Int8>());
 }

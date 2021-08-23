@@ -313,7 +313,6 @@ abstract class _AccountManager with Store {
         "SELECT sk FROM accounts WHERE id_account = ?1", [account.id]);
     canPay = res2.isNotEmpty && res2[0]['sk'] != null;
     active = account;
-    print("Active account = ${account.id}");
     await _fetchData(account.id, true);
   }
 
