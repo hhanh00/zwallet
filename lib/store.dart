@@ -300,6 +300,9 @@ abstract class _AccountManager with Store {
   int pnlSeriesIndex = 0;
 
   @observable
+  bool pnlDesc = false;
+
+  @observable
   List<Contact> contacts = [];
 
   Future<void> init() async {
@@ -676,6 +679,20 @@ abstract class _AccountManager with Store {
   }
 
   @action
+  void togglePnlDesc() {
+    pnlDesc = !pnlDesc;
+  }
+
+  @computed
+  List<PnL> get pnlSorted {
+    if (pnlDesc) {
+      var _pnls = [...pnls.reversed];
+      return _pnls;
+    }
+    return pnls; 
+  }
+
+  @action
   Future<void> convertToWatchOnly() async {
     await db.rawUpdate(
         "UPDATE accounts SET seed = NULL, sk = NULL WHERE id_account = ?1",
@@ -694,7 +711,7 @@ abstract class _AccountManager with Store {
     if (active == null) return;
     int balance = WarpApi.getTBalance(active.id);
     if (balance != tbalance) tbalance = balance;
-    if (tbalance / ZECUNIT >= settings.autoShieldThreshold) {
+    if (settings.autoShieldThreshold != 0.0 && tbalance / ZECUNIT >= settings.autoShieldThreshold) {
       WarpApi.shieldTAddr(active.id);
     }
   }
