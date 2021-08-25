@@ -6,15 +6,21 @@ ycash)
   export APP_NAME=ywallet
   export FEATURE=ycash
   ;;
+zcashtest)
+  export APP_TITLE=ZWalletTest
+  export APP_NAME=zwallettest
+  export FEATURE=zcashtest
+  ;;
 zcash)
   export APP_TITLE=ZWallet
   export APP_NAME=zwallet
-  export FEATURE=
+  export FEATURE=zcash
   ;;
 esac
 
 cp assets/$COIN.png assets/icon.png
 cp lib/coin/$COIN.dart lib/coin/coindef.dart
+cp native/zcash-sync/src/coindef/$COIN.rs native/zcash-sync/src/coin.rs
 
 mo pubspec.yaml.tpl > pubspec.yaml
 
