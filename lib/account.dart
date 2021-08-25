@@ -504,53 +504,64 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
     return SingleChildScrollView(
         padding: EdgeInsets.all(4),
         scrollDirection: Axis.vertical,
-        child: Observer(
-            builder: (context) => NotificationListener<OverscrollNotification>(
-                onNotification: (s) {
-                  final os = s.overscroll;
-                  if (os < 0) {
-                    widget.tabTo(0);
-                    return true;
-                  }
-                  if (os > 0) {
-                    widget.tabTo(2);
-                    return true;
-                  }
-                  return false;
+        child: Observer(builder: (context) {
+          var amountHeader = S.of(context).amount;
+          switch (accountManager.noteSortOrder) {
+            case SortOrder.Ascending:
+              amountHeader += ' \u2191';
+              break;
+            case SortOrder.Descending:
+              amountHeader += ' \u2193';
+              break;
+            default:
+          }
+          return NotificationListener<OverscrollNotification>(
+              onNotification: (s) {
+                final os = s.overscroll;
+                if (os < 0) {
+                  widget.tabTo(0);
+                  return true;
+                }
+                if (os > 0) {
+                  widget.tabTo(2);
+                  return true;
+                }
+                return false;
+              },
+              child: PaginatedDataTable(
+                columns: [
+                  DataColumn(
+                      label: settings.showConfirmations
+                          ? Text(S.of(context).confs)
+                          : Text(S.of(context).height),
+                      onSort: (_, __) {
+                        setState(() {
+                          settings.toggleShowConfirmations();
+                        });
+                      }),
+                  DataColumn(label: Text(S.of(context).datetime)),
+                  DataColumn(
+                      label: Text(amountHeader),
+                      numeric: true,
+                      onSort: (_, __) {
+                        setState(() {
+                          accountManager.sortNoteAmount();
+                        });
+                      }),
+                ],
+                header: Text(S.of(context).selectNotesToExcludeFromPayments,
+                    style: Theme.of(context).textTheme.bodyText1),
+                columnSpacing: 16,
+                showCheckboxColumn: false,
+                availableRowsPerPage: [5, 10, 25, 100],
+                onRowsPerPageChanged: (int value) {
+                  settings.setRowsPerPage(value);
                 },
-                child: PaginatedDataTable(
-                  columns: [
-                    DataColumn(
-                        label: settings.showConfirmations
-                            ? Text(S.of(context).confs)
-                            : Text(S.of(context).height),
-                        onSort: (_, __) {
-                          setState(() {
-                            settings.toggleShowConfirmations();
-                          });
-                        }),
-                    DataColumn(label: Text(S.of(context).datetime)),
-                    DataColumn(
-                        label: Text(S.of(context).amount),
-                        numeric: true,
-                        onSort: (_, __) {
-                          setState(() {
-                            accountManager.sortNoteAmount();
-                          });
-                        }),
-                  ],
-                  header: Text(S.of(context).selectNotesToExcludeFromPayments,
-                      style: Theme.of(context).textTheme.bodyText1),
-                  columnSpacing: 16,
-                  showCheckboxColumn: false,
-                  availableRowsPerPage: [5, 10, 25, 100],
-                  onRowsPerPageChanged: (int value) {
-                    settings.setRowsPerPage(value);
-                  },
-                  showFirstLastButtons: true,
-                  rowsPerPage: settings.rowsPerPage,
-                  source: NotesDataSource(context, _onRowSelected),
-                ))));
+                showFirstLastButtons: true,
+                rowsPerPage: settings.rowsPerPage,
+                source: NotesDataSource(context, _onRowSelected),
+              ));
+        }));
   }
 
   _onRowSelected(Note note) {
@@ -634,50 +645,61 @@ class HistoryState extends State<HistoryWidget>
     return SingleChildScrollView(
         padding: EdgeInsets.all(4),
         scrollDirection: Axis.vertical,
-        child: Observer(
-            builder: (context) => NotificationListener<OverscrollNotification>(
-                onNotification: (s) {
-                  if (s.overscroll < 0) {
-                    widget.tabTo(1);
-                    return true;
-                  }
-                  if (s.overscroll > 0) {
-                    widget.tabTo(3);
-                    return true;
-                  }
-                  return false;
-                },
-                child: PaginatedDataTable(
-                    columns: [
-                      DataColumn(
-                          label: settings.showConfirmations
-                              ? Text(S.of(context).confs)
-                              : Text(S.of(context).height),
-                          onSort: (_, __) {
-                            setState(() {
-                              settings.toggleShowConfirmations();
-                            });
-                          }),
-                      DataColumn(label: Text(S.of(context).datetime)),
-                      DataColumn(label: Text(S.of(context).txId)),
-                      DataColumn(
-                          label: Text(S.of(context).amount),
-                          numeric: true,
-                          onSort: (_, __) {
-                            setState(() {
-                              accountManager.sortTxAmount();
-                            });
-                          }),
-                    ],
-                    columnSpacing: 16,
-                    showCheckboxColumn: false,
-                    availableRowsPerPage: [5, 10, 25, 100],
-                    onRowsPerPageChanged: (int value) {
-                      settings.setRowsPerPage(value);
-                    },
-                    showFirstLastButtons: true,
-                    rowsPerPage: settings.rowsPerPage,
-                    source: HistoryDataSource(context)))));
+        child: Observer(builder: (context) {
+          var amountHeader = S.of(context).amount;
+          switch (accountManager.txSortOrder) {
+            case SortOrder.Ascending:
+              amountHeader += ' \u2191';
+              break;
+            case SortOrder.Descending:
+              amountHeader += ' \u2193';
+              break;
+            default:
+          }
+          return NotificationListener<OverscrollNotification>(
+              onNotification: (s) {
+                if (s.overscroll < 0) {
+                  widget.tabTo(1);
+                  return true;
+                }
+                if (s.overscroll > 0) {
+                  widget.tabTo(3);
+                  return true;
+                }
+                return false;
+              },
+              child: PaginatedDataTable(
+                  columns: [
+                    DataColumn(
+                        label: settings.showConfirmations
+                            ? Text(S.of(context).confs)
+                            : Text(S.of(context).height),
+                        onSort: (_, __) {
+                          setState(() {
+                            settings.toggleShowConfirmations();
+                          });
+                        }),
+                    DataColumn(label: Text(S.of(context).datetime)),
+                    DataColumn(label: Text(S.of(context).txId)),
+                    DataColumn(
+                        label: Text(amountHeader),
+                        numeric: true,
+                        onSort: (_, __) {
+                          setState(() {
+                            accountManager.sortTxAmount();
+                          });
+                        }),
+                  ],
+                  columnSpacing: 16,
+                  showCheckboxColumn: false,
+                  availableRowsPerPage: [5, 10, 25, 100],
+                  onRowsPerPageChanged: (int value) {
+                    settings.setRowsPerPage(value);
+                  },
+                  showFirstLastButtons: true,
+                  rowsPerPage: settings.rowsPerPage,
+                  source: HistoryDataSource(context)));
+        }));
   }
 }
 
