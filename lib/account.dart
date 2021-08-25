@@ -109,15 +109,22 @@ class _AccountPageState extends State<AccountPage>
             accountManager.canPay;
             return PopupMenuButton<String>(
               itemBuilder: (context) => [
-                PopupMenuItem(child: Text(S.of(context).accounts), value: "Accounts"),
-                PopupMenuItem(child: Text(S.of(context).backup), value: "Backup"),
-                PopupMenuItem(child: Text(S.of(context).rescan), value: "Rescan"),
+                PopupMenuItem(
+                    child: Text(S.of(context).accounts), value: "Accounts"),
+                PopupMenuItem(
+                    child: Text(S.of(context).backup), value: "Backup"),
+                PopupMenuItem(
+                    child: Text(S.of(context).rescan), value: "Rescan"),
                 if (accountManager.canPay)
-                  PopupMenuItem(child: Text(S.of(context).coldStorage), value: "Cold"),
+                  PopupMenuItem(
+                      child: Text(S.of(context).coldStorage), value: "Cold"),
                 if (accountManager.canPay)
-                  PopupMenuItem(child: Text(S.of(context).multipay), value: "MultiPay"),
-                PopupMenuItem(child: Text(S.of(context).broadcast), value: "Broadcast"),
-                PopupMenuItem(child: Text(S.of(context).settings), value: "Settings"),
+                  PopupMenuItem(
+                      child: Text(S.of(context).multipay), value: "MultiPay"),
+                PopupMenuItem(
+                    child: Text(S.of(context).broadcast), value: "Broadcast"),
+                PopupMenuItem(
+                    child: Text(S.of(context).settings), value: "Settings"),
                 PopupMenuItem(child: Text(S.of(context).about), value: "About"),
               ],
               onSelected: _onMenu,
@@ -271,7 +278,8 @@ class _AccountPageState extends State<AccountPage>
 
   _onAddressCopy() {
     Clipboard.setData(ClipboardData(text: _address()));
-    final snackBar = SnackBar(content: Text(S.of(context).addressCopiedToClipboard));
+    final snackBar =
+        SnackBar(content: Text(S.of(context).addressCopiedToClipboard));
     rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
   }
 
@@ -286,8 +294,7 @@ class _AccountPageState extends State<AccountPage>
           actions: confirmButtons(context, () async {
             final s = S.of(context);
             Navigator.of(this.context).pop();
-            final snackBar1 =
-                SnackBar(content: Text(s.shieldingInProgress));
+            final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
             rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
             final txid = await WarpApi.shieldTAddr(accountManager.active.id);
             final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
@@ -426,21 +433,20 @@ class _AccountPageState extends State<AccountPage>
 
   _rescan() {
     showDialog(
-      context: this.context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-          title: Text(S.of(context).rescan),
-          content: Text(S.of(context).rescanWalletFromTheFirstBlock),
-          actions:
-          confirmButtons(context, () {
-            Navigator.of(this.context).pop();
-            final snackBar = SnackBar(content: Text(S.of(context).rescanRequested));
-            rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
-            syncStatus.setSyncHeight(0);
-            WarpApi.rewindToHeight(0);
-            _sync();
-          }))
-    );
+        context: this.context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+            title: Text(S.of(context).rescan),
+            content: Text(S.of(context).rescanWalletFromTheFirstBlock),
+            actions: confirmButtons(context, () {
+              Navigator.of(this.context).pop();
+              final snackBar =
+                  SnackBar(content: Text(S.of(context).rescanRequested));
+              rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
+              syncStatus.setSyncHeight(0);
+              WarpApi.rewindToHeight(0);
+              _sync();
+            })));
   }
 
   _cold() {
@@ -448,12 +454,11 @@ class _AccountPageState extends State<AccountPage>
         context: context,
         barrierDismissible: false,
         builder: (context) => AlertDialog(
-                title: Text(S.of(context).coldStorage),
-                content: Text(
-                    S.of(context).doYouWantToDeleteTheSecretKeyAndConvert),
-                actions:
-                    confirmButtons(context, _convertToWatchOnly, okLabel: S.of(context).delete)
-                ));
+            title: Text(S.of(context).coldStorage),
+            content:
+                Text(S.of(context).doYouWantToDeleteTheSecretKeyAndConvert),
+            actions: confirmButtons(context, _convertToWatchOnly,
+                okLabel: S.of(context).delete)));
   }
 
   _multiPay() {
@@ -567,7 +572,9 @@ class NotesDataSource extends DataTableSource {
         ? syncStatus.latestHeight - note.height + 1
         : note.height;
 
-    var style = _confirmed(note.height) ? theme.textTheme.bodyText2 : theme.textTheme.overline;
+    var style = _confirmed(note.height)
+        ? theme.textTheme.bodyText2
+        : theme.textTheme.overline;
     if (note.spent)
       style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
 
@@ -579,8 +586,7 @@ class NotesDataSource extends DataTableSource {
               ? theme.primaryColor.withOpacity(0.5)
               : theme.backgroundColor),
       cells: [
-        DataCell(Text("$confsOrHeight",
-            style: style)),
+        DataCell(Text("$confsOrHeight", style: style)),
         DataCell(Text("${note.timestamp}", style: style)),
         DataCell(Text("${note.value.toStringAsFixed(8)}", style: style)),
       ],
@@ -775,7 +781,8 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
             });
           },
           options: [
-            FormBuilderFieldOption(child: Text(S.of(context).realized), value: 0),
+            FormBuilderFieldOption(
+                child: Text(S.of(context).realized), value: 0),
             FormBuilderFieldOption(child: Text(S.of(context).mm), value: 1),
             FormBuilderFieldOption(child: Text(S.of(context).total), value: 2),
             FormBuilderFieldOption(child: Text(S.of(context).price), value: 3),
@@ -783,7 +790,7 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
             FormBuilderFieldOption(child: Text(S.of(context).table), value: 5),
           ]),
       Observer(builder: (context) {
-        final _ = accountManager.pnls;
+        final _ = accountManager.pnlSorted;
         return Expanded(
             child: accountManager.pnlSeriesIndex != 5
                 ? PnLChart(accountManager.pnls, accountManager.pnlSeriesIndex)
@@ -822,19 +829,26 @@ class PnLChart extends StatelessWidget {
 
   static List<TimeSeriesPoint<double>> _createSeries(
       List<PnL> data, int index, BuildContext context) {
-    return data.map((pnl) =>
-        TimeSeriesPoint(pnl.timestamp.millisecondsSinceEpoch ~/ DAY_MS,
-            _seriesData(pnl, index))).toList();
+    return data
+        .map((pnl) => TimeSeriesPoint(
+            pnl.timestamp.millisecondsSinceEpoch ~/ DAY_MS,
+            _seriesData(pnl, index)))
+        .toList();
   }
 }
 
 class PnLTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final sortSymbol = accountManager.pnlDesc ? ' \u2193' : ' \u2191';
     return SingleChildScrollView(
         child: PaginatedDataTable(
             columns: [
-              DataColumn(label: Text(S.of(context).datetime)),
+              DataColumn(
+                  label: Text(S.of(context).datetime + sortSymbol),
+                  onSort: (_, __) {
+                    accountManager.togglePnlDesc();
+                  }),
               DataColumn(label: Text(S.of(context).qty), numeric: true),
               DataColumn(label: Text(S.of(context).price), numeric: true),
               DataColumn(label: Text(S.of(context).realized), numeric: true),
@@ -861,7 +875,7 @@ class PnLDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    final pnl = accountManager.pnls[index];
+    final pnl = accountManager.pnlSorted[index];
     final ts = dateFormat.format(pnl.timestamp);
     return DataRow(cells: [
       DataCell(Text("$ts")),

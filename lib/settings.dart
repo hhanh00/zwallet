@@ -18,6 +18,7 @@ class SettingsState extends State<SettingsPage> {
       MaskedTextController(mask: "00", text: "${settings.anchorOffset}");
   var _thresholdController = MoneyMaskedTextController(
       decimalSeparator: '.', thousandSeparator: ',', precision: 3);
+  var _currency = settings.currency;
 
   @override
   void initState() {
@@ -98,13 +99,18 @@ class SettingsState extends State<SettingsPage> {
                                 child: DropdownButtonFormField<String>(
                                     decoration: InputDecoration(
                                         labelText: S.of(context).currency),
-                                    value: settings.currency,
+                                    value: _currency,
                                     items: settings.currencies
                                         .map((c) => DropdownMenuItem(
                                             child: Text(c), value: c))
                                         .toList(),
                                     onChanged: (v) {
-                                      settings.setCurrency(v);
+                                      setState(() {
+                                        _currency = v;
+                                      });
+                                    },
+                                    onSaved: (_) {
+                                      settings.setCurrency(_currency);
                                     })),
                           ]),
                           FormBuilderTextField(
@@ -122,7 +128,7 @@ class SettingsState extends State<SettingsPage> {
                               decoration: InputDecoration(
                                   labelText: S.of(context).tradingChartRange),
                               initialValue: settings.chartRange,
-                              onChanged: _onChartRange,
+                              onSaved: _onChartRange,
                               options: [
                                 FormBuilderFieldOption(
                                     child: Text(S.of(context).M1), value: '1M'),
@@ -161,7 +167,7 @@ class SettingsState extends State<SettingsPage> {
     final vss = vs.replaceAll(',', '');
     final v = double.tryParse(vss);
     if (v == null) return S.of(context).amountMustBeANumber;
-    if (v <= 0.0) return S.of(context).amountMustBePositive;
+    if (v < 0.0) return S.of(context).amountMustBePositive;
     return null;
   }
 
