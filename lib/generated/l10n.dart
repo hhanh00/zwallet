@@ -105,10 +105,10 @@ class S {
     );
   }
 
-  /// `Trading P&L`
+  /// `Wallet P&L`
   String get tradingPl {
     return Intl.message(
-      'Trading P&L',
+      'Wallet P&L',
       name: 'tradingPl',
       desc: '',
       args: [],
@@ -245,10 +245,10 @@ class S {
     );
   }
 
-  /// `Do you want to transfer your entire transparent balance to your shielded address?`
+  /// `Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 mZEC will be deducted.`
   String get doYouWantToTransferYourEntireTransparentBalanceTo {
     return Intl.message(
-      'Do you want to transfer your entire transparent balance to your shielded address?',
+      'Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 mZEC will be deducted.',
       name: 'doYouWantToTransferYourEntireTransparentBalanceTo',
       desc: '',
       args: [],
@@ -1160,6 +1160,16 @@ class S {
     return Intl.message(
       'Shield Transparent Balance When Sending',
       name: 'shieldTransparentBalanceWithSending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use UA`
+  String get useUa {
+    return Intl.message(
+      'Use UA',
+      name: 'useUa',
       desc: '',
       args: [],
     );

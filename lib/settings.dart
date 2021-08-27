@@ -112,6 +112,11 @@ class SettingsState extends State<SettingsPage> {
                                     onSaved: (_) {
                                       settings.setCurrency(_currency);
                                     })),
+                            if (coin.supportsUA) Expanded(child: FormBuilderCheckbox(
+                                name: 'use_ua',
+                                title: Text(S.of(context).useUa),
+                                initialValue: settings.useUA,
+                                onSaved: _onUseUA)),
                           ]),
                           FormBuilderTextField(
                               decoration: InputDecoration(
@@ -198,6 +203,10 @@ class SettingsState extends State<SettingsPage> {
   _onAutoShieldThreshold(_) {
     final v = _thresholdController.numberValue;
     settings.setAutoShieldThreshold(v);
+  }
+
+  _onUseUA(v) {
+    settings.setUseUA(v);
   }
 
   _onSave() {

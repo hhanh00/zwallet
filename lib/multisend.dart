@@ -153,24 +153,23 @@ class PayRecipientState extends State<PayRecipient> {
     });
   }
 
-  void _onCancel() {
-    Navigator.of(context).pop();
-  }
-
   void _onAdd() {
     final form = _formKey.currentState;
 
     if (form.validate()) {
       form.save();
       _amount = Decimal.parse(_currencyController.text.replaceAll(',', ''));
+      final address = unwrapUA(_addressController.text);
       final r = Recipient(
-          _addressController.text, (_amount * ZECUNIT_DECIMAL).toInt(), "");
+          address, (_amount * ZECUNIT_DECIMAL).toInt(), "");
       Navigator.of(context).pop(r);
     }
   }
 
   String _checkAddress(String v) {
     if (v.isEmpty) return S.of(context).addressIsEmpty;
+    final zaddr = WarpApi.getSaplingFromUA(v);
+    if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
     return null;
   }

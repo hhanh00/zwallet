@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +11,6 @@ import 'package:local_auth/local_auth.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:grouped_list/grouped_list.dart';
 
 import 'about.dart';
@@ -266,7 +264,12 @@ class _AccountPageState extends State<AccountPage>
 
   _address() => accountManager.showTAddr
       ? accountManager.taddress
-      : (_useSnapAddress ? _snapAddress : accountManager.active.address);
+      : (_useSnapAddress ?
+          _uaAddress(_snapAddress, accountManager.taddress, settings.useUA) :
+          _uaAddress(accountManager.active.address, accountManager.taddress, settings.useUA));
+
+  String _uaAddress(String zaddress, String taddress, bool useUA) =>
+      useUA ? WarpApi.getUA(zaddress, taddress) : zaddress;
 
   _sign(int b) {
     return b < 0 ? '-' : '+';

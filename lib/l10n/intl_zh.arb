@@ -108,5 +108,6 @@
   "openInExplorer": "用瀏覽器開啟",
   "na": "不適用",
   "add": "增加",
-  "tradingChartRange": "交易範圍"
+  "tradingChartRange": "交易範圍",
+  "useUa": "Use UA"
 }

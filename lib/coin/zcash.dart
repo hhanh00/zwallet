@@ -10,4 +10,5 @@ class Coin {
     LWInstance("Lightwalletd", "https://mainnet.lightwalletd.com:9067"),
     LWInstance("Zecwallet", "https://lwdv3.zecwallet.co"),
   ];
+  bool supportsUA = true;
 }

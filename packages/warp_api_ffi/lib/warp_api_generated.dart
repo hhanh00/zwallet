@@ -351,6 +351,32 @@ class NativeLibrary {
   late final _dart_sync_historical_prices _sync_historical_prices =
       _sync_historical_prices_ptr.asFunction<_dart_sync_historical_prices>();
 
+  ffi.Pointer<ffi.Int8> get_ua(
+    ffi.Pointer<ffi.Int8> sapling_addr,
+    ffi.Pointer<ffi.Int8> transparent_addr,
+  ) {
+    return _get_ua(
+      sapling_addr,
+      transparent_addr,
+    );
+  }
+
+  late final _get_ua_ptr = _lookup<ffi.NativeFunction<_c_get_ua>>('get_ua');
+  late final _dart_get_ua _get_ua = _get_ua_ptr.asFunction<_dart_get_ua>();
+
+  ffi.Pointer<ffi.Int8> get_sapling(
+    ffi.Pointer<ffi.Int8> ua_addr,
+  ) {
+    return _get_sapling(
+      ua_addr,
+    );
+  }
+
+  late final _get_sapling_ptr =
+      _lookup<ffi.NativeFunction<_c_get_sapling>>('get_sapling');
+  late final _dart_get_sapling _get_sapling =
+      _get_sapling_ptr.asFunction<_dart_get_sapling>();
+
   void dummy_export() {
     return _dummy_export();
   }
@@ -573,6 +599,24 @@ typedef _dart_sync_historical_prices = int Function(
   int now,
   int days,
   ffi.Pointer<ffi.Int8> currency,
+);
+
+typedef _c_get_ua = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> sapling_addr,
+  ffi.Pointer<ffi.Int8> transparent_addr,
+);
+
+typedef _dart_get_ua = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> sapling_addr,
+  ffi.Pointer<ffi.Int8> transparent_addr,
+);
+
+typedef _c_get_sapling = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> ua_addr,
+);
+
+typedef _dart_get_sapling = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> ua_addr,
 );
 
 typedef _c_dummy_export = ffi.Void Function();
