@@ -173,6 +173,8 @@ class SendState extends State<SendPage> {
 
   String _checkAddress(String v) {
     if (v.isEmpty) return S.of(context).addressIsEmpty;
+    final zaddr = WarpApi.getSaplingFromUA(v);
+    if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
     return null;
   }
@@ -290,13 +292,14 @@ class SendState extends State<SendPage> {
         if (_includeFee) _amount -= DEFAULT_FEE;
         int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toInt();
         final memo = _memoController.text;
+        final address = unwrapUA(_address);
 
         if (accountManager.canPay) {
           final tx = await compute(
               sendPayment,
               PaymentParams(
                   accountManager.active.id,
-                  _address,
+                  address,
                   _amount,
                   memo,
                   maxAmountPerNote,
@@ -310,7 +313,7 @@ class SendState extends State<SendPage> {
           Directory tempDir = await getTemporaryDirectory();
           String filename = "${tempDir.path}/tx.json";
 
-          final msg = WarpApi.prepareTx(accountManager.active.id, _address, _amount, memo,
+          final msg = WarpApi.prepareTx(accountManager.active.id, address, _amount, memo,
               maxAmountPerNote, settings.anchorOffset, filename);
 
           Share.shareFiles([filename], subject: s.unsignedTransactionFile);

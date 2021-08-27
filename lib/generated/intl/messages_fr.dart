@@ -143,6 +143,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "txId" : MessageLookupByLibrary.simpleMessage("ID de tx :"),
     "unsignedTransactionFile" : MessageLookupByLibrary.simpleMessage("Fichier de transaction non signée"),
     "useSettingscurrency" : m5,
+    "useUa" : MessageLookupByLibrary.simpleMessage("Use UA"),
     "version" : MessageLookupByLibrary.simpleMessage("Version"),
     "viewingKey" : MessageLookupByLibrary.simpleMessage("Affichage de la clé")
   };

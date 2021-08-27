@@ -182,4 +182,22 @@ pub unsafe extern "C" fn sync_historical_prices(now: i64, days: u32, currency: *
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn get_ua(
+    sapling_addr: *mut c_char,
+    transparent_addr: *mut c_char,
+) -> *mut c_char {
+    let sapling_addr = CStr::from_ptr(sapling_addr).to_string_lossy();
+    let transparent_addr = CStr::from_ptr(transparent_addr).to_string_lossy();
+    let ua_addr = api::get_ua(&sapling_addr, &transparent_addr);
+    CString::new(ua_addr).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn get_sapling(ua_addr: *mut c_char) -> *mut c_char {
+    let ua_addr = CStr::from_ptr(ua_addr).to_string_lossy();
+    let sapling_addr = api::get_sapling(&ua_addr);
+    CString::new(sapling_addr).unwrap().into_raw()
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn dummy_export() {}

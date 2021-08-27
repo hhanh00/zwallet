@@ -68,4 +68,8 @@ char *broadcast(char *tx_filename);
 
 uint32_t sync_historical_prices(int64_t now, uint32_t days, char *currency);
 
+char *get_ua(char *sapling_addr, char *transparent_addr);
+
+char *get_sapling(char *ua_addr);
+
 void dummy_export(void);

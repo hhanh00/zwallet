@@ -123,6 +123,16 @@ class WarpApi {
     return address.cast<Utf8>().toDartString();
   }
 
+  static String getUA(String zaddress, String taddress) {
+    final ua = warp_api_lib.get_ua(zaddress.toNativeUtf8().cast<Int8>(), taddress.toNativeUtf8().cast<Int8>());
+    return ua.cast<Utf8>().toDartString();
+  }
+
+  static String getSaplingFromUA(String ua) {
+    final zaddr = warp_api_lib.get_sapling(ua.toNativeUtf8().cast<Int8>());
+    return zaddr.cast<Utf8>().toDartString();
+  }
+
   static void setMempoolAccount(int account) {
     return warp_api_lib.set_mempool_account(account);
   }

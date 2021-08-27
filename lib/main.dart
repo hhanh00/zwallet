@@ -176,3 +176,8 @@ List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(List<T> timeseries,
   }
   return ts;
 }
+
+String unwrapUA(String address) {
+  final zaddr = WarpApi.getSaplingFromUA(address);
+  return zaddr.isNotEmpty ? zaddr : address;
+}

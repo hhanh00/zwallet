@@ -1164,6 +1164,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Use UA`
+  String get useUa {
+    return Intl.message(
+      'Use UA',
+      name: 'useUa',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

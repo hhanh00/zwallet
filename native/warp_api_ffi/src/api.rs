@@ -346,3 +346,16 @@ pub fn sync_historical_prices(now: i64, days: u32, currency: &str) -> u32 {
         log_result(res)
     })
 }
+
+pub fn get_ua(sapling_addr: &str, transparent_addr: &str) -> String {
+    let ua = sync::get_ua(sapling_addr, transparent_addr).unwrap();
+    ua.to_string()
+}
+
+pub fn get_sapling(ua_addr: &str) -> String {
+    let z_addr = sync::get_sapling(ua_addr);
+    match z_addr {
+        Ok(z_addr) => z_addr.to_string(),
+        Err(_) => String::new(),
+    }
+}

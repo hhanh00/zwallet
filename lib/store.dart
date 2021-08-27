@@ -65,6 +65,9 @@ abstract class _Settings with Store {
   @observable
   double autoShieldThreshold = 0.0;
 
+  @observable
+  bool useUA = false;
+
   var palette = charts.MaterialPalette.blue;
 
   @action
@@ -84,6 +87,7 @@ abstract class _Settings with Store {
     chartRange = prefs.getString('chart_range') ?? "1Y";
     shieldBalance = prefs.getBool('shield_balance') ?? false;
     autoShieldThreshold = prefs.getDouble('autoshield_threshold') ?? 0.0;
+    useUA = prefs.getBool('use_ua') ?? false;
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
@@ -237,6 +241,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     autoShieldThreshold = v;
     prefs.setDouble('autoshield_threshold', autoShieldThreshold);
+  }
+
+  @action
+  Future<void> setUseUA(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    useUA = v;
+    prefs.setBool('use_ua', useUA);
   }
 }
 
