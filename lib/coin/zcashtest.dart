@@ -9,5 +9,5 @@ class Coin {
   List<LWInstance> lwd = [
     LWInstance("Lightwalletd", "https://testnet.lightwalletd.com:9067"),
   ];
-  bool supportsUA = true;
+  bool supportsUA = false;
 }
