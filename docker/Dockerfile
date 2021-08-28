@@ -7,7 +7,7 @@ ENV ANDROID_NDK_HOME /Android/android-ndk-r21e
 
 COPY . /zwallet
 
-RUN --mount=type=secret,id=pwd cd /zwallet && ./configure.sh zcash && ./build.sh
+RUN --mount=type=secret,id=pwd cd /zwallet && ./configure.sh zcashtest && ./build.sh
 
 FROM alpine:latest
 WORKDIR /root
