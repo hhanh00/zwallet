@@ -74,15 +74,5 @@ class BackupState extends State<BackupPage> {
     );
   }
 
-  _showQR(String text) {
-    showDialog(
-        context: context,
-        barrierColor: Colors.black,
-        builder: (context) => AlertDialog(
-            content: Container(
-              width: double.maxFinite,
-              child: QrImage(data: text, backgroundColor: Colors.white)
-            ),
-        ));
-  }
+  _showQR(String text) => showQR(context, text);
 }

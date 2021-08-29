@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path/path.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:splashscreen/splashscreen.dart';
@@ -180,4 +181,16 @@ List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(List<T> timeseries,
 String unwrapUA(String address) {
   final zaddr = WarpApi.getSaplingFromUA(address);
   return zaddr.isNotEmpty ? zaddr : address;
+}
+
+void showQR(BuildContext context, String text) {
+  showDialog(
+      context: context,
+      barrierColor: Colors.black,
+      builder: (context) => AlertDialog(
+        content: Container(
+            width: double.maxFinite,
+            child: QrImage(data: text, backgroundColor: Colors.white)
+        ),
+      ));
 }

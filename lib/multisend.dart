@@ -113,6 +113,7 @@ class PayRecipientState extends State<PayRecipient> {
   final _addressController = TextEditingController();
   var _currencyController = MoneyMaskedTextController(
       decimalSeparator: '.', thousandSeparator: ',', precision: 3);
+  final _memoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -139,6 +140,13 @@ class PayRecipientState extends State<PayRecipient> {
                 keyboardType: TextInputType.number,
                 controller: _currencyController,
                 validator: _checkAmount),
+            TextFormField(
+              decoration: InputDecoration(labelText: S.of(context).memo),
+              minLines: 4,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              controller: _memoController,
+            ),
             ButtonBar(children:
               confirmButtons(context, _onAdd, okLabel: S.of(context).add, okIcon: Icon(MdiIcons.plus)))
           ]),
@@ -161,7 +169,7 @@ class PayRecipientState extends State<PayRecipient> {
       _amount = Decimal.parse(_currencyController.text.replaceAll(',', ''));
       final address = unwrapUA(_addressController.text);
       final r = Recipient(
-          address, (_amount * ZECUNIT_DECIMAL).toInt(), "");
+          address, (_amount * ZECUNIT_DECIMAL).toInt(), _memoController.text);
       Navigator.of(context).pop(r);
     }
   }

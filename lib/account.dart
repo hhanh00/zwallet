@@ -8,6 +8,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
@@ -171,6 +172,13 @@ class _AccountPageState extends State<AccountPage>
                         child: GestureDetector(
                             child: Icon(Icons.content_copy),
                             onTap: _onAddressCopy)),
+                    WidgetSpan(
+                      child: Padding(padding: EdgeInsets.symmetric(horizontal: 4))
+                    ),
+                    WidgetSpan(
+                        child: GestureDetector(
+                            child: Icon(MdiIcons.qrcodeScan),
+                            onTap: _onReceive)),
                   ])),
                   Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   if (!showTAddr)
@@ -264,9 +272,10 @@ class _AccountPageState extends State<AccountPage>
 
   _address() => accountManager.showTAddr
       ? accountManager.taddress
-      : (_useSnapAddress ?
-          _uaAddress(_snapAddress, accountManager.taddress, settings.useUA) :
-          _uaAddress(accountManager.active.address, accountManager.taddress, settings.useUA));
+      : (_useSnapAddress
+          ? _uaAddress(_snapAddress, accountManager.taddress, settings.useUA)
+          : _uaAddress(accountManager.active.address, accountManager.taddress,
+              settings.useUA));
 
   String _uaAddress(String zaddress, String taddress, bool useUA) =>
       useUA ? WarpApi.getUA(zaddress, taddress) : zaddress;
@@ -304,6 +313,10 @@ class _AccountPageState extends State<AccountPage>
             rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
           })),
     );
+  }
+
+  _onReceive() {
+    showQR(context, _address());
   }
 
   _unconfirmedStyle() {
