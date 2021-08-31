@@ -84,13 +84,9 @@ class WarpApi {
     warp_api_lib.rewind_to_height(height);
   }
 
-  static void warpSync(bool getTx, int anchorOffset, void Function(int) f) {
-    var receivePort = ReceivePort();
-    Isolate.spawn(warpSyncIsolateFn, SyncParams(getTx, anchorOffset, receivePort.sendPort));
-
-    receivePort.listen((height) {
-      f(height);
-    });
+  static void warpSync(SyncParams params) {
+    warp_api_lib.warp_sync(params.getTx ? 1 : 0, params.anchorOffset, params.port!.nativePort);
+    params.port!.send(-1);
   }
 
   static Future<int> tryWarpSync(bool getTx, int anchorOffset) async {
@@ -225,11 +221,6 @@ String sendMultiPaymentIsolateFn(MultiPaymentParams params) {
       params.anchorOffset,
       params.port.nativePort);
   return txId.cast<Utf8>().toDartString();
-}
-
-void warpSyncIsolateFn(SyncParams params) {
-  warp_api_lib.warp_sync(params.getTx ? 1 : 0, params.anchorOffset, params.port!.nativePort);
-  params.port!.send(-1);
 }
 
 int tryWarpSyncIsolateFn(SyncParams params) {

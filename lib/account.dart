@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -36,6 +38,8 @@ class _AccountPageState extends State<AccountPage>
   TabController _tabController;
   bool _accountTab = true;
   bool _syncing = false;
+  StreamSubscription _progressDispose;
+  StreamSubscription _syncDispose;
 
   @override
   bool get wantKeepAlive => true;
@@ -55,9 +59,20 @@ class _AccountPageState extends State<AccountPage>
       await _setupTimer();
     });
     WidgetsBinding.instance.addObserver(this);
-    progressStream.listen((percent) {
+    _progressDispose = progressStream.listen((percent) {
       setState(() {
         _progress = percent;
+      });
+    });
+    _syncDispose = syncStream.listen((height) {
+      setState(() {
+        if (height >= 0)
+          syncStatus.setSyncHeight(height);
+        else {
+          _syncing = false;
+          WarpApi.mempoolReset(syncStatus.latestHeight);
+          _trySync();
+        }
       });
     });
   }
@@ -66,6 +81,8 @@ class _AccountPageState extends State<AccountPage>
   void dispose() {
     _timerSync?.cancel();
     WidgetsBinding.instance.removeObserver(this);
+    _progressDispose.cancel();
+    _syncDispose.cancel();
     super.dispose();
   }
 
@@ -347,17 +364,7 @@ class _AccountPageState extends State<AccountPage>
   _sync() async {
     _syncing = true;
     await syncStatus.update();
-    WarpApi.warpSync(settings.getTx, settings.anchorOffset, (int height) async {
-      setState(() {
-        if (height >= 0)
-          syncStatus.setSyncHeight(height);
-        else {
-          _syncing = false;
-          WarpApi.mempoolReset(syncStatus.latestHeight);
-          _trySync();
-        }
-      });
-    });
+    await sync(settings.getTx, settings.anchorOffset, syncPort.sendPort);
   }
 
   _trySync() async {
@@ -979,4 +986,9 @@ class ContactsState extends State<ContactsWidget>
   _onContact(Contact contact) {
     Navigator.of(context).pushNamed('/send', arguments: contact);
   }
+}
+
+Future<void> sync(bool getTx, int anchorOffset, SendPort port) async {
+  final params = SyncParams(getTx, anchorOffset, port);
+  await compute(WarpApi.warpSync, params);
 }

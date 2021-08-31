@@ -837,6 +837,9 @@ abstract class _MultiPayStore with Store {
 var progressPort = ReceivePort();
 var progressStream = progressPort.asBroadcastStream();
 
+var syncPort = ReceivePort();
+var syncStream = syncPort.asBroadcastStream();
+
 class Note {
   int id;
   int height;
