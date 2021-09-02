@@ -21,15 +21,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m0(currency) => "於 ${currency}的數量";
 
-  static m1(ticker) => "發送 ${ticker}";
+  static m1(ticker) => "你需要將你的公開結餘轉往屏蔽地址?";
 
-  static m2(ticker) => "發送 ${ticker} 至...";
+  static m2(ticker) => "發送 ${ticker}";
 
-  static m3(amount, ticker, count) => "發送數目${amount} ${ticker} 至 ${count} 收款人";
+  static m3(ticker) => "發送 ${ticker} 至...";
 
-  static m4(aZEC, ticker, address) => "傳送 ${aZEC} ${ticker} 至 ${address}";
+  static m4(amount, ticker, count) => "發送數目${amount} ${ticker} 至 ${count} 收款人";
 
-  static m5(currency) => "使用 ${currency}";
+  static m5(aZEC, ticker, address) => "傳送 ${aZEC} ${ticker} 至 ${address}";
+
+  static m6(currency) => "使用 ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -68,7 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "datetime" : MessageLookupByLibrary.simpleMessage("日期/時間"),
     "delete" : MessageLookupByLibrary.simpleMessage("刪除"),
     "doYouWantToDeleteTheSecretKeyAndConvert" : MessageLookupByLibrary.simpleMessage("你確定銷毀這秘密鎖匙？這指令執行後，該鎖匙會被永久刪除，不能復原。"),
-    "doYouWantToTransferYourEntireTransparentBalanceTo" : MessageLookupByLibrary.simpleMessage("你需要將你的公開結餘轉往屏蔽地址?"),
+    "doYouWantToTransferYourEntireTransparentBalanceTo" : m1,
     "enterSeed" : MessageLookupByLibrary.simpleMessage("輸入種子，秘密鎖匙或查看鎖匙\n留空預備新帳戶"),
     "height" : MessageLookupByLibrary.simpleMessage("高度"),
     "history" : MessageLookupByLibrary.simpleMessage("過去記錄"),
@@ -113,10 +115,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "seed" : MessageLookupByLibrary.simpleMessage("種子"),
     "selectNotesToExcludeFromPayments" : MessageLookupByLibrary.simpleMessage("選取不需要的貨幣"),
     "send" : MessageLookupByLibrary.simpleMessage("發送"),
-    "sendCointicker" : m1,
-    "sendCointickerTo" : m2,
-    "sendingATotalOfAmountCointickerToCountRecipients" : m3,
-    "sendingAzecCointickerToAddress" : m4,
+    "sendCointicker" : m2,
+    "sendCointickerTo" : m3,
+    "sendingATotalOfAmountCointickerToCountRecipients" : m4,
+    "sendingAzecCointickerToAddress" : m5,
     "server" : MessageLookupByLibrary.simpleMessage("伺服器"),
     "settings" : MessageLookupByLibrary.simpleMessage("設定"),
     "shieldTranspBalance" : MessageLookupByLibrary.simpleMessage("屏蔽公開餘額"),
@@ -138,7 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionDetails" : MessageLookupByLibrary.simpleMessage("交易資料"),
     "txId" : MessageLookupByLibrary.simpleMessage("TX ID:"),
     "unsignedTransactionFile" : MessageLookupByLibrary.simpleMessage("未簽署交易文件"),
-    "useSettingscurrency" : m5,
+    "useSettingscurrency" : m6,
     "useUa" : MessageLookupByLibrary.simpleMessage("Use UA"),
     "version" : MessageLookupByLibrary.simpleMessage("版本"),
     "viewingKey" : MessageLookupByLibrary.simpleMessage("查看鎖匙")

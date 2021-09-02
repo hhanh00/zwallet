@@ -21,15 +21,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m0(currency) => "Amount in ${currency}";
 
-  static m1(ticker) => "Send ${ticker}";
+  static m1(ticker) => "Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 m${ticker} will be deducted.";
 
-  static m2(ticker) => "Send ${ticker} to...";
+  static m2(ticker) => "Send ${ticker}";
 
-  static m3(amount, ticker, count) => "Sending a total of ${amount} ${ticker} to ${count} recipients";
+  static m3(ticker) => "Send ${ticker} to...";
 
-  static m4(aZEC, ticker, address) => "Sending ${aZEC} ${ticker} to ${address}";
+  static m4(amount, ticker, count) => "Sending a total of ${amount} ${ticker} to ${count} recipients";
 
-  static m5(currency) => "Use ${currency}";
+  static m5(aZEC, ticker, address) => "Sending ${aZEC} ${ticker} to ${address}";
+
+  static m6(currency) => "Use ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -72,7 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "datetime" : MessageLookupByLibrary.simpleMessage("Date/Time"),
     "delete" : MessageLookupByLibrary.simpleMessage("DELETE"),
     "doYouWantToDeleteTheSecretKeyAndConvert" : MessageLookupByLibrary.simpleMessage("Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible."),
-    "doYouWantToTransferYourEntireTransparentBalanceTo" : MessageLookupByLibrary.simpleMessage("Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 mZEC will be deducted."),
+    "doYouWantToTransferYourEntireTransparentBalanceTo" : m1,
     "enterSeed" : MessageLookupByLibrary.simpleMessage("Enter Seed, Secret Key or Viewing Key. Leave blank for a new account"),
     "height" : MessageLookupByLibrary.simpleMessage("Height"),
     "history" : MessageLookupByLibrary.simpleMessage("History"),
@@ -117,10 +119,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "seed" : MessageLookupByLibrary.simpleMessage("Seed"),
     "selectNotesToExcludeFromPayments" : MessageLookupByLibrary.simpleMessage("Select notes to EXCLUDE from payments"),
     "send" : MessageLookupByLibrary.simpleMessage("Send"),
-    "sendCointicker" : m1,
-    "sendCointickerTo" : m2,
-    "sendingATotalOfAmountCointickerToCountRecipients" : m3,
-    "sendingAzecCointickerToAddress" : m4,
+    "sendCointicker" : m2,
+    "sendCointickerTo" : m3,
+    "sendingATotalOfAmountCointickerToCountRecipients" : m4,
+    "sendingAzecCointickerToAddress" : m5,
     "server" : MessageLookupByLibrary.simpleMessage("Server"),
     "settings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "shieldTranspBalance" : MessageLookupByLibrary.simpleMessage("Shield Transp. Balance"),
@@ -143,7 +145,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionDetails" : MessageLookupByLibrary.simpleMessage("Transaction Details"),
     "txId" : MessageLookupByLibrary.simpleMessage("TX ID"),
     "unsignedTransactionFile" : MessageLookupByLibrary.simpleMessage("Unsigned Transaction File"),
-    "useSettingscurrency" : m5,
+    "useSettingscurrency" : m6,
     "useUa" : MessageLookupByLibrary.simpleMessage("Use UA"),
     "version" : MessageLookupByLibrary.simpleMessage("Version"),
     "viewingKey" : MessageLookupByLibrary.simpleMessage("Viewing Key")

@@ -245,13 +245,13 @@ class S {
     );
   }
 
-  /// `Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 mZEC will be deducted.`
-  String get doYouWantToTransferYourEntireTransparentBalanceTo {
+  /// `Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 m{ticker} will be deducted.`
+  String doYouWantToTransferYourEntireTransparentBalanceTo(Object ticker) {
     return Intl.message(
-      'Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 mZEC will be deducted.',
+      'Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 m$ticker will be deducted.',
       name: 'doYouWantToTransferYourEntireTransparentBalanceTo',
       desc: '',
-      args: [],
+      args: [ticker],
     );
   }
 

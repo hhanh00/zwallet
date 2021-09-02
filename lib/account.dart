@@ -319,7 +319,7 @@ class _AccountPageState extends State<AccountPage>
       builder: (context) => AlertDialog(
           title: Text(S.of(context).shieldTransparentBalance),
           content: Text(
-              S.of(context).doYouWantToTransferYourEntireTransparentBalanceTo),
+              S.of(context).doYouWantToTransferYourEntireTransparentBalanceTo(coin.ticker)),
           actions: confirmButtons(context, () async {
             final s = S.of(context);
             Navigator.of(this.context).pop();

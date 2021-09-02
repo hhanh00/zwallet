@@ -182,7 +182,7 @@ pub fn send_payment(
 ) -> String {
     let r = Runtime::new().unwrap();
     r.block_on(async {
-        let wallet = WALLET.get().unwrap().lock().unwrap();
+        let mut wallet = WALLET.get().unwrap().lock().unwrap();
         let res = wallet
             .send_payment(
                 account,
@@ -215,7 +215,7 @@ pub fn send_multi_payment(
 ) -> String {
     let r = Runtime::new().unwrap();
     r.block_on(async {
-        let wallet = WALLET.get().unwrap().lock().unwrap();
+        let mut wallet = WALLET.get().unwrap().lock().unwrap();
         let res = wallet
             .send_multi_payment(account, recipients_json, anchor_offset, move |progress| {
                 report_progress(progress, port);
