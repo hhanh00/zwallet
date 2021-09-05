@@ -55,7 +55,7 @@ class _AccountPageState extends State<AccountPage>
     });
     Future.microtask(() async {
       await accountManager.updateUnconfirmedBalance();
-      await accountManager.fetchAccountData();
+      await accountManager.fetchAccountData(false);
       await _setupTimer();
     });
     WidgetsBinding.instance.addObserver(this);
@@ -66,9 +66,10 @@ class _AccountPageState extends State<AccountPage>
     });
     _syncDispose = syncStream.listen((height) {
       setState(() {
-        if (height >= 0)
+        if (height >= 0) {
           syncStatus.setSyncHeight(height);
-        else {
+          eta.checkpoint(height, DateTime.now());
+        } else {
           _syncing = false;
           WarpApi.mempoolReset(syncStatus.latestHeight);
           _trySync();
@@ -153,16 +154,20 @@ class _AccountPageState extends State<AccountPage>
             padding: EdgeInsets.all(20),
             child: Center(
                 child: Column(children: [
-              Observer(
-                  builder: (context) => syncStatus.syncedHeight <= 0
-                      ? Text(S.of(context).synching)
-                      : syncStatus.isSynced()
-                          ? Text('${syncStatus.syncedHeight}',
-                              style: theme.textTheme.caption)
-                          : Text(
-                              '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}',
-                              style: theme.textTheme.caption
-                                  .apply(color: theme.primaryColor))),
+              Observer(builder: (context) {
+                final _1 = eta.eta;
+                final _2 = syncStatus.syncedHeight;
+                final _3 = syncStatus.latestHeight;
+                return syncStatus.syncedHeight <= 0
+                    ? Text(S.of(context).synching)
+                    : syncStatus.isSynced()
+                        ? Text('${syncStatus.syncedHeight}',
+                            style: theme.textTheme.caption)
+                        : Text(
+                            '${syncStatus.syncedHeight} / ${syncStatus.latestHeight} ${eta.eta}',
+                            style: theme.textTheme.caption
+                                .apply(color: theme.primaryColor));
+              }),
               Padding(padding: EdgeInsets.symmetric(vertical: 8)),
               Observer(builder: (context) {
                 final _ = accountManager.active.address;
@@ -364,6 +369,7 @@ class _AccountPageState extends State<AccountPage>
 
   _sync() async {
     _syncing = true;
+    eta.init(syncStatus.latestHeight);
     await syncStatus.update();
     await sync(settings.getTx, settings.anchorOffset, syncPort.sendPort);
   }
@@ -385,7 +391,7 @@ class _AccountPageState extends State<AccountPage>
         syncStatus.update();
       }
     }
-    await accountManager.fetchAccountData();
+    await accountManager.fetchAccountData(false);
     await accountManager.updateBalance();
     await accountManager.updateUnconfirmedBalance();
     accountManager.updateTBalance();

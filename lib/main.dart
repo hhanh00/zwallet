@@ -32,6 +32,7 @@ var priceStore = PriceStore();
 var syncStatus = SyncStatus();
 var settings = Settings();
 var multipayData = MultiPayStore();
+var eta = ETAStore();
 
 Future<Database> getDatabase() async {
   var databasesPath = await getDatabasesPath();

@@ -96,6 +96,7 @@ class MultiPayState extends State<MultiPayPage> {
       rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
 
       multipayData.clear();
+      await accountManager.fetchAccountData(true);
     }
   }
 }

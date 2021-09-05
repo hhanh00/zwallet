@@ -15,8 +15,7 @@ static MEMPOOL: OnceCell<Mutex<MemPool>> = OnceCell::new();
 static SYNCLOCK: OnceCell<Mutex<()>> = OnceCell::new();
 
 fn get_lock<T>(cell: &OnceCell<Mutex<T>>) -> anyhow::Result<MutexGuard<T>> {
-    cell
-        .get()
+    cell.get()
         .unwrap()
         .lock()
         .map_err(|_| anyhow::anyhow!("Could not acquire lock"))
@@ -137,7 +136,10 @@ pub fn try_warp_sync(get_tx: bool, anchor_offset: u32) -> i8 {
     let r = get_runtime();
     let res = r.block_on(async {
         android_logger::init_once(Config::default().with_min_level(Level::Info));
-        let _sync_lock = SYNCLOCK.get().ok_or_else(|| anyhow::anyhow!("Lock not initialized"))?.try_lock();
+        let _sync_lock = SYNCLOCK
+            .get()
+            .ok_or_else(|| anyhow::anyhow!("Lock not initialized"))?
+            .try_lock();
         if _sync_lock.is_ok() {
             let wallet = get_lock(&WALLET)?;
             let db_path = wallet.db_path.clone();

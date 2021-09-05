@@ -309,6 +309,7 @@ class SendState extends State<SendPage> {
 
           final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
           rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+          await accountManager.fetchAccountData(true);
         } else {
           Directory tempDir = await getTemporaryDirectory();
           String filename = "${tempDir.path}/tx.json";

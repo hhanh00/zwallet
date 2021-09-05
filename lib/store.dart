@@ -440,9 +440,9 @@ abstract class _AccountManager with Store {
   }
 
   @action
-  Future<void> fetchAccountData() async {
+  Future<void> fetchAccountData(bool force) async {
     if (active == null) return;
-    await _fetchData(active.id, false);
+    await _fetchData(active.id, force);
   }
 
   @action
@@ -832,6 +832,48 @@ abstract class _MultiPayStore with Store {
   void clear() {
     recipients.clear();
   }
+}
+
+class ETAStore = _ETAStore with _$ETAStore;
+
+abstract class _ETAStore with Store {
+  int height = 0;
+
+  @observable
+  ETACheckpoint prev;
+
+  @observable
+  ETACheckpoint current;
+
+  @action
+  void init(int height) {
+    this.height = height;
+    prev = null;
+  }
+
+  @action
+  void checkpoint(int height, DateTime timestamp) {
+    prev = current;
+    current = ETACheckpoint(height, timestamp);
+  }
+
+  @computed
+  String get eta {
+    if (prev == null || current == null) return "";
+    final speed = (current.height - prev.height) / (current.timestamp.millisecondsSinceEpoch - prev.timestamp.millisecondsSinceEpoch);
+    if (speed == 0) return "";
+    final eta = (height - current.height) / speed;
+    if (eta <= 0) return "";
+    final duration = Duration(milliseconds: eta.floor()).toString().split('.')[0];
+    return "(ETA: $duration)";
+  }
+}
+
+class ETACheckpoint {
+  int height;
+  DateTime timestamp;
+
+  ETACheckpoint(this.height, this.timestamp);
 }
 
 var progressPort = ReceivePort();
