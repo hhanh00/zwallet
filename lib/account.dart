@@ -190,8 +190,8 @@ class _AccountPageState extends State<AccountPage>
                             child: Icon(Icons.content_copy),
                             onTap: _onAddressCopy)),
                     WidgetSpan(
-                      child: Padding(padding: EdgeInsets.symmetric(horizontal: 4))
-                    ),
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 4))),
                     WidgetSpan(
                         child: GestureDetector(
                             child: Icon(MdiIcons.qrcodeScan),
@@ -318,8 +318,9 @@ class _AccountPageState extends State<AccountPage>
       barrierDismissible: false,
       builder: (context) => AlertDialog(
           title: Text(S.of(context).shieldTransparentBalance),
-          content: Text(
-              S.of(context).doYouWantToTransferYourEntireTransparentBalanceTo(coin.ticker)),
+          content: Text(S
+              .of(context)
+              .doYouWantToTransferYourEntireTransparentBalanceTo(coin.ticker)),
           actions: confirmButtons(context, () async {
             final s = S.of(context);
             Navigator.of(this.context).pop();
@@ -887,28 +888,30 @@ class PnLTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final sortSymbol = accountManager.pnlDesc ? ' \u2193' : ' \u2191';
     return SingleChildScrollView(
-        child: PaginatedDataTable(
-            columns: [
-              DataColumn(
-                  label: Text(S.of(context).datetime + sortSymbol),
-                  onSort: (_, __) {
-                    accountManager.togglePnlDesc();
-                  }),
-              DataColumn(label: Text(S.of(context).qty), numeric: true),
-              DataColumn(label: Text(S.of(context).price), numeric: true),
-              DataColumn(label: Text(S.of(context).realized), numeric: true),
-              DataColumn(label: Text(S.of(context).mm), numeric: true),
-              DataColumn(label: Text(S.of(context).total), numeric: true),
-            ],
-            columnSpacing: 16,
-            showCheckboxColumn: false,
-            availableRowsPerPage: [5, 10, 25, 100],
-            onRowsPerPageChanged: (int value) {
-              settings.setRowsPerPage(value);
-            },
-            showFirstLastButtons: true,
-            rowsPerPage: settings.rowsPerPage,
-            source: PnLDataSource(context)));
+        child: Observer(
+            builder: (context) => PaginatedDataTable(
+                columns: [
+                  DataColumn(
+                      label: Text(S.of(context).datetime + sortSymbol),
+                      onSort: (_, __) {
+                        accountManager.togglePnlDesc();
+                      }),
+                  DataColumn(label: Text(S.of(context).qty), numeric: true),
+                  DataColumn(label: Text(S.of(context).price), numeric: true),
+                  DataColumn(
+                      label: Text(S.of(context).realized), numeric: true),
+                  DataColumn(label: Text(S.of(context).mm), numeric: true),
+                  DataColumn(label: Text(S.of(context).total), numeric: true),
+                ],
+                columnSpacing: 16,
+                showCheckboxColumn: false,
+                availableRowsPerPage: [5, 10, 25, 100],
+                onRowsPerPageChanged: (int value) {
+                  settings.setRowsPerPage(value);
+                },
+                showFirstLastButtons: true,
+                rowsPerPage: settings.rowsPerPage,
+                source: PnLDataSource(context))));
   }
 }
 
