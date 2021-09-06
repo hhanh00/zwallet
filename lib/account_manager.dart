@@ -25,7 +25,7 @@ class AccountManagerState extends State<AccountManagerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(S.of(context).accounts), actions: [
+        appBar: AppBar(title: Text(S.of(context).selectAccount), actions: [
           PopupMenuButton<String>(
               itemBuilder: (context) => [
                     PopupMenuItem(
@@ -36,36 +36,33 @@ class AccountManagerState extends State<AccountManagerPage> {
               onSelected: _onMenu)
         ]),
         body: Observer(
-            builder: (context) => Stack(children: [
+            builder: (context) =>
                   accountManager.accounts.isEmpty
                       ? Center(child: NoAccount())
-                      : ListView(
-                          children: accountManager.accounts
-                              .asMap()
-                              .entries
-                              .map((a) => Card(
-                                      child: Dismissible(
-                                    key: Key(a.value.name),
-                                    child: ListTile(
-                                      title: Text(a.value.name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5),
-                                      trailing:
-                                          Text("${a.value.balance / ZECUNIT}"),
-                                      onTap: () {
-                                        _selectAccount(a.value);
-                                      },
-                                      onLongPress: () {
-                                        _editAccount(a.value);
-                                      },
-                                    ),
-                                    confirmDismiss: _onAccountDelete,
-                                    onDismissed: (direction) =>
-                                        _onDismissed(a.key, a.value.id),
-                                  )))
-                              .toList()),
-                ])),
+                      : ListView.builder(
+                          itemCount: accountManager.accounts.length,
+                          itemBuilder: (BuildContext context, int index) {
+                          final a = accountManager.accounts[index];
+                          return Card(
+                              child: Dismissible(
+                            key: Key(a.name),
+                            child: ListTile(
+                              title: Text(a.name,
+                                  style: Theme.of(context).textTheme.headline5),
+                              trailing: Text("${a.balance / ZECUNIT}"),
+                              onTap: () {
+                                _selectAccount(a);
+                              },
+                              onLongPress: () {
+                                _editAccount(a);
+                              },
+                            ),
+                            confirmDismiss: _onAccountDelete,
+                            onDismissed: (direction) =>
+                                _onDismissed(index, a.id),
+                          ));
+                        }),
+                ),
         floatingActionButton: FloatingActionButton(
             onPressed: _onRestore, child: Icon(Icons.add)));
   }
@@ -135,14 +132,10 @@ class AccountManagerState extends State<AccountManagerPage> {
 }
 
 class NoAccount extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    final Widget wallet = SvgPicture.asset(
-        'assets/wallet.svg',
-        color: Theme.of(context).primaryColor,
-        semanticsLabel: 'Wallet'
-    );
+    final Widget wallet = SvgPicture.asset('assets/wallet.svg',
+        color: Theme.of(context).primaryColor, semanticsLabel: 'Wallet');
 
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       SizedBox(child: wallet, height: 150, width: 150),

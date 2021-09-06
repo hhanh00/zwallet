@@ -37,7 +37,6 @@ class _AccountPageState extends State<AccountPage>
   String _snapAddress = "";
   TabController _tabController;
   bool _accountTab = true;
-  bool _syncing = false;
   StreamSubscription _progressDispose;
   StreamSubscription _syncDispose;
 
@@ -70,7 +69,6 @@ class _AccountPageState extends State<AccountPage>
           syncStatus.setSyncHeight(height);
           eta.checkpoint(height, DateTime.now());
         } else {
-          _syncing = false;
           WarpApi.mempoolReset(syncStatus.latestHeight);
           _trySync();
         }
@@ -104,10 +102,21 @@ class _AccountPageState extends State<AccountPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (!syncStatus.isSynced() && !_syncing) _trySync();
+    if (!syncStatus.isSynced() && !syncStatus.syncing) _trySync();
     if (accountManager.active == null) return CircularProgressIndicator();
     final theme = Theme.of(this.context);
     final hasTAddr = accountManager.taddress.isNotEmpty;
+
+    if (syncStatus.accountRestored) {
+      syncStatus.setAccountRestored(false);
+      Future.microtask(() {
+        rescanDialog(context, () {
+          syncStatus.sync(context);
+          Navigator.of(context).pop();
+        });
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Observer(
@@ -158,8 +167,8 @@ class _AccountPageState extends State<AccountPage>
                 final _1 = eta.eta;
                 final _2 = syncStatus.syncedHeight;
                 final _3 = syncStatus.latestHeight;
-                return syncStatus.syncedHeight <= 0
-                    ? Text(S.of(context).synching)
+                return syncStatus.syncedHeight < 0
+                    ? Text("")
                     : syncStatus.isSynced()
                         ? Text('${syncStatus.syncedHeight}',
                             style: theme.textTheme.caption)
@@ -368,9 +377,6 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _sync() async {
-    _syncing = true;
-    await syncStatus.update();
-    await sync(settings.getTx, settings.anchorOffset, syncPort.sendPort);
   }
 
   _trySync() async {
@@ -463,15 +469,8 @@ class _AccountPageState extends State<AccountPage>
   _rescan() {
     rescanDialog(context, () {
           Navigator.of(context).pop();
-          final snackBar =
-          SnackBar(content: Text(S
-              .of(context)
-              .rescanRequested));
-          rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
-          syncStatus.setSyncHeight(0);
-          WarpApi.rewindToHeight(0);
-          _sync();
-        });
+          syncStatus.sync(context);
+    });
   }
 
   _cold() {
@@ -992,7 +991,3 @@ class ContactsState extends State<ContactsWidget>
   }
 }
 
-Future<void> sync(bool getTx, int anchorOffset, SendPort port) async {
-  final params = SyncParams(getTx, anchorOffset, port);
-  await compute(WarpApi.warpSync, params);
-}

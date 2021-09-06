@@ -115,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "scanStartingMomentarily" : MessageLookupByLibrary.simpleMessage("掃描即將開始"),
     "secretKey" : MessageLookupByLibrary.simpleMessage("秘密鎖匙"),
     "seed" : MessageLookupByLibrary.simpleMessage("種子"),
+    "selectAccount" : MessageLookupByLibrary.simpleMessage("Select Account"),
     "selectNotesToExcludeFromPayments" : MessageLookupByLibrary.simpleMessage("選取不需要的貨幣"),
     "send" : MessageLookupByLibrary.simpleMessage("發送"),
     "sendCointicker" : m2,

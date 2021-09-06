@@ -112,5 +112,6 @@
   "useUa": "Use UA",
   "createANewAccount": "Create a new account and it will show up here",
   "duplicateAccount": "Duplicate Account",
-  "thisAccountAlreadyExists": "This account already exists."
+  "thisAccountAlreadyExists": "This account already exists.",
+  "selectAccount": "Select Account"
 }

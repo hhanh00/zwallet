@@ -64,7 +64,6 @@ class _RestorePageState extends State<RestorePage> {
     if (_formKey.currentState.validate()) {
       final account =
           WarpApi.newAccount(_nameController.text, _keyController.text);
-      print("$account");
       if (account < 0) {
         showDialog(
             context: context,
@@ -85,15 +84,11 @@ class _RestorePageState extends State<RestorePage> {
         await accountManager.refresh();
         await accountManager.setActiveAccountId(account);
         if (_keyController.text != "") {
-          await rescanDialog(context, () {
-            WarpApi.rewindToHeight(0);
-            Navigator.of(context).pop();
-          });
+          syncStatus.setAccountRestored(true);
         }
         else if (accountManager.accounts.length == 1)
           WarpApi.skipToLastHeight(); // single new account -> quick sync
         Navigator.of(context).pop();
-        Navigator.of(context).pushReplacementNamed('/account');
       }
     }
   }

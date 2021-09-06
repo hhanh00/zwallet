@@ -1,6 +1,7 @@
 import 'dart:isolate';
 import 'dart:typed_data';
 import 'dart:math' as math;
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts show MaterialPalette;
@@ -16,6 +17,7 @@ import 'dart:convert' as convert;
 import 'package:convert/convert.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 
+import 'generated/l10n.dart';
 import 'main.dart';
 
 part 'store.g.dart';
@@ -423,6 +425,8 @@ abstract class _AccountManager with Store {
   Future<void> delete(int account) async {
     await db.rawDelete("DELETE FROM accounts WHERE id_account = ?1", [account]);
     await db.rawDelete("DELETE FROM taddrs WHERE account = ?1", [account]);
+    if (account == active?.id)
+      resetToDefaultAccount();
   }
 
   @action
@@ -787,6 +791,12 @@ abstract class _SyncStatus with Store {
   }
 
   @observable
+  bool accountRestored = false;
+
+  @observable
+  bool syncing = false;
+
+  @observable
   int syncedHeight = -1;
 
   @observable
@@ -809,6 +819,27 @@ abstract class _SyncStatus with Store {
         0;
     if (_syncedHeight > 0) syncedHeight = _syncedHeight;
     return syncedHeight == latestHeight;
+  }
+
+  @action
+  Future<void> sync(BuildContext context) async {
+    syncing = true;
+    final snackBar =
+    SnackBar(content: Text(S
+        .of(context)
+        .rescanRequested));
+    rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
+    syncStatus.setSyncHeight(0);
+    WarpApi.rewindToHeight(0);
+    await syncStatus.update();
+    final params = SyncParams(settings.getTx, settings.anchorOffset, syncPort.sendPort);
+    await compute(WarpApi.warpSync, params);
+    syncing = false;
+  }
+
+  @action
+  void setAccountRestored(bool v) {
+    accountRestored = v;
   }
 }
 

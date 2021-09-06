@@ -119,6 +119,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "scanStartingMomentarily" : MessageLookupByLibrary.simpleMessage("Le scan démarre momentanément"),
     "secretKey" : MessageLookupByLibrary.simpleMessage("Clé secrète"),
     "seed" : MessageLookupByLibrary.simpleMessage("Graine"),
+    "selectAccount" : MessageLookupByLibrary.simpleMessage("Select Account"),
     "selectNotesToExcludeFromPayments" : MessageLookupByLibrary.simpleMessage("Sélectionnez les billets à EXCLURE des paiements"),
     "send" : MessageLookupByLibrary.simpleMessage("Envoyer"),
     "sendCointicker" : m2,
