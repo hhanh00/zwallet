@@ -453,7 +453,7 @@ typedef _dart_set_mempool_account = void Function(
   int account,
 );
 
-typedef _c_new_account = ffi.Uint32 Function(
+typedef _c_new_account = ffi.Int32 Function(
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> data,
 );

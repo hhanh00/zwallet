@@ -2,6 +2,7 @@ typedef char int8_t;
 typedef long long int int64_t;
 typedef long long int uint64_t;
 typedef long long int uintptr_t;
+typedef long int int32_t;
 typedef long int uint32_t;
 typedef char bool;
 typedef void *DartPostCObjectFnType;
@@ -22,7 +23,7 @@ char *new_address(uint32_t account);
 
 void set_mempool_account(uint32_t account);
 
-uint32_t new_account(char *name, char *data);
+int32_t new_account(char *name, char *data);
 
 int64_t get_mempool_balance(void);
 

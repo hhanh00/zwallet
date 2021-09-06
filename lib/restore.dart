@@ -27,7 +27,7 @@ class _RestorePageState extends State<RestorePage> {
         body: Form(
             key: _formKey,
             child: Padding(
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.all(16),
                 child: Column(children: [
                   TextFormField(
                     decoration: InputDecoration(labelText: S.of(context).accountName),
@@ -64,19 +64,37 @@ class _RestorePageState extends State<RestorePage> {
     if (_formKey.currentState.validate()) {
       final account =
           WarpApi.newAccount(_nameController.text, _keyController.text);
-      await accountManager.refresh();
-      await accountManager.setActiveAccountId(account);
-      if (accountManager.accounts.length == 1) {
-        if (_keyController.text == "")
-          WarpApi.skipToLastHeight(); // single new account -> quick sync
-        else {
-          final snackBar = SnackBar(content: Text(S.of(context).scanStartingMomentarily));
-          rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
-          WarpApi.rewindToHeight(0);
-        }
+      print("$account");
+      if (account < 0) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+                title: Text(S.of(context).duplicateAccount),
+                content: Text(S.of(context).thisAccountAlreadyExists),
+                actions: [
+                  ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      label: Text(S.of(context).ok),
+                      icon: Icon(Icons.done))
+                ]));
       }
-      Navigator.of(context).pop();
-      Navigator.of(context).pushReplacementNamed('/account');
+      else {
+        await accountManager.refresh();
+        await accountManager.setActiveAccountId(account);
+        if (_keyController.text != "") {
+          await rescanDialog(context, () {
+            WarpApi.rewindToHeight(0);
+            Navigator.of(context).pop();
+          });
+        }
+        else if (accountManager.accounts.length == 1)
+          WarpApi.skipToLastHeight(); // single new account -> quick sync
+        Navigator.of(context).pop();
+        Navigator.of(context).pushReplacementNamed('/account');
+      }
     }
   }
 

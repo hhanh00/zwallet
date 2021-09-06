@@ -109,5 +109,8 @@
   "na": "不適用",
   "add": "增加",
   "tradingChartRange": "交易範圍",
-  "useUa": "Use UA"
+  "useUa": "Use UA",
+  "createANewAccount": "Create a new account and it will show up here",
+  "duplicateAccount": "Duplicate Account",
+  "thisAccountAlreadyExists": "This account already exists."
 }

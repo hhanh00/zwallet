@@ -52,7 +52,7 @@ pub unsafe extern "C" fn set_mempool_account(account: u32) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn new_account(name: *mut c_char, data: *mut c_char) -> u32 {
+pub unsafe extern "C" fn new_account(name: *mut c_char, data: *mut c_char) -> i32 {
     let name = CStr::from_ptr(name).to_string_lossy();
     let data = CStr::from_ptr(data).to_string_lossy();
     api::new_account(&name, &data)

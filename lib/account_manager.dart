@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:warp/main.dart';
 import 'package:warp/store.dart';
 import 'generated/l10n.dart';
@@ -27,17 +28,17 @@ class AccountManagerState extends State<AccountManagerPage> {
         appBar: AppBar(title: Text(S.of(context).accounts), actions: [
           PopupMenuButton<String>(
               itemBuilder: (context) => [
-                    PopupMenuItem(child: Text(S.of(context).settings), value: "Settings"),
-                    PopupMenuItem(child: Text(S.of(context).about), value: "About"),
+                    PopupMenuItem(
+                        child: Text(S.of(context).settings), value: "Settings"),
+                    PopupMenuItem(
+                        child: Text(S.of(context).about), value: "About"),
                   ],
               onSelected: _onMenu)
         ]),
         body: Observer(
             builder: (context) => Stack(children: [
                   accountManager.accounts.isEmpty
-                      ? Center(
-                          child: Text(S.of(context).noAccount,
-                              style: Theme.of(context).textTheme.headline5))
+                      ? Center(child: NoAccount())
                       : ListView(
                           children: accountManager.accounts
                               .asMap()
@@ -76,8 +77,7 @@ class AccountManagerState extends State<AccountManagerPage> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
           title: Text(S.of(context).seed),
-          content: Text(
-              S.of(context).confirmDeleteAccount),
+          content: Text(S.of(context).confirmDeleteAccount),
           actions: confirmButtons(context, () {
             Navigator.of(context).pop(true);
           }, okLabel: S.of(context).delete, cancelValue: false)),
@@ -131,5 +131,27 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   _settings() {
     Navigator.of(this.context).pushNamed('/settings');
+  }
+}
+
+class NoAccount extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget wallet = SvgPicture.asset(
+        'assets/wallet.svg',
+        color: Theme.of(context).primaryColor,
+        semanticsLabel: 'Wallet'
+    );
+
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      SizedBox(child: wallet, height: 150, width: 150),
+      Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+      Text(S.of(context).noAccount,
+          style: Theme.of(context).textTheme.headline5),
+      Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+      Text(S.of(context).createANewAccount,
+          style: Theme.of(context).textTheme.bodyText1),
+    ]);
   }
 }

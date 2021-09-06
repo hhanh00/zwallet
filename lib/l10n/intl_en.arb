@@ -74,7 +74,7 @@
   "accountNameIsRequired": "Account name is required",
   "enterSeed": "Enter Seed, Secret Key or Viewing Key. Leave blank for a new account",
   "scanStartingMomentarily": "Scan starting momentarily",
-  "key": "Key",
+  "key": "Seed, Secret Key or View Key",
   "sendCointicker": "Send {ticker}",
   "max": "MAX",
   "advancedOptions": "Advanced Options",
@@ -112,5 +112,8 @@
   "M6": "6 M",
   "Y1": "1 Y",
   "shieldTransparentBalanceWithSending": "Shield Transparent Balance When Sending",
-  "useUa": "Use UA"
+  "useUa": "Use UA",
+  "createANewAccount": "Create a new account and it will show up here",
+  "duplicateAccount": "Duplicate Account",
+  "thisAccountAlreadyExists": "Another account has the same address"
 }

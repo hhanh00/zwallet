@@ -195,3 +195,13 @@ void showQR(BuildContext context, String text) {
         ),
       ));
 }
+
+Future<void> rescanDialog(BuildContext context, VoidCallback continuation) async {
+  await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+          title: Text(S.of(context).rescan),
+          content: Text(S.of(context).rescanWalletFromTheFirstBlock),
+          actions: confirmButtons(context, continuation)));
+}

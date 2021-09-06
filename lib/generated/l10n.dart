@@ -785,10 +785,10 @@ class S {
     );
   }
 
-  /// `Key`
+  /// `Seed, Secret Key or View Key`
   String get key {
     return Intl.message(
-      'Key',
+      'Seed, Secret Key or View Key',
       name: 'key',
       desc: '',
       args: [],
@@ -1170,6 +1170,36 @@ class S {
     return Intl.message(
       'Use UA',
       name: 'useUa',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a new account and it will show up here`
+  String get createANewAccount {
+    return Intl.message(
+      'Create a new account and it will show up here',
+      name: 'createANewAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duplicate Account`
+  String get duplicateAccount {
+    return Intl.message(
+      'Duplicate Account',
+      name: 'duplicateAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Another account has the same address`
+  String get thisAccountAlreadyExists {
+    return Intl.message(
+      'Another account has the same address',
+      name: 'thisAccountAlreadyExists',
       desc: '',
       args: [],
     );

@@ -61,7 +61,7 @@ pub fn init_wallet(db_path: &str, ld_url: &str) {
     SYNCLOCK.get_or_init(|| Mutex::new(()));
 }
 
-pub fn new_account(name: &str, data: &str) -> u32 {
+pub fn new_account(name: &str, data: &str) -> i32 {
     let res = || {
         let wallet = get_lock(&WALLET)?;
         wallet.new_account(name, data)

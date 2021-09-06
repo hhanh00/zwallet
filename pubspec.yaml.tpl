@@ -55,6 +55,7 @@ dependencies:
   file_picker: any
   mustache_template: any
   flutter_palette: any
+  flutter_svg: any
   flutter_localizations:
     sdk: flutter
 
@@ -95,6 +96,7 @@ flutter:
   assets:
     - assets/icon.png
     - assets/about.md
+    - assets/wallet.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

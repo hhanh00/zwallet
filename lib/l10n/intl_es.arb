@@ -113,5 +113,8 @@
   "M3": "3 M",
   "M6": "6 M",
   "Y1": "1 A",
-  "useUa": "Use UA"
+  "useUa": "Use UA",
+  "createANewAccount": "Create a new account and it will show up here",
+  "duplicateAccount": "Duplicate Account",
+  "thisAccountAlreadyExists": "This account already exists."
 }

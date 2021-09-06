@@ -837,19 +837,11 @@ abstract class _MultiPayStore with Store {
 class ETAStore = _ETAStore with _$ETAStore;
 
 abstract class _ETAStore with Store {
-  int height = 0;
-
   @observable
   ETACheckpoint prev;
 
   @observable
   ETACheckpoint current;
-
-  @action
-  void init(int height) {
-    this.height = height;
-    prev = null;
-  }
 
   @action
   void checkpoint(int height, DateTime timestamp) {
@@ -860,9 +852,10 @@ abstract class _ETAStore with Store {
   @computed
   String get eta {
     if (prev == null || current == null) return "";
+    if (current.timestamp.millisecondsSinceEpoch == prev.timestamp.millisecondsSinceEpoch) return "";
     final speed = (current.height - prev.height) / (current.timestamp.millisecondsSinceEpoch - prev.timestamp.millisecondsSinceEpoch);
     if (speed == 0) return "";
-    final eta = (height - current.height) / speed;
+    final eta = (syncStatus.latestHeight - current.height) / speed;
     if (eta <= 0) return "";
     final duration = Duration(milliseconds: eta.floor()).toString().split('.')[0];
     return "(ETA: $duration)";

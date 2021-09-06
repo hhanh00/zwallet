@@ -369,7 +369,6 @@ class _AccountPageState extends State<AccountPage>
 
   _sync() async {
     _syncing = true;
-    eta.init(syncStatus.latestHeight);
     await syncStatus.update();
     await sync(settings.getTx, settings.anchorOffset, syncPort.sendPort);
   }
@@ -462,21 +461,17 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _rescan() {
-    showDialog(
-        context: this.context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-            title: Text(S.of(context).rescan),
-            content: Text(S.of(context).rescanWalletFromTheFirstBlock),
-            actions: confirmButtons(context, () {
-              Navigator.of(this.context).pop();
-              final snackBar =
-                  SnackBar(content: Text(S.of(context).rescanRequested));
-              rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
-              syncStatus.setSyncHeight(0);
-              WarpApi.rewindToHeight(0);
-              _sync();
-            })));
+    rescanDialog(context, () {
+          Navigator.of(context).pop();
+          final snackBar =
+          SnackBar(content: Text(S
+              .of(context)
+              .rescanRequested));
+          rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
+          syncStatus.setSyncHeight(0);
+          WarpApi.rewindToHeight(0);
+          _sync();
+        });
   }
 
   _cold() {
