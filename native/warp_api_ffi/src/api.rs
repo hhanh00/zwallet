@@ -263,7 +263,7 @@ pub fn rewind_to_height(height: u32) {
 pub fn mempool_sync() -> i64 {
     let r = get_runtime();
     let res = r.block_on(async {
-        let mut mempool = MEMPOOL.get().unwrap().lock().unwrap();
+        let mut mempool = get_lock(&MEMPOOL)?;
         mempool.scan().await
     });
     log_result(res)
@@ -341,8 +341,8 @@ pub fn prepare_offline_tx(
                 anchor_offset,
             )
             .await?;
-        let mut file = File::create(tx_filename).unwrap();
-        writeln!(file, "{}", tx).unwrap();
+        let mut file = File::create(tx_filename)?;
+        writeln!(file, "{}", tx)?;
         Ok("File saved".to_string())
     });
     log_result_string(res)
@@ -375,8 +375,11 @@ pub fn sync_historical_prices(now: i64, days: u32, currency: &str) -> u32 {
 }
 
 pub fn get_ua(sapling_addr: &str, transparent_addr: &str) -> String {
-    let ua = sync::get_ua(sapling_addr, transparent_addr).unwrap();
-    ua.to_string()
+    let res = || {
+        let ua = sync::get_ua(sapling_addr, transparent_addr)?;
+        Ok(ua.to_string())
+    };
+    log_result(res())
 }
 
 pub fn get_sapling(ua_addr: &str) -> String {
