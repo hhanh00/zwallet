@@ -62,6 +62,9 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
       theme.primaryColor,
     ];
 
+    final textStyle = theme.textTheme.bodyText1;
+    final bgColor = theme.backgroundColor;
+
     return LineChartData(
       gridData: FlGridData(
         show: true,
@@ -131,6 +134,20 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
           ),
         ),
       ],
+      lineTouchData: LineTouchData(
+        touchTooltipData: LineTouchTooltipData(
+          tooltipBgColor: bgColor,
+          getTooltipItems: (touchedSpots) =>
+              touchedSpots.map((LineBarSpot spot) {
+                final x = spot.x;
+                final dt = DateTime.fromMillisecondsSinceEpoch(x.toInt() * DAY_MS);
+                final xdt = DateFormat.Md().format(dt);
+                final y = spot.y.toStringAsFixed(3);
+                return LineTooltipItem("$xdt - $y",
+                    textStyle);
+              }).toList()
+        )
+      )
     );
   }
 }
