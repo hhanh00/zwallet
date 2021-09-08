@@ -113,5 +113,10 @@
   "createANewAccount": "Create a new account and it will show up here",
   "duplicateAccount": "Duplicate Account",
   "thisAccountAlreadyExists": "This account already exists.",
-  "selectAccount": "Select Account"
+  "selectAccount": "Select Account",
+  "nameIsEmpty": "Name is empty",
+  "deleteContact": "Delete contact",
+  "areYouSureYouWantToDeleteThisContact": "Are you sure you want to delete this contact?",
+  "saveToBlockchain": "Save to Blockchain",
+  "areYouSureYouWantToSaveYourContactsIt": "Are you sure you want to save your contacts? It will cost 0.01 mZEC"
 }

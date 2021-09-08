@@ -1,3 +1,4 @@
+#ifndef __APPLE__
 typedef char int8_t;
 typedef long long int int64_t;
 typedef long long int uint64_t;
@@ -6,6 +7,7 @@ typedef long int int32_t;
 typedef long int uint32_t;
 typedef char bool;
 typedef void *DartPostCObjectFnType;
+#endif
 
 void init_wallet(char *db_path, char *ld_url);
 
@@ -72,5 +74,11 @@ uint32_t sync_historical_prices(int64_t now, uint32_t days, char *currency);
 char *get_ua(char *sapling_addr, char *transparent_addr);
 
 char *get_sapling(char *ua_addr);
+
+void store_contact(uint32_t id, char *name, char *address, bool dirty);
+
+char *commit_unsaved_contacts(uint32_t account, uint32_t anchor_offset);
+
+void truncate_data(void);
 
 void dummy_export(void);

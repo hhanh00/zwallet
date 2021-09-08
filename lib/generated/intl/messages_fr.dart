@@ -21,17 +21,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m0(currency) => "Montant en ${currency}";
 
-  static m1(ticker) => "Voulez-vous transférer l\'intégralité de votre solde transparent à votre adresse protégée?";
+  static m1(ticker) => "Are you sure you want to save your contacts? It will cost 0.01 mZEC";
 
-  static m2(ticker) => "Envoyer ${ticker}";
+  static m2(ticker) => "Voulez-vous transférer l\'intégralité de votre solde transparent à votre adresse protégée?";
 
-  static m3(ticker) => "Envoyer ${ticker} à...";
+  static m3(ticker) => "Envoyer ${ticker}";
 
-  static m4(amount, ticker, count) => "Envoi d\'un total de ${amount} ${ticker} à ${count} destinataires";
+  static m4(ticker) => "Envoyer ${ticker} à...";
 
-  static m5(aZEC, ticker, address) => "Envoi de ${aZEC} ${ticker} à ${address}";
+  static m5(amount, ticker, count) => "Envoi d\'un total de ${amount} ${ticker} à ${count} destinataires";
 
-  static m6(currency) => "Utiliser ${currency}";
+  static m6(aZEC, ticker, address) => "Envoi de ${aZEC} ${ticker} à ${address}";
+
+  static m7(currency) => "Utiliser ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -55,6 +57,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "amountMustBeANumber" : MessageLookupByLibrary.simpleMessage("Le montant doit être un nombre"),
     "amountMustBePositive" : MessageLookupByLibrary.simpleMessage("Le montant doit être positif"),
     "approve" : MessageLookupByLibrary.simpleMessage("APPROUVER"),
+    "areYouSureYouWantToDeleteThisContact" : MessageLookupByLibrary.simpleMessage("Are you sure you want to delete this contact?"),
+    "areYouSureYouWantToSaveYourContactsIt" : m1,
     "backup" : MessageLookupByLibrary.simpleMessage("Sauvegarde"),
     "backupDataRequiredForRestore" : MessageLookupByLibrary.simpleMessage("Données de sauvegarde - requises pour la restauration"),
     "balance" : MessageLookupByLibrary.simpleMessage("Solde"),
@@ -74,8 +78,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "dark" : MessageLookupByLibrary.simpleMessage("Sombre"),
     "datetime" : MessageLookupByLibrary.simpleMessage("Jour/Heure"),
     "delete" : MessageLookupByLibrary.simpleMessage("SUPPRIMER"),
+    "deleteContact" : MessageLookupByLibrary.simpleMessage("Delete contact"),
     "doYouWantToDeleteTheSecretKeyAndConvert" : MessageLookupByLibrary.simpleMessage("Voulez-vous SUPPRIMER la clé secrète et convertir ce compte en un compte d\'observation ? Vous ne pourrez plus dépenser depuis cet appareil. Cette opération n\'est PAS réversible."),
-    "doYouWantToTransferYourEntireTransparentBalanceTo" : m1,
+    "doYouWantToTransferYourEntireTransparentBalanceTo" : m2,
     "duplicateAccount" : MessageLookupByLibrary.simpleMessage("Duplicate Account"),
     "enterSeed" : MessageLookupByLibrary.simpleMessage("Entrez la graine, la clé secrète ou la clé de visualisation. Laissez vide pour un nouveau compte"),
     "height" : MessageLookupByLibrary.simpleMessage("Hauteur"),
@@ -93,6 +98,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "multiPay" : MessageLookupByLibrary.simpleMessage("Envoyer à plusieurs"),
     "multipay" : MessageLookupByLibrary.simpleMessage("Envoyer à plusieurs"),
     "na" : MessageLookupByLibrary.simpleMessage("N/A"),
+    "nameIsEmpty" : MessageLookupByLibrary.simpleMessage("Name is empty"),
     "newSnapAddress" : MessageLookupByLibrary.simpleMessage("Nouvelle adresse instantanée"),
     "noAccount" : MessageLookupByLibrary.simpleMessage("Pas de compte"),
     "noAuthenticationMethod" : MessageLookupByLibrary.simpleMessage("Pas de méthode d\'authentification"),
@@ -116,16 +122,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "rescanWalletFromTheFirstBlock" : MessageLookupByLibrary.simpleMessage("Reparcourir la chaine à partir du premier bloc?"),
     "retrieveTransactionDetails" : MessageLookupByLibrary.simpleMessage("Récupérer les détails de la transaction"),
     "roundToMillis" : MessageLookupByLibrary.simpleMessage("Arrondir au millième"),
+    "saveToBlockchain" : MessageLookupByLibrary.simpleMessage("Save to Blockchain"),
     "scanStartingMomentarily" : MessageLookupByLibrary.simpleMessage("Le scan démarre momentanément"),
     "secretKey" : MessageLookupByLibrary.simpleMessage("Clé secrète"),
     "seed" : MessageLookupByLibrary.simpleMessage("Graine"),
     "selectAccount" : MessageLookupByLibrary.simpleMessage("Select Account"),
     "selectNotesToExcludeFromPayments" : MessageLookupByLibrary.simpleMessage("Sélectionnez les billets à EXCLURE des paiements"),
     "send" : MessageLookupByLibrary.simpleMessage("Envoyer"),
-    "sendCointicker" : m2,
-    "sendCointickerTo" : m3,
-    "sendingATotalOfAmountCointickerToCountRecipients" : m4,
-    "sendingAzecCointickerToAddress" : m5,
+    "sendCointicker" : m3,
+    "sendCointickerTo" : m4,
+    "sendingATotalOfAmountCointickerToCountRecipients" : m5,
+    "sendingAzecCointickerToAddress" : m6,
     "server" : MessageLookupByLibrary.simpleMessage("Serveur"),
     "settings" : MessageLookupByLibrary.simpleMessage("Paramètres"),
     "shieldTranspBalance" : MessageLookupByLibrary.simpleMessage("Masquer le Solde Transparent"),
@@ -148,7 +155,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionDetails" : MessageLookupByLibrary.simpleMessage("Détails de la transaction"),
     "txId" : MessageLookupByLibrary.simpleMessage("ID de tx :"),
     "unsignedTransactionFile" : MessageLookupByLibrary.simpleMessage("Fichier de transaction non signée"),
-    "useSettingscurrency" : m6,
+    "useSettingscurrency" : m7,
     "useUa" : MessageLookupByLibrary.simpleMessage("Use UA"),
     "version" : MessageLookupByLibrary.simpleMessage("Version"),
     "viewingKey" : MessageLookupByLibrary.simpleMessage("Affichage de la clé")

@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:http/http.dart';
 import 'package:path/path.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sqflite/sqflite.dart';
@@ -33,6 +34,7 @@ var syncStatus = SyncStatus();
 var settings = Settings();
 var multipayData = MultiPayStore();
 var eta = ETAStore();
+var contacts = ContactStore();
 
 Future<Database> getDatabase() async {
   var databasesPath = await getDatabasesPath();
@@ -92,7 +94,10 @@ class ZWalletAppState extends State<ZWalletApp> {
       initialized = true;
       final dbPath = await getDatabasesPath();
       WarpApi.initWallet(dbPath + "/zec.db", settings.getLWD());
-      await accountManager.init();
+      final db = await getDatabase();
+      await accountManager.init(db);
+      await contacts.init(db);
+
       await syncStatus.init();
     }
     return Future.value(accountManager.accounts.isNotEmpty
@@ -204,4 +209,19 @@ Future<void> rescanDialog(BuildContext context, VoidCallback continuation) async
           title: Text(S.of(context).rescan),
           content: Text(S.of(context).rescanWalletFromTheFirstBlock),
           actions: confirmButtons(context, continuation)));
+}
+
+Future<bool> showMessageBox(BuildContext context, String title, String content, String label) {
+  final confirm = showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) =>
+        AlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: confirmButtons(context, () {
+              Navigator.of(context).pop(true);
+            }, okLabel: label, cancelValue: false)),
+  );
+  return confirm;
 }

@@ -377,6 +377,50 @@ class NativeLibrary {
   late final _dart_get_sapling _get_sapling =
       _get_sapling_ptr.asFunction<_dart_get_sapling>();
 
+  void store_contact(
+    int id,
+    ffi.Pointer<ffi.Int8> name,
+    ffi.Pointer<ffi.Int8> address,
+    int dirty,
+  ) {
+    return _store_contact(
+      id,
+      name,
+      address,
+      dirty,
+    );
+  }
+
+  late final _store_contact_ptr =
+      _lookup<ffi.NativeFunction<_c_store_contact>>('store_contact');
+  late final _dart_store_contact _store_contact =
+      _store_contact_ptr.asFunction<_dart_store_contact>();
+
+  ffi.Pointer<ffi.Int8> commit_unsaved_contacts(
+    int account,
+    int anchor_offset,
+  ) {
+    return _commit_unsaved_contacts(
+      account,
+      anchor_offset,
+    );
+  }
+
+  late final _commit_unsaved_contacts_ptr =
+      _lookup<ffi.NativeFunction<_c_commit_unsaved_contacts>>(
+          'commit_unsaved_contacts');
+  late final _dart_commit_unsaved_contacts _commit_unsaved_contacts =
+      _commit_unsaved_contacts_ptr.asFunction<_dart_commit_unsaved_contacts>();
+
+  void truncate_data() {
+    return _truncate_data();
+  }
+
+  late final _truncate_data_ptr =
+      _lookup<ffi.NativeFunction<_c_truncate_data>>('truncate_data');
+  late final _dart_truncate_data _truncate_data =
+      _truncate_data_ptr.asFunction<_dart_truncate_data>();
+
   void dummy_export() {
     return _dummy_export();
   }
@@ -618,6 +662,34 @@ typedef _c_get_sapling = ffi.Pointer<ffi.Int8> Function(
 typedef _dart_get_sapling = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> ua_addr,
 );
+
+typedef _c_store_contact = ffi.Void Function(
+  ffi.Uint32 id,
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> address,
+  ffi.Int8 dirty,
+);
+
+typedef _dart_store_contact = void Function(
+  int id,
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> address,
+  int dirty,
+);
+
+typedef _c_commit_unsaved_contacts = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint32 account,
+  ffi.Uint32 anchor_offset,
+);
+
+typedef _dart_commit_unsaved_contacts = ffi.Pointer<ffi.Int8> Function(
+  int account,
+  int anchor_offset,
+);
+
+typedef _c_truncate_data = ffi.Void Function();
+
+typedef _dart_truncate_data = void Function();
 
 typedef _c_dummy_export = ffi.Void Function();
 

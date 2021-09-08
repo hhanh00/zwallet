@@ -315,11 +315,8 @@ abstract class _AccountManager with Store {
   @observable
   bool pnlDesc = false;
 
-  @observable
-  List<Contact> contacts = [];
-
-  Future<void> init() async {
-    db = await getDatabase();
+  Future<void> init(Database db) async {
+    this.db = db;
     await resetToDefaultAccount();
   }
 
@@ -462,7 +459,6 @@ abstract class _AccountManager with Store {
     if (hasNewTx) {
       await _fetchSpending(accountId);
       await _fetchAccountBalanceTimeSeries(accountId);
-      await _fetchContacts(accountId);
     }
     if (countNewPrices > 0 || pnls.isEmpty || hasNewTx)
       await _fetchPNL(accountId);
@@ -731,17 +727,6 @@ abstract class _AccountManager with Store {
     }
   }
 
-  Future<void> _fetchContacts(int accountId) async {
-    List<Map> res = await db.rawQuery(
-        "SELECT name, address FROM contacts WHERE account = ?1 ORDER BY name",
-        [accountId]);
-    contacts = [];
-    for (var c in res) {
-      final contact = Contact(c['name'], c['address']);
-      contacts.add(contact);
-    }
-  }
-
   @action
   void setPnlSeriesIndex(int index) {
     pnlSeriesIndex = index;
@@ -831,6 +816,8 @@ abstract class _SyncStatus with Store {
     rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
     syncStatus.setSyncHeight(0);
     WarpApi.rewindToHeight(0);
+    WarpApi.truncateData();
+    contacts.markContactsDirty(false);
     await syncStatus.update();
     final params = SyncParams(settings.getTx, settings.anchorOffset, syncPort.sendPort);
     await compute(WarpApi.warpSync, params);
@@ -890,6 +877,61 @@ abstract class _ETAStore with Store {
     if (eta <= 0) return "";
     final duration = Duration(milliseconds: eta.floor()).toString().split('.')[0];
     return "(ETA: $duration)";
+  }
+}
+
+class ContactStore = _ContactStore with _$ContactStore;
+
+abstract class _ContactStore with Store {
+  Database db;
+
+  @observable
+  bool dirty = false;
+
+  @observable
+  ObservableList<Contact> contacts = ObservableList<Contact>.of([]);
+
+  void init(Database db) async {
+    this.db = db;
+    final prefs = await SharedPreferences.getInstance();
+    dirty = prefs.getBool('contacts_dirty') ?? false;
+  }
+
+  @action
+  Future<void> fetchContacts() async {
+    await _fetchContacts();
+  }
+
+  Future<void> _fetchContacts() async {
+    List<Map> res = await db.rawQuery(
+        "SELECT id, name, address FROM contacts WHERE address <> '' ORDER BY name");
+    contacts.clear();
+    for (var c in res) {
+      final contact = Contact(c['id'], c['name'], c['address']);
+      contacts.add(contact);
+    }
+  }
+
+  @action
+  Future<void> markContactsDirty(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    dirty = v;
+    prefs.setBool('contacts_dirty', dirty);
+  }
+
+  @action
+  Future<void> add(Contact c) async {
+    WarpApi.storeContact(c.id, c.name, c.address, true);
+    await markContactsDirty(true);
+    await _fetchContacts();
+  }
+
+  @action
+  Future<void> remove(Contact c) async {
+    contacts.removeWhere((contact) => contact.id == c.id);
+    WarpApi.storeContact(c.id, c.name, "", true);
+    await markContactsDirty(true);
+    await _fetchContacts();
   }
 }
 
@@ -968,10 +1010,13 @@ class Backup {
 }
 
 class Contact {
+  final int id;
   final String name;
   final String address;
 
-  Contact(this.name, this.address);
+  Contact(this.id, this.name, this.address);
+
+  factory Contact.empty() => Contact(0, "", "");
 }
 
 String addressLeftTrim(String address) =>

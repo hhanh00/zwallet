@@ -389,3 +389,30 @@ pub fn get_sapling(ua_addr: &str) -> String {
         Err(_) => String::new(),
     }
 }
+
+pub fn store_contact(id: u32, name: &str, address: &str, dirty: bool) {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.store_contact(id, name, address, dirty)?;
+        Ok(())
+    };
+    log_result(res())
+}
+
+pub fn commit_unsaved_contacts(account: u32, anchor_offset: u32) -> String {
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let wallet = get_lock(&WALLET)?;
+        wallet.commit_unsaved_contacts(account, anchor_offset).await
+    });
+    log_result_string(res)
+}
+
+pub fn truncate_data() {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.truncate_data()?;
+        Ok(())
+    };
+    log_result(res())
+}

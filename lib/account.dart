@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +16,7 @@ import 'package:grouped_list/grouped_list.dart';
 
 import 'about.dart';
 import 'chart.dart';
+import 'contact.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 
@@ -37,8 +36,10 @@ class _AccountPageState extends State<AccountPage>
   String _snapAddress = "";
   TabController _tabController;
   bool _accountTab = true;
+  bool _contactsTab = false;
   StreamSubscription _progressDispose;
   StreamSubscription _syncDispose;
+  final contactKey = GlobalKey<ContactsState>();
 
   @override
   bool get wantKeepAlive => true;
@@ -50,11 +51,13 @@ class _AccountPageState extends State<AccountPage>
     _tabController.addListener(() {
       setState(() {
         _accountTab = _tabController.index == 0;
+        _contactsTab = _tabController.index == 5;
       });
     });
     Future.microtask(() async {
       await accountManager.updateUnconfirmedBalance();
       await accountManager.fetchAccountData(false);
+      await contacts.fetchContacts();
       await _setupTimer();
     });
     WidgetsBinding.instance.addObserver(this);
@@ -282,17 +285,22 @@ class _AccountPageState extends State<AccountPage>
         HistoryWidget(tabTo),
         BudgetWidget(),
         PnLWidget(),
-        ContactsWidget(),
+        ContactsTab(key: contactKey),
       ]),
       floatingActionButton: _accountTab
           ? FloatingActionButton(
               onPressed: _onSend,
-              tooltip: S.of(context).send,
               backgroundColor: Theme.of(context)
                   .accentColor
                   .withOpacity(accountManager.canPay ? 1.0 : 0.3),
               child: Icon(Icons.send),
-            )
+            ) :
+      _contactsTab ?
+      FloatingActionButton(
+        onPressed: _onAddContact,
+        backgroundColor: Theme.of(context).accentColor,
+        child: Icon(Icons.add),
+      )
           : Container(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
@@ -399,6 +407,7 @@ class _AccountPageState extends State<AccountPage>
     await accountManager.fetchAccountData(false);
     await accountManager.updateBalance();
     await accountManager.updateUnconfirmedBalance();
+    await contacts.fetchContacts();
     accountManager.updateTBalance();
   }
 
@@ -505,7 +514,15 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _settings() {
-    Navigator.of(this.context).pushNamed('/settings');
+    Navigator.of(context).pushNamed('/settings');
+  }
+
+  _onAddContact() async {
+    final contact = await contactKey.currentState.showContactForm(context, Contact.empty());
+    if (contact != null) {
+      print("${contact.name} ${contact.address}");
+      contacts.add(contact);
+    }
   }
 }
 
@@ -945,49 +962,7 @@ class PnLDataSource extends DataTableSource {
   int get selectedRowCount => 0;
 }
 
-class ContactsWidget extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => ContactsState();
-}
-
-class ContactsState extends State<ContactsWidget>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true; //Set to true
-
-  @override
-  Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      final _ = accountManager.dataEpoch;
-      final theme = Theme.of(context);
-      return Padding(
-          padding: EdgeInsets.all(12),
-          child: Column(children: [
-            Text(S.of(context).toMakeAContactSendThemAMemoWithContact,
-                style: Theme.of(context).textTheme.caption),
-            Expanded(
-                child: GroupedListView<Contact, String>(
-              elements: accountManager.contacts,
-              groupBy: (e) => e.name.isEmpty ? "" : e.name[0],
-              itemBuilder: (context, c) => ListTile(
-                  title: Text(c.name),
-                  subtitle: Text(c.address),
-                  trailing: accountManager.canPay
-                      ? IconButton(
-                          icon: Icon(Icons.chevron_right),
-                          onPressed: () {
-                            _onContact(c);
-                          })
-                      : null),
-              groupSeparatorBuilder: (String h) =>
-                  Text(h, style: theme.textTheme.headline5),
-            )),
-          ]));
-    });
-  }
-
-  _onContact(Contact contact) {
-    Navigator.of(context).pushNamed('/send', arguments: contact);
-  }
-}
+// TODO: Refresh contacts after rescan
+// Remove Save to BC button after commit
+// Truncate tables on rescan
 

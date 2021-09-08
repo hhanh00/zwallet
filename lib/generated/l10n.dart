@@ -1214,6 +1214,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Name is empty`
+  String get nameIsEmpty {
+    return Intl.message(
+      'Name is empty',
+      name: 'nameIsEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete contact`
+  String get deleteContact {
+    return Intl.message(
+      'Delete contact',
+      name: 'deleteContact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete this contact?`
+  String get areYouSureYouWantToDeleteThisContact {
+    return Intl.message(
+      'Are you sure you want to delete this contact?',
+      name: 'areYouSureYouWantToDeleteThisContact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save to Blockchain`
+  String get saveToBlockchain {
+    return Intl.message(
+      'Save to Blockchain',
+      name: 'saveToBlockchain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to save your contacts? It will cost 0.01 m{ticker}`
+  String areYouSureYouWantToSaveYourContactsIt(Object ticker) {
+    return Intl.message(
+      'Are you sure you want to save your contacts? It will cost 0.01 m$ticker',
+      name: 'areYouSureYouWantToSaveYourContactsIt',
+      desc: '',
+      args: [ticker],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

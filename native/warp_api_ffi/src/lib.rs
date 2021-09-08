@@ -200,4 +200,27 @@ pub unsafe extern "C" fn get_sapling(ua_addr: *mut c_char) -> *mut c_char {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn store_contact(
+    id: u32,
+    name: *mut c_char,
+    address: *mut c_char,
+    dirty: bool,
+) {
+    let name = CStr::from_ptr(name).to_string_lossy();
+    let address = CStr::from_ptr(address).to_string_lossy();
+    api::store_contact(id, &name, &address, dirty);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn commit_unsaved_contacts(account: u32, anchor_offset: u32) -> *mut c_char {
+    let tx_id = api::commit_unsaved_contacts(account, anchor_offset);
+    CString::new(tx_id).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn truncate_data() {
+    api::truncate_data();
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn dummy_export() {}
