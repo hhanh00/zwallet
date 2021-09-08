@@ -294,14 +294,14 @@ class _AccountPageState extends State<AccountPage>
                   .accentColor
                   .withOpacity(accountManager.canPay ? 1.0 : 0.3),
               child: Icon(Icons.send),
-            ) :
-      _contactsTab ?
-      FloatingActionButton(
-        onPressed: _onAddContact,
-        backgroundColor: Theme.of(context).accentColor,
-        child: Icon(Icons.add),
-      )
-          : Container(), // This trailing comma makes auto-formatting nicer for build methods.
+            )
+          : _contactsTab
+              ? FloatingActionButton(
+                  onPressed: _onAddContact,
+                  backgroundColor: Theme.of(context).accentColor,
+                  child: Icon(Icons.add),
+                )
+              : Container(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
@@ -384,8 +384,7 @@ class _AccountPageState extends State<AccountPage>
     return priceStore.zecPrice;
   }
 
-  _sync() async {
-  }
+  _sync() async {}
 
   _trySync() async {
     priceStore.fetchZecPrice();
@@ -477,8 +476,8 @@ class _AccountPageState extends State<AccountPage>
 
   _rescan() {
     rescanDialog(context, () {
-          Navigator.of(context).pop();
-          syncStatus.sync(context);
+      Navigator.of(context).pop();
+      syncStatus.sync(context);
     });
   }
 
@@ -518,7 +517,8 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _onAddContact() async {
-    final contact = await contactKey.currentState.showContactForm(context, Contact.empty());
+    final contact =
+        await contactKey.currentState.showContactForm(context, Contact.empty());
     if (contact != null) {
       print("${contact.name} ${contact.address}");
       contacts.add(contact);
@@ -797,17 +797,17 @@ class BudgetState extends State<BudgetWidget>
           final _ = accountManager.dataEpoch;
           return Column(
             children: [
-              Expanded(
-                  child: Card(
+              Card(
                       child: Column(children: [
                 Text(S.of(context).largestSpendingsByAddress,
                     style: Theme.of(context).textTheme.headline6),
-                Expanded(
+                SizedBox(
                   child: PieChartSpending(accountManager.spendings),
+                  height: 200,
                 ),
                 Text(S.of(context).tapChartToToggleBetweenAddressAndAmount,
                     style: Theme.of(context).textTheme.caption)
-              ]))),
+              ])),
               Expanded(
                   child: Card(
                       child: Column(children: [
@@ -965,4 +965,3 @@ class PnLDataSource extends DataTableSource {
 // TODO: Refresh contacts after rescan
 // Remove Save to BC button after commit
 // Truncate tables on rescan
-

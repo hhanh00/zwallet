@@ -163,6 +163,23 @@ class PieChartSpending extends StatefulWidget {
 
 class PieChartSpendingState extends State<PieChartSpending> {
   int touchedIndex = -1;
+  List<Spending> spendings = [];
+
+  @override
+  void initState() {
+    super.initState();
+    final sum = widget.spendings.fold<double>(0.0, (acc, b) => acc + b.amount);
+    var misc = 0.0;
+    for (var s in widget.spendings) {
+      if (s.amount / sum < 0.05)
+        misc += s.amount;
+      else
+        spendings.add(s);
+    }
+    if (misc/sum > 0.05) {
+      spendings.add(Spending("Misc", misc));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +209,7 @@ class PieChartSpendingState extends State<PieChartSpending> {
 
   List<PieChartSectionData> showingSections() {
     final palette = ColorPalette.adjacent(Theme.of(context).primaryColor, numberOfColors: max(widget.spendings.length, 1));
-    return widget.spendings.asMap().entries.map((e) {
+    return spendings.asMap().entries.map((e) {
       final i = e.key;
       final spending = e.value;
       final isTouched = i == touchedIndex;
