@@ -6,8 +6,8 @@ typedef long long int uintptr_t;
 typedef long int int32_t;
 typedef long int uint32_t;
 typedef char bool;
-typedef void *DartPostCObjectFnType;
 #endif
+typedef void *DartPostCObjectFnType;
 
 void init_wallet(char *db_path, char *ld_url);
 

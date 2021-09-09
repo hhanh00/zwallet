@@ -153,7 +153,7 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
 }
 
 class PieChartSpending extends StatefulWidget {
-  List<Spending> spendings = [];
+  final List<Spending> spendings;
 
   PieChartSpending(this.spendings);
   
@@ -204,7 +204,7 @@ class PieChartSpendingState extends State<PieChartSpending> {
             show: false,
           ),
           sectionsSpace: 0,
-          centerSpaceRadius: 40,
+          centerSpaceRadius: getScreenSize(context) / 10,
           sections: showingSections(spendings)),
     );
   }

@@ -12,7 +12,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:grouped_list/grouped_list.dart';
 
 import 'about.dart';
 import 'chart.dart';
@@ -109,6 +108,7 @@ class _AccountPageState extends State<AccountPage>
     if (accountManager.active == null) return CircularProgressIndicator();
     final theme = Theme.of(this.context);
     final hasTAddr = accountManager.taddress.isNotEmpty;
+    final qrSize = getScreenSize(context) / 2.5;
 
     if (syncStatus.accountRestored) {
       syncStatus.setAccountRestored(false);
@@ -122,8 +122,6 @@ class _AccountPageState extends State<AccountPage>
 
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(child: Image.asset('assets/icon.png'), padding: EdgeInsets.symmetric(horizontal: 4),),
-        leadingWidth: 48,
         centerTitle: true,
         title: Observer(
             builder: (context) => Text("${accountManager.active.name}")),
@@ -197,7 +195,8 @@ class _AccountPageState extends State<AccountPage>
                       onTap: hasTAddr ? _onQRTap : null,
                       child: QrImage(
                           data: address,
-                          size: 200,
+                          size: qrSize,
+                          embeddedImage: AssetImage('assets/icon.png'),
                           backgroundColor: Colors.white)),
                   Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                   RichText(
@@ -243,8 +242,9 @@ class _AccountPageState extends State<AccountPage>
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.ideographic,
                     children: <Widget>[
-                      Text('${coin.symbol} ${_getBalance_hi(balance)}',
-                          style: theme.textTheme.headline2),
+                      Text('${coin.symbol}', style: theme.textTheme.headline4),
+                      Text(' ${_getBalance_hi(balance)}',
+                          style: theme.textTheme.headline2.copyWith(color: theme.colorScheme.primaryVariant)),
                       Text('${_getBalance_lo(balance)}'),
                     ]);
               }),
@@ -311,12 +311,15 @@ class _AccountPageState extends State<AccountPage>
     if (index != _tabController.index) _tabController.animateTo(index);
   }
 
-  _address() => accountManager.showTAddr
-      ? accountManager.taddress
-      : (_useSnapAddress
-          ? _uaAddress(_snapAddress, accountManager.taddress, settings.useUA)
-          : _uaAddress(accountManager.active.address, accountManager.taddress,
-              settings.useUA));
+  String _address() {
+    final address = accountManager.showTAddr
+        ? accountManager.taddress
+        : (_useSnapAddress
+        ? _uaAddress(_snapAddress, accountManager.taddress, settings.useUA)
+        : _uaAddress(accountManager.active.address, accountManager.taddress,
+        settings.useUA));
+    return address.substring(0, 16) + "..." + address.substring(address.length - 16);
+  }
 
   String _uaAddress(String zaddress, String taddress, bool useUA) =>
       useUA ? WarpApi.getUA(zaddress, taddress) : zaddress;
@@ -362,9 +365,7 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _unconfirmedStyle() {
-    return accountManager.unconfirmedBalance > 0
-        ? TextStyle(color: Colors.green)
-        : TextStyle(color: Colors.red);
+    return TextStyle(color: amountColor(context, accountManager.unconfirmedBalance));
   }
 
   _getBalance_hi(int b) {
@@ -627,11 +628,14 @@ class NotesDataSource extends DataTableSource {
         ? syncStatus.latestHeight - note.height + 1
         : note.height;
 
-    var style = _confirmed(note.height)
-        ? theme.textTheme.bodyText2
-        : theme.textTheme.overline;
+    var style = theme.textTheme.bodyText2;
+    if (!_confirmed(note.height))
+      style = style.copyWith(color: style.color.withOpacity(0.5));
+
     if (note.spent)
       style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
+
+    style = fontWeight(style, note.value);
 
     return DataRow.byIndex(
       index: index,
@@ -670,7 +674,7 @@ class NotesDataSource extends DataTableSource {
 }
 
 class HistoryWidget extends StatefulWidget {
-  void Function(int index) tabTo;
+  final void Function(int index) tabTo;
 
   HistoryWidget(this.tabTo);
 
@@ -758,12 +762,16 @@ class HistoryDataSource extends DataTableSource {
     final confsOrHeight = settings.showConfirmations
         ? syncStatus.latestHeight - tx.height + 1
         : tx.height;
+    final color = amountColor(context, tx.value);
+    var style = Theme.of(context).textTheme.bodyText2.copyWith(color: color);
+    style = fontWeight(style, tx.value);
+
     return DataRow(
         cells: [
           DataCell(Text("$confsOrHeight")),
           DataCell(Text("${tx.timestamp}")),
           DataCell(Text("${tx.txid}")),
-          DataCell(Text("${tx.value.toStringAsFixed(8)}",
+          DataCell(Text("${tx.value.toStringAsFixed(8)}", style: style,
               textAlign: TextAlign.left)),
         ],
         onSelectChanged: (_) {
@@ -806,7 +814,7 @@ class BudgetState extends State<BudgetWidget>
                     style: Theme.of(context).textTheme.headline6),
                 SizedBox(
                   child: PieChartSpending(accountManager.spendings),
-                  height: 200,
+                  height: getScreenSize(context) / 2,
                 ),
                 Text(S.of(context).tapChartToToggleBetweenAddressAndAmount,
                     style: Theme.of(context).textTheme.caption)

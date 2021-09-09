@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -53,9 +55,9 @@ void main() {
           ? Observer(
           builder: (context) {
               final theme = settings.themeData.copyWith(dataTableTheme:
-              DataTableThemeData(headingRowColor: MaterialStateColor.resolveWith((_) => settings.themeData.primaryColor.withOpacity(0.4))));
+              DataTableThemeData(headingRowColor: MaterialStateColor.resolveWith((_) => settings.themeData.highlightColor)));
               return MaterialApp(
-                title: 'ZWallet',
+                title: coin.app,
                 theme: theme,
                 home: home,
                 scaffoldMessengerKey: rootScaffoldMessengerKey,
@@ -226,4 +228,26 @@ Future<bool> showMessageBox(BuildContext context, String title, String content, 
             }, okLabel: label, cancelValue: false)),
   );
   return confirm;
+}
+
+double getScreenSize(BuildContext context) {
+  final size = MediaQuery.of(context).size;
+  return min(size.height, size.width);
+}
+
+Color amountColor(BuildContext context, num a) {
+  if (a < 0) return Colors.red;
+  if (a > 0) return Colors.green;
+  return Theme.of(context).textTheme.bodyText1.color;
+}
+
+TextStyle fontWeight(TextStyle style, num v) {
+  final value = v.abs();
+  if (value >= 250)
+    return style.copyWith(fontWeight: FontWeight.w800);
+  else if (value >= 25)
+    return style.copyWith(fontWeight: FontWeight.w600);
+  else if (value >= 5)
+    return style.copyWith(fontWeight: FontWeight.w400);
+  return style.copyWith(fontWeight: FontWeight.w200);
 }
