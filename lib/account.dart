@@ -184,6 +184,7 @@ class _AccountPageState extends State<AccountPage>
               Observer(builder: (context) {
                 final _ = accountManager.active.address;
                 final address = _address();
+                final shortAddress = address.substring(0, 16) + "..." + address.substring(address.length - 16);
                 final showTAddr = accountManager.showTAddr;
                 return Column(children: [
                   if (hasTAddr)
@@ -202,7 +203,7 @@ class _AccountPageState extends State<AccountPage>
                   RichText(
                       text: TextSpan(children: [
                     TextSpan(
-                        text: '$address ', style: theme.textTheme.bodyText2),
+                        text: '$shortAddress ', style: theme.textTheme.bodyText2),
                     WidgetSpan(
                         child: GestureDetector(
                             child: Icon(Icons.content_copy),
@@ -237,14 +238,16 @@ class _AccountPageState extends State<AccountPage>
                 final balance = accountManager.showTAddr
                     ? accountManager.tbalance
                     : accountManager.balance;
+                final balanceHi = _getBalance_hi(balance);
+                final balanceStyle = (balanceHi.length > 9 ? theme.textTheme.headline3 : theme.textTheme.headline2).copyWith(color: theme.colorScheme.primaryVariant);
                 return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.ideographic,
                     children: <Widget>[
-                      Text('${coin.symbol}', style: theme.textTheme.headline4),
-                      Text(' ${_getBalance_hi(balance)}',
-                          style: theme.textTheme.headline2.copyWith(color: theme.colorScheme.primaryVariant)),
+                      Text('${coin.symbol}', style: theme.textTheme.headline5),
+                      Text(' $balanceHi',
+                          style: balanceStyle),
                       Text('${_getBalance_lo(balance)}'),
                     ]);
               }),
@@ -318,7 +321,7 @@ class _AccountPageState extends State<AccountPage>
         ? _uaAddress(_snapAddress, accountManager.taddress, settings.useUA)
         : _uaAddress(accountManager.active.address, accountManager.taddress,
         settings.useUA));
-    return address.substring(0, 16) + "..." + address.substring(address.length - 16);
+    return address;
   }
 
   String _uaAddress(String zaddress, String taddress, bool useUA) =>
@@ -635,7 +638,7 @@ class NotesDataSource extends DataTableSource {
     if (note.spent)
       style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
 
-    style = fontWeight(style, note.value);
+    final amountStyle = fontWeight(style, note.value);
 
     return DataRow.byIndex(
       index: index,
@@ -647,7 +650,7 @@ class NotesDataSource extends DataTableSource {
       cells: [
         DataCell(Text("$confsOrHeight", style: style)),
         DataCell(Text("${note.timestamp}", style: style)),
-        DataCell(Text("${note.value.toStringAsFixed(8)}", style: style)),
+        DataCell(Text("${note.value.toStringAsFixed(8)}", style: amountStyle)),
       ],
       onSelectChanged: (selected) => _noteSelected(note, selected),
     );

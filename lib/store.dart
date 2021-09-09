@@ -4,7 +4,6 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'package:charts_flutter/flutter.dart' as charts show MaterialPalette;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
@@ -69,8 +68,6 @@ abstract class _Settings with Store {
 
   @observable
   bool useUA = false;
-
-  var palette = charts.MaterialPalette.blue;
 
   @action
   Future<bool> restore() async {
@@ -139,19 +136,15 @@ abstract class _Settings with Store {
     switch (theme) {
       case 'zcash':
         scheme = FlexScheme.mango;
-        palette = charts.MaterialPalette.gray;
         break;
       case 'blue':
         scheme = FlexScheme.bahamaBlue;
-        palette = charts.MaterialPalette.blue;
         break;
       case 'pink':
         scheme = FlexScheme.sakura;
-        palette = charts.MaterialPalette.pink;
         break;
       case 'coffee':
         scheme = FlexScheme.espresso;
-        palette = charts.MaterialPalette.gray;
         break;
     }
     switch (themeBrightness) {
@@ -808,6 +801,7 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<void> sync(BuildContext context) async {
+    eta.reset();
     syncing = true;
     final snackBar =
     SnackBar(content: Text(S
@@ -822,6 +816,7 @@ abstract class _SyncStatus with Store {
     final params = SyncParams(settings.getTx, settings.anchorOffset, syncPort.sendPort);
     await compute(WarpApi.warpSync, params);
     syncing = false;
+    eta.reset();
   }
 
   @action
@@ -860,6 +855,12 @@ abstract class _ETAStore with Store {
 
   @observable
   ETACheckpoint current;
+
+  @action
+  void reset() {
+    prev = null;
+    current = null;
+  }
 
   @action
   void checkpoint(int height, DateTime timestamp) {
