@@ -51,10 +51,12 @@ void main() {
       builder: (context, state) =>
       state.hasData
           ? Observer(
-          builder: (context) =>
-              MaterialApp(
+          builder: (context) {
+              final theme = settings.themeData.copyWith(dataTableTheme:
+              DataTableThemeData(headingRowColor: MaterialStateColor.resolveWith((_) => settings.themeData.primaryColor.withOpacity(0.4))));
+              return MaterialApp(
                 title: 'ZWallet',
-                theme: settings.themeData,
+                theme: theme,
                 home: home,
                 scaffoldMessengerKey: rootScaffoldMessengerKey,
                 localizationsDelegates: [
@@ -77,7 +79,7 @@ void main() {
                   };
                   return MaterialPageRoute(builder: routes[settings.name]);
                 },
-              ))
+          );})
           : Container()));
 }
 

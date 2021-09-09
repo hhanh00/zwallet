@@ -122,9 +122,11 @@ class _AccountPageState extends State<AccountPage>
 
     return Scaffold(
       appBar: AppBar(
+        leading: Padding(child: Image.asset('assets/icon.png'), padding: EdgeInsets.symmetric(horizontal: 4),),
+        leadingWidth: 48,
+        centerTitle: true,
         title: Observer(
-            builder: (context) =>
-                Text("${coin.symbol} Wallet - ${accountManager.active.name}")),
+            builder: (context) => Text("${accountManager.active.name}")),
         bottom: TabBar(controller: _tabController, isScrollable: true, tabs: [
           Tab(text: S.of(context).account),
           Tab(text: S.of(context).notes),
@@ -527,7 +529,7 @@ class _AccountPageState extends State<AccountPage>
 }
 
 class NoteWidget extends StatefulWidget {
-  void Function(int index) tabTo;
+  final void Function(int index) tabTo;
 
   NoteWidget(this.tabTo);
 
@@ -541,9 +543,10 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    final headerStyle = Theme.of(context).textTheme.headline4;
+
     return SingleChildScrollView(
-        padding: EdgeInsets.all(4),
+        padding: EdgeInsets.all(8),
         scrollDirection: Axis.vertical,
         child: Observer(builder: (context) {
           var amountHeader = S.of(context).amount;
@@ -591,7 +594,7 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
                       }),
                 ],
                 header: Text(S.of(context).selectNotesToExcludeFromPayments,
-                    style: Theme.of(context).textTheme.bodyText1),
+                    style: Theme.of(context).textTheme.bodyText2),
                 columnSpacing: 16,
                 showCheckboxColumn: false,
                 availableRowsPerPage: [5, 10, 25, 100],

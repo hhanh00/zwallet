@@ -153,7 +153,7 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
 }
 
 class PieChartSpending extends StatefulWidget {
-  final List<Spending> spendings;
+  List<Spending> spendings = [];
 
   PieChartSpending(this.spendings);
   
@@ -163,11 +163,16 @@ class PieChartSpending extends StatefulWidget {
 
 class PieChartSpendingState extends State<PieChartSpending> {
   int touchedIndex = -1;
-  List<Spending> spendings = [];
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Spending> spendings = [];
+
     final sum = widget.spendings.fold<double>(0.0, (acc, b) => acc + b.amount);
     var misc = 0.0;
     for (var s in widget.spendings) {
@@ -179,10 +184,7 @@ class PieChartSpendingState extends State<PieChartSpending> {
     if (misc/sum > 0.05) {
       spendings.add(Spending("Misc", misc));
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return PieChart(
       PieChartData(
           pieTouchData: PieTouchData(touchCallback: (pieTouchResponse) {
@@ -203,11 +205,11 @@ class PieChartSpendingState extends State<PieChartSpending> {
           ),
           sectionsSpace: 0,
           centerSpaceRadius: 40,
-          sections: showingSections()),
+          sections: showingSections(spendings)),
     );
   }
 
-  List<PieChartSectionData> showingSections() {
+  List<PieChartSectionData> showingSections(List<Spending> spendings) {
     final palette = ColorPalette.adjacent(Theme.of(context).primaryColor, numberOfColors: max(widget.spendings.length, 1));
     return spendings.asMap().entries.map((e) {
       final i = e.key;

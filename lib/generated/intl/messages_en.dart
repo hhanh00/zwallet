@@ -127,7 +127,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "secretKey" : MessageLookupByLibrary.simpleMessage("Secret Key"),
     "seed" : MessageLookupByLibrary.simpleMessage("Seed"),
     "selectAccount" : MessageLookupByLibrary.simpleMessage("Select Account"),
-    "selectNotesToExcludeFromPayments" : MessageLookupByLibrary.simpleMessage("Select notes to EXCLUDE from payments"),
+    "selectNotesToExcludeFromPayments" : MessageLookupByLibrary.simpleMessage("Selected notes are EXCLUDED from payments"),
     "send" : MessageLookupByLibrary.simpleMessage("Send"),
     "sendCointicker" : m3,
     "sendCointickerTo" : m4,

@@ -34,7 +34,7 @@
   "height": "Height",
   "datetime": "Date/Time",
   "amount": "Amount",
-  "selectNotesToExcludeFromPayments": "Select notes to EXCLUDE from payments",
+  "selectNotesToExcludeFromPayments": "Selected notes are EXCLUDED from payments",
   "largestSpendingsByAddress": "Largest Spendings by Address",
   "tapChartToToggleBetweenAddressAndAmount": "Tap Chart to Toggle between Address and Amount",
   "accountBalanceHistory": "Account Balance History",
