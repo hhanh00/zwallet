@@ -416,3 +416,12 @@ pub fn truncate_data() {
     };
     log_result(res())
 }
+
+pub fn delete_account(account: u32) {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.delete_account(account)?;
+        Ok(())
+    };
+    log_result(res())
+}

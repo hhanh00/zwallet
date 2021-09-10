@@ -79,6 +79,8 @@ void store_contact(uint32_t id, char *name, char *address, bool dirty);
 
 char *commit_unsaved_contacts(uint32_t account, uint32_t anchor_offset);
 
+void delete_account(uint32_t account);
+
 void truncate_data(void);
 
 void dummy_export(void);

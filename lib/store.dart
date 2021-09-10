@@ -25,25 +25,25 @@ class Settings = _Settings with _$Settings;
 
 abstract class _Settings with Store {
   @observable
-  String ldUrl;
+  String ldUrl = "";
 
   @observable
-  String ldUrlChoice;
+  String ldUrlChoice = "";
 
   @observable
-  int anchorOffset;
+  int anchorOffset = 10;
 
   @observable
-  bool getTx;
+  bool getTx = true;
 
   @observable
-  int rowsPerPage;
+  int rowsPerPage = 10;
 
   @observable
-  String theme;
+  String theme = "";
 
   @observable
-  String themeBrightness;
+  String themeBrightness = "";
 
   @observable
   ThemeData themeData = ThemeData.light();
@@ -146,6 +146,8 @@ abstract class _Settings with Store {
       case 'coffee':
         scheme = FlexScheme.espresso;
         break;
+      default:
+        scheme = FlexScheme.mango;
     }
     switch (themeBrightness) {
       case 'light':
@@ -249,10 +251,10 @@ abstract class _Settings with Store {
 class AccountManager = _AccountManager with _$AccountManager;
 
 abstract class _AccountManager with Store {
-  Database db;
+  late Database db;
 
   @observable
-  Account active;
+  Account active = Account(0, "", "", 0);
 
   @observable
   bool canPay = false;
@@ -288,7 +290,7 @@ abstract class _AccountManager with Store {
   List<Spending> spendings = [];
 
   @observable
-  List<TimeSeriesPoint> accountBalances = [];
+  List<TimeSeriesPoint<double>> accountBalances = [];
 
   @observable
   List<PnL> pnls = [];
@@ -328,7 +330,6 @@ abstract class _AccountManager with Store {
 
   @action
   Future<void> setActiveAccount(Account account) async {
-    if (account == null) return;
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('account', account.id);
     final List<Map> res1 = await db.rawQuery(
@@ -347,7 +348,7 @@ abstract class _AccountManager with Store {
   @action
   Future<void> setActiveAccountId(int idAccount) async {
     final account = accounts.firstWhere((account) => account.id == idAccount,
-        orElse: () => accounts.isNotEmpty ? accounts[0] : null);
+        orElse: () => accounts[0]);
     await setActiveAccount(account);
   }
 
@@ -359,12 +360,12 @@ abstract class _AccountManager with Store {
     final List<Map> res = await db.rawQuery(
         "SELECT seed, sk, ivk FROM accounts WHERE id_account = ?1",
         [active.id]);
-    if (res.isEmpty) return null;
+    if (res.isEmpty) throw Exception("Account N/A");
     final row = res[0];
     final seed = row['seed'];
     final sk = row['sk'];
     final ivk = row['ivk'];
-    int type;
+    int type = 0;
     if (seed != null)
       type = 0;
     else if (sk != null)
@@ -413,9 +414,8 @@ abstract class _AccountManager with Store {
 
   @action
   Future<void> delete(int account) async {
-    await db.rawDelete("DELETE FROM accounts WHERE id_account = ?1", [account]);
-    await db.rawDelete("DELETE FROM taddrs WHERE account = ?1", [account]);
-    if (account == active?.id)
+    WarpApi.deleteAccount(account);
+    if (account == active.id)
       resetToDefaultAccount();
   }
 
@@ -503,7 +503,7 @@ abstract class _AccountManager with Store {
       final timestamp = txDateFormat
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
       return Tx(row['id_tx'], row['height'], timestamp, shortTxid, fullTxId,
-          row['value'] / ZECUNIT, row['address'], row['memo']);
+          row['value'] / ZECUNIT, row['address'] ?? "", row['memo'] ?? "");
     }).toList();
 
     dataEpoch = DateTime.now().millisecondsSinceEpoch;
@@ -590,7 +590,7 @@ abstract class _AccountManager with Store {
     for (var row in res) {
       final timestamp =
           DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
-      final value = row['value'];
+      final value = row['value'] as int;
       final ab = AccountBalance(timestamp, b / ZECUNIT);
       _accountBalances.add(ab);
       b -= value;
@@ -759,7 +759,7 @@ abstract class _PriceStore with Store {
 class SyncStatus = _SyncStatus with _$SyncStatus;
 
 abstract class _SyncStatus with Store {
-  Database _db;
+  late Database _db;
 
   init() async {
     var databasesPath = await getDatabasesPath();
@@ -807,7 +807,7 @@ abstract class _SyncStatus with Store {
     SnackBar(content: Text(S
         .of(context)
         .rescanRequested));
-    rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
+    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     syncStatus.setSyncHeight(0);
     WarpApi.rewindToHeight(0);
     WarpApi.truncateData();
@@ -851,10 +851,10 @@ class ETAStore = _ETAStore with _$ETAStore;
 
 abstract class _ETAStore with Store {
   @observable
-  ETACheckpoint prev;
+  ETACheckpoint? prev;
 
   @observable
-  ETACheckpoint current;
+  ETACheckpoint? current;
 
   @action
   void reset() {
@@ -870,11 +870,13 @@ abstract class _ETAStore with Store {
 
   @computed
   String get eta {
-    if (prev == null || current == null) return "";
-    if (current.timestamp.millisecondsSinceEpoch == prev.timestamp.millisecondsSinceEpoch) return "";
-    final speed = (current.height - prev.height) / (current.timestamp.millisecondsSinceEpoch - prev.timestamp.millisecondsSinceEpoch);
+    final p = prev;
+    final c = current;
+    if (p == null || c == null) return "";
+    if (c.timestamp.millisecondsSinceEpoch == p.timestamp.millisecondsSinceEpoch) return "";
+    final speed = (c.height - p.height) / (c.timestamp.millisecondsSinceEpoch - p.timestamp.millisecondsSinceEpoch);
     if (speed == 0) return "";
-    final eta = (syncStatus.latestHeight - current.height) / speed;
+    final eta = (syncStatus.latestHeight - c.height) / speed;
     if (eta <= 0) return "";
     final duration = Duration(milliseconds: eta.floor()).toString().split('.')[0];
     return "(ETA: $duration)";
@@ -884,7 +886,7 @@ abstract class _ETAStore with Store {
 class ContactStore = _ContactStore with _$ContactStore;
 
 abstract class _ContactStore with Store {
-  Database db;
+  late Database db;
 
   @observable
   bool dirty = false;
@@ -892,7 +894,7 @@ abstract class _ContactStore with Store {
   @observable
   ObservableList<Contact> contacts = ObservableList<Contact>.of([]);
 
-  void init(Database db) async {
+  Future<void> init(Database db) async {
     this.db = db;
     final prefs = await SharedPreferences.getInstance();
     dirty = prefs.getBool('contacts_dirty') ?? false;

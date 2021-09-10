@@ -27,5 +27,6 @@ mo pubspec.yaml.tpl > pubspec.yaml
 flutter pub get
 flutter pub run change_app_package_name:main me.hanh.$APP_NAME
 flutter pub run flutter_launcher_icons:main
-flutter pub run flutter_launcher_name:main
+flutter pub run flutter_app_name
 flutter pub run build_runner build
+flutter pub run flutter_native_splash:create

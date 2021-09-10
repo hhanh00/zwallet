@@ -218,6 +218,10 @@ class WarpApi {
   static void truncateData() {
     warp_api_lib.truncate_data();
   }
+
+  static void deleteAccount(int account) {
+    warp_api_lib.delete_account(account);
+  }
 }
 
 String sendPaymentIsolateFn(PaymentParams params) {

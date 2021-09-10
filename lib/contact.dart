@@ -1,5 +1,5 @@
-import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -10,7 +10,7 @@ import 'generated/l10n.dart';
 import 'store.dart';
 
 class ContactsTab extends StatefulWidget {
-  ContactsTab({Key key}) : super(key: key);
+  ContactsTab({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ContactsState();
@@ -57,7 +57,6 @@ class ContactsState extends State<ContactsTab> {
   }
 
   _editContact(Contact c) async {
-    print(c.id);
     final contact = await showContactForm(context, c);
     if (contact != null) contacts.add(contact);
   }
@@ -83,10 +82,10 @@ class ContactsState extends State<ContactsTab> {
               title: Text('Add Contact'),
               content: ContactForm(c, key: key),
               actions: confirmButtons(context, () {
-                key.currentState.onOK();
+                key.currentState!.onOK();
               }),
             ));
-    return contact;
+    return contact!;
   }
 
   _onCommit() async {
@@ -98,7 +97,7 @@ class ContactsState extends State<ContactsTab> {
       final tx = await WarpApi.commitUnsavedContacts(
           accountManager.active.id, settings.anchorOffset);
       final snackBar = SnackBar(content: Text("${S.of(context).txId}: $tx"));
-      rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     }
   }
 }
@@ -123,7 +122,7 @@ class NoContact extends StatelessWidget {
 class ContactForm extends StatefulWidget {
   final Contact contact;
 
-  ContactForm(this.contact, {Key key}) : super(key: key);
+  ContactForm(this.contact, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ContactState();
@@ -152,17 +151,14 @@ class ContactState extends State<ContactForm> {
             controller: nameController,
             validator: _checkName,
           ),
-          AddressInput(
-              labelText: 'Address',
-              initialValue: address,
-              onSaved: (addr) {
-                address = addr;
+          AddressInput('Address', address, (addr) {
+                address = addr ?? "";
               })
         ])));
   }
 
   onOK() {
-    final state = formKey.currentState;
+    final state = formKey.currentState!;
     if (state.validate()) {
       state.save();
       final contact = Contact(widget.contact.id, nameController.text, address);
@@ -170,18 +166,18 @@ class ContactState extends State<ContactForm> {
     }
   }
 
-  String _checkName(String v) {
-    if (v.isEmpty) return S.of(context).nameIsEmpty;
+  String? _checkName(String? v) {
+    if (v == null || v.isEmpty) return S.of(context).nameIsEmpty;
     return null;
   }
 }
 
 class AddressInput extends StatefulWidget {
-  final void Function(String) onSaved;
+  final void Function(String?) onSaved;
   final String labelText;
   final String initialValue;
 
-  AddressInput({this.labelText, this.initialValue, this.onSaved});
+  AddressInput(this.labelText, this.initialValue, this.onSaved);
 
   @override
   State<StatefulWidget> createState() => AddressState();
@@ -214,8 +210,8 @@ class AddressState extends State<AddressInput> {
     ]);
   }
 
-  String _checkAddress(String v) {
-    if (v.isEmpty) return S.of(context).addressIsEmpty;
+  String? _checkAddress(String? v) {
+    if (v == null || v.isEmpty) return S.of(context).addressIsEmpty;
     final zaddr = WarpApi.getSaplingFromUA(v);
     if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
@@ -223,10 +219,10 @@ class AddressState extends State<AddressInput> {
   }
 
   void _onScan() async {
-    var code = await BarcodeScanner.scan();
-    setState(() {
-      final address = code.rawContent;
-      _addressController.text = address;
-    });
+    var address = await scanCode(context);
+    if (address != null)
+      setState(() {
+        _addressController.text = address;
+      });
   }
 }

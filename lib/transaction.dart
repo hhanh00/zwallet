@@ -32,8 +32,8 @@ class TransactionState extends State<TransactionPage> {
               subtitle: Text('${widget.tx.timestamp}')),
           ListTile(title: Text(S.of(context).amount), subtitle: SelectableText('${widget.tx.value.toStringAsFixed(8)}')),
           ListTile(
-              title: Text(S.of(context).address), subtitle: SelectableText('${widget.tx.address ?? S.of(context).na}')),
-          ListTile(title: Text(S.of(context).memo), subtitle: SelectableText('${widget.tx.memo ?? S.of(context).na}')),
+              title: Text(S.of(context).address), subtitle: SelectableText('${widget.tx.address}')),
+          ListTile(title: Text(S.of(context).memo), subtitle: SelectableText('${widget.tx.memo}')),
           ElevatedButton(onPressed: _onOpen, child: Text(S.of(context).openInExplorer))
         ]));
   }

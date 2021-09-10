@@ -29,15 +29,15 @@ class _AccountPageState extends State<AccountPage>
         WidgetsBindingObserver,
         AutomaticKeepAliveClientMixin,
         SingleTickerProviderStateMixin {
-  Timer _timerSync;
+  Timer? _timerSync;
   int _progress = 0;
   bool _useSnapAddress = false;
   String _snapAddress = "";
-  TabController _tabController;
+  late TabController _tabController;
   bool _accountTab = true;
   bool _contactsTab = false;
-  StreamSubscription _progressDispose;
-  StreamSubscription _syncDispose;
+  StreamSubscription? _progressDispose;
+  StreamSubscription? _syncDispose;
   final contactKey = GlobalKey<ContactsState>();
 
   @override
@@ -59,7 +59,7 @@ class _AccountPageState extends State<AccountPage>
       await contacts.fetchContacts();
       await _setupTimer();
     });
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
     _progressDispose = progressStream.listen((percent) {
       setState(() {
         _progress = percent;
@@ -81,9 +81,9 @@ class _AccountPageState extends State<AccountPage>
   @override
   void dispose() {
     _timerSync?.cancel();
-    WidgetsBinding.instance.removeObserver(this);
-    _progressDispose.cancel();
-    _syncDispose.cancel();
+    WidgetsBinding.instance?.removeObserver(this);
+    _progressDispose?.cancel();
+    _syncDispose?.cancel();
     super.dispose();
   }
 
@@ -109,16 +109,6 @@ class _AccountPageState extends State<AccountPage>
     final theme = Theme.of(this.context);
     final hasTAddr = accountManager.taddress.isNotEmpty;
     final qrSize = getScreenSize(context) / 2.5;
-
-    if (syncStatus.accountRestored) {
-      syncStatus.setAccountRestored(false);
-      Future.microtask(() {
-        rescanDialog(context, () {
-          syncStatus.sync(context);
-          Navigator.of(context).pop();
-        });
-      });
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -177,14 +167,14 @@ class _AccountPageState extends State<AccountPage>
                             style: theme.textTheme.caption)
                         : Text(
                             '${syncStatus.syncedHeight} / ${syncStatus.latestHeight} ${eta.eta}',
-                            style: theme.textTheme.caption
+                            style: theme.textTheme.caption!
                                 .apply(color: theme.primaryColor));
               }),
               Padding(padding: EdgeInsets.symmetric(vertical: 8)),
               Observer(builder: (context) {
                 final _ = accountManager.active.address;
                 final address = _address();
-                final shortAddress = address.substring(0, 16) + "..." + address.substring(address.length - 16);
+                final shortAddress = address != "" ? address.substring(0, 16) + "..." + address.substring(address.length - 16) : "";
                 final showTAddr = accountManager.showTAddr;
                 return Column(children: [
                   if (hasTAddr)
@@ -239,7 +229,7 @@ class _AccountPageState extends State<AccountPage>
                     ? accountManager.tbalance
                     : accountManager.balance;
                 final balanceHi = _getBalance_hi(balance);
-                final balanceStyle = (balanceHi.length > 9 ? theme.textTheme.headline3 : theme.textTheme.headline2).copyWith(color: theme.colorScheme.primaryVariant);
+                final balanceStyle = (balanceHi.length > 9 ? theme.textTheme.headline3 : theme.textTheme.headline2)!.copyWith(color: theme.colorScheme.primaryVariant);
                 return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -339,7 +329,7 @@ class _AccountPageState extends State<AccountPage>
     Clipboard.setData(ClipboardData(text: _address()));
     final snackBar =
         SnackBar(content: Text(S.of(context).addressCopiedToClipboard));
-    rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
+    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
   }
 
   _onShieldTAddr() {
@@ -355,10 +345,10 @@ class _AccountPageState extends State<AccountPage>
             final s = S.of(context);
             Navigator.of(this.context).pop();
             final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
-            rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
+            rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
             final txid = await WarpApi.shieldTAddr(accountManager.active.id);
             final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
-            rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+            rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
           })),
     );
   }
@@ -476,7 +466,7 @@ class _AccountPageState extends State<AccountPage>
           barrierDismissible: true,
           builder: (context) => AlertDialog(
               title: Text(S.of(context).noAuthenticationMethod),
-              content: Text(e.message)));
+              content: Text(e.message ?? "")));
     }
   }
 
@@ -509,7 +499,7 @@ class _AccountPageState extends State<AccountPage>
     if (result != null) {
       final res = WarpApi.broadcast(result.files.single.path);
       final snackBar = SnackBar(content: Text(res));
-      rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     }
   }
 
@@ -524,9 +514,8 @@ class _AccountPageState extends State<AccountPage>
 
   _onAddContact() async {
     final contact =
-        await contactKey.currentState.showContactForm(context, Contact.empty());
+        await contactKey.currentState?.showContactForm(context, Contact.empty());
     if (contact != null) {
-      print("${contact.name} ${contact.address}");
       contacts.add(contact);
     }
   }
@@ -602,8 +591,8 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
                 columnSpacing: 16,
                 showCheckboxColumn: false,
                 availableRowsPerPage: [5, 10, 25, 100],
-                onRowsPerPageChanged: (int value) {
-                  settings.setRowsPerPage(value);
+                onRowsPerPageChanged: (int? value) {
+                  settings.setRowsPerPage(value ?? 25);
                 },
                 showFirstLastButtons: true,
                 rowsPerPage: settings.rowsPerPage,
@@ -631,9 +620,9 @@ class NotesDataSource extends DataTableSource {
         ? syncStatus.latestHeight - note.height + 1
         : note.height;
 
-    var style = theme.textTheme.bodyText2;
+    var style = theme.textTheme.bodyText2!;
     if (!_confirmed(note.height))
-      style = style.copyWith(color: style.color.withOpacity(0.5));
+      style = style.copyWith(color: style.color!.withOpacity(0.5));
 
     if (note.spent)
       style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
@@ -669,7 +658,7 @@ class NotesDataSource extends DataTableSource {
     return syncStatus.latestHeight - height >= settings.anchorOffset;
   }
 
-  void _noteSelected(Note note, bool selected) {
+  void _noteSelected(Note note, bool? selected) {
     note.excluded = !note.excluded;
     notifyListeners();
     onRowSelected(note);
@@ -744,8 +733,8 @@ class HistoryState extends State<HistoryWidget>
                   columnSpacing: 16,
                   showCheckboxColumn: false,
                   availableRowsPerPage: [5, 10, 25, 100],
-                  onRowsPerPageChanged: (int value) {
-                    settings.setRowsPerPage(value);
+                  onRowsPerPageChanged: (int? value) {
+                    settings.setRowsPerPage(value ?? 25);
                   },
                   showFirstLastButtons: true,
                   rowsPerPage: settings.rowsPerPage,
@@ -766,7 +755,7 @@ class HistoryDataSource extends DataTableSource {
         ? syncStatus.latestHeight - tx.height + 1
         : tx.height;
     final color = amountColor(context, tx.value);
-    var style = Theme.of(context).textTheme.bodyText2.copyWith(color: color);
+    var style = Theme.of(context).textTheme.bodyText2!.copyWith(color: color);
     style = fontWeight(style, tx.value);
 
     return DataRow(
@@ -852,9 +841,9 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
           orientation: OptionsOrientation.horizontal,
           name: S.of(context).pnl,
           initialValue: accountManager.pnlSeriesIndex,
-          onChanged: (v) {
+          onChanged: (int? v) {
             setState(() {
-              accountManager.setPnlSeriesIndex(v);
+              accountManager.setPnlSeriesIndex(v!);
             });
           },
           options: [
@@ -902,6 +891,7 @@ class PnLChart extends StatelessWidget {
       case 4:
         return pnl.amount;
     }
+    return 0.0;
   }
 
   static List<TimeSeriesPoint<double>> _createSeries(
@@ -937,8 +927,8 @@ class PnLTable extends StatelessWidget {
                 columnSpacing: 16,
                 showCheckboxColumn: false,
                 availableRowsPerPage: [5, 10, 25, 100],
-                onRowsPerPageChanged: (int value) {
-                  settings.setRowsPerPage(value);
+                onRowsPerPageChanged: (int? value) {
+                  settings.setRowsPerPage(value ?? 25);
                 },
                 showFirstLastButtons: true,
                 rowsPerPage: settings.rowsPerPage,

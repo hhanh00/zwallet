@@ -58,11 +58,11 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
     }
 
     List<Color> gradientColors = [
-      theme.accentColor,
-      theme.primaryColor,
+      theme.colorScheme.secondary,
+      theme.colorScheme.primary,
     ];
 
-    final textStyle = theme.textTheme.bodyText1;
+    final textStyle = theme.textTheme.bodyText1!;
     final bgColor = theme.backgroundColor;
 
     return LineChartData(
@@ -71,22 +71,24 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
         drawVerticalLine: true,
         getDrawingHorizontalLine: (value) {
           return FlLine(
-            color: theme.accentColor.withOpacity(0.2),
+            color: theme.colorScheme.secondary.withOpacity(0.2),
             strokeWidth: 1,
           );
         },
         getDrawingVerticalLine: (value) {
           return FlLine(
-            color: theme.accentColor.withOpacity(0.2),
+            color: theme.colorScheme.secondary.withOpacity(0.2),
             strokeWidth: 1,
           );
         },
       ),
       titlesData: FlTitlesData(
+        rightTitles: SideTitles(showTitles: false),
+        topTitles: SideTitles(showTitles: false),
         bottomTitles: SideTitles(
           showTitles: true,
           reservedSize: 22,
-          getTextStyles: (value) => TextStyle(
+          getTextStyles: (context, value) => TextStyle(
               color: theme.primaryColor,
               fontWeight: FontWeight.bold,
               fontSize: 12),
@@ -98,7 +100,7 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
         ),
         leftTitles: SideTitles(
           showTitles: true,
-          getTextStyles: (value) => TextStyle(
+          getTextStyles: (context, value) => TextStyle(
             color: theme.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 14,
@@ -187,17 +189,15 @@ class PieChartSpendingState extends State<PieChartSpending> {
 
     return PieChart(
       PieChartData(
-          pieTouchData: PieTouchData(touchCallback: (pieTouchResponse) {
+          pieTouchData: PieTouchData(touchCallback: (event, pieTouchResponse) {
             setState(() {
-              final desiredTouch =
-                  pieTouchResponse.touchInput is! PointerExitEvent &&
-                      pieTouchResponse.touchInput is! PointerUpEvent;
-              if (desiredTouch && pieTouchResponse.touchedSection != null) {
-                touchedIndex =
-                    pieTouchResponse.touchedSection.touchedSectionIndex;
-              } else {
+              if (!event.isInterestedForInteractions ||
+                  pieTouchResponse == null ||
+                  pieTouchResponse.touchedSection == null) {
                 touchedIndex = -1;
+                return;
               }
+              touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
             });
           }),
           borderData: FlBorderData(

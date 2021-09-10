@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import 'main.dart';
 import 'store.dart';
@@ -11,7 +10,7 @@ class BackupPage extends StatefulWidget {
 }
 
 class BackupState extends State<BackupPage> {
-  Backup backup;
+  late Backup backup;
   final _backupController = TextEditingController();
   final _skController = TextEditingController();
   final _ivkController = TextEditingController();
@@ -19,8 +18,8 @@ class BackupState extends State<BackupPage> {
   Future<bool> _init() async {
     backup = await accountManager.getBackup();
     _backupController.text = backup.value();
-    _skController.text = backup.sk ?? "";
-    _ivkController.text = backup.ivk ?? "";
+    _skController.text = backup.sk;
+    _ivkController.text = backup.ivk;
     return true;
   }
 

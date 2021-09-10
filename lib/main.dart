@@ -1,14 +1,14 @@
 import 'dart:math';
 
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:http/http.dart';
 import 'package:path/path.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:splashscreen/splashscreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'generated/l10n.dart';
 
@@ -50,39 +50,44 @@ void main() {
   final home = ZWalletApp();
   runApp(FutureBuilder(
       future: settings.restore(),
-      builder: (context, state) =>
-      state.hasData
-          ? Observer(
-          builder: (context) {
-              final theme = settings.themeData.copyWith(dataTableTheme:
-              DataTableThemeData(headingRowColor: MaterialStateColor.resolveWith((_) => settings.themeData.highlightColor)));
-              return MaterialApp(
-                title: coin.app,
-                theme: theme,
-                home: home,
-                scaffoldMessengerKey: rootScaffoldMessengerKey,
-                localizationsDelegates: [
-                  S.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: S.delegate.supportedLocales,
-                onGenerateRoute: (RouteSettings settings) {
-                  var routes = <String, WidgetBuilder>{
-                    '/account': (context) => AccountPage(),
-                    '/restore': (context) => RestorePage(),
-                    '/send': (context) => SendPage(settings.arguments),
-                    '/accounts': (context) => AccountManagerPage(),
-                    '/settings': (context) => SettingsPage(),
-                    '/tx': (context) => TransactionPage(settings.arguments),
-                    '/backup': (context) => BackupPage(),
-                    '/multipay': (context) => MultiPayPage(),
-                  };
-                  return MaterialPageRoute(builder: routes[settings.name]);
-                },
-          );})
-          : Container()));
+      builder: (context, snapshot) {
+        return snapshot.connectionState == ConnectionState.waiting
+            ? MaterialApp(home: Container()) :
+              Observer(builder: (context) {
+                final theme = settings.themeData.copyWith(
+                    dataTableTheme: DataTableThemeData(
+                        headingRowColor: MaterialStateColor.resolveWith(
+                            (_) => settings.themeData.highlightColor)));
+                return MaterialApp(
+                  title: coin.app,
+                  theme: theme,
+                  home: home,
+                  scaffoldMessengerKey: rootScaffoldMessengerKey,
+                  localizationsDelegates: [
+                    S.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: S.delegate.supportedLocales,
+                  onGenerateRoute: (RouteSettings settings) {
+                    var routes = <String, WidgetBuilder>{
+                      '/account': (context) => AccountPage(),
+                      '/restore': (context) => RestorePage(),
+                      '/send': (context) =>
+                          SendPage(settings.arguments as Contact?),
+                      '/accounts': (context) => AccountManagerPage(),
+                      '/settings': (context) => SettingsPage(),
+                      '/tx': (context) =>
+                          TransactionPage(settings.arguments as Tx),
+                      '/backup': (context) => BackupPage(),
+                      '/multipay': (context) => MultiPayPage(),
+                    };
+                    return MaterialPageRoute(builder: routes[settings.name]!);
+                  },
+                );
+              });
+      }));
 }
 
 class ZWalletApp extends StatefulWidget {
@@ -93,7 +98,7 @@ class ZWalletApp extends StatefulWidget {
 class ZWalletAppState extends State<ZWalletApp> {
   bool initialized = false;
 
-  Future<Widget> _init() async {
+  Future<bool> _init() async {
     if (!initialized) {
       initialized = true;
       final dbPath = await getDatabasesPath();
@@ -104,61 +109,48 @@ class ZWalletAppState extends State<ZWalletApp> {
 
       await syncStatus.init();
     }
-    return Future.value(accountManager.accounts.isNotEmpty
-        ? AccountPage()
-        : AccountManagerPage());
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SplashScreen(
-      navigateAfterFuture: _init(),
-      title: new Text(
-        coin.app,
-        style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-      ),
-      image: new Image.asset('assets/icon.png'),
-      backgroundColor: theme.backgroundColor,
-      photoSize: 50.0,
-      loaderColor: theme.primaryColor,
-    );
+    return FutureBuilder(
+        future: _init(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return Container();
+          return accountManager.accounts.isNotEmpty
+              ? AccountPage()
+              : AccountManagerPage();
+        });
   }
 }
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
-GlobalKey<ScaffoldMessengerState>();
+    GlobalKey<ScaffoldMessengerState>();
 
-List<ElevatedButton> confirmButtons(BuildContext context,
-    VoidCallback onPressed,
-    {String okLabel, Icon okIcon, cancelValue}) {
+List<ElevatedButton> confirmButtons(
+    BuildContext context, VoidCallback? onPressed,
+    {String? okLabel, Icon? okIcon, cancelValue}) {
   final navigator = Navigator.of(context);
   return <ElevatedButton>[
     ElevatedButton.icon(
         icon: Icon(Icons.cancel),
-        label: Text(S
-            .of(context)
-            .cancel),
+        label: Text(S.of(context).cancel),
         onPressed: () {
           cancelValue != null ? navigator.pop(cancelValue) : navigator.pop();
         },
         style: ElevatedButton.styleFrom(
-            primary: Theme
-                .of(context)
-                .buttonTheme
-                .colorScheme
-                .secondary)),
+            primary: Theme.of(context).buttonTheme.colorScheme!.secondary)),
     ElevatedButton.icon(
       icon: okIcon ?? Icon(Icons.done),
-      label: Text(okLabel ?? S
-          .of(context)
-          .ok),
+      label: Text(okLabel ?? S.of(context).ok),
       onPressed: onPressed,
     )
   ];
 }
 
-List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(List<T> timeseries,
+List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(
+    List<T> timeseries,
     int start,
     int end,
     int Function(T) getDay,
@@ -198,14 +190,14 @@ void showQR(BuildContext context, String text) {
       context: context,
       barrierColor: Colors.black,
       builder: (context) => AlertDialog(
-        content: Container(
-            width: double.maxFinite,
-            child: QrImage(data: text, backgroundColor: Colors.white)
-        ),
-      ));
+            content: Container(
+                width: double.maxFinite,
+                child: QrImage(data: text, backgroundColor: Colors.white)),
+          ));
 }
 
-Future<void> rescanDialog(BuildContext context, VoidCallback continuation) async {
+Future<void> rescanDialog(
+    BuildContext context, VoidCallback continuation) async {
   await showDialog(
       context: context,
       barrierDismissible: false,
@@ -215,19 +207,19 @@ Future<void> rescanDialog(BuildContext context, VoidCallback continuation) async
           actions: confirmButtons(context, continuation)));
 }
 
-Future<bool> showMessageBox(BuildContext context, String title, String content, String label) {
-  final confirm = showDialog<bool>(
+Future<bool> showMessageBox(
+    BuildContext context, String title, String content, String label) async {
+  final confirm = await showDialog<bool>(
     context: context,
     barrierDismissible: false,
-    builder: (context) =>
-        AlertDialog(
-            title: Text(title),
-            content: Text(content),
-            actions: confirmButtons(context, () {
-              Navigator.of(context).pop(true);
-            }, okLabel: label, cancelValue: false)),
+    builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: confirmButtons(context, () {
+          Navigator.of(context).pop(true);
+        }, okLabel: label, cancelValue: false)),
   );
-  return confirm;
+  return confirm ?? false;
 }
 
 double getScreenSize(BuildContext context) {
@@ -236,9 +228,10 @@ double getScreenSize(BuildContext context) {
 }
 
 Color amountColor(BuildContext context, num a) {
+  final theme = Theme.of(context);
   if (a < 0) return Colors.red;
   if (a > 0) return Colors.green;
-  return Theme.of(context).textTheme.bodyText1.color;
+  return theme.textTheme.bodyText1!.color!;
 }
 
 TextStyle fontWeight(TextStyle style, num v) {
@@ -247,7 +240,21 @@ TextStyle fontWeight(TextStyle style, num v) {
     return style.copyWith(fontWeight: FontWeight.w800);
   else if (value >= 25)
     return style.copyWith(fontWeight: FontWeight.w600);
-  else if (value >= 5)
-    return style.copyWith(fontWeight: FontWeight.w400);
+  else if (value >= 5) return style.copyWith(fontWeight: FontWeight.w400);
   return style.copyWith(fontWeight: FontWeight.w200);
+}
+
+CurrencyTextInputFormatter makeInputFormatter(bool mZEC) =>
+    CurrencyTextInputFormatter(symbol: '', decimalDigits: mZEC ? 3 : 8);
+
+double? parseNumber(String? s) {
+  if (s == null) return 0;
+  final s2 = s.replaceAll(',', '');
+  return double.tryParse(s2);
+}
+
+Future<String?> scanCode(BuildContext context) async {
+  final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S.of(context).cancel, true, ScanMode.QR);
+  if (code == "-1") return null;
+  return code;
 }

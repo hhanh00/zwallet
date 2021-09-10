@@ -69,7 +69,7 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   Future<bool> _onAccountDelete(DismissDirection _direction) async {
     if (accountManager.accounts.length == 1) return false;
-    final confirm = showDialog<bool>(
+    final confirm = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
@@ -79,7 +79,7 @@ class AccountManagerState extends State<AccountManagerPage> {
             Navigator.of(context).pop(true);
           }, okLabel: S.of(context).delete, cancelValue: false)),
     );
-    return confirm;
+    return confirm ?? false;
   }
 
   void _onDismissed(int index, int account) async {
@@ -89,6 +89,14 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   _selectAccount(Account account) async {
     await accountManager.setActiveAccount(account);
+    if (syncStatus.accountRestored) {
+      syncStatus.setAccountRestored(false);
+      await rescanDialog(context, () {
+          syncStatus.sync(context);
+          Navigator.of(context).pop();
+        });
+    }
+
     final navigator = Navigator.of(context);
     if (navigator.canPop())
       navigator.pop();

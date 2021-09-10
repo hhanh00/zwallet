@@ -218,6 +218,11 @@ pub unsafe extern "C" fn commit_unsaved_contacts(account: u32, anchor_offset: u3
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn delete_account(account: u32) {
+    api::delete_account(account);
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn truncate_data() {
     api::truncate_data();
 }

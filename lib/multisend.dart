@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp/store.dart';
@@ -66,7 +65,7 @@ class MultiPayState extends State<MultiPayPage> {
   _send() async {
     final amount = multipayData.recipients
             .map((r) => r.amount)
-            .fold(0.0, (a, b) => a + b) /
+            .fold<double>(0.0, (a, b) => a + b) /
         ZECUNIT;
     final count = multipayData.recipients.length;
 
@@ -87,13 +86,13 @@ class MultiPayState extends State<MultiPayPage> {
       Navigator.of(context).pop();
 
       final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
-      rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
 
       final recipientsJson = jsonEncode(multipayData.recipients);
       final tx = await WarpApi.sendMultiPayment(accountManager.active.id,
           recipientsJson, settings.anchorOffset, (p) {});
       final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
-      rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
 
       multipayData.clear();
       await accountManager.fetchAccountData(true);
@@ -112,8 +111,7 @@ class PayRecipientState extends State<PayRecipient> {
   final _formKey = GlobalKey<FormState>();
   var _amount = Decimal.zero;
   final _addressController = TextEditingController();
-  var _currencyController = MoneyMaskedTextController(
-      decimalSeparator: '.', thousandSeparator: ',', precision: 3);
+  var _currencyController = TextEditingController();
   final _memoController = TextEditingController();
 
   @override
@@ -140,6 +138,7 @@ class PayRecipientState extends State<PayRecipient> {
                 decoration: InputDecoration(labelText: S.of(context).amount),
                 keyboardType: TextInputType.number,
                 controller: _currencyController,
+                inputFormatters: [makeInputFormatter(true)],
                 validator: _checkAmount),
             TextFormField(
               decoration: InputDecoration(labelText: S.of(context).memo),
@@ -155,19 +154,19 @@ class PayRecipientState extends State<PayRecipient> {
   }
 
   void _onScan() async {
-    var code = await BarcodeScanner.scan();
-    setState(() {
-      final address = code.rawContent;
-      _addressController.text = address;
-    });
+    final address = await scanCode(context);
+    if (address != null)
+      setState(() {
+          _addressController.text = address;
+      });
   }
 
   void _onAdd() {
-    final form = _formKey.currentState;
+    final form = _formKey.currentState!;
 
     if (form.validate()) {
       form.save();
-      _amount = Decimal.parse(_currencyController.text.replaceAll(',', ''));
+      _amount = Decimal.parse(parseNumber(_currencyController.text).toString());
       final address = unwrapUA(_addressController.text);
       final r = Recipient(
           address, (_amount * ZECUNIT_DECIMAL).toInt(), _memoController.text);
@@ -175,16 +174,16 @@ class PayRecipientState extends State<PayRecipient> {
     }
   }
 
-  String _checkAddress(String v) {
-    if (v.isEmpty) return S.of(context).addressIsEmpty;
+  String? _checkAddress(String? v) {
+    if (v == null || v.isEmpty) return S.of(context).addressIsEmpty;
     final zaddr = WarpApi.getSaplingFromUA(v);
     if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
     return null;
   }
 
-  String _checkAmount(String vs) {
-    final v = double.tryParse(vs);
+  String? _checkAmount(String? vs) {
+    final v = parseNumber(vs);
     if (v == null) return S.of(context).amountMustBeANumber;
     if (v <= 0.0) return S.of(context).amountMustBePositive;
     return null;

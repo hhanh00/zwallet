@@ -412,6 +412,19 @@ class NativeLibrary {
   late final _dart_commit_unsaved_contacts _commit_unsaved_contacts =
       _commit_unsaved_contacts_ptr.asFunction<_dart_commit_unsaved_contacts>();
 
+  void delete_account(
+    int account,
+  ) {
+    return _delete_account(
+      account,
+    );
+  }
+
+  late final _delete_account_ptr =
+      _lookup<ffi.NativeFunction<_c_delete_account>>('delete_account');
+  late final _dart_delete_account _delete_account =
+      _delete_account_ptr.asFunction<_dart_delete_account>();
+
   void truncate_data() {
     return _truncate_data();
   }
@@ -685,6 +698,14 @@ typedef _c_commit_unsaved_contacts = ffi.Pointer<ffi.Int8> Function(
 typedef _dart_commit_unsaved_contacts = ffi.Pointer<ffi.Int8> Function(
   int account,
   int anchor_offset,
+);
+
+typedef _c_delete_account = ffi.Void Function(
+  ffi.Uint32 account,
+);
+
+typedef _dart_delete_account = void Function(
+  int account,
 );
 
 typedef _c_truncate_data = ffi.Void Function();
