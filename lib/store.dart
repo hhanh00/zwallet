@@ -993,8 +993,8 @@ class AccountBalance {
 
 class Backup {
   int type;
-  final String seed;
-  final String sk;
+  final String? seed;
+  final String? sk;
   final String ivk;
 
   Backup(this.type, this.seed, this.sk, this.ivk);
@@ -1002,9 +1002,9 @@ class Backup {
   String value() {
     switch (type) {
       case 0:
-        return seed;
+        return seed!;
       case 1:
-        return sk;
+        return sk!;
       case 2:
         return ivk;
     }

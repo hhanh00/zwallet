@@ -18,7 +18,7 @@ class BackupState extends State<BackupPage> {
   Future<bool> _init() async {
     backup = await accountManager.getBackup();
     _backupController.text = backup.value();
-    _skController.text = backup.sk;
+    _skController.text = backup.sk ?? "";
     _ivkController.text = backup.ivk;
     return true;
   }
@@ -50,7 +50,7 @@ class BackupState extends State<BackupPage> {
           ),
           if (type == 0) TextField(
             decoration: InputDecoration(labelText: S.of(context).secretKey, prefixIcon: IconButton(icon: Icon(Icons.vpn_key),
-    onPressed: () => _showQR(backup.sk))),
+    onPressed: () => _showQR(backup.sk!))),
             controller: _skController,
             minLines: 3,
             maxLines: 10,
