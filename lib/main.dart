@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:decimal/decimal.dart';
@@ -236,12 +237,13 @@ Color amountColor(BuildContext context, num a) {
 
 TextStyle fontWeight(TextStyle style, num v) {
   final value = v.abs();
+  final style2 = style.copyWith(fontFeatures: [FontFeature.tabularFigures()]);
   if (value >= 250)
-    return style.copyWith(fontWeight: FontWeight.w800);
+    return style2.copyWith(fontWeight: FontWeight.w800);
   else if (value >= 25)
-    return style.copyWith(fontWeight: FontWeight.w600);
-  else if (value >= 5) return style.copyWith(fontWeight: FontWeight.w400);
-  return style.copyWith(fontWeight: FontWeight.w200);
+    return style2.copyWith(fontWeight: FontWeight.w600);
+  else if (value >= 5) return style2.copyWith(fontWeight: FontWeight.w400);
+  return style2.copyWith(fontWeight: FontWeight.w200);
 }
 
 CurrencyTextInputFormatter makeInputFormatter(bool mZEC) =>
