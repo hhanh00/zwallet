@@ -4,6 +4,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
@@ -73,13 +74,15 @@ class MultiPayState extends State<MultiPayPage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) => AlertDialog(
-              title: Text(S.of(context).pleaseConfirm),
-              content: SingleChildScrollView(
-                  child: Text(
-                      S.of(context).sendingATotalOfAmountCointickerToCountRecipients(amount, coin.ticker, count))),
-              actions:
-                confirmButtons(context, () => Navigator.of(context).pop(true), cancelValue: false)
-            ));
+            title: Text(S.of(context).pleaseConfirm),
+            content: SingleChildScrollView(
+                child: Text(S
+                    .of(context)
+                    .sendingATotalOfAmountCointickerToCountRecipients(
+                        amount, coin.ticker, count))),
+            actions: confirmButtons(
+                context, () => Navigator.of(context).pop(true),
+                cancelValue: false)));
 
     if (approved) {
       final s = S.of(context);
@@ -122,13 +125,23 @@ class PayRecipientState extends State<PayRecipient> {
           child: Column(children: <Widget>[
             Row(children: <Widget>[
               Expanded(
-                child: TextFormField(
-                  decoration: InputDecoration(labelText: S.of(context).sendCointickerTo(coin.ticker)),
-                  minLines: 4,
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  controller: _addressController,
+                child: TypeAheadFormField(
+                  textFieldConfiguration: TextFieldConfiguration(
+                      decoration: InputDecoration(
+                          labelText:
+                              S.of(context).sendCointickerTo(coin.ticker)),
+                      controller: _addressController,
+                      minLines: 4,
+                      maxLines: 10,
+                      keyboardType: TextInputType.multiline),
                   validator: _checkAddress,
+                  onSuggestionSelected: (Contact contact) {
+                    _addressController.text = contact.name;
+                  },
+                  suggestionsCallback: (String pattern) {
+                    return contacts.contacts.where((c) => c.name.toLowerCase().contains(pattern.toLowerCase()));
+                  },
+                  itemBuilder: (BuildContext context, Contact c) => ListTile(title: Text(c.name)),
                 ),
               ),
               IconButton(
@@ -147,8 +160,9 @@ class PayRecipientState extends State<PayRecipient> {
               keyboardType: TextInputType.multiline,
               controller: _memoController,
             ),
-            ButtonBar(children:
-              confirmButtons(context, _onAdd, okLabel: S.of(context).add, okIcon: Icon(MdiIcons.plus)))
+            ButtonBar(
+                children: confirmButtons(context, _onAdd,
+                    okLabel: S.of(context).add, okIcon: Icon(MdiIcons.plus)))
           ]),
         ));
   }
@@ -157,7 +171,7 @@ class PayRecipientState extends State<PayRecipient> {
     final address = await scanCode(context);
     if (address != null)
       setState(() {
-          _addressController.text = address;
+        _addressController.text = address;
       });
   }
 
@@ -167,7 +181,8 @@ class PayRecipientState extends State<PayRecipient> {
     if (form.validate()) {
       form.save();
       _amount = Decimal.parse(parseNumber(_currencyController.text).toString());
-      final address = unwrapUA(_addressController.text);
+      final c = contacts.contacts.where((c) => c.name == _addressController.text);
+      final address = c.isEmpty ? unwrapUA(_addressController.text) : c.first.address;
       final r = Recipient(
           address, (_amount * ZECUNIT_DECIMAL).toInt(), _memoController.text);
       Navigator.of(context).pop(r);
@@ -176,6 +191,8 @@ class PayRecipientState extends State<PayRecipient> {
 
   String? _checkAddress(String? v) {
     if (v == null || v.isEmpty) return S.of(context).addressIsEmpty;
+    final c = contacts.contacts.where((c) => c.name == v);
+    if (c.isNotEmpty) return null;
     final zaddr = WarpApi.getSaplingFromUA(v);
     if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
