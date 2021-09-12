@@ -504,7 +504,7 @@ abstract class _AccountManager with Store {
       final timestamp = txDateFormat
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
       return Tx(row['id_tx'], row['height'], timestamp, shortTxid, fullTxId,
-          row['value'] / ZECUNIT, row['address'] ?? "", row['contact'], row['memo'] ?? "");
+          row['value'] / ZECUNIT, row['address'] ?? "", row['name'], row['memo'] ?? "");
     }).toList();
 
     dataEpoch = DateTime.now().millisecondsSinceEpoch;
