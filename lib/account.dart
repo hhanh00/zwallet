@@ -910,7 +910,7 @@ class PnLTable extends StatelessWidget {
             builder: (context) => PaginatedDataTable(
                 columns: [
                   DataColumn(
-                      label: Text(S.of(context).datetime + sortSymbol),
+                      label: Text(S.of(context).date + sortSymbol),
                       onSort: (_, __) {
                         accountManager.togglePnlDesc();
                       }),

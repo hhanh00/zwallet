@@ -96,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "currency": MessageLookupByLibrary.simpleMessage("Moneda"),
         "custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "dark": MessageLookupByLibrary.simpleMessage("Noche"),
+        "date": MessageLookupByLibrary.simpleMessage("Date"),
         "datetime": MessageLookupByLibrary.simpleMessage("Fecha/Hora"),
         "delete": MessageLookupByLibrary.simpleMessage("ELIMINAR"),
         "deleteContact": MessageLookupByLibrary.simpleMessage("Delete contact"),

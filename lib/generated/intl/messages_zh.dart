@@ -86,6 +86,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "currency": MessageLookupByLibrary.simpleMessage("貨幣"),
         "custom": MessageLookupByLibrary.simpleMessage("自訂"),
         "dark": MessageLookupByLibrary.simpleMessage("深色"),
+        "date": MessageLookupByLibrary.simpleMessage("Date"),
         "datetime": MessageLookupByLibrary.simpleMessage("日期/時間"),
         "delete": MessageLookupByLibrary.simpleMessage("刪除"),
         "deleteContact": MessageLookupByLibrary.simpleMessage("Delete contact"),

@@ -164,7 +164,7 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     chartRange = v;
     prefs.setString('chart_range', chartRange);
-    accountManager.fetchPNL();
+    accountManager.fetchChartData();
   }
 
   String getLWD() {
@@ -210,7 +210,7 @@ abstract class _Settings with Store {
     currency = newCurrency;
     prefs.setString('currency', currency);
     await priceStore.fetchZecPrice();
-    await accountManager.fetchPNL();
+    await accountManager.fetchChartData();
   }
 
   @action
@@ -563,13 +563,20 @@ abstract class _AccountManager with Store {
     return txs;
   }
 
+  TimeRange getChartRange() {
+    final now = DateTime.now();
+    final today = DateTime.utc(now.year, now.month, now.day);
+    final start = today.add(Duration(days: -chartRangeInt()));
+    final cutoff = start.millisecondsSinceEpoch;
+    return TimeRange(cutoff, today.millisecondsSinceEpoch);
+  }
+
   Future<void> _fetchSpending(int accountId) async {
-    final cutoff =
-        DateTime.now().add(Duration(days: -365)).millisecondsSinceEpoch / 1000;
+    final range = getChartRange();
     final List<Map> res = await db.rawQuery(
         "SELECT SUM(value) as v, t.address, c.name FROM transactions t LEFT JOIN contacts c ON t.address = c.address "
         "WHERE account = ?1 AND timestamp >= ?2 AND value < 0 GROUP BY t.address ORDER BY v ASC LIMIT 5",
-        [accountId, cutoff]);
+        [accountId, range.start ~/ 1000]);
     spendings = res.map((row) {
       final address = row['address'] ?? "";
       final value = -row['v'] / ZECUNIT;
@@ -579,14 +586,10 @@ abstract class _AccountManager with Store {
   }
 
   Future<void> _fetchAccountBalanceTimeSeries(int accountId) async {
-    final now = DateTime.now();
-    final today = DateTime.utc(now.year, now.month, now.day);
-    final end = today;
-    final start = today.add(Duration(days: -30));
-    final cutoff = start.millisecondsSinceEpoch ~/ 1000;
+    final range = getChartRange();
     final List<Map> res = await db.rawQuery(
         "SELECT timestamp, value FROM transactions WHERE account = ?1 AND timestamp >= ?2 ORDER BY timestamp DESC",
-        [accountId, cutoff]);
+        [accountId, range.start ~/ 1000]);
     List<AccountBalance> _accountBalances = [];
     var b = balance;
     _accountBalances.add(AccountBalance(DateTime.now(), b / ZECUNIT));
@@ -598,12 +601,12 @@ abstract class _AccountManager with Store {
       _accountBalances.add(ab);
       b -= value;
     }
-    _accountBalances.add(AccountBalance(start, b / ZECUNIT));
+    _accountBalances.add(AccountBalance(DateTime.fromMillisecondsSinceEpoch(range.start), b / ZECUNIT));
     _accountBalances = _accountBalances.reversed.toList();
     accountBalances = sampleDaily<AccountBalance, double, double>(
         _accountBalances,
-        start.millisecondsSinceEpoch,
-        end.millisecondsSinceEpoch,
+        range.start,
+        range.end,
         (AccountBalance ab) => ab.time.millisecondsSinceEpoch ~/ DAY_MS,
         (AccountBalance ab) => ab.balance,
         (acc, v) => v,
@@ -611,25 +614,30 @@ abstract class _AccountManager with Store {
   }
 
   @action
-  Future<void> fetchPNL() async {
-    if (active == null) return;
+  Future<void> fetchChartData() async {
     await _fetchPNL(active.id);
+    await _fetchSpending(active.id);
+    await _fetchAccountBalanceTimeSeries(active.id);
+  }
+
+  int chartRangeInt() {
+    switch (settings.chartRange) {
+      case '1M':
+        return 30;
+      case '3M':
+        return 90;
+      case '6M':
+        return 180;
+    }
+    return 365;
   }
 
   Future<void> _fetchPNL(int accountId) async {
-    final now = DateTime.now();
-    final today = DateTime.utc(now.year, now.month, now.day);
-    var days = 365;
-    switch (settings.chartRange) {
-      case '1M': days = 30; break;
-      case '3M': days = 90; break;
-      case '6M': days = 180; break;
-    }
-    final cutoff = today.add(Duration(days: -days));
+    final range = getChartRange();
 
     final List<Map> res1 = await db.rawQuery(
         "SELECT timestamp, value FROM transactions WHERE timestamp >= ?2 AND account = ?1",
-        [accountId, cutoff.millisecondsSinceEpoch ~/ 1000]);
+        [accountId, range.start ~/ 1000]);
     final List<Trade> trades = [];
     for (var row in res1) {
       final dt = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
@@ -639,8 +647,8 @@ abstract class _AccountManager with Store {
 
     final portfolioTimeSeries = sampleDaily<Trade, Trade, double>(
         trades,
-        cutoff.millisecondsSinceEpoch,
-        today.millisecondsSinceEpoch,
+        range.start,
+        range.end,
         (t) => t.dt.millisecondsSinceEpoch ~/ DAY_MS,
         (t) => t,
         (acc, t) => acc + t.qty,
@@ -648,7 +656,7 @@ abstract class _AccountManager with Store {
 
     final List<Map> res2 = await db.rawQuery(
         "SELECT timestamp, price FROM historical_prices WHERE timestamp >= ?2 AND currency = ?1",
-        [settings.currency, cutoff.millisecondsSinceEpoch ~/ 1000]);
+        [settings.currency, range.start ~/ 1000]);
     final List<Quote> quotes = [];
     for (var row in res2) {
       final dt = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
@@ -1091,4 +1099,11 @@ class Quote {
   final price;
 
   Quote(this.dt, this.price);
+}
+
+class TimeRange {
+  final int start;
+  final int end;
+
+  TimeRange(this.start, this.end);
 }

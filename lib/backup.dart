@@ -40,7 +40,7 @@ class BackupState extends State<BackupPage> {
     if (!snapshot.hasData) return LinearProgressIndicator();
     final type = backup.type;
     final theme = Theme.of(context);
-    return Card(
+    return SingleChildScrollView(child: Card(
       child: Column(
         children: [
           TextField(
@@ -78,7 +78,7 @@ class BackupState extends State<BackupPage> {
           style: theme.textTheme.subtitle1!.copyWith(color: theme.primaryColor)))
         ]
       ),
-    );
+    ));
   }
 
   _showQR(String text) => showQR(context, text);

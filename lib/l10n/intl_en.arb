@@ -123,5 +123,6 @@
   "saveToBlockchain": "Save to Blockchain",
   "areYouSureYouWantToSaveYourContactsIt": "Are you sure you want to save your contacts? It will cost 0.01 m{ticker}",
   "backupWarning": "No one can recover your secret keys. If you don't have a backup and your phone breaks down, you WILL LOSE YOUR MONEY. You can reach this page by the app menu then Backup",
-  "contactName": "Contact Name"
+  "contactName": "Contact Name",
+  "date": "Date"
 }
