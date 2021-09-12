@@ -84,10 +84,13 @@ class _RestorePageState extends State<RestorePage> {
         await accountManager.refresh();
         if (_keyController.text != "") {
           syncStatus.setAccountRestored(true);
+          Navigator.of(context).pop();
         }
-        else if (accountManager.accounts.length == 1)
-          WarpApi.skipToLastHeight(); // single new account -> quick sync
-        Navigator.of(context).pop();
+        else {
+          if (accountManager.accounts.length == 1)
+            WarpApi.skipToLastHeight(); // single new account -> quick sync
+          Navigator.of(context).pushReplacementNamed('/backup', arguments: account);
+        }
       }
     }
   }

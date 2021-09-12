@@ -66,6 +66,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup": MessageLookupByLibrary.simpleMessage("備份"),
         "backupDataRequiredForRestore":
             MessageLookupByLibrary.simpleMessage("將資料備份 - 要求重置"),
+        "backupWarning": MessageLookupByLibrary.simpleMessage(
+            "No one can recover your secret keys. If you don\'t have a backup, you WILL LOSE YOUR MONEY if your phone breaks down. You can reach this page by the app menu then Backup"),
         "balance": MessageLookupByLibrary.simpleMessage("粵語"),
         "blue": MessageLookupByLibrary.simpleMessage("藍色"),
         "broadcast": MessageLookupByLibrary.simpleMessage("廣播"),
@@ -77,6 +79,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirmDeleteAccount": MessageLookupByLibrary.simpleMessage(
             "你確定要將這帳戶刪除？這指令執行後，帳戶會被永久刪除，不能復原。"),
         "confs": MessageLookupByLibrary.simpleMessage("確認"),
+        "contactName": MessageLookupByLibrary.simpleMessage("Contact Name"),
         "contacts": MessageLookupByLibrary.simpleMessage("通訊錄"),
         "createANewAccount": MessageLookupByLibrary.simpleMessage(
             "Create a new account and it will show up here"),

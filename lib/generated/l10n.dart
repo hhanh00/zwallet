@@ -1281,6 +1281,26 @@ class S {
       args: [ticker],
     );
   }
+
+  /// `No one can recover your secret keys. If you don't have a backup and your phone breaks down, you WILL LOSE YOUR MONEY. You can reach this page by the app menu then Backup`
+  String get backupWarning {
+    return Intl.message(
+      'No one can recover your secret keys. If you don\'t have a backup and your phone breaks down, you WILL LOSE YOUR MONEY. You can reach this page by the app menu then Backup',
+      name: 'backupWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact Name`
+  String get contactName {
+    return Intl.message(
+      'Contact Name',
+      name: 'contactName',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

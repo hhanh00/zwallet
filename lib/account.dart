@@ -15,6 +15,7 @@ import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'about.dart';
+import 'budget.dart';
 import 'chart.dart';
 import 'contact.dart';
 import 'main.dart';
@@ -175,7 +176,7 @@ class _AccountPageState extends State<AccountPage>
               Observer(builder: (context) {
                 final _ = accountManager.active.address;
                 final address = _address();
-                final shortAddress = address != "" ? address.substring(0, 16) + "..." + address.substring(address.length - 16) : "";
+                final shortAddress = addressLeftTrim(address);
                 final showTAddr = accountManager.showTAddr;
                 return Column(children: [
                   if (hasTAddr)
@@ -459,7 +460,7 @@ class _AccountPageState extends State<AccountPage>
       final didAuthenticate = await localAuth.authenticate(
           localizedReason: S.of(context).pleaseAuthenticateToShowAccountSeed);
       if (didAuthenticate) {
-        Navigator.of(context).pushNamed('/backup', arguments: true);
+        Navigator.of(context).pushNamed('/backup');
       }
     } on PlatformException catch (e) {
       await showDialog(
@@ -537,8 +538,6 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    final headerStyle = Theme.of(context).textTheme.headline4;
-
     return SingleChildScrollView(
         padding: EdgeInsets.all(8),
         scrollDirection: Axis.vertical,
@@ -805,18 +804,15 @@ class BudgetState extends State<BudgetWidget>
                       child: Column(children: [
                 Text(S.of(context).largestSpendingsByAddress,
                     style: Theme.of(context).textTheme.headline6),
-                SizedBox(
-                  child: PieChartSpending(accountManager.spendings),
-                  height: getScreenSize(context) / 2,
-                ),
-                Text(S.of(context).tapChartToToggleBetweenAddressAndAmount,
-                    style: Theme.of(context).textTheme.caption)
+                Padding(padding: EdgeInsets.symmetric(vertical: 4)),
+                BudgetChart(),
               ])),
               Expanded(
                   child: Card(
                       child: Column(children: [
                 Text(S.of(context).accountBalanceHistory,
                     style: Theme.of(context).textTheme.headline6),
+                Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                 Expanded(
                     child: LineChartTimeSeries(accountManager.accountBalances))
               ]))),
@@ -966,7 +962,3 @@ class PnLDataSource extends DataTableSource {
   @override
   int get selectedRowCount => 0;
 }
-
-// TODO: Refresh contacts after rescan
-// Remove Save to BC button after commit
-// Truncate tables on rescan

@@ -81,7 +81,7 @@ void main() {
                       '/settings': (context) => SettingsPage(),
                       '/tx': (context) =>
                           TransactionPage(settings.arguments as Tx),
-                      '/backup': (context) => BackupPage(),
+                      '/backup': (context) => BackupPage(settings.arguments as int?),
                       '/multipay': (context) => MultiPayPage(),
                     };
                     return MaterialPageRoute(builder: routes[settings.name]!);
@@ -259,4 +259,12 @@ Future<String?> scanCode(BuildContext context) async {
   final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S.of(context).cancel, true, ScanMode.QR);
   if (code == "-1") return null;
   return code;
+}
+
+String addressLeftTrim(String address) =>
+    address != "" ? address.substring(0, 8) + "..." + address.substring(address.length - 16) : "";
+
+void showSnackBar(String msg) {
+  final snackBar = SnackBar(content: Text(msg));
+  rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
 }

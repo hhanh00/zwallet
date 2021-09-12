@@ -356,10 +356,10 @@ abstract class _AccountManager with Store {
     return WarpApi.newAddress(active.id);
   }
 
-  Future<Backup> getBackup() async {
+  Future<Backup> getBackup(int account) async {
     final List<Map> res = await db.rawQuery(
         "SELECT seed, sk, ivk FROM accounts WHERE id_account = ?1",
-        [active.id]);
+        [account]);
     if (res.isEmpty) throw Exception("Account N/A");
     final row = res[0];
     final seed = row['seed'];
@@ -494,7 +494,8 @@ abstract class _AccountManager with Store {
     }).toList();
 
     final List<Map> res2 = await db.rawQuery(
-        "SELECT id_tx, txid, height, timestamp, address, value, memo FROM transactions WHERE account = ?1",
+        "SELECT id_tx, txid, height, timestamp, t.address, c.name, value, memo FROM transactions t "
+        "LEFT JOIN contacts c ON t.address = c.address WHERE account = ?1",
         [accountId]);
     txs = res2.map((row) {
       Uint8List txid = row['txid'];
@@ -503,7 +504,7 @@ abstract class _AccountManager with Store {
       final timestamp = txDateFormat
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
       return Tx(row['id_tx'], row['height'], timestamp, shortTxid, fullTxId,
-          row['value'] / ZECUNIT, row['address'] ?? "", row['memo'] ?? "");
+          row['value'] / ZECUNIT, row['address'] ?? "", row['contact'], row['memo'] ?? "");
     }).toList();
 
     dataEpoch = DateTime.now().millisecondsSinceEpoch;
@@ -564,14 +565,16 @@ abstract class _AccountManager with Store {
 
   Future<void> _fetchSpending(int accountId) async {
     final cutoff =
-        DateTime.now().add(Duration(days: -30)).millisecondsSinceEpoch / 1000;
+        DateTime.now().add(Duration(days: -365)).millisecondsSinceEpoch / 1000;
     final List<Map> res = await db.rawQuery(
-        "SELECT SUM(value) as v, address FROM transactions WHERE account = ?1 AND timestamp >= ?2 AND value < 0 GROUP BY address ORDER BY v ASC LIMIT 10",
+        "SELECT SUM(value) as v, t.address, c.name FROM transactions t LEFT JOIN contacts c ON t.address = c.address "
+        "WHERE account = ?1 AND timestamp >= ?2 AND value < 0 GROUP BY t.address ORDER BY v ASC LIMIT 5",
         [accountId, cutoff]);
     spendings = res.map((row) {
       final address = row['address'] ?? "";
       final value = -row['v'] / ZECUNIT;
-      return Spending(addressLeftTrim(address), value);
+      final contact = row['name'];
+      return Spending(address, value, contact);
     }).toList();
   }
 
@@ -971,17 +974,19 @@ class Tx {
   String fullTxId;
   double value;
   String address;
+  String? contact;
   String memo;
 
   Tx(this.id, this.height, this.timestamp, this.txid, this.fullTxId, this.value,
-      this.address, this.memo);
+      this.address, this.contact, this.memo);
 }
 
 class Spending {
   final String address;
   final double amount;
+  final String? contact;
 
-  Spending(this.address, this.amount);
+  Spending(this.address, this.amount, this.contact);
 }
 
 class AccountBalance {
@@ -1021,9 +1026,6 @@ class Contact {
 
   factory Contact.empty() => Contact(0, "", "");
 }
-
-String addressLeftTrim(String address) =>
-    "..." + address.substring(math.max(address.length - 6, 0));
 
 enum SortOrder {
   Unsorted,

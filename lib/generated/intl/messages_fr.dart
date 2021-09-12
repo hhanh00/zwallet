@@ -75,6 +75,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup": MessageLookupByLibrary.simpleMessage("Sauvegarde"),
         "backupDataRequiredForRestore": MessageLookupByLibrary.simpleMessage(
             "Données de sauvegarde - requises pour la restauration"),
+        "backupWarning": MessageLookupByLibrary.simpleMessage(
+            "No one can recover your secret keys. If you don\'t have a backup, you WILL LOSE YOUR MONEY if your phone breaks down. You can reach this page by the app menu then Backup"),
         "balance": MessageLookupByLibrary.simpleMessage("Solde"),
         "blue": MessageLookupByLibrary.simpleMessage("Bleu"),
         "broadcast": MessageLookupByLibrary.simpleMessage("Diffusion"),
@@ -87,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirmDeleteAccount": MessageLookupByLibrary.simpleMessage(
             "Êtes-vous SUR de vouloir SUPPRIMER ce compte ? Vous DEVEZ avoir une SAUVEGARDE pour le récupérer. Cette opération n\'est PAS réversible."),
         "confs": MessageLookupByLibrary.simpleMessage("Confs"),
+        "contactName": MessageLookupByLibrary.simpleMessage("Contact Name"),
         "contacts": MessageLookupByLibrary.simpleMessage("Mes Contacts"),
         "createANewAccount": MessageLookupByLibrary.simpleMessage(
             "Create a new account and it will show up here"),
