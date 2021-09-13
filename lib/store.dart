@@ -69,6 +69,9 @@ abstract class _Settings with Store {
   @observable
   bool useUA = false;
 
+  @observable
+  bool autoHide = true;
+
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
@@ -87,6 +90,7 @@ abstract class _Settings with Store {
     shieldBalance = prefs.getBool('shield_balance') ?? false;
     autoShieldThreshold = prefs.getDouble('autoshield_threshold') ?? 0.0;
     useUA = prefs.getBool('use_ua') ?? false;
+    autoHide = prefs.getBool('auto_hide') ?? true;
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
@@ -245,6 +249,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     useUA = v;
     prefs.setBool('use_ua', useUA);
+  }
+
+  @action
+  Future<void> setAutoHide(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    autoHide = v;
+    prefs.setBool('auto_hide', autoHide);
   }
 }
 

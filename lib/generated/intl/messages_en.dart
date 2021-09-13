@@ -72,6 +72,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Are you sure you want to delete this contact?"),
         "areYouSureYouWantToSaveYourContactsIt": m1,
+        "autoHideBalance":
+            MessageLookupByLibrary.simpleMessage("Auto Hide Balance"),
         "backup": MessageLookupByLibrary.simpleMessage("Backup"),
         "backupDataRequiredForRestore": MessageLookupByLibrary.simpleMessage(
             "Backup Data - Required for Restore"),

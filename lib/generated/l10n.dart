@@ -1321,6 +1321,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Auto Hide Balance`
+  String get autoHideBalance {
+    return Intl.message(
+      'Auto Hide Balance',
+      name: 'autoHideBalance',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

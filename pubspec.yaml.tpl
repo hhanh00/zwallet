@@ -58,6 +58,7 @@ dependencies:
       url: https://github.com/hhanh00/flutter_barcode_scanner.git
       ref: d338bdc5c0b797d81694f04bd5f52e8171939af5
   currency_text_input_formatter: ^2.1.2
+  sensors_plus: ^1.1.0
   flutter_localizations:
     sdk: flutter
 

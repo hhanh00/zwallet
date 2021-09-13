@@ -268,3 +268,16 @@ void showSnackBar(String msg) {
   final snackBar = SnackBar(content: Text(msg));
   rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
 }
+
+enum DeviceWidth {
+  xs, sm, md, lg, xl
+}
+
+DeviceWidth getWidth(BuildContext context) {
+  final width = MediaQuery.of(context).size.width;
+  if (width < 600) return DeviceWidth.xs;
+  if (width < 960) return DeviceWidth.sm;
+  if (width < 1280) return DeviceWidth.md;
+  if (width < 1920) return DeviceWidth.lg;
+  return DeviceWidth.xl;
+}

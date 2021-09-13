@@ -13,10 +13,11 @@ class SettingsPage extends StatefulWidget {
 final _settingsFormKey = GlobalKey<FormBuilderState>();
 
 class SettingsState extends State<SettingsPage> {
-  var _anchorController = TextEditingController(text: "${settings.anchorOffset}");
-  var _thresholdController = TextEditingController(text: "${settings.autoShieldThreshold.toStringAsFixed(3)}");
+  var _anchorController =
+      TextEditingController(text: "${settings.anchorOffset}");
+  var _thresholdController = TextEditingController(
+      text: "${settings.autoShieldThreshold.toStringAsFixed(3)}");
   var _currency = settings.currency;
-
 
   @override
   Widget build(BuildContext context) {
@@ -104,11 +105,13 @@ class SettingsState extends State<SettingsPage> {
                                     onSaved: (_) {
                                       settings.setCurrency(_currency);
                                     })),
-                            if (coin.supportsUA) Expanded(child: FormBuilderCheckbox(
-                                name: 'use_ua',
-                                title: Text(S.of(context).useUa),
-                                initialValue: settings.useUA,
-                                onSaved: _onUseUA)),
+                            if (coin.supportsUA)
+                              Expanded(
+                                  child: FormBuilderCheckbox(
+                                      name: 'use_ua',
+                                      title: Text(S.of(context).useUa),
+                                      initialValue: settings.useUA,
+                                      onSaved: _onUseUA)),
                           ]),
                           FormBuilderTextField(
                               decoration: InputDecoration(
@@ -142,6 +145,12 @@ class SettingsState extends State<SettingsPage> {
                                   S.of(context).retrieveTransactionDetails),
                               initialValue: settings.getTx,
                               onSaved: _onGetTx),
+                          FormBuilderCheckbox(
+                              name: 'auto_hide',
+                              title: Text(
+                                  S.of(context).autoHideBalance),
+                              initialValue: settings.autoHide,
+                              onSaved: _onAutoHide),
                           TextFormField(
                               decoration: InputDecoration(
                                   labelText: 'Auto Shield Threshold'),
@@ -200,6 +209,10 @@ class SettingsState extends State<SettingsPage> {
 
   _onUseUA(v) {
     settings.setUseUA(v);
+  }
+
+  _onAutoHide(v) {
+    settings.setAutoHide(v);
   }
 
   _onSave() {

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -40,7 +42,9 @@ class _AccountPageState extends State<AccountPage>
   bool _contactsTab = false;
   StreamSubscription? _progressDispose;
   StreamSubscription? _syncDispose;
+  StreamSubscription? _accDispose;
   final contactKey = GlobalKey<ContactsState>();
+  bool _flat = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -78,6 +82,15 @@ class _AccountPageState extends State<AccountPage>
         }
       });
     });
+    _accDispose = accelerometerEvents.listen((event) {
+      final n = sqrt(event.x*event.x + event.y*event.y + event.z*event.z);
+      final inclination = (acos(event.z/n) / pi * 180).abs();
+      final flat = inclination < 30;
+      if (flat != _flat)
+        setState(() {
+          _flat = flat;
+        });
+    });
   }
 
   @override
@@ -86,6 +99,7 @@ class _AccountPageState extends State<AccountPage>
     WidgetsBinding.instance?.removeObserver(this);
     _progressDispose?.cancel();
     _syncDispose?.cancel();
+    _accDispose?.cancel();
     super.dispose();
   }
 
@@ -178,6 +192,7 @@ class _AccountPageState extends State<AccountPage>
                 final address = _address();
                 final shortAddress = addressLeftTrim(address);
                 final showTAddr = accountManager.showTAddr;
+                final hide = settings.autoHide && _flat;
                 return Column(children: [
                   if (hasTAddr)
                     Text(showTAddr
@@ -186,11 +201,12 @@ class _AccountPageState extends State<AccountPage>
                   Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   GestureDetector(
                       onTap: hasTAddr ? _onQRTap : null,
+                      child: RotatedBox(quarterTurns: hide ? 2 : 0,
                       child: QrImage(
                           data: address,
                           size: qrSize,
                           embeddedImage: AssetImage('assets/icon.png'),
-                          backgroundColor: Colors.white)),
+                          backgroundColor: Colors.white))),
                   Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                   RichText(
                       text: TextSpan(children: [
@@ -230,26 +246,30 @@ class _AccountPageState extends State<AccountPage>
                 final balance = accountManager.showTAddr
                     ? accountManager.tbalance
                     : accountManager.balance;
-                final balanceHi = _getBalance_hi(balance);
-                final balanceStyle = (balanceHi.length > 9 ? theme.textTheme.headline3 : theme.textTheme.headline2)!.copyWith(color: theme.colorScheme.primaryVariant);
+                final hide = settings.autoHide && _flat;
+                final balanceHi = hide ? '-------' : _getBalance_hi(balance);
+                final deviceWidth = getWidth(context);
+                final digits = deviceWidth.index < DeviceWidth.sm.index ? 7 : 9;
+                final balanceStyle = (balanceHi.length > digits ? theme.textTheme.headline4 : theme.textTheme.headline2)!.copyWith(color: theme.colorScheme.primaryVariant);
                 return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.ideographic,
                     children: <Widget>[
-                      Text('${coin.symbol}', style: theme.textTheme.headline5),
+                      if (!hide) Text('${coin.symbol}', style: theme.textTheme.headline5),
                       Text(' $balanceHi',
                           style: balanceStyle),
-                      Text('${_getBalance_lo(balance)}'),
+                      if (!hide) Text('${_getBalance_lo(balance)}'),
                     ]);
               }),
               Observer(builder: (context) {
+                final hide = settings.autoHide && _flat;
                 final balance = accountManager.showTAddr
                     ? accountManager.tbalance
                     : accountManager.balance;
                 final fx = _fx();
                 final balanceFX = balance * fx / ZECUNIT;
-                return Column(children: [
+                return hide ? Container() :  Column(children: [
                   if (fx != 0.0)
                     Text("${balanceFX.toStringAsFixed(2)} ${settings.currency}",
                         style: theme.textTheme.headline6),
