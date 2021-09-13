@@ -106,6 +106,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "doYouWantToTransferYourEntireTransparentBalanceTo": m2,
         "duplicateAccount":
             MessageLookupByLibrary.simpleMessage("Duplicate Account"),
+        "duplicateContact": MessageLookupByLibrary.simpleMessage(
+            "Another contact has this address"),
         "enterSeed": MessageLookupByLibrary.simpleMessage(
             "Enter Seed, Secret Key or Viewing Key. Leave blank for a new account"),
         "height": MessageLookupByLibrary.simpleMessage("Height"),

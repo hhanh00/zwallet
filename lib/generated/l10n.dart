@@ -1311,6 +1311,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Another contact has this address`
+  String get duplicateContact {
+    return Intl.message(
+      'Another contact has this address',
+      name: 'duplicateContact',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
