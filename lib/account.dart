@@ -748,7 +748,6 @@ class HistoryState extends State<HistoryWidget>
                           });
                         }),
                     DataColumn(label: Text(S.of(context).datetime)),
-                    DataColumn(label: Text(S.of(context).txId)),
                     DataColumn(
                         label: Text(amountHeader),
                         numeric: true,
@@ -757,6 +756,7 @@ class HistoryState extends State<HistoryWidget>
                             accountManager.sortTxAmount();
                           });
                         }),
+                    DataColumn(label: Text(S.of(context).txId)),
                   ],
                   columnSpacing: 16,
                   showCheckboxColumn: false,
@@ -790,9 +790,9 @@ class HistoryDataSource extends DataTableSource {
         cells: [
           DataCell(Text("$confsOrHeight")),
           DataCell(Text("${tx.timestamp}")),
-          DataCell(Text("${tx.txid}")),
           DataCell(Text("${tx.value.toStringAsFixed(8)}", style: style,
               textAlign: TextAlign.left)),
+          DataCell(Text("${tx.txid}")),
         ],
         onSelectChanged: (_) {
           Navigator.of(this.context).pushNamed('/tx', arguments: tx);
