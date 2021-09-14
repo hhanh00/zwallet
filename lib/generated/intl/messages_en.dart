@@ -180,7 +180,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "selectAccount": MessageLookupByLibrary.simpleMessage("Select Account"),
         "selectNotesToExcludeFromPayments":
             MessageLookupByLibrary.simpleMessage(
-                "Selected notes are EXCLUDED from payments"),
+                "Select notes to EXCLUDE from payments"),
         "send": MessageLookupByLibrary.simpleMessage("Send"),
         "sendCointicker": m3,
         "sendCointickerTo": m4,

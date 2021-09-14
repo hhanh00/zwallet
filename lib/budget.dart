@@ -81,6 +81,7 @@ class BudgetTable extends StatelessWidget {
         columnSpacing: 8,
         dataRowHeight: 32,
         headingRowHeight: 40,
+        horizontalMargin: 8,
         columns: [
           DataColumn(label: Text('Address')),
           DataColumn(label: Text('Amount', style: amountStyle), numeric: true),

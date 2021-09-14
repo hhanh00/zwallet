@@ -400,10 +400,10 @@ class S {
     );
   }
 
-  /// `Selected notes are EXCLUDED from payments`
+  /// `Select notes to EXCLUDE from payments`
   String get selectNotesToExcludeFromPayments {
     return Intl.message(
-      'Selected notes are EXCLUDED from payments',
+      'Select notes to EXCLUDE from payments',
       name: 'selectNotesToExcludeFromPayments',
       desc: '',
       args: [],
