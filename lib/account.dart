@@ -872,11 +872,11 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
             });
           },
           options: [
+            FormBuilderFieldOption(child: Text(S.of(context).price), value: 0),
             FormBuilderFieldOption(
-                child: Text(S.of(context).realized), value: 0),
-            FormBuilderFieldOption(child: Text(S.of(context).mm), value: 1),
-            FormBuilderFieldOption(child: Text(S.of(context).total), value: 2),
-            FormBuilderFieldOption(child: Text(S.of(context).price), value: 3),
+                child: Text(S.of(context).realized), value: 1),
+            FormBuilderFieldOption(child: Text(S.of(context).mm), value: 2),
+            FormBuilderFieldOption(child: Text(S.of(context).total), value: 3),
             FormBuilderFieldOption(child: Text(S.of(context).qty), value: 4),
             FormBuilderFieldOption(child: Text(S.of(context).table), value: 5),
           ]),
@@ -906,13 +906,13 @@ class PnLChart extends StatelessWidget {
   static double _seriesData(PnL pnl, int index) {
     switch (index) {
       case 0:
-        return pnl.realized;
-      case 1:
-        return pnl.unrealized;
-      case 2:
-        return pnl.realized + pnl.unrealized;
-      case 3:
         return pnl.price;
+      case 1:
+        return pnl.realized;
+      case 2:
+        return pnl.unrealized;
+      case 3:
+        return pnl.realized + pnl.unrealized;
       case 4:
         return pnl.amount;
     }
