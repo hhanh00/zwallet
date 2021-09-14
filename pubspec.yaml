@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.9+112
+version: 1.0.9+121
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -52,11 +52,14 @@ dependencies:
   mustache_template: ^2.0.0
   flutter_palette: ^1.1.0+1
   flutter_svg: ^0.22.0
+  flutter_typeahead: ^3.2.0
   flutter_barcode_scanner:
     git:
       url: https://github.com/hhanh00/flutter_barcode_scanner.git
       ref: d338bdc5c0b797d81694f04bd5f52e8171939af5
   currency_text_input_formatter: ^2.1.2
+  sensors_plus: ^1.1.0
+  connectivity_plus: ^1.1.0
   flutter_localizations:
     sdk: flutter
 
@@ -76,7 +79,7 @@ dev_dependencies:
   flutter_native_splash: ^1.2.3
 
 flutter_app_name:
-  name: "YWallet"
+  name: ""
 
 flutter_icons:
   android: true

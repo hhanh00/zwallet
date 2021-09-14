@@ -82,15 +82,7 @@ class _AccountPageState extends State<AccountPage>
         }
       });
     });
-    _accDispose = accelerometerEvents.listen((event) {
-      final n = sqrt(event.x*event.x + event.y*event.y + event.z*event.z);
-      final inclination = (acos(event.z/n) / pi * 180).abs();
-      final flat = inclination < 30;
-      if (flat != _flat)
-        setState(() {
-          _flat = flat;
-        });
-    });
+    _accDispose = accelerometerEvents.listen(_handleAccel);
   }
 
   @override
@@ -110,9 +102,15 @@ class _AccountPageState extends State<AccountPage>
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
         _timerSync?.cancel();
+        _timerSync = null;
+        _accDispose?.cancel();
+        _accDispose = null;
         break;
       case AppLifecycleState.resumed:
-        _setupTimer();
+        if (_timerSync == null)
+          _setupTimer();
+        if (_accDispose == null)
+          _accDispose = accelerometerEvents.listen(_handleAccel);
         break;
     }
   }
@@ -540,6 +538,16 @@ class _AccountPageState extends State<AccountPage>
     if (contact != null) {
       contacts.add(contact);
     }
+  }
+
+  _handleAccel(event) {
+    final n = sqrt(event.x*event.x + event.y*event.y + event.z*event.z);
+    final inclination = (acos(event.z/n) / pi * 180).abs();
+    final flat = inclination < 30;
+    if (flat != _flat)
+      setState(() {
+        _flat = flat;
+      });
   }
 }
 

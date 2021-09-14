@@ -11,6 +11,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'generated/l10n.dart';
 
 import 'account.dart';
@@ -205,7 +206,23 @@ Future<void> rescanDialog(
       builder: (context) => AlertDialog(
           title: Text(S.of(context).rescan),
           content: Text(S.of(context).rescanWalletFromTheFirstBlock),
-          actions: confirmButtons(context, continuation)));
+          actions: confirmButtons(context, () => confirmWifi(context, continuation))));
+}
+
+Future<void> confirmWifi(BuildContext context, VoidCallback continuation) async {
+  final connectivity = await Connectivity().checkConnectivity();
+  if (connectivity == ConnectivityResult.mobile) {
+    Navigator.of(context).pop();
+    await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+            title: Text(S.of(context).rescan),
+            content: Text('On Mobile Data, scanning may incur additional charges. Do you want to proceed?'),
+            actions: confirmButtons(context, continuation)));
+  }
+  else
+    continuation();
 }
 
 Future<bool> showMessageBox(
