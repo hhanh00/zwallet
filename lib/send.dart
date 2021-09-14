@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/warp_api.dart';
@@ -33,10 +34,10 @@ class SendState extends State<SendPage> {
   var _balance = 0;
   final _addressController = TextEditingController();
   final _memoController = TextEditingController();
-  final _otherAmountController = TextEditingController();
   var _mZEC = true;
-  var _useFX = false;
-  var _amountController = TextEditingController(text: '0.000');
+  var _inputInZEC = true;
+  var _zecAmountController = TextEditingController(text: '0.000');
+  var _fiatAmountController = TextEditingController(text: '0.000');
   final _maxAmountController = TextEditingController(text: '0.000');
   var _includeFee = false;
   var _isExpanded = false;
@@ -54,11 +55,11 @@ class SendState extends State<SendPage> {
         _balance = math.max(balance - DEFAULT_FEE, 0);
       });
     });
-    _updateOtherAmount();
+    _updateFiatAmount();
     super.initState();
 
     _priceAutorunDispose = autorun((_) {
-      _updateOtherAmount();
+      _updateFiatAmount();
     });
   }
 
@@ -106,26 +107,36 @@ class SendState extends State<SendPage> {
                   Row(children: [
                     Expanded(
                         child: TextFormField(
+                            style: !_inputInZEC ? TextStyle(fontWeight: FontWeight.w200) : TextStyle(),
                             decoration:
-                                InputDecoration(labelText: thisAmountLabel()),
+                                InputDecoration(labelText: S.of(context).amountInSettingscurrency(coin.ticker)),
+                            controller: _zecAmountController,
                             keyboardType: TextInputType.number,
-                            controller: _amountController,
                             inputFormatters: [makeInputFormatter(_mZEC)],
                             validator: _checkAmount,
+                            onTap: () => setState(() { _inputInZEC = true; }),
                             onChanged: (_) {
-                              _updateOtherAmount();
+                              _updateFiatAmount();
                             },
-                            onSaved: _onAmount)),
+                            onSaved: _onAmount,
+                        )),
                     TextButton(
                         child: Text(S.of(context).max), onPressed: _onMax),
                   ]),
                   Row(children: [
                     Expanded(
                       child: TextFormField(
-                        readOnly: true,
+                        style: _inputInZEC ? TextStyle(fontWeight: FontWeight.w200) : TextStyle(),
                         decoration:
-                            InputDecoration(labelText: otherAmountLabel()),
-                        controller: _otherAmountController,
+                            InputDecoration(labelText: S.of(context).amountInSettingscurrency(settings.currency)),
+                        controller: _fiatAmountController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [makeInputFormatter(_mZEC)],
+                        validator: _checkAmount,
+                        onTap: () => setState(() { _inputInZEC = false; }),
+                        onChanged: (_) {
+                          _updateAmount();
+                        },
                       ),
                     ),
                   ]),
@@ -153,14 +164,6 @@ class SendState extends State<SendPage> {
                                   title: Text(S.of(context).roundToMillis),
                                   value: _mZEC,
                                   onChanged: _onChangedmZEC),
-                              Observer(
-                                  builder: (context) => CheckboxListTile(
-                                      title: Text(S
-                                          .of(context)
-                                          .useSettingscurrency(
-                                              settings.currency)),
-                                      value: _useFX,
-                                      onChanged: _onChangedUseFX)),
                               CheckboxListTile(
                                   title: Text(S.of(context).includeFeeInAmount),
                                   value: _includeFee,
@@ -225,11 +228,10 @@ class SendState extends State<SendPage> {
   void _onMax() {
     setState(() {
       _mZEC = false;
-      _useFX = false;
       _includeFee = false;
-      _amountController.text =
+      _zecAmountController.text =
           (Decimal.fromInt(_balance) / ZECUNIT_DECIMAL).toString();
-      _updateOtherAmount();
+      _updateFiatAmount();
     });
   }
 
@@ -239,18 +241,12 @@ class SendState extends State<SendPage> {
     });
   }
 
-  void _onChangedUseFX(bool? v) {
-    setState(() {
-      _useFX = v ?? false;
-      _amountController.text = _otherAmountController.text;
-      _updateOtherAmount();
-    });
-  }
-
   void _onChangedmZEC(bool? v) {
     if (v == null) return;
     setState(() {
       _mZEC = v;
+      _zecAmountController.text = _trimToPrecision(_zecAmountController.text);
+      _fiatAmountController.text = _trimToPrecision(_fiatAmountController.text);
     });
   }
 
@@ -289,15 +285,25 @@ class SendState extends State<SendPage> {
     _maxAmountPerNote = Decimal.parse(v);
   }
 
-  void _updateOtherAmount() {
-    final price = _fx().toDouble();
-    final v = _amountController.text == "" ? "0" : _amountController.text;
-    final amount = double.parse(v);
-    final otherAmount = (_useFX)
-        ? (amount / price).toStringAsFixed(8)
-        : (amount * price).toStringAsFixed(8);
-    _otherAmountController.text = otherAmount;
+  void _updateAmount() {
+    final rate = 1.0 / priceStore.zecPrice;
+    final amount = parseNumber(_fiatAmountController.text);
+    final otherAmount = _formatCurrency(amount * rate);
+    setState(() {
+      _zecAmountController.text = otherAmount;
+    });
   }
+
+  void _updateFiatAmount() {
+    final rate = priceStore.zecPrice;
+    final amount = parseNumber(_zecAmountController.text);
+    final otherAmount = _formatCurrency(amount * rate);
+    setState(() {
+      _fiatAmountController.text = otherAmount;
+    });
+  }
+
+  String _formatCurrency(double v) => NumberFormat.currency(decimalDigits: precision(_mZEC), symbol: '').format(v);
 
   void _onSend() async {
     final form = _formKey.currentState;
@@ -361,20 +367,15 @@ class SendState extends State<SendPage> {
     }
   }
 
-  String thisAmountLabel() => S
-      .of(context)
-      .amountInSettingscurrency(_useFX ? settings.currency : coin.ticker);
+  int amountInZAT(Decimal v) => (v * ZECUNIT_DECIMAL).toInt();
 
-  String otherAmountLabel() => S
-      .of(context)
-      .amountInSettingscurrency(_useFX ? coin.ticker : settings.currency);
+  double _fx() {
+    return priceStore.zecPrice;
+  }
 
-  int amountInZAT(Decimal v) => _useFX
-      ? (v / _fx() * ZECUNIT_DECIMAL).toInt()
-      : (v * ZECUNIT_DECIMAL).toInt();
-
-  Decimal _fx() {
-    return Decimal.parse("${priceStore.zecPrice}");
+  String _trimToPrecision(String v) {
+    double vv = parseNumber(v);
+    return vv.toStringAsFixed(precision(_mZEC));
   }
 }
 

@@ -6,6 +6,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sqflite/sqflite.dart';
@@ -264,13 +265,14 @@ TextStyle fontWeight(TextStyle style, num v) {
 }
 
 CurrencyTextInputFormatter makeInputFormatter(bool mZEC) =>
-    CurrencyTextInputFormatter(symbol: '', decimalDigits: mZEC ? 3 : 8);
+    CurrencyTextInputFormatter(symbol: '', decimalDigits: precision(mZEC));
 
-double? parseNumber(String? s) {
-  if (s == null) return 0;
-  final s2 = s.replaceAll(',', '');
-  return double.tryParse(s2);
+double parseNumber(String? s) {
+  if (s == null || s.isEmpty) return 0;
+  return NumberFormat.currency().parse(s).toDouble();
 }
+
+int precision(bool mZEC) => mZEC ? 3 : 8;
 
 Future<String?> scanCode(BuildContext context) async {
   final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S.of(context).cancel, true, ScanMode.QR);

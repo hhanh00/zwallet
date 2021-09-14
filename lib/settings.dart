@@ -204,7 +204,7 @@ class SettingsState extends State<SettingsPage> {
 
   _onAutoShieldThreshold(_) {
     final v = parseNumber(_thresholdController.text);
-    settings.setAutoShieldThreshold(v ?? 0.0);
+    settings.setAutoShieldThreshold(v);
   }
 
   _onUseUA(v) {
