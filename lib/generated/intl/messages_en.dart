@@ -54,6 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Account name is required"),
         "accounts": MessageLookupByLibrary.simpleMessage("Accounts"),
         "add": MessageLookupByLibrary.simpleMessage("ADD"),
+        "addContact": MessageLookupByLibrary.simpleMessage("Add Contact"),
         "address": MessageLookupByLibrary.simpleMessage("Address"),
         "addressCopiedToClipboard":
             MessageLookupByLibrary.simpleMessage("Address copied to clipboard"),
@@ -95,6 +96,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "contacts": MessageLookupByLibrary.simpleMessage("Contacts"),
         "createANewAccount": MessageLookupByLibrary.simpleMessage(
             "Create a new account and it will show up here"),
+        "createANewContactAndItWillShowUpHere":
+            MessageLookupByLibrary.simpleMessage(
+                "Create a new contact and it will show up here"),
         "currency": MessageLookupByLibrary.simpleMessage("Currency"),
         "custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "dark": MessageLookupByLibrary.simpleMessage("Dark"),
@@ -139,6 +143,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noAccount": MessageLookupByLibrary.simpleMessage("No account"),
         "noAuthenticationMethod":
             MessageLookupByLibrary.simpleMessage("No Authentication Method"),
+        "noContacts": MessageLookupByLibrary.simpleMessage("No Contacts"),
         "noSpendingInTheLast30Days": MessageLookupByLibrary.simpleMessage(
             "No Spending in the Last 30 Days"),
         "notEnoughBalance":
@@ -212,6 +217,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "theme": MessageLookupByLibrary.simpleMessage("Theme"),
         "thisAccountAlreadyExists": MessageLookupByLibrary.simpleMessage(
             "Another account has the same address"),
+        "tiltYourDeviceUpToRevealYourBalance":
+            MessageLookupByLibrary.simpleMessage(
+                "Tilt your device up to reveal your balance"),
         "timestamp": MessageLookupByLibrary.simpleMessage("Timestamp"),
         "toMakeAContactSendThemAMemoWithContact":
             MessageLookupByLibrary.simpleMessage(

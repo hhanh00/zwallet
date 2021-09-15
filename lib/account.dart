@@ -267,7 +267,7 @@ class _AccountPageState extends State<AccountPage>
                     : accountManager.balance;
                 final fx = _fx();
                 final balanceFX = balance * fx / ZECUNIT;
-                return hide ? Container() :  Column(children: [
+                return hide ? Text(S.of(context).tiltYourDeviceUpToRevealYourBalance) :  Column(children: [
                   if (fx != 0.0)
                     Text("${balanceFX.toStringAsFixed(2)} ${settings.currency}",
                         style: theme.textTheme.headline6),
@@ -540,10 +540,10 @@ class _AccountPageState extends State<AccountPage>
     }
   }
 
-  _handleAccel(event) {
+  _handleAccel(AccelerometerEvent event) {
     final n = sqrt(event.x*event.x + event.y*event.y + event.z*event.z);
-    final inclination = (acos(event.z/n) / pi * 180).abs();
-    final flat = inclination < 30;
+    final inclination = acos(event.z/n) / pi * 180 * event.y.sign;
+    final flat = inclination < 20;
     if (flat != _flat)
       setState(() {
         _flat = flat;

@@ -126,5 +126,9 @@
   "contactName": "Contact Name",
   "date": "Date",
   "duplicateContact": "Another contact has this address",
-  "autoHideBalance": "Auto Hide Balance"
+  "autoHideBalance": "Auto Hide Balance",
+  "tiltYourDeviceUpToRevealYourBalance": "Tilt your device up to reveal your balance",
+  "noContacts": "No Contacts",
+  "createANewContactAndItWillShowUpHere": "Create a new contact and it will show up here",
+  "addContact": "Add Contact"
 }

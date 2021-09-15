@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -79,7 +78,7 @@ class ContactsState extends State<ContactsTab> {
         context: context,
         builder: (context) => AlertDialog(
               contentPadding: EdgeInsets.all(16),
-              title: Text('Add Contact'),
+              title: Text(S.of(context).addContact),
               content: ContactForm(c, key: key),
               actions: confirmButtons(context, () {
                 key.currentState!.onOK();
@@ -111,9 +110,9 @@ class NoContact extends StatelessWidget {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       SizedBox(child: contact, height: 150, width: 150),
       Padding(padding: EdgeInsets.symmetric(vertical: 16)),
-      Text('No Contacts', style: Theme.of(context).textTheme.headline5),
+      Text(S.of(context).noContacts, style: Theme.of(context).textTheme.headline5),
       Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-      Text('Create a new contact and it will show up here',
+      Text(S.of(context).createANewContactAndItWillShowUpHere,
           style: Theme.of(context).textTheme.bodyText1),
     ]);
   }
@@ -147,11 +146,11 @@ class ContactState extends State<ContactForm> {
         child: SingleChildScrollView(
             child: Column(children: [
           TextFormField(
-            decoration: InputDecoration(labelText: 'Contact Name'),
+            decoration: InputDecoration(labelText: S.of(context).contactName),
             controller: nameController,
             validator: _checkName,
           ),
-          AddressInput('Address', address, (addr) {
+          AddressInput(S.of(context).address, address, (addr) {
                 address = addr ?? "";
               })
         ])));

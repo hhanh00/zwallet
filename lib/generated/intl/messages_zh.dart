@@ -48,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("請輸入帳戶名稱"),
         "accounts": MessageLookupByLibrary.simpleMessage("帳戶"),
         "add": MessageLookupByLibrary.simpleMessage("增加"),
+        "addContact": MessageLookupByLibrary.simpleMessage("Add Contact"),
         "address": MessageLookupByLibrary.simpleMessage("地址"),
         "addressCopiedToClipboard":
             MessageLookupByLibrary.simpleMessage("複製地址到剪貼簿"),
@@ -85,6 +86,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "contacts": MessageLookupByLibrary.simpleMessage("通訊錄"),
         "createANewAccount": MessageLookupByLibrary.simpleMessage(
             "Create a new account and it will show up here"),
+        "createANewContactAndItWillShowUpHere":
+            MessageLookupByLibrary.simpleMessage(
+                "Create a new contact and it will show up here"),
         "currency": MessageLookupByLibrary.simpleMessage("貨幣"),
         "custom": MessageLookupByLibrary.simpleMessage("自訂"),
         "dark": MessageLookupByLibrary.simpleMessage("深色"),
@@ -121,6 +125,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "newSnapAddress": MessageLookupByLibrary.simpleMessage("立即地址"),
         "noAccount": MessageLookupByLibrary.simpleMessage("沒有帳戶"),
         "noAuthenticationMethod": MessageLookupByLibrary.simpleMessage("不用驗證"),
+        "noContacts": MessageLookupByLibrary.simpleMessage("No Contacts"),
         "noSpendingInTheLast30Days":
             MessageLookupByLibrary.simpleMessage("過去三十天內沒有任何開支"),
         "notEnoughBalance": MessageLookupByLibrary.simpleMessage("帳戶結餘不足"),
@@ -180,6 +185,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "theme": MessageLookupByLibrary.simpleMessage("佈置主題"),
         "thisAccountAlreadyExists": MessageLookupByLibrary.simpleMessage(
             "This account already exists."),
+        "tiltYourDeviceUpToRevealYourBalance":
+            MessageLookupByLibrary.simpleMessage(
+                "Tilt your device up to reveal your balance"),
         "timestamp": MessageLookupByLibrary.simpleMessage("時間蓋章"),
         "toMakeAContactSendThemAMemoWithContact":
             MessageLookupByLibrary.simpleMessage("發送備忘到 Contact:"),

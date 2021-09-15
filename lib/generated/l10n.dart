@@ -1331,6 +1331,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Tilt your device up to reveal your balance`
+  String get tiltYourDeviceUpToRevealYourBalance {
+    return Intl.message(
+      'Tilt your device up to reveal your balance',
+      name: 'tiltYourDeviceUpToRevealYourBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Contacts`
+  String get noContacts {
+    return Intl.message(
+      'No Contacts',
+      name: 'noContacts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a new contact and it will show up here`
+  String get createANewContactAndItWillShowUpHere {
+    return Intl.message(
+      'Create a new contact and it will show up here',
+      name: 'createANewContactAndItWillShowUpHere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Contact`
+  String get addContact {
+    return Intl.message(
+      'Add Contact',
+      name: 'addContact',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -126,5 +126,9 @@
   "backupWarning": "No one can recover your secret keys. If you don't have a backup, you WILL LOSE YOUR MONEY if your phone breaks down. You can reach this page by the app menu then Backup",
   "contactName": "Contact Name",
   "date": "Date",
-  "autoHideBalance": "Auto Hide Balance"
+  "autoHideBalance": "Auto Hide Balance",
+  "tiltYourDeviceUpToRevealYourBalance": "Tilt your device up to reveal your balance",
+  "noContacts": "No Contacts",
+  "createANewContactAndItWillShowUpHere": "Create a new contact and it will show up here",
+  "addContact": "Add Contact"
 }
