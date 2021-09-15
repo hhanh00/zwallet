@@ -575,7 +575,7 @@ abstract class _AccountManager with Store {
   }
 
   TimeRange getChartRange() {
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
     final today = DateTime.utc(now.year, now.month, now.day);
     final start = today.add(Duration(days: -chartRangeInt()));
     final cutoff = start.millisecondsSinceEpoch;
