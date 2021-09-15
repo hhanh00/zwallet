@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:decimal/decimal.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'dart:math' as math;
 
 import 'main.dart';
@@ -18,7 +18,7 @@ import 'store.dart';
 import 'generated/l10n.dart';
 
 class SendPage extends StatefulWidget {
-  final Contact contact;
+  final Contact? contact;
 
   SendPage(this.contact);
 
@@ -34,20 +34,20 @@ class SendState extends State<SendPage> {
   var _balance = 0;
   final _addressController = TextEditingController();
   final _memoController = TextEditingController();
-  final _otherAmountController = TextEditingController();
   var _mZEC = true;
-  var _useFX = false;
-  var _currencyController = _makeMoneyMaskedTextController(true);
-  var _maxAmountPerNoteController = _makeMoneyMaskedTextController(true);
+  var _inputInZEC = true;
+  var _zecAmountController = TextEditingController(text: '0.000');
+  var _fiatAmountController = TextEditingController(text: '0.000');
+  final _maxAmountController = TextEditingController(text: '0.000');
   var _includeFee = false;
   var _isExpanded = false;
   var _shieldTransparent = settings.shieldBalance;
-  ReactionDisposer _priceAutorunDispose;
+  ReactionDisposer? _priceAutorunDispose;
 
   @override
   initState() {
     if (widget.contact != null)
-      _addressController.text = widget.contact.address;
+      _addressController.text = widget.contact!.address;
     Future.microtask(() async {
       final balance = await accountManager
           .getBalanceSpendable(syncStatus.latestHeight - settings.anchorOffset);
@@ -55,18 +55,17 @@ class SendState extends State<SendPage> {
         _balance = math.max(balance - DEFAULT_FEE, 0);
       });
     });
-    _updateOtherAmount();
+    _updateFiatAmount();
     super.initState();
 
     _priceAutorunDispose = autorun((_) {
-      final price = priceStore.zecPrice;
-      _updateOtherAmount();
+      _updateFiatAmount();
     });
   }
 
   @override
   void dispose() {
-    _priceAutorunDispose();
+    _priceAutorunDispose!();
     super.dispose();
   }
 
@@ -81,15 +80,25 @@ class SendState extends State<SendPage> {
                 child: Column(children: <Widget>[
                   Row(children: <Widget>[
                     Expanded(
-                      child: TextFormField(
-                        decoration:
-                            InputDecoration(labelText: S.of(context).sendCointickerTo(coin.ticker)),
-                        minLines: 4,
-                        maxLines: null,
-                        keyboardType: TextInputType.multiline,
-                        controller: _addressController,
+                      child: TypeAheadFormField(
+                        textFieldConfiguration: TextFieldConfiguration(
+                          controller: _addressController,
+                          decoration: InputDecoration(
+                              labelText:
+                                  S.of(context).sendCointickerTo(coin.ticker)),
+                          minLines: 4,
+                          maxLines: 10,
+                          keyboardType: TextInputType.multiline,
+                        ),
                         onSaved: _onAddress,
                         validator: _checkAddress,
+                        onSuggestionSelected: (Contact contact) {
+                          _addressController.text = contact.name;
+                        },
+                        suggestionsCallback: (String pattern) {
+                          return contacts.contacts.where((c) => c.name.toLowerCase().contains(pattern.toLowerCase()));
+                        },
+                        itemBuilder: (BuildContext context, Contact c) => ListTile(title: Text(c.name)),
                       ),
                     ),
                     IconButton(
@@ -98,23 +107,37 @@ class SendState extends State<SendPage> {
                   Row(children: [
                     Expanded(
                         child: TextFormField(
+                            style: !_inputInZEC ? TextStyle(fontWeight: FontWeight.w200) : TextStyle(),
                             decoration:
-                                InputDecoration(labelText: thisAmountLabel()),
+                                InputDecoration(labelText: S.of(context).amountInSettingscurrency(coin.ticker)),
+                            controller: _zecAmountController,
                             keyboardType: TextInputType.number,
-                            controller: _currencyController,
+                            inputFormatters: [makeInputFormatter(_mZEC)],
                             validator: _checkAmount,
-                            onChanged: (_) { _updateOtherAmount(); },
-                            onSaved: _onAmount)),
-                    TextButton(child: Text(S.of(context).max), onPressed: _onMax),
+                            onTap: () => setState(() { _inputInZEC = true; }),
+                            onChanged: (_) {
+                              _updateFiatAmount();
+                            },
+                            onSaved: _onAmount,
+                        )),
+                    TextButton(
+                        child: Text(S.of(context).max), onPressed: _onMax),
                   ]),
                   Row(children: [
                     Expanded(
-                          child: TextFormField(
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                  labelText: otherAmountLabel()),
-                            controller: _otherAmountController,
-                              ),
+                      child: TextFormField(
+                        style: _inputInZEC ? TextStyle(fontWeight: FontWeight.w200) : TextStyle(),
+                        decoration:
+                            InputDecoration(labelText: S.of(context).amountInSettingscurrency(settings.currency)),
+                        controller: _fiatAmountController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [makeInputFormatter(_mZEC)],
+                        validator: _checkAmount,
+                        onTap: () => setState(() { _inputInZEC = false; }),
+                        onChanged: (_) {
+                          _updateAmount();
+                        },
+                      ),
                     ),
                   ]),
                   ExpansionPanelList(
@@ -125,12 +148,13 @@ class SendState extends State<SendPage> {
                       },
                       children: [
                         ExpansionPanel(
-                            headerBuilder: (_, __) =>
-                                ListTile(title: Text(S.of(context).advancedOptions)),
+                            headerBuilder: (_, __) => ListTile(
+                                title: Text(S.of(context).advancedOptions)),
                             body: Column(children: [
                               ListTile(
                                   title: TextFormField(
-                                decoration: InputDecoration(labelText: S.of(context).memo),
+                                decoration: InputDecoration(
+                                    labelText: S.of(context).memo),
                                 minLines: 4,
                                 maxLines: null,
                                 keyboardType: TextInputType.multiline,
@@ -140,24 +164,23 @@ class SendState extends State<SendPage> {
                                   title: Text(S.of(context).roundToMillis),
                                   value: _mZEC,
                                   onChanged: _onChangedmZEC),
-                              Observer(builder: (context) => CheckboxListTile(
-                                  title: Text(S.of(context).useSettingscurrency(settings.currency)),
-                                  value: _useFX,
-                                  onChanged: _onChangedUseFX)),
                               CheckboxListTile(
                                   title: Text(S.of(context).includeFeeInAmount),
                                   value: _includeFee,
                                   onChanged: _onChangedIncludeFee),
-                              if (accountManager.canPay) CheckboxListTile(
-                                  title: Text(S.of(context).shieldTransparentBalance),
-                                  value: _shieldTransparent,
-                                  onChanged: _onChangedShieldBalance),
+                              if (accountManager.canPay)
+                                CheckboxListTile(
+                                    title: Text(
+                                        S.of(context).shieldTransparentBalance),
+                                    value: _shieldTransparent,
+                                    onChanged: _onChangedShieldBalance),
                               ListTile(
                                   title: TextFormField(
                                 decoration: InputDecoration(
                                     labelText: S.of(context).maxAmountPerNote),
                                 keyboardType: TextInputType.number,
-                                controller: _maxAmountPerNoteController,
+                                controller: _maxAmountController,
+                                inputFormatters: [makeInputFormatter(_mZEC)],
                                 validator: _checkMaxAmountPerNote,
                                 onSaved: _onSavedMaxAmountPerNote,
                               )),
@@ -165,31 +188,38 @@ class SendState extends State<SendPage> {
                             isExpanded: _isExpanded)
                       ]),
                   Padding(padding: EdgeInsets.all(8)),
-                  Text(S.of(context).spendable + '${_balance / ZECUNIT} ${coin.ticker}'),
+                  Text(S.of(context).spendable +
+                      '${_balance / ZECUNIT} ${coin.ticker}'),
                   ButtonBar(
-                      children: confirmButtons(context, _onSend, okLabel: S.of(context).send, okIcon: Icon(MdiIcons.send)))
+                      children: confirmButtons(context, _onSend,
+                          okLabel: S.of(context).send,
+                          okIcon: Icon(MdiIcons.send)))
                 ]))));
   }
 
-  String _checkAddress(String v) {
-    if (v.isEmpty) return S.of(context).addressIsEmpty;
+  String? _checkAddress(String? v) {
+    if (v == null || v.isEmpty) return S.of(context).addressIsEmpty;
+    final c = contacts.contacts.where((c) => c.name == v);
+    if (c.isNotEmpty) return null;
     final zaddr = WarpApi.getSaplingFromUA(v);
     if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
     return null;
   }
 
-  String _checkAmount(String vs) {
-    final vss = vs.replaceAll(',', '');
-    final v = double.tryParse(vss);
+  String? _checkAmount(String? vs) {
+    if (vs == null) return S.of(context).amountMustBeANumber;
+    final v = parseNumber(vs);
     if (v == null) return S.of(context).amountMustBeANumber;
     if (v <= 0.0) return S.of(context).amountMustBePositive;
-    if (amountInZAT(Decimal.parse(vss)) > _balance) return S.of(context).notEnoughBalance;
+    if (amountInZAT(Decimal.parse(v.toString())) > _balance)
+      return S.of(context).notEnoughBalance;
     return null;
   }
 
-  String _checkMaxAmountPerNote(String vs) {
-    final v = double.tryParse(vs);
+  String? _checkMaxAmountPerNote(String? vs) {
+    if (vs == null) return S.of(context).amountMustBeANumber;
+    final v = parseNumber(vs);
     if (v == null) return S.of(context).amountMustBeANumber;
     if (v < 0.0) return S.of(context).amountMustBePositive;
     return null;
@@ -198,73 +228,82 @@ class SendState extends State<SendPage> {
   void _onMax() {
     setState(() {
       _mZEC = false;
-      _useFX = false;
-      _currencyController = _makeMoneyMaskedTextController(false);
       _includeFee = false;
-      _currencyController.updateValue(
-          (Decimal.fromInt(_balance) / ZECUNIT_DECIMAL).toDouble());
-      _updateOtherAmount();
+      _zecAmountController.text =
+          (Decimal.fromInt(_balance) / ZECUNIT_DECIMAL).toString();
+      _updateFiatAmount();
     });
   }
 
-  void _onChangedIncludeFee(bool v) {
+  void _onChangedIncludeFee(bool? v) {
     setState(() {
-      _includeFee = v;
+      _includeFee = v ?? false;
     });
   }
 
-  void _onChangedUseFX(bool v) {
-    setState(() {
-      _useFX = v;
-      _currencyController
-          .updateValue(double.parse(_otherAmountController.text));
-      _updateOtherAmount();
-    });
-  }
-
-  void _onChangedmZEC(bool v) {
+  void _onChangedmZEC(bool? v) {
+    if (v == null) return;
     setState(() {
       _mZEC = v;
-      final amount = _currencyController.numberValue;
-      _currencyController = _makeMoneyMaskedTextController(v);
-      _currencyController.updateValue(amount);
-      _maxAmountPerNoteController = _makeMoneyMaskedTextController(v);
+      _zecAmountController.text = _trimToPrecision(_zecAmountController.text);
+      _fiatAmountController.text = _trimToPrecision(_fiatAmountController.text);
     });
   }
 
-  void _onChangedShieldBalance(bool v) {
+  void _onChangedShieldBalance(bool? v) {
+    if (v == null) return;
     setState(() {
       _shieldTransparent = v;
     });
   }
 
   void _onScan() async {
-    var code = await BarcodeScanner.scan();
-    setState(() {
-      _address = code.rawContent;
-      _addressController.text = _address;
-    });
+    final code = await scanCode(context);
+    if (code != null)
+      setState(() {
+        _address = code;
+        _addressController.text = _address;
+      });
   }
 
-  void _onAmount(String vs) {
+  void _onAmount(String? vs) {
+    if (vs == null) return;
     final vss = vs.replaceAll(',', '');
     _amount = amountInZAT(Decimal.parse(vss));
   }
 
   void _onAddress(v) {
-    _address = v;
+    final c = contacts.contacts.where((c) => c.name == v);
+    if (c.isEmpty)
+      _address = v;
+    else {
+      _address = c.first.address;
+    }
   }
 
   void _onSavedMaxAmountPerNote(v) {
     _maxAmountPerNote = Decimal.parse(v);
   }
 
-  void _updateOtherAmount() {
-    final price = _fx().toDouble();
-    final amount = _currencyController.numberValue;
-    final otherAmount = (_useFX) ? (amount / price).toStringAsFixed(8) : (amount * price).toStringAsFixed(8);
-    _otherAmountController.text = otherAmount;
+  void _updateAmount() {
+    final rate = 1.0 / priceStore.zecPrice;
+    final amount = parseNumber(_fiatAmountController.text);
+    final otherAmount = _formatCurrency(amount * rate);
+    setState(() {
+      _zecAmountController.text = otherAmount;
+    });
   }
+
+  void _updateFiatAmount() {
+    final rate = priceStore.zecPrice;
+    final amount = parseNumber(_zecAmountController.text);
+    final otherAmount = _formatCurrency(amount * rate);
+    setState(() {
+      _fiatAmountController.text = otherAmount;
+    });
+  }
+
+  String _formatCurrency(double v) => NumberFormat.currency(decimalDigits: precision(_mZEC), symbol: '').format(v);
 
   void _onSend() async {
     final form = _formKey.currentState;
@@ -277,17 +316,19 @@ class SendState extends State<SendPage> {
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) => AlertDialog(
-                title: Text(S.of(context).pleaseConfirm),
-                content: SingleChildScrollView(
-                    child: Text(S.of(context).sendingAzecCointickerToAddress(aZEC, coin.ticker, _address))),
-                actions: confirmButtons(context, () => Navigator.of(context).pop(true), okLabel: S.of(context).approve, cancelValue: false)
-              ));
+              title: Text(S.of(context).pleaseConfirm),
+              content: SingleChildScrollView(
+                  child: Text(S.of(context).sendingAzecCointickerToAddress(
+                      aZEC, coin.ticker, _address))),
+              actions: confirmButtons(
+                  context, () => Navigator.of(context).pop(true),
+                  okLabel: S.of(context).approve, cancelValue: false)));
       if (approved) {
         final s = S.of(context);
         Navigator.of(context).pop();
 
         final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
-        rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
+        rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
 
         if (_includeFee) _amount -= DEFAULT_FEE;
         int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toInt();
@@ -308,38 +349,34 @@ class SendState extends State<SendPage> {
                   progressPort.sendPort));
 
           final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
-          rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+          await accountManager.fetchAccountData(true);
         } else {
           Directory tempDir = await getTemporaryDirectory();
           String filename = "${tempDir.path}/tx.json";
 
-          final msg = WarpApi.prepareTx(accountManager.active.id, address, _amount, memo,
-              maxAmountPerNote, settings.anchorOffset, filename);
+          final msg = WarpApi.prepareTx(accountManager.active.id, address,
+              _amount, memo, maxAmountPerNote, settings.anchorOffset, filename);
 
           Share.shareFiles([filename], subject: s.unsignedTransactionFile);
 
           final snackBar2 = SnackBar(content: Text(msg));
-          rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
         }
       }
     }
   }
 
-  static MoneyMaskedTextController _makeMoneyMaskedTextController(bool mZEC) =>
-      MoneyMaskedTextController(
-          decimalSeparator: '.',
-          thousandSeparator: ',',
-          precision: mZEC ? 3 : 8);
+  int amountInZAT(Decimal v) => (v * ZECUNIT_DECIMAL).toInt();
 
-  String thisAmountLabel() => S.of(context).amountInSettingscurrency(_useFX ? settings.currency : coin.ticker);
+  double _fx() {
+    return priceStore.zecPrice;
+  }
 
-  String otherAmountLabel() => S.of(context).amountInSettingscurrency(_useFX ? coin.ticker : settings.currency);
-
-  int amountInZAT(Decimal v) => _useFX
-      ? (v / _fx() * ZECUNIT_DECIMAL).toInt()
-      : (v * ZECUNIT_DECIMAL).toInt();
-
-  Decimal _fx() { return Decimal.parse("${priceStore.zecPrice}"); }
+  String _trimToPrecision(String v) {
+    double vv = parseNumber(v);
+    return vv.toStringAsFixed(precision(_mZEC));
+  }
 }
 
 sendPayment(PaymentParams param) async {

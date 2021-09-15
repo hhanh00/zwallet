@@ -52,7 +52,7 @@ pub unsafe extern "C" fn set_mempool_account(account: u32) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn new_account(name: *mut c_char, data: *mut c_char) -> u32 {
+pub unsafe extern "C" fn new_account(name: *mut c_char, data: *mut c_char) -> i32 {
     let name = CStr::from_ptr(name).to_string_lossy();
     let data = CStr::from_ptr(data).to_string_lossy();
     api::new_account(&name, &data)
@@ -197,6 +197,34 @@ pub unsafe extern "C" fn get_sapling(ua_addr: *mut c_char) -> *mut c_char {
     let ua_addr = CStr::from_ptr(ua_addr).to_string_lossy();
     let sapling_addr = api::get_sapling(&ua_addr);
     CString::new(sapling_addr).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn store_contact(
+    id: u32,
+    name: *mut c_char,
+    address: *mut c_char,
+    dirty: bool,
+) {
+    let name = CStr::from_ptr(name).to_string_lossy();
+    let address = CStr::from_ptr(address).to_string_lossy();
+    api::store_contact(id, &name, &address, dirty);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn commit_unsaved_contacts(account: u32, anchor_offset: u32) -> *mut c_char {
+    let tx_id = api::commit_unsaved_contacts(account, anchor_offset);
+    CString::new(tx_id).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn delete_account(account: u32) {
+    api::delete_account(account);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn truncate_data() {
+    api::truncate_data();
 }
 
 #[no_mangle]

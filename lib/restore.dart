@@ -1,6 +1,6 @@
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -27,12 +27,12 @@ class _RestorePageState extends State<RestorePage> {
         body: Form(
             key: _formKey,
             child: Padding(
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.all(16),
                 child: Column(children: [
                   TextFormField(
                     decoration: InputDecoration(labelText: S.of(context).accountName),
                     controller: _nameController,
-                    validator: (String name) {
+                    validator: (String? name) {
                       if (name == null || name.isEmpty)
                         return S.of(context).accountNameIsRequired;
                       return null;
@@ -61,22 +61,37 @@ class _RestorePageState extends State<RestorePage> {
   }
 
   _onOK() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       final account =
           WarpApi.newAccount(_nameController.text, _keyController.text);
-      await accountManager.refresh();
-      await accountManager.setActiveAccountId(account);
-      if (accountManager.accounts.length == 1) {
-        if (_keyController.text == "")
-          WarpApi.skipToLastHeight(); // single new account -> quick sync
+      if (account < 0) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+                title: Text(S.of(context).duplicateAccount),
+                content: Text(S.of(context).thisAccountAlreadyExists),
+                actions: [
+                  ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      label: Text(S.of(context).ok),
+                      icon: Icon(Icons.done))
+                ]));
+      }
+      else {
+        await accountManager.refresh();
+        if (_keyController.text != "") {
+          syncStatus.setAccountRestored(true);
+          Navigator.of(context).pop();
+        }
         else {
-          final snackBar = SnackBar(content: Text(S.of(context).scanStartingMomentarily));
-          rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
-          WarpApi.rewindToHeight(0);
+          if (accountManager.accounts.length == 1)
+            WarpApi.skipToLastHeight(); // single new account -> quick sync
+          Navigator.of(context).pushReplacementNamed('/backup', arguments: account);
         }
       }
-      Navigator.of(context).pop();
-      Navigator.of(context).pushReplacementNamed('/account');
     }
   }
 
@@ -87,11 +102,11 @@ class _RestorePageState extends State<RestorePage> {
   }
 
   void _onScan() async {
-    var code = await BarcodeScanner.scan();
-    setState(() {
-      final key = code.rawContent;
-      _keyController.text = key;
-      _validKey = key == "" || WarpApi.validKey(key);
-    });
+    final key = await scanCode(context);
+    if (key != null)
+      setState(() {
+        _keyController.text = key;
+        _validKey = key == "" || WarpApi.validKey(key);
+      });
   }
 }

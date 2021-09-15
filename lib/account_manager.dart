@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:warp/main.dart';
 import 'package:warp/store.dart';
 import 'generated/l10n.dart';
@@ -24,65 +25,61 @@ class AccountManagerState extends State<AccountManagerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(S.of(context).accounts), actions: [
+        appBar: AppBar(title: Text(S.of(context).selectAccount), actions: [
           PopupMenuButton<String>(
               itemBuilder: (context) => [
-                    PopupMenuItem(child: Text(S.of(context).settings), value: "Settings"),
-                    PopupMenuItem(child: Text(S.of(context).about), value: "About"),
+                    PopupMenuItem(
+                        child: Text(S.of(context).settings), value: "Settings"),
+                    PopupMenuItem(
+                        child: Text(S.of(context).about), value: "About"),
                   ],
               onSelected: _onMenu)
         ]),
         body: Observer(
-            builder: (context) => Stack(children: [
+            builder: (context) =>
                   accountManager.accounts.isEmpty
-                      ? Center(
-                          child: Text(S.of(context).noAccount,
-                              style: Theme.of(context).textTheme.headline5))
-                      : ListView(
-                          children: accountManager.accounts
-                              .asMap()
-                              .entries
-                              .map((a) => Card(
-                                      child: Dismissible(
-                                    key: Key(a.value.name),
-                                    child: ListTile(
-                                      title: Text(a.value.name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5),
-                                      trailing:
-                                          Text("${a.value.balance / ZECUNIT}"),
-                                      onTap: () {
-                                        _selectAccount(a.value);
-                                      },
-                                      onLongPress: () {
-                                        _editAccount(a.value);
-                                      },
-                                    ),
-                                    confirmDismiss: _onAccountDelete,
-                                    onDismissed: (direction) =>
-                                        _onDismissed(a.key, a.value.id),
-                                  )))
-                              .toList()),
-                ])),
+                      ? Center(child: NoAccount())
+                      : ListView.builder(
+                          itemCount: accountManager.accounts.length,
+                          itemBuilder: (BuildContext context, int index) {
+                          final a = accountManager.accounts[index];
+                          return Card(
+                              child: Dismissible(
+                            key: Key(a.name),
+                            child: ListTile(
+                              title: Text(a.name,
+                                  style: Theme.of(context).textTheme.headline5),
+                              trailing: Text("${a.balance / ZECUNIT}"),
+                              onTap: () {
+                                _selectAccount(a);
+                              },
+                              onLongPress: () {
+                                _editAccount(a);
+                              },
+                            ),
+                            confirmDismiss: _onAccountDelete,
+                            onDismissed: (direction) =>
+                                _onDismissed(index, a.id),
+                          ));
+                        }),
+                ),
         floatingActionButton: FloatingActionButton(
             onPressed: _onRestore, child: Icon(Icons.add)));
   }
 
   Future<bool> _onAccountDelete(DismissDirection _direction) async {
     if (accountManager.accounts.length == 1) return false;
-    final confirm = showDialog<bool>(
+    final confirm = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
           title: Text(S.of(context).seed),
-          content: Text(
-              S.of(context).confirmDeleteAccount),
+          content: Text(S.of(context).confirmDeleteAccount),
           actions: confirmButtons(context, () {
             Navigator.of(context).pop(true);
           }, okLabel: S.of(context).delete, cancelValue: false)),
     );
-    return confirm;
+    return confirm ?? false;
   }
 
   void _onDismissed(int index, int account) async {
@@ -92,6 +89,14 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   _selectAccount(Account account) async {
     await accountManager.setActiveAccount(account);
+    if (syncStatus.accountRestored) {
+      syncStatus.setAccountRestored(false);
+      await rescanDialog(context, () {
+          syncStatus.sync(context);
+          Navigator.of(context).pop();
+        });
+    }
+
     final navigator = Navigator.of(context);
     if (navigator.canPop())
       navigator.pop();
@@ -131,5 +136,23 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   _settings() {
     Navigator.of(this.context).pushNamed('/settings');
+  }
+}
+
+class NoAccount extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final Widget wallet = SvgPicture.asset('assets/wallet.svg',
+        color: Theme.of(context).primaryColor, semanticsLabel: 'Wallet');
+
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      SizedBox(child: wallet, height: 150, width: 150),
+      Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+      Text(S.of(context).noAccount,
+          style: Theme.of(context).textTheme.headline5),
+      Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+      Text(S.of(context).createANewAccount,
+          style: Theme.of(context).textTheme.bodyText1),
+    ]);
   }
 }

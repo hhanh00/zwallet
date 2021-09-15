@@ -197,6 +197,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bincode"
+version = "1.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b1f45e9417d87227c7a56d22e471c6206462cba514c7590c09aff4cf6d1ddcad"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "bitflags"
 version = "1.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2601,6 +2610,7 @@ name = "sync"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "bincode",
  "bls12_381",
  "byteorder",
  "chrono",
@@ -2635,6 +2645,7 @@ dependencies = [
  "tokio-stream",
  "tonic",
  "tonic-build",
+ "zcash_address",
  "zcash_client_backend",
  "zcash_params 0.1.0 (git+https://github.com/hhanh00/zcash-params.git?branch=main)",
  "zcash_primitives",
@@ -3311,6 +3322,16 @@ name = "yansi"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9fc79f4a1e39857fc00c3f662cbf2651c771f00e9c15fe2abc341806bd46bd71"
+
+[[package]]
+name = "zcash_address"
+version = "0.0.0"
+source = "git+https://github.com/hhanh00/librustzcash.git?rev=19a97f16945c68c33aedcc89f2a4f4d398658b05#19a97f16945c68c33aedcc89f2a4f4d398658b05"
+dependencies = [
+ "bech32",
+ "blake2b_simd",
+ "bs58",
+]
 
 [[package]]
 name = "zcash_client_backend"

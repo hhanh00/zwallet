@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import 'main.dart';
@@ -15,16 +14,10 @@ final _settingsFormKey = GlobalKey<FormBuilderState>();
 
 class SettingsState extends State<SettingsPage> {
   var _anchorController =
-      MaskedTextController(mask: "00", text: "${settings.anchorOffset}");
-  var _thresholdController = MoneyMaskedTextController(
-      decimalSeparator: '.', thousandSeparator: ',', precision: 3);
+      TextEditingController(text: "${settings.anchorOffset}");
+  var _thresholdController = TextEditingController(
+      text: "${settings.autoShieldThreshold.toStringAsFixed(3)}");
   var _currency = settings.currency;
-
-  @override
-  void initState() {
-    super.initState();
-    _thresholdController.updateValue(settings.autoShieldThreshold);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,17 +99,19 @@ class SettingsState extends State<SettingsPage> {
                                         .toList(),
                                     onChanged: (v) {
                                       setState(() {
-                                        _currency = v;
+                                        _currency = v!;
                                       });
                                     },
                                     onSaved: (_) {
                                       settings.setCurrency(_currency);
                                     })),
-                            if (coin.supportsUA) Expanded(child: FormBuilderCheckbox(
-                                name: 'use_ua',
-                                title: Text(S.of(context).useUa),
-                                initialValue: settings.useUA,
-                                onSaved: _onUseUA)),
+                            if (coin.supportsUA)
+                              Expanded(
+                                  child: FormBuilderCheckbox(
+                                      name: 'use_ua',
+                                      title: Text(S.of(context).useUa),
+                                      initialValue: settings.useUA,
+                                      onSaved: _onUseUA)),
                           ]),
                           FormBuilderTextField(
                               decoration: InputDecoration(
@@ -150,11 +145,18 @@ class SettingsState extends State<SettingsPage> {
                                   S.of(context).retrieveTransactionDetails),
                               initialValue: settings.getTx,
                               onSaved: _onGetTx),
+                          FormBuilderCheckbox(
+                              name: 'auto_hide',
+                              title: Text(
+                                  S.of(context).autoHideBalance),
+                              initialValue: settings.autoHide,
+                              onSaved: _onAutoHide),
                           TextFormField(
                               decoration: InputDecoration(
                                   labelText: 'Auto Shield Threshold'),
                               keyboardType: TextInputType.number,
                               controller: _thresholdController,
+                              inputFormatters: [makeInputFormatter(true)],
                               onSaved: _onAutoShieldThreshold,
                               validator: _checkAmount),
                           FormBuilderCheckbox(
@@ -168,9 +170,9 @@ class SettingsState extends State<SettingsPage> {
                         ]))))));
   }
 
-  String _checkAmount(String vs) {
-    final vss = vs.replaceAll(',', '');
-    final v = double.tryParse(vss);
+  String? _checkAmount(String? vs) {
+    if (vs == null) return S.of(context).amountMustBeANumber;
+    final v = parseNumber(vs);
     if (v == null) return S.of(context).amountMustBeANumber;
     if (v < 0.0) return S.of(context).amountMustBePositive;
     return null;
@@ -201,7 +203,7 @@ class SettingsState extends State<SettingsPage> {
   }
 
   _onAutoShieldThreshold(_) {
-    final v = _thresholdController.numberValue;
+    final v = parseNumber(_thresholdController.text);
     settings.setAutoShieldThreshold(v);
   }
 
@@ -209,8 +211,12 @@ class SettingsState extends State<SettingsPage> {
     settings.setUseUA(v);
   }
 
+  _onAutoHide(v) {
+    settings.setAutoHide(v);
+  }
+
   _onSave() {
-    final form = _settingsFormKey.currentState;
+    final form = _settingsFormKey.currentState!;
     if (form.validate()) {
       form.save();
       Navigator.of(context).pop();

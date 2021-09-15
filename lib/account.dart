@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:isolate';
+import 'dart:ui';
+import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -12,12 +12,14 @@ import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:grouped_list/grouped_list.dart';
 
 import 'about.dart';
+import 'budget.dart';
 import 'chart.dart';
+import 'contact.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 
@@ -31,15 +33,18 @@ class _AccountPageState extends State<AccountPage>
         WidgetsBindingObserver,
         AutomaticKeepAliveClientMixin,
         SingleTickerProviderStateMixin {
-  Timer _timerSync;
+  Timer? _timerSync;
   int _progress = 0;
   bool _useSnapAddress = false;
   String _snapAddress = "";
-  TabController _tabController;
+  late TabController _tabController;
   bool _accountTab = true;
-  bool _syncing = false;
-  StreamSubscription _progressDispose;
-  StreamSubscription _syncDispose;
+  bool _contactsTab = false;
+  StreamSubscription? _progressDispose;
+  StreamSubscription? _syncDispose;
+  StreamSubscription? _accDispose;
+  final contactKey = GlobalKey<ContactsState>();
+  bool _flat = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -51,14 +56,16 @@ class _AccountPageState extends State<AccountPage>
     _tabController.addListener(() {
       setState(() {
         _accountTab = _tabController.index == 0;
+        _contactsTab = _tabController.index == 5;
       });
     });
     Future.microtask(() async {
       await accountManager.updateUnconfirmedBalance();
-      await accountManager.fetchAccountData();
+      await accountManager.fetchAccountData(false);
+      await contacts.fetchContacts();
       await _setupTimer();
     });
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
     _progressDispose = progressStream.listen((percent) {
       setState(() {
         _progress = percent;
@@ -66,23 +73,25 @@ class _AccountPageState extends State<AccountPage>
     });
     _syncDispose = syncStream.listen((height) {
       setState(() {
-        if (height >= 0)
+        if (height >= 0) {
           syncStatus.setSyncHeight(height);
-        else {
-          _syncing = false;
+          eta.checkpoint(height, DateTime.now());
+        } else {
           WarpApi.mempoolReset(syncStatus.latestHeight);
           _trySync();
         }
       });
     });
+    _accDispose = accelerometerEvents.listen(_handleAccel);
   }
 
   @override
   void dispose() {
     _timerSync?.cancel();
-    WidgetsBinding.instance.removeObserver(this);
-    _progressDispose.cancel();
-    _syncDispose.cancel();
+    WidgetsBinding.instance?.removeObserver(this);
+    _progressDispose?.cancel();
+    _syncDispose?.cancel();
+    _accDispose?.cancel();
     super.dispose();
   }
 
@@ -93,9 +102,15 @@ class _AccountPageState extends State<AccountPage>
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
         _timerSync?.cancel();
+        _timerSync = null;
+        _accDispose?.cancel();
+        _accDispose = null;
         break;
       case AppLifecycleState.resumed:
-        _setupTimer();
+        if (_timerSync == null)
+          _setupTimer();
+        if (_accDispose == null)
+          _accDispose = accelerometerEvents.listen(_handleAccel);
         break;
     }
   }
@@ -103,15 +118,17 @@ class _AccountPageState extends State<AccountPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (!syncStatus.isSynced() && !_syncing) _trySync();
+    if (!syncStatus.isSynced() && !syncStatus.syncing) _trySync();
     if (accountManager.active == null) return CircularProgressIndicator();
     final theme = Theme.of(this.context);
     final hasTAddr = accountManager.taddress.isNotEmpty;
+    final qrSize = getScreenSize(context) / 2.5;
+
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Observer(
-            builder: (context) =>
-                Text("${coin.symbol} Wallet - ${accountManager.active.name}")),
+            builder: (context) => Text("${accountManager.active.name}")),
         bottom: TabBar(controller: _tabController, isScrollable: true, tabs: [
           Tab(text: S.of(context).account),
           Tab(text: S.of(context).notes),
@@ -153,21 +170,27 @@ class _AccountPageState extends State<AccountPage>
             padding: EdgeInsets.all(20),
             child: Center(
                 child: Column(children: [
-              Observer(
-                  builder: (context) => syncStatus.syncedHeight <= 0
-                      ? Text(S.of(context).synching)
-                      : syncStatus.isSynced()
-                          ? Text('${syncStatus.syncedHeight}',
-                              style: theme.textTheme.caption)
-                          : Text(
-                              '${syncStatus.syncedHeight} / ${syncStatus.latestHeight}',
-                              style: theme.textTheme.caption
-                                  .apply(color: theme.primaryColor))),
+              Observer(builder: (context) {
+                final _1 = eta.eta;
+                final _2 = syncStatus.syncedHeight;
+                final _3 = syncStatus.latestHeight;
+                return syncStatus.syncedHeight < 0
+                    ? Text("")
+                    : syncStatus.isSynced()
+                        ? Text('${syncStatus.syncedHeight}',
+                            style: theme.textTheme.caption)
+                        : Text(
+                            '${syncStatus.syncedHeight} / ${syncStatus.latestHeight} ${eta.eta}',
+                            style: theme.textTheme.caption!
+                                .apply(color: theme.primaryColor));
+              }),
               Padding(padding: EdgeInsets.symmetric(vertical: 8)),
               Observer(builder: (context) {
                 final _ = accountManager.active.address;
                 final address = _address();
+                final shortAddress = addressLeftTrim(address);
                 final showTAddr = accountManager.showTAddr;
+                final hide = settings.autoHide && _flat;
                 return Column(children: [
                   if (hasTAddr)
                     Text(showTAddr
@@ -176,22 +199,24 @@ class _AccountPageState extends State<AccountPage>
                   Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   GestureDetector(
                       onTap: hasTAddr ? _onQRTap : null,
+                      child: RotatedBox(quarterTurns: hide ? 2 : 0,
                       child: QrImage(
                           data: address,
-                          size: 200,
-                          backgroundColor: Colors.white)),
+                          size: qrSize,
+                          embeddedImage: AssetImage('assets/icon.png'),
+                          backgroundColor: Colors.white))),
                   Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                   RichText(
                       text: TextSpan(children: [
                     TextSpan(
-                        text: '$address ', style: theme.textTheme.bodyText2),
+                        text: '$shortAddress ', style: theme.textTheme.bodyText2),
                     WidgetSpan(
                         child: GestureDetector(
                             child: Icon(Icons.content_copy),
                             onTap: _onAddressCopy)),
                     WidgetSpan(
-                      child: Padding(padding: EdgeInsets.symmetric(horizontal: 4))
-                    ),
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 4))),
                     WidgetSpan(
                         child: GestureDetector(
                             child: Icon(MdiIcons.qrcodeScan),
@@ -219,23 +244,30 @@ class _AccountPageState extends State<AccountPage>
                 final balance = accountManager.showTAddr
                     ? accountManager.tbalance
                     : accountManager.balance;
+                final hide = settings.autoHide && _flat;
+                final balanceHi = hide ? '-------' : _getBalance_hi(balance);
+                final deviceWidth = getWidth(context);
+                final digits = deviceWidth.index < DeviceWidth.sm.index ? 7 : 9;
+                final balanceStyle = (balanceHi.length > digits ? theme.textTheme.headline4 : theme.textTheme.headline2)!.copyWith(color: theme.colorScheme.primaryVariant);
                 return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.ideographic,
                     children: <Widget>[
-                      Text('${coin.symbol} ${_getBalance_hi(balance)}',
-                          style: theme.textTheme.headline2),
-                      Text('${_getBalance_lo(balance)}'),
+                      if (!hide) Text('${coin.symbol}', style: theme.textTheme.headline5),
+                      Text(' $balanceHi',
+                          style: balanceStyle),
+                      if (!hide) Text('${_getBalance_lo(balance)}'),
                     ]);
               }),
               Observer(builder: (context) {
+                final hide = settings.autoHide && _flat;
                 final balance = accountManager.showTAddr
                     ? accountManager.tbalance
                     : accountManager.balance;
                 final fx = _fx();
                 final balanceFX = balance * fx / ZECUNIT;
-                return Column(children: [
+                return hide ? Text(S.of(context).tiltYourDeviceUpToRevealYourBalance) :  Column(children: [
                   if (fx != 0.0)
                     Text("${balanceFX.toStringAsFixed(2)} ${settings.currency}",
                         style: theme.textTheme.headline6),
@@ -268,18 +300,23 @@ class _AccountPageState extends State<AccountPage>
         HistoryWidget(tabTo),
         BudgetWidget(),
         PnLWidget(),
-        ContactsWidget(),
+        ContactsTab(key: contactKey),
       ]),
       floatingActionButton: _accountTab
           ? FloatingActionButton(
               onPressed: _onSend,
-              tooltip: S.of(context).send,
               backgroundColor: Theme.of(context)
                   .accentColor
                   .withOpacity(accountManager.canPay ? 1.0 : 0.3),
               child: Icon(Icons.send),
             )
-          : Container(), // This trailing comma makes auto-formatting nicer for build methods.
+          : _contactsTab
+              ? FloatingActionButton(
+                  onPressed: _onAddContact,
+                  backgroundColor: Theme.of(context).accentColor,
+                  child: Icon(Icons.add),
+                )
+              : Container(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
@@ -287,12 +324,15 @@ class _AccountPageState extends State<AccountPage>
     if (index != _tabController.index) _tabController.animateTo(index);
   }
 
-  _address() => accountManager.showTAddr
-      ? accountManager.taddress
-      : (_useSnapAddress
-          ? _uaAddress(_snapAddress, accountManager.taddress, settings.useUA)
-          : _uaAddress(accountManager.active.address, accountManager.taddress,
-              settings.useUA));
+  String _address() {
+    final address = accountManager.showTAddr
+        ? accountManager.taddress
+        : (_useSnapAddress
+        ? _uaAddress(_snapAddress, accountManager.taddress, settings.useUA)
+        : _uaAddress(accountManager.active.address, accountManager.taddress,
+        settings.useUA));
+    return address;
+  }
 
   String _uaAddress(String zaddress, String taddress, bool useUA) =>
       useUA ? WarpApi.getUA(zaddress, taddress) : zaddress;
@@ -309,7 +349,7 @@ class _AccountPageState extends State<AccountPage>
     Clipboard.setData(ClipboardData(text: _address()));
     final snackBar =
         SnackBar(content: Text(S.of(context).addressCopiedToClipboard));
-    rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
+    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
   }
 
   _onShieldTAddr() {
@@ -318,16 +358,17 @@ class _AccountPageState extends State<AccountPage>
       barrierDismissible: false,
       builder: (context) => AlertDialog(
           title: Text(S.of(context).shieldTransparentBalance),
-          content: Text(
-              S.of(context).doYouWantToTransferYourEntireTransparentBalanceTo),
+          content: Text(S
+              .of(context)
+              .doYouWantToTransferYourEntireTransparentBalanceTo(coin.ticker)),
           actions: confirmButtons(context, () async {
             final s = S.of(context);
             Navigator.of(this.context).pop();
             final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
-            rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
+            rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
             final txid = await WarpApi.shieldTAddr(accountManager.active.id);
             final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
-            rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+            rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
           })),
     );
   }
@@ -337,9 +378,7 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _unconfirmedStyle() {
-    return accountManager.unconfirmedBalance > 0
-        ? TextStyle(color: Colors.green)
-        : TextStyle(color: Colors.red);
+    return TextStyle(color: amountColor(context, accountManager.unconfirmedBalance));
   }
 
   _getBalance_hi(int b) {
@@ -361,11 +400,7 @@ class _AccountPageState extends State<AccountPage>
     return priceStore.zecPrice;
   }
 
-  _sync() async {
-    _syncing = true;
-    await syncStatus.update();
-    await sync(settings.getTx, settings.anchorOffset, syncPort.sendPort);
-  }
+  _sync() async {}
 
   _trySync() async {
     priceStore.fetchZecPrice();
@@ -384,9 +419,10 @@ class _AccountPageState extends State<AccountPage>
         syncStatus.update();
       }
     }
-    await accountManager.fetchAccountData();
+    await accountManager.fetchAccountData(false);
     await accountManager.updateBalance();
     await accountManager.updateUnconfirmedBalance();
+    await contacts.fetchContacts();
     accountManager.updateTBalance();
   }
 
@@ -442,7 +478,7 @@ class _AccountPageState extends State<AccountPage>
       final didAuthenticate = await localAuth.authenticate(
           localizedReason: S.of(context).pleaseAuthenticateToShowAccountSeed);
       if (didAuthenticate) {
-        Navigator.of(context).pushNamed('/backup', arguments: true);
+        Navigator.of(context).pushNamed('/backup');
       }
     } on PlatformException catch (e) {
       await showDialog(
@@ -450,26 +486,15 @@ class _AccountPageState extends State<AccountPage>
           barrierDismissible: true,
           builder: (context) => AlertDialog(
               title: Text(S.of(context).noAuthenticationMethod),
-              content: Text(e.message)));
+              content: Text(e.message ?? "")));
     }
   }
 
   _rescan() {
-    showDialog(
-        context: this.context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-            title: Text(S.of(context).rescan),
-            content: Text(S.of(context).rescanWalletFromTheFirstBlock),
-            actions: confirmButtons(context, () {
-              Navigator.of(this.context).pop();
-              final snackBar =
-                  SnackBar(content: Text(S.of(context).rescanRequested));
-              rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
-              syncStatus.setSyncHeight(0);
-              WarpApi.rewindToHeight(0);
-              _sync();
-            })));
+    rescanDialog(context, () {
+      Navigator.of(context).pop();
+      syncStatus.sync(context);
+    });
   }
 
   _cold() {
@@ -494,7 +519,7 @@ class _AccountPageState extends State<AccountPage>
     if (result != null) {
       final res = WarpApi.broadcast(result.files.single.path);
       final snackBar = SnackBar(content: Text(res));
-      rootScaffoldMessengerKey.currentState.showSnackBar(snackBar);
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     }
   }
 
@@ -504,12 +529,30 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _settings() {
-    Navigator.of(this.context).pushNamed('/settings');
+    Navigator.of(context).pushNamed('/settings');
+  }
+
+  _onAddContact() async {
+    final contact =
+        await contactKey.currentState?.showContactForm(context, Contact.empty());
+    if (contact != null) {
+      contacts.add(contact);
+    }
+  }
+
+  _handleAccel(AccelerometerEvent event) {
+    final n = sqrt(event.x*event.x + event.y*event.y + event.z*event.z);
+    final inclination = acos(event.z/n) / pi * 180 * event.y.sign;
+    final flat = inclination < 20;
+    if (flat != _flat)
+      setState(() {
+        _flat = flat;
+      });
   }
 }
 
 class NoteWidget extends StatefulWidget {
-  void Function(int index) tabTo;
+  final void Function(int index) tabTo;
 
   NoteWidget(this.tabTo);
 
@@ -523,9 +566,8 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return SingleChildScrollView(
-        padding: EdgeInsets.all(4),
+        padding: EdgeInsets.all(8),
         scrollDirection: Axis.vertical,
         child: Observer(builder: (context) {
           var amountHeader = S.of(context).amount;
@@ -573,12 +615,12 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
                       }),
                 ],
                 header: Text(S.of(context).selectNotesToExcludeFromPayments,
-                    style: Theme.of(context).textTheme.bodyText1),
+                    style: Theme.of(context).textTheme.bodyText2),
                 columnSpacing: 16,
                 showCheckboxColumn: false,
                 availableRowsPerPage: [5, 10, 25, 100],
-                onRowsPerPageChanged: (int value) {
-                  settings.setRowsPerPage(value);
+                onRowsPerPageChanged: (int? value) {
+                  settings.setRowsPerPage(value ?? 25);
                 },
                 showFirstLastButtons: true,
                 rowsPerPage: settings.rowsPerPage,
@@ -606,11 +648,14 @@ class NotesDataSource extends DataTableSource {
         ? syncStatus.latestHeight - note.height + 1
         : note.height;
 
-    var style = _confirmed(note.height)
-        ? theme.textTheme.bodyText2
-        : theme.textTheme.overline;
+    var style = theme.textTheme.bodyText2!;
+    if (!_confirmed(note.height))
+      style = style.copyWith(color: style.color!.withOpacity(0.5));
+
     if (note.spent)
       style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
+
+    final amountStyle = fontWeight(style, note.value);
 
     return DataRow.byIndex(
       index: index,
@@ -622,7 +667,7 @@ class NotesDataSource extends DataTableSource {
       cells: [
         DataCell(Text("$confsOrHeight", style: style)),
         DataCell(Text("${note.timestamp}", style: style)),
-        DataCell(Text("${note.value.toStringAsFixed(8)}", style: style)),
+        DataCell(Text("${note.value.toStringAsFixed(8)}", style: amountStyle)),
       ],
       onSelectChanged: (selected) => _noteSelected(note, selected),
     );
@@ -641,7 +686,7 @@ class NotesDataSource extends DataTableSource {
     return syncStatus.latestHeight - height >= settings.anchorOffset;
   }
 
-  void _noteSelected(Note note, bool selected) {
+  void _noteSelected(Note note, bool? selected) {
     note.excluded = !note.excluded;
     notifyListeners();
     onRowSelected(note);
@@ -649,7 +694,7 @@ class NotesDataSource extends DataTableSource {
 }
 
 class HistoryWidget extends StatefulWidget {
-  void Function(int index) tabTo;
+  final void Function(int index) tabTo;
 
   HistoryWidget(this.tabTo);
 
@@ -703,7 +748,6 @@ class HistoryState extends State<HistoryWidget>
                           });
                         }),
                     DataColumn(label: Text(S.of(context).datetime)),
-                    DataColumn(label: Text(S.of(context).txId)),
                     DataColumn(
                         label: Text(amountHeader),
                         numeric: true,
@@ -712,12 +756,13 @@ class HistoryState extends State<HistoryWidget>
                             accountManager.sortTxAmount();
                           });
                         }),
+                    DataColumn(label: Text(S.of(context).txId)),
                   ],
                   columnSpacing: 16,
                   showCheckboxColumn: false,
                   availableRowsPerPage: [5, 10, 25, 100],
-                  onRowsPerPageChanged: (int value) {
-                    settings.setRowsPerPage(value);
+                  onRowsPerPageChanged: (int? value) {
+                    settings.setRowsPerPage(value ?? 25);
                   },
                   showFirstLastButtons: true,
                   rowsPerPage: settings.rowsPerPage,
@@ -737,13 +782,17 @@ class HistoryDataSource extends DataTableSource {
     final confsOrHeight = settings.showConfirmations
         ? syncStatus.latestHeight - tx.height + 1
         : tx.height;
+    final color = amountColor(context, tx.value);
+    var style = Theme.of(context).textTheme.bodyText2!.copyWith(color: color);
+    style = fontWeight(style, tx.value);
+
     return DataRow(
         cells: [
           DataCell(Text("$confsOrHeight")),
           DataCell(Text("${tx.timestamp}")),
-          DataCell(Text("${tx.txid}")),
-          DataCell(Text("${tx.value.toStringAsFixed(8)}",
+          DataCell(Text("${tx.value.toStringAsFixed(8)}", style: style,
               textAlign: TextAlign.left)),
+          DataCell(Text("${tx.txid}")),
         ],
         onSelectChanged: (_) {
           Navigator.of(this.context).pushNamed('/tx', arguments: tx);
@@ -779,22 +828,19 @@ class BudgetState extends State<BudgetWidget>
           final _ = accountManager.dataEpoch;
           return Column(
             children: [
-              Expanded(
-                  child: Card(
+              Card(
                       child: Column(children: [
                 Text(S.of(context).largestSpendingsByAddress,
                     style: Theme.of(context).textTheme.headline6),
-                Expanded(
-                  child: PieChartSpending(accountManager.spendings),
-                ),
-                Text(S.of(context).tapChartToToggleBetweenAddressAndAmount,
-                    style: Theme.of(context).textTheme.caption)
-              ]))),
+                Padding(padding: EdgeInsets.symmetric(vertical: 4)),
+                BudgetChart(),
+              ])),
               Expanded(
                   child: Card(
                       child: Column(children: [
                 Text(S.of(context).accountBalanceHistory,
                     style: Theme.of(context).textTheme.headline6),
+                Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                 Expanded(
                     child: LineChartTimeSeries(accountManager.accountBalances))
               ]))),
@@ -820,17 +866,17 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
           orientation: OptionsOrientation.horizontal,
           name: S.of(context).pnl,
           initialValue: accountManager.pnlSeriesIndex,
-          onChanged: (v) {
+          onChanged: (int? v) {
             setState(() {
-              accountManager.setPnlSeriesIndex(v);
+              accountManager.setPnlSeriesIndex(v!);
             });
           },
           options: [
+            FormBuilderFieldOption(child: Text(S.of(context).price), value: 0),
             FormBuilderFieldOption(
-                child: Text(S.of(context).realized), value: 0),
-            FormBuilderFieldOption(child: Text(S.of(context).mm), value: 1),
-            FormBuilderFieldOption(child: Text(S.of(context).total), value: 2),
-            FormBuilderFieldOption(child: Text(S.of(context).price), value: 3),
+                child: Text(S.of(context).realized), value: 1),
+            FormBuilderFieldOption(child: Text(S.of(context).mm), value: 2),
+            FormBuilderFieldOption(child: Text(S.of(context).total), value: 3),
             FormBuilderFieldOption(child: Text(S.of(context).qty), value: 4),
             FormBuilderFieldOption(child: Text(S.of(context).table), value: 5),
           ]),
@@ -860,16 +906,17 @@ class PnLChart extends StatelessWidget {
   static double _seriesData(PnL pnl, int index) {
     switch (index) {
       case 0:
-        return pnl.realized;
-      case 1:
-        return pnl.unrealized;
-      case 2:
-        return pnl.realized + pnl.unrealized;
-      case 3:
         return pnl.price;
+      case 1:
+        return pnl.realized;
+      case 2:
+        return pnl.unrealized;
+      case 3:
+        return pnl.realized + pnl.unrealized;
       case 4:
         return pnl.amount;
     }
+    return 0.0;
   }
 
   static List<TimeSeriesPoint<double>> _createSeries(
@@ -887,28 +934,30 @@ class PnLTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final sortSymbol = accountManager.pnlDesc ? ' \u2193' : ' \u2191';
     return SingleChildScrollView(
-        child: PaginatedDataTable(
-            columns: [
-              DataColumn(
-                  label: Text(S.of(context).datetime + sortSymbol),
-                  onSort: (_, __) {
-                    accountManager.togglePnlDesc();
-                  }),
-              DataColumn(label: Text(S.of(context).qty), numeric: true),
-              DataColumn(label: Text(S.of(context).price), numeric: true),
-              DataColumn(label: Text(S.of(context).realized), numeric: true),
-              DataColumn(label: Text(S.of(context).mm), numeric: true),
-              DataColumn(label: Text(S.of(context).total), numeric: true),
-            ],
-            columnSpacing: 16,
-            showCheckboxColumn: false,
-            availableRowsPerPage: [5, 10, 25, 100],
-            onRowsPerPageChanged: (int value) {
-              settings.setRowsPerPage(value);
-            },
-            showFirstLastButtons: true,
-            rowsPerPage: settings.rowsPerPage,
-            source: PnLDataSource(context)));
+        child: Observer(
+            builder: (context) => PaginatedDataTable(
+                columns: [
+                  DataColumn(
+                      label: Text(S.of(context).date + sortSymbol),
+                      onSort: (_, __) {
+                        accountManager.togglePnlDesc();
+                      }),
+                  DataColumn(label: Text(S.of(context).qty), numeric: true),
+                  DataColumn(label: Text(S.of(context).price), numeric: true),
+                  DataColumn(
+                      label: Text(S.of(context).realized), numeric: true),
+                  DataColumn(label: Text(S.of(context).mm), numeric: true),
+                  DataColumn(label: Text(S.of(context).total), numeric: true),
+                ],
+                columnSpacing: 16,
+                showCheckboxColumn: false,
+                availableRowsPerPage: [5, 10, 25, 100],
+                onRowsPerPageChanged: (int? value) {
+                  settings.setRowsPerPage(value ?? 25);
+                },
+                showFirstLastButtons: true,
+                rowsPerPage: settings.rowsPerPage,
+                source: PnLDataSource(context))));
   }
 }
 
@@ -940,55 +989,4 @@ class PnLDataSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
-}
-
-class ContactsWidget extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => ContactsState();
-}
-
-class ContactsState extends State<ContactsWidget>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true; //Set to true
-
-  @override
-  Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      final _ = accountManager.dataEpoch;
-      final theme = Theme.of(context);
-      return Padding(
-          padding: EdgeInsets.all(12),
-          child: Column(children: [
-            Text(S.of(context).toMakeAContactSendThemAMemoWithContact,
-                style: Theme.of(context).textTheme.caption),
-            Expanded(
-                child: GroupedListView<Contact, String>(
-              elements: accountManager.contacts,
-              groupBy: (e) => e.name.isEmpty ? "" : e.name[0],
-              itemBuilder: (context, c) => ListTile(
-                  title: Text(c.name),
-                  subtitle: Text(c.address),
-                  trailing: accountManager.canPay
-                      ? IconButton(
-                          icon: Icon(Icons.chevron_right),
-                          onPressed: () {
-                            _onContact(c);
-                          })
-                      : null),
-              groupSeparatorBuilder: (String h) =>
-                  Text(h, style: theme.textTheme.headline5),
-            )),
-          ]));
-    });
-  }
-
-  _onContact(Contact contact) {
-    Navigator.of(context).pushNamed('/send', arguments: contact);
-  }
-}
-
-Future<void> sync(bool getTx, int anchorOffset, SendPort port) async {
-  final params = SyncParams(getTx, anchorOffset, port);
-  await compute(WarpApi.warpSync, params);
 }

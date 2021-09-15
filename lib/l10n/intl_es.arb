@@ -113,5 +113,22 @@
   "M3": "3 M",
   "M6": "6 M",
   "Y1": "1 A",
-  "useUa": "Use UA"
+  "useUa": "Use UA",
+  "createANewAccount": "Create a new account and it will show up here",
+  "duplicateAccount": "Duplicate Account",
+  "thisAccountAlreadyExists": "This account already exists.",
+  "selectAccount": "Select Account",
+  "nameIsEmpty": "Name is empty",
+  "deleteContact": "Delete contact",
+  "areYouSureYouWantToDeleteThisContact": "Are you sure you want to delete this contact?",
+  "saveToBlockchain": "Save to Blockchain",
+  "areYouSureYouWantToSaveYourContactsIt": "Are you sure you want to save your contacts? It will cost 0.01 mZEC",
+  "backupWarning": "No one can recover your secret keys. If you don't have a backup, you WILL LOSE YOUR MONEY if your phone breaks down. You can reach this page by the app menu then Backup",
+  "contactName": "Contact Name",
+  "date": "Date",
+  "autoHideBalance": "Auto Hide Balance",
+  "tiltYourDeviceUpToRevealYourBalance": "Tilt your device up to reveal your balance",
+  "noContacts": "No Contacts",
+  "createANewContactAndItWillShowUpHere": "Create a new contact and it will show up here",
+  "addContact": "Add Contact"
 }

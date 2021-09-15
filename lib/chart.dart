@@ -58,9 +58,12 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
     }
 
     List<Color> gradientColors = [
-      theme.accentColor,
-      theme.primaryColor,
+      theme.colorScheme.secondary,
+      theme.colorScheme.primary,
     ];
+
+    final textStyle = theme.textTheme.bodyText1!;
+    final bgColor = theme.backgroundColor;
 
     return LineChartData(
       gridData: FlGridData(
@@ -68,22 +71,24 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
         drawVerticalLine: true,
         getDrawingHorizontalLine: (value) {
           return FlLine(
-            color: theme.accentColor.withOpacity(0.2),
+            color: theme.colorScheme.secondary.withOpacity(0.2),
             strokeWidth: 1,
           );
         },
         getDrawingVerticalLine: (value) {
           return FlLine(
-            color: theme.accentColor.withOpacity(0.2),
+            color: theme.colorScheme.secondary.withOpacity(0.2),
             strokeWidth: 1,
           );
         },
       ),
       titlesData: FlTitlesData(
+        rightTitles: SideTitles(showTitles: false),
+        topTitles: SideTitles(showTitles: false),
         bottomTitles: SideTitles(
           showTitles: true,
           reservedSize: 22,
-          getTextStyles: (value) => TextStyle(
+          getTextStyles: (context, value) => TextStyle(
               color: theme.primaryColor,
               fontWeight: FontWeight.bold,
               fontSize: 12),
@@ -95,7 +100,7 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
         ),
         leftTitles: SideTitles(
           showTitles: true,
-          getTextStyles: (value) => TextStyle(
+          getTextStyles: (context, value) => TextStyle(
             color: theme.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 14,
@@ -131,65 +136,21 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
           ),
         ),
       ],
+      lineTouchData: LineTouchData(
+        touchTooltipData: LineTouchTooltipData(
+          tooltipBgColor: bgColor,
+          getTooltipItems: (touchedSpots) =>
+              touchedSpots.map((LineBarSpot spot) {
+                final x = spot.x;
+                final dt = DateTime.fromMillisecondsSinceEpoch(x.toInt() * DAY_MS);
+                final xdt = DateFormat.Md().format(dt);
+                final y = spot.y.toStringAsFixed(3);
+                return LineTooltipItem("$xdt - $y",
+                    textStyle);
+              }).toList()
+        )
+      )
     );
   }
 }
 
-class PieChartSpending extends StatefulWidget {
-  final List<Spending> spendings;
-
-  PieChartSpending(this.spendings);
-  
-  @override
-  State<PieChartSpending> createState() => PieChartSpendingState();
-}
-
-class PieChartSpendingState extends State<PieChartSpending> {
-  int touchedIndex = -1;
-
-  @override
-  Widget build(BuildContext context) {
-    return PieChart(
-      PieChartData(
-          pieTouchData: PieTouchData(touchCallback: (pieTouchResponse) {
-            setState(() {
-              final desiredTouch =
-                  pieTouchResponse.touchInput is! PointerExitEvent &&
-                      pieTouchResponse.touchInput is! PointerUpEvent;
-              if (desiredTouch && pieTouchResponse.touchedSection != null) {
-                touchedIndex =
-                    pieTouchResponse.touchedSection.touchedSectionIndex;
-              } else {
-                touchedIndex = -1;
-              }
-            });
-          }),
-          borderData: FlBorderData(
-            show: false,
-          ),
-          sectionsSpace: 0,
-          centerSpaceRadius: 40,
-          sections: showingSections()),
-    );
-  }
-
-  List<PieChartSectionData> showingSections() {
-    final palette = ColorPalette.adjacent(Theme.of(context).primaryColor, numberOfColors: max(widget.spendings.length, 1));
-    return widget.spendings.asMap().entries.map((e) {
-      final i = e.key;
-      final spending = e.value;
-      final isTouched = i == touchedIndex;
-      final fontSize = isTouched ? 25.0 : 16.0;
-      final radius = isTouched ? 60.0 : 50.0;
-      return PieChartSectionData(
-        color: palette[i],
-        value: spending.amount,
-        title: isTouched ? "${spending.amount}" : spending.address,
-        radius: radius,
-        titleStyle: TextStyle(
-            fontSize: fontSize,
-            fontWeight: FontWeight.bold),
-      );
-    }).toList();
-  }
-}

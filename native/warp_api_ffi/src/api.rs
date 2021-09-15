@@ -5,7 +5,7 @@ use log::{error, info, Level};
 use once_cell::sync::OnceCell;
 use std::fs::File;
 use std::io::{Read, Write};
-use std::sync::Mutex;
+use std::sync::{Mutex, MutexGuard};
 use sync::{broadcast_tx, ChainError, MemPool, Wallet};
 use tokio::runtime::Runtime;
 use zcash_primitives::transaction::builder::Progress;
@@ -13,6 +13,17 @@ use zcash_primitives::transaction::builder::Progress;
 static WALLET: OnceCell<Mutex<Wallet>> = OnceCell::new();
 static MEMPOOL: OnceCell<Mutex<MemPool>> = OnceCell::new();
 static SYNCLOCK: OnceCell<Mutex<()>> = OnceCell::new();
+
+fn get_lock<T>(cell: &OnceCell<Mutex<T>>) -> anyhow::Result<MutexGuard<T>> {
+    cell.get()
+        .unwrap()
+        .lock()
+        .map_err(|_| anyhow::anyhow!("Could not acquire lock"))
+}
+
+fn get_runtime() -> Runtime {
+    Runtime::new().unwrap()
+}
 
 fn log_result<T: Default>(result: anyhow::Result<T>) -> T {
     match result {
@@ -50,9 +61,12 @@ pub fn init_wallet(db_path: &str, ld_url: &str) {
     SYNCLOCK.get_or_init(|| Mutex::new(()));
 }
 
-pub fn new_account(name: &str, data: &str) -> u32 {
-    let wallet = WALLET.get().unwrap().lock().unwrap();
-    log_result(wallet.new_account(name, data))
+pub fn new_account(name: &str, data: &str) -> i32 {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.new_account(name, data)
+    };
+    log_result(res())
 }
 
 async fn warp(
@@ -81,7 +95,7 @@ async fn warp(
     )
     .await?;
     info!("Sync finished");
-    let mut mempool = MEMPOOL.get().unwrap().lock().unwrap();
+    let mut mempool = get_lock(&MEMPOOL)?;
     mempool.scan().await?;
     Ok(())
 }
@@ -104,11 +118,11 @@ fn convert_sync_result(result: anyhow::Result<()>) -> i8 {
 }
 
 pub fn warp_sync(get_tx: bool, anchor_offset: u32, port: i64) -> i8 {
-    let r = Runtime::new().unwrap();
+    let r = get_runtime();
     let res = r.block_on(async {
         android_logger::init_once(Config::default().with_min_level(Level::Info));
-        let _sync_lock = SYNCLOCK.get().unwrap().lock().unwrap();
-        let wallet = WALLET.get().unwrap().lock().unwrap();
+        let _sync_lock = get_lock(&SYNCLOCK)?;
+        let wallet = get_lock(&WALLET)?;
         let db_path = wallet.db_path.clone();
         let ld_url = wallet.ld_url.clone();
         drop(wallet);
@@ -119,12 +133,15 @@ pub fn warp_sync(get_tx: bool, anchor_offset: u32, port: i64) -> i8 {
 }
 
 pub fn try_warp_sync(get_tx: bool, anchor_offset: u32) -> i8 {
-    let r = Runtime::new().unwrap();
+    let r = get_runtime();
     let res = r.block_on(async {
         android_logger::init_once(Config::default().with_min_level(Level::Info));
-        let _sync_lock = SYNCLOCK.get().unwrap().try_lock();
+        let _sync_lock = SYNCLOCK
+            .get()
+            .ok_or_else(|| anyhow::anyhow!("Lock not initialized"))?
+            .try_lock();
         if _sync_lock.is_ok() {
-            let wallet = WALLET.get().unwrap().lock().unwrap();
+            let wallet = get_lock(&WALLET)?;
             let db_path = wallet.db_path.clone();
             let ld_url = wallet.ld_url.clone();
             drop(wallet);
@@ -142,17 +159,22 @@ pub fn valid_address(address: &str) -> bool {
 }
 
 pub fn new_address(account: u32) -> String {
-    let wallet = WALLET.get().unwrap().lock().unwrap();
-    wallet.new_diversified_address(account).unwrap()
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.new_diversified_address(account)
+    };
+    log_result(res())
 }
 
 pub fn get_latest_height() -> u32 {
-    let r = Runtime::new().unwrap();
-    r.block_on(async {
+    let r = get_runtime();
+    let res = r.block_on(async {
         android_logger::init_once(Config::default().with_min_level(Level::Info));
-        let wallet = WALLET.get().unwrap().lock().unwrap();
-        log_result(sync::latest_height(&wallet.ld_url).await)
-    })
+        let wallet = get_lock(&WALLET)?;
+        let height = sync::latest_height(&wallet.ld_url).await?;
+        Ok::<_, anyhow::Error>(height)
+    });
+    log_result(res)
 }
 
 fn report_progress(progress: Progress, port: i64) {
@@ -180,9 +202,9 @@ pub fn send_payment(
     shield_transparent_balance: bool,
     port: i64,
 ) -> String {
-    let r = Runtime::new().unwrap();
-    r.block_on(async {
-        let wallet = WALLET.get().unwrap().lock().unwrap();
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let mut wallet = get_lock(&WALLET)?;
         let res = wallet
             .send_payment(
                 account,
@@ -196,15 +218,10 @@ pub fn send_payment(
                     report_progress(progress, port);
                 },
             )
-            .await;
-        match res {
-            Err(err) => {
-                log::error!("{}", err);
-                err.to_string()
-            }
-            Ok(tx_id) => tx_id,
-        }
-    })
+            .await?;
+        Ok(res)
+    });
+    log_result_string(res)
 }
 
 pub fn send_multi_payment(
@@ -213,76 +230,93 @@ pub fn send_multi_payment(
     anchor_offset: u32,
     port: i64,
 ) -> String {
-    let r = Runtime::new().unwrap();
-    r.block_on(async {
-        let wallet = WALLET.get().unwrap().lock().unwrap();
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let mut wallet = get_lock(&WALLET)?;
         let res = wallet
             .send_multi_payment(account, recipients_json, anchor_offset, move |progress| {
                 report_progress(progress, port);
             })
-            .await;
-        log_result_string(res)
-    })
+            .await?;
+        Ok(res)
+    });
+    log_result_string(res)
 }
 
 pub fn skip_to_last_height() {
-    let r = Runtime::new().unwrap();
-    r.block_on(async {
-        let wallet = WALLET.get().unwrap().lock().unwrap();
-        log_result(wallet.skip_to_last_height().await);
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let wallet = get_lock(&WALLET)?;
+        wallet.skip_to_last_height().await
     });
+    log_result(res)
 }
 
 pub fn rewind_to_height(height: u32) {
-    let mut wallet = WALLET.get().unwrap().lock().unwrap();
-    log_result(wallet.rewind_to_height(height))
+    let res = || {
+        let mut wallet = get_lock(&WALLET)?;
+        wallet.rewind_to_height(height)
+    };
+    log_result(res())
 }
 
 pub fn mempool_sync() -> i64 {
-    let r = Runtime::new().unwrap();
-    r.block_on(async {
-        let mut mempool = MEMPOOL.get().unwrap().lock().unwrap();
-        let res = mempool.scan().await;
-        log_result(res)
-    })
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let mut mempool = get_lock(&MEMPOOL)?;
+        mempool.scan().await
+    });
+    log_result(res)
 }
 
 pub fn set_mempool_account(account: u32) {
-    let mut mempool = MEMPOOL.get().unwrap().lock().unwrap();
-    log_result(mempool.set_account(account));
+    let res = || {
+        let mut mempool = get_lock(&MEMPOOL)?;
+        mempool.set_account(account)
+    };
+    log_result(res());
 }
 
 pub fn mempool_reset(height: u32) {
-    let mut mempool = MEMPOOL.get().unwrap().lock().unwrap();
-    log_result(mempool.clear(height));
+    let res = || {
+        let mut mempool = get_lock(&MEMPOOL)?;
+        mempool.clear(height)
+    };
+    log_result(res());
 }
 
 pub fn get_mempool_balance() -> i64 {
-    let mempool = MEMPOOL.get().unwrap().lock().unwrap();
-    mempool.get_unconfirmed_balance()
+    let res = || {
+        let mempool = get_lock(&MEMPOOL)?;
+        Ok(mempool.get_unconfirmed_balance())
+    };
+    log_result(res())
 }
 
 pub fn get_taddr_balance(account: u32) -> u64 {
-    let r = Runtime::new().unwrap();
-    r.block_on(async {
-        let wallet = WALLET.get().unwrap().lock().unwrap();
-        let res = wallet.get_taddr_balance(account).await;
-        log_result(res)
-    })
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let wallet = get_lock(&WALLET)?;
+        wallet.get_taddr_balance(account).await
+    });
+    log_result(res)
 }
 
 pub fn shield_taddr(account: u32) -> String {
-    let r = Runtime::new().unwrap();
-    r.block_on(async {
-        let wallet = WALLET.get().unwrap().lock().unwrap();
-        let res = wallet.shield_taddr(account).await;
-        log_result(res)
-    })
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let wallet = get_lock(&WALLET)?;
+        wallet.shield_taddr(account).await
+    });
+    log_result(res)
 }
 
 pub fn set_lwd_url(url: &str) {
-    let mut wallet = WALLET.get().unwrap().lock().unwrap();
-    log_result(wallet.set_lwd_url(url));
+    let res = || {
+        let mut wallet = get_lock(&WALLET)?;
+        wallet.set_lwd_url(url)
+    };
+    log_result(res())
 }
 
 pub fn prepare_offline_tx(
@@ -294,10 +328,10 @@ pub fn prepare_offline_tx(
     anchor_offset: u32,
     tx_filename: &str,
 ) -> String {
-    let r = Runtime::new().unwrap();
-    r.block_on(async {
-        let wallet = WALLET.get().unwrap().lock().unwrap();
-        let res = wallet
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let wallet = get_lock(&WALLET)?;
+        let tx = wallet
             .prepare_payment(
                 account,
                 to_address,
@@ -306,19 +340,12 @@ pub fn prepare_offline_tx(
                 max_amount_per_note,
                 anchor_offset,
             )
-            .await;
-        match res {
-            Ok(tx) => {
-                let mut file = File::create(tx_filename).unwrap();
-                writeln!(file, "{}", tx).unwrap();
-                "File saved".to_string()
-            }
-            Err(err) => {
-                log::error!("{}", err);
-                format!("{}", err)
-            }
-        }
-    })
+            .await?;
+        let mut file = File::create(tx_filename)?;
+        writeln!(file, "{}", tx)?;
+        Ok("File saved".to_string())
+    });
+    log_result_string(res)
 }
 
 async fn _broadcast(tx_filename: &str, ld_url: &str) -> anyhow::Result<String> {
@@ -330,26 +357,29 @@ async fn _broadcast(tx_filename: &str, ld_url: &str) -> anyhow::Result<String> {
 }
 
 pub fn broadcast(tx_filename: &str) -> String {
-    let r = Runtime::new().unwrap();
-    r.block_on(async {
-        let wallet = WALLET.get().unwrap().lock().unwrap();
-        let res = _broadcast(tx_filename, &wallet.ld_url).await;
-        log_result_string(res)
-    })
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let wallet = get_lock(&WALLET)?;
+        _broadcast(tx_filename, &wallet.ld_url).await
+    });
+    log_result_string(res)
 }
 
 pub fn sync_historical_prices(now: i64, days: u32, currency: &str) -> u32 {
-    let r = Runtime::new().unwrap();
-    r.block_on(async {
-        let mut wallet = WALLET.get().unwrap().lock().unwrap();
-        let res = wallet.sync_historical_prices(now, days, currency).await;
-        log_result(res)
-    })
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let mut wallet = get_lock(&WALLET)?;
+        wallet.sync_historical_prices(now, days, currency).await
+    });
+    log_result(res)
 }
 
 pub fn get_ua(sapling_addr: &str, transparent_addr: &str) -> String {
-    let ua = sync::get_ua(sapling_addr, transparent_addr).unwrap();
-    ua.to_string()
+    let res = || {
+        let ua = sync::get_ua(sapling_addr, transparent_addr)?;
+        Ok(ua.to_string())
+    };
+    log_result(res())
 }
 
 pub fn get_sapling(ua_addr: &str) -> String {
@@ -358,4 +388,40 @@ pub fn get_sapling(ua_addr: &str) -> String {
         Ok(z_addr) => z_addr.to_string(),
         Err(_) => String::new(),
     }
+}
+
+pub fn store_contact(id: u32, name: &str, address: &str, dirty: bool) {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.store_contact(id, name, address, dirty)?;
+        Ok(())
+    };
+    log_result(res())
+}
+
+pub fn commit_unsaved_contacts(account: u32, anchor_offset: u32) -> String {
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let wallet = get_lock(&WALLET)?;
+        wallet.commit_unsaved_contacts(account, anchor_offset).await
+    });
+    log_result_string(res)
+}
+
+pub fn truncate_data() {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.truncate_data()?;
+        Ok(())
+    };
+    log_result(res())
+}
+
+pub fn delete_account(account: u32) {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.delete_account(account)?;
+        Ok(())
+    };
+    log_result(res())
 }

@@ -20,7 +20,7 @@ rustup install stable
 rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 cargo install --force cargo-make
 
-curl -o flutter.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.2.3-stable.tar.xz
+curl -o flutter.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.5.0-stable.tar.xz
 tar xvf flutter.tar.xz
 rm -f flutter.tar.xz
 

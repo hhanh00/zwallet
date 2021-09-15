@@ -113,5 +113,22 @@
   "M3": "3 M",
   "M6": "6 M",
   "Y1": "1 A",
-  "useUa": "Use UA"
+  "useUa": "Utiliser UA",
+  "createANewAccount": "Créez un nouveau compte et il apparaîtra ici",
+  "duplicateAccount": "Compte en double",
+  "thisAccountAlreadyExists": "Ce Compte existe déjà",
+  "selectAccount": "Choisissez un compte",
+  "nameIsEmpty": "Le nom est vide",
+  "deleteContact": "Effacer un contact",
+  "areYouSureYouWantToDeleteThisContact": "Voulez vous effacer ce contact?",
+  "saveToBlockchain": "Sauver les contacts dans la blockchaine",
+  "areYouSureYouWantToSaveYourContactsIt": "Voulez vous sauver vos contacts? Ceci coute 0.01 m{ticker}",
+  "backupWarning": "Vos clés ne sont pas récupérables. Si vous n'avez pas de sauvegarde, vous pouvez PERDREZ VOTRE ARGENT. Cette page est accessible par Menu ... / Sauvegarde",
+  "contactName": "Nom du Contact",
+  "date": "Date",
+  "autoHideBalance": "Cacher le solde automatiquement",
+  "tiltYourDeviceUpToRevealYourBalance": "Redressez votre mobile pour révéler votre solde",
+  "noContacts": "Pas de Contacts",
+  "createANewContactAndItWillShowUpHere": "Créez un nouveau contact et il apparaîtra ici",
+  "addContact": "Ajouter un contact"
 }

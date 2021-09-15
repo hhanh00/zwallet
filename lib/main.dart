@@ -1,12 +1,18 @@
+import 'dart:math';
+import 'dart:ui';
+
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:splashscreen/splashscreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'generated/l10n.dart';
 
 import 'account.dart';
@@ -32,6 +38,8 @@ var priceStore = PriceStore();
 var syncStatus = SyncStatus();
 var settings = Settings();
 var multipayData = MultiPayStore();
+var eta = ETAStore();
+var contacts = ContactStore();
 
 Future<Database> getDatabase() async {
   var databasesPath = await getDatabasesPath();
@@ -45,37 +53,44 @@ void main() {
   final home = ZWalletApp();
   runApp(FutureBuilder(
       future: settings.restore(),
-      builder: (context, state) =>
-      state.hasData
-          ? Observer(
-          builder: (context) =>
-              MaterialApp(
-                title: 'ZWallet',
-                theme: settings.themeData,
-                home: home,
-                scaffoldMessengerKey: rootScaffoldMessengerKey,
-                localizationsDelegates: [
-                  S.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: S.delegate.supportedLocales,
-                onGenerateRoute: (RouteSettings settings) {
-                  var routes = <String, WidgetBuilder>{
-                    '/account': (context) => AccountPage(),
-                    '/restore': (context) => RestorePage(),
-                    '/send': (context) => SendPage(settings.arguments),
-                    '/accounts': (context) => AccountManagerPage(),
-                    '/settings': (context) => SettingsPage(),
-                    '/tx': (context) => TransactionPage(settings.arguments),
-                    '/backup': (context) => BackupPage(),
-                    '/multipay': (context) => MultiPayPage(),
-                  };
-                  return MaterialPageRoute(builder: routes[settings.name]);
-                },
-              ))
-          : Container()));
+      builder: (context, snapshot) {
+        return snapshot.connectionState == ConnectionState.waiting
+            ? MaterialApp(home: Container()) :
+              Observer(builder: (context) {
+                final theme = settings.themeData.copyWith(
+                    dataTableTheme: DataTableThemeData(
+                        headingRowColor: MaterialStateColor.resolveWith(
+                            (_) => settings.themeData.highlightColor)));
+                return MaterialApp(
+                  title: coin.app,
+                  theme: theme,
+                  home: home,
+                  scaffoldMessengerKey: rootScaffoldMessengerKey,
+                  localizationsDelegates: [
+                    S.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: S.delegate.supportedLocales,
+                  onGenerateRoute: (RouteSettings settings) {
+                    var routes = <String, WidgetBuilder>{
+                      '/account': (context) => AccountPage(),
+                      '/restore': (context) => RestorePage(),
+                      '/send': (context) =>
+                          SendPage(settings.arguments as Contact?),
+                      '/accounts': (context) => AccountManagerPage(),
+                      '/settings': (context) => SettingsPage(),
+                      '/tx': (context) =>
+                          TransactionPage(settings.arguments as Tx),
+                      '/backup': (context) => BackupPage(settings.arguments as int?),
+                      '/multipay': (context) => MultiPayPage(),
+                    };
+                    return MaterialPageRoute(builder: routes[settings.name]!);
+                  },
+                );
+              });
+      }));
 }
 
 class ZWalletApp extends StatefulWidget {
@@ -86,69 +101,59 @@ class ZWalletApp extends StatefulWidget {
 class ZWalletAppState extends State<ZWalletApp> {
   bool initialized = false;
 
-  Future<Widget> _init() async {
+  Future<bool> _init() async {
     if (!initialized) {
       initialized = true;
       final dbPath = await getDatabasesPath();
       WarpApi.initWallet(dbPath + "/zec.db", settings.getLWD());
-      await accountManager.init();
+      final db = await getDatabase();
+      await accountManager.init(db);
+      await contacts.init(db);
+
       await syncStatus.init();
     }
-    return Future.value(accountManager.accounts.isNotEmpty
-        ? AccountPage()
-        : AccountManagerPage());
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SplashScreen(
-      navigateAfterFuture: _init(),
-      title: new Text(
-        coin.app,
-        style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-      ),
-      image: new Image.asset('assets/icon.png'),
-      backgroundColor: theme.backgroundColor,
-      photoSize: 50.0,
-      loaderColor: theme.primaryColor,
-    );
+    return FutureBuilder(
+        future: _init(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return Container();
+          return accountManager.accounts.isNotEmpty
+              ? AccountPage()
+              : AccountManagerPage();
+        });
   }
 }
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
-GlobalKey<ScaffoldMessengerState>();
+    GlobalKey<ScaffoldMessengerState>();
 
-List<ElevatedButton> confirmButtons(BuildContext context,
-    VoidCallback onPressed,
-    {String okLabel, Icon okIcon, cancelValue}) {
+List<ElevatedButton> confirmButtons(
+    BuildContext context, VoidCallback? onPressed,
+    {String? okLabel, Icon? okIcon, cancelValue}) {
   final navigator = Navigator.of(context);
   return <ElevatedButton>[
     ElevatedButton.icon(
         icon: Icon(Icons.cancel),
-        label: Text(S
-            .of(context)
-            .cancel),
+        label: Text(S.of(context).cancel),
         onPressed: () {
           cancelValue != null ? navigator.pop(cancelValue) : navigator.pop();
         },
         style: ElevatedButton.styleFrom(
-            primary: Theme
-                .of(context)
-                .buttonTheme
-                .colorScheme
-                .secondary)),
+            primary: Theme.of(context).buttonTheme.colorScheme!.secondary)),
     ElevatedButton.icon(
       icon: okIcon ?? Icon(Icons.done),
-      label: Text(okLabel ?? S
-          .of(context)
-          .ok),
+      label: Text(okLabel ?? S.of(context).ok),
       onPressed: onPressed,
     )
   ];
 }
 
-List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(List<T> timeseries,
+List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(
+    List<T> timeseries,
     int start,
     int end,
     int Function(T) getDay,
@@ -188,9 +193,110 @@ void showQR(BuildContext context, String text) {
       context: context,
       barrierColor: Colors.black,
       builder: (context) => AlertDialog(
-        content: Container(
-            width: double.maxFinite,
-            child: QrImage(data: text, backgroundColor: Colors.white)
-        ),
-      ));
+            content: Container(
+                width: double.maxFinite,
+                child: QrImage(data: text, backgroundColor: Colors.white)),
+          ));
+}
+
+Future<void> rescanDialog(
+    BuildContext context, VoidCallback continuation) async {
+  await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+          title: Text(S.of(context).rescan),
+          content: Text(S.of(context).rescanWalletFromTheFirstBlock),
+          actions: confirmButtons(context, () => confirmWifi(context, continuation))));
+}
+
+Future<void> confirmWifi(BuildContext context, VoidCallback continuation) async {
+  final connectivity = await Connectivity().checkConnectivity();
+  if (connectivity == ConnectivityResult.mobile) {
+    Navigator.of(context).pop();
+    await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+            title: Text(S.of(context).rescan),
+            content: Text('On Mobile Data, scanning may incur additional charges. Do you want to proceed?'),
+            actions: confirmButtons(context, continuation)));
+  }
+  else
+    continuation();
+}
+
+Future<bool> showMessageBox(
+    BuildContext context, String title, String content, String label) async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: confirmButtons(context, () {
+          Navigator.of(context).pop(true);
+        }, okLabel: label, cancelValue: false)),
+  );
+  return confirm ?? false;
+}
+
+double getScreenSize(BuildContext context) {
+  final size = MediaQuery.of(context).size;
+  return min(size.height, size.width);
+}
+
+Color amountColor(BuildContext context, num a) {
+  final theme = Theme.of(context);
+  if (a < 0) return Colors.red;
+  if (a > 0) return Colors.green;
+  return theme.textTheme.bodyText1!.color!;
+}
+
+TextStyle fontWeight(TextStyle style, num v) {
+  final value = v.abs();
+  final style2 = style.copyWith(fontFeatures: [FontFeature.tabularFigures()]);
+  if (value >= 250)
+    return style2.copyWith(fontWeight: FontWeight.w800);
+  else if (value >= 25)
+    return style2.copyWith(fontWeight: FontWeight.w600);
+  else if (value >= 5) return style2.copyWith(fontWeight: FontWeight.w400);
+  return style2.copyWith(fontWeight: FontWeight.w200);
+}
+
+CurrencyTextInputFormatter makeInputFormatter(bool mZEC) =>
+    CurrencyTextInputFormatter(symbol: '', decimalDigits: precision(mZEC));
+
+double parseNumber(String? s) {
+  if (s == null || s.isEmpty) return 0;
+  return NumberFormat.currency().parse(s).toDouble();
+}
+
+int precision(bool mZEC) => mZEC ? 3 : 8;
+
+Future<String?> scanCode(BuildContext context) async {
+  final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S.of(context).cancel, true, ScanMode.QR);
+  if (code == "-1") return null;
+  return code;
+}
+
+String addressLeftTrim(String address) =>
+    address != "" ? address.substring(0, 8) + "..." + address.substring(address.length - 16) : "";
+
+void showSnackBar(String msg) {
+  final snackBar = SnackBar(content: Text(msg));
+  rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+}
+
+enum DeviceWidth {
+  xs, sm, md, lg, xl
+}
+
+DeviceWidth getWidth(BuildContext context) {
+  final width = MediaQuery.of(context).size.width;
+  if (width < 600) return DeviceWidth.xs;
+  if (width < 960) return DeviceWidth.sm;
+  if (width < 1280) return DeviceWidth.md;
+  if (width < 1920) return DeviceWidth.lg;
+  return DeviceWidth.xl;
 }

@@ -42,6 +42,13 @@ class MultiPaymentParams {
   MultiPaymentParams(this.account, this.recipientJson, this.anchorOffset, this.port);
 }
 
+class CommitContactsParams {
+  int account;
+  int anchorOffset;
+
+  CommitContactsParams(this.account, this.anchorOffset);
+}
+
 const DEFAULT_ACCOUNT = 1;
 
 final warp_api_lib = init();
@@ -199,6 +206,22 @@ class WarpApi {
   static updateLWD(String url) {
     warp_api_lib.set_lwd_url(url.toNativeUtf8().cast<Int8>());
   }
+
+  static void storeContact(int id, String name, String address, bool dirty) {
+    warp_api_lib.store_contact(id, name.toNativeUtf8().cast<Int8>(), address.toNativeUtf8().cast<Int8>(), dirty ? 1 : 0);
+  }
+
+  static Future<String> commitUnsavedContacts(int account, int anchorOffset) async {
+    return compute(commitUnsavedContactsIsolateFn, CommitContactsParams(account, anchorOffset));
+  }
+
+  static void truncateData() {
+    warp_api_lib.truncate_data();
+  }
+
+  static void deleteAccount(int account) {
+    warp_api_lib.delete_account(account);
+  }
 }
 
 String sendPaymentIsolateFn(PaymentParams params) {
@@ -244,4 +267,9 @@ int syncHistoricalPricesIsolateFn(String currency) {
   final now = DateTime.now();
   final today = DateTime.utc(now.year, now.month, now.day);
   return warp_api_lib.sync_historical_prices(today.millisecondsSinceEpoch ~/ 1000, 370, currency.toNativeUtf8().cast<Int8>());
+}
+
+String commitUnsavedContactsIsolateFn(CommitContactsParams params) {
+  final txId = warp_api_lib.commit_unsaved_contacts(params.account, params.anchorOffset);
+  return txId.cast<Utf8>().toDartString();
 }

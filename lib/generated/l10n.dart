@@ -10,28 +10,43 @@ import 'intl/messages_all.dart';
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
 // ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
-// ignore_for_file: avoid_redundant_argument_values
+// ignore_for_file: avoid_redundant_argument_values, avoid_escaping_inner_quotes
 
 class S {
   S();
-  
-  static S current;
-  
-  static const AppLocalizationDelegate delegate =
-    AppLocalizationDelegate();
+
+  static S? _current;
+
+  static S get current {
+    assert(_current != null,
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    return _current!;
+  }
+
+  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name); 
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      S.current = S();
-      
-      return S.current;
+      final instance = S();
+      S._current = instance;
+
+      return instance;
     });
-  } 
+  }
 
   static S of(BuildContext context) {
+    final instance = S.maybeOf(context);
+    assert(instance != null,
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    return instance!;
+  }
+
+  static S? maybeOf(BuildContext context) {
     return Localizations.of<S>(context, S);
   }
 
@@ -245,13 +260,13 @@ class S {
     );
   }
 
-  /// `Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 mZEC will be deducted.`
-  String get doYouWantToTransferYourEntireTransparentBalanceTo {
+  /// `Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 m{ticker} will be deducted.`
+  String doYouWantToTransferYourEntireTransparentBalanceTo(Object ticker) {
     return Intl.message(
-      'Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 mZEC will be deducted.',
+      'Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 m$ticker will be deducted.',
       name: 'doYouWantToTransferYourEntireTransparentBalanceTo',
       desc: '',
-      args: [],
+      args: [ticker],
     );
   }
 
@@ -676,7 +691,8 @@ class S {
   }
 
   /// `Sending a total of {amount} {ticker} to {count} recipients`
-  String sendingATotalOfAmountCointickerToCountRecipients(Object amount, Object ticker, Object count) {
+  String sendingATotalOfAmountCointickerToCountRecipients(
+      Object amount, Object ticker, Object count) {
     return Intl.message(
       'Sending a total of $amount $ticker to $count recipients',
       name: 'sendingATotalOfAmountCointickerToCountRecipients',
@@ -785,10 +801,10 @@ class S {
     );
   }
 
-  /// `Key`
+  /// `Seed, Secret Key or View Key`
   String get key {
     return Intl.message(
-      'Key',
+      'Seed, Secret Key or View Key',
       name: 'key',
       desc: '',
       args: [],
@@ -906,7 +922,8 @@ class S {
   }
 
   /// `Sending {aZEC} {ticker} to {address}`
-  String sendingAzecCointickerToAddress(Object aZEC, Object ticker, Object address) {
+  String sendingAzecCointickerToAddress(
+      Object aZEC, Object ticker, Object address) {
     return Intl.message(
       'Sending $aZEC $ticker to $address',
       name: 'sendingAzecCointickerToAddress',
@@ -1174,6 +1191,186 @@ class S {
       args: [],
     );
   }
+
+  /// `Create a new account and it will show up here`
+  String get createANewAccount {
+    return Intl.message(
+      'Create a new account and it will show up here',
+      name: 'createANewAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duplicate Account`
+  String get duplicateAccount {
+    return Intl.message(
+      'Duplicate Account',
+      name: 'duplicateAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Another account has the same address`
+  String get thisAccountAlreadyExists {
+    return Intl.message(
+      'Another account has the same address',
+      name: 'thisAccountAlreadyExists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Account`
+  String get selectAccount {
+    return Intl.message(
+      'Select Account',
+      name: 'selectAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name is empty`
+  String get nameIsEmpty {
+    return Intl.message(
+      'Name is empty',
+      name: 'nameIsEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete contact`
+  String get deleteContact {
+    return Intl.message(
+      'Delete contact',
+      name: 'deleteContact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete this contact?`
+  String get areYouSureYouWantToDeleteThisContact {
+    return Intl.message(
+      'Are you sure you want to delete this contact?',
+      name: 'areYouSureYouWantToDeleteThisContact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save to Blockchain`
+  String get saveToBlockchain {
+    return Intl.message(
+      'Save to Blockchain',
+      name: 'saveToBlockchain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to save your contacts? It will cost 0.01 m{ticker}`
+  String areYouSureYouWantToSaveYourContactsIt(Object ticker) {
+    return Intl.message(
+      'Are you sure you want to save your contacts? It will cost 0.01 m$ticker',
+      name: 'areYouSureYouWantToSaveYourContactsIt',
+      desc: '',
+      args: [ticker],
+    );
+  }
+
+  /// `No one can recover your secret keys. If you don't have a backup and your phone breaks down, you WILL LOSE YOUR MONEY. You can reach this page by the app menu then Backup`
+  String get backupWarning {
+    return Intl.message(
+      'No one can recover your secret keys. If you don\'t have a backup and your phone breaks down, you WILL LOSE YOUR MONEY. You can reach this page by the app menu then Backup',
+      name: 'backupWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact Name`
+  String get contactName {
+    return Intl.message(
+      'Contact Name',
+      name: 'contactName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get date {
+    return Intl.message(
+      'Date',
+      name: 'date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Another contact has this address`
+  String get duplicateContact {
+    return Intl.message(
+      'Another contact has this address',
+      name: 'duplicateContact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto Hide Balance`
+  String get autoHideBalance {
+    return Intl.message(
+      'Auto Hide Balance',
+      name: 'autoHideBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tilt your device up to reveal your balance`
+  String get tiltYourDeviceUpToRevealYourBalance {
+    return Intl.message(
+      'Tilt your device up to reveal your balance',
+      name: 'tiltYourDeviceUpToRevealYourBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Contacts`
+  String get noContacts {
+    return Intl.message(
+      'No Contacts',
+      name: 'noContacts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a new contact and it will show up here`
+  String get createANewContactAndItWillShowUpHere {
+    return Intl.message(
+      'Create a new contact and it will show up here',
+      name: 'createANewContactAndItWillShowUpHere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Contact`
+  String get addContact {
+    return Intl.message(
+      'Add Contact',
+      name: 'addContact',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -1196,11 +1393,9 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   bool shouldReload(AppLocalizationDelegate old) => false;
 
   bool _isSupported(Locale locale) {
-    if (locale != null) {
-      for (var supportedLocale in supportedLocales) {
-        if (supportedLocale.languageCode == locale.languageCode) {
-          return true;
-        }
+    for (var supportedLocale in supportedLocales) {
+      if (supportedLocale.languageCode == locale.languageCode) {
+        return true;
       }
     }
     return false;
