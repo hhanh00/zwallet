@@ -107,8 +107,7 @@ class _AccountPageState extends State<AccountPage>
         _accDispose = null;
         break;
       case AppLifecycleState.resumed:
-        if (_timerSync == null)
-          _setupTimer();
+        if (_timerSync == null) _setupTimer();
         if (_accDispose == null)
           _accDispose = accelerometerEvents.listen(_handleAccel);
         break;
@@ -199,17 +198,19 @@ class _AccountPageState extends State<AccountPage>
                   Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   GestureDetector(
                       onTap: hasTAddr ? _onQRTap : null,
-                      child: RotatedBox(quarterTurns: hide ? 2 : 0,
-                      child: QrImage(
-                          data: address,
-                          size: qrSize,
-                          embeddedImage: AssetImage('assets/icon.png'),
-                          backgroundColor: Colors.white))),
+                      child: RotatedBox(
+                          quarterTurns: hide ? 2 : 0,
+                          child: QrImage(
+                              data: address,
+                              size: qrSize,
+                              embeddedImage: AssetImage('assets/icon.png'),
+                              backgroundColor: Colors.white))),
                   Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                   RichText(
                       text: TextSpan(children: [
                     TextSpan(
-                        text: '$shortAddress ', style: theme.textTheme.bodyText2),
+                        text: '$shortAddress ',
+                        style: theme.textTheme.bodyText2),
                     WidgetSpan(
                         child: GestureDetector(
                             child: Icon(Icons.content_copy),
@@ -248,15 +249,19 @@ class _AccountPageState extends State<AccountPage>
                 final balanceHi = hide ? '-------' : _getBalance_hi(balance);
                 final deviceWidth = getWidth(context);
                 final digits = deviceWidth.index < DeviceWidth.sm.index ? 7 : 9;
-                final balanceStyle = (balanceHi.length > digits ? theme.textTheme.headline4 : theme.textTheme.headline2)!.copyWith(color: theme.colorScheme.primaryVariant);
+                final balanceStyle = (balanceHi.length > digits
+                        ? theme.textTheme.headline4
+                        : theme.textTheme.headline2)!
+                    .copyWith(color: theme.colorScheme.primaryVariant);
                 return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.ideographic,
                     children: <Widget>[
-                      if (!hide) Text('${coin.symbol}', style: theme.textTheme.headline5),
-                      Text(' $balanceHi',
-                          style: balanceStyle),
+                      if (!hide)
+                        Text('${coin.symbol}',
+                            style: theme.textTheme.headline5),
+                      Text(' $balanceHi', style: balanceStyle),
                       if (!hide) Text('${_getBalance_lo(balance)}'),
                     ]);
               }),
@@ -267,14 +272,17 @@ class _AccountPageState extends State<AccountPage>
                     : accountManager.balance;
                 final fx = _fx();
                 final balanceFX = balance * fx / ZECUNIT;
-                return hide ? Text(S.of(context).tiltYourDeviceUpToRevealYourBalance) :  Column(children: [
-                  if (fx != 0.0)
-                    Text("${balanceFX.toStringAsFixed(2)} ${settings.currency}",
-                        style: theme.textTheme.headline6),
-                  if (fx != 0.0)
-                    Text(
-                        "1 ${coin.ticker} = ${fx.toStringAsFixed(2)} ${settings.currency}"),
-                ]);
+                return hide
+                    ? Text(S.of(context).tiltYourDeviceUpToRevealYourBalance)
+                    : Column(children: [
+                        if (fx != 0.0)
+                          Text(
+                              "${balanceFX.toStringAsFixed(2)} ${settings.currency}",
+                              style: theme.textTheme.headline6),
+                        if (fx != 0.0)
+                          Text(
+                              "1 ${coin.ticker} = ${fx.toStringAsFixed(2)} ${settings.currency}"),
+                      ]);
               }),
               Padding(padding: EdgeInsets.symmetric(vertical: 8)),
               Observer(
@@ -328,9 +336,9 @@ class _AccountPageState extends State<AccountPage>
     final address = accountManager.showTAddr
         ? accountManager.taddress
         : (_useSnapAddress
-        ? _uaAddress(_snapAddress, accountManager.taddress, settings.useUA)
-        : _uaAddress(accountManager.active.address, accountManager.taddress,
-        settings.useUA));
+            ? _uaAddress(_snapAddress, accountManager.taddress, settings.useUA)
+            : _uaAddress(accountManager.active.address, accountManager.taddress,
+                settings.useUA));
     return address;
   }
 
@@ -378,7 +386,8 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _unconfirmedStyle() {
-    return TextStyle(color: amountColor(context, accountManager.unconfirmedBalance));
+    return TextStyle(
+        color: amountColor(context, accountManager.unconfirmedBalance));
   }
 
   _getBalance_hi(int b) {
@@ -533,16 +542,16 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _onAddContact() async {
-    final contact =
-        await contactKey.currentState?.showContactForm(context, Contact.empty());
+    final contact = await contactKey.currentState
+        ?.showContactForm(context, Contact.empty());
     if (contact != null) {
       contacts.add(contact);
     }
   }
 
   _handleAccel(AccelerometerEvent event) {
-    final n = sqrt(event.x*event.x + event.y*event.y + event.z*event.z);
-    final inclination = acos(event.z/n) / pi * 180 * event.y.sign;
+    final n = sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
+    final inclination = acos(event.z / n) / pi * 180 * event.y.sign;
     final flat = inclination < 20;
     if (flat != _flat)
       setState(() {
@@ -580,52 +589,39 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
               break;
             default:
           }
-          return NotificationListener<OverscrollNotification>(
-              onNotification: (s) {
-                final os = s.overscroll;
-                if (os < 0) {
-                  widget.tabTo(0);
-                  return true;
-                }
-                if (os > 0) {
-                  widget.tabTo(2);
-                  return true;
-                }
-                return false;
-              },
-              child: PaginatedDataTable(
-                columns: [
-                  DataColumn(
-                      label: settings.showConfirmations
-                          ? Text(S.of(context).confs)
-                          : Text(S.of(context).height),
-                      onSort: (_, __) {
-                        setState(() {
-                          settings.toggleShowConfirmations();
-                        });
-                      }),
-                  DataColumn(label: Text(S.of(context).datetime)),
-                  DataColumn(
-                      label: Text(amountHeader),
-                      numeric: true,
-                      onSort: (_, __) {
-                        setState(() {
-                          accountManager.sortNoteAmount();
-                        });
-                      }),
-                ],
-                header: Text(S.of(context).selectNotesToExcludeFromPayments,
-                    style: Theme.of(context).textTheme.bodyText2),
-                columnSpacing: 16,
-                showCheckboxColumn: false,
-                availableRowsPerPage: [5, 10, 25, 100],
-                onRowsPerPageChanged: (int? value) {
-                  settings.setRowsPerPage(value ?? 25);
-                },
-                showFirstLastButtons: true,
-                rowsPerPage: settings.rowsPerPage,
-                source: NotesDataSource(context, _onRowSelected),
-              ));
+          return PaginatedDataTable(
+            columns: [
+              DataColumn(
+                  label: settings.showConfirmations
+                      ? Text(S.of(context).confs)
+                      : Text(S.of(context).height),
+                  onSort: (_, __) {
+                    setState(() {
+                      settings.toggleShowConfirmations();
+                    });
+                  }),
+              DataColumn(label: Text(S.of(context).datetime)),
+              DataColumn(
+                  label: Text(amountHeader),
+                  numeric: true,
+                  onSort: (_, __) {
+                    setState(() {
+                      accountManager.sortNoteAmount();
+                    });
+                  }),
+            ],
+            header: Text(S.of(context).selectNotesToExcludeFromPayments,
+                style: Theme.of(context).textTheme.bodyText2),
+            columnSpacing: 16,
+            showCheckboxColumn: false,
+            availableRowsPerPage: [5, 10, 25, 100],
+            onRowsPerPageChanged: (int? value) {
+              settings.setRowsPerPage(value ?? 25);
+            },
+            showFirstLastButtons: true,
+            rowsPerPage: settings.rowsPerPage,
+            source: NotesDataSource(context, _onRowSelected),
+          );
         }));
   }
 
@@ -724,49 +720,39 @@ class HistoryState extends State<HistoryWidget>
               break;
             default:
           }
-          return NotificationListener<OverscrollNotification>(
-              onNotification: (s) {
-                if (s.overscroll < 0) {
-                  widget.tabTo(1);
-                  return true;
-                }
-                if (s.overscroll > 0) {
-                  widget.tabTo(3);
-                  return true;
-                }
-                return false;
+          return PaginatedDataTable(
+              columns: [
+                DataColumn(
+                    label: settings.showConfirmations
+                        ? Text(S.of(context).confs)
+                        : Text(S.of(context).height),
+                    onSort: (_, __) {
+                      setState(() {
+                        settings.toggleShowConfirmations();
+                      });
+                    }),
+                DataColumn(label: Text(S.of(context).datetime)),
+                DataColumn(
+                    label: Text(amountHeader),
+                    numeric: true,
+                    onSort: (_, __) {
+                      setState(() {
+                        accountManager.sortTxAmount();
+                      });
+                    }),
+                DataColumn(label: Text(S.of(context).txId)),
+                DataColumn(label: Text(S.of(context).address)),
+                DataColumn(label: Text(S.of(context).memo)),
+              ],
+              columnSpacing: 16,
+              showCheckboxColumn: false,
+              availableRowsPerPage: [5, 10, 25, 100],
+              onRowsPerPageChanged: (int? value) {
+                settings.setRowsPerPage(value ?? 25);
               },
-              child: PaginatedDataTable(
-                  columns: [
-                    DataColumn(
-                        label: settings.showConfirmations
-                            ? Text(S.of(context).confs)
-                            : Text(S.of(context).height),
-                        onSort: (_, __) {
-                          setState(() {
-                            settings.toggleShowConfirmations();
-                          });
-                        }),
-                    DataColumn(label: Text(S.of(context).datetime)),
-                    DataColumn(
-                        label: Text(amountHeader),
-                        numeric: true,
-                        onSort: (_, __) {
-                          setState(() {
-                            accountManager.sortTxAmount();
-                          });
-                        }),
-                    DataColumn(label: Text(S.of(context).txId)),
-                  ],
-                  columnSpacing: 16,
-                  showCheckboxColumn: false,
-                  availableRowsPerPage: [5, 10, 25, 100],
-                  onRowsPerPageChanged: (int? value) {
-                    settings.setRowsPerPage(value ?? 25);
-                  },
-                  showFirstLastButtons: true,
-                  rowsPerPage: settings.rowsPerPage,
-                  source: HistoryDataSource(context)));
+              showFirstLastButtons: true,
+              rowsPerPage: settings.rowsPerPage,
+              source: HistoryDataSource(context));
         }));
   }
 }
@@ -785,14 +771,18 @@ class HistoryDataSource extends DataTableSource {
     final color = amountColor(context, tx.value);
     var style = Theme.of(context).textTheme.bodyText2!.copyWith(color: color);
     style = fontWeight(style, tx.value);
+    final a = tx.contact ?? addressLeftTrim(tx.address);
+    final m = tx.memo.substring(0, min(tx.memo.length, 32));
 
     return DataRow(
         cells: [
           DataCell(Text("$confsOrHeight")),
           DataCell(Text("${tx.timestamp}")),
-          DataCell(Text("${tx.value.toStringAsFixed(8)}", style: style,
-              textAlign: TextAlign.left)),
+          DataCell(Text("${tx.value.toStringAsFixed(8)}",
+              style: style, textAlign: TextAlign.left)),
           DataCell(Text("${tx.txid}")),
+          DataCell(Text("$a")),
+          DataCell(Text("$m")),
         ],
         onSelectChanged: (_) {
           Navigator.of(this.context).pushNamed('/tx', arguments: tx);
@@ -829,7 +819,7 @@ class BudgetState extends State<BudgetWidget>
           return Column(
             children: [
               Card(
-                      child: Column(children: [
+                  child: Column(children: [
                 Text(S.of(context).largestSpendingsByAddress,
                     style: Theme.of(context).textTheme.headline6),
                 Padding(padding: EdgeInsets.symmetric(vertical: 4)),
