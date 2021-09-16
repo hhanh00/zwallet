@@ -313,7 +313,7 @@ abstract class _AccountManager with Store {
   SortOrder noteSortOrder = SortOrder.Unsorted;
 
   @observable
-  SortOrder txSortOrder = SortOrder.Unsorted;
+  TxSortConfig txSortOrder = TxSortConfig("", SortOrder.Unsorted);
 
   @observable
   int pnlSeriesIndex = 0;
@@ -440,13 +440,11 @@ abstract class _AccountManager with Store {
 
   @action
   Future<void> updateBalance() async {
-    if (active == null) return;
     balance = await _getBalance(active.id);
   }
 
   @action
   Future<void> fetchAccountData(bool force) async {
-    if (active == null) return;
     await _fetchData(active.id, force);
   }
 
@@ -551,21 +549,31 @@ abstract class _AccountManager with Store {
   @computed
   List<Tx> get sortedTxs {
     var txs2 = [...txs];
-    return _sortTxAmount(txs2, txSortOrder);
+    switch (txSortOrder.field) {
+      case "amount": return _sortTx(txs2, (Tx tx) => tx.value, txSortOrder.order);
+      case "txid": return _sortTx(txs2, (Tx tx) => tx.txid, txSortOrder.order);
+      case "address": return _sortTx(txs2, (Tx tx) => tx.contact ?? tx.address, txSortOrder.order);
+      case "memo": return _sortTx(txs2, (Tx tx) => tx.memo, txSortOrder.order);
+    }
+    return txs2;
   }
 
   @action
-  Future<void> sortTxAmount() async {
-    txSortOrder = nextSortOrder(txSortOrder);
+  Future<void> sortTx(String field) async {
+    if (field != txSortOrder.field) {
+      txSortOrder = TxSortConfig(field, SortOrder.Ascending);
+    }
+    else
+       txSortOrder = TxSortConfig(field, nextSortOrder(txSortOrder.order));
   }
 
-  List<Tx>  _sortTxAmount(List<Tx> txs, SortOrder order) {
+  List<Tx>  _sortTx<T extends Comparable>(List<Tx> txs, T Function(Tx) project, SortOrder order) {
     switch (order) {
       case SortOrder.Ascending:
-        txs.sort((a, b) => a.value.compareTo(b.value));
+        txs.sort((a, b) => project(a).compareTo(project(b)));
         break;
       case SortOrder.Descending:
-        txs.sort((a, b) => -a.value.compareTo(b.value));
+        txs.sort((a, b) => -project(a).compareTo(project(b)));
         break;
       case SortOrder.Unsorted:
         txs.sort((a, b) => -a.height.compareTo(b.height));
@@ -734,7 +742,6 @@ abstract class _AccountManager with Store {
   }
 
   void updateTBalance() {
-    if (active == null) return;
     int balance = WarpApi.getTBalance(active.id);
     if (balance != tbalance) tbalance = balance;
     if (settings.autoShieldThreshold != 0.0 && tbalance / ZECUNIT >= settings.autoShieldThreshold) {
@@ -1118,3 +1125,14 @@ class TimeRange {
 
   TimeRange(this.start, this.end);
 }
+
+class TxSortConfig {
+  @observable
+  final String field;
+
+  @observable
+  final SortOrder order;
+
+  TxSortConfig(this.field, this.order);
+}
+
