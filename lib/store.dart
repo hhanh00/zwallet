@@ -504,7 +504,7 @@ abstract class _AccountManager with Store {
 
     final List<Map> res2 = await db.rawQuery(
         "SELECT id_tx, txid, height, timestamp, t.address, c.name, value, memo FROM transactions t "
-        "LEFT JOIN contacts c ON t.address = c.address WHERE account = ?1",
+        "LEFT JOIN contacts c ON t.address = c.address WHERE account = ?1 ORDER BY height DESC",
         [accountId]);
     txs = res2.map((row) {
       Uint8List txid = row['txid'];

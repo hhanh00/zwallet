@@ -132,7 +132,7 @@ class SendState extends State<SendPage> {
                         controller: _fiatAmountController,
                         keyboardType: TextInputType.number,
                         inputFormatters: [makeInputFormatter(_mZEC)],
-                        validator: _checkAmount,
+                        validator: (v) => _checkAmount(v, allowZero: true),
                         onTap: () => setState(() { _inputInZEC = false; }),
                         onChanged: (_) {
                           _updateAmount();
@@ -207,11 +207,12 @@ class SendState extends State<SendPage> {
     return null;
   }
 
-  String? _checkAmount(String? vs) {
+  String? _checkAmount(String? vs, { bool allowZero: false }) {
     if (vs == null) return S.of(context).amountMustBeANumber;
     final v = parseNumber(vs);
     if (v == null) return S.of(context).amountMustBeANumber;
-    if (v <= 0.0) return S.of(context).amountMustBePositive;
+    if (v < 0.0) return S.of(context).amountMustBePositive;
+    if (v == 0.0 && !allowZero) return S.of(context).amountMustBePositive;
     if (amountInZAT(Decimal.parse(v.toString())) > _balance)
       return S.of(context).notEnoughBalance;
     return null;
@@ -220,7 +221,6 @@ class SendState extends State<SendPage> {
   String? _checkMaxAmountPerNote(String? vs) {
     if (vs == null) return S.of(context).amountMustBeANumber;
     final v = parseNumber(vs);
-    if (v == null) return S.of(context).amountMustBeANumber;
     if (v < 0.0) return S.of(context).amountMustBePositive;
     return null;
   }
