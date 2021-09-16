@@ -162,6 +162,7 @@ class ContactState extends State<ContactForm> {
       state.save();
       final contact = Contact(widget.contact.id, nameController.text, address);
       Navigator.of(context).pop(contact);
+      accountManager.fetchAccountData(true);
     }
   }
 

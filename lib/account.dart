@@ -243,17 +243,19 @@ class _AccountPageState extends State<AccountPage>
                 ]);
               }),
               Observer(builder: (context) {
-                final balance = accountManager.showTAddr
+                final showTAddr = accountManager.showTAddr;
+                final balance = showTAddr
                     ? accountManager.tbalance
                     : accountManager.balance;
                 final hide = settings.autoHide && _flat;
+                final balanceColor = !showTAddr ? theme.colorScheme.primaryVariant : theme.colorScheme.secondaryVariant;
                 final balanceHi = hide ? '-------' : _getBalance_hi(balance);
                 final deviceWidth = getWidth(context);
                 final digits = deviceWidth.index < DeviceWidth.sm.index ? 7 : 9;
                 final balanceStyle = (balanceHi.length > digits
                         ? theme.textTheme.headline4
                         : theme.textTheme.headline2)!
-                    .copyWith(color: theme.colorScheme.primaryVariant);
+                    .copyWith(color: balanceColor);
                 return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.baseline,
