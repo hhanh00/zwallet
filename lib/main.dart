@@ -256,11 +256,11 @@ Color amountColor(BuildContext context, num a) {
 TextStyle fontWeight(TextStyle style, num v) {
   final value = v.abs();
   final style2 = style.copyWith(fontFeatures: [FontFeature.tabularFigures()]);
-  if (value >= 250)
+  if (value >= coin.weights[2])
     return style2.copyWith(fontWeight: FontWeight.w800);
-  else if (value >= 25)
+  else if (value >= coin.weights[1])
     return style2.copyWith(fontWeight: FontWeight.w600);
-  else if (value >= 5) return style2.copyWith(fontWeight: FontWeight.w400);
+  else if (value >= coin.weights[0]) return style2.copyWith(fontWeight: FontWeight.w400);
   return style2.copyWith(fontWeight: FontWeight.w200);
 }
 
