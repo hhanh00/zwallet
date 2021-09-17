@@ -1371,6 +1371,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Account has some BALANCE. Are you sure you want to delete it?`
+  String get accountHasSomeBalanceAreYouSureYouWantTo {
+    return Intl.message(
+      'Account has some BALANCE. Are you sure you want to delete it?',
+      name: 'accountHasSomeBalanceAreYouSureYouWantTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Account`
+  String get deleteAccount {
+    return Intl.message(
+      'Delete Account',
+      name: 'deleteAccount',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -753,6 +753,16 @@ abstract class _AccountManager with Store {
   void setPnlSeriesIndex(int index) {
     pnlSeriesIndex = index;
   }
+
+  Future<Map<int, int>> getAllTBalances() async {
+    final Map<int, int> balances = {};
+    for (var a in accounts) {
+      final b = await WarpApi.getTBalanceAsync(a.id);
+      balances[a.id] = b;
+    }
+
+    return balances;
+  }
 }
 
 class Account {

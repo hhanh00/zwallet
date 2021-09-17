@@ -174,6 +174,11 @@ class WarpApi {
     return balance;
   }
 
+  static Future<int> getTBalanceAsync(int account) async {
+    final balance = await compute(getTBalanceIsolateFn, account);
+    return balance;
+  }
+
   static Future<String> shieldTAddr(int account) async {
     final txId = compute(shieldTAddrIsolateFn, account);
     return txId;
@@ -272,4 +277,8 @@ int syncHistoricalPricesIsolateFn(String currency) {
 String commitUnsavedContactsIsolateFn(CommitContactsParams params) {
   final txId = warp_api_lib.commit_unsaved_contacts(params.account, params.anchorOffset);
   return txId.cast<Utf8>().toDartString();
+}
+
+int getTBalanceIsolateFn(int account) {
+  return warp_api_lib.get_taddr_balance(account);
 }

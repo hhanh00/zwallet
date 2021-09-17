@@ -43,6 +43,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "about": MessageLookupByLibrary.simpleMessage("關於"),
         "account": MessageLookupByLibrary.simpleMessage("帳戶"),
         "accountBalanceHistory": MessageLookupByLibrary.simpleMessage("帳戶結餘記錄"),
+        "accountHasSomeBalanceAreYouSureYouWantTo":
+            MessageLookupByLibrary.simpleMessage(
+                "Account has some BALANCE. Are you sure you want to delete it?"),
         "accountName": MessageLookupByLibrary.simpleMessage("帳戶名稱"),
         "accountNameIsRequired":
             MessageLookupByLibrary.simpleMessage("請輸入帳戶名稱"),
@@ -95,6 +98,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "datetime": MessageLookupByLibrary.simpleMessage("日期/時間"),
         "delete": MessageLookupByLibrary.simpleMessage("刪除"),
+        "deleteAccount": MessageLookupByLibrary.simpleMessage("Delete Account"),
         "deleteContact": MessageLookupByLibrary.simpleMessage("Delete contact"),
         "doYouWantToDeleteTheSecretKeyAndConvert":
             MessageLookupByLibrary.simpleMessage(

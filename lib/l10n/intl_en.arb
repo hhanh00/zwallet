@@ -130,5 +130,7 @@
   "tiltYourDeviceUpToRevealYourBalance": "Tilt your device up to reveal your balance",
   "noContacts": "No Contacts",
   "createANewContactAndItWillShowUpHere": "Create a new contact and it will show up here",
-  "addContact": "Add Contact"
+  "addContact": "Add Contact",
+  "accountHasSomeBalanceAreYouSureYouWantTo": "Account has some BALANCE. Are you sure you want to delete it?",
+  "deleteAccount": "Delete Account"
 }

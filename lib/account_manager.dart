@@ -14,11 +14,18 @@ class AccountManagerPage extends StatefulWidget {
 
 class AccountManagerState extends State<AccountManagerPage> {
   var _accountNameController = TextEditingController();
+  var _tbalances = Map<int, int>();
 
   @override
   initState() {
     super.initState();
-    Future.microtask(accountManager.refresh);
+    Future.microtask(() async {
+      await accountManager.refresh();
+      final tbalances = await accountManager.getAllTBalances();
+      setState(() {
+        _tbalances = tbalances;
+      });
+    });
     showAboutOnce(this.context);
   }
 
@@ -43,13 +50,17 @@ class AccountManagerState extends State<AccountManagerPage> {
                           itemCount: accountManager.accounts.length,
                           itemBuilder: (BuildContext context, int index) {
                           final a = accountManager.accounts[index];
+                          final zbal = a.balance / ZECUNIT;
+                          final tbal = (_tbalances[a.id] ?? 0) / ZECUNIT;
+                          final balance = zbal + tbal;
                           return Card(
                               child: Dismissible(
                             key: Key(a.name),
                             child: ListTile(
                               title: Text(a.name,
                                   style: Theme.of(context).textTheme.headline5),
-                              trailing: Text("${a.balance / ZECUNIT}"),
+                              subtitle: Text("${zbal.toStringAsFixed(3)} + ${_tbalances[a.id] != null ? tbal.toStringAsFixed(3) : '?'}"),
+                              trailing: Text("${balance.toStringAsFixed(3)}"),
                               onTap: () {
                                 _selectAccount(a);
                               },
@@ -57,9 +68,9 @@ class AccountManagerState extends State<AccountManagerPage> {
                                 _editAccount(a);
                               },
                             ),
-                            confirmDismiss: _onAccountDelete,
-                            onDismissed: (direction) =>
-                                _onDismissed(index, a.id),
+                            confirmDismiss: (d) => _onAccountDelete(a),
+                            onDismissed: (d) =>
+                                _onDismissed(index, a),
                           ));
                         }),
                 ),
@@ -67,23 +78,41 @@ class AccountManagerState extends State<AccountManagerPage> {
             onPressed: _onRestore, child: Icon(Icons.add)));
   }
 
-  Future<bool> _onAccountDelete(DismissDirection _direction) async {
+  Future<bool> _onAccountDelete(Account account) async {
     if (accountManager.accounts.length == 1) return false;
-    final confirm = await showDialog<bool>(
+    final confirm1 = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-          title: Text(S.of(context).seed),
+          title: Text(S.of(context).deleteAccount),
           content: Text(S.of(context).confirmDeleteAccount),
           actions: confirmButtons(context, () {
             Navigator.of(context).pop(true);
           }, okLabel: S.of(context).delete, cancelValue: false)),
     );
-    return confirm ?? false;
+    final confirm2 = confirm1 ?? false;
+    if (!confirm2) return false;
+
+    final zbal = account.balance;
+    final tbal = _tbalances[account.id] ?? 0;
+    if (zbal + tbal > 0) {
+      final confirm3 = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+            title: Text(S.of(context).deleteAccount),
+            content: Text(S.of(context).accountHasSomeBalanceAreYouSureYouWantTo),
+            actions: confirmButtons(context, () {
+              Navigator.of(context).pop(true);
+            }, okLabel: S.of(context).delete, cancelValue: false)),
+      );
+      return confirm3 ?? false;
+    }
+    return true;
   }
 
-  void _onDismissed(int index, int account) async {
-    await accountManager.delete(account);
+  void _onDismissed(int index, Account account) async {
+    await accountManager.delete(account.id);
     accountManager.refresh();
   }
 

@@ -49,6 +49,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "account": MessageLookupByLibrary.simpleMessage("Compte"),
         "accountBalanceHistory": MessageLookupByLibrary.simpleMessage(
             "Historique du solde du compte"),
+        "accountHasSomeBalanceAreYouSureYouWantTo":
+            MessageLookupByLibrary.simpleMessage(
+                "Account has some BALANCE. Are you sure you want to delete it?"),
         "accountName": MessageLookupByLibrary.simpleMessage("Nom du compte"),
         "accountNameIsRequired":
             MessageLookupByLibrary.simpleMessage("Le nom du compte est requis"),
@@ -106,6 +109,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "datetime": MessageLookupByLibrary.simpleMessage("Jour/Heure"),
         "delete": MessageLookupByLibrary.simpleMessage("SUPPRIMER"),
+        "deleteAccount": MessageLookupByLibrary.simpleMessage("Delete Account"),
         "deleteContact":
             MessageLookupByLibrary.simpleMessage("Effacer un contact"),
         "doYouWantToDeleteTheSecretKeyAndConvert":
