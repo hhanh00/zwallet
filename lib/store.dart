@@ -82,7 +82,7 @@ abstract class _Settings with Store {
     anchorOffset = prefs.getInt('anchor_offset') ?? 3;
     getTx = prefs.getBool('get_txinfo') ?? true;
     rowsPerPage = prefs.getInt('rows_per_age') ?? 10;
-    theme = prefs.getString('theme') ?? "zcash";
+    theme = prefs.getString('theme') ?? "gold";
     themeBrightness = prefs.getString('theme_brightness') ?? "dark";
     showConfirmations = prefs.getBool('show_confirmations') ?? false;
     currency = prefs.getString('currency') ?? "USD";
@@ -138,7 +138,7 @@ abstract class _Settings with Store {
   void _updateThemeData() {
     FlexScheme scheme;
     switch (theme) {
-      case 'zcash':
+      case 'gold':
         scheme = FlexScheme.mango;
         break;
       case 'blue':
@@ -147,8 +147,8 @@ abstract class _Settings with Store {
       case 'pink':
         scheme = FlexScheme.sakura;
         break;
-      case 'coffee':
-        scheme = FlexScheme.espresso;
+      case 'purple':
+        scheme = FlexScheme.deepPurple;
         break;
       default:
         scheme = FlexScheme.mango;

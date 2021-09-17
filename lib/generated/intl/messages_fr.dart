@@ -120,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Compte en double"),
         "enterSeed": MessageLookupByLibrary.simpleMessage(
             "Entrez la graine, la clé secrète ou la clé de visualisation. Laissez vide pour un nouveau compte"),
+        "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "height": MessageLookupByLibrary.simpleMessage("Hauteur"),
         "history": MessageLookupByLibrary.simpleMessage("Historique"),
         "includeFeeInAmount": MessageLookupByLibrary.simpleMessage(
@@ -169,6 +170,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "preparingTransaction": MessageLookupByLibrary.simpleMessage(
             "Préparation de la transaction..."),
         "price": MessageLookupByLibrary.simpleMessage("Prix"),
+        "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("Quantité"),
         "realized": MessageLookupByLibrary.simpleMessage("Réalisé"),
         "rescan": MessageLookupByLibrary.simpleMessage("Parcourir à nouveau"),

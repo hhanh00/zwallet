@@ -118,6 +118,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Duplicate Account"),
         "enterSeed": MessageLookupByLibrary.simpleMessage(
             "Ingrese Semilla, Clave Secreta o Clave Lectura. Dejar en blanco para una nueva cuenta "),
+        "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "height": MessageLookupByLibrary.simpleMessage("Altura"),
         "history": MessageLookupByLibrary.simpleMessage("Historia"),
         "includeFeeInAmount": MessageLookupByLibrary.simpleMessage(
@@ -167,6 +168,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "preparingTransaction":
             MessageLookupByLibrary.simpleMessage("Preparando la transacción…"),
         "price": MessageLookupByLibrary.simpleMessage("Precio"),
+        "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("Cantidad"),
         "realized": MessageLookupByLibrary.simpleMessage("Dio Cuenta"),
         "rescan": MessageLookupByLibrary.simpleMessage("Escanear"),

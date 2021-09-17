@@ -120,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Another contact has this address"),
         "enterSeed": MessageLookupByLibrary.simpleMessage(
             "Enter Seed, Secret Key or Viewing Key. Leave blank for a new account"),
+        "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "height": MessageLookupByLibrary.simpleMessage("Height"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
         "includeFeeInAmount":
@@ -169,6 +170,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "preparingTransaction":
             MessageLookupByLibrary.simpleMessage("Preparing transaction..."),
         "price": MessageLookupByLibrary.simpleMessage("Price"),
+        "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("Qty"),
         "realized": MessageLookupByLibrary.simpleMessage("Realized"),
         "rescan": MessageLookupByLibrary.simpleMessage("Rescan"),

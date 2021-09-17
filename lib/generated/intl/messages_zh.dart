@@ -108,6 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Duplicate Account"),
         "enterSeed":
             MessageLookupByLibrary.simpleMessage("輸入種子，秘密鎖匙或查看鎖匙\n留空預備新帳戶"),
+        "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "height": MessageLookupByLibrary.simpleMessage("高度"),
         "history": MessageLookupByLibrary.simpleMessage("過去記錄"),
         "includeFeeInAmount": MessageLookupByLibrary.simpleMessage("將費用加到總數"),
@@ -146,6 +147,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pnl": MessageLookupByLibrary.simpleMessage("獲利與虧損"),
         "preparingTransaction": MessageLookupByLibrary.simpleMessage("準備交易⋯"),
         "price": MessageLookupByLibrary.simpleMessage("價格"),
+        "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("數量"),
         "realized": MessageLookupByLibrary.simpleMessage("已獲利"),
         "rescan": MessageLookupByLibrary.simpleMessage("重新掃描"),

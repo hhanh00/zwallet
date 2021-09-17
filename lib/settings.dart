@@ -62,7 +62,7 @@ class SettingsState extends State<SettingsPage> {
                               onChanged: _onTheme,
                               options: [
                                 FormBuilderFieldOption(
-                                    child: Text('Zcash'), value: 'zcash'),
+                                    child: Text(S.of(context).gold), value: 'gold'),
                                 FormBuilderFieldOption(
                                     child: Text(S.of(context).blue),
                                     value: 'blue'),
@@ -70,8 +70,8 @@ class SettingsState extends State<SettingsPage> {
                                     child: Text(S.of(context).pink),
                                     value: 'pink'),
                                 FormBuilderFieldOption(
-                                    child: Text(S.of(context).coffee),
-                                    value: 'coffee'),
+                                    child: Text(S.of(context).purple),
+                                    value: 'purple'),
                               ]),
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,

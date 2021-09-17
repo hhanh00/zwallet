@@ -128,5 +128,7 @@
   "createANewContactAndItWillShowUpHere": "Create a new contact and it will show up here",
   "addContact": "Add Contact",
   "accountHasSomeBalanceAreYouSureYouWantTo": "Account has some BALANCE. Are you sure you want to delete it?",
-  "deleteAccount": "Delete Account"
+  "deleteAccount": "Delete Account",
+  "gold": "Gold",
+  "purple": "Purple"
 }
