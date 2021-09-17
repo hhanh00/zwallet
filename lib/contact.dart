@@ -215,7 +215,7 @@ class AddressState extends State<AddressInput> {
     final zaddr = WarpApi.getSaplingFromUA(v);
     if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
-    if (contacts.contacts.contains(v)) return S.of(context).duplicateContact;
+    if (contacts.contacts.where((c) => c.address == v).isNotEmpty) return S.of(context).duplicateContact;
     return null;
   }
 
