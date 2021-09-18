@@ -310,10 +310,10 @@ abstract class _AccountManager with Store {
   List<Account> accounts = [];
 
   @observable
-  SortOrder noteSortOrder = SortOrder.Unsorted;
+  SortConfig noteSortConfig = SortConfig("", SortOrder.Unsorted);
 
   @observable
-  TxSortConfig txSortOrder = TxSortConfig("", SortOrder.Unsorted);
+  SortConfig txSortConfig = SortConfig("", SortOrder.Unsorted);
 
   @observable
   int pnlSeriesIndex = 0;
@@ -489,7 +489,7 @@ abstract class _AccountManager with Store {
     final List<Map> res = await db.rawQuery(
         "SELECT n.id_note, n.height, n.value, t.timestamp, n.excluded, n.spent FROM received_notes n, transactions t "
         "WHERE n.account = ?1 AND (n.spent IS NULL OR n.spent = 0) "
-        "AND n.tx = t.id_tx",
+        "AND n.tx = t.id_tx ORDER BY n.height DESC",
         [accountId]);
     notes = res.map((row) {
       final id = row['id_note'];
@@ -523,12 +523,16 @@ abstract class _AccountManager with Store {
   @computed
   List<Note> get sortedNotes {
     var notes2 = [...notes];
-    return _sortNoteAmount(notes2, noteSortOrder);
+    switch (noteSortConfig.field) {
+      case "time": return _sort(notes2, (Note note) => note.height, noteSortConfig.order);
+      case "amount": return _sort(notes2, (Note note) => note.value, noteSortConfig.order);
+    }
+    return notes2;
   }
 
   @action
-  Future<void> sortNoteAmount() async {
-    noteSortOrder = nextSortOrder(noteSortOrder);
+  Future<void> sortNotes(String field) async {
+    noteSortConfig.sortOn(field);
   }
 
   List<Note> _sortNoteAmount(List<Note> notes, SortOrder order) {
@@ -549,25 +553,22 @@ abstract class _AccountManager with Store {
   @computed
   List<Tx> get sortedTxs {
     var txs2 = [...txs];
-    switch (txSortOrder.field) {
-      case "amount": return _sortTx(txs2, (Tx tx) => tx.value, txSortOrder.order);
-      case "txid": return _sortTx(txs2, (Tx tx) => tx.txid, txSortOrder.order);
-      case "address": return _sortTx(txs2, (Tx tx) => tx.contact ?? tx.address, txSortOrder.order);
-      case "memo": return _sortTx(txs2, (Tx tx) => tx.memo, txSortOrder.order);
+    switch (txSortConfig.field) {
+      case "time": return _sort(txs2, (Tx tx) => tx.height, txSortConfig.order);
+      case "amount": return _sort(txs2, (Tx tx) => tx.value, txSortConfig.order);
+      case "txid": return _sort(txs2, (Tx tx) => tx.txid, txSortConfig.order);
+      case "address": return _sort(txs2, (Tx tx) => tx.contact ?? tx.address, txSortConfig.order);
+      case "memo": return _sort(txs2, (Tx tx) => tx.memo, txSortConfig.order);
     }
     return txs2;
   }
 
   @action
   Future<void> sortTx(String field) async {
-    if (field != txSortOrder.field) {
-      txSortOrder = TxSortConfig(field, SortOrder.Ascending);
-    }
-    else
-       txSortOrder = TxSortConfig(field, nextSortOrder(txSortOrder.order));
+    txSortConfig.sortOn(field);
   }
 
-  List<Tx>  _sortTx<T extends Comparable>(List<Tx> txs, T Function(Tx) project, SortOrder order) {
+  List<C>  _sort<C extends HasHeight, T extends Comparable>(List<C> txs, T Function(C) project, SortOrder order) {
     switch (order) {
       case SortOrder.Ascending:
         txs.sort((a, b) => project(a).compareTo(project(b)));
@@ -990,7 +991,11 @@ var progressStream = progressPort.asBroadcastStream();
 var syncPort = ReceivePort();
 var syncStream = syncPort.asBroadcastStream();
 
-class Note {
+abstract class HasHeight {
+  int height = 0;
+}
+
+class Note extends HasHeight {
   int id;
   int height;
   String timestamp;
@@ -1002,7 +1007,7 @@ class Note {
       this.spent);
 }
 
-class Tx {
+class Tx extends HasHeight {
   int id;
   int height;
   String timestamp;
@@ -1136,13 +1141,30 @@ class TimeRange {
   TimeRange(this.start, this.end);
 }
 
-class TxSortConfig {
+class SortConfig {
   @observable
-  final String field;
+  String field;
 
   @observable
-  final SortOrder order;
+  SortOrder order;
 
-  TxSortConfig(this.field, this.order);
+  SortConfig(this.field, this.order);
+
+  @action
+  void sortOn(String field) {
+    if (field != this.field)
+      order = SortOrder.Ascending;
+    else
+      order = nextSortOrder(order);
+    this.field = field;
+  }
+
+  String getIndicator(String field) {
+    if (this.field != field) return '';
+    if (order == SortOrder.Ascending)
+      return ' \u2191';
+    if (order == SortOrder.Descending)
+      return ' \u2193';
+    return '';
+  }
 }
-

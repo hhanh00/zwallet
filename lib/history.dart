@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import 'main.dart';
-import 'store.dart';
 import 'generated/l10n.dart';
 
 class HistoryWidget extends StatefulWidget {
@@ -39,18 +38,28 @@ class HistoryState extends State<HistoryWidget>
                         settings.toggleShowConfirmations();
                       });
                     }),
-                DataColumn(label: Text(S.of(context).datetime)),
                 DataColumn(
-                    label:
-                        Text(S.of(context).amount + _sortIndicator("amount")),
-                    numeric: true,
-                    onSort: (_, __) {
-                      setState(() {
-                        accountManager.sortTx("amount");
-                      });
-                    }),
+                  label: Text(S.of(context).datetime +
+                      accountManager.txSortConfig.getIndicator("time")),
+                  onSort: (_, __) {
+                    setState(() {
+                      accountManager.sortTx("time");
+                    });
+                  },
+                ),
                 DataColumn(
-                  label: Text(S.of(context).txId + _sortIndicator("txid")),
+                  label: Text(S.of(context).amount +
+                      accountManager.txSortConfig.getIndicator("amount")),
+                  numeric: true,
+                  onSort: (_, __) {
+                    setState(() {
+                      accountManager.sortTx("amount");
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: Text(S.of(context).txId +
+                      accountManager.txSortConfig.getIndicator("txid")),
                   onSort: (_, __) {
                     setState(() {
                       accountManager.sortTx("txid");
@@ -58,8 +67,8 @@ class HistoryState extends State<HistoryWidget>
                   },
                 ),
                 DataColumn(
-                  label:
-                      Text(S.of(context).address + _sortIndicator("address")),
+                  label: Text(S.of(context).address +
+                      accountManager.txSortConfig.getIndicator("address")),
                   onSort: (_, __) {
                     setState(() {
                       accountManager.sortTx("address");
@@ -67,7 +76,8 @@ class HistoryState extends State<HistoryWidget>
                   },
                 ),
                 DataColumn(
-                  label: Text(S.of(context).memo + _sortIndicator("memo")),
+                  label: Text(S.of(context).memo +
+                      accountManager.txSortConfig.getIndicator("memo")),
                   onSort: (_, __) {
                     setState(() {
                       accountManager.sortTx("memo");
@@ -85,15 +95,6 @@ class HistoryState extends State<HistoryWidget>
               rowsPerPage: settings.rowsPerPage,
               source: HistoryDataSource(context));
         }));
-  }
-
-  String _sortIndicator(String field) {
-    if (accountManager.txSortOrder.field != field) return '';
-    if (accountManager.txSortOrder.order == SortOrder.Ascending)
-      return ' \u2191';
-    if (accountManager.txSortOrder.order == SortOrder.Descending)
-      return ' \u2193';
-    return '';
   }
 }
 
