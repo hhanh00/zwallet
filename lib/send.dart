@@ -132,7 +132,7 @@ class SendState extends State<SendPage> {
                         controller: _fiatAmountController,
                         keyboardType: TextInputType.number,
                         inputFormatters: [makeInputFormatter(_mZEC)],
-                        validator: (v) => _checkAmount(v, allowZero: true),
+                        validator: (v) => _checkAmount(v, isFiat: true),
                         onTap: () => setState(() { _inputInZEC = false; }),
                         onChanged: (_) {
                           _updateAmount();
@@ -207,13 +207,12 @@ class SendState extends State<SendPage> {
     return null;
   }
 
-  String? _checkAmount(String? vs, { bool allowZero: false }) {
+  String? _checkAmount(String? vs, { bool isFiat: false }) {
     if (vs == null) return S.of(context).amountMustBeANumber;
     final v = parseNumber(vs);
-    if (v == null) return S.of(context).amountMustBeANumber;
     if (v < 0.0) return S.of(context).amountMustBePositive;
-    if (v == 0.0 && !allowZero) return S.of(context).amountMustBePositive;
-    if (amountInZAT(Decimal.parse(v.toString())) > _balance)
+    if (!isFiat && v == 0.0) return S.of(context).amountMustBePositive;
+    if (!isFiat && amountInZAT(Decimal.parse(v.toString())) > _balance)
       return S.of(context).notEnoughBalance;
     return null;
   }

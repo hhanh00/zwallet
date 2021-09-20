@@ -51,6 +51,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("請輸入帳戶名稱"),
         "accounts": MessageLookupByLibrary.simpleMessage("帳戶"),
         "add": MessageLookupByLibrary.simpleMessage("增加"),
+        "addARecipientAndItWillShowHere": MessageLookupByLibrary.simpleMessage(
+            "Add a recipient and it will show here"),
         "addContact": MessageLookupByLibrary.simpleMessage("Add Contact"),
         "address": MessageLookupByLibrary.simpleMessage("地址"),
         "addressCopiedToClipboard":
@@ -131,6 +133,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noAccount": MessageLookupByLibrary.simpleMessage("沒有帳戶"),
         "noAuthenticationMethod": MessageLookupByLibrary.simpleMessage("不用驗證"),
         "noContacts": MessageLookupByLibrary.simpleMessage("No Contacts"),
+        "noRecipient": MessageLookupByLibrary.simpleMessage("No Recipient"),
         "noSpendingInTheLast30Days":
             MessageLookupByLibrary.simpleMessage("過去三十天內沒有任何開支"),
         "notEnoughBalance": MessageLookupByLibrary.simpleMessage("帳戶結餘不足"),

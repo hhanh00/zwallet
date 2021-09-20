@@ -4,6 +4,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp/store.dart';
@@ -23,6 +24,7 @@ class MultiPayState extends State<MultiPayPage> {
     return Scaffold(
       appBar: AppBar(title: Text(S.of(context).multiPay)),
       body: Observer(builder: (context) {
+        if (multipayData.recipients.isEmpty) return NoRecipient();
         final rows = multipayData.recipients.asMap().entries.map((e) {
           final index = e.key;
           final recipient = e.value;
@@ -206,3 +208,21 @@ class PayRecipientState extends State<PayRecipient> {
     return null;
   }
 }
+
+class NoRecipient extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final Widget contact = SvgPicture.asset('assets/multipay.svg',
+        color: Theme.of(context).primaryColor, semanticsLabel: 'Contacts');
+
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      SizedBox(child: contact, height: 150, width: 150),
+      Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+      Text(S.of(context).noRecipient, style: Theme.of(context).textTheme.headline5),
+      Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+      Text(S.of(context).addARecipientAndItWillShowHere,
+          style: Theme.of(context).textTheme.bodyText1),
+    ]);
+  }
+}
+

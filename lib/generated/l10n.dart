@@ -1411,6 +1411,26 @@ class S {
       args: [],
     );
   }
+
+  /// `No Recipient`
+  String get noRecipient {
+    return Intl.message(
+      'No Recipient',
+      name: 'noRecipient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a recipient and it will show here`
+  String get addARecipientAndItWillShowHere {
+    return Intl.message(
+      'Add a recipient and it will show here',
+      name: 'addARecipientAndItWillShowHere',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

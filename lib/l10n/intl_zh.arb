@@ -130,5 +130,7 @@
   "accountHasSomeBalanceAreYouSureYouWantTo": "Account has some BALANCE. Are you sure you want to delete it?",
   "deleteAccount": "Delete Account",
   "gold": "Gold",
-  "purple": "Purple"
+  "purple": "Purple",
+  "noRecipient": "No Recipient",
+  "addARecipientAndItWillShowHere": "Add a recipient and it will show here"
 }

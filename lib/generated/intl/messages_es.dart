@@ -57,6 +57,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Se requiere el nombre de cuenta"),
         "accounts": MessageLookupByLibrary.simpleMessage("Cuentas"),
         "add": MessageLookupByLibrary.simpleMessage("AGREGAR"),
+        "addARecipientAndItWillShowHere": MessageLookupByLibrary.simpleMessage(
+            "Add a recipient and it will show here"),
         "addContact": MessageLookupByLibrary.simpleMessage("Add Contact"),
         "address": MessageLookupByLibrary.simpleMessage("Dirección"),
         "addressCopiedToClipboard": MessageLookupByLibrary.simpleMessage(
@@ -146,6 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noAuthenticationMethod":
             MessageLookupByLibrary.simpleMessage("Sin método de autenticación"),
         "noContacts": MessageLookupByLibrary.simpleMessage("No Contacts"),
+        "noRecipient": MessageLookupByLibrary.simpleMessage("No Recipient"),
         "noSpendingInTheLast30Days":
             MessageLookupByLibrary.simpleMessage("Sin Pagos En 30 Días"),
         "notEnoughBalance":
