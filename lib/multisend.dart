@@ -141,9 +141,11 @@ class PayRecipientState extends State<PayRecipient> {
                     _addressController.text = contact.name;
                   },
                   suggestionsCallback: (String pattern) {
-                    return contacts.contacts.where((c) => c.name.toLowerCase().contains(pattern.toLowerCase()));
+                    return contacts.contacts.where((c) =>
+                        c.name.toLowerCase().contains(pattern.toLowerCase()));
                   },
-                  itemBuilder: (BuildContext context, Contact c) => ListTile(title: Text(c.name)),
+                  itemBuilder: (BuildContext context, Contact c) =>
+                      ListTile(title: Text(c.name)),
                 ),
               ),
               IconButton(
@@ -183,8 +185,10 @@ class PayRecipientState extends State<PayRecipient> {
     if (form.validate()) {
       form.save();
       _amount = Decimal.parse(parseNumber(_currencyController.text).toString());
-      final c = contacts.contacts.where((c) => c.name == _addressController.text);
-      final address = c.isEmpty ? unwrapUA(_addressController.text) : c.first.address;
+      final c =
+          contacts.contacts.where((c) => c.name == _addressController.text);
+      final address =
+          c.isEmpty ? unwrapUA(_addressController.text) : c.first.address;
       final r = Recipient(
           address, (_amount * ZECUNIT_DECIMAL).toInt(), _memoController.text);
       Navigator.of(context).pop(r);
@@ -215,14 +219,15 @@ class NoRecipient extends StatelessWidget {
     final Widget contact = SvgPicture.asset('assets/multipay.svg',
         color: Theme.of(context).primaryColor, semanticsLabel: 'Contacts');
 
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       SizedBox(child: contact, height: 150, width: 150),
       Padding(padding: EdgeInsets.symmetric(vertical: 16)),
-      Text(S.of(context).noRecipient, style: Theme.of(context).textTheme.headline5),
+      Text(S.of(context).noRecipient,
+          style: Theme.of(context).textTheme.headline5),
       Padding(padding: EdgeInsets.symmetric(vertical: 8)),
       Text(S.of(context).addARecipientAndItWillShowHere,
           style: Theme.of(context).textTheme.bodyText1),
-    ]);
+    ]));
   }
 }
-
