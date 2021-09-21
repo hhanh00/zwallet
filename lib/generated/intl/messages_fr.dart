@@ -58,7 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "accounts": MessageLookupByLibrary.simpleMessage("Comptes"),
         "add": MessageLookupByLibrary.simpleMessage("AJOUTER"),
         "addARecipientAndItWillShowHere": MessageLookupByLibrary.simpleMessage(
-            "Add a recipient and it will show here"),
+            "Ajoutez un receveur et il sera ici"),
         "addContact":
             MessageLookupByLibrary.simpleMessage("Ajouter un contact"),
         "address": MessageLookupByLibrary.simpleMessage("adresse"),
@@ -150,7 +150,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noAuthenticationMethod": MessageLookupByLibrary.simpleMessage(
             "Pas de méthode d\'authentification"),
         "noContacts": MessageLookupByLibrary.simpleMessage("Pas de Contacts"),
-        "noRecipient": MessageLookupByLibrary.simpleMessage("No Recipient"),
+        "noRecipient": MessageLookupByLibrary.simpleMessage("Pas de receveur"),
         "noSpendingInTheLast30Days": MessageLookupByLibrary.simpleMessage(
             "Aucune dépense au cours des 30 derniers jours"),
         "notEnoughBalance":
@@ -238,7 +238,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tradingPl": MessageLookupByLibrary.simpleMessage("Profit et Pertes"),
         "transactionDetails":
             MessageLookupByLibrary.simpleMessage("Détails de la transaction"),
-        "txId": MessageLookupByLibrary.simpleMessage("ID de tx :"),
+        "txId": MessageLookupByLibrary.simpleMessage("ID de tx"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Fichier de transaction non signée"),
         "useSettingscurrency": m7,

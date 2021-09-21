@@ -146,6 +146,7 @@ class PayRecipientState extends State<PayRecipient> {
                   },
                   itemBuilder: (BuildContext context, Contact c) =>
                       ListTile(title: Text(c.name)),
+                  noItemsFoundBuilder: (_) => SizedBox(),
                 ),
               ),
               IconButton(

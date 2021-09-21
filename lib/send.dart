@@ -100,6 +100,7 @@ class SendState extends State<SendPage> {
                           return contacts.contacts.where((c) => c.name.toLowerCase().contains(pattern.toLowerCase()));
                         },
                         itemBuilder: (BuildContext context, Contact c) => ListTile(title: Text(c.name)),
+                        noItemsFoundBuilder: (_) => SizedBox(),
                       ),
                     ),
                     IconButton(
@@ -266,9 +267,8 @@ class SendState extends State<SendPage> {
   }
 
   void _onAmount(String? vs) {
-    if (vs == null) return;
-    final vss = vs.replaceAll(',', '');
-    _amount = amountInZAT(Decimal.parse(vss));
+    final v = parseNumber(vs);
+    _amount = amountInZAT(Decimal.parse(v.toString()));
   }
 
   void _onAddress(v) {
@@ -280,8 +280,9 @@ class SendState extends State<SendPage> {
     }
   }
 
-  void _onSavedMaxAmountPerNote(v) {
-    _maxAmountPerNote = Decimal.parse(v);
+  void _onSavedMaxAmountPerNote(vs) {
+    final v = parseNumber(vs);
+    _maxAmountPerNote = Decimal.parse(v.toString());
   }
 
   void _updateAmount() {
