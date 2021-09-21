@@ -144,7 +144,7 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
                 final x = spot.x;
                 final dt = DateTime.fromMillisecondsSinceEpoch(x.toInt() * DAY_MS);
                 final xdt = DateFormat.Md().format(dt);
-                final y = spot.y.toStringAsFixed(3);
+                final y = decimalFormat(spot.y, 3);
                 return LineTooltipItem("$xdt - $y",
                     textStyle);
               }).toList()

@@ -74,7 +74,7 @@ class BudgetTable extends StatelessWidget {
         showSnackBar(S.of(context).addressCopiedToClipboard);
       }, child:
             Text(addressOrContact, style: style))),
-        DataCell(Text(e.value.amount.toStringAsFixed(8), style: style)),
+        DataCell(Text(decimalFormat(e.value.amount, 8), style: style)),
       ]);
     }).toList();
     return DataTable(

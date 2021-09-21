@@ -16,7 +16,7 @@ class SettingsState extends State<SettingsPage> {
   var _anchorController =
       TextEditingController(text: "${settings.anchorOffset}");
   var _thresholdController = TextEditingController(
-      text: "${settings.autoShieldThreshold.toStringAsFixed(3)}");
+      text: decimalFormat(settings.autoShieldThreshold, 3));
   var _currency = settings.currency;
 
   @override

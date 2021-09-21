@@ -300,3 +300,6 @@ DeviceWidth getWidth(BuildContext context) {
   if (width < 1920) return DeviceWidth.lg;
   return DeviceWidth.xl;
 }
+
+String decimalFormat(double x, int decimalDigits, { String symbol = '' }) =>
+    NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol).format(x).trimRight();

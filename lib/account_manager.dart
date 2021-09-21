@@ -59,8 +59,8 @@ class AccountManagerState extends State<AccountManagerPage> {
                             child: ListTile(
                               title: Text(a.name,
                                   style: Theme.of(context).textTheme.headline5),
-                              subtitle: Text("${zbal.toStringAsFixed(3)} + ${_tbalances[a.id] != null ? tbal.toStringAsFixed(3) : '?'}"),
-                              trailing: Text("${balance.toStringAsFixed(3)}"),
+                              subtitle: Text("${decimalFormat(zbal, 3)} + ${_tbalances[a.id] != null ? decimalFormat(tbal, 3) : '?'}"),
+                              trailing: Text(decimalFormat(balance, 3)),
                               onTap: () {
                                 _selectAccount(a);
                               },

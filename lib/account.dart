@@ -281,11 +281,11 @@ class _AccountPageState extends State<AccountPage>
                     : Column(children: [
                         if (fx != 0.0)
                           Text(
-                              "${balanceFX.toStringAsFixed(2)} ${settings.currency}",
+                              "${decimalFormat(balanceFX, 2, symbol: settings.currency)}",
                               style: theme.textTheme.headline6),
                         if (fx != 0.0)
                           Text(
-                              "1 ${coin.ticker} = ${fx.toStringAsFixed(2)} ${settings.currency}"),
+                              "1 ${coin.ticker} = ${decimalFormat(fx, 2, symbol: settings.currency)}"),
                       ]);
               }),
               Padding(padding: EdgeInsets.symmetric(vertical: 8)),
@@ -395,7 +395,7 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _getBalance_hi(int b) {
-    return ((b.abs() ~/ 100000) / 1000.0).toStringAsFixed(3);
+    return decimalFormat((b.abs() ~/ 100000) / 1000.0, 3);
   }
 
   _getBalance_lo(b) {
@@ -728,11 +728,11 @@ class PnLDataSource extends DataTableSource {
     final ts = dateFormat.format(pnl.timestamp);
     return DataRow(cells: [
       DataCell(Text("$ts")),
-      DataCell(Text("${pnl.amount.toStringAsFixed(2)}")),
-      DataCell(Text("${pnl.price.toStringAsFixed(3)}")),
-      DataCell(Text("${pnl.realized.toStringAsFixed(3)}")),
-      DataCell(Text("${pnl.unrealized.toStringAsFixed(3)}")),
-      DataCell(Text("${(pnl.realized + pnl.unrealized).toStringAsFixed(3)}")),
+      DataCell(Text(decimalFormat(pnl.amount, 2))),
+      DataCell(Text(decimalFormat(pnl.price, 3))),
+      DataCell(Text(decimalFormat(pnl.realized, 3))),
+      DataCell(Text(decimalFormat(pnl.unrealized, 3))),
+      DataCell(Text(decimalFormat(pnl.realized + pnl.unrealized, 3))),
     ]);
   }
 

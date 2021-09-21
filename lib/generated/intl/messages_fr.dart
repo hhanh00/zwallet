@@ -155,7 +155,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Aucune dépense au cours des 30 derniers jours"),
         "notEnoughBalance":
             MessageLookupByLibrary.simpleMessage("Solde insuffisant"),
-        "notes": MessageLookupByLibrary.simpleMessage("Bileets"),
+        "notes": MessageLookupByLibrary.simpleMessage("Billets"),
         "numberOfConfirmationsNeededBeforeSpending":
             MessageLookupByLibrary.simpleMessage(
                 "Nombre de confirmations nécessaires avant de dépenser"),

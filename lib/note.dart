@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl/intl.dart';
 
 import 'main.dart';
 import 'store.dart';
@@ -108,7 +109,7 @@ class NotesDataSource extends DataTableSource {
       cells: [
         DataCell(Text("$confsOrHeight", style: style)),
         DataCell(Text("${note.timestamp}", style: style)),
-        DataCell(Text("${note.value.toStringAsFixed(8)}", style: amountStyle)),
+        DataCell(Text(decimalFormat(note.value, 8), style: amountStyle)),
       ],
       onSelectChanged: (selected) => _noteSelected(note, selected),
     );

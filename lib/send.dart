@@ -27,6 +27,7 @@ class SendPage extends StatefulWidget {
 }
 
 class SendState extends State<SendPage> {
+  static final zero = decimalFormat(0, 3);
   final _formKey = GlobalKey<FormState>();
   var _address = "";
   var _amount = 0;
@@ -36,9 +37,9 @@ class SendState extends State<SendPage> {
   final _memoController = TextEditingController();
   var _mZEC = true;
   var _inputInZEC = true;
-  var _zecAmountController = TextEditingController(text: '0.000');
-  var _fiatAmountController = TextEditingController(text: '0.000');
-  final _maxAmountController = TextEditingController(text: '0.000');
+  var _zecAmountController = TextEditingController(text: zero);
+  var _fiatAmountController = TextEditingController(text: zero);
+  final _maxAmountController = TextEditingController(text: zero);
   var _includeFee = false;
   var _isExpanded = false;
   var _shieldTransparent = settings.shieldBalance;
@@ -188,8 +189,7 @@ class SendState extends State<SendPage> {
                             isExpanded: _isExpanded)
                       ]),
                   Padding(padding: EdgeInsets.all(8)),
-                  Text(S.of(context).spendable +
-                      '${_balance / ZECUNIT} ${coin.ticker}'),
+                  Text(S.of(context).spendable + ' ' + decimalFormat(_balance / ZECUNIT, 8, symbol: coin.ticker)),
                   ButtonBar(
                       children: confirmButtons(context, _onSend,
                           okLabel: S.of(context).send,
@@ -302,7 +302,7 @@ class SendState extends State<SendPage> {
     });
   }
 
-  String _formatCurrency(double v) => NumberFormat.currency(decimalDigits: precision(_mZEC), symbol: '').format(v);
+  String _formatCurrency(double v) => decimalFormat(v, precision(_mZEC));
 
   void _onSend() async {
     final form = _formKey.currentState;
@@ -374,7 +374,7 @@ class SendState extends State<SendPage> {
 
   String _trimToPrecision(String v) {
     double vv = parseNumber(v);
-    return vv.toStringAsFixed(precision(_mZEC));
+    return decimalFormat(vv, precision(_mZEC));
   }
 }
 

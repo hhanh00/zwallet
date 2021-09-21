@@ -30,7 +30,7 @@ class TransactionState extends State<TransactionPage> {
           ListTile(
               title: Text(S.of(context).timestamp),
               subtitle: Text('${widget.tx.timestamp}')),
-          ListTile(title: Text(S.of(context).amount), subtitle: SelectableText('${widget.tx.value.toStringAsFixed(8)}')),
+          ListTile(title: Text(S.of(context).amount), subtitle: SelectableText(decimalFormat(widget.tx.value, 8))),
           ListTile(
               title: Text(S.of(context).address), subtitle: SelectableText('${widget.tx.address}')),
           ListTile(
