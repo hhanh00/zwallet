@@ -305,7 +305,7 @@ pub fn get_taddr_balance(account: u32) -> u64 {
 pub fn shield_taddr(account: u32) -> String {
     let r = get_runtime();
     let res = r.block_on(async {
-        let wallet = get_lock(&WALLET)?;
+        let mut wallet = get_lock(&WALLET)?;
         wallet.shield_taddr(account).await
     });
     log_result(res)
@@ -402,7 +402,7 @@ pub fn store_contact(id: u32, name: &str, address: &str, dirty: bool) {
 pub fn commit_unsaved_contacts(account: u32, anchor_offset: u32) -> String {
     let r = get_runtime();
     let res = r.block_on(async {
-        let wallet = get_lock(&WALLET)?;
+        let mut wallet = get_lock(&WALLET)?;
         wallet.commit_unsaved_contacts(account, anchor_offset).await
     });
     log_result_string(res)
