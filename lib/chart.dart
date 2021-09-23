@@ -92,11 +92,11 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
               color: theme.primaryColor,
               fontWeight: FontWeight.bold,
               fontSize: 12),
+          // checkToShowTitle: (min, max, _, interval, v) => v != max,
           getTitles: (v) {
             final dt = DateTime.fromMillisecondsSinceEpoch(v.toInt() * DAY_MS);
             return DateFormat.Md().format(dt);
           },
-          interval: 1.1 * (_maxX - _minX) / 6,
         ),
         leftTitles: SideTitles(
           showTitles: true,
@@ -110,11 +110,10 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
           },
           reservedSize: 40,
           margin: 12,
-          interval: yInterval,
         ),
       ),
       borderData: FlBorderData(
-          show: true, border: Border.all(color: theme.accentColor, width: 1)),
+          show: true, border: Border.all(color: theme.colorScheme.secondary, width: 1)),
       minX: _minX,
       maxX: _maxX,
       minY: _minY,

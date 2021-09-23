@@ -4,17 +4,14 @@ case $COIN in
 ycash)
   export APP_TITLE=YWallet
   export APP_NAME=ywallet
-  export FEATURE=ycash
   ;;
 zcashtest)
   export APP_TITLE=ZWalletTest
   export APP_NAME=zwallettest
-  export FEATURE=zcashtest
   ;;
 zcash)
-  export APP_TITLE=ZWallet
-  export APP_NAME=zwallet
-  export FEATURE=zcash
+  export APP_TITLE=WarpWallet
+  export APP_NAME=warpwallet
   ;;
 esac
 

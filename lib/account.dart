@@ -249,7 +249,9 @@ class _AccountPageState extends State<AccountPage>
                     ? accountManager.tbalance
                     : accountManager.balance;
                 final hide = settings.autoHide && _flat;
-                final balanceColor = !showTAddr ? theme.colorScheme.primaryVariant : theme.colorScheme.secondaryVariant;
+                final balanceColor = !showTAddr
+                    ? theme.colorScheme.primaryVariant
+                    : theme.colorScheme.secondaryVariant;
                 final balanceHi = hide ? '-------' : _getBalance_hi(balance);
                 final deviceWidth = getWidth(context);
                 final digits = deviceWidth.index < DeviceWidth.sm.index ? 7 : 9;
@@ -638,9 +640,12 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
       Observer(builder: (context) {
         final _ = accountManager.pnlSorted;
         return Expanded(
-            child: accountManager.pnlSeriesIndex != 5
-                ? PnLChart(accountManager.pnls, accountManager.pnlSeriesIndex)
-                : PnLTable());
+            child: Padding(
+                padding: EdgeInsets.only(right: 20),
+                child: accountManager.pnlSeriesIndex != 5
+                    ? PnLChart(
+                        accountManager.pnls, accountManager.pnlSeriesIndex)
+                    : PnLTable()));
       })
     ]);
   }
