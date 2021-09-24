@@ -598,8 +598,8 @@ class BudgetState extends State<BudgetWidget>
                 Text(S.of(context).accountBalanceHistory,
                     style: Theme.of(context).textTheme.headline6),
                 Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-                Expanded(
-                    child: LineChartTimeSeries(accountManager.accountBalances))
+                Expanded(child: Padding(padding: EdgeInsets.only(right: 20),
+                    child: LineChartTimeSeries(accountManager.accountBalances)))
               ]))),
             ],
           );
