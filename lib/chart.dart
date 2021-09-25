@@ -92,7 +92,6 @@ class LineChartTimeSeriesState extends State<LineChartTimeSeries> {
               color: theme.primaryColor,
               fontWeight: FontWeight.bold,
               fontSize: 12),
-          // checkToShowTitle: (min, max, _, interval, v) => v != max,
           getTitles: (v) {
             final dt = DateTime.fromMillisecondsSinceEpoch(v.toInt() * DAY_MS);
             return DateFormat.Md().format(dt);

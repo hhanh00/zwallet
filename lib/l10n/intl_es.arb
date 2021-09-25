@@ -136,5 +136,7 @@
   "gold": "Oro",
   "purple": "Morada",
   "noRecipient": "Sin Destinatario",
-  "addARecipientAndItWillShowHere": "Agregar un destinatario y se mostrará aquí"
+  "addARecipientAndItWillShowHere": "Agregar un destinatario y se mostrará aquí",
+  "receivePayment": "Receive a payment",
+  "amountTooHigh": "Amount too high"
 }

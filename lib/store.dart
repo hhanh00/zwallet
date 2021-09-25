@@ -1168,3 +1168,17 @@ class SortConfig {
     return '';
   }
 }
+
+@JsonSerializable()
+class DecodedPaymentURI {
+  String address;
+  int amount;
+  String memo;
+
+  DecodedPaymentURI(this.address, this.amount, this.memo);
+
+  factory DecodedPaymentURI.fromJson(Map<String, dynamic> json) =>
+      _$DecodedPaymentURIFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DecodedPaymentURIToJson(this);
+}

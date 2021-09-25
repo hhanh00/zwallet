@@ -207,8 +207,9 @@ class PayRecipientState extends State<PayRecipient> {
   }
 
   String? _checkAmount(String? vs) {
+    if (vs == null) return S.of(context).amountMustBeANumber;
+    if (checkNumber(vs)) return S.of(context).amountMustBeANumber;
     final v = parseNumber(vs);
-    if (v == null) return S.of(context).amountMustBeANumber;
     if (v <= 0.0) return S.of(context).amountMustBePositive;
     return null;
   }

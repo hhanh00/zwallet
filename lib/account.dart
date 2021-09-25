@@ -13,6 +13,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:warp/payment_uri.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -387,8 +388,9 @@ class _AccountPageState extends State<AccountPage>
     );
   }
 
-  _onReceive() {
-    showQR(context, _address());
+  _onReceive() async {
+    await showDialog(context: context, builder: (context) =>
+        AlertDialog(title: Text(S.of(context).receivePayment), content: PaymentURIPage(_address())));
   }
 
   _unconfirmedStyle() {

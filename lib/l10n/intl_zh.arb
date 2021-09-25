@@ -132,5 +132,7 @@
   "gold": "Gold",
   "purple": "Purple",
   "noRecipient": "No Recipient",
-  "addARecipientAndItWillShowHere": "Add a recipient and it will show here"
+  "addARecipientAndItWillShowHere": "Add a recipient and it will show here",
+  "receivePayment": "Receive a payment",
+  "amountTooHigh": "Amount too high"
 }

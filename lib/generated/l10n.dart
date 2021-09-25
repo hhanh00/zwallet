@@ -1431,6 +1431,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Receive a payment`
+  String get receivePayment {
+    return Intl.message(
+      'Receive a payment',
+      name: 'receivePayment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount too high`
+  String get amountTooHigh {
+    return Intl.message(
+      'Amount too high',
+      name: 'amountTooHigh',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

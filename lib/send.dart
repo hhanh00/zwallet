@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -210,6 +211,7 @@ class SendState extends State<SendPage> {
 
   String? _checkAmount(String? vs, { bool isFiat: false }) {
     if (vs == null) return S.of(context).amountMustBeANumber;
+    if (!checkNumber(vs)) return S.of(context).amountMustBeANumber;
     final v = parseNumber(vs);
     if (v < 0.0) return S.of(context).amountMustBePositive;
     if (!isFiat && v == 0.0) return S.of(context).amountMustBePositive;
@@ -220,6 +222,7 @@ class SendState extends State<SendPage> {
 
   String? _checkMaxAmountPerNote(String? vs) {
     if (vs == null) return S.of(context).amountMustBeANumber;
+    if (!checkNumber(vs)) return S.of(context).amountMustBeANumber;
     final v = parseNumber(vs);
     if (v < 0.0) return S.of(context).amountMustBePositive;
     return null;
@@ -259,11 +262,25 @@ class SendState extends State<SendPage> {
 
   void _onScan() async {
     final code = await scanCode(context);
-    if (code != null)
-      setState(() {
-        _address = code;
-        _addressController.text = _address;
-      });
+    if (code != null) {
+      if (_checkAddress(code) != null) {
+        final json = WarpApi.parsePaymentURI(code);
+        final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
+        setState(() {
+          _address = payment.address;
+          _addressController.text = _address;
+          _memoController.text = payment.memo;
+          _amount = payment.amount;
+          _zecAmountController.text = amountFromZAT(_amount);
+        });
+      }
+      else {
+        setState(() {
+          _address = code;
+          _addressController.text = _address;
+        });
+      }
+    }
   }
 
   void _onAmount(String? vs) {
@@ -368,6 +385,7 @@ class SendState extends State<SendPage> {
   }
 
   int amountInZAT(Decimal v) => (v * ZECUNIT_DECIMAL).toInt();
+  String amountFromZAT(int v) => (Decimal.fromInt(v) / ZECUNIT_DECIMAL).toString();
 
   double _fx() {
     return priceStore.zecPrice;

@@ -64,6 +64,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "amountMustBeANumber":
             MessageLookupByLibrary.simpleMessage("請輸入數字（數量）"),
         "amountMustBePositive": MessageLookupByLibrary.simpleMessage("數量必須為正數"),
+        "amountTooHigh":
+            MessageLookupByLibrary.simpleMessage("Amount too high"),
         "approve": MessageLookupByLibrary.simpleMessage("同意"),
         "areYouSureYouWantToDeleteThisContact":
             MessageLookupByLibrary.simpleMessage(
@@ -153,6 +155,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("數量"),
         "realized": MessageLookupByLibrary.simpleMessage("已獲利"),
+        "receivePayment":
+            MessageLookupByLibrary.simpleMessage("Receive a payment"),
         "rescan": MessageLookupByLibrary.simpleMessage("重新掃描"),
         "rescanRequested": MessageLookupByLibrary.simpleMessage("已經收到重新掃描要求"),
         "rescanWalletFromTheFirstBlock":

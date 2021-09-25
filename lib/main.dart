@@ -9,7 +9,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:warp/payment_uri.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -32,6 +34,7 @@ const ZECUNIT = 100000000.0;
 var ZECUNIT_DECIMAL = Decimal.parse('100000000');
 const mZECUNIT = 100000;
 const DEFAULT_FEE = 1000;
+const MAXMONEY = 21000000;
 
 var accountManager = AccountManager();
 var priceStore = PriceStore();
@@ -100,6 +103,23 @@ class ZWalletApp extends StatefulWidget {
 
 class ZWalletAppState extends State<ZWalletApp> {
   bool initialized = false;
+
+  RateMyApp rateMyApp = RateMyApp(
+    preferencesPrefix: 'rateMyApp_',
+    minDays: 0,
+    minLaunches: 5,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      await rateMyApp.init();
+      if (mounted && rateMyApp.shouldOpenDialog) {
+        rateMyApp.showRateDialog(this.context);
+      }
+    });
+  }
 
   Future<bool> _init() async {
     if (!initialized) {
@@ -270,6 +290,14 @@ CurrencyTextInputFormatter makeInputFormatter(bool mZEC) =>
 double parseNumber(String? s) {
   if (s == null || s.isEmpty) return 0;
   return NumberFormat.currency().parse(s).toDouble();
+}
+
+bool checkNumber(String s) {
+  try {
+    NumberFormat.currency().parse(s);
+  }
+  on FormatException { return false; }
+  return true;
 }
 
 int precision(bool mZEC) => mZEC ? 3 : 8;

@@ -227,6 +227,20 @@ class WarpApi {
   static void deleteAccount(int account) {
     warp_api_lib.delete_account(account);
   }
+
+  static String makePaymentURI(String address, int amount, String memo) {
+    final uri = warp_api_lib.make_payment_uri(
+        address.toNativeUtf8().cast<Int8>(),
+        amount,
+        memo.toNativeUtf8().cast<Int8>());
+    return uri.cast<Utf8>().toDartString();
+  }
+
+  static String parsePaymentURI(String uri) {
+    final json = warp_api_lib.parse_payment_uri(
+        uri.toNativeUtf8().cast<Int8>());
+    return json.cast<Utf8>().toDartString();
+  }
 }
 
 String sendPaymentIsolateFn(PaymentParams params) {

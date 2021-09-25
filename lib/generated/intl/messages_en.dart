@@ -73,6 +73,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Amount must be a number"),
         "amountMustBePositive":
             MessageLookupByLibrary.simpleMessage("Amount must be positive"),
+        "amountTooHigh":
+            MessageLookupByLibrary.simpleMessage("Amount too high"),
         "approve": MessageLookupByLibrary.simpleMessage("APPROVE"),
         "areYouSureYouWantToDeleteThisContact":
             MessageLookupByLibrary.simpleMessage(
@@ -176,6 +178,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("Qty"),
         "realized": MessageLookupByLibrary.simpleMessage("Realized"),
+        "receivePayment":
+            MessageLookupByLibrary.simpleMessage("Receive a payment"),
         "rescan": MessageLookupByLibrary.simpleMessage("Rescan"),
         "rescanRequested":
             MessageLookupByLibrary.simpleMessage("Rescan Requested..."),
