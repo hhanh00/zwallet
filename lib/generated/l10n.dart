@@ -1432,10 +1432,10 @@ class S {
     );
   }
 
-  /// `Receive a payment`
+  /// `Receive Payment`
   String get receivePayment {
     return Intl.message(
-      'Receive a payment',
+      'Receive Payment',
       name: 'receivePayment',
       desc: '',
       args: [],

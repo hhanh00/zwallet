@@ -31,12 +31,13 @@ class PaymentURIState extends State<PaymentURIPage> {
   Widget build(BuildContext context) {
     final qrSize = getScreenSize(context) / 1.5;
 
-    return Container(
-        width: double.maxFinite,
-        child: Form(
-            key: _formKey,
+    return Form(
+        key: _formKey,
+        child: SingleChildScrollView(child: Padding(padding: EdgeInsets.all(8),
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(S.of(context).receivePayment, style: Theme.of(context).textTheme.headline5),
+                  Padding(padding: EdgeInsets.all(8)),
               QrImage(
                   data: qrText, size: qrSize, backgroundColor: Colors.white),
               Padding(padding: EdgeInsets.all(8)),
@@ -62,7 +63,7 @@ class PaymentURIState extends State<PaymentURIPage> {
                   onPressed: _ok,
                 ),
               ]),
-            ])));
+            ]))));
   }
 
   String? _checkAmount(String? vs) {

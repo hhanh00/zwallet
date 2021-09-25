@@ -389,8 +389,11 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _onReceive() async {
-    await showDialog(context: context, builder: (context) =>
-        AlertDialog(title: Text(S.of(context).receivePayment), content: PaymentURIPage(_address())));
+    await showDialog(context: context,
+        barrierColor: Colors.black,
+        barrierDismissible: false,
+        builder: (context) =>
+        Dialog(child: PaymentURIPage(_address())));
   }
 
   _unconfirmedStyle() {

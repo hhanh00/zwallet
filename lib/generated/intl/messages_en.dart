@@ -179,7 +179,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "qty": MessageLookupByLibrary.simpleMessage("Qty"),
         "realized": MessageLookupByLibrary.simpleMessage("Realized"),
         "receivePayment":
-            MessageLookupByLibrary.simpleMessage("Receive a payment"),
+            MessageLookupByLibrary.simpleMessage("Receive Payment"),
         "rescan": MessageLookupByLibrary.simpleMessage("Rescan"),
         "rescanRequested":
             MessageLookupByLibrary.simpleMessage("Rescan Requested..."),
