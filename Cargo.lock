@@ -856,7 +856,7 @@ dependencies = [
 [[package]]
 name = "equihash"
 version = "0.1.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2ede1d5da2b6b2357b139ca599298f08decb3bfd"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -3343,7 +3343,7 @@ dependencies = [
 [[package]]
 name = "zcash_client_backend"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2ede1d5da2b6b2357b139ca599298f08decb3bfd"
 dependencies = [
  "base64",
  "bech32",
@@ -3367,7 +3367,7 @@ dependencies = [
 [[package]]
 name = "zcash_note_encryption"
 version = "0.0.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2ede1d5da2b6b2357b139ca599298f08decb3bfd"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -3414,7 +3414,7 @@ dependencies = [
 [[package]]
 name = "zcash_primitives"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2ede1d5da2b6b2357b139ca599298f08decb3bfd"
 dependencies = [
  "aes",
  "bitvec 0.20.4",
@@ -3444,7 +3444,7 @@ dependencies = [
 [[package]]
 name = "zcash_proofs"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2ede1d5da2b6b2357b139ca599298f08decb3bfd"
 dependencies = [
  "bellman",
  "blake2b_simd",
