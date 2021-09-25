@@ -121,7 +121,10 @@ class PayRecipientState extends State<PayRecipient> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
+    return GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        }, child: Form(
         key: _formKey,
         child: SingleChildScrollView(
           child: Column(children: <Widget>[
@@ -169,7 +172,7 @@ class PayRecipientState extends State<PayRecipient> {
                 children: confirmButtons(context, _onAdd,
                     okLabel: S.of(context).add, okIcon: Icon(MdiIcons.plus)))
           ]),
-        ));
+        )));
   }
 
   void _onScan() async {

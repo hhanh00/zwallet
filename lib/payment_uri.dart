@@ -33,37 +33,47 @@ class PaymentURIState extends State<PaymentURIPage> {
 
     return Form(
         key: _formKey,
-        child: SingleChildScrollView(child: Padding(padding: EdgeInsets.all(8),
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(S.of(context).receivePayment, style: Theme.of(context).textTheme.headline5),
-                  Padding(padding: EdgeInsets.all(8)),
-              QrImage(
-                  data: qrText, size: qrSize, backgroundColor: Colors.white),
-              Padding(padding: EdgeInsets.all(8)),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Amount Requested'),
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-                inputFormatters: [makeInputFormatter(true)],
-                validator: _checkAmount,
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: S.of(context).memo),
-                minLines: 4,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                controller: _memoController,
-              ),
-              Padding(padding: EdgeInsets.all(8)),
-              ButtonBar(children: [
-                ElevatedButton.icon(
-                  icon: Icon(Icons.build),
-                  label: Text('MAKE QR'),
-                  onPressed: _ok,
-                ),
-              ]),
-            ]))));
+        child: SingleChildScrollView(
+            child: GestureDetector(
+                onTap: () { FocusScope.of(context).unfocus(); },
+                child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(S.of(context).receivePayment,
+                              style: Theme.of(context).textTheme.headline5),
+                          Padding(padding: EdgeInsets.all(8)),
+                          QrImage(
+                              data: qrText,
+                              size: qrSize,
+                              backgroundColor: Colors.white),
+                          Padding(padding: EdgeInsets.all(8)),
+                          TextFormField(
+                            decoration:
+                                InputDecoration(labelText: 'Amount Requested'),
+                            controller: _amountController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [makeInputFormatter(true)],
+                            validator: _checkAmount,
+                          ),
+                          TextFormField(
+                            decoration:
+                                InputDecoration(labelText: S.of(context).memo),
+                            minLines: 4,
+                            maxLines: null,
+                            keyboardType: TextInputType.multiline,
+                            controller: _memoController,
+                          ),
+                          Padding(padding: EdgeInsets.all(8)),
+                          ButtonBar(children: [
+                            ElevatedButton.icon(
+                              icon: Icon(Icons.build),
+                              label: Text('MAKE QR'),
+                              onPressed: _ok,
+                            ),
+                          ]),
+                        ])))));
   }
 
   String? _checkAmount(String? vs) {

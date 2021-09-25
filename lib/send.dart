@@ -75,7 +75,7 @@ class SendState extends State<SendPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(S.of(context).sendCointicker(coin.ticker))),
-        body: Form(
+        body: GestureDetector(onTap: () { FocusScope.of(context).unfocus(); }, child: Form(
             key: _formKey,
             child: SingleChildScrollView(
                 padding: EdgeInsets.all(20),
@@ -196,7 +196,7 @@ class SendState extends State<SendPage> {
                       children: confirmButtons(context, _onSend,
                           okLabel: S.of(context).send,
                           okIcon: Icon(MdiIcons.send)))
-                ]))));
+                ])))));
   }
 
   String? _checkAddress(String? v) {
