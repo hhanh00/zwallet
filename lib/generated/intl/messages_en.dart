@@ -167,6 +167,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Open in Explorer"),
         "pink": MessageLookupByLibrary.simpleMessage("Pink"),
         "pl": MessageLookupByLibrary.simpleMessage("P/L"),
+        "pleaseAuthenticateToSend":
+            MessageLookupByLibrary.simpleMessage("Please authenticate to Send"),
         "pleaseAuthenticateToShowAccountSeed":
             MessageLookupByLibrary.simpleMessage(
                 "Please authenticate to show account seed"),
@@ -176,6 +178,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Preparing transaction..."),
         "price": MessageLookupByLibrary.simpleMessage("Price"),
         "protectSend": MessageLookupByLibrary.simpleMessage("Protect Send"),
+        "protectSendSettingChanged": MessageLookupByLibrary.simpleMessage(
+            "Protect Send setting changed"),
         "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("Qty"),
         "realized": MessageLookupByLibrary.simpleMessage("Realized"),

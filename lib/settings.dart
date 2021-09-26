@@ -233,7 +233,7 @@ class SettingsState extends State<SettingsPage> {
     final form = _settingsFormKey.currentState!;
     if (form.validate()) {
       print(_needAuth);
-      if (_needAuth && !await authenticate(context)) return;
+      if (_needAuth && !await authenticate(context, S.of(context).protectSendSettingChanged)) return;
       form.save();
       Navigator.of(context).pop();
     }

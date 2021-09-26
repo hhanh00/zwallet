@@ -1461,6 +1461,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Protect Send setting changed`
+  String get protectSendSettingChanged {
+    return Intl.message(
+      'Protect Send setting changed',
+      name: 'protectSendSettingChanged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please authenticate to Send`
+  String get pleaseAuthenticateToSend {
+    return Intl.message(
+      'Please authenticate to Send',
+      name: 'pleaseAuthenticateToSend',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

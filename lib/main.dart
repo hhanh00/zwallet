@@ -334,11 +334,11 @@ DeviceWidth getWidth(BuildContext context) {
 String decimalFormat(double x, int decimalDigits, { String symbol = '' }) =>
     NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol).format(x).trimRight();
 
-Future<bool> authenticate(BuildContext context) async {
+Future<bool> authenticate(BuildContext context, String reason) async {
   final localAuth = LocalAuthentication();
   try {
     final didAuthenticate = await localAuth.authenticate(
-        localizedReason: S.of(context).pleaseAuthenticateToShowAccountSeed);
+        localizedReason: reason);
     if (didAuthenticate) {
       return true;
     }

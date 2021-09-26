@@ -353,7 +353,7 @@ class SendState extends State<SendPage> {
         final address = unwrapUA(_address);
 
         if (accountManager.canPay) {
-          if (settings.protectSend && !await authenticate(context)) return;
+          if (settings.protectSend && !await authenticate(context, S.of(context).pleaseAuthenticateToSend)) return;
           final tx = await compute(
               sendPayment,
               PaymentParams(

@@ -139,5 +139,7 @@
   "addARecipientAndItWillShowHere": "Ajoutez un receveur et il sera ici",
   "receivePayment": "Recevoir un payment",
   "amountTooHigh": "Amount too high",
-  "protectSend": "Protect Send"
+  "protectSend": "Protect Send",
+  "protectSendSettingChanged": "Protect Send setting changed",
+  "pleaseAuthenticateToSend": "Please authenticate to Send"
 }

@@ -146,6 +146,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "openInExplorer": MessageLookupByLibrary.simpleMessage("用瀏覽器開啟"),
         "pink": MessageLookupByLibrary.simpleMessage("粉紅色"),
         "pl": MessageLookupByLibrary.simpleMessage("獲利/虧損"),
+        "pleaseAuthenticateToSend":
+            MessageLookupByLibrary.simpleMessage("Please authenticate to Send"),
         "pleaseAuthenticateToShowAccountSeed":
             MessageLookupByLibrary.simpleMessage("如要顯示帳戶種子，請驗證"),
         "pleaseConfirm": MessageLookupByLibrary.simpleMessage("請確認"),
@@ -153,6 +155,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "preparingTransaction": MessageLookupByLibrary.simpleMessage("準備交易⋯"),
         "price": MessageLookupByLibrary.simpleMessage("價格"),
         "protectSend": MessageLookupByLibrary.simpleMessage("Protect Send"),
+        "protectSendSettingChanged": MessageLookupByLibrary.simpleMessage(
+            "Protect Send setting changed"),
         "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("數量"),
         "realized": MessageLookupByLibrary.simpleMessage("已獲利"),

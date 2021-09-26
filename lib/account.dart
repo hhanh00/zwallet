@@ -492,7 +492,7 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _backup() async {
-    final didAuthenticate = await authenticate(context);
+    final didAuthenticate = await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
     if (didAuthenticate) {
       Navigator.of(context).pushNamed('/backup');
     }
