@@ -85,7 +85,7 @@
   "useSettingscurrency": "Utiliser {currency}",
   "includeFeeInAmount": "Inclure les frais dans le montant",
   "maxAmountPerNote": "Montant maximum par note",
-  "spendable": "Dépensable:",
+  "spendable": "Dépensable",
   "notEnoughBalance": "Solde insuffisant",
   "approve": "APPROUVER",
   "sendingAzecCointickerToAddress": "Envoi de {aZEC} {ticker} à {address}",
@@ -141,5 +141,6 @@
   "amountTooHigh": "Amount too high",
   "protectSend": "Protect Send",
   "protectSendSettingChanged": "Protect Send setting changed",
-  "pleaseAuthenticateToSend": "Please authenticate to Send"
+  "pleaseAuthenticateToSend": "Please authenticate to Send",
+  "unshielded": "Unshielded"
 }

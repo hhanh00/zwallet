@@ -218,7 +218,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Masquer le solde transparent"),
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Masquage en cours..."),
-        "spendable": MessageLookupByLibrary.simpleMessage("Dépensable:"),
+        "spendable": MessageLookupByLibrary.simpleMessage("Dépensable"),
         "synching":
             MessageLookupByLibrary.simpleMessage("Synchronisation en cours"),
         "table": MessageLookupByLibrary.simpleMessage("Tableau"),
@@ -248,6 +248,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "transactionDetails":
             MessageLookupByLibrary.simpleMessage("Détails de la transaction"),
         "txId": MessageLookupByLibrary.simpleMessage("ID de tx"),
+        "unshielded": MessageLookupByLibrary.simpleMessage("Unshielded"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Fichier de transaction non signée"),
         "useSettingscurrency": m7,

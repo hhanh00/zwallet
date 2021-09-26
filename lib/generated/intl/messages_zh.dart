@@ -214,6 +214,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tradingPl": MessageLookupByLibrary.simpleMessage("交易"),
         "transactionDetails": MessageLookupByLibrary.simpleMessage("交易資料"),
         "txId": MessageLookupByLibrary.simpleMessage("TX ID:"),
+        "unshielded": MessageLookupByLibrary.simpleMessage("Unshielded"),
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("未簽署交易文件"),
         "useSettingscurrency": m7,

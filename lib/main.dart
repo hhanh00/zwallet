@@ -355,3 +355,25 @@ Future<bool> authenticate(BuildContext context, String reason) async {
   }
   return false;
 }
+
+Future<void> shieldTAddr(BuildContext context) async {
+  await showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+        title: Text(S.of(context).shieldTransparentBalance),
+        content: Text(S
+            .of(context)
+            .doYouWantToTransferYourEntireTransparentBalanceTo(coin.ticker)),
+        actions: confirmButtons(context, () async {
+          final s = S.of(context);
+          Navigator.of(context).pop();
+          final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
+          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
+          final txid = await WarpApi.shieldTAddr(accountManager.active.id);
+          final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
+          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+        })),
+  );
+}
+

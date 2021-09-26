@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/warp_api.dart';
@@ -73,158 +72,212 @@ class SendState extends State<SendPage> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Scaffold(
-        appBar: AppBar(title: Text(S.of(context).sendCointicker(coin.ticker))),
-        body: GestureDetector(onTap: () { FocusScope.of(context).unfocus(); }, child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-                padding: EdgeInsets.all(20),
-                child: Column(children: <Widget>[
-                  Row(children: <Widget>[
-                    Expanded(
-                      child: TypeAheadFormField(
-                        textFieldConfiguration: TextFieldConfiguration(
-                          controller: _addressController,
-                          decoration: InputDecoration(
-                              labelText:
-                                  S.of(context).sendCointickerTo(coin.ticker)),
-                          minLines: 4,
-                          maxLines: 10,
-                          keyboardType: TextInputType.multiline,
+        appBar: AppBar(title: Text(s.sendCointicker(coin.ticker))),
+        body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                    padding: EdgeInsets.all(20),
+                    child: Column(children: <Widget>[
+                      Row(children: <Widget>[
+                        Expanded(
+                          child: TypeAheadFormField(
+                            textFieldConfiguration: TextFieldConfiguration(
+                              controller: _addressController,
+                              decoration: InputDecoration(
+                                  labelText: s.sendCointickerTo(coin.ticker)),
+                              minLines: 4,
+                              maxLines: 10,
+                              keyboardType: TextInputType.multiline,
+                            ),
+                            onSaved: _onAddress,
+                            validator: _checkAddress,
+                            onSuggestionSelected: (Contact contact) {
+                              _addressController.text = contact.name;
+                            },
+                            suggestionsCallback: (String pattern) {
+                              return contacts.contacts.where((c) =>
+                                  c.name
+                                      .toLowerCase()
+                                      .contains(pattern.toLowerCase()));
+                            },
+                            itemBuilder: (BuildContext context, Contact c) =>
+                                ListTile(title: Text(c.name)),
+                            noItemsFoundBuilder: (_) => SizedBox(),
+                          ),
                         ),
-                        onSaved: _onAddress,
-                        validator: _checkAddress,
-                        onSuggestionSelected: (Contact contact) {
-                          _addressController.text = contact.name;
-                        },
-                        suggestionsCallback: (String pattern) {
-                          return contacts.contacts.where((c) => c.name.toLowerCase().contains(pattern.toLowerCase()));
-                        },
-                        itemBuilder: (BuildContext context, Contact c) => ListTile(title: Text(c.name)),
-                        noItemsFoundBuilder: (_) => SizedBox(),
-                      ),
-                    ),
-                    IconButton(
-                        icon: new Icon(MdiIcons.qrcodeScan), onPressed: _onScan)
-                  ]),
-                  Row(children: [
-                    Expanded(
-                        child: TextFormField(
-                            style: !_inputInZEC ? TextStyle(fontWeight: FontWeight.w200) : TextStyle(),
-                            decoration:
-                                InputDecoration(labelText: S.of(context).amountInSettingscurrency(coin.ticker)),
-                            controller: _zecAmountController,
+                        IconButton(
+                            icon: new Icon(MdiIcons.qrcodeScan),
+                            onPressed: _onScan)
+                      ]),
+                      Row(children: [
+                        Expanded(
+                            child: TextFormField(
+                              style: !_inputInZEC
+                                  ? TextStyle(fontWeight: FontWeight.w200)
+                                  : TextStyle(),
+                              decoration: InputDecoration(
+                                  labelText: s.amountInSettingscurrency(coin.ticker)),
+                              controller: _zecAmountController,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [makeInputFormatter(_mZEC)],
+                              validator: _checkAmount,
+                              onTap: () =>
+                                  setState(() {
+                                    _inputInZEC = true;
+                                  }),
+                              onChanged: (_) {
+                                _updateFiatAmount();
+                              },
+                              onSaved: _onAmount,
+                            )),
+                        TextButton(
+                            child: Text(s.max), onPressed: _onMax),
+                      ]),
+                      Row(children: [
+                        Expanded(
+                          child: TextFormField(
+                            style: _inputInZEC
+                                ? TextStyle(fontWeight: FontWeight.w200)
+                                : TextStyle(),
+                            decoration: InputDecoration(
+                                labelText: s.amountInSettingscurrency(
+                                    settings.currency)),
+                            controller: _fiatAmountController,
                             keyboardType: TextInputType.number,
                             inputFormatters: [makeInputFormatter(_mZEC)],
-                            validator: _checkAmount,
-                            onTap: () => setState(() { _inputInZEC = true; }),
+                            validator: (v) => _checkAmount(v, isFiat: true),
+                            onTap: () =>
+                                setState(() {
+                                  _inputInZEC = false;
+                                }),
                             onChanged: (_) {
-                              _updateFiatAmount();
+                              _updateAmount();
                             },
-                            onSaved: _onAmount,
-                        )),
-                    TextButton(
-                        child: Text(S.of(context).max), onPressed: _onMax),
-                  ]),
-                  Row(children: [
-                    Expanded(
-                      child: TextFormField(
-                        style: _inputInZEC ? TextStyle(fontWeight: FontWeight.w200) : TextStyle(),
-                        decoration:
-                            InputDecoration(labelText: S.of(context).amountInSettingscurrency(settings.currency)),
-                        controller: _fiatAmountController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [makeInputFormatter(_mZEC)],
-                        validator: (v) => _checkAmount(v, isFiat: true),
-                        onTap: () => setState(() { _inputInZEC = false; }),
-                        onChanged: (_) {
-                          _updateAmount();
-                        },
-                      ),
-                    ),
-                  ]),
-                  ExpansionPanelList(
-                      expansionCallback: (_, isExpanded) {
-                        setState(() {
-                          _isExpanded = !isExpanded;
-                        });
-                      },
-                      children: [
-                        ExpansionPanel(
-                            headerBuilder: (_, __) => ListTile(
-                                title: Text(S.of(context).advancedOptions)),
-                            body: Column(children: [
-                              ListTile(
-                                  title: TextFormField(
-                                decoration: InputDecoration(
-                                    labelText: S.of(context).memo),
-                                minLines: 4,
-                                maxLines: null,
-                                keyboardType: TextInputType.multiline,
-                                controller: _memoController,
-                              )),
-                              CheckboxListTile(
-                                  title: Text(S.of(context).roundToMillis),
-                                  value: _mZEC,
-                                  onChanged: _onChangedmZEC),
-                              CheckboxListTile(
-                                  title: Text(S.of(context).includeFeeInAmount),
-                                  value: _includeFee,
-                                  onChanged: _onChangedIncludeFee),
-                              if (accountManager.canPay)
-                                CheckboxListTile(
-                                    title: Text(
-                                        S.of(context).shieldTransparentBalance),
-                                    value: _shieldTransparent,
-                                    onChanged: _onChangedShieldBalance),
-                              ListTile(
-                                  title: TextFormField(
-                                decoration: InputDecoration(
-                                    labelText: S.of(context).maxAmountPerNote),
-                                keyboardType: TextInputType.number,
-                                controller: _maxAmountController,
-                                inputFormatters: [makeInputFormatter(_mZEC)],
-                                validator: _checkMaxAmountPerNote,
-                                onSaved: _onSavedMaxAmountPerNote,
-                              )),
-                            ]),
-                            isExpanded: _isExpanded)
+                          ),
+                        ),
                       ]),
-                  Padding(padding: EdgeInsets.all(8)),
-                  Text(S.of(context).spendable + ' ' + decimalFormat(_balance / ZECUNIT, 8, symbol: coin.ticker)),
-                  ButtonBar(
-                      children: confirmButtons(context, _onSend,
-                          okLabel: S.of(context).send,
-                          okIcon: Icon(MdiIcons.send)))
-                ])))));
+                      ExpansionPanelList(
+                          expansionCallback: (_, isExpanded) {
+                            setState(() {
+                              _isExpanded = !isExpanded;
+                            });
+                          },
+                          children: [
+                            ExpansionPanel(
+                              headerBuilder: (_, __) =>
+                                  ListTile(
+                                      title: Text(s.advancedOptions)),
+                              body: Column(children: [
+                                ListTile(
+                                  title: TextFormField(
+                                    decoration: InputDecoration(
+                                        labelText: s.memo),
+                                    minLines: 4,
+                                    maxLines: null,
+                                    keyboardType: TextInputType.multiline,
+                                    controller: _memoController,
+                                  ),
+                                ),
+                                CheckboxListTile(
+                                    title: Text(s.roundToMillis),
+                                    value: _mZEC,
+                                    onChanged: _onChangedmZEC),
+                                CheckboxListTile(
+                                    title:
+                                    Text(s.includeFeeInAmount),
+                                    value: _includeFee,
+                                    onChanged: _onChangedIncludeFee),
+                                if (accountManager.canPay)
+                                  CheckboxListTile(
+                                    title: Text(
+                                        s.shieldTransparentBalance),
+                                    value: _shieldTransparent,
+                                    onChanged: _onChangedShieldBalance,
+                                  ),
+                                ListTile(
+                                    title: TextFormField(
+                                      decoration: InputDecoration(
+                                          labelText:
+                                          s.maxAmountPerNote),
+                                      keyboardType: TextInputType.number,
+                                      controller: _maxAmountController,
+                                      inputFormatters: [
+                                        makeInputFormatter(_mZEC)
+                                      ],
+                                      validator: _checkMaxAmountPerNote,
+                                      onSaved: _onSavedMaxAmountPerNote,
+                                    )),
+                              ]),
+                              isExpanded: _isExpanded,
+                            )
+                          ]),
+                      Padding(padding: EdgeInsets.all(8)),
+                      Text(
+                        "${s.spendable}: ${decimalFormat(
+                            _balance / ZECUNIT, 8, symbol: coin.ticker)}",
+                      ),
+                      Observer(builder: (context) {
+                        final tbal = accountManager.tbalance;
+                        return tbal > 0 ? RichText(
+                            text: TextSpan(children: [
+                              TextSpan(
+                                text:
+                                "${s.unshielded}: ${decimalFormat(
+                                    tbal / ZECUNIT, 3,
+                                    symbol: coin.ticker)} ",),
+                              WidgetSpan(
+
+                                child: GestureDetector(
+                                  child: Icon(Icons.shield_outlined),
+                                  onTap: () {
+                                    shieldTAddr(context);
+                                  },
+                                ),
+                              )
+                            ])) : Container();
+                      }),
+                      ButtonBar(
+                          children: confirmButtons(context, _onSend,
+                              okLabel: s.send,
+                              okIcon: Icon(MdiIcons.send)))
+                    ])))));
   }
 
   String? _checkAddress(String? v) {
-    if (v == null || v.isEmpty) return S.of(context).addressIsEmpty;
+    final s = S.of(context);
+    if (v == null || v.isEmpty) return s.addressIsEmpty;
     final c = contacts.contacts.where((c) => c.name == v);
     if (c.isNotEmpty) return null;
     final zaddr = WarpApi.getSaplingFromUA(v);
     if (zaddr.isNotEmpty) return null;
-    if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
+    if (!WarpApi.validAddress(v)) return s.invalidAddress;
     return null;
   }
 
-  String? _checkAmount(String? vs, { bool isFiat: false }) {
-    if (vs == null) return S.of(context).amountMustBeANumber;
-    if (!checkNumber(vs)) return S.of(context).amountMustBeANumber;
+  String? _checkAmount(String? vs, {bool isFiat: false}) {
+    final s = S.of(context);
+    if (vs == null) return s.amountMustBeANumber;
+    if (!checkNumber(vs)) return s.amountMustBeANumber;
     final v = parseNumber(vs);
-    if (v < 0.0) return S.of(context).amountMustBePositive;
-    if (!isFiat && v == 0.0) return S.of(context).amountMustBePositive;
+    if (v < 0.0) return s.amountMustBePositive;
+    if (!isFiat && v == 0.0) return s.amountMustBePositive;
     if (!isFiat && amountInZAT(Decimal.parse(v.toString())) > _balance)
-      return S.of(context).notEnoughBalance;
+      return s.notEnoughBalance;
     return null;
   }
 
   String? _checkMaxAmountPerNote(String? vs) {
-    if (vs == null) return S.of(context).amountMustBeANumber;
-    if (!checkNumber(vs)) return S.of(context).amountMustBeANumber;
+    final s = S.of(context);
+    if (vs == null) return s.amountMustBeANumber;
+    if (!checkNumber(vs)) return s.amountMustBeANumber;
     final v = parseNumber(vs);
-    if (v < 0.0) return S.of(context).amountMustBePositive;
+    if (v < 0.0) return s.amountMustBePositive;
     return null;
   }
 
@@ -273,8 +326,7 @@ class SendState extends State<SendPage> {
           _amount = payment.amount;
           _zecAmountController.text = amountFromZAT(_amount);
         });
-      }
-      else {
+      } else {
         setState(() {
           _address = code;
           _addressController.text = _address;
@@ -323,6 +375,7 @@ class SendState extends State<SendPage> {
   String _formatCurrency(double v) => decimalFormat(v, precision(_mZEC));
 
   void _onSend() async {
+    final s = S.of(context);
     final form = _formKey.currentState;
     if (form == null) return;
 
@@ -332,16 +385,16 @@ class SendState extends State<SendPage> {
       final approved = await showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (BuildContext context) => AlertDialog(
-              title: Text(S.of(context).pleaseConfirm),
-              content: SingleChildScrollView(
-                  child: Text(S.of(context).sendingAzecCointickerToAddress(
-                      aZEC, coin.ticker, _address))),
-              actions: confirmButtons(
-                  context, () => Navigator.of(context).pop(true),
-                  okLabel: S.of(context).approve, cancelValue: false)));
+          builder: (BuildContext context) =>
+              AlertDialog(
+                  title: Text(s.pleaseConfirm),
+                  content: SingleChildScrollView(
+                      child: Text(s.sendingAzecCointickerToAddress(
+                          aZEC, coin.ticker, _address))),
+                  actions: confirmButtons(
+                      context, () => Navigator.of(context).pop(true),
+                      okLabel: s.approve, cancelValue: false)));
       if (approved) {
-        final s = S.of(context);
         Navigator.of(context).pop();
 
         final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
@@ -353,7 +406,9 @@ class SendState extends State<SendPage> {
         final address = unwrapUA(_address);
 
         if (accountManager.canPay) {
-          if (settings.protectSend && !await authenticate(context, S.of(context).pleaseAuthenticateToSend)) return;
+          if (settings.protectSend &&
+              !await authenticate(
+                  context, s.pleaseAuthenticateToSend)) return;
           final tx = await compute(
               sendPayment,
               PaymentParams(
@@ -373,8 +428,14 @@ class SendState extends State<SendPage> {
           Directory tempDir = await getTemporaryDirectory();
           String filename = "${tempDir.path}/tx.json";
 
-          final msg = WarpApi.prepareTx(accountManager.active.id, address,
-              _amount, memo, maxAmountPerNote, settings.anchorOffset, filename);
+          final msg = WarpApi.prepareTx(
+              accountManager.active.id,
+              address,
+              _amount,
+              memo,
+              maxAmountPerNote,
+              settings.anchorOffset,
+              filename);
 
           Share.shareFiles([filename], subject: s.unsignedTransactionFile);
 
@@ -386,7 +447,9 @@ class SendState extends State<SendPage> {
   }
 
   int amountInZAT(Decimal v) => (v * ZECUNIT_DECIMAL).toInt();
-  String amountFromZAT(int v) => (Decimal.fromInt(v) / ZECUNIT_DECIMAL).toString();
+
+  String amountFromZAT(int v) =>
+      (Decimal.fromInt(v) / ZECUNIT_DECIMAL).toString();
 
   double _fx() {
     return priceStore.zecPrice;

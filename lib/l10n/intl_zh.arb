@@ -137,5 +137,6 @@
   "amountTooHigh": "Amount too high",
   "protectSend": "Protect Send",
   "protectSendSettingChanged": "Protect Send setting changed",
-  "pleaseAuthenticateToSend": "Please authenticate to Send"
+  "pleaseAuthenticateToSend": "Please authenticate to Send",
+  "unshielded": "Unshielded"
 }

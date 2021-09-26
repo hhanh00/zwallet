@@ -891,10 +891,10 @@ class S {
     );
   }
 
-  /// `Spendable:`
+  /// `Spendable`
   String get spendable {
     return Intl.message(
-      'Spendable:',
+      'Spendable',
       name: 'spendable',
       desc: '',
       args: [],
@@ -1477,6 +1477,16 @@ class S {
     return Intl.message(
       'Please authenticate to Send',
       name: 'pleaseAuthenticateToSend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unshielded`
+  String get unshielded {
+    return Intl.message(
+      'Unshielded',
+      name: 'unshielded',
       desc: '',
       args: [],
     );

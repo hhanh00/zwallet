@@ -220,7 +220,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Shield Transparent Balance When Sending"),
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Shielding in progress..."),
-        "spendable": MessageLookupByLibrary.simpleMessage("Spendable:"),
+        "spendable": MessageLookupByLibrary.simpleMessage("Spendable"),
         "synching": MessageLookupByLibrary.simpleMessage("Synching"),
         "table": MessageLookupByLibrary.simpleMessage("Table"),
         "tapAnIconToShowTheQrCode": MessageLookupByLibrary.simpleMessage(
@@ -249,6 +249,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "transactionDetails":
             MessageLookupByLibrary.simpleMessage("Transaction Details"),
         "txId": MessageLookupByLibrary.simpleMessage("TX ID"),
+        "unshielded": MessageLookupByLibrary.simpleMessage("Unshielded"),
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("Unsigned Transaction File"),
         "useSettingscurrency": m7,

@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -240,7 +239,7 @@ class _AccountPageState extends State<AccountPage>
                       style: OutlinedButton.styleFrom(
                           side:
                               BorderSide(width: 1, color: theme.primaryColor)),
-                      onPressed: _onShieldTAddr,
+                      onPressed: () { shieldTAddr(context); },
                     )
                 ]);
               }),
@@ -365,27 +364,6 @@ class _AccountPageState extends State<AccountPage>
     final snackBar =
         SnackBar(content: Text(S.of(context).addressCopiedToClipboard));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
-  }
-
-  _onShieldTAddr() {
-    showDialog(
-      context: this.context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-          title: Text(S.of(context).shieldTransparentBalance),
-          content: Text(S
-              .of(context)
-              .doYouWantToTransferYourEntireTransparentBalanceTo(coin.ticker)),
-          actions: confirmButtons(context, () async {
-            final s = S.of(context);
-            Navigator.of(this.context).pop();
-            final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
-            rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
-            final txid = await WarpApi.shieldTAddr(accountManager.active.id);
-            final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
-            rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
-          })),
-    );
   }
 
   _onReceive() async {
