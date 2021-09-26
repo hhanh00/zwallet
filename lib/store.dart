@@ -73,7 +73,7 @@ abstract class _Settings with Store {
   bool autoHide = true;
 
   @observable
-  bool protectSend = true;
+  bool protectSend = false;
 
   @action
   Future<bool> restore() async {
@@ -94,7 +94,7 @@ abstract class _Settings with Store {
     autoShieldThreshold = prefs.getDouble('autoshield_threshold') ?? 0.0;
     useUA = prefs.getBool('use_ua') ?? false;
     autoHide = prefs.getBool('auto_hide') ?? true;
-    protectSend = prefs.getBool('protect_send') ?? true;
+    protectSend = prefs.getBool('protect_send') ?? false;
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
