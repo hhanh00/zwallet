@@ -4,9 +4,11 @@ import 'dart:ui';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:path/path.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
@@ -331,3 +333,25 @@ DeviceWidth getWidth(BuildContext context) {
 
 String decimalFormat(double x, int decimalDigits, { String symbol = '' }) =>
     NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol).format(x).trimRight();
+
+Future<bool> authenticate(BuildContext context) async {
+  final localAuth = LocalAuthentication();
+  try {
+    final didAuthenticate = await localAuth.authenticate(
+        localizedReason: S.of(context).pleaseAuthenticateToShowAccountSeed);
+    if (didAuthenticate) {
+      return true;
+    }
+  } on PlatformException catch (e) {
+    await showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) =>
+            AlertDialog(
+                title: Text(S
+                    .of(context)
+                    .noAuthenticationMethod),
+                content: Text(e.message ?? "")));
+  }
+  return false;
+}

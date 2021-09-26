@@ -18,6 +18,7 @@ class SettingsState extends State<SettingsPage> {
   var _thresholdController = TextEditingController(
       text: decimalFormat(settings.autoShieldThreshold, 3));
   var _currency = settings.currency;
+  var _needAuth = false;
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +106,15 @@ class SettingsState extends State<SettingsPage> {
                                     onSaved: (_) {
                                       settings.setCurrency(_currency);
                                     })),
+                            Expanded(
+                                child: FormBuilderCheckbox(
+                                    name: 'protect_send',
+                                    title: Text(S.of(context).protectSend),
+                                    initialValue: settings.protectSend,
+                                    onChanged: (_) {
+                                      _needAuth = true;
+                                    },
+                                    onSaved: _onProtectSend)),
                             if (coin.supportsUA)
                               Expanded(
                                   child: FormBuilderCheckbox(
@@ -215,9 +225,15 @@ class SettingsState extends State<SettingsPage> {
     settings.setAutoHide(v);
   }
 
-  _onSave() {
+  _onProtectSend(v) {
+    settings.setProtectSend(v);
+  }
+
+  _onSave() async {
     final form = _settingsFormKey.currentState!;
     if (form.validate()) {
+      print(_needAuth);
+      if (_needAuth && !await authenticate(context)) return;
       form.save();
       Navigator.of(context).pop();
     }

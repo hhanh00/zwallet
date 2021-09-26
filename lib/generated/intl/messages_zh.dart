@@ -152,6 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pnl": MessageLookupByLibrary.simpleMessage("獲利與虧損"),
         "preparingTransaction": MessageLookupByLibrary.simpleMessage("準備交易⋯"),
         "price": MessageLookupByLibrary.simpleMessage("價格"),
+        "protectSend": MessageLookupByLibrary.simpleMessage("Protect Send"),
         "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("數量"),
         "realized": MessageLookupByLibrary.simpleMessage("已獲利"),

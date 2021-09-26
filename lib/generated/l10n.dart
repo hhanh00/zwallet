@@ -1451,6 +1451,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Protect Send`
+  String get protectSend {
+    return Intl.message(
+      'Protect Send',
+      name: 'protectSend',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

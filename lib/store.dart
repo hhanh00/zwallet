@@ -72,6 +72,9 @@ abstract class _Settings with Store {
   @observable
   bool autoHide = true;
 
+  @observable
+  bool protectSend = true;
+
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
@@ -91,6 +94,7 @@ abstract class _Settings with Store {
     autoShieldThreshold = prefs.getDouble('autoshield_threshold') ?? 0.0;
     useUA = prefs.getBool('use_ua') ?? false;
     autoHide = prefs.getBool('auto_hide') ?? true;
+    protectSend = prefs.getBool('protect_send') ?? true;
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
@@ -256,6 +260,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     autoHide = v;
     prefs.setBool('auto_hide', autoHide);
+  }
+
+  @action
+  Future<void> setProtectSend(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    protectSend = v;
+    prefs.setBool('protect_send', protectSend);
   }
 }
 

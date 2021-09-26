@@ -492,20 +492,9 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _backup() async {
-    final localAuth = LocalAuthentication();
-    try {
-      final didAuthenticate = await localAuth.authenticate(
-          localizedReason: S.of(context).pleaseAuthenticateToShowAccountSeed);
-      if (didAuthenticate) {
-        Navigator.of(context).pushNamed('/backup');
-      }
-    } on PlatformException catch (e) {
-      await showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) => AlertDialog(
-              title: Text(S.of(context).noAuthenticationMethod),
-              content: Text(e.message ?? "")));
+    final didAuthenticate = await authenticate(context);
+    if (didAuthenticate) {
+      Navigator.of(context).pushNamed('/backup');
     }
   }
 

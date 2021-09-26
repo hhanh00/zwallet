@@ -138,5 +138,6 @@
   "noRecipient": "Pas de receveur",
   "addARecipientAndItWillShowHere": "Ajoutez un receveur et il sera ici",
   "receivePayment": "Recevoir un payment",
-  "amountTooHigh": "Amount too high"
+  "amountTooHigh": "Amount too high",
+  "protectSend": "Protect Send"
 }
