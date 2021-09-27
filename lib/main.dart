@@ -109,7 +109,7 @@ class ZWalletAppState extends State<ZWalletApp> {
   RateMyApp rateMyApp = RateMyApp(
     preferencesPrefix: 'rateMyApp_',
     minDays: 0,
-    minLaunches: 5,
+    minLaunches: 20,
   );
 
   @override
