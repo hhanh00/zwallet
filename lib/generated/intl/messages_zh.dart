@@ -164,6 +164,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Receive a payment"),
         "rescan": MessageLookupByLibrary.simpleMessage("重新掃描"),
+        "rescanNeeded": MessageLookupByLibrary.simpleMessage("Rescan Needed"),
         "rescanRequested": MessageLookupByLibrary.simpleMessage("已經收到重新掃描要求"),
         "rescanWalletFromTheFirstBlock":
             MessageLookupByLibrary.simpleMessage("由第一組開始重新掃描銀包"),

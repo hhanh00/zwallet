@@ -143,5 +143,6 @@
   "totalBalance": "Total Balance",
   "underConfirmed": "Under Confirmed",
   "excludedNotes": "Excluded Notes",
-  "spendableBalance": "Spendable Balance"
+  "spendableBalance": "Spendable Balance",
+  "rescanNeeded": "Rescan Needed"
 }

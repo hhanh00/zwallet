@@ -1541,6 +1541,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Rescan Needed`
+  String get rescanNeeded {
+    return Intl.message(
+      'Rescan Needed',
+      name: 'rescanNeeded',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

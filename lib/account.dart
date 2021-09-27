@@ -119,6 +119,7 @@ class _AccountPageState extends State<AccountPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    var s = S.of(context);
     if (!syncStatus.isSynced() && !syncStatus.syncing) _trySync();
     final theme = Theme.of(this.context);
     final hasTAddr = accountManager.taddress.isNotEmpty;
@@ -130,36 +131,38 @@ class _AccountPageState extends State<AccountPage>
         title: Observer(
             builder: (context) => Text("${accountManager.active.name}")),
         bottom: TabBar(controller: _tabController, isScrollable: true, tabs: [
-          Tab(text: S.of(context).account),
-          Tab(text: S.of(context).notes),
-          Tab(text: S.of(context).history),
-          Tab(text: S.of(context).budget),
-          Tab(text: S.of(context).tradingPl),
-          Tab(text: S.of(context).contacts),
+          Tab(text: s.account),
+          Tab(text: s.notes),
+          Tab(text: s.history),
+          Tab(text: s.budget),
+          Tab(text: s.tradingPl),
+          Tab(text: s.contacts),
         ]),
         actions: [
           Observer(builder: (context) {
             accountManager.canPay;
             return PopupMenuButton<String>(
-              itemBuilder: (context) => [
+              itemBuilder: (context) {
+                return [
                 PopupMenuItem(
-                    child: Text(S.of(context).accounts), value: "Accounts"),
+                    child: Text(s.accounts), value: "Accounts"),
                 PopupMenuItem(
-                    child: Text(S.of(context).backup), value: "Backup"),
+                    child: Text(s.backup), value: "Backup"),
                 PopupMenuItem(
-                    child: Text(S.of(context).rescan), value: "Rescan"),
+                    child: Text(s.rescan), value: "Rescan"),
                 if (accountManager.canPay)
                   PopupMenuItem(
-                      child: Text(S.of(context).coldStorage), value: "Cold"),
+                      child: Text(s.coldStorage), value: "Cold"),
                 if (accountManager.canPay)
                   PopupMenuItem(
-                      child: Text(S.of(context).multipay), value: "MultiPay"),
+                      child: Text(s.multipay), value: "MultiPay"),
                 PopupMenuItem(
-                    child: Text(S.of(context).broadcast), value: "Broadcast"),
+                    child: Text(s.broadcast), value: "Broadcast"),
                 PopupMenuItem(
-                    child: Text(S.of(context).settings), value: "Settings"),
-                PopupMenuItem(child: Text(S.of(context).about), value: "About"),
-              ],
+                    child: Text(s.settings), value: "Settings"),
+                PopupMenuItem(child: Text(s.about), value: "About"),
+              ];
+              },
               onSelected: _onMenu,
             );
           })
@@ -175,7 +178,7 @@ class _AccountPageState extends State<AccountPage>
                 final _2 = syncStatus.syncedHeight;
                 final _3 = syncStatus.latestHeight;
                 return syncStatus.syncedHeight < 0
-                    ? Text("")
+                    ? Text(s.rescanNeeded)
                     : syncStatus.isSynced()
                         ? Text('${syncStatus.syncedHeight}',
                             style: theme.textTheme.caption)
@@ -194,8 +197,8 @@ class _AccountPageState extends State<AccountPage>
                 return Column(children: [
                   if (hasTAddr)
                     Text(showTAddr
-                        ? S.of(context).tapQrCodeForShieldedAddress
-                        : S.of(context).tapQrCodeForTransparentAddress),
+                        ? s.tapQrCodeForShieldedAddress
+                        : s.tapQrCodeForTransparentAddress),
                   Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   GestureDetector(
                       onTap: hasTAddr ? _onQRTap : null,
@@ -227,14 +230,14 @@ class _AccountPageState extends State<AccountPage>
                   Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   if (!showTAddr)
                     OutlinedButton(
-                        child: Text(S.of(context).newSnapAddress),
+                        child: Text(s.newSnapAddress),
                         style: OutlinedButton.styleFrom(
                             side: BorderSide(
                                 width: 1, color: theme.primaryColor)),
                         onPressed: _onSnapAddress),
                   if (showTAddr)
                     OutlinedButton(
-                      child: Text(S.of(context).shieldTranspBalance),
+                      child: Text(s.shieldTranspBalance),
                       style: OutlinedButton.styleFrom(
                           side:
                               BorderSide(width: 1, color: theme.primaryColor)),
@@ -278,7 +281,7 @@ class _AccountPageState extends State<AccountPage>
                 final fx = _fx();
                 final balanceFX = balance * fx / ZECUNIT;
                 return hide
-                    ? Text(S.of(context).tiltYourDeviceUpToRevealYourBalance)
+                    ? Text(s.tiltYourDeviceUpToRevealYourBalance)
                     : Column(children: [
                         if (fx != 0.0)
                           Text(
@@ -318,15 +321,13 @@ class _AccountPageState extends State<AccountPage>
       floatingActionButton: _accountTab
           ? FloatingActionButton(
               onPressed: _onSend,
-              backgroundColor: Theme.of(context)
-                  .accentColor
-                  .withOpacity(accountManager.canPay ? 1.0 : 0.3),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               child: Icon(Icons.send),
             )
           : _contactsTab
               ? FloatingActionButton(
                   onPressed: _onAddContact,
-                  backgroundColor: Theme.of(context).accentColor,
+                  backgroundColor: theme.colorScheme.secondary,
                   child: Icon(Icons.add),
                 )
               : Container(), // This trailing comma makes auto-formatting nicer for build methods.
