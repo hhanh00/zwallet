@@ -112,6 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Duplicate Account"),
         "enterSeed":
             MessageLookupByLibrary.simpleMessage("輸入種子，秘密鎖匙或查看鎖匙\n留空預備新帳戶"),
+        "excludedNotes": MessageLookupByLibrary.simpleMessage("Excluded Notes"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "height": MessageLookupByLibrary.simpleMessage("高度"),
         "history": MessageLookupByLibrary.simpleMessage("過去記錄"),
@@ -190,6 +191,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("屏蔽你的公開結餘"),
         "shieldingInProgress": MessageLookupByLibrary.simpleMessage("屏蔽進行中"),
         "spendable": MessageLookupByLibrary.simpleMessage("可使用的"),
+        "spendableBalance":
+            MessageLookupByLibrary.simpleMessage("Spendable Balance"),
         "synching": MessageLookupByLibrary.simpleMessage("同步"),
         "table": MessageLookupByLibrary.simpleMessage("表列"),
         "tapAnIconToShowTheQrCode":
@@ -210,11 +213,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "toMakeAContactSendThemAMemoWithContact":
             MessageLookupByLibrary.simpleMessage("發送備忘到 Contact:"),
         "total": MessageLookupByLibrary.simpleMessage("總數"),
+        "totalBalance": MessageLookupByLibrary.simpleMessage("Total Balance"),
         "tradingChartRange": MessageLookupByLibrary.simpleMessage("交易範圍"),
         "tradingPl": MessageLookupByLibrary.simpleMessage("交易"),
         "transactionDetails": MessageLookupByLibrary.simpleMessage("交易資料"),
         "txId": MessageLookupByLibrary.simpleMessage("TX ID:"),
+        "underConfirmed":
+            MessageLookupByLibrary.simpleMessage("Under Confirmed"),
         "unshielded": MessageLookupByLibrary.simpleMessage("Unshielded"),
+        "unshieldedBalance":
+            MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("未簽署交易文件"),
         "useSettingscurrency": m7,

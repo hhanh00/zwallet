@@ -407,12 +407,10 @@ abstract class _AccountManager with Store {
     return res[0]['value'] ?? 0;
   }
 
-  Future<int> getSpendableBalance() async {
-    final height = syncStatus.latestHeight - settings.anchorOffset;
+  Future<int> getShieldedBalance() async {
     return Sqflite.firstIntValue(await db.rawQuery(
-        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent IS NULL "
-        "AND height <= ?2",
-        [active.id, height])) ?? 0;
+        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent IS NULL",
+        [active.id])) ?? 0;
   }
 
   Future<int> getUnderConfirmedBalance() async {

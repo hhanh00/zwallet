@@ -124,6 +124,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cuenta duplicada"),
         "enterSeed": MessageLookupByLibrary.simpleMessage(
             "Ingrese Semilla, Clave Secreta o Clave Lectura. Dejar en blanco para una nueva cuenta "),
+        "excludedNotes": MessageLookupByLibrary.simpleMessage("Excluded Notes"),
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "height": MessageLookupByLibrary.simpleMessage("Altura"),
         "history": MessageLookupByLibrary.simpleMessage("Historia"),
@@ -219,6 +220,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Blindaje en progreso…"),
         "spendable": MessageLookupByLibrary.simpleMessage("Gastable"),
+        "spendableBalance":
+            MessageLookupByLibrary.simpleMessage("Spendable Balance"),
         "synching": MessageLookupByLibrary.simpleMessage("Sincronizando"),
         "table": MessageLookupByLibrary.simpleMessage("Lista"),
         "tapAnIconToShowTheQrCode": MessageLookupByLibrary.simpleMessage(
@@ -241,13 +244,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Para hacer un contacto, enviarles una nota con ‘Contact:’"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
+        "totalBalance": MessageLookupByLibrary.simpleMessage("Total Balance"),
         "tradingChartRange":
             MessageLookupByLibrary.simpleMessage("Rango de Gráfico"),
         "tradingPl": MessageLookupByLibrary.simpleMessage("Intercambio G&P"),
         "transactionDetails":
             MessageLookupByLibrary.simpleMessage("Detalles de transacción"),
         "txId": MessageLookupByLibrary.simpleMessage("TX ID:"),
+        "underConfirmed":
+            MessageLookupByLibrary.simpleMessage("Under Confirmed"),
         "unshielded": MessageLookupByLibrary.simpleMessage("Unshielded"),
+        "unshieldedBalance":
+            MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Archivo de transaccion sin firmar"),
         "useSettingscurrency": m7,

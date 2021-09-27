@@ -1491,6 +1491,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Unshielded Balance`
+  String get unshieldedBalance {
+    return Intl.message(
+      'Unshielded Balance',
+      name: 'unshieldedBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Balance`
+  String get totalBalance {
+    return Intl.message(
+      'Total Balance',
+      name: 'totalBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Under Confirmed`
+  String get underConfirmed {
+    return Intl.message(
+      'Under Confirmed',
+      name: 'underConfirmed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Excluded Notes`
+  String get excludedNotes {
+    return Intl.message(
+      'Excluded Notes',
+      name: 'excludedNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spendable Balance`
+  String get spendableBalance {
+    return Intl.message(
+      'Spendable Balance',
+      name: 'spendableBalance',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

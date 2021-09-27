@@ -142,5 +142,10 @@
   "protectSend": "Protect Send",
   "protectSendSettingChanged": "Protect Send setting changed",
   "pleaseAuthenticateToSend": "Please authenticate to Send",
-  "unshielded": "Unshielded"
+  "unshielded": "Unshielded",
+  "unshieldedBalance": "Unshielded Balance",
+  "totalBalance": "Total Balance",
+  "underConfirmed": "Under Confirmed",
+  "excludedNotes": "Excluded Notes",
+  "spendableBalance": "Spendable Balance"
 }

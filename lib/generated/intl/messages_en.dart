@@ -124,6 +124,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Another contact has this address"),
         "enterSeed": MessageLookupByLibrary.simpleMessage(
             "Enter Seed, Secret Key or Viewing Key. Leave blank for a new account"),
+        "excludedNotes": MessageLookupByLibrary.simpleMessage("Excluded Notes"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "height": MessageLookupByLibrary.simpleMessage("Height"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
@@ -221,6 +222,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Shielding in progress..."),
         "spendable": MessageLookupByLibrary.simpleMessage("Spendable"),
+        "spendableBalance":
+            MessageLookupByLibrary.simpleMessage("Spendable Balance"),
         "synching": MessageLookupByLibrary.simpleMessage("Synching"),
         "table": MessageLookupByLibrary.simpleMessage("Table"),
         "tapAnIconToShowTheQrCode": MessageLookupByLibrary.simpleMessage(
@@ -243,13 +246,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "To make a contact, send them a memo with Contact:"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
+        "totalBalance": MessageLookupByLibrary.simpleMessage("Total Balance"),
         "tradingChartRange":
             MessageLookupByLibrary.simpleMessage("Trading Chart Range"),
         "tradingPl": MessageLookupByLibrary.simpleMessage("Wallet P&L"),
         "transactionDetails":
             MessageLookupByLibrary.simpleMessage("Transaction Details"),
         "txId": MessageLookupByLibrary.simpleMessage("TX ID"),
+        "underConfirmed":
+            MessageLookupByLibrary.simpleMessage("Under Confirmed"),
         "unshielded": MessageLookupByLibrary.simpleMessage("Unshielded"),
+        "unshieldedBalance":
+            MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("Unsigned Transaction File"),
         "useSettingscurrency": m7,
