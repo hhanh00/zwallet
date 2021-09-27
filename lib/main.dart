@@ -334,6 +334,8 @@ DeviceWidth getWidth(BuildContext context) {
 String decimalFormat(double x, int decimalDigits, { String symbol = '' }) =>
     NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol).format(x).trimRight();
 
+String amountToString(int amount) => decimalFormat(amount / ZECUNIT, 8);
+
 Future<bool> authenticate(BuildContext context, String reason) async {
   final localAuth = LocalAuthentication();
   try {

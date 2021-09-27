@@ -120,7 +120,6 @@ class _AccountPageState extends State<AccountPage>
   Widget build(BuildContext context) {
     super.build(context);
     if (!syncStatus.isSynced() && !syncStatus.syncing) _trySync();
-    if (accountManager.active == null) return CircularProgressIndicator();
     final theme = Theme.of(this.context);
     final hasTAddr = accountManager.taddress.isNotEmpty;
     final qrSize = getScreenSize(context) / 2.5;
@@ -418,9 +417,10 @@ class _AccountPageState extends State<AccountPage>
     }
     await accountManager.fetchAccountData(false);
     await accountManager.updateBalance();
+    await accountManager.updateTBalance();
     await accountManager.updateUnconfirmedBalance();
     await contacts.fetchContacts();
-    accountManager.updateTBalance();
+    accountManager.autoshield();
   }
 
   _onSnapAddress() {

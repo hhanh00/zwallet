@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/warp_api.dart';
@@ -32,7 +32,10 @@ class SendState extends State<SendPage> {
   var _address = "";
   var _amount = 0;
   var _maxAmountPerNote = Decimal.zero;
-  var _balance = 0;
+  var _totalBalance = 0;
+  var _tbalance = 0;
+  var _excludedBalance = 0;
+  var _underConfirmedBalance = 0;
   final _addressController = TextEditingController();
   final _memoController = TextEditingController();
   var _mZEC = true;
@@ -44,17 +47,14 @@ class SendState extends State<SendPage> {
   var _isExpanded = false;
   var _shieldTransparent = settings.shieldBalance;
   ReactionDisposer? _priceAutorunDispose;
+  ReactionDisposer? _newBlockAutorunDispose;
 
   @override
   initState() {
     if (widget.contact != null)
       _addressController.text = widget.contact!.address;
+
     Future.microtask(() async {
-      final balance = await accountManager
-          .getBalanceSpendable(syncStatus.latestHeight - settings.anchorOffset);
-      setState(() {
-        _balance = math.max(balance - DEFAULT_FEE, 0);
-      });
     });
     _updateFiatAmount();
     super.initState();
@@ -62,11 +62,25 @@ class SendState extends State<SendPage> {
     _priceAutorunDispose = autorun((_) {
       _updateFiatAmount();
     });
+
+    _newBlockAutorunDispose = autorun((_) async {
+      final balance = await accountManager.getSpendableBalance();
+      final tbalance = accountManager.tbalance;
+      final excludedBalance = await accountManager.getExcludedBalance();
+      final underConfirmedBalance = await accountManager.getUnderConfirmedBalance();
+      setState(() {
+        _totalBalance = math.max(balance - DEFAULT_FEE, 0);
+        _tbalance = tbalance;
+        _excludedBalance = excludedBalance;
+        _underConfirmedBalance = underConfirmedBalance;
+      });
+    });
   }
 
   @override
   void dispose() {
-    _priceAutorunDispose!();
+    _priceAutorunDispose?.call();
+    _newBlockAutorunDispose?.call();
     super.dispose();
   }
 
@@ -218,30 +232,7 @@ class SendState extends State<SendPage> {
                             )
                           ]),
                       Padding(padding: EdgeInsets.all(8)),
-                      Text(
-                        "${s.spendable}: ${decimalFormat(
-                            _balance / ZECUNIT, 8, symbol: coin.ticker)}",
-                      ),
-                      Observer(builder: (context) {
-                        final tbal = accountManager.tbalance;
-                        return tbal > 0 ? RichText(
-                            text: TextSpan(children: [
-                              TextSpan(
-                                text:
-                                "${s.unshielded}: ${decimalFormat(
-                                    tbal / ZECUNIT, 3,
-                                    symbol: coin.ticker)} ",),
-                              WidgetSpan(
-
-                                child: GestureDetector(
-                                  child: Icon(Icons.shield_outlined),
-                                  onTap: () {
-                                    shieldTAddr(context);
-                                  },
-                                ),
-                              )
-                            ])) : Container();
-                      }),
+                      BalanceTable(_totalBalance, _tbalance, _excludedBalance, _underConfirmedBalance),
                       ButtonBar(
                           children: confirmButtons(context, _onSend,
                               okLabel: s.send,
@@ -267,7 +258,7 @@ class SendState extends State<SendPage> {
     final v = parseNumber(vs);
     if (v < 0.0) return s.amountMustBePositive;
     if (!isFiat && v == 0.0) return s.amountMustBePositive;
-    if (!isFiat && amountInZAT(Decimal.parse(v.toString())) > _balance)
+    if (!isFiat && amountInZAT(Decimal.parse(v.toString())) > _totalBalance)
       return s.notEnoughBalance;
     return null;
   }
@@ -285,8 +276,7 @@ class SendState extends State<SendPage> {
     setState(() {
       _mZEC = false;
       _includeFee = false;
-      _zecAmountController.text =
-          (Decimal.fromInt(_balance) / ZECUNIT_DECIMAL).toString();
+      _zecAmountController.text = amountToString(spendable);
       _updateFiatAmount();
     });
   }
@@ -459,7 +449,62 @@ class SendState extends State<SendPage> {
     double vv = parseNumber(v);
     return decimalFormat(vv, precision(_mZEC));
   }
+
+  get spendable => _totalBalance - _excludedBalance;
 }
+
+class BalanceTable extends StatelessWidget {
+  final int balance;
+  final int tbalance;
+  final int excludedBalance;
+  final int underConfirmedBalance;
+
+  BalanceTable(this.balance, this.tbalance, this.excludedBalance, this.underConfirmedBalance);
+
+  @override
+  Widget build(BuildContext context) {
+
+    final tbalanceLabel = Text.rich(
+        TextSpan(children: [
+          TextSpan(text: 'Unshielded Balance'),
+          WidgetSpan(
+            child: GestureDetector(
+              child: Icon(Icons.shield_outlined),
+              onTap: () {
+                shieldTAddr(context);
+              },
+            ),
+          )
+        ]));
+
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          BalanceRow(Text('Total Balance'), balance + tbalance + underConfirmedBalance),
+          BalanceRow(Text('Under Confirmed'), -underConfirmedBalance),
+          BalanceRow(Text('Excluded Notes'), -excludedBalance),
+          BalanceRow(tbalanceLabel, -tbalance),
+          BalanceRow(Text('Spendable Balance', style: TextStyle(color: Theme.of(context).primaryColor)), balance - excludedBalance),
+        ]
+      )
+    );
+  }
+}
+
+class BalanceRow extends StatelessWidget {
+  final label;
+  final amount;
+  BalanceRow(this.label, this.amount);
+  
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(title: label,
+        trailing: Text(amountToString(amount), style: TextStyle(fontFeatures: [FontFeature.tabularFigures()])),
+        visualDensity: VisualDensity(horizontal: 0, vertical: -4));
+  }
+}
+
 
 sendPayment(PaymentParams param) async {
   param.port.send(0);

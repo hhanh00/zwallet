@@ -364,6 +364,9 @@ abstract class _AccountManager with Store {
         "SELECT sk FROM accounts WHERE id_account = ?1", [account.id]);
     canPay = res2.isNotEmpty && res2[0]['sk'] != null;
     active = account;
+
+    balance = 0;
+    tbalance = 0;
     await _fetchData(account.id, true);
   }
 
@@ -404,13 +407,28 @@ abstract class _AccountManager with Store {
     return res[0]['value'] ?? 0;
   }
 
-  Future<int> getBalanceSpendable(int height) async {
-    final List<Map> res = await db.rawQuery(
+  Future<int> getSpendableBalance() async {
+    final height = syncStatus.latestHeight - settings.anchorOffset;
+    return Sqflite.firstIntValue(await db.rawQuery(
         "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent IS NULL "
-        "AND height <= ?2 AND (excluded IS NULL OR NOT excluded)",
-        [active.id, height]);
-    if (res.isEmpty) return 0;
-    return res[0]['value'] ?? 0;
+        "AND height <= ?2",
+        [active.id, height])) ?? 0;
+  }
+
+  Future<int> getUnderConfirmedBalance() async {
+    final height = syncStatus.latestHeight - settings.anchorOffset;
+    return Sqflite.firstIntValue(await db.rawQuery(
+        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND height > ?2",
+        [active.id, height])) ?? 0;
+  }
+
+  Future<int> getExcludedBalance() async {
+    final height = syncStatus.latestHeight - settings.anchorOffset;
+    final amount = Sqflite.firstIntValue(await db.rawQuery(
+        "SELECT SUM(value) FROM received_notes WHERE account = ?1 AND spent IS NULL "
+        "AND height <= ?2 AND excluded",
+        [active.id, height])) ?? 0;
+    return amount;
   }
 
   @action
@@ -466,6 +484,7 @@ abstract class _AccountManager with Store {
 
   Future<void> _fetchData(int accountId, bool force) async {
     await _updateBalance(accountId);
+    await _updateTBalance(accountId);
 
     final hasNewTx = await _fetchNotesAndHistory(accountId, force);
     int countNewPrices = await WarpApi.syncHistoricalPrices(settings.currency);
@@ -544,21 +563,6 @@ abstract class _AccountManager with Store {
   @action
   Future<void> sortNotes(String field) async {
     noteSortConfig.sortOn(field);
-  }
-
-  List<Note> _sortNoteAmount(List<Note> notes, SortOrder order) {
-    switch (order) {
-      case SortOrder.Ascending:
-        notes.sort((a, b) => a.value.compareTo(b.value));
-        break;
-      case SortOrder.Descending:
-        notes.sort((a, b) => -a.value.compareTo(b.value));
-        break;
-      case SortOrder.Unsorted:
-        notes.sort((a, b) => -a.height.compareTo(b.height));
-        break;
-    }
-    return notes;
   }
 
   @computed
@@ -753,9 +757,17 @@ abstract class _AccountManager with Store {
         [note.id, note.excluded]);
   }
 
-  void updateTBalance() {
-    int balance = WarpApi.getTBalance(active.id);
+  @action
+  Future<void> updateTBalance() async {
+    _updateTBalance(active.id);
+  }
+
+  _updateTBalance(int accountId) {
+    int balance = WarpApi.getTBalance(accountId);
     if (balance != tbalance) tbalance = balance;
+  }
+
+  void autoshield() {
     if (settings.autoShieldThreshold != 0.0 && tbalance / ZECUNIT >= settings.autoShieldThreshold) {
       WarpApi.shieldTAddr(active.id);
     }
@@ -846,7 +858,7 @@ abstract class _SyncStatus with Store {
     final _syncedHeight = Sqflite.firstIntValue(
             await _db.rawQuery("SELECT MAX(height) FROM blocks")) ??
         0;
-    if (_syncedHeight > 0) syncedHeight = _syncedHeight;
+    if (_syncedHeight > 0) setSyncHeight(_syncedHeight);
     return syncedHeight == latestHeight;
   }
 
@@ -859,7 +871,7 @@ abstract class _SyncStatus with Store {
         .of(context)
         .rescanRequested));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
-    syncStatus.setSyncHeight(0);
+    setSyncHeight(0);
     WarpApi.rewindToHeight(0);
     WarpApi.truncateData();
     contacts.markContactsDirty(false);
@@ -873,6 +885,14 @@ abstract class _SyncStatus with Store {
   @action
   void setAccountRestored(bool v) {
     accountRestored = v;
+  }
+
+  @action
+  void setSyncedToLatestHeight() {
+    final anchorOffset = settings.anchorOffset;
+    final h = latestHeight - anchorOffset;
+    setSyncHeight(h);
+    WarpApi.rewindToHeight(h);
   }
 }
 
