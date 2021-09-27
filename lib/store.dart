@@ -887,10 +887,8 @@ abstract class _SyncStatus with Store {
 
   @action
   void setSyncedToLatestHeight() {
-    final anchorOffset = settings.anchorOffset;
-    final h = latestHeight - anchorOffset;
-    setSyncHeight(h);
-    WarpApi.rewindToHeight(h);
+    setSyncHeight(latestHeight);
+    WarpApi.skipToLastHeight();
   }
 }
 
