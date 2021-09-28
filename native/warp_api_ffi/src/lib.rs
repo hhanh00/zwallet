@@ -228,4 +228,23 @@ pub unsafe extern "C" fn truncate_data() {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn make_payment_uri(
+    address: *mut c_char,
+    amount: u64,
+    memo: *mut c_char,
+) -> *mut c_char {
+    let address = CStr::from_ptr(address).to_string_lossy();
+    let memo = CStr::from_ptr(memo).to_string_lossy();
+    let uri = api::make_payment_uri(&address, amount, &memo);
+    CString::new(uri).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn parse_payment_uri(uri: *mut c_char) -> *mut c_char {
+    let uri = CStr::from_ptr(uri).to_string_lossy();
+    let payment_json = api::parse_payment_uri(&uri);
+    CString::new(payment_json).unwrap().into_raw()
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn dummy_export() {}

@@ -9,10 +9,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:warp/payment_uri.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -119,8 +119,8 @@ class _AccountPageState extends State<AccountPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    var s = S.of(context);
     if (!syncStatus.isSynced() && !syncStatus.syncing) _trySync();
-    if (accountManager.active == null) return CircularProgressIndicator();
     final theme = Theme.of(this.context);
     final hasTAddr = accountManager.taddress.isNotEmpty;
     final qrSize = getScreenSize(context) / 2.5;
@@ -131,36 +131,38 @@ class _AccountPageState extends State<AccountPage>
         title: Observer(
             builder: (context) => Text("${accountManager.active.name}")),
         bottom: TabBar(controller: _tabController, isScrollable: true, tabs: [
-          Tab(text: S.of(context).account),
-          Tab(text: S.of(context).notes),
-          Tab(text: S.of(context).history),
-          Tab(text: S.of(context).budget),
-          Tab(text: S.of(context).tradingPl),
-          Tab(text: S.of(context).contacts),
+          Tab(text: s.account),
+          Tab(text: s.notes),
+          Tab(text: s.history),
+          Tab(text: s.budget),
+          Tab(text: s.tradingPl),
+          Tab(text: s.contacts),
         ]),
         actions: [
           Observer(builder: (context) {
             accountManager.canPay;
             return PopupMenuButton<String>(
-              itemBuilder: (context) => [
+              itemBuilder: (context) {
+                return [
                 PopupMenuItem(
-                    child: Text(S.of(context).accounts), value: "Accounts"),
+                    child: Text(s.accounts), value: "Accounts"),
                 PopupMenuItem(
-                    child: Text(S.of(context).backup), value: "Backup"),
+                    child: Text(s.backup), value: "Backup"),
                 PopupMenuItem(
-                    child: Text(S.of(context).rescan), value: "Rescan"),
+                    child: Text(s.rescan), value: "Rescan"),
                 if (accountManager.canPay)
                   PopupMenuItem(
-                      child: Text(S.of(context).coldStorage), value: "Cold"),
+                      child: Text(s.coldStorage), value: "Cold"),
                 if (accountManager.canPay)
                   PopupMenuItem(
-                      child: Text(S.of(context).multipay), value: "MultiPay"),
+                      child: Text(s.multipay), value: "MultiPay"),
                 PopupMenuItem(
-                    child: Text(S.of(context).broadcast), value: "Broadcast"),
+                    child: Text(s.broadcast), value: "Broadcast"),
                 PopupMenuItem(
-                    child: Text(S.of(context).settings), value: "Settings"),
-                PopupMenuItem(child: Text(S.of(context).about), value: "About"),
-              ],
+                    child: Text(s.settings), value: "Settings"),
+                PopupMenuItem(child: Text(s.about), value: "About"),
+              ];
+              },
               onSelected: _onMenu,
             );
           })
@@ -176,7 +178,7 @@ class _AccountPageState extends State<AccountPage>
                 final _2 = syncStatus.syncedHeight;
                 final _3 = syncStatus.latestHeight;
                 return syncStatus.syncedHeight < 0
-                    ? Text("")
+                    ? Text(s.rescanNeeded)
                     : syncStatus.isSynced()
                         ? Text('${syncStatus.syncedHeight}',
                             style: theme.textTheme.caption)
@@ -195,8 +197,8 @@ class _AccountPageState extends State<AccountPage>
                 return Column(children: [
                   if (hasTAddr)
                     Text(showTAddr
-                        ? S.of(context).tapQrCodeForShieldedAddress
-                        : S.of(context).tapQrCodeForTransparentAddress),
+                        ? s.tapQrCodeForShieldedAddress
+                        : s.tapQrCodeForTransparentAddress),
                   Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   GestureDetector(
                       onTap: hasTAddr ? _onQRTap : null,
@@ -228,18 +230,18 @@ class _AccountPageState extends State<AccountPage>
                   Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   if (!showTAddr)
                     OutlinedButton(
-                        child: Text(S.of(context).newSnapAddress),
+                        child: Text(s.newSnapAddress),
                         style: OutlinedButton.styleFrom(
                             side: BorderSide(
                                 width: 1, color: theme.primaryColor)),
                         onPressed: _onSnapAddress),
                   if (showTAddr)
                     OutlinedButton(
-                      child: Text(S.of(context).shieldTranspBalance),
+                      child: Text(s.shieldTranspBalance),
                       style: OutlinedButton.styleFrom(
                           side:
                               BorderSide(width: 1, color: theme.primaryColor)),
-                      onPressed: _onShieldTAddr,
+                      onPressed: () { shieldTAddr(context); },
                     )
                 ]);
               }),
@@ -249,7 +251,9 @@ class _AccountPageState extends State<AccountPage>
                     ? accountManager.tbalance
                     : accountManager.balance;
                 final hide = settings.autoHide && _flat;
-                final balanceColor = !showTAddr ? theme.colorScheme.primaryVariant : theme.colorScheme.secondaryVariant;
+                final balanceColor = !showTAddr
+                    ? theme.colorScheme.primaryVariant
+                    : theme.colorScheme.secondaryVariant;
                 final balanceHi = hide ? '-------' : _getBalance_hi(balance);
                 final deviceWidth = getWidth(context);
                 final digits = deviceWidth.index < DeviceWidth.sm.index ? 7 : 9;
@@ -277,7 +281,7 @@ class _AccountPageState extends State<AccountPage>
                 final fx = _fx();
                 final balanceFX = balance * fx / ZECUNIT;
                 return hide
-                    ? Text(S.of(context).tiltYourDeviceUpToRevealYourBalance)
+                    ? Text(s.tiltYourDeviceUpToRevealYourBalance)
                     : Column(children: [
                         if (fx != 0.0)
                           Text(
@@ -317,15 +321,13 @@ class _AccountPageState extends State<AccountPage>
       floatingActionButton: _accountTab
           ? FloatingActionButton(
               onPressed: _onSend,
-              backgroundColor: Theme.of(context)
-                  .accentColor
-                  .withOpacity(accountManager.canPay ? 1.0 : 0.3),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               child: Icon(Icons.send),
             )
           : _contactsTab
               ? FloatingActionButton(
                   onPressed: _onAddContact,
-                  backgroundColor: Theme.of(context).accentColor,
+                  backgroundColor: theme.colorScheme.secondary,
                   child: Icon(Icons.add),
                 )
               : Container(), // This trailing comma makes auto-formatting nicer for build methods.
@@ -364,29 +366,11 @@ class _AccountPageState extends State<AccountPage>
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
   }
 
-  _onShieldTAddr() {
-    showDialog(
-      context: this.context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-          title: Text(S.of(context).shieldTransparentBalance),
-          content: Text(S
-              .of(context)
-              .doYouWantToTransferYourEntireTransparentBalanceTo(coin.ticker)),
-          actions: confirmButtons(context, () async {
-            final s = S.of(context);
-            Navigator.of(this.context).pop();
-            final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
-            rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
-            final txid = await WarpApi.shieldTAddr(accountManager.active.id);
-            final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
-            rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
-          })),
-    );
-  }
-
-  _onReceive() {
-    showQR(context, _address());
+  _onReceive() async {
+    await showDialog(context: context,
+        barrierColor: Colors.black,
+        builder: (context) =>
+        Dialog(child: PaymentURIPage(_address())));
   }
 
   _unconfirmedStyle() {
@@ -434,9 +418,10 @@ class _AccountPageState extends State<AccountPage>
     }
     await accountManager.fetchAccountData(false);
     await accountManager.updateBalance();
+    await accountManager.updateTBalance();
     await accountManager.updateUnconfirmedBalance();
     await contacts.fetchContacts();
-    accountManager.updateTBalance();
+    accountManager.autoshield();
   }
 
   _onSnapAddress() {
@@ -486,20 +471,9 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _backup() async {
-    final localAuth = LocalAuthentication();
-    try {
-      final didAuthenticate = await localAuth.authenticate(
-          localizedReason: S.of(context).pleaseAuthenticateToShowAccountSeed);
-      if (didAuthenticate) {
-        Navigator.of(context).pushNamed('/backup');
-      }
-    } on PlatformException catch (e) {
-      await showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) => AlertDialog(
-              title: Text(S.of(context).noAuthenticationMethod),
-              content: Text(e.message ?? "")));
+    final didAuthenticate = await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
+    if (didAuthenticate) {
+      Navigator.of(context).pushNamed('/backup');
     }
   }
 
@@ -596,8 +570,8 @@ class BudgetState extends State<BudgetWidget>
                 Text(S.of(context).accountBalanceHistory,
                     style: Theme.of(context).textTheme.headline6),
                 Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-                Expanded(
-                    child: LineChartTimeSeries(accountManager.accountBalances))
+                Expanded(child: Padding(padding: EdgeInsets.only(right: 20),
+                    child: LineChartTimeSeries(accountManager.accountBalances)))
               ]))),
             ],
           );
@@ -638,9 +612,12 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
       Observer(builder: (context) {
         final _ = accountManager.pnlSorted;
         return Expanded(
-            child: accountManager.pnlSeriesIndex != 5
-                ? PnLChart(accountManager.pnls, accountManager.pnlSeriesIndex)
-                : PnLTable());
+            child: Padding(
+                padding: EdgeInsets.only(right: 20),
+                child: accountManager.pnlSeriesIndex != 5
+                    ? PnLChart(
+                        accountManager.pnls, accountManager.pnlSeriesIndex)
+                    : PnLTable()));
       })
     ]);
   }

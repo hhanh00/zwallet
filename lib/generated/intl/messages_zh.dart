@@ -64,6 +64,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "amountMustBeANumber":
             MessageLookupByLibrary.simpleMessage("請輸入數字（數量）"),
         "amountMustBePositive": MessageLookupByLibrary.simpleMessage("數量必須為正數"),
+        "amountTooHigh":
+            MessageLookupByLibrary.simpleMessage("Amount too high"),
         "approve": MessageLookupByLibrary.simpleMessage("同意"),
         "areYouSureYouWantToDeleteThisContact":
             MessageLookupByLibrary.simpleMessage(
@@ -110,6 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Duplicate Account"),
         "enterSeed":
             MessageLookupByLibrary.simpleMessage("輸入種子，秘密鎖匙或查看鎖匙\n留空預備新帳戶"),
+        "excludedNotes": MessageLookupByLibrary.simpleMessage("Excluded Notes"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "height": MessageLookupByLibrary.simpleMessage("高度"),
         "history": MessageLookupByLibrary.simpleMessage("過去記錄"),
@@ -144,16 +147,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "openInExplorer": MessageLookupByLibrary.simpleMessage("用瀏覽器開啟"),
         "pink": MessageLookupByLibrary.simpleMessage("粉紅色"),
         "pl": MessageLookupByLibrary.simpleMessage("獲利/虧損"),
+        "pleaseAuthenticateToSend":
+            MessageLookupByLibrary.simpleMessage("Please authenticate to Send"),
         "pleaseAuthenticateToShowAccountSeed":
             MessageLookupByLibrary.simpleMessage("如要顯示帳戶種子，請驗證"),
         "pleaseConfirm": MessageLookupByLibrary.simpleMessage("請確認"),
         "pnl": MessageLookupByLibrary.simpleMessage("獲利與虧損"),
         "preparingTransaction": MessageLookupByLibrary.simpleMessage("準備交易⋯"),
         "price": MessageLookupByLibrary.simpleMessage("價格"),
+        "protectSend": MessageLookupByLibrary.simpleMessage("Protect Send"),
+        "protectSendSettingChanged": MessageLookupByLibrary.simpleMessage(
+            "Protect Send setting changed"),
         "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("數量"),
         "realized": MessageLookupByLibrary.simpleMessage("已獲利"),
+        "receivePayment":
+            MessageLookupByLibrary.simpleMessage("Receive a payment"),
         "rescan": MessageLookupByLibrary.simpleMessage("重新掃描"),
+        "rescanNeeded": MessageLookupByLibrary.simpleMessage("Rescan Needed"),
         "rescanRequested": MessageLookupByLibrary.simpleMessage("已經收到重新掃描要求"),
         "rescanWalletFromTheFirstBlock":
             MessageLookupByLibrary.simpleMessage("由第一組開始重新掃描銀包"),
@@ -181,6 +192,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("屏蔽你的公開結餘"),
         "shieldingInProgress": MessageLookupByLibrary.simpleMessage("屏蔽進行中"),
         "spendable": MessageLookupByLibrary.simpleMessage("可使用的"),
+        "spendableBalance":
+            MessageLookupByLibrary.simpleMessage("Spendable Balance"),
         "synching": MessageLookupByLibrary.simpleMessage("同步"),
         "table": MessageLookupByLibrary.simpleMessage("表列"),
         "tapAnIconToShowTheQrCode":
@@ -201,10 +214,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "toMakeAContactSendThemAMemoWithContact":
             MessageLookupByLibrary.simpleMessage("發送備忘到 Contact:"),
         "total": MessageLookupByLibrary.simpleMessage("總數"),
+        "totalBalance": MessageLookupByLibrary.simpleMessage("Total Balance"),
         "tradingChartRange": MessageLookupByLibrary.simpleMessage("交易範圍"),
         "tradingPl": MessageLookupByLibrary.simpleMessage("交易"),
         "transactionDetails": MessageLookupByLibrary.simpleMessage("交易資料"),
         "txId": MessageLookupByLibrary.simpleMessage("TX ID:"),
+        "underConfirmed":
+            MessageLookupByLibrary.simpleMessage("Under Confirmed"),
+        "unshielded": MessageLookupByLibrary.simpleMessage("Unshielded"),
+        "unshieldedBalance":
+            MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("未簽署交易文件"),
         "useSettingscurrency": m7,

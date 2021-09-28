@@ -83,4 +83,8 @@ void delete_account(uint32_t account);
 
 void truncate_data(void);
 
+char *make_payment_uri(char *address, uint64_t amount, char *memo);
+
+char *parse_payment_uri(char *uri);
+
 void dummy_export(void);

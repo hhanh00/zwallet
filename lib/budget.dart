@@ -59,11 +59,11 @@ class BudgetTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final palette = ColorPalette.adjacent(Theme.of(context).primaryColor,
         numberOfColors: max(spendings.length, 1));
-    final amountStyle = TextStyle(fontFeatures: [FontFeature.tabularFigures()]);
     final rows = spendings.asMap().entries.map((e) {
-      final style = TextStyle(color: palette[e.key]);
+      final style = TextStyle(color: palette[e.key], fontFeatures: [FontFeature.tabularFigures()]);
       final address = e.value.address;
       final shortAddress = addressLeftTrim(address);
       final addressOrContact = e.value.contact ?? shortAddress;
@@ -83,8 +83,8 @@ class BudgetTable extends StatelessWidget {
         headingRowHeight: 40,
         horizontalMargin: 8,
         columns: [
-          DataColumn(label: Text('Address')),
-          DataColumn(label: Text('Amount', style: amountStyle), numeric: true),
+          DataColumn(label: Text(s.address)),
+          DataColumn(label: Text(s.amount), numeric: true),
         ],
         rows: rows);
   }

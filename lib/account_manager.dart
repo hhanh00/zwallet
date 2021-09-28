@@ -125,6 +125,9 @@ class AccountManagerState extends State<AccountManagerPage> {
           Navigator.of(context).pop();
         });
     }
+    else if (syncStatus.syncedHeight < 0) {
+      syncStatus.setSyncedToLatestHeight();
+    }
 
     final navigator = Navigator.of(context);
     if (navigator.canPop())

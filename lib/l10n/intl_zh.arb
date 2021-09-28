@@ -132,5 +132,17 @@
   "gold": "Gold",
   "purple": "Purple",
   "noRecipient": "No Recipient",
-  "addARecipientAndItWillShowHere": "Add a recipient and it will show here"
+  "addARecipientAndItWillShowHere": "Add a recipient and it will show here",
+  "receivePayment": "Receive a payment",
+  "amountTooHigh": "Amount too high",
+  "protectSend": "Protect Send",
+  "protectSendSettingChanged": "Protect Send setting changed",
+  "pleaseAuthenticateToSend": "Please authenticate to Send",
+  "unshielded": "Unshielded",
+  "unshieldedBalance": "Unshielded Balance",
+  "totalBalance": "Total Balance",
+  "underConfirmed": "Under Confirmed",
+  "excludedNotes": "Excluded Notes",
+  "spendableBalance": "Spendable Balance",
+  "rescanNeeded": "Rescan Needed"
 }

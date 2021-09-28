@@ -891,10 +891,10 @@ class S {
     );
   }
 
-  /// `Spendable:`
+  /// `Spendable`
   String get spendable {
     return Intl.message(
-      'Spendable:',
+      'Spendable',
       name: 'spendable',
       desc: '',
       args: [],
@@ -1427,6 +1427,126 @@ class S {
     return Intl.message(
       'Add a recipient and it will show here',
       name: 'addARecipientAndItWillShowHere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive Payment`
+  String get receivePayment {
+    return Intl.message(
+      'Receive Payment',
+      name: 'receivePayment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount too high`
+  String get amountTooHigh {
+    return Intl.message(
+      'Amount too high',
+      name: 'amountTooHigh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Protect Send`
+  String get protectSend {
+    return Intl.message(
+      'Protect Send',
+      name: 'protectSend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Protect Send setting changed`
+  String get protectSendSettingChanged {
+    return Intl.message(
+      'Protect Send setting changed',
+      name: 'protectSendSettingChanged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please authenticate to Send`
+  String get pleaseAuthenticateToSend {
+    return Intl.message(
+      'Please authenticate to Send',
+      name: 'pleaseAuthenticateToSend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unshielded`
+  String get unshielded {
+    return Intl.message(
+      'Unshielded',
+      name: 'unshielded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unshielded Balance`
+  String get unshieldedBalance {
+    return Intl.message(
+      'Unshielded Balance',
+      name: 'unshieldedBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Balance`
+  String get totalBalance {
+    return Intl.message(
+      'Total Balance',
+      name: 'totalBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Under Confirmed`
+  String get underConfirmed {
+    return Intl.message(
+      'Under Confirmed',
+      name: 'underConfirmed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Excluded Notes`
+  String get excludedNotes {
+    return Intl.message(
+      'Excluded Notes',
+      name: 'excludedNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spendable Balance`
+  String get spendableBalance {
+    return Intl.message(
+      'Spendable Balance',
+      name: 'spendableBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rescan Needed`
+  String get rescanNeeded {
+    return Intl.message(
+      'Rescan Needed',
+      name: 'rescanNeeded',
       desc: '',
       args: [],
     );

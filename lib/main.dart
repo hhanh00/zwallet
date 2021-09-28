@@ -4,12 +4,16 @@ import 'dart:ui';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:path/path.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:warp/payment_uri.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -32,6 +36,7 @@ const ZECUNIT = 100000000.0;
 var ZECUNIT_DECIMAL = Decimal.parse('100000000');
 const mZECUNIT = 100000;
 const DEFAULT_FEE = 1000;
+const MAXMONEY = 21000000;
 
 var accountManager = AccountManager();
 var priceStore = PriceStore();
@@ -100,6 +105,23 @@ class ZWalletApp extends StatefulWidget {
 
 class ZWalletAppState extends State<ZWalletApp> {
   bool initialized = false;
+
+  RateMyApp rateMyApp = RateMyApp(
+    preferencesPrefix: 'rateMyApp_',
+    minDays: 0,
+    minLaunches: 20,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      await rateMyApp.init();
+      if (mounted && rateMyApp.shouldOpenDialog) {
+        rateMyApp.showRateDialog(this.context);
+      }
+    });
+  }
 
   Future<bool> _init() async {
     if (!initialized) {
@@ -272,6 +294,14 @@ double parseNumber(String? s) {
   return NumberFormat.currency().parse(s).toDouble();
 }
 
+bool checkNumber(String s) {
+  try {
+    NumberFormat.currency().parse(s);
+  }
+  on FormatException { return false; }
+  return true;
+}
+
 int precision(bool mZEC) => mZEC ? 3 : 8;
 
 Future<String?> scanCode(BuildContext context) async {
@@ -303,3 +333,49 @@ DeviceWidth getWidth(BuildContext context) {
 
 String decimalFormat(double x, int decimalDigits, { String symbol = '' }) =>
     NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol).format(x).trimRight();
+
+String amountToString(int amount) => decimalFormat(amount / ZECUNIT, 8);
+
+Future<bool> authenticate(BuildContext context, String reason) async {
+  final localAuth = LocalAuthentication();
+  try {
+    final didAuthenticate = await localAuth.authenticate(
+        localizedReason: reason);
+    if (didAuthenticate) {
+      return true;
+    }
+  } on PlatformException catch (e) {
+    await showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) =>
+            AlertDialog(
+                title: Text(S
+                    .of(context)
+                    .noAuthenticationMethod),
+                content: Text(e.message ?? "")));
+  }
+  return false;
+}
+
+Future<void> shieldTAddr(BuildContext context) async {
+  await showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+        title: Text(S.of(context).shieldTransparentBalance),
+        content: Text(S
+            .of(context)
+            .doYouWantToTransferYourEntireTransparentBalanceTo(coin.ticker)),
+        actions: confirmButtons(context, () async {
+          final s = S.of(context);
+          Navigator.of(context).pop();
+          final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
+          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
+          final txid = await WarpApi.shieldTAddr(accountManager.active.id);
+          final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
+          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+        })),
+  );
+}
+

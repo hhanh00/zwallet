@@ -425,3 +425,19 @@ pub fn delete_account(account: u32) {
     };
     log_result(res())
 }
+
+pub fn make_payment_uri(address: &str, amount: u64, memo: &str) -> String {
+    let res = || {
+        let uri = Wallet::make_payment_uri(address, amount, memo)?;
+        Ok(uri)
+    };
+    log_result(res())
+}
+
+pub fn parse_payment_uri(uri: &str) -> String {
+    let res = || {
+        let payment_json = Wallet::parse_payment_uri(uri)?;
+        Ok(payment_json)
+    };
+    log_result(res())
+}

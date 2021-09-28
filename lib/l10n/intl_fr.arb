@@ -85,7 +85,7 @@
   "useSettingscurrency": "Utiliser {currency}",
   "includeFeeInAmount": "Inclure les frais dans le montant",
   "maxAmountPerNote": "Montant maximum par note",
-  "spendable": "Dépensable:",
+  "spendable": "Dépensable",
   "notEnoughBalance": "Solde insuffisant",
   "approve": "APPROUVER",
   "sendingAzecCointickerToAddress": "Envoi de {aZEC} {ticker} à {address}",
@@ -136,5 +136,17 @@
   "gold": "Gold",
   "purple": "Purple",
   "noRecipient": "Pas de receveur",
-  "addARecipientAndItWillShowHere": "Ajoutez un receveur et il sera ici"
+  "addARecipientAndItWillShowHere": "Ajoutez un receveur et il sera ici",
+  "receivePayment": "Recevoir un payment",
+  "amountTooHigh": "Amount too high",
+  "protectSend": "Protect Send",
+  "protectSendSettingChanged": "Protect Send setting changed",
+  "pleaseAuthenticateToSend": "Please authenticate to Send",
+  "unshielded": "Unshielded",
+  "unshieldedBalance": "Unshielded Balance",
+  "totalBalance": "Total Balance",
+  "underConfirmed": "Under Confirmed",
+  "excludedNotes": "Excluded Notes",
+  "spendableBalance": "Spendable Balance",
+  "rescanNeeded": "Rescan Needed"
 }

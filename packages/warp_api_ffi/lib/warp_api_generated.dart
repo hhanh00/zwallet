@@ -434,6 +434,36 @@ class NativeLibrary {
   late final _dart_truncate_data _truncate_data =
       _truncate_data_ptr.asFunction<_dart_truncate_data>();
 
+  ffi.Pointer<ffi.Int8> make_payment_uri(
+    ffi.Pointer<ffi.Int8> address,
+    int amount,
+    ffi.Pointer<ffi.Int8> memo,
+  ) {
+    return _make_payment_uri(
+      address,
+      amount,
+      memo,
+    );
+  }
+
+  late final _make_payment_uri_ptr =
+      _lookup<ffi.NativeFunction<_c_make_payment_uri>>('make_payment_uri');
+  late final _dart_make_payment_uri _make_payment_uri =
+      _make_payment_uri_ptr.asFunction<_dart_make_payment_uri>();
+
+  ffi.Pointer<ffi.Int8> parse_payment_uri(
+    ffi.Pointer<ffi.Int8> uri,
+  ) {
+    return _parse_payment_uri(
+      uri,
+    );
+  }
+
+  late final _parse_payment_uri_ptr =
+      _lookup<ffi.NativeFunction<_c_parse_payment_uri>>('parse_payment_uri');
+  late final _dart_parse_payment_uri _parse_payment_uri =
+      _parse_payment_uri_ptr.asFunction<_dart_parse_payment_uri>();
+
   void dummy_export() {
     return _dummy_export();
   }
@@ -711,6 +741,26 @@ typedef _dart_delete_account = void Function(
 typedef _c_truncate_data = ffi.Void Function();
 
 typedef _dart_truncate_data = void Function();
+
+typedef _c_make_payment_uri = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> address,
+  ffi.Uint64 amount,
+  ffi.Pointer<ffi.Int8> memo,
+);
+
+typedef _dart_make_payment_uri = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> address,
+  int amount,
+  ffi.Pointer<ffi.Int8> memo,
+);
+
+typedef _c_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> uri,
+);
+
+typedef _dart_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> uri,
+);
 
 typedef _c_dummy_export = ffi.Void Function();
 

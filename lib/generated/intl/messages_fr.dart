@@ -74,6 +74,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Le montant doit être un nombre"),
         "amountMustBePositive": MessageLookupByLibrary.simpleMessage(
             "Le montant doit être positif"),
+        "amountTooHigh":
+            MessageLookupByLibrary.simpleMessage("Amount too high"),
         "approve": MessageLookupByLibrary.simpleMessage("APPROUVER"),
         "areYouSureYouWantToDeleteThisContact":
             MessageLookupByLibrary.simpleMessage(
@@ -122,6 +124,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Compte en double"),
         "enterSeed": MessageLookupByLibrary.simpleMessage(
             "Entrez la graine, la clé secrète ou la clé de visualisation. Laissez vide pour un nouveau compte"),
+        "excludedNotes": MessageLookupByLibrary.simpleMessage("Excluded Notes"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "height": MessageLookupByLibrary.simpleMessage("Hauteur"),
         "history": MessageLookupByLibrary.simpleMessage("Historique"),
@@ -164,6 +167,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ouvrir dans l\'explorateur"),
         "pink": MessageLookupByLibrary.simpleMessage("Rose"),
         "pl": MessageLookupByLibrary.simpleMessage("Profit/Perte"),
+        "pleaseAuthenticateToSend":
+            MessageLookupByLibrary.simpleMessage("Please authenticate to Send"),
         "pleaseAuthenticateToShowAccountSeed":
             MessageLookupByLibrary.simpleMessage(
                 "Veuillez vous authentifier pour voir la graine du compte"),
@@ -173,10 +178,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "preparingTransaction": MessageLookupByLibrary.simpleMessage(
             "Préparation de la transaction..."),
         "price": MessageLookupByLibrary.simpleMessage("Prix"),
+        "protectSend": MessageLookupByLibrary.simpleMessage("Protect Send"),
+        "protectSendSettingChanged": MessageLookupByLibrary.simpleMessage(
+            "Protect Send setting changed"),
         "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("Quantité"),
         "realized": MessageLookupByLibrary.simpleMessage("Réalisé"),
+        "receivePayment":
+            MessageLookupByLibrary.simpleMessage("Recevoir un payment"),
         "rescan": MessageLookupByLibrary.simpleMessage("Parcourir à nouveau"),
+        "rescanNeeded": MessageLookupByLibrary.simpleMessage("Rescan Needed"),
         "rescanRequested":
             MessageLookupByLibrary.simpleMessage("Parcours demandé..."),
         "rescanWalletFromTheFirstBlock": MessageLookupByLibrary.simpleMessage(
@@ -209,7 +220,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Masquer le solde transparent"),
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Masquage en cours..."),
-        "spendable": MessageLookupByLibrary.simpleMessage("Dépensable:"),
+        "spendable": MessageLookupByLibrary.simpleMessage("Dépensable"),
+        "spendableBalance":
+            MessageLookupByLibrary.simpleMessage("Spendable Balance"),
         "synching":
             MessageLookupByLibrary.simpleMessage("Synchronisation en cours"),
         "table": MessageLookupByLibrary.simpleMessage("Tableau"),
@@ -233,12 +246,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Pour établir un contact, envoyez-lui un mémo avec Contact:"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
+        "totalBalance": MessageLookupByLibrary.simpleMessage("Total Balance"),
         "tradingChartRange": MessageLookupByLibrary.simpleMessage(
             "Domaine de temps des graphiques"),
         "tradingPl": MessageLookupByLibrary.simpleMessage("Profit et Pertes"),
         "transactionDetails":
             MessageLookupByLibrary.simpleMessage("Détails de la transaction"),
         "txId": MessageLookupByLibrary.simpleMessage("ID de tx"),
+        "underConfirmed":
+            MessageLookupByLibrary.simpleMessage("Under Confirmed"),
+        "unshielded": MessageLookupByLibrary.simpleMessage("Unshielded"),
+        "unshieldedBalance":
+            MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Fichier de transaction non signée"),
         "useSettingscurrency": m7,
