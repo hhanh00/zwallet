@@ -61,7 +61,7 @@ class SendState extends State<SendPage> {
     });
 
     _newBlockAutorunDispose = autorun((_) async {
-      final _ = accountManager.dataEpoch;
+      final _ = syncStatus.latestHeight;
       final sBalance = await accountManager.getShieldedBalance();
       final tBalance = accountManager.tbalance;
       final excludedBalance = await accountManager.getExcludedBalance();
