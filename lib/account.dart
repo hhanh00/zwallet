@@ -477,11 +477,11 @@ class _AccountPageState extends State<AccountPage>
     }
   }
 
-  _rescan() {
-    rescanDialog(context, () {
-      Navigator.of(context).pop();
+  _rescan() async {
+    final approved = await rescanDialog(context);
+    if (approved) {
       syncStatus.sync(context);
-    });
+    }
   }
 
   _cold() {

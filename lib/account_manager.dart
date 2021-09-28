@@ -120,10 +120,9 @@ class AccountManagerState extends State<AccountManagerPage> {
     await accountManager.setActiveAccount(account);
     if (syncStatus.accountRestored) {
       syncStatus.setAccountRestored(false);
-      await rescanDialog(context, () {
-          syncStatus.sync(context);
-          Navigator.of(context).pop();
-        });
+      final approved = await rescanDialog(context);
+      if (approved)
+        syncStatus.sync(context);
     }
     else if (syncStatus.syncedHeight < 0) {
       syncStatus.setSyncedToLatestHeight();

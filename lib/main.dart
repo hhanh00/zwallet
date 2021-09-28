@@ -221,31 +221,32 @@ void showQR(BuildContext context, String text) {
           ));
 }
 
-Future<void> rescanDialog(
-    BuildContext context, VoidCallback continuation) async {
-  await showDialog(
+Future<bool> rescanDialog(
+    BuildContext context) async {
+  final approved = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
           title: Text(S.of(context).rescan),
           content: Text(S.of(context).rescanWalletFromTheFirstBlock),
-          actions: confirmButtons(context, () => confirmWifi(context, continuation))));
+          actions: confirmButtons(context, () => Navigator.of(context).pop(true), cancelValue: false))) ?? false;
+  if (approved)
+    return await confirmWifi(context);
+  return false;
 }
 
-Future<void> confirmWifi(BuildContext context, VoidCallback continuation) async {
+Future<bool> confirmWifi(BuildContext context) async {
   final connectivity = await Connectivity().checkConnectivity();
   if (connectivity == ConnectivityResult.mobile) {
-    Navigator.of(context).pop();
-    await showDialog(
+    return await showDialog<bool?>(
         context: context,
         barrierDismissible: false,
         builder: (context) => AlertDialog(
             title: Text(S.of(context).rescan),
             content: Text('On Mobile Data, scanning may incur additional charges. Do you want to proceed?'),
-            actions: confirmButtons(context, continuation)));
+            actions: confirmButtons(context, () => Navigator.of(context).pop(true), cancelValue: false))) ?? false;
   }
-  else
-    continuation();
+  return true;
 }
 
 Future<bool> showMessageBox(
