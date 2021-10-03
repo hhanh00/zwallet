@@ -18,9 +18,9 @@ import 'store.dart';
 import 'generated/l10n.dart';
 
 class SendPage extends StatefulWidget {
-  final Contact? contact;
+  final SendPageArgs? args;
 
-  SendPage(this.contact);
+  SendPage(this.args);
 
   @override
   SendState createState() => SendState();
@@ -50,8 +50,11 @@ class SendState extends State<SendPage> {
 
   @override
   initState() {
-    if (widget.contact != null)
-      _addressController.text = widget.contact!.address;
+    if (widget.args?.contact != null)
+      _addressController.text = widget.args!.contact!.address;
+
+    if (widget.args?.uri != null)
+      _setPaymentURI(widget.args!.uri!);
 
     _updateFiatAmount();
     super.initState();
@@ -283,15 +286,7 @@ class SendState extends State<SendPage> {
     final code = await scanCode(context);
     if (code != null) {
       if (_checkAddress(code) != null) {
-        final json = WarpApi.parsePaymentURI(code);
-        final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
-        setState(() {
-          _address = payment.address;
-          _addressController.text = _address;
-          _memoController.text = payment.memo;
-          _amount = payment.amount;
-          _zecAmountController.text = amountFromZAT(_amount);
-        });
+        _setPaymentURI(code); // not an address
       } else {
         setState(() {
           _address = code;
@@ -299,6 +294,20 @@ class SendState extends State<SendPage> {
         });
       }
     }
+  }
+
+  void _setPaymentURI(String uri) {
+    final json = WarpApi.parsePaymentURI(uri);
+    try {
+      final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
+      setState(() {
+        _address = payment.address;
+        _addressController.text = _address;
+        _memoController.text = payment.memo;
+        _amount = payment.amount;
+        _zecAmountController.text = amountFromZAT(_amount);
+      });
+    } on FormatException {}
   }
 
   void _onAmount(String? vs) {

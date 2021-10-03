@@ -61,6 +61,7 @@ dependencies:
   currency_text_input_formatter: ^2.1.2
   sensors_plus: ^1.1.0
   connectivity_plus: ^1.1.0
+  uni_links: ^0.5.1
   flutter_localizations:
     sdk: flutter
 

@@ -52,7 +52,7 @@ class ContactsState extends State<ContactsTab> {
   }
 
   _onContact(Contact c) {
-    Navigator.of(context).pushNamed('/send', arguments: c);
+    Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(contact: c));
   }
 
   _editContact(Contact c) async {

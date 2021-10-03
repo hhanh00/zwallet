@@ -1209,3 +1209,10 @@ class DecodedPaymentURI {
 
   Map<String, dynamic> toJson() => _$DecodedPaymentURIToJson(this);
 }
+
+class SendPageArgs {
+  final Contact? contact;
+  final String? uri;
+
+  SendPageArgs({this.contact, this.uri});
+}

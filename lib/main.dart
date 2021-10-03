@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
@@ -17,6 +18,8 @@ import 'package:warp/payment_uri.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:uni_links/uni_links.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'generated/l10n.dart';
 
 import 'account.dart';
@@ -53,6 +56,17 @@ Future<Database> getDatabase() async {
   return db;
 }
 
+StreamSubscription? subUniLinks;
+
+Future<void> initUniLinks(BuildContext context) async {
+  try {
+    final initialLink = await getInitialLink();
+    if (initialLink != null)
+        Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(uri: initialLink));
+  } on PlatformException {
+  }
+}
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final home = ZWalletApp();
@@ -83,7 +97,7 @@ void main() {
                       '/account': (context) => AccountPage(),
                       '/restore': (context) => RestorePage(),
                       '/send': (context) =>
-                          SendPage(settings.arguments as Contact?),
+                          SendPage(settings.arguments as SendPageArgs?),
                       '/accounts': (context) => AccountManagerPage(),
                       '/settings': (context) => SettingsPage(),
                       '/tx': (context) =>
@@ -123,7 +137,7 @@ class ZWalletAppState extends State<ZWalletApp> {
     });
   }
 
-  Future<bool> _init() async {
+  Future<bool> _init(BuildContext context) async {
     if (!initialized) {
       initialized = true;
       final dbPath = await getDatabasesPath();
@@ -131,8 +145,8 @@ class ZWalletAppState extends State<ZWalletApp> {
       final db = await getDatabase();
       await accountManager.init(db);
       await contacts.init(db);
-
       await syncStatus.init();
+      await initUniLinks(context);
     }
     return true;
   }
@@ -140,7 +154,7 @@ class ZWalletAppState extends State<ZWalletApp> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _init(),
+        future: _init(context),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return Container();
           return accountManager.accounts.isNotEmpty

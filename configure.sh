@@ -20,6 +20,7 @@ cp lib/coin/$COIN.dart lib/coin/coindef.dart
 cp native/zcash-sync/src/coindef/$COIN.rs native/zcash-sync/src/coin.rs
 
 mo pubspec.yaml.tpl > pubspec.yaml
+mo android/app/src/main/AndroidManifest.xml.tpl > android/app/src/main/AndroidManifest.xml
 
 flutter pub get
 flutter pub run change_app_package_name:main me.hanh.$APP_NAME
