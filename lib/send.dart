@@ -36,6 +36,8 @@ class SendState extends State<SendPage> {
   var _tBalance = 0;
   var _excludedBalance = 0;
   var _underConfirmedBalance = 0;
+  var _unconfirmedSpentBalance = 0;
+  var _unconfirmedBalance = 0;
   final _addressController = TextEditingController();
   final _memoController = TextEditingController();
   var _mZEC = true;
@@ -70,11 +72,15 @@ class SendState extends State<SendPage> {
       final excludedBalance = await accountManager.getExcludedBalance();
       final underConfirmedBalance =
           await accountManager.getUnderConfirmedBalance();
+      final unconfirmedSpentBalance = await accountManager.getUnconfirmedSpentBalance();
+      final unconfirmedBalance = accountManager.unconfirmedBalance;
       setState(() {
         _sBalance = sBalance;
         _tBalance = tBalance;
         _excludedBalance = excludedBalance;
         _underConfirmedBalance = underConfirmedBalance;
+        _unconfirmedSpentBalance = unconfirmedSpentBalance;
+        _unconfirmedBalance = unconfirmedBalance;
       });
     });
   }
@@ -173,7 +179,7 @@ class SendState extends State<SendPage> {
                                 }))
                       ]),
                       BalanceTable(_sBalance, _tBalance, _excludedBalance,
-                          _underConfirmedBalance),
+                          _underConfirmedBalance, change),
                       ExpansionPanelList(
                           expansionCallback: (_, isExpanded) {
                             setState(() {
@@ -428,6 +434,8 @@ class SendState extends State<SendPage> {
 
   get spendable => math.max(
       _sBalance - _excludedBalance - _underConfirmedBalance - DEFAULT_FEE, 0);
+
+  get change => _unconfirmedSpentBalance + _unconfirmedBalance;
 }
 
 class BalanceTable extends StatelessWidget {
@@ -435,9 +443,10 @@ class BalanceTable extends StatelessWidget {
   final int tBalance;
   final int excludedBalance;
   final int underConfirmedBalance;
+  final int change;
 
   BalanceTable(this.sBalance, this.tBalance, this.excludedBalance,
-      this.underConfirmedBalance);
+      this.underConfirmedBalance, this.change);
 
   @override
   Widget build(BuildContext context) {
@@ -459,7 +468,7 @@ class BalanceTable extends StatelessWidget {
       borderRadius: BorderRadius.circular(8)),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
       BalanceRow(Text(S.of(context).totalBalance), totalBalance),
-      BalanceRow(Text(S.of(context).underConfirmed), -underConfirmedBalance),
+      BalanceRow(Text(S.of(context).underConfirmed), -underConfirmed),
       BalanceRow(Text(S.of(context).excludedNotes), -excludedBalance),
       BalanceRow(tBalanceLabel, -tBalance),
       BalanceRow(Text(S.of(context).spendableBalance), spendable,
@@ -467,7 +476,8 @@ class BalanceTable extends StatelessWidget {
     ]));
   }
 
-  get totalBalance => sBalance + tBalance;
+  get totalBalance => sBalance + tBalance + change;
+  get underConfirmed => -underConfirmedBalance - change;
 
   get spendable => math.max(
       sBalance - excludedBalance - underConfirmedBalance - DEFAULT_FEE, 0);

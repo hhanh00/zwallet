@@ -413,6 +413,12 @@ abstract class _AccountManager with Store {
         [active.id])) ?? 0;
   }
 
+  Future<int> getUnconfirmedSpentBalance() async {
+    return Sqflite.firstIntValue(await db.rawQuery(
+        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent = 0",
+        [active.id])) ?? 0;
+  }
+
   Future<int> getUnderConfirmedBalance() async {
     final height = syncStatus.latestHeight - settings.anchorOffset;
     return Sqflite.firstIntValue(await db.rawQuery(
