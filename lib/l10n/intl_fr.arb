@@ -148,5 +148,7 @@
   "underConfirmed": "Pas assez de confs",
   "excludedNotes": "Billets exclus",
   "spendableBalance": "Montant dépensable",
-  "rescanNeeded": "Scan nécessaire"
+  "rescanNeeded": "Scan nécessaire",
+  "tapTransactionForDetails": "Tap Transaction for Details",
+  "transactionHistory": "Transaction History"
 }

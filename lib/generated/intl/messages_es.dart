@@ -236,6 +236,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Pinchar QR para Dirección Blindada"),
         "tapQrCodeForTransparentAddress": MessageLookupByLibrary.simpleMessage(
             "Pinchar QR para Dirección Transparente"),
+        "tapTransactionForDetails":
+            MessageLookupByLibrary.simpleMessage("Tap Transaction for Details"),
         "theme": MessageLookupByLibrary.simpleMessage("Tema"),
         "thisAccountAlreadyExists":
             MessageLookupByLibrary.simpleMessage("Esta cuenta ya existe."),
@@ -253,6 +255,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "tradingPl": MessageLookupByLibrary.simpleMessage("Intercambio G&P"),
         "transactionDetails":
             MessageLookupByLibrary.simpleMessage("Detalles de transacción"),
+        "transactionHistory":
+            MessageLookupByLibrary.simpleMessage("Transaction History"),
         "txId": MessageLookupByLibrary.simpleMessage("TX ID:"),
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Confirmaciones Insuficiente"),

@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:intl/intl.dart';
-
+import 'package:csv/csv.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 
@@ -29,6 +31,10 @@ class HistoryState extends State<HistoryWidget>
         scrollDirection: Axis.vertical,
         child: Observer(builder: (context) {
           return PaginatedDataTable(
+              header: Text(S.of(context).tapTransactionForDetails, style: Theme.of(context).textTheme.bodyText2),
+              actions: [
+                IconButton(onPressed: _onExport, icon: Icon(Icons.save))
+              ],
               columns: [
                 DataColumn(
                     label: settings.showConfirmations
@@ -96,6 +102,19 @@ class HistoryState extends State<HistoryWidget>
               rowsPerPage: settings.rowsPerPage,
               source: HistoryDataSource(context));
         }));
+  }
+
+  _onExport() async {
+    final csvData = accountManager.sortedTxs.map((tx) => [
+      tx.fullTxId, tx.height, tx.timestamp, tx.address, tx.contact ?? '',
+      tx.value, tx.memo]).toList();
+    final csvConverter = ListToCsvConverter();
+    final csv = csvConverter.convert(csvData);
+    Directory tempDir = await getTemporaryDirectory();
+    String filename = "${tempDir.path}/tx_history.csv";
+    final file = File(filename);
+    await file.writeAsString(csv);
+    Share.shareFiles([filename], subject: S.of(context).transactionHistory);
   }
 }
 

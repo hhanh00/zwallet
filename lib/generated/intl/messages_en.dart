@@ -236,6 +236,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Tap QR Code for Shielded Address"),
         "tapQrCodeForTransparentAddress": MessageLookupByLibrary.simpleMessage(
             "Tap QR Code for Transparent Address"),
+        "tapTransactionForDetails":
+            MessageLookupByLibrary.simpleMessage("Tap Transaction for Details"),
         "theme": MessageLookupByLibrary.simpleMessage("Theme"),
         "thisAccountAlreadyExists": MessageLookupByLibrary.simpleMessage(
             "Another account has the same address"),
@@ -253,6 +255,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "tradingPl": MessageLookupByLibrary.simpleMessage("Wallet P&L"),
         "transactionDetails":
             MessageLookupByLibrary.simpleMessage("Transaction Details"),
+        "transactionHistory":
+            MessageLookupByLibrary.simpleMessage("Transaction History"),
         "txId": MessageLookupByLibrary.simpleMessage("TX ID"),
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Under Confirmed"),

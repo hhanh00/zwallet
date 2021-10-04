@@ -1551,6 +1551,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Tap Transaction for Details`
+  String get tapTransactionForDetails {
+    return Intl.message(
+      'Tap Transaction for Details',
+      name: 'tapTransactionForDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction History`
+  String get transactionHistory {
+    return Intl.message(
+      'Transaction History',
+      name: 'transactionHistory',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

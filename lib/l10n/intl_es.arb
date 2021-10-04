@@ -148,5 +148,7 @@
   "underConfirmed": "Confirmaciones Insuficiente",
   "excludedNotes": "Notas Excluidas",
   "spendableBalance": "Saldo Gastable",
-  "rescanNeeded": "Necesita Escanear"
+  "rescanNeeded": "Necesita Escanear",
+  "tapTransactionForDetails": "Tap Transaction for Details",
+  "transactionHistory": "Transaction History"
 }

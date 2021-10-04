@@ -148,5 +148,7 @@
   "underConfirmed": "Under Confirmed",
   "excludedNotes": "Excluded Notes",
   "spendableBalance": "Spendable Balance",
-  "rescanNeeded": "Rescan Needed"
+  "rescanNeeded": "Rescan Needed",
+  "tapTransactionForDetails": "Tap Transaction for Details",
+  "transactionHistory": "Transaction History"
 }
