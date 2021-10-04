@@ -309,6 +309,11 @@ double parseNumber(String? s) {
   return NumberFormat.currency().parse(s).toDouble();
 }
 
+int stringToAmount(String? s) {
+  final a = parseNumber(s);
+  return (Decimal.parse(a.toString()) * ZECUNIT_DECIMAL).toInt();
+}
+
 bool checkNumber(String s) {
   try {
     NumberFormat.currency().parse(s);

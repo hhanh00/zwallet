@@ -90,7 +90,7 @@ class PaymentURIState extends State<PaymentURIPage> {
 
     final String _qrText;
     if (amount.isNotEmpty) {
-      final a = (Decimal.parse(amount) * ZECUNIT_DECIMAL).toInt();
+      final a = stringToAmount(amount);
       _qrText = WarpApi.makePaymentURI(widget.address, a, memo);
     } else
       _qrText = widget.address;
