@@ -150,5 +150,6 @@
   "spendableBalance": "Montant dépensable",
   "rescanNeeded": "Scan nécessaire",
   "tapTransactionForDetails": "Tap Transaction for Details",
-  "transactionHistory": "Transaction History"
+  "transactionHistory": "Transaction History",
+  "help": "Help"
 }

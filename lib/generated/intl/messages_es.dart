@@ -128,6 +128,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Notas Excluidas"),
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "height": MessageLookupByLibrary.simpleMessage("Altura"),
+        "help": MessageLookupByLibrary.simpleMessage("Help"),
         "history": MessageLookupByLibrary.simpleMessage("Historia"),
         "includeFeeInAmount": MessageLookupByLibrary.simpleMessage(
             "Incluir tarifa en la cantidad"),

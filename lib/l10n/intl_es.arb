@@ -150,5 +150,6 @@
   "spendableBalance": "Saldo Gastable",
   "rescanNeeded": "Necesita Escanear",
   "tapTransactionForDetails": "Tap Transaction for Details",
-  "transactionHistory": "Transaction History"
+  "transactionHistory": "Transaction History",
+  "help": "Help"
 }

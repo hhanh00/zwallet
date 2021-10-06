@@ -127,6 +127,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "excludedNotes": MessageLookupByLibrary.simpleMessage("Excluded Notes"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "height": MessageLookupByLibrary.simpleMessage("Height"),
+        "help": MessageLookupByLibrary.simpleMessage("Help"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
         "includeFeeInAmount":
             MessageLookupByLibrary.simpleMessage("Include Fee in Amount"),

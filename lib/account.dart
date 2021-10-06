@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:warp/payment_uri.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
@@ -160,6 +161,7 @@ class _AccountPageState extends State<AccountPage>
                     child: Text(s.broadcast), value: "Broadcast"),
                 PopupMenuItem(
                     child: Text(s.settings), value: "Settings"),
+                PopupMenuItem(child: Text(s.help), value: "Help"),
                 PopupMenuItem(child: Text(s.about), value: "About"),
               ];
               },
@@ -463,6 +465,9 @@ class _AccountPageState extends State<AccountPage>
         break;
       case "Settings":
         _settings();
+        break;
+      case "Help":
+        launch(DOC_URL);
         break;
       case "About":
         showAbout(this.context);
