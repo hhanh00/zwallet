@@ -149,7 +149,7 @@
   "excludedNotes": "Billets exclus",
   "spendableBalance": "Montant dépensable",
   "rescanNeeded": "Scan nécessaire",
-  "tapTransactionForDetails": "Tap Transaction for Details",
-  "transactionHistory": "Transaction History",
-  "help": "Help"
+  "tapTransactionForDetails": "Presser sur une Transaction pour plus de details",
+  "transactionHistory": "Historique des Transactions",
+  "help": "Aide"
 }
