@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:warp/dualmoneyinput.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:decimal/decimal.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,8 +30,8 @@ class SendPage extends StatefulWidget {
 class SendState extends State<SendPage> {
   static final zero = decimalFormat(0, 3);
   final _formKey = GlobalKey<FormState>();
+  final _amountKey = GlobalKey<DualMoneyInputState>();
   var _address = "";
-  var _amount = 0;
   var _maxAmountPerNote = Decimal.zero;
   var _sBalance = 0;
   var _tBalance = 0;
@@ -40,14 +41,10 @@ class SendState extends State<SendPage> {
   var _unconfirmedBalance = 0;
   final _addressController = TextEditingController();
   final _memoController = TextEditingController();
-  var _mZEC = true;
-  var _inputInZEC = true;
-  var _zecAmountController = TextEditingController(text: zero);
-  var _fiatAmountController = TextEditingController(text: zero);
   final _maxAmountController = TextEditingController(text: zero);
   var _isExpanded = false;
+  var _useMillis = true;
   var _shieldTransparent = settings.shieldBalance;
-  ReactionDisposer? _priceAutorunDispose;
   ReactionDisposer? _newBlockAutorunDispose;
 
   @override
@@ -58,12 +55,7 @@ class SendState extends State<SendPage> {
     if (widget.args?.uri != null)
       _setPaymentURI(widget.args!.uri!);
 
-    _updateFiatAmount();
     super.initState();
-
-    _priceAutorunDispose = autorun((_) {
-      _updateFiatAmount();
-    });
 
     _newBlockAutorunDispose = autorun((_) async {
       final _ = syncStatus.latestHeight;
@@ -87,7 +79,6 @@ class SendState extends State<SendPage> {
 
   @override
   void dispose() {
-    _priceAutorunDispose?.call();
     _newBlockAutorunDispose?.call();
     super.dispose();
   }
@@ -135,49 +126,7 @@ class SendState extends State<SendPage> {
                             icon: new Icon(MdiIcons.qrcodeScan),
                             onPressed: _onScan)
                       ]),
-                      Row(children: [
-                        Expanded(
-                            child: TextFormField(
-                          style: !_inputInZEC
-                              ? TextStyle(fontWeight: FontWeight.w200)
-                              : TextStyle(),
-                          decoration: InputDecoration(
-                              labelText:
-                                  s.amountInSettingscurrency(coin.ticker)),
-                          controller: _zecAmountController,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [makeInputFormatter(_mZEC)],
-                          validator: _checkAmount,
-                          onTap: () => setState(() {
-                            _inputInZEC = true;
-                          }),
-                          onChanged: (_) {
-                            _updateFiatAmount();
-                          },
-                          onSaved: _onAmount,
-                        )),
-                        TextButton(child: Text(s.max), onPressed: _onMax),
-                      ]),
-                      Row(children: [
-                        Expanded(
-                            child: TextFormField(
-                                style: _inputInZEC
-                                    ? TextStyle(fontWeight: FontWeight.w200)
-                                    : TextStyle(),
-                                decoration: InputDecoration(
-                                    labelText: s.amountInSettingscurrency(
-                                        settings.currency)),
-                                controller: _fiatAmountController,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [makeInputFormatter(_mZEC)],
-                                validator: (v) => _checkAmount(v, isFiat: true),
-                                onTap: () => setState(() {
-                                      _inputInZEC = false;
-                                    }),
-                                onChanged: (_) {
-                                  _updateAmount();
-                                }))
-                      ]),
+                      DualMoneyInputWidget(key: _amountKey, child: TextButton(child: Text(s.max), onPressed: _onMax), spendable: spendable),
                       BalanceTable(_sBalance, _tBalance, _excludedBalance,
                           _underConfirmedBalance, change),
                       ExpansionPanelList(
@@ -203,8 +152,8 @@ class SendState extends State<SendPage> {
                                 ),
                                 CheckboxListTile(
                                     title: Text(s.roundToMillis),
-                                    value: _mZEC,
-                                    onChanged: _onChangedmZEC),
+                                    value: _useMillis,
+                                    onChanged: _setUseMillis),
                                 if (accountManager.canPay)
                                   CheckboxListTile(
                                     title: Text(s.shieldTransparentBalance),
@@ -217,7 +166,7 @@ class SendState extends State<SendPage> {
                                       labelText: s.maxAmountPerNote),
                                   keyboardType: TextInputType.number,
                                   controller: _maxAmountController,
-                                  inputFormatters: [makeInputFormatter(_mZEC)],
+                                  inputFormatters: [makeInputFormatter(amountInput?.useMillis)],
                                   validator: _checkMaxAmountPerNote,
                                   onSaved: _onSavedMaxAmountPerNote,
                                 )),
@@ -243,18 +192,6 @@ class SendState extends State<SendPage> {
     return null;
   }
 
-  String? _checkAmount(String? vs, {bool isFiat: false}) {
-    final s = S.of(context);
-    if (vs == null) return s.amountMustBeANumber;
-    if (!checkNumber(vs)) return s.amountMustBeANumber;
-    final v = parseNumber(vs);
-    if (v < 0.0) return s.amountMustBePositive;
-    if (!isFiat && v == 0.0) return s.amountMustBePositive;
-    if (!isFiat && amountInZAT(Decimal.parse(v.toString())) > spendable)
-      return s.notEnoughBalance;
-    return null;
-  }
-
   String? _checkMaxAmountPerNote(String? vs) {
     final s = S.of(context);
     if (vs == null) return s.amountMustBeANumber;
@@ -266,18 +203,8 @@ class SendState extends State<SendPage> {
 
   void _onMax() {
     setState(() {
-      _mZEC = false;
-      _zecAmountController.text = amountToString(spendable);
-      _updateFiatAmount();
-    });
-  }
-
-  void _onChangedmZEC(bool? v) {
-    if (v == null) return;
-    setState(() {
-      _mZEC = v;
-      _zecAmountController.text = _trimToPrecision(_zecAmountController.text);
-      _fiatAmountController.text = _trimToPrecision(_fiatAmountController.text);
+      _useMillis = false;
+      amountInput?.setAmount(spendable);
     });
   }
 
@@ -302,6 +229,14 @@ class SendState extends State<SendPage> {
     }
   }
 
+  void _setUseMillis(bool? vv) {
+    final v = vv ?? false;
+    amountInput?.setMillis(v);
+    setState(() {
+      _useMillis = v;
+    });
+  }
+
   void _setPaymentURI(String uri) {
     final json = WarpApi.parsePaymentURI(uri);
     try {
@@ -310,15 +245,9 @@ class SendState extends State<SendPage> {
         _address = payment.address;
         _addressController.text = _address;
         _memoController.text = payment.memo;
-        _amount = payment.amount;
-        _zecAmountController.text = amountFromZAT(_amount);
+        amountInput?.setAmount(payment.amount);
       });
     } on FormatException {}
-  }
-
-  void _onAmount(String? vs) {
-    final v = parseNumber(vs);
-    _amount = amountInZAT(Decimal.parse(v.toString()));
   }
 
   void _onAddress(v) {
@@ -335,26 +264,6 @@ class SendState extends State<SendPage> {
     _maxAmountPerNote = Decimal.parse(v.toString());
   }
 
-  void _updateAmount() {
-    final rate = 1.0 / priceStore.zecPrice;
-    final amount = parseNumber(_fiatAmountController.text);
-    final otherAmount = _formatCurrency(amount * rate);
-    setState(() {
-      _zecAmountController.text = otherAmount;
-    });
-  }
-
-  void _updateFiatAmount() {
-    final rate = priceStore.zecPrice;
-    final amount = parseNumber(_zecAmountController.text);
-    final otherAmount = _formatCurrency(amount * rate);
-    setState(() {
-      _fiatAmountController.text = otherAmount;
-    });
-  }
-
-  String _formatCurrency(double v) => decimalFormat(v, precision(_mZEC));
-
   void _onSend() async {
     final s = S.of(context);
     final form = _formKey.currentState;
@@ -362,7 +271,7 @@ class SendState extends State<SendPage> {
 
     if (form.validate()) {
       form.save();
-      final aZEC = (Decimal.fromInt(_amount) / ZECUNIT_DECIMAL).toString();
+      final aZEC = amountToString(amountInput?.amount ?? 0);
       final approved = await showDialog(
           context: context,
           barrierDismissible: false,
@@ -392,7 +301,7 @@ class SendState extends State<SendPage> {
               PaymentParams(
                   accountManager.active.id,
                   address,
-                  _amount,
+                  amountInput?.amount ?? 0,
                   memo,
                   maxAmountPerNote,
                   settings.anchorOffset,
@@ -407,7 +316,7 @@ class SendState extends State<SendPage> {
           String filename = "${tempDir.path}/tx.json";
 
           final msg = WarpApi.prepareTx(accountManager.active.id, address,
-              _amount, memo, maxAmountPerNote, settings.anchorOffset, filename);
+              amountInput?.amount ?? 0, memo, maxAmountPerNote, settings.anchorOffset, filename);
 
           Share.shareFiles([filename], subject: s.unsignedTransactionFile);
 
@@ -423,19 +332,12 @@ class SendState extends State<SendPage> {
   String amountFromZAT(int v) =>
       (Decimal.fromInt(v) / ZECUNIT_DECIMAL).toString();
 
-  double _fx() {
-    return priceStore.zecPrice;
-  }
-
-  String _trimToPrecision(String v) {
-    double vv = parseNumber(v);
-    return decimalFormat(vv, precision(_mZEC));
-  }
-
   get spendable => math.max(
       _sBalance - _excludedBalance - _underConfirmedBalance - DEFAULT_FEE, 0);
 
   get change => _unconfirmedSpentBalance + _unconfirmedBalance;
+
+  DualMoneyInputState? get amountInput => _amountKey.currentState;
 }
 
 class BalanceTable extends StatelessWidget {

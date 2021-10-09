@@ -322,7 +322,7 @@ TextStyle fontWeight(TextStyle style, num v) {
   return style2.copyWith(fontWeight: FontWeight.w200);
 }
 
-CurrencyTextInputFormatter makeInputFormatter(bool mZEC) =>
+CurrencyTextInputFormatter makeInputFormatter(bool? mZEC) =>
     CurrencyTextInputFormatter(symbol: '', decimalDigits: precision(mZEC));
 
 double parseNumber(String? s) {
@@ -343,7 +343,7 @@ bool checkNumber(String s) {
   return true;
 }
 
-int precision(bool mZEC) => mZEC ? 3 : 8;
+int precision(bool? mZEC) => (mZEC == null || mZEC) ? 3 : 8;
 
 Future<String?> scanCode(BuildContext context) async {
   final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S.of(context).cancel, true, ScanMode.QR);
