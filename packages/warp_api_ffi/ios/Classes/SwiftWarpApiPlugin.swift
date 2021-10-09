@@ -13,6 +13,6 @@ public class SwiftWarpApiPlugin: NSObject, FlutterPlugin {
   }
 
   public static func dummyMethod() {
-    dummy_export();
+    dummy_export()
   }
 }

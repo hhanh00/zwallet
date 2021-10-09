@@ -1,10 +1,11 @@
 import 'dart:convert';
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
@@ -23,6 +24,7 @@ class MultiPayState extends State<MultiPayPage> {
     return Scaffold(
       appBar: AppBar(title: Text(S.of(context).multiPay)),
       body: Observer(builder: (context) {
+        if (multipayData.recipients.isEmpty) return NoRecipient();
         final rows = multipayData.recipients.asMap().entries.map((e) {
           final index = e.key;
           final recipient = e.value;
@@ -66,7 +68,7 @@ class MultiPayState extends State<MultiPayPage> {
   _send() async {
     final amount = multipayData.recipients
             .map((r) => r.amount)
-            .fold(0.0, (a, b) => a + b) /
+            .fold<double>(0.0, (a, b) => a + b) /
         ZECUNIT;
     final count = multipayData.recipients.length;
 
@@ -74,26 +76,31 @@ class MultiPayState extends State<MultiPayPage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) => AlertDialog(
-              title: Text(S.of(context).pleaseConfirm),
-              content: SingleChildScrollView(
-                  child: Text(
-                      S.of(context).sendingATotalOfAmountCointickerToCountRecipients(amount, coin.ticker, count))),
-              actions:
-                confirmButtons(context, () => Navigator.of(context).pop(true), cancelValue: false)
-            ));
+            title: Text(S.of(context).pleaseConfirm),
+            content: SingleChildScrollView(
+                child: Text(S
+                    .of(context)
+                    .sendingATotalOfAmountCointickerToCountRecipients(
+                        amount, coin.ticker, count))),
+            actions: confirmButtons(
+                context, () => Navigator.of(context).pop(true),
+                cancelValue: false)));
 
     if (approved) {
-      final snackBar1 = SnackBar(content: Text(S.of(context).preparingTransaction));
-      rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
+      final s = S.of(context);
+      Navigator.of(context).pop();
+
+      final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
 
       final recipientsJson = jsonEncode(multipayData.recipients);
       final tx = await WarpApi.sendMultiPayment(accountManager.active.id,
           recipientsJson, settings.anchorOffset, (p) {});
-      final snackBar2 = SnackBar(content: Text(S.of(context).txId + tx));
-      rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+      final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
 
       multipayData.clear();
-      Navigator.of(context).pop();
+      await accountManager.fetchAccountData(true);
     }
   }
 }
@@ -109,24 +116,40 @@ class PayRecipientState extends State<PayRecipient> {
   final _formKey = GlobalKey<FormState>();
   var _amount = Decimal.zero;
   final _addressController = TextEditingController();
-  var _currencyController = MoneyMaskedTextController(
-      decimalSeparator: '.', thousandSeparator: ',', precision: 3);
+  var _currencyController = TextEditingController();
+  final _memoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Form(
+    return GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        }, child: Form(
         key: _formKey,
         child: SingleChildScrollView(
           child: Column(children: <Widget>[
             Row(children: <Widget>[
               Expanded(
-                child: TextFormField(
-                  decoration: InputDecoration(labelText: S.of(context).sendCointickerTo(coin.ticker)),
-                  minLines: 4,
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  controller: _addressController,
+                child: TypeAheadFormField(
+                  textFieldConfiguration: TextFieldConfiguration(
+                      decoration: InputDecoration(
+                          labelText:
+                              S.of(context).sendCointickerTo(coin.ticker)),
+                      controller: _addressController,
+                      minLines: 4,
+                      maxLines: 10,
+                      keyboardType: TextInputType.multiline),
                   validator: _checkAddress,
+                  onSuggestionSelected: (Contact contact) {
+                    _addressController.text = contact.name;
+                  },
+                  suggestionsCallback: (String pattern) {
+                    return contacts.contacts.where((c) =>
+                        c.name.toLowerCase().contains(pattern.toLowerCase()));
+                  },
+                  itemBuilder: (BuildContext context, Contact c) =>
+                      ListTile(title: Text(c.name)),
+                  noItemsFoundBuilder: (_) => SizedBox(),
                 ),
               ),
               IconButton(
@@ -136,47 +159,80 @@ class PayRecipientState extends State<PayRecipient> {
                 decoration: InputDecoration(labelText: S.of(context).amount),
                 keyboardType: TextInputType.number,
                 controller: _currencyController,
+                inputFormatters: [makeInputFormatter(true)],
                 validator: _checkAmount),
-            ButtonBar(children:
-              confirmButtons(context, _onAdd, okLabel: S.of(context).add, okIcon: Icon(MdiIcons.plus)))
+            TextFormField(
+              decoration: InputDecoration(labelText: S.of(context).memo),
+              minLines: 4,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              controller: _memoController,
+            ),
+            ButtonBar(
+                children: confirmButtons(context, _onAdd,
+                    okLabel: S.of(context).add, okIcon: Icon(MdiIcons.plus)))
           ]),
-        ));
+        )));
   }
 
   void _onScan() async {
-    var code = await BarcodeScanner.scan();
-    setState(() {
-      final address = code.rawContent;
-      _addressController.text = address;
-    });
-  }
-
-  void _onCancel() {
-    Navigator.of(context).pop();
+    final address = await scanCode(context);
+    if (address != null)
+      setState(() {
+        _addressController.text = address;
+      });
   }
 
   void _onAdd() {
-    final form = _formKey.currentState;
+    final form = _formKey.currentState!;
 
     if (form.validate()) {
       form.save();
-      _amount = Decimal.parse(_currencyController.text.replaceAll(',', ''));
+      _amount = Decimal.parse(parseNumber(_currencyController.text).toString());
+      final c =
+          contacts.contacts.where((c) => c.name == _addressController.text);
+      final address =
+          c.isEmpty ? unwrapUA(_addressController.text) : c.first.address;
       final r = Recipient(
-          _addressController.text, (_amount * ZECUNIT_DECIMAL).toInt(), "");
+          address, (_amount * ZECUNIT_DECIMAL).toInt(), _memoController.text);
       Navigator.of(context).pop(r);
     }
   }
 
-  String _checkAddress(String v) {
-    if (v.isEmpty) return S.of(context).addressIsEmpty;
+  String? _checkAddress(String? v) {
+    if (v == null || v.isEmpty) return S.of(context).addressIsEmpty;
+    final c = contacts.contacts.where((c) => c.name == v);
+    if (c.isNotEmpty) return null;
+    final zaddr = WarpApi.getSaplingFromUA(v);
+    if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
     return null;
   }
 
-  String _checkAmount(String vs) {
-    final v = double.tryParse(vs);
-    if (v == null) return S.of(context).amountMustBeANumber;
+  String? _checkAmount(String? vs) {
+    if (vs == null) return S.of(context).amountMustBeANumber;
+    if (checkNumber(vs)) return S.of(context).amountMustBeANumber;
+    final v = parseNumber(vs);
     if (v <= 0.0) return S.of(context).amountMustBePositive;
     return null;
+  }
+}
+
+class NoRecipient extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final Widget contact = SvgPicture.asset('assets/multipay.svg',
+        color: Theme.of(context).primaryColor, semanticsLabel: 'Contacts');
+
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      SizedBox(child: contact, height: 150, width: 150),
+      Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+      Text(S.of(context).noRecipient,
+          style: Theme.of(context).textTheme.headline5),
+      Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+      Text(S.of(context).addARecipientAndItWillShowHere,
+          style: Theme.of(context).textTheme.bodyText1),
+    ]));
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import 'main.dart';
@@ -15,7 +14,11 @@ final _settingsFormKey = GlobalKey<FormBuilderState>();
 
 class SettingsState extends State<SettingsPage> {
   var _anchorController =
-      MaskedTextController(mask: "00", text: "${settings.anchorOffset}");
+      TextEditingController(text: "${settings.anchorOffset}");
+  var _thresholdController = TextEditingController(
+      text: decimalFormat(settings.autoShieldThreshold, 3));
+  var _currency = settings.currency;
+  var _needAuth = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +30,7 @@ class SettingsState extends State<SettingsPage> {
       FormBuilderFieldOption(
           value: 'custom',
           child: FormBuilderTextField(
+            name: 'lwd_url',
             decoration: InputDecoration(labelText: S.of(context).custom),
             initialValue: settings.ldUrl,
             onSaved: _onURL,
@@ -59,7 +63,7 @@ class SettingsState extends State<SettingsPage> {
                               onChanged: _onTheme,
                               options: [
                                 FormBuilderFieldOption(
-                                    child: Text('Zcash'), value: 'zcash'),
+                                    child: Text(S.of(context).gold), value: 'gold'),
                                 FormBuilderFieldOption(
                                     child: Text(S.of(context).blue),
                                     value: 'blue'),
@@ -67,8 +71,8 @@ class SettingsState extends State<SettingsPage> {
                                     child: Text(S.of(context).pink),
                                     value: 'pink'),
                                 FormBuilderFieldOption(
-                                    child: Text(S.of(context).coffee),
-                                    value: 'coffee'),
+                                    child: Text(S.of(context).purple),
+                                    value: 'purple'),
                               ]),
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
@@ -89,14 +93,35 @@ class SettingsState extends State<SettingsPage> {
                                 child: DropdownButtonFormField<String>(
                                     decoration: InputDecoration(
                                         labelText: S.of(context).currency),
-                                    value: settings.currency,
+                                    value: _currency,
                                     items: settings.currencies
                                         .map((c) => DropdownMenuItem(
                                             child: Text(c), value: c))
                                         .toList(),
                                     onChanged: (v) {
-                                      settings.setCurrency(v);
+                                      setState(() {
+                                        _currency = v!;
+                                      });
+                                    },
+                                    onSaved: (_) {
+                                      settings.setCurrency(_currency);
                                     })),
+                            Expanded(
+                                child: FormBuilderCheckbox(
+                                    name: 'protect_send',
+                                    title: Text(S.of(context).protectSend),
+                                    initialValue: settings.protectSend,
+                                    onChanged: (_) {
+                                      _needAuth = true;
+                                    },
+                                    onSaved: _onProtectSend)),
+                            if (coin.supportsUA)
+                              Expanded(
+                                  child: FormBuilderCheckbox(
+                                      name: 'use_ua',
+                                      title: Text(S.of(context).useUa),
+                                      initialValue: settings.useUA,
+                                      onSaved: _onUseUA)),
                           ]),
                           FormBuilderTextField(
                               decoration: InputDecoration(
@@ -113,7 +138,7 @@ class SettingsState extends State<SettingsPage> {
                               decoration: InputDecoration(
                                   labelText: S.of(context).tradingChartRange),
                               initialValue: settings.chartRange,
-                              onChanged: _onChartRange,
+                              onSaved: _onChartRange,
                               options: [
                                 FormBuilderFieldOption(
                                     child: Text(S.of(context).M1), value: '1M'),
@@ -124,14 +149,43 @@ class SettingsState extends State<SettingsPage> {
                                 FormBuilderFieldOption(
                                     child: Text(S.of(context).Y1), value: '1Y'),
                               ]),
-                              FormBuilderCheckbox(
-                                  name: 'get_tx',
-                                  title: Text(
-                                      S.of(context).retrieveTransactionDetails),
-                                  initialValue: settings.getTx,
-                                  onSaved: _onGetTx),
+                          FormBuilderCheckbox(
+                              name: 'get_tx',
+                              title: Text(
+                                  S.of(context).retrieveTransactionDetails),
+                              initialValue: settings.getTx,
+                              onSaved: _onGetTx),
+                          FormBuilderCheckbox(
+                              name: 'auto_hide',
+                              title: Text(
+                                  S.of(context).autoHideBalance),
+                              initialValue: settings.autoHide,
+                              onSaved: _onAutoHide),
+                          TextFormField(
+                              decoration: InputDecoration(
+                                  labelText: 'Auto Shield Threshold'),
+                              keyboardType: TextInputType.number,
+                              controller: _thresholdController,
+                              inputFormatters: [makeInputFormatter(true)],
+                              onSaved: _onAutoShieldThreshold,
+                              validator: _checkAmount),
+                          FormBuilderCheckbox(
+                              name: 'shield_send',
+                              title: Text(S
+                                  .of(context)
+                                  .shieldTransparentBalanceWithSending),
+                              initialValue: settings.shieldBalance,
+                              onSaved: _shieldBalance),
                           ButtonBar(children: confirmButtons(context, _onSave))
                         ]))))));
+  }
+
+  String? _checkAmount(String? vs) {
+    if (vs == null) return S.of(context).amountMustBeANumber;
+    if (!checkNumber(vs)) return S.of(context).amountMustBeANumber;
+    final v = parseNumber(vs);
+    if (v < 0.0) return S.of(context).amountMustBePositive;
+    return null;
   }
 
   _onChoice(v) {
@@ -154,9 +208,32 @@ class SettingsState extends State<SettingsPage> {
     settings.setChartRange(v);
   }
 
-  _onSave() {
-    final form = _settingsFormKey.currentState;
+  _shieldBalance(v) {
+    settings.setShieldBalance(v);
+  }
+
+  _onAutoShieldThreshold(_) {
+    final v = parseNumber(_thresholdController.text);
+    settings.setAutoShieldThreshold(v);
+  }
+
+  _onUseUA(v) {
+    settings.setUseUA(v);
+  }
+
+  _onAutoHide(v) {
+    settings.setAutoHide(v);
+  }
+
+  _onProtectSend(v) {
+    settings.setProtectSend(v);
+  }
+
+  _onSave() async {
+    final form = _settingsFormKey.currentState!;
     if (form.validate()) {
+      print(_needAuth);
+      if (_needAuth && !await authenticate(context, S.of(context).protectSendSettingChanged)) return;
       form.save();
       Navigator.of(context).pop();
     }
@@ -168,12 +245,5 @@ class SettingsState extends State<SettingsPage> {
 
   _onGetTx(v) {
     settings.updateGetTx(v);
-  }
-
-  String _checkFx(String vs) {
-    final v = double.tryParse(vs);
-    if (v == null) return 'FX rate must be a number';
-    if (v <= 0.0) return 'FX rate must be positive';
-    return null;
   }
 }

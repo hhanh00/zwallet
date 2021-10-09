@@ -1,9 +1,9 @@
 import 'dart:isolate';
 import 'dart:typed_data';
 import 'dart:math' as math;
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'package:charts_flutter/flutter.dart' as charts show MaterialPalette;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
@@ -16,6 +16,7 @@ import 'dart:convert' as convert;
 import 'package:convert/convert.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 
+import 'generated/l10n.dart';
 import 'main.dart';
 
 part 'store.g.dart';
@@ -24,25 +25,25 @@ class Settings = _Settings with _$Settings;
 
 abstract class _Settings with Store {
   @observable
-  String ldUrl;
+  String ldUrl = "";
 
   @observable
-  String ldUrlChoice;
+  String ldUrlChoice = "";
 
   @observable
-  int anchorOffset;
+  int anchorOffset = 10;
 
   @observable
-  bool getTx;
+  bool getTx = true;
 
   @observable
-  int rowsPerPage;
+  int rowsPerPage = 10;
 
   @observable
-  String theme;
+  String theme = "";
 
   @observable
-  String themeBrightness;
+  String themeBrightness = "";
 
   @observable
   ThemeData themeData = ThemeData.light();
@@ -59,7 +60,20 @@ abstract class _Settings with Store {
   @observable
   String chartRange = '1Y';
 
-  var palette = charts.MaterialPalette.blue;
+  @observable
+  bool shieldBalance = false;
+
+  @observable
+  double autoShieldThreshold = 0.0;
+
+  @observable
+  bool useUA = false;
+
+  @observable
+  bool autoHide = true;
+
+  @observable
+  bool protectSend = false;
 
   @action
   Future<bool> restore() async {
@@ -71,11 +85,16 @@ abstract class _Settings with Store {
     anchorOffset = prefs.getInt('anchor_offset') ?? 3;
     getTx = prefs.getBool('get_txinfo') ?? true;
     rowsPerPage = prefs.getInt('rows_per_age') ?? 10;
-    theme = prefs.getString('theme') ?? "zcash";
+    theme = prefs.getString('theme') ?? "gold";
     themeBrightness = prefs.getString('theme_brightness') ?? "dark";
     showConfirmations = prefs.getBool('show_confirmations') ?? false;
     currency = prefs.getString('currency') ?? "USD";
     chartRange = prefs.getString('chart_range') ?? "1Y";
+    shieldBalance = prefs.getBool('shield_balance') ?? false;
+    autoShieldThreshold = prefs.getDouble('autoshield_threshold') ?? 0.0;
+    useUA = prefs.getBool('use_ua') ?? false;
+    autoHide = prefs.getBool('auto_hide') ?? true;
+    protectSend = prefs.getBool('protect_send') ?? false;
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
@@ -123,22 +142,20 @@ abstract class _Settings with Store {
   void _updateThemeData() {
     FlexScheme scheme;
     switch (theme) {
-      case 'zcash':
+      case 'gold':
         scheme = FlexScheme.mango;
-        palette = charts.MaterialPalette.gray;
         break;
       case 'blue':
         scheme = FlexScheme.bahamaBlue;
-        palette = charts.MaterialPalette.blue;
         break;
       case 'pink':
         scheme = FlexScheme.sakura;
-        palette = charts.MaterialPalette.pink;
         break;
-      case 'coffee':
-        scheme = FlexScheme.espresso;
-        palette = charts.MaterialPalette.gray;
+      case 'purple':
+        scheme = FlexScheme.deepPurple;
         break;
+      default:
+        scheme = FlexScheme.mango;
     }
     switch (themeBrightness) {
       case 'light':
@@ -155,7 +172,7 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     chartRange = v;
     prefs.setString('chart_range', chartRange);
-    accountManager.fetchPNL();
+    accountManager.fetchChartData();
   }
 
   String getLWD() {
@@ -201,7 +218,7 @@ abstract class _Settings with Store {
     currency = newCurrency;
     prefs.setString('currency', currency);
     await priceStore.fetchZecPrice();
-    await accountManager.fetchPNL();
+    await accountManager.fetchChartData();
   }
 
   @action
@@ -216,15 +233,50 @@ abstract class _Settings with Store {
       currencies = c;
     }
   }
+
+  @action
+  Future<void> setShieldBalance(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    shieldBalance = v;
+    prefs.setBool('shield_balance', shieldBalance);
+  }
+
+  @action
+  Future<void> setAutoShieldThreshold(double v) async {
+    final prefs = await SharedPreferences.getInstance();
+    autoShieldThreshold = v;
+    prefs.setDouble('autoshield_threshold', autoShieldThreshold);
+  }
+
+  @action
+  Future<void> setUseUA(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    useUA = v;
+    prefs.setBool('use_ua', useUA);
+  }
+
+  @action
+  Future<void> setAutoHide(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    autoHide = v;
+    prefs.setBool('auto_hide', autoHide);
+  }
+
+  @action
+  Future<void> setProtectSend(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    protectSend = v;
+    prefs.setBool('protect_send', protectSend);
+  }
 }
 
 class AccountManager = _AccountManager with _$AccountManager;
 
 abstract class _AccountManager with Store {
-  Database db;
+  late Database db;
 
   @observable
-  Account active;
+  Account active = Account(0, "", "", 0);
 
   @observable
   bool canPay = false;
@@ -260,7 +312,7 @@ abstract class _AccountManager with Store {
   List<Spending> spendings = [];
 
   @observable
-  List<TimeSeriesPoint> accountBalances = [];
+  List<TimeSeriesPoint<double>> accountBalances = [];
 
   @observable
   List<PnL> pnls = [];
@@ -269,19 +321,19 @@ abstract class _AccountManager with Store {
   List<Account> accounts = [];
 
   @observable
-  SortOrder noteSortOrder = SortOrder.Unsorted;
+  SortConfig noteSortConfig = SortConfig("", SortOrder.Unsorted);
 
   @observable
-  SortOrder txSortOrder = SortOrder.Unsorted;
+  SortConfig txSortConfig = SortConfig("", SortOrder.Unsorted);
 
   @observable
   int pnlSeriesIndex = 0;
 
   @observable
-  List<Contact> contacts = [];
+  bool pnlDesc = false;
 
-  Future<void> init() async {
-    db = await getDatabase();
+  Future<void> init(Database db) async {
+    this.db = db;
     await resetToDefaultAccount();
   }
 
@@ -300,7 +352,6 @@ abstract class _AccountManager with Store {
 
   @action
   Future<void> setActiveAccount(Account account) async {
-    if (account == null) return;
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('account', account.id);
     final List<Map> res1 = await db.rawQuery(
@@ -313,14 +364,16 @@ abstract class _AccountManager with Store {
         "SELECT sk FROM accounts WHERE id_account = ?1", [account.id]);
     canPay = res2.isNotEmpty && res2[0]['sk'] != null;
     active = account;
-    print("Active account = ${account.id}");
-    await _fetchData(account.id);
+
+    balance = 0;
+    tbalance = 0;
+    await _fetchData(account.id, true);
   }
 
   @action
   Future<void> setActiveAccountId(int idAccount) async {
     final account = accounts.firstWhere((account) => account.id == idAccount,
-        orElse: () => accounts.isNotEmpty ? accounts[0] : null);
+        orElse: () => accounts[0]);
     await setActiveAccount(account);
   }
 
@@ -328,16 +381,16 @@ abstract class _AccountManager with Store {
     return WarpApi.newAddress(active.id);
   }
 
-  Future<Backup> getBackup() async {
+  Future<Backup> getBackup(int account) async {
     final List<Map> res = await db.rawQuery(
         "SELECT seed, sk, ivk FROM accounts WHERE id_account = ?1",
-        [active.id]);
-    if (res.isEmpty) return null;
+        [account]);
+    if (res.isEmpty) throw Exception("Account N/A");
     final row = res[0];
     final seed = row['seed'];
     final sk = row['sk'];
     final ivk = row['ivk'];
-    int type;
+    int type = 0;
     if (seed != null)
       type = 0;
     else if (sk != null)
@@ -354,13 +407,32 @@ abstract class _AccountManager with Store {
     return res[0]['value'] ?? 0;
   }
 
-  Future<int> getBalanceSpendable(int height) async {
-    final List<Map> res = await db.rawQuery(
-        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent IS NULL "
-        "AND height <= ?2 AND (excluded IS NULL OR NOT excluded)",
-        [active.id, height]);
-    if (res.isEmpty) return 0;
-    return res[0]['value'] ?? 0;
+  Future<int> getShieldedBalance() async {
+    return Sqflite.firstIntValue(await db.rawQuery(
+        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent IS NULL",
+        [active.id])) ?? 0;
+  }
+
+  Future<int> getUnconfirmedSpentBalance() async {
+    return Sqflite.firstIntValue(await db.rawQuery(
+        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent = 0",
+        [active.id])) ?? 0;
+  }
+
+  Future<int> getUnderConfirmedBalance() async {
+    final height = syncStatus.latestHeight - settings.anchorOffset;
+    return Sqflite.firstIntValue(await db.rawQuery(
+        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND height > ?2",
+        [active.id, height])) ?? 0;
+  }
+
+  Future<int> getExcludedBalance() async {
+    final height = syncStatus.latestHeight - settings.anchorOffset;
+    final amount = Sqflite.firstIntValue(await db.rawQuery(
+        "SELECT SUM(value) FROM received_notes WHERE account = ?1 AND spent IS NULL "
+        "AND height <= ?2 AND excluded",
+        [active.id, height])) ?? 0;
+    return amount;
   }
 
   @action
@@ -386,8 +458,9 @@ abstract class _AccountManager with Store {
 
   @action
   Future<void> delete(int account) async {
-    await db.rawDelete("DELETE FROM accounts WHERE id_account = ?1", [account]);
-    await db.rawDelete("DELETE FROM taddrs WHERE account = ?1", [account]);
+    WarpApi.deleteAccount(account);
+    if (account == active.id)
+      resetToDefaultAccount();
   }
 
   @action
@@ -400,14 +473,12 @@ abstract class _AccountManager with Store {
 
   @action
   Future<void> updateBalance() async {
-    if (active == null) return;
     balance = await _getBalance(active.id);
   }
 
   @action
-  Future<void> fetchAccountData() async {
-    if (active == null) return;
-    await _fetchData(active.id);
+  Future<void> fetchAccountData(bool force) async {
+    await _fetchData(active.id, force);
   }
 
   @action
@@ -415,14 +486,15 @@ abstract class _AccountManager with Store {
     showTAddr = !showTAddr;
   }
 
-  Future<void> _fetchData(int accountId) async {
+  Future<void> _fetchData(int accountId, bool force) async {
     await _updateBalance(accountId);
-    final hasNewTx = await _fetchNotesAndHistory(accountId);
+    await _updateTBalance(accountId);
+
+    final hasNewTx = await _fetchNotesAndHistory(accountId, force);
     int countNewPrices = await WarpApi.syncHistoricalPrices(settings.currency);
     if (hasNewTx) {
       await _fetchSpending(accountId);
       await _fetchAccountBalanceTimeSeries(accountId);
-      await _fetchContacts(accountId);
     }
     if (countNewPrices > 0 || pnls.isEmpty || hasNewTx)
       await _fetchPNL(accountId);
@@ -438,20 +510,20 @@ abstract class _AccountManager with Store {
     dataEpoch = DateTime.now().millisecondsSinceEpoch;
   }
 
-  Future<bool> _fetchNotesAndHistory(int accountId) async {
+  Future<bool> _fetchNotesAndHistory(int accountId, bool force) async {
     final List<Map> res0 = await db.rawQuery(
         "SELECT MAX(height) as height FROM transactions WHERE account = ?1",
         [accountId]);
     if (res0.isEmpty) return false;
 
     final _lastTxHeight = res0[0]['height'] ?? 0;
-    if (lastTxHeight == _lastTxHeight) return false;
+    if (!force && lastTxHeight == _lastTxHeight) return false;
     lastTxHeight = _lastTxHeight;
 
     final List<Map> res = await db.rawQuery(
         "SELECT n.id_note, n.height, n.value, t.timestamp, n.excluded, n.spent FROM received_notes n, transactions t "
         "WHERE n.account = ?1 AND (n.spent IS NULL OR n.spent = 0) "
-        "AND n.tx = t.id_tx",
+        "AND n.tx = t.id_tx ORDER BY n.height DESC",
         [accountId]);
     notes = res.map((row) {
       final id = row['id_note'];
@@ -465,7 +537,8 @@ abstract class _AccountManager with Store {
     }).toList();
 
     final List<Map> res2 = await db.rawQuery(
-        "SELECT id_tx, txid, height, timestamp, address, value, memo FROM transactions WHERE account = ?1",
+        "SELECT id_tx, txid, height, timestamp, t.address, c.name, value, memo FROM transactions t "
+        "LEFT JOIN contacts c ON t.address = c.address WHERE account = ?1 ORDER BY height DESC",
         [accountId]);
     txs = res2.map((row) {
       Uint8List txid = row['txid'];
@@ -474,7 +547,7 @@ abstract class _AccountManager with Store {
       final timestamp = txDateFormat
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
       return Tx(row['id_tx'], row['height'], timestamp, shortTxid, fullTxId,
-          row['value'] / ZECUNIT, row['address'], row['memo']);
+          row['value'] / ZECUNIT, row['address'] ?? "", row['name'], row['memo'] ?? "");
     }).toList();
 
     dataEpoch = DateTime.now().millisecondsSinceEpoch;
@@ -484,47 +557,43 @@ abstract class _AccountManager with Store {
   @computed
   List<Note> get sortedNotes {
     var notes2 = [...notes];
-    return _sortNoteAmount(notes2, noteSortOrder);
+    switch (noteSortConfig.field) {
+      case "time": return _sort(notes2, (Note note) => note.height, noteSortConfig.order);
+      case "amount": return _sort(notes2, (Note note) => note.value, noteSortConfig.order);
+    }
+    return notes2;
   }
 
   @action
-  Future<void> sortNoteAmount() async {
-    noteSortOrder = nextSortOrder(noteSortOrder);
-  }
-
-  List<Note> _sortNoteAmount(List<Note> notes, SortOrder order) {
-    switch (order) {
-      case SortOrder.Ascending:
-        notes.sort((a, b) => a.value.compareTo(b.value));
-        break;
-      case SortOrder.Descending:
-        notes.sort((a, b) => -a.value.compareTo(b.value));
-        break;
-      case SortOrder.Unsorted:
-        notes.sort((a, b) => -a.height.compareTo(b.height));
-        break;
-    }
-    return notes;
+  Future<void> sortNotes(String field) async {
+    noteSortConfig.sortOn(field);
   }
 
   @computed
   List<Tx> get sortedTxs {
     var txs2 = [...txs];
-    return _sortTxAmount(txs2, txSortOrder);
+    switch (txSortConfig.field) {
+      case "time": return _sort(txs2, (Tx tx) => tx.height, txSortConfig.order);
+      case "amount": return _sort(txs2, (Tx tx) => tx.value, txSortConfig.order);
+      case "txid": return _sort(txs2, (Tx tx) => tx.txid, txSortConfig.order);
+      case "address": return _sort(txs2, (Tx tx) => tx.contact ?? tx.address, txSortConfig.order);
+      case "memo": return _sort(txs2, (Tx tx) => tx.memo, txSortConfig.order);
+    }
+    return txs2;
   }
 
   @action
-  Future<void> sortTxAmount() async {
-    txSortOrder = nextSortOrder(txSortOrder);
+  Future<void> sortTx(String field) async {
+    txSortConfig.sortOn(field);
   }
 
-  List<Tx>  _sortTxAmount(List<Tx> txs, SortOrder order) {
+  List<C>  _sort<C extends HasHeight, T extends Comparable>(List<C> txs, T Function(C) project, SortOrder order) {
     switch (order) {
       case SortOrder.Ascending:
-        txs.sort((a, b) => a.value.compareTo(b.value));
+        txs.sort((a, b) => project(a).compareTo(project(b)));
         break;
       case SortOrder.Descending:
-        txs.sort((a, b) => -a.value.compareTo(b.value));
+        txs.sort((a, b) => -project(a).compareTo(project(b)));
         break;
       case SortOrder.Unsorted:
         txs.sort((a, b) => -a.height.compareTo(b.height));
@@ -533,45 +602,50 @@ abstract class _AccountManager with Store {
     return txs;
   }
 
+  TimeRange getChartRange() {
+    final now = DateTime.now().toUtc();
+    final today = DateTime.utc(now.year, now.month, now.day);
+    final start = today.add(Duration(days: -chartRangeInt()));
+    final cutoff = start.millisecondsSinceEpoch;
+    return TimeRange(cutoff, today.millisecondsSinceEpoch);
+  }
+
   Future<void> _fetchSpending(int accountId) async {
-    final cutoff =
-        DateTime.now().add(Duration(days: -30)).millisecondsSinceEpoch / 1000;
+    final range = getChartRange();
     final List<Map> res = await db.rawQuery(
-        "SELECT SUM(value) as v, address FROM transactions WHERE account = ?1 AND timestamp >= ?2 AND value < 0 GROUP BY address ORDER BY v ASC LIMIT 10",
-        [accountId, cutoff]);
+        "SELECT SUM(value) as v, t.address, c.name FROM transactions t LEFT JOIN contacts c ON t.address = c.address "
+        "WHERE account = ?1 AND timestamp >= ?2 AND value < 0 GROUP BY t.address ORDER BY v ASC LIMIT 5",
+        [accountId, range.start ~/ 1000]);
     spendings = res.map((row) {
       final address = row['address'] ?? "";
       final value = -row['v'] / ZECUNIT;
-      return Spending(addressLeftTrim(address), value);
+      final contact = row['name'];
+      return Spending(address, value, contact);
     }).toList();
   }
 
   Future<void> _fetchAccountBalanceTimeSeries(int accountId) async {
-    final now = DateTime.now();
-    final today = DateTime.utc(now.year, now.month, now.day);
-    final end = today;
-    final start = today.add(Duration(days: -30));
-    final cutoff = start.millisecondsSinceEpoch ~/ 1000;
+    final range = getChartRange();
     final List<Map> res = await db.rawQuery(
         "SELECT timestamp, value FROM transactions WHERE account = ?1 AND timestamp >= ?2 ORDER BY timestamp DESC",
-        [accountId, cutoff]);
+        [accountId, range.start ~/ 1000]);
     List<AccountBalance> _accountBalances = [];
     var b = balance;
     _accountBalances.add(AccountBalance(DateTime.now(), b / ZECUNIT));
     for (var row in res) {
       final timestamp =
           DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
-      final value = row['value'];
+      final value = row['value'] as int;
       final ab = AccountBalance(timestamp, b / ZECUNIT);
       _accountBalances.add(ab);
       b -= value;
     }
-    _accountBalances.add(AccountBalance(start, b / ZECUNIT));
+    _accountBalances.add(AccountBalance(DateTime.fromMillisecondsSinceEpoch(range.start), b / ZECUNIT));
     _accountBalances = _accountBalances.reversed.toList();
     accountBalances = sampleDaily<AccountBalance, double, double>(
         _accountBalances,
-        start.millisecondsSinceEpoch,
-        end.millisecondsSinceEpoch,
+        range.start,
+        range.end,
         (AccountBalance ab) => ab.time.millisecondsSinceEpoch ~/ DAY_MS,
         (AccountBalance ab) => ab.balance,
         (acc, v) => v,
@@ -579,25 +653,30 @@ abstract class _AccountManager with Store {
   }
 
   @action
-  Future<void> fetchPNL() async {
-    if (active == null) return;
+  Future<void> fetchChartData() async {
     await _fetchPNL(active.id);
+    await _fetchSpending(active.id);
+    await _fetchAccountBalanceTimeSeries(active.id);
+  }
+
+  int chartRangeInt() {
+    switch (settings.chartRange) {
+      case '1M':
+        return 30;
+      case '3M':
+        return 90;
+      case '6M':
+        return 180;
+    }
+    return 365;
   }
 
   Future<void> _fetchPNL(int accountId) async {
-    final now = DateTime.now();
-    final today = DateTime.utc(now.year, now.month, now.day);
-    var days = 365;
-    switch (settings.chartRange) {
-      case '1M': days = 30; break;
-      case '3M': days = 90; break;
-      case '6M': days = 180; break;
-    }
-    final cutoff = today.add(Duration(days: -days));
+    final range = getChartRange();
 
     final List<Map> res1 = await db.rawQuery(
         "SELECT timestamp, value FROM transactions WHERE timestamp >= ?2 AND account = ?1",
-        [accountId, cutoff.millisecondsSinceEpoch ~/ 1000]);
+        [accountId, range.start ~/ 1000]);
     final List<Trade> trades = [];
     for (var row in res1) {
       final dt = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
@@ -607,8 +686,8 @@ abstract class _AccountManager with Store {
 
     final portfolioTimeSeries = sampleDaily<Trade, Trade, double>(
         trades,
-        cutoff.millisecondsSinceEpoch,
-        today.millisecondsSinceEpoch,
+        range.start,
+        range.end,
         (t) => t.dt.millisecondsSinceEpoch ~/ DAY_MS,
         (t) => t,
         (acc, t) => acc + t.qty,
@@ -616,7 +695,7 @@ abstract class _AccountManager with Store {
 
     final List<Map> res2 = await db.rawQuery(
         "SELECT timestamp, price FROM historical_prices WHERE timestamp >= ?2 AND currency = ?1",
-        [settings.currency, cutoff.millisecondsSinceEpoch ~/ 1000]);
+        [settings.currency, range.start ~/ 1000]);
     final List<Quote> quotes = [];
     for (var row in res2) {
       final dt = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
@@ -628,7 +707,8 @@ abstract class _AccountManager with Store {
     var cash = 0.0;
     var realized = 0.0;
     final List<PnL> _pnls = [];
-    for (var i = 0; i < quotes.length; i++) {
+    final len = math.min(quotes.length, portfolioTimeSeries.length);
+    for (var i = 0; i < len; i++) {
       final dt = quotes[i].dt;
       final price = quotes[i].price;
       final balance = portfolioTimeSeries[i].value;
@@ -653,6 +733,20 @@ abstract class _AccountManager with Store {
   }
 
   @action
+  void togglePnlDesc() {
+    pnlDesc = !pnlDesc;
+  }
+
+  @computed
+  List<PnL> get pnlSorted {
+    if (pnlDesc) {
+      var _pnls = [...pnls.reversed];
+      return _pnls;
+    }
+    return pnls; 
+  }
+
+  @action
   Future<void> convertToWatchOnly() async {
     await db.rawUpdate(
         "UPDATE accounts SET seed = NULL, sk = NULL WHERE id_account = ?1",
@@ -667,26 +761,35 @@ abstract class _AccountManager with Store {
         [note.id, note.excluded]);
   }
 
-  void updateTBalance() {
-    if (active == null) return;
-    int balance = WarpApi.getTBalance(active.id);
+  @action
+  Future<void> updateTBalance() async {
+    _updateTBalance(active.id);
+  }
+
+  _updateTBalance(int accountId) {
+    int balance = WarpApi.getTBalance(accountId);
     if (balance != tbalance) tbalance = balance;
   }
 
-  Future<void> _fetchContacts(int accountId) async {
-    List<Map> res = await db.rawQuery(
-        "SELECT name, address FROM contacts WHERE account = ?1 ORDER BY name",
-        [accountId]);
-    contacts = [];
-    for (var c in res) {
-      final contact = Contact(c['name'], c['address']);
-      contacts.add(contact);
+  void autoshield() {
+    if (settings.autoShieldThreshold != 0.0 && tbalance / ZECUNIT >= settings.autoShieldThreshold) {
+      WarpApi.shieldTAddr(active.id);
     }
   }
 
   @action
   void setPnlSeriesIndex(int index) {
     pnlSeriesIndex = index;
+  }
+
+  Future<Map<int, int>> getAllTBalances() async {
+    final Map<int, int> balances = {};
+    for (var a in accounts) {
+      final b = await WarpApi.getTBalanceAsync(a.id);
+      balances[a.id] = b;
+    }
+
+    return balances;
   }
 }
 
@@ -723,7 +826,7 @@ abstract class _PriceStore with Store {
 class SyncStatus = _SyncStatus with _$SyncStatus;
 
 abstract class _SyncStatus with Store {
-  Database _db;
+  late Database _db;
 
   init() async {
     var databasesPath = await getDatabasesPath();
@@ -731,6 +834,12 @@ abstract class _SyncStatus with Store {
     _db = await openDatabase(path);
     await update();
   }
+
+  @observable
+  bool accountRestored = false;
+
+  @observable
+  bool syncing = false;
 
   @observable
   int syncedHeight = -1;
@@ -753,8 +862,39 @@ abstract class _SyncStatus with Store {
     final _syncedHeight = Sqflite.firstIntValue(
             await _db.rawQuery("SELECT MAX(height) FROM blocks")) ??
         0;
-    if (_syncedHeight > 0) syncedHeight = _syncedHeight;
+    if (_syncedHeight > 0) setSyncHeight(_syncedHeight);
     return syncedHeight == latestHeight;
+  }
+
+  @action
+  Future<void> sync(BuildContext context) async {
+    eta.reset();
+    syncing = true;
+    final snackBar =
+    SnackBar(content: Text(S
+        .of(context)
+        .rescanRequested));
+    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+    setSyncHeight(0);
+    WarpApi.rewindToHeight(0);
+    WarpApi.truncateData();
+    contacts.markContactsDirty(false);
+    await syncStatus.update();
+    final params = SyncParams(settings.getTx, settings.anchorOffset, syncPort.sendPort);
+    await compute(WarpApi.warpSync, params);
+    syncing = false;
+    eta.reset();
+  }
+
+  @action
+  void setAccountRestored(bool v) {
+    accountRestored = v;
+  }
+
+  @action
+  void setSyncedToLatestHeight() {
+    setSyncHeight(latestHeight);
+    WarpApi.skipToLastHeight();
   }
 }
 
@@ -780,10 +920,115 @@ abstract class _MultiPayStore with Store {
   }
 }
 
+class ETAStore = _ETAStore with _$ETAStore;
+
+abstract class _ETAStore with Store {
+  @observable
+  ETACheckpoint? prev;
+
+  @observable
+  ETACheckpoint? current;
+
+  @action
+  void reset() {
+    prev = null;
+    current = null;
+  }
+
+  @action
+  void checkpoint(int height, DateTime timestamp) {
+    prev = current;
+    current = ETACheckpoint(height, timestamp);
+  }
+
+  @computed
+  String get eta {
+    final p = prev;
+    final c = current;
+    if (p == null || c == null) return "";
+    if (c.timestamp.millisecondsSinceEpoch == p.timestamp.millisecondsSinceEpoch) return "";
+    final speed = (c.height - p.height) / (c.timestamp.millisecondsSinceEpoch - p.timestamp.millisecondsSinceEpoch);
+    if (speed == 0) return "";
+    final eta = (syncStatus.latestHeight - c.height) / speed;
+    if (eta <= 0) return "";
+    final duration = Duration(milliseconds: eta.floor()).toString().split('.')[0];
+    return "(ETA: $duration)";
+  }
+}
+
+class ContactStore = _ContactStore with _$ContactStore;
+
+abstract class _ContactStore with Store {
+  late Database db;
+
+  @observable
+  bool dirty = false;
+
+  @observable
+  ObservableList<Contact> contacts = ObservableList<Contact>.of([]);
+
+  Future<void> init(Database db) async {
+    this.db = db;
+    final prefs = await SharedPreferences.getInstance();
+    dirty = prefs.getBool('contacts_dirty') ?? false;
+  }
+
+  @action
+  Future<void> fetchContacts() async {
+    await _fetchContacts();
+  }
+
+  Future<void> _fetchContacts() async {
+    List<Map> res = await db.rawQuery(
+        "SELECT id, name, address FROM contacts WHERE address <> '' ORDER BY name");
+    contacts.clear();
+    for (var c in res) {
+      final contact = Contact(c['id'], c['name'], c['address']);
+      contacts.add(contact);
+    }
+  }
+
+  @action
+  Future<void> markContactsDirty(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    dirty = v;
+    prefs.setBool('contacts_dirty', dirty);
+  }
+
+  @action
+  Future<void> add(Contact c) async {
+    WarpApi.storeContact(c.id, c.name, c.address, true);
+    await markContactsDirty(true);
+    await _fetchContacts();
+  }
+
+  @action
+  Future<void> remove(Contact c) async {
+    contacts.removeWhere((contact) => contact.id == c.id);
+    WarpApi.storeContact(c.id, c.name, "", true);
+    await markContactsDirty(true);
+    await _fetchContacts();
+  }
+}
+
+class ETACheckpoint {
+  int height;
+  DateTime timestamp;
+
+  ETACheckpoint(this.height, this.timestamp);
+}
+
 var progressPort = ReceivePort();
 var progressStream = progressPort.asBroadcastStream();
 
-class Note {
+var syncPort = ReceivePort();
+var syncStream = syncPort.asBroadcastStream();
+
+abstract class HasHeight {
+  int height = 0;
+}
+
+class Note extends HasHeight {
   int id;
   int height;
   String timestamp;
@@ -795,7 +1040,7 @@ class Note {
       this.spent);
 }
 
-class Tx {
+class Tx extends HasHeight {
   int id;
   int height;
   String timestamp;
@@ -803,17 +1048,19 @@ class Tx {
   String fullTxId;
   double value;
   String address;
+  String? contact;
   String memo;
 
   Tx(this.id, this.height, this.timestamp, this.txid, this.fullTxId, this.value,
-      this.address, this.memo);
+      this.address, this.contact, this.memo);
 }
 
 class Spending {
   final String address;
   final double amount;
+  final String? contact;
 
-  Spending(this.address, this.amount);
+  Spending(this.address, this.amount, this.contact);
 }
 
 class AccountBalance {
@@ -825,8 +1072,8 @@ class AccountBalance {
 
 class Backup {
   int type;
-  final String seed;
-  final String sk;
+  final String? seed;
+  final String? sk;
   final String ivk;
 
   Backup(this.type, this.seed, this.sk, this.ivk);
@@ -834,9 +1081,9 @@ class Backup {
   String value() {
     switch (type) {
       case 0:
-        return seed;
+        return seed!;
       case 1:
-        return sk;
+        return sk!;
       case 2:
         return ivk;
     }
@@ -845,14 +1092,14 @@ class Backup {
 }
 
 class Contact {
+  final int id;
   final String name;
   final String address;
 
-  Contact(this.name, this.address);
-}
+  Contact(this.id, this.name, this.address);
 
-String addressLeftTrim(String address) =>
-    "..." + address.substring(math.max(address.length - 6, 0));
+  factory Contact.empty() => Contact(0, "", "");
+}
 
 enum SortOrder {
   Unsorted,
@@ -918,4 +1165,60 @@ class Quote {
   final price;
 
   Quote(this.dt, this.price);
+}
+
+class TimeRange {
+  final int start;
+  final int end;
+
+  TimeRange(this.start, this.end);
+}
+
+class SortConfig {
+  @observable
+  String field;
+
+  @observable
+  SortOrder order;
+
+  SortConfig(this.field, this.order);
+
+  @action
+  void sortOn(String field) {
+    if (field != this.field)
+      order = SortOrder.Ascending;
+    else
+      order = nextSortOrder(order);
+    this.field = field;
+  }
+
+  String getIndicator(String field) {
+    if (this.field != field) return '';
+    if (order == SortOrder.Ascending)
+      return ' \u2191';
+    if (order == SortOrder.Descending)
+      return ' \u2193';
+    return '';
+  }
+}
+
+@JsonSerializable()
+class DecodedPaymentURI {
+  String address;
+  int amount;
+  String memo;
+
+  DecodedPaymentURI(this.address, this.amount, this.memo);
+
+  factory DecodedPaymentURI.fromJson(Map<String, dynamic> json) =>
+      _$DecodedPaymentURIFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DecodedPaymentURIToJson(this);
+}
+
+class SendPageArgs {
+  final Contact? contact;
+  final String? uri;
+
+  SendPageArgs({this.contact, this.uri});
 }

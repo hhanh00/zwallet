@@ -1,0 +1,27 @@
+name: ExtractRelease
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - uses: shrink/actions-docker-extract@v1
+        id: extract
+        with:
+          image: '${{ secrets.DOCKER_HUB_USERNAME }}/zwallet:latest'
+          path: '/root/.'
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{ steps.extract.outputs.destination }}/app-arm64-v8a-release.apk
+            ${{ steps.extract.outputs.destination }}/app-armeabi-v7a-release.apk
+            ${{ steps.extract.outputs.destination }}/app-x86_64-release.apk
+

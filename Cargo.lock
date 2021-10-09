@@ -197,6 +197,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bincode"
+version = "1.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b1f45e9417d87227c7a56d22e471c6206462cba514c7590c09aff4cf6d1ddcad"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "bitflags"
 version = "1.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -847,7 +856,7 @@ dependencies = [
 [[package]]
 name = "equihash"
 version = "0.1.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2ede1d5da2b6b2357b139ca599298f08decb3bfd"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -1412,6 +1421,12 @@ name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
+
+[[package]]
+name = "lazycell"
+version = "1.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "lexical-core"
@@ -2601,6 +2616,7 @@ name = "sync"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "bincode",
  "bls12_381",
  "byteorder",
  "chrono",
@@ -2615,6 +2631,7 @@ dependencies = [
  "hex",
  "jubjub",
  "lazy_static",
+ "lazycell",
  "log",
  "prost",
  "protobuf",
@@ -2635,6 +2652,7 @@ dependencies = [
  "tokio-stream",
  "tonic",
  "tonic-build",
+ "zcash_address",
  "zcash_client_backend",
  "zcash_params 0.1.0 (git+https://github.com/hhanh00/zcash-params.git?branch=main)",
  "zcash_primitives",
@@ -3313,9 +3331,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9fc79f4a1e39857fc00c3f662cbf2651c771f00e9c15fe2abc341806bd46bd71"
 
 [[package]]
+name = "zcash_address"
+version = "0.0.0"
+source = "git+https://github.com/hhanh00/librustzcash.git?rev=19a97f16945c68c33aedcc89f2a4f4d398658b05#19a97f16945c68c33aedcc89f2a4f4d398658b05"
+dependencies = [
+ "bech32",
+ "blake2b_simd",
+ "bs58",
+]
+
+[[package]]
 name = "zcash_client_backend"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2ede1d5da2b6b2357b139ca599298f08decb3bfd"
 dependencies = [
  "base64",
  "bech32",
@@ -3339,7 +3367,7 @@ dependencies = [
 [[package]]
 name = "zcash_note_encryption"
 version = "0.0.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2ede1d5da2b6b2357b139ca599298f08decb3bfd"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -3386,7 +3414,7 @@ dependencies = [
 [[package]]
 name = "zcash_primitives"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2ede1d5da2b6b2357b139ca599298f08decb3bfd"
 dependencies = [
  "aes",
  "bitvec 0.20.4",
@@ -3416,7 +3444,7 @@ dependencies = [
 [[package]]
 name = "zcash_proofs"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2433f7c690bdd8d28ebde6321d4ff329f2ab7c95"
+source = "git+https://github.com/hhanh00/librustzcash.git?branch=warp-sync#2ede1d5da2b6b2357b139ca599298f08decb3bfd"
 dependencies = [
  "bellman",
  "blake2b_simd",

@@ -9,6 +9,7 @@ import 'package:ffi/ffi.dart';
 import './warp_api_generated.dart';
 
 typedef report_callback = Void Function(Int32);
+const DAY_MS = 24 * 3600 * 1000;
 
 class SyncParams {
   bool getTx;
@@ -25,10 +26,11 @@ class PaymentParams {
   String memo;
   int maxAmountPerNote;
   int anchorOffset;
+  bool shieldBalance;
   SendPort port;
 
   PaymentParams(this.account, this.address, this.amount, this.memo, this.maxAmountPerNote,
-      this.anchorOffset, this.port);
+      this.anchorOffset, this.shieldBalance, this.port);
 }
 
 class MultiPaymentParams {
@@ -38,6 +40,13 @@ class MultiPaymentParams {
   SendPort port;
 
   MultiPaymentParams(this.account, this.recipientJson, this.anchorOffset, this.port);
+}
+
+class CommitContactsParams {
+  int account;
+  int anchorOffset;
+
+  CommitContactsParams(this.account, this.anchorOffset);
 }
 
 const DEFAULT_ACCOUNT = 1;
@@ -82,13 +91,9 @@ class WarpApi {
     warp_api_lib.rewind_to_height(height);
   }
 
-  static void warpSync(bool getTx, int anchorOffset, void Function(int) f) {
-    var receivePort = ReceivePort();
-    Isolate.spawn(warpSyncIsolateFn, SyncParams(getTx, anchorOffset, receivePort.sendPort));
-
-    receivePort.listen((height) {
-      f(height);
-    });
+  static void warpSync(SyncParams params) {
+    warp_api_lib.warp_sync(params.getTx ? 1 : 0, params.anchorOffset, params.port!.nativePort);
+    params.port!.send(-1);
   }
 
   static Future<int> tryWarpSync(bool getTx, int anchorOffset) async {
@@ -121,6 +126,16 @@ class WarpApi {
     return address.cast<Utf8>().toDartString();
   }
 
+  static String getUA(String zaddress, String taddress) {
+    final ua = warp_api_lib.get_ua(zaddress.toNativeUtf8().cast<Int8>(), taddress.toNativeUtf8().cast<Int8>());
+    return ua.cast<Utf8>().toDartString();
+  }
+
+  static String getSaplingFromUA(String ua) {
+    final zaddr = warp_api_lib.get_sapling(ua.toNativeUtf8().cast<Int8>());
+    return zaddr.cast<Utf8>().toDartString();
+  }
+
   static void setMempoolAccount(int account) {
     return warp_api_lib.set_mempool_account(account);
   }
@@ -130,7 +145,7 @@ class WarpApi {
   }
 
   static Future<String> sendPayment(int account, String address, int amount, String memo,
-      int maxAmountPerNote, int anchorOffset, void Function(int) f) async {
+      int maxAmountPerNote, int anchorOffset, bool shieldTBalance, void Function(int) f) async {
     var receivePort = ReceivePort();
     receivePort.listen((progress) {
       f(progress);
@@ -139,7 +154,7 @@ class WarpApi {
     return await compute(
         sendPaymentIsolateFn,
         PaymentParams(
-            account, address, amount, memo, maxAmountPerNote, anchorOffset, receivePort.sendPort));
+            account, address, amount, memo, maxAmountPerNote, anchorOffset, shieldTBalance, receivePort.sendPort));
   }
 
   static Future<String> sendMultiPayment(int account, String recipientsJson, int anchorOffset, void Function(int) f) async {
@@ -156,6 +171,11 @@ class WarpApi {
 
   static int getTBalance(int account) {
     final balance = warp_api_lib.get_taddr_balance(account);
+    return balance;
+  }
+
+  static Future<int> getTBalanceAsync(int account) async {
+    final balance = await compute(getTBalanceIsolateFn, account);
     return balance;
   }
 
@@ -191,6 +211,36 @@ class WarpApi {
   static updateLWD(String url) {
     warp_api_lib.set_lwd_url(url.toNativeUtf8().cast<Int8>());
   }
+
+  static void storeContact(int id, String name, String address, bool dirty) {
+    warp_api_lib.store_contact(id, name.toNativeUtf8().cast<Int8>(), address.toNativeUtf8().cast<Int8>(), dirty ? 1 : 0);
+  }
+
+  static Future<String> commitUnsavedContacts(int account, int anchorOffset) async {
+    return compute(commitUnsavedContactsIsolateFn, CommitContactsParams(account, anchorOffset));
+  }
+
+  static void truncateData() {
+    warp_api_lib.truncate_data();
+  }
+
+  static void deleteAccount(int account) {
+    warp_api_lib.delete_account(account);
+  }
+
+  static String makePaymentURI(String address, int amount, String memo) {
+    final uri = warp_api_lib.make_payment_uri(
+        address.toNativeUtf8().cast<Int8>(),
+        amount,
+        memo.toNativeUtf8().cast<Int8>());
+    return uri.cast<Utf8>().toDartString();
+  }
+
+  static String parsePaymentURI(String uri) {
+    final json = warp_api_lib.parse_payment_uri(
+        uri.toNativeUtf8().cast<Int8>());
+    return json.cast<Utf8>().toDartString();
+  }
 }
 
 String sendPaymentIsolateFn(PaymentParams params) {
@@ -201,6 +251,7 @@ String sendPaymentIsolateFn(PaymentParams params) {
       params.memo.toNativeUtf8().cast<Int8>(),
       params.maxAmountPerNote,
       params.anchorOffset,
+      params.shieldBalance ? 1 : 0,
       params.port.nativePort);
   return txId.cast<Utf8>().toDartString();
 }
@@ -212,11 +263,6 @@ String sendMultiPaymentIsolateFn(MultiPaymentParams params) {
       params.anchorOffset,
       params.port.nativePort);
   return txId.cast<Utf8>().toDartString();
-}
-
-void warpSyncIsolateFn(SyncParams params) {
-  warp_api_lib.warp_sync(params.getTx ? 1 : 0, params.anchorOffset, params.port!.nativePort);
-  params.port!.send(-1);
 }
 
 int tryWarpSyncIsolateFn(SyncParams params) {
@@ -237,6 +283,16 @@ String shieldTAddrIsolateFn(int account) {
 }
 
 int syncHistoricalPricesIsolateFn(String currency) {
-  final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-  return warp_api_lib.sync_historical_prices(now, 370, currency.toNativeUtf8().cast<Int8>());
+  final now = DateTime.now();
+  final today = DateTime.utc(now.year, now.month, now.day);
+  return warp_api_lib.sync_historical_prices(today.millisecondsSinceEpoch ~/ 1000, 370, currency.toNativeUtf8().cast<Int8>());
+}
+
+String commitUnsavedContactsIsolateFn(CommitContactsParams params) {
+  final txId = warp_api_lib.commit_unsaved_contacts(params.account, params.anchorOffset);
+  return txId.cast<Utf8>().toDartString();
+}
+
+int getTBalanceIsolateFn(int account) {
+  return warp_api_lib.get_taddr_balance(account);
 }

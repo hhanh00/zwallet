@@ -10,4 +10,6 @@ class Coin {
     LWInstance("Lightwalletd", "https://mainnet.lightwalletd.com:9067"),
     LWInstance("Zecwallet", "https://lwdv3.zecwallet.co"),
   ];
+  bool supportsUA = false;
+  List<double> weights = [0.05, 0.25, 2.50];
 }

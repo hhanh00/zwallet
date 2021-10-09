@@ -1,16 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:decimal/decimal.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'dart:math' as math;
 
 import 'main.dart';
@@ -18,242 +18,345 @@ import 'store.dart';
 import 'generated/l10n.dart';
 
 class SendPage extends StatefulWidget {
-  final Contact contact;
+  final SendPageArgs? args;
 
-  SendPage(this.contact);
+  SendPage(this.args);
 
   @override
   SendState createState() => SendState();
 }
 
 class SendState extends State<SendPage> {
+  static final zero = decimalFormat(0, 3);
   final _formKey = GlobalKey<FormState>();
   var _address = "";
   var _amount = 0;
   var _maxAmountPerNote = Decimal.zero;
-  var _balance = 0;
+  var _sBalance = 0;
+  var _tBalance = 0;
+  var _excludedBalance = 0;
+  var _underConfirmedBalance = 0;
+  var _unconfirmedSpentBalance = 0;
+  var _unconfirmedBalance = 0;
   final _addressController = TextEditingController();
   final _memoController = TextEditingController();
-  final _otherAmountController = TextEditingController();
   var _mZEC = true;
-  var _useFX = false;
-  var _currencyController = _makeMoneyMaskedTextController(true);
-  var _maxAmountPerNoteController = _makeMoneyMaskedTextController(true);
-  var _includeFee = false;
+  var _inputInZEC = true;
+  var _zecAmountController = TextEditingController(text: zero);
+  var _fiatAmountController = TextEditingController(text: zero);
+  final _maxAmountController = TextEditingController(text: zero);
   var _isExpanded = false;
-  ReactionDisposer _priceAutorunDispose;
+  var _shieldTransparent = settings.shieldBalance;
+  ReactionDisposer? _priceAutorunDispose;
+  ReactionDisposer? _newBlockAutorunDispose;
 
   @override
   initState() {
-    if (widget.contact != null)
-      _addressController.text = widget.contact.address;
-    Future.microtask(() async {
-      final balance = await accountManager
-          .getBalanceSpendable(syncStatus.latestHeight - settings.anchorOffset);
-      setState(() {
-        _balance = math.max(balance - DEFAULT_FEE, 0);
-      });
-    });
-    _updateOtherAmount();
+    if (widget.args?.contact != null)
+      _addressController.text = widget.args!.contact!.address;
+
+    if (widget.args?.uri != null)
+      _setPaymentURI(widget.args!.uri!);
+
+    _updateFiatAmount();
     super.initState();
 
     _priceAutorunDispose = autorun((_) {
-      final price = priceStore.zecPrice;
-      _updateOtherAmount();
+      _updateFiatAmount();
+    });
+
+    _newBlockAutorunDispose = autorun((_) async {
+      final _ = syncStatus.latestHeight;
+      final sBalance = await accountManager.getShieldedBalance();
+      final tBalance = accountManager.tbalance;
+      final excludedBalance = await accountManager.getExcludedBalance();
+      final underConfirmedBalance =
+          await accountManager.getUnderConfirmedBalance();
+      final unconfirmedSpentBalance = await accountManager.getUnconfirmedSpentBalance();
+      final unconfirmedBalance = accountManager.unconfirmedBalance;
+      setState(() {
+        _sBalance = sBalance;
+        _tBalance = tBalance;
+        _excludedBalance = excludedBalance;
+        _underConfirmedBalance = underConfirmedBalance;
+        _unconfirmedSpentBalance = unconfirmedSpentBalance;
+        _unconfirmedBalance = unconfirmedBalance;
+      });
     });
   }
 
   @override
   void dispose() {
-    _priceAutorunDispose();
+    _priceAutorunDispose?.call();
+    _newBlockAutorunDispose?.call();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Scaffold(
-        appBar: AppBar(title: Text(S.of(context).sendCointicker(coin.ticker))),
-        body: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-                padding: EdgeInsets.all(20),
-                child: Column(children: <Widget>[
-                  Row(children: <Widget>[
-                    Expanded(
-                      child: TextFormField(
-                        decoration:
-                            InputDecoration(labelText: S.of(context).sendCointickerTo(coin.ticker)),
-                        minLines: 4,
-                        maxLines: null,
-                        keyboardType: TextInputType.multiline,
-                        controller: _addressController,
-                        onSaved: _onAddress,
-                        validator: _checkAddress,
-                      ),
-                    ),
-                    IconButton(
-                        icon: new Icon(MdiIcons.qrcodeScan), onPressed: _onScan)
-                  ]),
-                  Row(children: [
-                    Expanded(
-                        child: TextFormField(
-                            decoration:
-                                InputDecoration(labelText: thisAmountLabel()),
-                            keyboardType: TextInputType.number,
-                            controller: _currencyController,
-                            validator: _checkAmount,
-                            onChanged: (_) { _updateOtherAmount(); },
-                            onSaved: _onAmount)),
-                    TextButton(child: Text(S.of(context).max), onPressed: _onMax),
-                  ]),
-                  Row(children: [
-                    Expanded(
-                          child: TextFormField(
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                  labelText: otherAmountLabel()),
-                            controller: _otherAmountController,
-                              ),
-                    ),
-                  ]),
-                  ExpansionPanelList(
-                      expansionCallback: (_, isExpanded) {
-                        setState(() {
-                          _isExpanded = !isExpanded;
-                        });
-                      },
-                      children: [
-                        ExpansionPanel(
-                            headerBuilder: (_, __) =>
-                                ListTile(title: Text(S.of(context).advancedOptions)),
-                            body: Column(children: [
-                              ListTile(
-                                  title: TextFormField(
-                                decoration: InputDecoration(labelText: S.of(context).memo),
-                                minLines: 4,
-                                maxLines: null,
-                                keyboardType: TextInputType.multiline,
-                                controller: _memoController,
-                              )),
-                              CheckboxListTile(
-                                  title: Text(S.of(context).roundToMillis),
-                                  value: _mZEC,
-                                  onChanged: _onChangedmZEC),
-                              Observer(builder: (context) => CheckboxListTile(
-                                  title: Text(S.of(context).useSettingscurrency(settings.currency)),
-                                  value: _useFX,
-                                  onChanged: _onChangedUseFX)),
-                              CheckboxListTile(
-                                  title: Text(S.of(context).includeFeeInAmount),
-                                  value: _includeFee,
-                                  onChanged: _onChangedIncludeFee),
-                              ListTile(
-                                  title: TextFormField(
-                                decoration: InputDecoration(
-                                    labelText: S.of(context).maxAmountPerNote),
-                                keyboardType: TextInputType.number,
-                                controller: _maxAmountPerNoteController,
-                                validator: _checkMaxAmountPerNote,
-                                onSaved: _onSavedMaxAmountPerNote,
-                              )),
-                            ]),
-                            isExpanded: _isExpanded)
+        appBar: AppBar(title: Text(s.sendCointicker(coin.ticker))),
+        body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                    padding: EdgeInsets.all(20),
+                    child: Column(children: <Widget>[
+                      Row(children: <Widget>[
+                        Expanded(
+                            child: TypeAheadFormField(
+                          textFieldConfiguration: TextFieldConfiguration(
+                            controller: _addressController,
+                            decoration: InputDecoration(
+                                labelText: s.sendCointickerTo(coin.ticker)),
+                            minLines: 4,
+                            maxLines: 10,
+                            keyboardType: TextInputType.multiline,
+                          ),
+                          onSaved: _onAddress,
+                          validator: _checkAddress,
+                          onSuggestionSelected: (Contact contact) {
+                            _addressController.text = contact.name;
+                          },
+                          suggestionsCallback: (String pattern) {
+                            return contacts.contacts.where((c) => c.name
+                                .toLowerCase()
+                                .contains(pattern.toLowerCase()));
+                          },
+                          itemBuilder: (BuildContext context, Contact c) =>
+                              ListTile(title: Text(c.name)),
+                          noItemsFoundBuilder: (_) => SizedBox(),
+                        )),
+                        IconButton(
+                            icon: new Icon(MdiIcons.qrcodeScan),
+                            onPressed: _onScan)
                       ]),
-                  Padding(padding: EdgeInsets.all(8)),
-                  Text(S.of(context).spendable + '${_balance / ZECUNIT} ${coin.ticker}'),
-                  ButtonBar(
-                      children: confirmButtons(context, _onSend, okLabel: S.of(context).send, okIcon: Icon(MdiIcons.send)))
-                ]))));
+                      Row(children: [
+                        Expanded(
+                            child: TextFormField(
+                          style: !_inputInZEC
+                              ? TextStyle(fontWeight: FontWeight.w200)
+                              : TextStyle(),
+                          decoration: InputDecoration(
+                              labelText:
+                                  s.amountInSettingscurrency(coin.ticker)),
+                          controller: _zecAmountController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [makeInputFormatter(_mZEC)],
+                          validator: _checkAmount,
+                          onTap: () => setState(() {
+                            _inputInZEC = true;
+                          }),
+                          onChanged: (_) {
+                            _updateFiatAmount();
+                          },
+                          onSaved: _onAmount,
+                        )),
+                        TextButton(child: Text(s.max), onPressed: _onMax),
+                      ]),
+                      Row(children: [
+                        Expanded(
+                            child: TextFormField(
+                                style: _inputInZEC
+                                    ? TextStyle(fontWeight: FontWeight.w200)
+                                    : TextStyle(),
+                                decoration: InputDecoration(
+                                    labelText: s.amountInSettingscurrency(
+                                        settings.currency)),
+                                controller: _fiatAmountController,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [makeInputFormatter(_mZEC)],
+                                validator: (v) => _checkAmount(v, isFiat: true),
+                                onTap: () => setState(() {
+                                      _inputInZEC = false;
+                                    }),
+                                onChanged: (_) {
+                                  _updateAmount();
+                                }))
+                      ]),
+                      BalanceTable(_sBalance, _tBalance, _excludedBalance,
+                          _underConfirmedBalance, change),
+                      ExpansionPanelList(
+                          expansionCallback: (_, isExpanded) {
+                            setState(() {
+                              _isExpanded = !isExpanded;
+                            });
+                          },
+                          children: [
+                            ExpansionPanel(
+                              headerBuilder: (_, __) =>
+                                  ListTile(title: Text(s.advancedOptions)),
+                              body: Column(children: [
+                                ListTile(
+                                  title: TextFormField(
+                                    decoration:
+                                        InputDecoration(labelText: s.memo),
+                                    minLines: 4,
+                                    maxLines: null,
+                                    keyboardType: TextInputType.multiline,
+                                    controller: _memoController,
+                                  ),
+                                ),
+                                CheckboxListTile(
+                                    title: Text(s.roundToMillis),
+                                    value: _mZEC,
+                                    onChanged: _onChangedmZEC),
+                                if (accountManager.canPay)
+                                  CheckboxListTile(
+                                    title: Text(s.shieldTransparentBalance),
+                                    value: _shieldTransparent,
+                                    onChanged: _onChangedShieldBalance,
+                                  ),
+                                ListTile(
+                                    title: TextFormField(
+                                  decoration: InputDecoration(
+                                      labelText: s.maxAmountPerNote),
+                                  keyboardType: TextInputType.number,
+                                  controller: _maxAmountController,
+                                  inputFormatters: [makeInputFormatter(_mZEC)],
+                                  validator: _checkMaxAmountPerNote,
+                                  onSaved: _onSavedMaxAmountPerNote,
+                                )),
+                              ]),
+                              isExpanded: _isExpanded,
+                            )
+                          ]),
+                      Padding(padding: EdgeInsets.all(8)),
+                      ButtonBar(
+                          children: confirmButtons(context, _onSend,
+                              okLabel: s.send, okIcon: Icon(MdiIcons.send)))
+                    ])))));
   }
 
-  String _checkAddress(String v) {
-    if (v.isEmpty) return S.of(context).addressIsEmpty;
-    if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
+  String? _checkAddress(String? v) {
+    final s = S.of(context);
+    if (v == null || v.isEmpty) return s.addressIsEmpty;
+    final c = contacts.contacts.where((c) => c.name == v);
+    if (c.isNotEmpty) return null;
+    final zaddr = WarpApi.getSaplingFromUA(v);
+    if (zaddr.isNotEmpty) return null;
+    if (!WarpApi.validAddress(v)) return s.invalidAddress;
     return null;
   }
 
-  String _checkAmount(String vs) {
-    final vss = vs.replaceAll(',', '');
-    final v = double.tryParse(vss);
-    if (v == null) return S.of(context).amountMustBeANumber;
-    if (v <= 0.0) return S.of(context).amountMustBePositive;
-    if (amountInZAT(Decimal.parse(vss)) > _balance) return S.of(context).notEnoughBalance;
+  String? _checkAmount(String? vs, {bool isFiat: false}) {
+    final s = S.of(context);
+    if (vs == null) return s.amountMustBeANumber;
+    if (!checkNumber(vs)) return s.amountMustBeANumber;
+    final v = parseNumber(vs);
+    if (v < 0.0) return s.amountMustBePositive;
+    if (!isFiat && v == 0.0) return s.amountMustBePositive;
+    if (!isFiat && amountInZAT(Decimal.parse(v.toString())) > spendable)
+      return s.notEnoughBalance;
     return null;
   }
 
-  String _checkMaxAmountPerNote(String vs) {
-    final v = double.tryParse(vs);
-    if (v == null) return S.of(context).amountMustBeANumber;
-    if (v < 0.0) return S.of(context).amountMustBePositive;
+  String? _checkMaxAmountPerNote(String? vs) {
+    final s = S.of(context);
+    if (vs == null) return s.amountMustBeANumber;
+    if (!checkNumber(vs)) return s.amountMustBeANumber;
+    final v = parseNumber(vs);
+    if (v < 0.0) return s.amountMustBePositive;
     return null;
   }
 
   void _onMax() {
     setState(() {
       _mZEC = false;
-      _useFX = false;
-      _currencyController = _makeMoneyMaskedTextController(false);
-      _includeFee = false;
-      _currencyController.updateValue(
-          (Decimal.fromInt(_balance) / ZECUNIT_DECIMAL).toDouble());
-      _updateOtherAmount();
+      _zecAmountController.text = amountToString(spendable);
+      _updateFiatAmount();
     });
   }
 
-  void _onChangedIncludeFee(bool v) {
-    setState(() {
-      _includeFee = v;
-    });
-  }
-
-  void _onChangedUseFX(bool v) {
-    setState(() {
-      _useFX = v;
-      _currencyController
-          .updateValue(double.parse(_otherAmountController.text));
-      _updateOtherAmount();
-    });
-  }
-
-  void _onChangedmZEC(bool v) {
+  void _onChangedmZEC(bool? v) {
+    if (v == null) return;
     setState(() {
       _mZEC = v;
-      final amount = _currencyController.numberValue;
-      _currencyController = _makeMoneyMaskedTextController(v);
-      _currencyController.updateValue(amount);
-      _maxAmountPerNoteController = _makeMoneyMaskedTextController(v);
+      _zecAmountController.text = _trimToPrecision(_zecAmountController.text);
+      _fiatAmountController.text = _trimToPrecision(_fiatAmountController.text);
+    });
+  }
+
+  void _onChangedShieldBalance(bool? v) {
+    if (v == null) return;
+    setState(() {
+      _shieldTransparent = v;
     });
   }
 
   void _onScan() async {
-    var code = await BarcodeScanner.scan();
-    setState(() {
-      _address = code.rawContent;
-      _addressController.text = _address;
-    });
+    final code = await scanCode(context);
+    if (code != null) {
+      if (_checkAddress(code) != null) {
+        _setPaymentURI(code); // not an address
+      } else {
+        setState(() {
+          _address = code;
+          _addressController.text = _address;
+        });
+      }
+    }
   }
 
-  void _onAmount(String vs) {
-    final vss = vs.replaceAll(',', '');
-    _amount = amountInZAT(Decimal.parse(vss));
+  void _setPaymentURI(String uri) {
+    final json = WarpApi.parsePaymentURI(uri);
+    try {
+      final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
+      setState(() {
+        _address = payment.address;
+        _addressController.text = _address;
+        _memoController.text = payment.memo;
+        _amount = payment.amount;
+        _zecAmountController.text = amountFromZAT(_amount);
+      });
+    } on FormatException {}
+  }
+
+  void _onAmount(String? vs) {
+    final v = parseNumber(vs);
+    _amount = amountInZAT(Decimal.parse(v.toString()));
   }
 
   void _onAddress(v) {
-    _address = v;
+    final c = contacts.contacts.where((c) => c.name == v);
+    if (c.isEmpty)
+      _address = v;
+    else {
+      _address = c.first.address;
+    }
   }
 
-  void _onSavedMaxAmountPerNote(v) {
-    _maxAmountPerNote = Decimal.parse(v);
+  void _onSavedMaxAmountPerNote(vs) {
+    final v = parseNumber(vs);
+    _maxAmountPerNote = Decimal.parse(v.toString());
   }
 
-  void _updateOtherAmount() {
-    final price = _fx().toDouble();
-    final amount = _currencyController.numberValue;
-    final otherAmount = (_useFX) ? (amount / price).toStringAsFixed(8) : (amount * price).toStringAsFixed(8);
-    _otherAmountController.text = otherAmount;
+  void _updateAmount() {
+    final rate = 1.0 / priceStore.zecPrice;
+    final amount = parseNumber(_fiatAmountController.text);
+    final otherAmount = _formatCurrency(amount * rate);
+    setState(() {
+      _zecAmountController.text = otherAmount;
+    });
   }
+
+  void _updateFiatAmount() {
+    final rate = priceStore.zecPrice;
+    final amount = parseNumber(_zecAmountController.text);
+    final otherAmount = _formatCurrency(amount * rate);
+    setState(() {
+      _fiatAmountController.text = otherAmount;
+    });
+  }
+
+  String _formatCurrency(double v) => decimalFormat(v, precision(_mZEC));
 
   void _onSend() async {
+    final s = S.of(context);
     final form = _formKey.currentState;
     if (form == null) return;
 
@@ -264,65 +367,137 @@ class SendState extends State<SendPage> {
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) => AlertDialog(
-                title: Text(S.of(context).pleaseConfirm),
-                content: SingleChildScrollView(
-                    child: Text(S.of(context).sendingAzecCointickerToAddress(aZEC, coin.ticker, _address))),
-                actions: confirmButtons(context, () => Navigator.of(context).pop(true), okLabel: S.of(context).approve, cancelValue: false)
-              ));
+              title: Text(s.pleaseConfirm),
+              content: SingleChildScrollView(
+                  child: Text(s.sendingAzecCointickerToAddress(
+                      aZEC, coin.ticker, _address))),
+              actions: confirmButtons(
+                  context, () => Navigator.of(context).pop(true),
+                  okLabel: s.approve, cancelValue: false)));
       if (approved) {
         Navigator.of(context).pop();
-        final snackBar1 = SnackBar(content: Text(S.of(context).preparingTransaction));
-        rootScaffoldMessengerKey.currentState.showSnackBar(snackBar1);
 
-        if (_includeFee) _amount -= DEFAULT_FEE;
+        final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
+        rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
+
         int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toInt();
         final memo = _memoController.text;
+        final address = unwrapUA(_address);
 
         if (accountManager.canPay) {
+          if (settings.protectSend &&
+              !await authenticate(context, s.pleaseAuthenticateToSend)) return;
           final tx = await compute(
               sendPayment,
               PaymentParams(
                   accountManager.active.id,
-                  _address,
+                  address,
                   _amount,
                   memo,
                   maxAmountPerNote,
                   settings.anchorOffset,
+                  _shieldTransparent,
                   progressPort.sendPort));
 
-          final snackBar2 = SnackBar(content: Text(S.of(context).txId + tx));
-          rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+          final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
+          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+          await accountManager.fetchAccountData(true);
         } else {
           Directory tempDir = await getTemporaryDirectory();
           String filename = "${tempDir.path}/tx.json";
 
-          final msg = WarpApi.prepareTx(accountManager.active.id, _address, _amount, memo,
-              maxAmountPerNote, settings.anchorOffset, filename);
+          final msg = WarpApi.prepareTx(accountManager.active.id, address,
+              _amount, memo, maxAmountPerNote, settings.anchorOffset, filename);
 
-          Share.shareFiles([filename], subject: S.of(context).unsignedTransactionFile);
+          Share.shareFiles([filename], subject: s.unsignedTransactionFile);
 
           final snackBar2 = SnackBar(content: Text(msg));
-          rootScaffoldMessengerKey.currentState.showSnackBar(snackBar2);
+          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
         }
       }
     }
   }
 
-  static MoneyMaskedTextController _makeMoneyMaskedTextController(bool mZEC) =>
-      MoneyMaskedTextController(
-          decimalSeparator: '.',
-          thousandSeparator: ',',
-          precision: mZEC ? 3 : 8);
+  int amountInZAT(Decimal v) => (v * ZECUNIT_DECIMAL).toInt();
 
-  String thisAmountLabel() => S.of(context).amountInSettingscurrency(_useFX ? settings.currency : coin.ticker);
+  String amountFromZAT(int v) =>
+      (Decimal.fromInt(v) / ZECUNIT_DECIMAL).toString();
 
-  String otherAmountLabel() => S.of(context).amountInSettingscurrency(_useFX ? coin.ticker : settings.currency);
+  double _fx() {
+    return priceStore.zecPrice;
+  }
 
-  int amountInZAT(Decimal v) => _useFX
-      ? (v / _fx() * ZECUNIT_DECIMAL).toInt()
-      : (v * ZECUNIT_DECIMAL).toInt();
+  String _trimToPrecision(String v) {
+    double vv = parseNumber(v);
+    return decimalFormat(vv, precision(_mZEC));
+  }
 
-  Decimal _fx() { return Decimal.parse("${priceStore.zecPrice}"); }
+  get spendable => math.max(
+      _sBalance - _excludedBalance - _underConfirmedBalance - DEFAULT_FEE, 0);
+
+  get change => _unconfirmedSpentBalance + _unconfirmedBalance;
+}
+
+class BalanceTable extends StatelessWidget {
+  final int sBalance;
+  final int tBalance;
+  final int excludedBalance;
+  final int underConfirmedBalance;
+  final int change;
+
+  BalanceTable(this.sBalance, this.tBalance, this.excludedBalance,
+      this.underConfirmedBalance, this.change);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tBalanceLabel = Text.rich(TextSpan(children: [
+      TextSpan(text: S.of(context).unshieldedBalance + ' '),
+      WidgetSpan(
+        child: GestureDetector(
+          child: Icon(Icons.shield_outlined),
+          onTap: () {
+            shieldTAddr(context);
+          },
+        ),
+      )
+    ]));
+
+    return Container(
+      decoration: BoxDecoration(border: Border.all(color: theme.dividerColor, width: 1),
+      borderRadius: BorderRadius.circular(8)),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      BalanceRow(Text(S.of(context).totalBalance), totalBalance),
+      BalanceRow(Text(S.of(context).underConfirmed), -underConfirmed),
+      BalanceRow(Text(S.of(context).excludedNotes), -excludedBalance),
+      BalanceRow(tBalanceLabel, -tBalance),
+      BalanceRow(Text(S.of(context).spendableBalance), spendable,
+          style: TextStyle(color: Theme.of(context).primaryColor)),
+    ]));
+  }
+
+  get totalBalance => sBalance + tBalance + change;
+  get underConfirmed => -underConfirmedBalance - change;
+
+  get spendable => math.max(
+      sBalance - excludedBalance - underConfirmedBalance - DEFAULT_FEE, 0);
+}
+
+class BalanceRow extends StatelessWidget {
+  final label;
+  final amount;
+  final style;
+
+  BalanceRow(this.label, this.amount, {this.style});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+        title: label,
+        trailing: Text(amountToString(amount),
+            style: TextStyle(fontFeatures: [FontFeature.tabularFigures()]).merge(style)),
+        visualDensity: VisualDensity(horizontal: 0, vertical: -4));
+  }
 }
 
 sendPayment(PaymentParams param) async {
@@ -333,7 +508,8 @@ sendPayment(PaymentParams param) async {
       param.amount,
       param.memo,
       param.maxAmountPerNote,
-      param.anchorOffset, (percent) {
+      param.anchorOffset,
+      param.shieldBalance, (percent) {
     param.port.send(percent);
   });
   param.port.send(0);

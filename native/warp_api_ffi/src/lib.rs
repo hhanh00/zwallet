@@ -52,7 +52,7 @@ pub unsafe extern "C" fn set_mempool_account(account: u32) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn new_account(name: *mut c_char, data: *mut c_char) -> u32 {
+pub unsafe extern "C" fn new_account(name: *mut c_char, data: *mut c_char) -> i32 {
     let name = CStr::from_ptr(name).to_string_lossy();
     let data = CStr::from_ptr(data).to_string_lossy();
     api::new_account(&name, &data)
@@ -71,6 +71,7 @@ pub unsafe extern "C" fn send_payment(
     memo: *mut c_char,
     max_amount_per_note: u64,
     anchor_offset: u32,
+    shield_transparent_balance: bool,
     port: i64,
 ) -> *const c_char {
     let address = CStr::from_ptr(address).to_string_lossy();
@@ -82,6 +83,7 @@ pub unsafe extern "C" fn send_payment(
         &memo,
         max_amount_per_note,
         anchor_offset,
+        shield_transparent_balance,
         port,
     );
     CString::new(tx_id).unwrap().into_raw()
@@ -177,6 +179,71 @@ pub unsafe extern "C" fn broadcast(tx_filename: *mut c_char) -> *mut c_char {
 pub unsafe extern "C" fn sync_historical_prices(now: i64, days: u32, currency: *mut c_char) -> u32 {
     let currency = CStr::from_ptr(currency).to_string_lossy();
     api::sync_historical_prices(now, days, &currency)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn get_ua(
+    sapling_addr: *mut c_char,
+    transparent_addr: *mut c_char,
+) -> *mut c_char {
+    let sapling_addr = CStr::from_ptr(sapling_addr).to_string_lossy();
+    let transparent_addr = CStr::from_ptr(transparent_addr).to_string_lossy();
+    let ua_addr = api::get_ua(&sapling_addr, &transparent_addr);
+    CString::new(ua_addr).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn get_sapling(ua_addr: *mut c_char) -> *mut c_char {
+    let ua_addr = CStr::from_ptr(ua_addr).to_string_lossy();
+    let sapling_addr = api::get_sapling(&ua_addr);
+    CString::new(sapling_addr).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn store_contact(
+    id: u32,
+    name: *mut c_char,
+    address: *mut c_char,
+    dirty: bool,
+) {
+    let name = CStr::from_ptr(name).to_string_lossy();
+    let address = CStr::from_ptr(address).to_string_lossy();
+    api::store_contact(id, &name, &address, dirty);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn commit_unsaved_contacts(account: u32, anchor_offset: u32) -> *mut c_char {
+    let tx_id = api::commit_unsaved_contacts(account, anchor_offset);
+    CString::new(tx_id).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn delete_account(account: u32) {
+    api::delete_account(account);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn truncate_data() {
+    api::truncate_data();
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn make_payment_uri(
+    address: *mut c_char,
+    amount: u64,
+    memo: *mut c_char,
+) -> *mut c_char {
+    let address = CStr::from_ptr(address).to_string_lossy();
+    let memo = CStr::from_ptr(memo).to_string_lossy();
+    let uri = api::make_payment_uri(&address, amount, &memo);
+    CString::new(uri).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn parse_payment_uri(uri: *mut c_char) -> *mut c_char {
+    let uri = CStr::from_ptr(uri).to_string_lossy();
+    let payment_json = api::parse_payment_uri(&uri);
+    CString::new(payment_json).unwrap().into_raw()
 }
 
 #[no_mangle]
