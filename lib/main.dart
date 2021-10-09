@@ -14,11 +14,11 @@ import 'package:path/path.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:warp/payment_uri.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:quick_actions/quick_actions.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'generated/l10n.dart';
 
@@ -27,6 +27,7 @@ import 'account_manager.dart';
 import 'backup.dart';
 import 'coin/coindef.dart';
 import 'multisend.dart';
+import 'payment_uri.dart';
 import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
@@ -68,6 +69,17 @@ Future<void> initUniLinks(BuildContext context) async {
   }
 }
 
+void handleQuickAction(BuildContext context, String shortcut) {
+  switch (shortcut) {
+    case 'receive':
+      Navigator.of(context).pushNamed('/receive');
+      break;
+    case 'send':
+      Navigator.of(context).pushNamed('/send');
+      break;
+  }
+}
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final home = ZWalletApp();
@@ -99,6 +111,7 @@ void main() {
                       '/restore': (context) => RestorePage(),
                       '/send': (context) =>
                           SendPage(settings.arguments as SendPageArgs?),
+                      '/receive': (context) => PaymentURIPage(settings.arguments as String?),
                       '/accounts': (context) => AccountManagerPage(),
                       '/settings': (context) => SettingsPage(),
                       '/tx': (context) =>
@@ -139,6 +152,7 @@ class ZWalletAppState extends State<ZWalletApp> {
   }
 
   Future<bool> _init(BuildContext context) async {
+    final s = S.of(this.context);
     if (!initialized) {
       initialized = true;
       final dbPath = await getDatabasesPath();
@@ -148,6 +162,12 @@ class ZWalletAppState extends State<ZWalletApp> {
       await contacts.init(db);
       await syncStatus.init();
       await initUniLinks(context);
+      final quickActions = QuickActions();
+      quickActions.setShortcutItems(<ShortcutItem>[
+        ShortcutItem(type: 'receive', localizedTitle: s.receive(coin.ticker), icon: 'receive'),
+        ShortcutItem(type: 'send', localizedTitle: s.sendCointicker(coin.ticker), icon: 'send'),
+      ]);
+      quickActions.initialize((type) { handleQuickAction(this.context, type); });
     }
     return true;
   }

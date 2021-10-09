@@ -27,17 +27,19 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m2(ticker) =>
       "Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 m${ticker} will be deducted.";
 
-  static String m3(ticker) => "Send ${ticker}";
+  static String m3(ticker) => "Receive ${ticker}";
 
-  static String m4(ticker) => "Send ${ticker} to...";
+  static String m4(ticker) => "Send ${ticker}";
 
-  static String m5(amount, ticker, count) =>
+  static String m5(ticker) => "Send ${ticker} to...";
+
+  static String m6(amount, ticker, count) =>
       "Sending a total of ${amount} ${ticker} to ${count} recipients";
 
-  static String m6(aZEC, ticker, address) =>
+  static String m7(aZEC, ticker, address) =>
       "Sending ${aZEC} ${ticker} to ${address}";
 
-  static String m7(currency) => "Use ${currency}";
+  static String m8(currency) => "Use ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -185,6 +187,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("Qty"),
         "realized": MessageLookupByLibrary.simpleMessage("Realized"),
+        "receive": m3,
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Receive Payment"),
         "rescan": MessageLookupByLibrary.simpleMessage("Rescan"),
@@ -208,10 +211,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Select notes to EXCLUDE from payments"),
         "send": MessageLookupByLibrary.simpleMessage("Send"),
-        "sendCointicker": m3,
-        "sendCointickerTo": m4,
-        "sendingATotalOfAmountCointickerToCountRecipients": m5,
-        "sendingAzecCointickerToAddress": m6,
+        "sendCointicker": m4,
+        "sendCointickerTo": m5,
+        "sendingATotalOfAmountCointickerToCountRecipients": m6,
+        "sendingAzecCointickerToAddress": m7,
         "server": MessageLookupByLibrary.simpleMessage("Server"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "shieldTranspBalance":
@@ -266,7 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("Unsigned Transaction File"),
-        "useSettingscurrency": m7,
+        "useSettingscurrency": m8,
         "useUa": MessageLookupByLibrary.simpleMessage("Use UA"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
         "viewingKey": MessageLookupByLibrary.simpleMessage("Viewing Key")

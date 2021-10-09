@@ -151,5 +151,6 @@
   "rescanNeeded": "Scan nécessaire",
   "tapTransactionForDetails": "Presser sur une Transaction pour plus de details",
   "transactionHistory": "Historique des Transactions",
-  "help": "Aide"
+  "help": "Aide",
+  "receive": "Recevoir {ticker}"
 }

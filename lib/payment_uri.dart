@@ -9,7 +9,7 @@ import 'generated/l10n.dart';
 class PaymentURIPage extends StatefulWidget {
   final String address;
 
-  PaymentURIPage(this.address);
+  PaymentURIPage(String? _address): address = _address ?? accountManager.active.address;
 
   @override
   PaymentURIState createState() => PaymentURIState();
@@ -24,7 +24,7 @@ class PaymentURIState extends State<PaymentURIPage> {
   @override
   void initState() {
     super.initState();
-    qrText = widget.address;
+    qrText = widget.address ;
   }
 
   @override
@@ -33,7 +33,9 @@ class PaymentURIState extends State<PaymentURIPage> {
 
     return Form(
         key: _formKey,
-        child: SingleChildScrollView(
+        child: Scaffold(
+          appBar: AppBar(title: Text(S.of(context).receive(coin.ticker))),
+          body: GestureDetector(
             child: GestureDetector(
                 onTap: () { FocusScope.of(context).unfocus(); },
                 child: Padding(
@@ -73,7 +75,7 @@ class PaymentURIState extends State<PaymentURIPage> {
                               onPressed: _ok,
                             ),
                           ]),
-                        ])))));
+                        ]))))));
   }
 
   String? _checkAmount(String? vs) {

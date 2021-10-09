@@ -1581,6 +1581,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Receive {ticker}`
+  String receive(Object ticker) {
+    return Intl.message(
+      'Receive $ticker',
+      name: 'receive',
+      desc: '',
+      args: [ticker],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

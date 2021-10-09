@@ -151,5 +151,6 @@
   "rescanNeeded": "Necesita Escanear",
   "tapTransactionForDetails": "Tap Transaction for Details",
   "transactionHistory": "Transaction History",
-  "help": "Help"
+  "help": "Help",
+  "receive": "Receive {ticker}"
 }
