@@ -106,7 +106,7 @@
   "timestamp": "Date/Heure",
   "address": "adresse",
   "openInExplorer": "Ouvrir dans l'explorateur",
-  "na": "N/A",
+  "na": "N/D",
   "add": "AJOUTER",
   "tradingChartRange": "Domaine de temps des graphiques",
   "M1": "1 M",
@@ -153,5 +153,5 @@
   "transactionHistory": "Historique des Transactions",
   "help": "Aide",
   "receive": "Recevoir {ticker}",
-  "pnlHistory": "PNL History"
+  "pnlHistory": "Historique des P/P"
 }

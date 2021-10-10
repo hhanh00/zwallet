@@ -27,7 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m2(ticker) =>
       "¿Quiere transferir su saldo transparente a su dirección blindada? ";
 
-  static String m3(ticker) => "Receive ${ticker}";
+  static String m3(ticker) => "Recibir ${ticker}";
 
   static String m4(ticker) => "Enviar ${ticker}";
 
@@ -130,7 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Notas Excluidas"),
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "height": MessageLookupByLibrary.simpleMessage("Altura"),
-        "help": MessageLookupByLibrary.simpleMessage("Help"),
+        "help": MessageLookupByLibrary.simpleMessage("Ayuda"),
         "history": MessageLookupByLibrary.simpleMessage("Historia"),
         "includeFeeInAmount": MessageLookupByLibrary.simpleMessage(
             "Incluir tarifa en la cantidad"),
@@ -178,8 +178,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Autentíquese para ver la semilla de la cuenta"),
         "pleaseConfirm":
             MessageLookupByLibrary.simpleMessage("Por favor, confirmar"),
-        "pnl": MessageLookupByLibrary.simpleMessage("Pnl"),
-        "pnlHistory": MessageLookupByLibrary.simpleMessage("PNL History"),
+        "pnl": MessageLookupByLibrary.simpleMessage("G&P"),
+        "pnlHistory": MessageLookupByLibrary.simpleMessage("Historia de G&P"),
         "preparingTransaction":
             MessageLookupByLibrary.simpleMessage("Preparando la transacción…"),
         "price": MessageLookupByLibrary.simpleMessage("Precio"),
@@ -241,8 +241,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Pinchar QR para Dirección Blindada"),
         "tapQrCodeForTransparentAddress": MessageLookupByLibrary.simpleMessage(
             "Pinchar QR para Dirección Transparente"),
-        "tapTransactionForDetails":
-            MessageLookupByLibrary.simpleMessage("Tap Transaction for Details"),
+        "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
+            "Toque Transacción para detalles"),
         "theme": MessageLookupByLibrary.simpleMessage("Tema"),
         "thisAccountAlreadyExists":
             MessageLookupByLibrary.simpleMessage("Esta cuenta ya existe."),
@@ -261,7 +261,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "transactionDetails":
             MessageLookupByLibrary.simpleMessage("Detalles de transacción"),
         "transactionHistory":
-            MessageLookupByLibrary.simpleMessage("Transaction History"),
+            MessageLookupByLibrary.simpleMessage("Historia de transacciones"),
         "txId": MessageLookupByLibrary.simpleMessage("TX ID:"),
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Confirmaciones Insuficiente"),

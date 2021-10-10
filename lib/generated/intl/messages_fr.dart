@@ -149,7 +149,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "mm": MessageLookupByLibrary.simpleMessage("Virtuel"),
         "multiPay": MessageLookupByLibrary.simpleMessage("Envoyer à plusieurs"),
         "multipay": MessageLookupByLibrary.simpleMessage("Envoyer à plusieurs"),
-        "na": MessageLookupByLibrary.simpleMessage("N/A"),
+        "na": MessageLookupByLibrary.simpleMessage("N/D"),
         "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Le nom est vide"),
         "newSnapAddress": MessageLookupByLibrary.simpleMessage(
             "Nouvelle adresse instantanée"),
@@ -179,7 +179,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "pleaseConfirm":
             MessageLookupByLibrary.simpleMessage("Veuillez confirmer"),
         "pnl": MessageLookupByLibrary.simpleMessage("P/P"),
-        "pnlHistory": MessageLookupByLibrary.simpleMessage("PNL History"),
+        "pnlHistory":
+            MessageLookupByLibrary.simpleMessage("Historique des P/P"),
         "preparingTransaction": MessageLookupByLibrary.simpleMessage(
             "Préparation de la transaction..."),
         "price": MessageLookupByLibrary.simpleMessage("Prix"),

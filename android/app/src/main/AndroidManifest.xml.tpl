@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.hanh.ywallet">
+    package="me.hanh.zwallet">
    <application
         android:label="YWallet"
         android:icon="@mipmap/ic_launcher">
