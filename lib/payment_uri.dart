@@ -47,10 +47,10 @@ class PaymentURIState extends State<PaymentURIPage> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          QrImage(
-                              data: qrText,
-                              size: qrSize,
-                              backgroundColor: Colors.white),
+                          GestureDetector(onTap: _ok, child: QrImage(
+                            data: qrText,
+                            size: qrSize,
+                            backgroundColor: Colors.white)),
                           Padding(padding: EdgeInsets.all(8)),
                           DualMoneyInputWidget(key: amountKey),
                           TextFormField(
