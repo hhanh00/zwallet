@@ -25,7 +25,10 @@ class PaymentURIState extends State<PaymentURIPage> {
   @override
   void initState() {
     super.initState();
-    qrText = widget.address ;
+    qrText = widget.address;
+    Future.microtask(() {
+      priceStore.fetchZecPrice();
+    });
   }
 
   @override
