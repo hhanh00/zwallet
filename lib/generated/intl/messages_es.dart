@@ -179,6 +179,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pleaseConfirm":
             MessageLookupByLibrary.simpleMessage("Por favor, confirmar"),
         "pnl": MessageLookupByLibrary.simpleMessage("Pnl"),
+        "pnlHistory": MessageLookupByLibrary.simpleMessage("PNL History"),
         "preparingTransaction":
             MessageLookupByLibrary.simpleMessage("Preparando la transacción…"),
         "price": MessageLookupByLibrary.simpleMessage("Precio"),

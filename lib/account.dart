@@ -13,7 +13,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:warp/payment_uri.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -592,36 +591,54 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      FormBuilderRadioGroup(
-          orientation: OptionsOrientation.horizontal,
-          name: S.of(context).pnl,
-          initialValue: accountManager.pnlSeriesIndex,
-          onChanged: (int? v) {
-            setState(() {
-              accountManager.setPnlSeriesIndex(v!);
-            });
-          },
-          options: [
-            FormBuilderFieldOption(child: Text(S.of(context).price), value: 0),
-            FormBuilderFieldOption(
-                child: Text(S.of(context).realized), value: 1),
-            FormBuilderFieldOption(child: Text(S.of(context).mm), value: 2),
-            FormBuilderFieldOption(child: Text(S.of(context).total), value: 3),
-            FormBuilderFieldOption(child: Text(S.of(context).qty), value: 4),
-            FormBuilderFieldOption(child: Text(S.of(context).table), value: 5),
+    return IconTheme.merge(
+      data: IconThemeData(opacity: 0.54),
+      child:
+        Column(children: [
+          Row(children: [
+            Expanded(child:
+              FormBuilderRadioGroup(
+                orientation: OptionsOrientation.horizontal,
+                name: S.of(context).pnl,
+                initialValue: accountManager.pnlSeriesIndex,
+                onChanged: (int? v) {
+                  setState(() {
+                    accountManager.setPnlSeriesIndex(v!);
+                  });
+                },
+                options: [
+                  FormBuilderFieldOption(child: Text(S.of(context).price), value: 0),
+                  FormBuilderFieldOption(
+                      child: Text(S.of(context).realized), value: 1),
+                  FormBuilderFieldOption(child: Text(S.of(context).mm), value: 2),
+                  FormBuilderFieldOption(child: Text(S.of(context).total), value: 3),
+                  FormBuilderFieldOption(child: Text(S.of(context).qty), value: 4),
+                  FormBuilderFieldOption(child: Text(S.of(context).table), value: 5),
+              ])),
+            IconButton(onPressed: _onExport, icon: Icon(Icons.save)),
           ]),
-      Observer(builder: (context) {
-        final _ = accountManager.pnlSorted;
-        return Expanded(
-            child: Padding(
-                padding: EdgeInsets.only(right: 20),
-                child: accountManager.pnlSeriesIndex != 5
-                    ? PnLChart(
-                        accountManager.pnls, accountManager.pnlSeriesIndex)
-                    : PnLTable()));
-      })
-    ]);
+          Observer(builder: (context) {
+            final _ = accountManager.pnlSorted;
+            return Expanded(
+                child: Padding(
+                    padding: EdgeInsets.only(right: 20),
+                    child: accountManager.pnlSeriesIndex != 5
+                        ? PnLChart(
+                            accountManager.pnls, accountManager.pnlSeriesIndex)
+                        : PnLTable()));
+          })
+    ]));
+  }
+
+  _onExport() async {
+    final csvData = accountManager.pnlSorted.map((pnl) => [
+      pnl.timestamp,
+      pnl.amount,
+      pnl.price,
+      pnl.realized,
+      pnl.unrealized,
+      pnl.realized + pnl.unrealized]).toList();
+    await shareCsv(csvData, 'pnl_history.csv', S.of(context).pnlHistory);
   }
 }
 

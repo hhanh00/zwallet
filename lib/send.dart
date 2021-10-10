@@ -52,8 +52,11 @@ class SendState extends State<SendPage> {
     if (widget.args?.contact != null)
       _addressController.text = widget.args!.contact!.address;
 
-    if (widget.args?.uri != null)
-      _setPaymentURI(widget.args!.uri!);
+    final uri = widget.args?.uri;
+    if (uri != null)
+      Future.microtask(() {
+        _setPaymentURI(uri);
+      });
 
     super.initState();
 

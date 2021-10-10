@@ -152,5 +152,6 @@
   "tapTransactionForDetails": "Presser sur une Transaction pour plus de details",
   "transactionHistory": "Historique des Transactions",
   "help": "Aide",
-  "receive": "Recevoir {ticker}"
+  "receive": "Recevoir {ticker}",
+  "pnlHistory": "PNL History"
 }

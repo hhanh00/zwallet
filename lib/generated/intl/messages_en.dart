@@ -178,6 +178,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Please authenticate to show account seed"),
         "pleaseConfirm": MessageLookupByLibrary.simpleMessage("Please Confirm"),
         "pnl": MessageLookupByLibrary.simpleMessage("Pnl"),
+        "pnlHistory": MessageLookupByLibrary.simpleMessage("PNL History"),
         "preparingTransaction":
             MessageLookupByLibrary.simpleMessage("Preparing transaction..."),
         "price": MessageLookupByLibrary.simpleMessage("Price"),

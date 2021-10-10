@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:csv/csv.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +13,10 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -64,9 +68,13 @@ Future<void> initUniLinks(BuildContext context) async {
   try {
     final initialLink = await getInitialLink();
     if (initialLink != null)
-        Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(uri: initialLink));
+      Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(uri: initialLink));
   } on PlatformException {
   }
+
+  subUniLinks = linkStream.listen((String? uri) {
+    Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(uri: uri));
+  });
 }
 
 void handleQuickAction(BuildContext context, String shortcut) {
@@ -163,11 +171,20 @@ class ZWalletAppState extends State<ZWalletApp> {
       await syncStatus.init();
       await initUniLinks(context);
       final quickActions = QuickActions();
-      quickActions.setShortcutItems(<ShortcutItem>[
-        ShortcutItem(type: 'receive', localizedTitle: s.receive(coin.ticker), icon: 'receive'),
-        ShortcutItem(type: 'send', localizedTitle: s.sendCointicker(coin.ticker), icon: 'send'),
-      ]);
-      quickActions.initialize((type) { handleQuickAction(this.context, type); });
+      quickActions.initialize((type) {
+        handleQuickAction(this.context, type);
+      });
+      if (!settings.linkHooksInitialized) {
+        quickActions.setShortcutItems(<ShortcutItem>[
+          ShortcutItem(type: 'receive',
+              localizedTitle: s.receive(coin.ticker),
+              icon: 'receive'),
+          ShortcutItem(type: 'send',
+              localizedTitle: s.sendCointicker(coin.ticker),
+              icon: 'send'),
+        ]);
+        await settings.setLinkHooksInitialized();
+      }
     }
     return true;
   }
@@ -418,5 +435,15 @@ Future<void> shieldTAddr(BuildContext context) async {
           rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
         })),
   );
+}
+
+Future<void> shareCsv(List<List> data, String filename, String title) async {
+  final csvConverter = ListToCsvConverter();
+  final csv = csvConverter.convert(data);
+  Directory tempDir = await getTemporaryDirectory();
+  String fn = "${tempDir.path}/$filename";
+  final file = File(fn);
+  await file.writeAsString(csv);
+  await Share.shareFiles([fn], subject: title);
 }
 

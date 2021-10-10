@@ -1591,6 +1591,16 @@ class S {
       args: [ticker],
     );
   }
+
+  /// `PNL History`
+  String get pnlHistory {
+    return Intl.message(
+      'PNL History',
+      name: 'pnlHistory',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

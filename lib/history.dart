@@ -1,11 +1,7 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:csv/csv.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 
@@ -108,13 +104,7 @@ class HistoryState extends State<HistoryWidget>
     final csvData = accountManager.sortedTxs.map((tx) => [
       tx.fullTxId, tx.height, tx.timestamp, tx.address, tx.contact ?? '',
       tx.value, tx.memo]).toList();
-    final csvConverter = ListToCsvConverter();
-    final csv = csvConverter.convert(csvData);
-    Directory tempDir = await getTemporaryDirectory();
-    String filename = "${tempDir.path}/tx_history.csv";
-    final file = File(filename);
-    await file.writeAsString(csv);
-    Share.shareFiles([filename], subject: S.of(context).transactionHistory);
+    await shareCsv(csvData, 'tx_history.csv', S.of(context).transactionHistory);
   }
 }
 

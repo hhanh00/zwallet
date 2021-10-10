@@ -25,6 +25,9 @@ class Settings = _Settings with _$Settings;
 
 abstract class _Settings with Store {
   @observable
+  bool linkHooksInitialized = false;
+
+  @observable
   String ldUrl = "";
 
   @observable
@@ -78,6 +81,7 @@ abstract class _Settings with Store {
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
+    linkHooksInitialized = prefs.getBool('link_hooks') ?? false;
     ldUrlChoice = prefs.getString('lightwalletd_choice') ?? "Lightwalletd";
     ldUrl = prefs.getString('lightwalletd_custom') ?? "";
     prefs.setString('lightwalletd_choice', ldUrlChoice);
@@ -98,6 +102,13 @@ abstract class _Settings with Store {
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
+  }
+
+  @action
+  Future<void> setLinkHooksInitialized() async {
+    final prefs = await SharedPreferences.getInstance();
+    linkHooksInitialized = true;
+    prefs.setBool('link_hooks', true);
   }
 
   @action

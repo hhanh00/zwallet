@@ -152,5 +152,6 @@
   "tapTransactionForDetails": "Tap Transaction for Details",
   "transactionHistory": "Transaction History",
   "help": "Help",
-  "receive": "Receive {ticker}"
+  "receive": "Receive {ticker}",
+  "pnlHistory": "PNL History"
 }
