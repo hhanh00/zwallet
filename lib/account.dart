@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 import 'dart:math';
 
@@ -385,7 +386,8 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _setupTimer() async {
-    await _sync();
+    await Future.delayed(Duration(seconds: 3));
+    await _trySync();
     _timerSync = Timer.periodic(Duration(seconds: 15), (Timer t) {
       _trySync();
     });
@@ -394,8 +396,6 @@ class _AccountPageState extends State<AccountPage>
   double _fx() {
     return priceStore.zecPrice;
   }
-
-  _sync() async {}
 
   _trySync() async {
     priceStore.fetchZecPrice();
