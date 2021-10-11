@@ -92,6 +92,7 @@ class PaymentURIState extends State<PaymentURIPage> {
     if (form.validate()) {
       form.save();
       _updateQR();
+      FocusScope.of(context).unfocus();
     }
   }
 }
