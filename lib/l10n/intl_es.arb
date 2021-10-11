@@ -153,5 +153,6 @@
   "transactionHistory": "Historia de transacciones",
   "help": "Ayuda",
   "receive": "Recibir {ticker}",
-  "pnlHistory": "Historia de G&P"
+  "pnlHistory": "Historia de G&P",
+  "useTransparentBalance": "Usar Saldo Transp"
 }

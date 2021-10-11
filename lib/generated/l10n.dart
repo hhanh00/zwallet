@@ -1601,6 +1601,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Use Transparent Balance`
+  String get useTransparentBalance {
+    return Intl.message(
+      'Use Transparent Balance',
+      name: 'useTransparentBalance',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -153,5 +153,6 @@
   "transactionHistory": "Historique des Transactions",
   "help": "Aide",
   "receive": "Recevoir {ticker}",
-  "pnlHistory": "Historique des P/P"
+  "pnlHistory": "Historique des P/P",
+  "useTransparentBalance": "Utiliser le Solde Transparent"
 }

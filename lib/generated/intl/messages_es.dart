@@ -271,6 +271,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Archivo de transaccion sin firmar"),
         "useSettingscurrency": m8,
+        "useTransparentBalance":
+            MessageLookupByLibrary.simpleMessage("Usar Saldo Transp"),
         "useUa": MessageLookupByLibrary.simpleMessage("Usar UA"),
         "version": MessageLookupByLibrary.simpleMessage("Versión"),
         "viewingKey": MessageLookupByLibrary.simpleMessage("Llave Lectura")

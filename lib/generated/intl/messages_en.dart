@@ -271,6 +271,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("Unsigned Transaction File"),
         "useSettingscurrency": m8,
+        "useTransparentBalance":
+            MessageLookupByLibrary.simpleMessage("Use Transparent Balance"),
         "useUa": MessageLookupByLibrary.simpleMessage("Use UA"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
         "viewingKey": MessageLookupByLibrary.simpleMessage("Viewing Key")

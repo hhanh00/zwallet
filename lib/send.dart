@@ -44,7 +44,7 @@ class SendState extends State<SendPage> {
   final _maxAmountController = TextEditingController(text: zero);
   var _isExpanded = false;
   var _useMillis = true;
-  var _shieldTransparent = settings.shieldBalance;
+  var _useTransparent = settings.shieldBalance;
   ReactionDisposer? _newBlockAutorunDispose;
 
   @override
@@ -130,7 +130,7 @@ class SendState extends State<SendPage> {
                             onPressed: _onScan)
                       ]),
                       DualMoneyInputWidget(key: _amountKey, child: TextButton(child: Text(s.max), onPressed: _onMax), spendable: spendable),
-                      BalanceTable(_sBalance, _tBalance, _excludedBalance,
+                      BalanceTable(_sBalance, _tBalance, _useTransparent, _excludedBalance,
                           _underConfirmedBalance, change),
                       ExpansionPanelList(
                           expansionCallback: (_, isExpanded) {
@@ -159,9 +159,9 @@ class SendState extends State<SendPage> {
                                     onChanged: _setUseMillis),
                                 if (accountManager.canPay)
                                   CheckboxListTile(
-                                    title: Text(s.shieldTransparentBalance),
-                                    value: _shieldTransparent,
-                                    onChanged: _onChangedShieldBalance,
+                                    title: Text(s.useTransparentBalance),
+                                    value: _useTransparent,
+                                    onChanged: _onChangedUseTransparent,
                                   ),
                                 ListTile(
                                     title: TextFormField(
@@ -211,10 +211,10 @@ class SendState extends State<SendPage> {
     });
   }
 
-  void _onChangedShieldBalance(bool? v) {
+  void _onChangedUseTransparent(bool? v) {
     if (v == null) return;
     setState(() {
-      _shieldTransparent = v;
+      _useTransparent = v;
     });
   }
 
@@ -308,7 +308,7 @@ class SendState extends State<SendPage> {
                   memo,
                   maxAmountPerNote,
                   settings.anchorOffset,
-                  _shieldTransparent,
+                  _useTransparent,
                   progressPort.sendPort));
 
           final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
@@ -335,7 +335,7 @@ class SendState extends State<SendPage> {
   String amountFromZAT(int v) =>
       (Decimal.fromInt(v) / ZECUNIT_DECIMAL).toString();
 
-  get spendable => math.max(
+  get spendable => math.max((_useTransparent ? _tBalance : 0) +
       _sBalance - _excludedBalance - _underConfirmedBalance - DEFAULT_FEE, 0);
 
   get change => _unconfirmedSpentBalance + _unconfirmedBalance;
@@ -346,11 +346,12 @@ class SendState extends State<SendPage> {
 class BalanceTable extends StatelessWidget {
   final int sBalance;
   final int tBalance;
+  final bool useTBalance;
   final int excludedBalance;
   final int underConfirmedBalance;
   final int change;
 
-  BalanceTable(this.sBalance, this.tBalance, this.excludedBalance,
+  BalanceTable(this.sBalance, this.tBalance, this.useTBalance, this.excludedBalance,
       this.underConfirmedBalance, this.change);
 
   @override
@@ -375,7 +376,7 @@ class BalanceTable extends StatelessWidget {
       BalanceRow(Text(S.of(context).totalBalance), totalBalance),
       BalanceRow(Text(S.of(context).underConfirmed), -underConfirmed),
       BalanceRow(Text(S.of(context).excludedNotes), -excludedBalance),
-      BalanceRow(tBalanceLabel, -tBalance),
+      if (!useTBalance) BalanceRow(tBalanceLabel, -tBalance),
       BalanceRow(Text(S.of(context).spendableBalance), spendable,
           style: TextStyle(color: Theme.of(context).primaryColor)),
     ]));
@@ -385,7 +386,7 @@ class BalanceTable extends StatelessWidget {
   get underConfirmed => -underConfirmedBalance - change;
 
   get spendable => math.max(
-      sBalance - excludedBalance - underConfirmedBalance - DEFAULT_FEE, 0);
+      sBalance + (useTBalance ? tBalance : 0) - excludedBalance - underConfirmedBalance - DEFAULT_FEE, 0);
 }
 
 class BalanceRow extends StatelessWidget {
@@ -414,7 +415,7 @@ sendPayment(PaymentParams param) async {
       param.memo,
       param.maxAmountPerNote,
       param.anchorOffset,
-      param.shieldBalance, (percent) {
+      param.useTransparent, (percent) {
     param.port.send(percent);
   });
   param.port.send(0);
