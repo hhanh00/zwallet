@@ -64,6 +64,11 @@ class PaymentURIState extends State<PaymentURIPage> {
                           Padding(padding: EdgeInsets.all(8)),
                           ButtonBar(children: [
                             ElevatedButton.icon(
+                              icon: Icon(Icons.clear),
+                              label: Text('RESET'),
+                              onPressed: _reset,
+                            ),
+                            ElevatedButton.icon(
                               icon: Icon(Icons.build),
                               label: Text('MAKE QR'),
                               onPressed: _ok,
@@ -84,6 +89,14 @@ class PaymentURIState extends State<PaymentURIPage> {
 
     setState(() {
       qrText = _qrText;
+    });
+  }
+
+  void _reset() {
+    _memoController.clear();
+    amountKey.currentState?.clear();
+    setState(() {
+      qrText = widget.address;
     });
   }
 

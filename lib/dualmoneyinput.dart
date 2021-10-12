@@ -85,6 +85,14 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
       ]);
   }
 
+  void clear() {
+    setState(() {
+      useMillis = true;
+      zecAmountController.text = zero;
+      fiatAmountController.text = zero;
+    });
+  }
+
   void setMillis(bool useMillis) {
     setState(() {
       this.useMillis = useMillis;
