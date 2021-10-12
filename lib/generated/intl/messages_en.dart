@@ -103,11 +103,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "confs": MessageLookupByLibrary.simpleMessage("Confs"),
         "contactName": MessageLookupByLibrary.simpleMessage("Contact Name"),
         "contacts": MessageLookupByLibrary.simpleMessage("Contacts"),
-        "createANewAccount": MessageLookupByLibrary.simpleMessage(
-            "Create a new account and it will show up here"),
+        "createANewAccount":
+            MessageLookupByLibrary.simpleMessage("Tap + to add a new account"),
         "createANewContactAndItWillShowUpHere":
-            MessageLookupByLibrary.simpleMessage(
-                "Create a new contact and it will show up here"),
+            MessageLookupByLibrary.simpleMessage("Tap + to add a new contact"),
         "currency": MessageLookupByLibrary.simpleMessage("Currency"),
         "custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "dark": MessageLookupByLibrary.simpleMessage("Dark"),

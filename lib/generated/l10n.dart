@@ -1192,10 +1192,10 @@ class S {
     );
   }
 
-  /// `Create a new account and it will show up here`
+  /// `Tap + to add a new account`
   String get createANewAccount {
     return Intl.message(
-      'Create a new account and it will show up here',
+      'Tap + to add a new account',
       name: 'createANewAccount',
       desc: '',
       args: [],
@@ -1352,10 +1352,10 @@ class S {
     );
   }
 
-  /// `Create a new contact and it will show up here`
+  /// `Tap + to add a new contact`
   String get createANewContactAndItWillShowUpHere {
     return Intl.message(
-      'Create a new contact and it will show up here',
+      'Tap + to add a new contact',
       name: 'createANewContactAndItWillShowUpHere',
       desc: '',
       args: [],

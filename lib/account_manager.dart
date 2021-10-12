@@ -42,7 +42,7 @@ class AccountManagerState extends State<AccountManagerPage> {
                   ],
               onSelected: _onMenu)
         ]),
-        body: Observer(
+        body: Padding(padding: EdgeInsets.all(8), child: Observer(
             builder: (context) =>
                   accountManager.accounts.isEmpty
                       ? Center(child: NoAccount())
@@ -73,7 +73,7 @@ class AccountManagerState extends State<AccountManagerPage> {
                                 _onDismissed(index, a),
                           ));
                         }),
-                ),
+                )),
         floatingActionButton: FloatingActionButton(
             onPressed: _onRestore, child: Icon(Icons.add)));
   }
