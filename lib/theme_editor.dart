@@ -41,16 +41,16 @@ class ThemeEditorState extends State<ThemeEditorPage> {
                 side: BorderSide(color: theme.dividerColor, width: 1)
               ),
               child: Column(children: [
-                ListTile(title: Text('Primary Color'), trailing: ColorSwatch(_primary, (c) => setState(() { _primary = c; }))),
-                ListTile(title: Text('Secondary Color'), trailing: ColorSwatch(_primaryVariant, (c) => setState(() { _primaryVariant = c; }))),
+                ListTile(title: Text('Color'), trailing: ColorSwatch(_primary, (c) => setState(() { _primary = c; }))),
+                ListTile(title: Text('Accent Color'), trailing: ColorSwatch(_primaryVariant, (c) => setState(() { _primaryVariant = c; }))),
             ])),
             Padding(padding: EdgeInsets.all(8)),
             Text('Secondary', style: theme.textTheme.headline6),
             Padding(padding: EdgeInsets.all(4)),
             Card(
                 child: Column(children: [
-                  ListTile(title: Text('Primary Color'), trailing: ColorSwatch(_secondary, (c) => setState(() { _secondary = c; }))),
-                  ListTile(title: Text('Secondary Color'), trailing: ColorSwatch(_secondaryVariant, (c) => setState(() { _secondaryVariant = c; }))),
+                  ListTile(title: Text('Color'), trailing: ColorSwatch(_secondary, (c) => setState(() { _secondary = c; }))),
+                  ListTile(title: Text('Accent Color'), trailing: ColorSwatch(_secondaryVariant, (c) => setState(() { _secondaryVariant = c; }))),
                 ])),
             ButtonBar(children: confirmButtons(context, _ok))
         ]))));
