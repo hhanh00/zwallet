@@ -234,6 +234,8 @@ abstract class _Settings with Store {
     prefs.setInt('primary.variant', primaryVariantColorValue);
     prefs.setInt('secondary', secondaryColorValue);
     prefs.setInt('secondary.variant', secondaryVariantColorValue);
+
+    _updateThemeData();
   }
 
   @action
