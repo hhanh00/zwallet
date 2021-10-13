@@ -36,6 +36,7 @@ import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
 import 'store.dart';
+import 'theme_editor.dart';
 import 'transaction.dart';
 
 var coin = Coin();
@@ -113,21 +114,22 @@ void main() {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   supportedLocales: S.delegate.supportedLocales,
-                  onGenerateRoute: (RouteSettings settings) {
+                  onGenerateRoute: (RouteSettings routeSettings) {
                     var routes = <String, WidgetBuilder>{
                       '/account': (context) => AccountPage(),
                       '/restore': (context) => RestorePage(),
                       '/send': (context) =>
-                          SendPage(settings.arguments as SendPageArgs?),
-                      '/receive': (context) => PaymentURIPage(settings.arguments as String?),
+                          SendPage(routeSettings.arguments as SendPageArgs?),
+                      '/receive': (context) => PaymentURIPage(routeSettings.arguments as String?),
                       '/accounts': (context) => AccountManagerPage(),
                       '/settings': (context) => SettingsPage(),
                       '/tx': (context) =>
-                          TransactionPage(settings.arguments as Tx),
-                      '/backup': (context) => BackupPage(settings.arguments as int?),
+                          TransactionPage(routeSettings.arguments as Tx),
+                      '/backup': (context) => BackupPage(routeSettings.arguments as int?),
                       '/multipay': (context) => MultiPayPage(),
+                      '/edit_theme': (context) => ThemeEditorPage(onSaved: settings.updateCustomThemeColors),
                     };
-                    return MaterialPageRoute(builder: routes[settings.name]!);
+                    return MaterialPageRoute(builder: routes[routeSettings.name]!);
                   },
                 );
               });

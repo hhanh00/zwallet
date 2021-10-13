@@ -74,8 +74,11 @@ class SettingsState extends State<SettingsPage> {
                                 FormBuilderFieldOption(
                                     child: Text(s.purple),
                                     value: 'purple'),
+                                FormBuilderFieldOption(
+                                    child: Text(s.custom),
+                                    value: 'custom'),
                               ]),
-                          FormBuilderRadioGroup(
+                          Row(children: [Expanded(child: FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
                               name: 'brightness',
                               initialValue: settings.themeBrightness,
@@ -87,7 +90,9 @@ class SettingsState extends State<SettingsPage> {
                                 FormBuilderFieldOption(
                                     child: Text(s.dark),
                                     value: 'dark'),
-                              ]),
+                              ])),
+                            IconButton(onPressed: _editTheme, icon: Icon(Icons.edit))
+                          ]),
                           Row(children: [
                             SizedBox(
                                 width: 100,
@@ -245,5 +250,9 @@ class SettingsState extends State<SettingsPage> {
 
   _onGetTx(v) {
     settings.updateGetTx(v);
+  }
+
+  _editTheme() {
+    Navigator.of(context).pushNamed('/edit_theme');
   }
 }

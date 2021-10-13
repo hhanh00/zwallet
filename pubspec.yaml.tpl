@@ -43,6 +43,7 @@ dependencies:
   flutter_form_builder: ^6.1.0+1
   url_launcher: ^6.0.10
   flex_color_scheme: ^3.0.1
+  flutter_colorpicker: ^0.6.0
   fl_chart: ^0.40.0
   grouped_list: ^4.1.0
   json_annotation: ^4.1.0
