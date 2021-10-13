@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:warp/main.dart';
 
+import 'generated/l10n.dart';
+
 typedef OnThemeSaved(Color primary, Color primaryAccent, Color secondary, Color secondaryAccent);
 
 class ThemeEditorPage extends StatefulWidget {
@@ -30,27 +32,28 @@ class ThemeEditorState extends State<ThemeEditorPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final s = S.of(context);
     return Scaffold(
-        appBar: AppBar(title: Text('Theme Editor')),
+        appBar: AppBar(title: Text(s.themeEditor)),
         body: Padding(padding: EdgeInsets.all(8), child: Form(
           child: Column(children: [
-            Text('Primary', style: theme.textTheme.headline6),
+            Text(s.primary, style: theme.textTheme.headline6),
             Padding(padding: EdgeInsets.all(4)),
             Card(
               shape: RoundedRectangleBorder(
                 side: BorderSide(color: theme.dividerColor, width: 1)
               ),
               child: Column(children: [
-                ListTile(title: Text('Color'), trailing: ColorSwatch(_primary, (c) => setState(() { _primary = c; }))),
-                ListTile(title: Text('Accent Color'), trailing: ColorSwatch(_primaryVariant, (c) => setState(() { _primaryVariant = c; }))),
+                ListTile(title: Text(s.color), trailing: ColorSwatch(_primary, (c) => setState(() { _primary = c; }))),
+                ListTile(title: Text(s.accentColor), trailing: ColorSwatch(_primaryVariant, (c) => setState(() { _primaryVariant = c; }))),
             ])),
             Padding(padding: EdgeInsets.all(8)),
-            Text('Secondary', style: theme.textTheme.headline6),
+            Text(s.secondary, style: theme.textTheme.headline6),
             Padding(padding: EdgeInsets.all(4)),
             Card(
                 child: Column(children: [
-                  ListTile(title: Text('Color'), trailing: ColorSwatch(_secondary, (c) => setState(() { _secondary = c; }))),
-                  ListTile(title: Text('Accent Color'), trailing: ColorSwatch(_secondaryVariant, (c) => setState(() { _secondaryVariant = c; }))),
+                  ListTile(title: Text(s.color), trailing: ColorSwatch(_secondary, (c) => setState(() { _secondary = c; }))),
+                  ListTile(title: Text(s.accentColor), trailing: ColorSwatch(_secondaryVariant, (c) => setState(() { _secondaryVariant = c; }))),
                 ])),
             ButtonBar(children: confirmButtons(context, _ok))
         ]))));

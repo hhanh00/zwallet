@@ -154,5 +154,10 @@
   "help": "Aide",
   "receive": "Recevoir {ticker}",
   "pnlHistory": "Historique des P/P",
-  "useTransparentBalance": "Utiliser le Solde Transparent"
+  "useTransparentBalance": "Utiliser le Solde Transparent",
+  "themeEditor": "Editeur de Thème",
+  "color": "Couleur",
+  "accentColor": "Couleur d'accent",
+  "primary": "Primaire",
+  "secondary": "Secondaire"
 }

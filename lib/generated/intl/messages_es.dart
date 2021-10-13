@@ -48,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "M6": MessageLookupByLibrary.simpleMessage("6 M"),
         "Y1": MessageLookupByLibrary.simpleMessage("1 A"),
         "about": MessageLookupByLibrary.simpleMessage("Acerca"),
+        "accentColor": MessageLookupByLibrary.simpleMessage("Acento Color"),
         "account": MessageLookupByLibrary.simpleMessage("Cuenta"),
         "accountBalanceHistory":
             MessageLookupByLibrary.simpleMessage("Historial De Cuenta"),
@@ -98,6 +99,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cambiar nombre de la cuenta"),
         "coffee": MessageLookupByLibrary.simpleMessage("Café"),
         "coldStorage": MessageLookupByLibrary.simpleMessage("Billetera Fría"),
+        "color": MessageLookupByLibrary.simpleMessage("Color"),
         "confirmDeleteAccount": MessageLookupByLibrary.simpleMessage(
             "¿Está SEGURO de que desea BORRAR esta cuenta? DEBE tener una COPIA DE SEGURIDAD para recuperarla. Esta operación NO es reversible."),
         "confs": MessageLookupByLibrary.simpleMessage("Confs"),
@@ -183,6 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "preparingTransaction":
             MessageLookupByLibrary.simpleMessage("Preparando la transacción…"),
         "price": MessageLookupByLibrary.simpleMessage("Precio"),
+        "primary": MessageLookupByLibrary.simpleMessage("Primario"),
         "protectSend": MessageLookupByLibrary.simpleMessage("Proteger enviar"),
         "protectSendSettingChanged": MessageLookupByLibrary.simpleMessage(
             "La configuración de envío protegido ha cambiado"),
@@ -207,6 +210,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Guardar en blockchain?"),
         "scanStartingMomentarily": MessageLookupByLibrary.simpleMessage(
             "Escaneo comenzando momentáneamente "),
+        "secondary": MessageLookupByLibrary.simpleMessage("Secundario"),
         "secretKey": MessageLookupByLibrary.simpleMessage("Llave Secreta"),
         "seed": MessageLookupByLibrary.simpleMessage("Semilla"),
         "selectAccount":
@@ -244,6 +248,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
             "Toque Transacción para detalles"),
         "theme": MessageLookupByLibrary.simpleMessage("Tema"),
+        "themeEditor": MessageLookupByLibrary.simpleMessage("Editora de temas"),
         "thisAccountAlreadyExists":
             MessageLookupByLibrary.simpleMessage("Esta cuenta ya existe."),
         "tiltYourDeviceUpToRevealYourBalance":

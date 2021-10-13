@@ -154,5 +154,10 @@
   "help": "Ayuda",
   "receive": "Recibir {ticker}",
   "pnlHistory": "Historia de G&P",
-  "useTransparentBalance": "Usar Saldo Transp"
+  "useTransparentBalance": "Usar Saldo Transp",
+  "themeEditor": "Editora de temas",
+  "color": "Color",
+  "accentColor": "Acento Color",
+  "primary": "Primario",
+  "secondary": "Secundario"
 }

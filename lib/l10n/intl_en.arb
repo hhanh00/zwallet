@@ -154,5 +154,10 @@
   "help": "Help",
   "receive": "Receive {ticker}",
   "pnlHistory": "PNL History",
-  "useTransparentBalance": "Use Transparent Balance"
+  "useTransparentBalance": "Use Transparent Balance",
+  "themeEditor": "Theme Editor",
+  "color": "Color",
+  "accentColor": "Accent Color",
+  "primary": "Primary",
+  "secondary": "Secondary"
 }

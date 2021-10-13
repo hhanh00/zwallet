@@ -1611,6 +1611,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Theme Editor`
+  String get themeEditor {
+    return Intl.message(
+      'Theme Editor',
+      name: 'themeEditor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Color`
+  String get color {
+    return Intl.message(
+      'Color',
+      name: 'color',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accent Color`
+  String get accentColor {
+    return Intl.message(
+      'Accent Color',
+      name: 'accentColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Primary`
+  String get primary {
+    return Intl.message(
+      'Primary',
+      name: 'primary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Secondary`
+  String get secondary {
+    return Intl.message(
+      'Secondary',
+      name: 'secondary',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
