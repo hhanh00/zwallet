@@ -27,17 +27,19 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m2(ticker) =>
       "Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 m${ticker} will be deducted.";
 
-  static String m3(ticker) => "Send ${ticker}";
+  static String m3(ticker) => "Receive ${ticker}";
 
-  static String m4(ticker) => "Send ${ticker} to...";
+  static String m4(ticker) => "Send ${ticker}";
 
-  static String m5(amount, ticker, count) =>
+  static String m5(ticker) => "Send ${ticker} to...";
+
+  static String m6(amount, ticker, count) =>
       "Sending a total of ${amount} ${ticker} to ${count} recipients";
 
-  static String m6(aZEC, ticker, address) =>
+  static String m7(aZEC, ticker, address) =>
       "Sending ${aZEC} ${ticker} to ${address}";
 
-  static String m7(currency) => "Use ${currency}";
+  static String m8(currency) => "Use ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -46,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "M6": MessageLookupByLibrary.simpleMessage("6 M"),
         "Y1": MessageLookupByLibrary.simpleMessage("1 Y"),
         "about": MessageLookupByLibrary.simpleMessage("About"),
+        "accentColor": MessageLookupByLibrary.simpleMessage("Accent Color"),
         "account": MessageLookupByLibrary.simpleMessage("Account"),
         "accountBalanceHistory":
             MessageLookupByLibrary.simpleMessage("Account Balance History"),
@@ -96,16 +99,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Change Account Name"),
         "coffee": MessageLookupByLibrary.simpleMessage("Coffee"),
         "coldStorage": MessageLookupByLibrary.simpleMessage("Cold Storage"),
+        "color": MessageLookupByLibrary.simpleMessage("Color"),
         "confirmDeleteAccount": MessageLookupByLibrary.simpleMessage(
             "Are you SURE you want to DELETE this account? You MUST have a BACKUP to recover it. This operation is NOT reversible."),
         "confs": MessageLookupByLibrary.simpleMessage("Confs"),
         "contactName": MessageLookupByLibrary.simpleMessage("Contact Name"),
         "contacts": MessageLookupByLibrary.simpleMessage("Contacts"),
-        "createANewAccount": MessageLookupByLibrary.simpleMessage(
-            "Create a new account and it will show up here"),
+        "createANewAccount":
+            MessageLookupByLibrary.simpleMessage("Tap + to add a new account"),
         "createANewContactAndItWillShowUpHere":
-            MessageLookupByLibrary.simpleMessage(
-                "Create a new contact and it will show up here"),
+            MessageLookupByLibrary.simpleMessage("Tap + to add a new contact"),
         "currency": MessageLookupByLibrary.simpleMessage("Currency"),
         "custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "dark": MessageLookupByLibrary.simpleMessage("Dark"),
@@ -176,15 +179,18 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Please authenticate to show account seed"),
         "pleaseConfirm": MessageLookupByLibrary.simpleMessage("Please Confirm"),
         "pnl": MessageLookupByLibrary.simpleMessage("Pnl"),
+        "pnlHistory": MessageLookupByLibrary.simpleMessage("PNL History"),
         "preparingTransaction":
             MessageLookupByLibrary.simpleMessage("Preparing transaction..."),
         "price": MessageLookupByLibrary.simpleMessage("Price"),
+        "primary": MessageLookupByLibrary.simpleMessage("Primary"),
         "protectSend": MessageLookupByLibrary.simpleMessage("Protect Send"),
         "protectSendSettingChanged": MessageLookupByLibrary.simpleMessage(
             "Protect Send setting changed"),
         "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("Qty"),
         "realized": MessageLookupByLibrary.simpleMessage("Realized"),
+        "receive": m3,
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Receive Payment"),
         "rescan": MessageLookupByLibrary.simpleMessage("Rescan"),
@@ -201,6 +207,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Save to Blockchain"),
         "scanStartingMomentarily":
             MessageLookupByLibrary.simpleMessage("Scan starting momentarily"),
+        "secondary": MessageLookupByLibrary.simpleMessage("Secondary"),
         "secretKey": MessageLookupByLibrary.simpleMessage("Secret Key"),
         "seed": MessageLookupByLibrary.simpleMessage("Seed"),
         "selectAccount": MessageLookupByLibrary.simpleMessage("Select Account"),
@@ -208,10 +215,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Select notes to EXCLUDE from payments"),
         "send": MessageLookupByLibrary.simpleMessage("Send"),
-        "sendCointicker": m3,
-        "sendCointickerTo": m4,
-        "sendingATotalOfAmountCointickerToCountRecipients": m5,
-        "sendingAzecCointickerToAddress": m6,
+        "sendCointicker": m4,
+        "sendCointickerTo": m5,
+        "sendingATotalOfAmountCointickerToCountRecipients": m6,
+        "sendingAzecCointickerToAddress": m7,
         "server": MessageLookupByLibrary.simpleMessage("Server"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "shieldTranspBalance":
@@ -240,6 +247,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tapTransactionForDetails":
             MessageLookupByLibrary.simpleMessage("Tap Transaction for Details"),
         "theme": MessageLookupByLibrary.simpleMessage("Theme"),
+        "themeEditor": MessageLookupByLibrary.simpleMessage("Theme Editor"),
         "thisAccountAlreadyExists": MessageLookupByLibrary.simpleMessage(
             "Another account has the same address"),
         "tiltYourDeviceUpToRevealYourBalance":
@@ -266,7 +274,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("Unsigned Transaction File"),
-        "useSettingscurrency": m7,
+        "useSettingscurrency": m8,
+        "useTransparentBalance":
+            MessageLookupByLibrary.simpleMessage("Use Transparent Balance"),
         "useUa": MessageLookupByLibrary.simpleMessage("Use UA"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
         "viewingKey": MessageLookupByLibrary.simpleMessage("Viewing Key")

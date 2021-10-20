@@ -27,17 +27,19 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m2(ticker) =>
       "¿Quiere transferir su saldo transparente a su dirección blindada? ";
 
-  static String m3(ticker) => "Enviar ${ticker}";
+  static String m3(ticker) => "Recibir ${ticker}";
 
-  static String m4(ticker) => "Enviar ${ticker} a…";
+  static String m4(ticker) => "Enviar ${ticker}";
 
-  static String m5(amount, ticker, count) =>
+  static String m5(ticker) => "Enviar ${ticker} a…";
+
+  static String m6(amount, ticker, count) =>
       "Enviando un total de ${amount} ${ticker} a ${count} direcciones";
 
-  static String m6(aZEC, ticker, address) =>
+  static String m7(aZEC, ticker, address) =>
       "Enviado ${aZEC} ${ticker} a ${address}";
 
-  static String m7(currency) => "Utilizar ${currency}";
+  static String m8(currency) => "Utilizar ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -46,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "M6": MessageLookupByLibrary.simpleMessage("6 M"),
         "Y1": MessageLookupByLibrary.simpleMessage("1 A"),
         "about": MessageLookupByLibrary.simpleMessage("Acerca"),
+        "accentColor": MessageLookupByLibrary.simpleMessage("Acento Color"),
         "account": MessageLookupByLibrary.simpleMessage("Cuenta"),
         "accountBalanceHistory":
             MessageLookupByLibrary.simpleMessage("Historial De Cuenta"),
@@ -96,6 +99,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cambiar nombre de la cuenta"),
         "coffee": MessageLookupByLibrary.simpleMessage("Café"),
         "coldStorage": MessageLookupByLibrary.simpleMessage("Billetera Fría"),
+        "color": MessageLookupByLibrary.simpleMessage("Color"),
         "confirmDeleteAccount": MessageLookupByLibrary.simpleMessage(
             "¿Está SEGURO de que desea BORRAR esta cuenta? DEBE tener una COPIA DE SEGURIDAD para recuperarla. Esta operación NO es reversible."),
         "confs": MessageLookupByLibrary.simpleMessage("Confs"),
@@ -128,7 +132,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Notas Excluidas"),
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "height": MessageLookupByLibrary.simpleMessage("Altura"),
-        "help": MessageLookupByLibrary.simpleMessage("Help"),
+        "help": MessageLookupByLibrary.simpleMessage("Ayuda"),
         "history": MessageLookupByLibrary.simpleMessage("Historia"),
         "includeFeeInAmount": MessageLookupByLibrary.simpleMessage(
             "Incluir tarifa en la cantidad"),
@@ -176,16 +180,19 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Autentíquese para ver la semilla de la cuenta"),
         "pleaseConfirm":
             MessageLookupByLibrary.simpleMessage("Por favor, confirmar"),
-        "pnl": MessageLookupByLibrary.simpleMessage("Pnl"),
+        "pnl": MessageLookupByLibrary.simpleMessage("G&P"),
+        "pnlHistory": MessageLookupByLibrary.simpleMessage("Historia de G&P"),
         "preparingTransaction":
             MessageLookupByLibrary.simpleMessage("Preparando la transacción…"),
         "price": MessageLookupByLibrary.simpleMessage("Precio"),
+        "primary": MessageLookupByLibrary.simpleMessage("Primario"),
         "protectSend": MessageLookupByLibrary.simpleMessage("Proteger enviar"),
         "protectSendSettingChanged": MessageLookupByLibrary.simpleMessage(
             "La configuración de envío protegido ha cambiado"),
         "purple": MessageLookupByLibrary.simpleMessage("Morada"),
         "qty": MessageLookupByLibrary.simpleMessage("Cantidad"),
         "realized": MessageLookupByLibrary.simpleMessage("Dio Cuenta"),
+        "receive": m3,
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Recibir un pago"),
         "rescan": MessageLookupByLibrary.simpleMessage("Escanear"),
@@ -203,6 +210,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Guardar en blockchain?"),
         "scanStartingMomentarily": MessageLookupByLibrary.simpleMessage(
             "Escaneo comenzando momentáneamente "),
+        "secondary": MessageLookupByLibrary.simpleMessage("Secundario"),
         "secretKey": MessageLookupByLibrary.simpleMessage("Llave Secreta"),
         "seed": MessageLookupByLibrary.simpleMessage("Semilla"),
         "selectAccount":
@@ -211,10 +219,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Seleccionar Notas a EXCLUIR de los pagos"),
         "send": MessageLookupByLibrary.simpleMessage("Enviar"),
-        "sendCointicker": m3,
-        "sendCointickerTo": m4,
-        "sendingATotalOfAmountCointickerToCountRecipients": m5,
-        "sendingAzecCointickerToAddress": m6,
+        "sendCointicker": m4,
+        "sendCointickerTo": m5,
+        "sendingATotalOfAmountCointickerToCountRecipients": m6,
+        "sendingAzecCointickerToAddress": m7,
         "server": MessageLookupByLibrary.simpleMessage("Servidor"),
         "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
         "shieldTranspBalance":
@@ -237,9 +245,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Pinchar QR para Dirección Blindada"),
         "tapQrCodeForTransparentAddress": MessageLookupByLibrary.simpleMessage(
             "Pinchar QR para Dirección Transparente"),
-        "tapTransactionForDetails":
-            MessageLookupByLibrary.simpleMessage("Tap Transaction for Details"),
+        "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
+            "Toque Transacción para detalles"),
         "theme": MessageLookupByLibrary.simpleMessage("Tema"),
+        "themeEditor": MessageLookupByLibrary.simpleMessage("Editora de temas"),
         "thisAccountAlreadyExists":
             MessageLookupByLibrary.simpleMessage("Esta cuenta ya existe."),
         "tiltYourDeviceUpToRevealYourBalance":
@@ -257,7 +266,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "transactionDetails":
             MessageLookupByLibrary.simpleMessage("Detalles de transacción"),
         "transactionHistory":
-            MessageLookupByLibrary.simpleMessage("Transaction History"),
+            MessageLookupByLibrary.simpleMessage("Historia de transacciones"),
         "txId": MessageLookupByLibrary.simpleMessage("TX ID:"),
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Confirmaciones Insuficiente"),
@@ -266,7 +275,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Saldo sin blindaje"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Archivo de transaccion sin firmar"),
-        "useSettingscurrency": m7,
+        "useSettingscurrency": m8,
+        "useTransparentBalance":
+            MessageLookupByLibrary.simpleMessage("Usar Saldo Transp"),
         "useUa": MessageLookupByLibrary.simpleMessage("Usar UA"),
         "version": MessageLookupByLibrary.simpleMessage("Versión"),
         "viewingKey": MessageLookupByLibrary.simpleMessage("Llave Lectura")

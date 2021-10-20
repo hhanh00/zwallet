@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 import 'dart:math';
 
@@ -13,7 +14,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:warp/payment_uri.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -163,6 +163,7 @@ class _AccountPageState extends State<AccountPage>
                     child: Text(s.settings), value: "Settings"),
                 PopupMenuItem(child: Text(s.help), value: "Help"),
                 PopupMenuItem(child: Text(s.about), value: "About"),
+                // PopupMenuItem(child: Text("Reorg"), value: "Reorg"),
               ];
               },
               onSelected: _onMenu,
@@ -369,10 +370,7 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _onReceive() async {
-    await showDialog(context: context,
-        barrierColor: Colors.black,
-        builder: (context) =>
-        Dialog(child: PaymentURIPage(_address())));
+    Navigator.of(context).pushNamed('/receive', arguments: _address());
   }
 
   _unconfirmedStyle() {
@@ -389,7 +387,8 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _setupTimer() async {
-    await _sync();
+    await Future.delayed(Duration(seconds: 3));
+    await _trySync();
     _timerSync = Timer.periodic(Duration(seconds: 15), (Timer t) {
       _trySync();
     });
@@ -399,7 +398,12 @@ class _AccountPageState extends State<AccountPage>
     return priceStore.zecPrice;
   }
 
-  _sync() async {}
+  _reorg() async {
+    final targetHeight = syncStatus.syncedHeight - 10;
+    WarpApi.rewindToHeight(targetHeight);
+    syncStatus.setSyncHeight(targetHeight);
+    await _trySync();
+  }
 
   _trySync() async {
     priceStore.fetchZecPrice();
@@ -410,10 +414,7 @@ class _AccountPageState extends State<AccountPage>
       final res =
           await WarpApi.tryWarpSync(settings.getTx, settings.anchorOffset);
       if (res == 1) {
-        // Reorg
-        final targetHeight = syncStatus.syncedHeight - 10;
-        WarpApi.rewindToHeight(targetHeight);
-        syncStatus.setSyncHeight(targetHeight);
+        await _reorg();
       } else if (res == 0) {
         syncStatus.update();
       }
@@ -471,6 +472,9 @@ class _AccountPageState extends State<AccountPage>
         break;
       case "About":
         showAbout(this.context);
+        break;
+      case "Reorg":
+        _reorg();
         break;
     }
   }
@@ -595,36 +599,54 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      FormBuilderRadioGroup(
-          orientation: OptionsOrientation.horizontal,
-          name: S.of(context).pnl,
-          initialValue: accountManager.pnlSeriesIndex,
-          onChanged: (int? v) {
-            setState(() {
-              accountManager.setPnlSeriesIndex(v!);
-            });
-          },
-          options: [
-            FormBuilderFieldOption(child: Text(S.of(context).price), value: 0),
-            FormBuilderFieldOption(
-                child: Text(S.of(context).realized), value: 1),
-            FormBuilderFieldOption(child: Text(S.of(context).mm), value: 2),
-            FormBuilderFieldOption(child: Text(S.of(context).total), value: 3),
-            FormBuilderFieldOption(child: Text(S.of(context).qty), value: 4),
-            FormBuilderFieldOption(child: Text(S.of(context).table), value: 5),
+    return IconTheme.merge(
+      data: IconThemeData(opacity: 0.54),
+      child:
+        Column(children: [
+          Row(children: [
+            Expanded(child:
+              FormBuilderRadioGroup(
+                orientation: OptionsOrientation.horizontal,
+                name: S.of(context).pnl,
+                initialValue: accountManager.pnlSeriesIndex,
+                onChanged: (int? v) {
+                  setState(() {
+                    accountManager.setPnlSeriesIndex(v!);
+                  });
+                },
+                options: [
+                  FormBuilderFieldOption(child: Text(S.of(context).price), value: 0),
+                  FormBuilderFieldOption(
+                      child: Text(S.of(context).realized), value: 1),
+                  FormBuilderFieldOption(child: Text(S.of(context).mm), value: 2),
+                  FormBuilderFieldOption(child: Text(S.of(context).total), value: 3),
+                  FormBuilderFieldOption(child: Text(S.of(context).qty), value: 4),
+                  FormBuilderFieldOption(child: Text(S.of(context).table), value: 5),
+              ])),
+            IconButton(onPressed: _onExport, icon: Icon(Icons.save)),
           ]),
-      Observer(builder: (context) {
-        final _ = accountManager.pnlSorted;
-        return Expanded(
-            child: Padding(
-                padding: EdgeInsets.only(right: 20),
-                child: accountManager.pnlSeriesIndex != 5
-                    ? PnLChart(
-                        accountManager.pnls, accountManager.pnlSeriesIndex)
-                    : PnLTable()));
-      })
-    ]);
+          Observer(builder: (context) {
+            final _ = accountManager.pnlSorted;
+            return Expanded(
+                child: Padding(
+                    padding: EdgeInsets.only(right: 20),
+                    child: accountManager.pnlSeriesIndex != 5
+                        ? PnLChart(
+                            accountManager.pnls, accountManager.pnlSeriesIndex)
+                        : PnLTable()));
+          })
+    ]));
+  }
+
+  _onExport() async {
+    final csvData = accountManager.pnlSorted.map((pnl) => [
+      pnl.timestamp,
+      pnl.amount,
+      pnl.price,
+      pnl.realized,
+      pnl.unrealized,
+      pnl.realized + pnl.unrealized]).toList();
+    await shareCsv(csvData, 'pnl_history.csv', S.of(context).pnlHistory);
   }
 }
 

@@ -42,7 +42,7 @@
   "noSpendingInTheLast30Days":"Sin Pagos En 30 Días",
   "largestSpendingLastMonth":"Pago Más Grande Mes Pasado",
   "balance":"Saldo",
-  "pnl":"Pnl",
+  "pnl":"G&P",
   "real":"Real",
   "mm":"M/M",
   "total":"Total",
@@ -149,7 +149,15 @@
   "excludedNotes": "Notas Excluidas",
   "spendableBalance": "Saldo Gastable",
   "rescanNeeded": "Necesita Escanear",
-  "tapTransactionForDetails": "Tap Transaction for Details",
-  "transactionHistory": "Transaction History",
-  "help": "Help"
+  "tapTransactionForDetails": "Toque Transacción para detalles",
+  "transactionHistory": "Historia de transacciones",
+  "help": "Ayuda",
+  "receive": "Recibir {ticker}",
+  "pnlHistory": "Historia de G&P",
+  "useTransparentBalance": "Usar Saldo Transp",
+  "themeEditor": "Editora de temas",
+  "color": "Color",
+  "accentColor": "Acento Color",
+  "primary": "Primario",
+  "secondary": "Secundario"
 }

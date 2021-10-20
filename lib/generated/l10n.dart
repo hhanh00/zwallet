@@ -1192,10 +1192,10 @@ class S {
     );
   }
 
-  /// `Create a new account and it will show up here`
+  /// `Tap + to add a new account`
   String get createANewAccount {
     return Intl.message(
-      'Create a new account and it will show up here',
+      'Tap + to add a new account',
       name: 'createANewAccount',
       desc: '',
       args: [],
@@ -1352,10 +1352,10 @@ class S {
     );
   }
 
-  /// `Create a new contact and it will show up here`
+  /// `Tap + to add a new contact`
   String get createANewContactAndItWillShowUpHere {
     return Intl.message(
-      'Create a new contact and it will show up here',
+      'Tap + to add a new contact',
       name: 'createANewContactAndItWillShowUpHere',
       desc: '',
       args: [],
@@ -1577,6 +1577,86 @@ class S {
     return Intl.message(
       'Help',
       name: 'help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive {ticker}`
+  String receive(Object ticker) {
+    return Intl.message(
+      'Receive $ticker',
+      name: 'receive',
+      desc: '',
+      args: [ticker],
+    );
+  }
+
+  /// `PNL History`
+  String get pnlHistory {
+    return Intl.message(
+      'PNL History',
+      name: 'pnlHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use Transparent Balance`
+  String get useTransparentBalance {
+    return Intl.message(
+      'Use Transparent Balance',
+      name: 'useTransparentBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Theme Editor`
+  String get themeEditor {
+    return Intl.message(
+      'Theme Editor',
+      name: 'themeEditor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Color`
+  String get color {
+    return Intl.message(
+      'Color',
+      name: 'color',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accent Color`
+  String get accentColor {
+    return Intl.message(
+      'Accent Color',
+      name: 'accentColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Primary`
+  String get primary {
+    return Intl.message(
+      'Primary',
+      name: 'primary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Secondary`
+  String get secondary {
+    return Intl.message(
+      'Secondary',
+      name: 'secondary',
       desc: '',
       args: [],
     );

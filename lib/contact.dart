@@ -18,8 +18,8 @@ class ContactsTab extends StatefulWidget {
 class ContactsState extends State<ContactsTab> {
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return contacts.contacts.isEmpty
+    return Observer(builder: (context) =>
+      Padding(padding: EdgeInsets.all(8), child: contacts.contacts.isEmpty
           ? NoContact()
           : Column(children: [
             if (contacts.dirty) OutlinedButton(onPressed: _onCommit, child: Text(S.of(context).saveToBlockchain), style: OutlinedButton.styleFrom(
@@ -47,8 +47,8 @@ class ContactsState extends State<ContactsTab> {
                               _delContact(c);
                             }));
                   })
-              )]);
-    });
+              )]))
+    );
   }
 
   _onContact(Contact c) {

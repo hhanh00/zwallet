@@ -106,7 +106,7 @@
   "timestamp": "Date/Heure",
   "address": "adresse",
   "openInExplorer": "Ouvrir dans l'explorateur",
-  "na": "N/A",
+  "na": "N/D",
   "add": "AJOUTER",
   "tradingChartRange": "Domaine de temps des graphiques",
   "M1": "1 M",
@@ -151,5 +151,13 @@
   "rescanNeeded": "Scan nécessaire",
   "tapTransactionForDetails": "Presser sur une Transaction pour plus de details",
   "transactionHistory": "Historique des Transactions",
-  "help": "Aide"
+  "help": "Aide",
+  "receive": "Recevoir {ticker}",
+  "pnlHistory": "Historique des P/P",
+  "useTransparentBalance": "Utiliser le Solde Transparent",
+  "themeEditor": "Editeur de Thème",
+  "color": "Couleur",
+  "accentColor": "Couleur d'accent",
+  "primary": "Primaire",
+  "secondary": "Secondaire"
 }

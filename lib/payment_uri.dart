@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:warp/dualmoneyinput.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
@@ -9,22 +10,25 @@ import 'generated/l10n.dart';
 class PaymentURIPage extends StatefulWidget {
   final String address;
 
-  PaymentURIPage(this.address);
+  PaymentURIPage(String? _address): address = _address ?? accountManager.active.address;
 
   @override
   PaymentURIState createState() => PaymentURIState();
 }
 
 class PaymentURIState extends State<PaymentURIPage> {
-  var _amountController = TextEditingController(text: '');
   var _memoController = TextEditingController(text: '');
   var qrText = "";
   final _formKey = GlobalKey<FormState>();
+  final amountKey = GlobalKey<DualMoneyInputState>();
 
   @override
   void initState() {
     super.initState();
     qrText = widget.address;
+    Future.microtask(() {
+      priceStore.fetchZecPrice();
+    });
   }
 
   @override
@@ -33,7 +37,9 @@ class PaymentURIState extends State<PaymentURIPage> {
 
     return Form(
         key: _formKey,
-        child: SingleChildScrollView(
+        child: Scaffold(
+          appBar: AppBar(title: Text(S.of(context).receive(coin.ticker))),
+          body: SingleChildScrollView(
             child: GestureDetector(
                 onTap: () { FocusScope.of(context).unfocus(); },
                 child: Padding(
@@ -41,22 +47,12 @@ class PaymentURIState extends State<PaymentURIPage> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(S.of(context).receivePayment,
-                              style: Theme.of(context).textTheme.headline5),
+                          GestureDetector(onTap: _ok, child: QrImage(
+                            data: qrText,
+                            size: qrSize,
+                            backgroundColor: Colors.white)),
                           Padding(padding: EdgeInsets.all(8)),
-                          QrImage(
-                              data: qrText,
-                              size: qrSize,
-                              backgroundColor: Colors.white),
-                          Padding(padding: EdgeInsets.all(8)),
-                          TextFormField(
-                            decoration:
-                                InputDecoration(labelText: 'Amount Requested'),
-                            controller: _amountController,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [makeInputFormatter(true)],
-                            validator: _checkAmount,
-                          ),
+                          DualMoneyInputWidget(key: amountKey),
                           TextFormField(
                             decoration:
                                 InputDecoration(labelText: S.of(context).memo),
@@ -68,30 +64,26 @@ class PaymentURIState extends State<PaymentURIPage> {
                           Padding(padding: EdgeInsets.all(8)),
                           ButtonBar(children: [
                             ElevatedButton.icon(
+                              icon: Icon(Icons.clear),
+                              label: Text('RESET'),
+                              onPressed: _reset,
+                            ),
+                            ElevatedButton.icon(
                               icon: Icon(Icons.build),
                               label: Text('MAKE QR'),
                               onPressed: _ok,
                             ),
                           ]),
-                        ])))));
-  }
-
-  String? _checkAmount(String? vs) {
-    if (vs == null || vs.isEmpty) return null;
-    if (!checkNumber(vs)) return S.of(context).amountMustBeANumber;
-    final a = parseNumber(vs);
-    if (a >= MAXMONEY) return S.of(context).amountTooHigh;
-    return null;
+                        ]))))));
   }
 
   void _updateQR() {
-    final amount = _amountController.text;
+    final amount = amountKey.currentState!.amount;
     final memo = _memoController.text;
 
     final String _qrText;
-    if (amount.isNotEmpty) {
-      final a = stringToAmount(amount);
-      _qrText = WarpApi.makePaymentURI(widget.address, a, memo);
+    if (amount > 0) {
+      _qrText = WarpApi.makePaymentURI(widget.address, amount, memo);
     } else
       _qrText = widget.address;
 
@@ -100,11 +92,20 @@ class PaymentURIState extends State<PaymentURIPage> {
     });
   }
 
+  void _reset() {
+    _memoController.clear();
+    amountKey.currentState?.clear();
+    setState(() {
+      qrText = widget.address;
+    });
+  }
+
   void _ok() {
     final form = _formKey.currentState!;
     if (form.validate()) {
       form.save();
       _updateQR();
+      FocusScope.of(context).unfocus();
     }
   }
 }

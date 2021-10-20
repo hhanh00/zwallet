@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:csv/csv.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +13,16 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:warp/payment_uri.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:quick_actions/quick_actions.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'generated/l10n.dart';
 
@@ -27,10 +31,12 @@ import 'account_manager.dart';
 import 'backup.dart';
 import 'coin/coindef.dart';
 import 'multisend.dart';
+import 'payment_uri.dart';
 import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
 import 'store.dart';
+import 'theme_editor.dart';
 import 'transaction.dart';
 
 var coin = Coin();
@@ -63,8 +69,23 @@ Future<void> initUniLinks(BuildContext context) async {
   try {
     final initialLink = await getInitialLink();
     if (initialLink != null)
-        Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(uri: initialLink));
+      Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(uri: initialLink));
   } on PlatformException {
+  }
+
+  subUniLinks = linkStream.listen((String? uri) {
+    Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(uri: uri));
+  });
+}
+
+void handleQuickAction(BuildContext context, String shortcut) {
+  switch (shortcut) {
+    case 'receive':
+      Navigator.of(context).pushNamed('/receive');
+      break;
+    case 'send':
+      Navigator.of(context).pushNamed('/send');
+      break;
   }
 }
 
@@ -93,20 +114,22 @@ void main() {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   supportedLocales: S.delegate.supportedLocales,
-                  onGenerateRoute: (RouteSettings settings) {
+                  onGenerateRoute: (RouteSettings routeSettings) {
                     var routes = <String, WidgetBuilder>{
                       '/account': (context) => AccountPage(),
                       '/restore': (context) => RestorePage(),
                       '/send': (context) =>
-                          SendPage(settings.arguments as SendPageArgs?),
+                          SendPage(routeSettings.arguments as SendPageArgs?),
+                      '/receive': (context) => PaymentURIPage(routeSettings.arguments as String?),
                       '/accounts': (context) => AccountManagerPage(),
                       '/settings': (context) => SettingsPage(),
                       '/tx': (context) =>
-                          TransactionPage(settings.arguments as Tx),
-                      '/backup': (context) => BackupPage(settings.arguments as int?),
+                          TransactionPage(routeSettings.arguments as Tx),
+                      '/backup': (context) => BackupPage(routeSettings.arguments as int?),
                       '/multipay': (context) => MultiPayPage(),
+                      '/edit_theme': (context) => ThemeEditorPage(onSaved: settings.updateCustomThemeColors),
                     };
-                    return MaterialPageRoute(builder: routes[settings.name]!);
+                    return MaterialPageRoute(builder: routes[routeSettings.name]!);
                   },
                 );
               });
@@ -139,6 +162,7 @@ class ZWalletAppState extends State<ZWalletApp> {
   }
 
   Future<bool> _init(BuildContext context) async {
+    final s = S.of(this.context);
     if (!initialized) {
       initialized = true;
       final dbPath = await getDatabasesPath();
@@ -148,6 +172,21 @@ class ZWalletAppState extends State<ZWalletApp> {
       await contacts.init(db);
       await syncStatus.init();
       await initUniLinks(context);
+      final quickActions = QuickActions();
+      quickActions.initialize((type) {
+        handleQuickAction(this.context, type);
+      });
+      if (!settings.linkHooksInitialized) {
+        quickActions.setShortcutItems(<ShortcutItem>[
+          ShortcutItem(type: 'receive',
+              localizedTitle: s.receive(coin.ticker),
+              icon: 'receive'),
+          ShortcutItem(type: 'send',
+              localizedTitle: s.sendCointicker(coin.ticker),
+              icon: 'send'),
+        ]);
+        await settings.setLinkHooksInitialized();
+      }
     }
     return true;
   }
@@ -302,7 +341,7 @@ TextStyle fontWeight(TextStyle style, num v) {
   return style2.copyWith(fontWeight: FontWeight.w200);
 }
 
-CurrencyTextInputFormatter makeInputFormatter(bool mZEC) =>
+CurrencyTextInputFormatter makeInputFormatter(bool? mZEC) =>
     CurrencyTextInputFormatter(symbol: '', decimalDigits: precision(mZEC));
 
 double parseNumber(String? s) {
@@ -323,7 +362,7 @@ bool checkNumber(String s) {
   return true;
 }
 
-int precision(bool mZEC) => mZEC ? 3 : 8;
+int precision(bool? mZEC) => (mZEC == null || mZEC) ? 3 : 8;
 
 Future<String?> scanCode(BuildContext context) async {
   final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S.of(context).cancel, true, ScanMode.QR);
@@ -398,5 +437,15 @@ Future<void> shieldTAddr(BuildContext context) async {
           rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
         })),
   );
+}
+
+Future<void> shareCsv(List<List> data, String filename, String title) async {
+  final csvConverter = ListToCsvConverter();
+  final csv = csvConverter.convert(data);
+  Directory tempDir = await getTemporaryDirectory();
+  String fn = "${tempDir.path}/$filename";
+  final file = File(fn);
+  await file.writeAsString(csv);
+  await Share.shareFiles([fn], subject: title);
 }
 

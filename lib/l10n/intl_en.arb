@@ -113,7 +113,7 @@
   "Y1": "1 Y",
   "shieldTransparentBalanceWithSending": "Shield Transparent Balance When Sending",
   "useUa": "Use UA",
-  "createANewAccount": "Create a new account and it will show up here",
+  "createANewAccount": "Tap + to add a new account",
   "duplicateAccount": "Duplicate Account",
   "thisAccountAlreadyExists": "Another account has the same address",
   "selectAccount": "Select Account",
@@ -129,7 +129,7 @@
   "autoHideBalance": "Auto Hide Balance",
   "tiltYourDeviceUpToRevealYourBalance": "Tilt your device up to reveal your balance",
   "noContacts": "No Contacts",
-  "createANewContactAndItWillShowUpHere": "Create a new contact and it will show up here",
+  "createANewContactAndItWillShowUpHere": "Tap + to add a new contact",
   "addContact": "Add Contact",
   "accountHasSomeBalanceAreYouSureYouWantTo": "Account has some BALANCE. Are you sure you want to delete it?",
   "deleteAccount": "Delete Account",
@@ -151,5 +151,13 @@
   "rescanNeeded": "Rescan Needed",
   "tapTransactionForDetails": "Tap Transaction for Details",
   "transactionHistory": "Transaction History",
-  "help": "Help"
+  "help": "Help",
+  "receive": "Receive {ticker}",
+  "pnlHistory": "PNL History",
+  "useTransparentBalance": "Use Transparent Balance",
+  "themeEditor": "Theme Editor",
+  "color": "Color",
+  "accentColor": "Accent Color",
+  "primary": "Primary",
+  "secondary": "Secondary"
 }

@@ -25,6 +25,9 @@ class Settings = _Settings with _$Settings;
 
 abstract class _Settings with Store {
   @observable
+  bool linkHooksInitialized = false;
+
+  @observable
   String ldUrl = "";
 
   @observable
@@ -75,9 +78,20 @@ abstract class _Settings with Store {
   @observable
   bool protectSend = false;
 
+  @observable
+  int primaryColorValue = 0;
+  @observable
+  int primaryVariantColorValue = 0;
+
+  @observable
+  int secondaryColorValue = 0;
+  @observable
+  int secondaryVariantColorValue = 0;
+
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
+    linkHooksInitialized = prefs.getBool('link_hooks') ?? false;
     ldUrlChoice = prefs.getString('lightwalletd_choice') ?? "Lightwalletd";
     ldUrl = prefs.getString('lightwalletd_custom') ?? "";
     prefs.setString('lightwalletd_choice', ldUrlChoice);
@@ -95,9 +109,22 @@ abstract class _Settings with Store {
     useUA = prefs.getBool('use_ua') ?? false;
     autoHide = prefs.getBool('auto_hide') ?? true;
     protectSend = prefs.getBool('protect_send') ?? false;
+
+    primaryColorValue = prefs.getInt('primary') ?? Colors.blue.value;
+    primaryVariantColorValue = prefs.getInt('primary.variant') ?? Colors.blueAccent.value;
+    secondaryColorValue = prefs.getInt('secondary') ?? Colors.green.value;
+    secondaryVariantColorValue = prefs.getInt('secondary.variant') ?? Colors.greenAccent.value;
+
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     return true;
+  }
+
+  @action
+  Future<void> setLinkHooksInitialized() async {
+    final prefs = await SharedPreferences.getInstance();
+    linkHooksInitialized = true;
+    prefs.setBool('link_hooks', true);
   }
 
   @action
@@ -140,31 +167,75 @@ abstract class _Settings with Store {
   }
 
   void _updateThemeData() {
-    FlexScheme scheme;
-    switch (theme) {
-      case 'gold':
-        scheme = FlexScheme.mango;
-        break;
-      case 'blue':
-        scheme = FlexScheme.bahamaBlue;
-        break;
-      case 'pink':
-        scheme = FlexScheme.sakura;
-        break;
-      case 'purple':
-        scheme = FlexScheme.deepPurple;
-        break;
-      default:
-        scheme = FlexScheme.mango;
+    if (theme == 'custom') {
+      final colors = FlexSchemeColor(primary: Color(primaryColorValue),
+          primaryVariant: Color(primaryVariantColorValue),
+          secondary: Color(secondaryColorValue),
+          secondaryVariant: Color(secondaryVariantColorValue));
+      final scheme = FlexSchemeData(name: 'custom',
+          description: 'Custom Theme',
+          light: colors,
+          dark: colors);
+      switch (themeBrightness) {
+        case 'light':
+          themeData = FlexColorScheme
+              .light(colors: scheme.light)
+              .toTheme;
+          break;
+        case 'dark':
+          themeData = FlexColorScheme
+              .dark(colors: scheme.dark)
+              .toTheme;
+          break;
+      }
     }
-    switch (themeBrightness) {
-      case 'light':
-        themeData = FlexColorScheme.light(scheme: scheme).toTheme;
-        break;
-      case 'dark':
-        themeData = FlexColorScheme.dark(scheme: scheme).toTheme;
-        break;
+    else {
+      FlexScheme scheme;
+      switch (theme) {
+        case 'gold':
+          scheme = FlexScheme.mango;
+          break;
+        case 'blue':
+          scheme = FlexScheme.bahamaBlue;
+          break;
+        case 'pink':
+          scheme = FlexScheme.sakura;
+          break;
+        case 'purple':
+          scheme = FlexScheme.deepPurple;
+          break;
+        default:
+          scheme = FlexScheme.mango;
+      }
+      switch (themeBrightness) {
+        case 'light':
+          themeData = FlexColorScheme
+              .light(scheme: scheme)
+              .toTheme;
+          break;
+        case 'dark':
+          themeData = FlexColorScheme
+              .dark(scheme: scheme)
+              .toTheme;
+          break;
+      }
     }
+  }
+
+  @action
+  Future<void> updateCustomThemeColors(Color primary, Color primaryVariant, Color secondary, Color secondaryVariant) async {
+    final prefs = await SharedPreferences.getInstance();
+    primaryColorValue = primary.value;
+    primaryVariantColorValue = primaryVariant.value;
+    secondaryColorValue = secondary.value;
+    secondaryVariantColorValue = secondaryVariant.value;
+
+    prefs.setInt('primary', primaryColorValue);
+    prefs.setInt('primary.variant', primaryVariantColorValue);
+    prefs.setInt('secondary', secondaryColorValue);
+    prefs.setInt('secondary.variant', secondaryVariantColorValue);
+
+    _updateThemeData();
   }
 
   @action
