@@ -245,7 +245,7 @@ class SettingsState extends State<SettingsPage> {
   }
 
   _onAnchorOffset(v) {
-    settings.anchorOffset = int.parse(v);
+    settings.setAnchorOffset(int.parse(v));
   }
 
   _onGetTx(v) {

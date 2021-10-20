@@ -163,6 +163,7 @@ class _AccountPageState extends State<AccountPage>
                     child: Text(s.settings), value: "Settings"),
                 PopupMenuItem(child: Text(s.help), value: "Help"),
                 PopupMenuItem(child: Text(s.about), value: "About"),
+                // PopupMenuItem(child: Text("Reorg"), value: "Reorg"),
               ];
               },
               onSelected: _onMenu,
@@ -397,6 +398,13 @@ class _AccountPageState extends State<AccountPage>
     return priceStore.zecPrice;
   }
 
+  _reorg() async {
+    final targetHeight = syncStatus.syncedHeight - 10;
+    WarpApi.rewindToHeight(targetHeight);
+    syncStatus.setSyncHeight(targetHeight);
+    await _trySync();
+  }
+
   _trySync() async {
     priceStore.fetchZecPrice();
     if (syncStatus.syncedHeight < 0) return;
@@ -406,10 +414,7 @@ class _AccountPageState extends State<AccountPage>
       final res =
           await WarpApi.tryWarpSync(settings.getTx, settings.anchorOffset);
       if (res == 1) {
-        // Reorg
-        final targetHeight = syncStatus.syncedHeight - 10;
-        WarpApi.rewindToHeight(targetHeight);
-        syncStatus.setSyncHeight(targetHeight);
+        await _reorg();
       } else if (res == 0) {
         syncStatus.update();
       }
@@ -467,6 +472,9 @@ class _AccountPageState extends State<AccountPage>
         break;
       case "About":
         showAbout(this.context);
+        break;
+      case "Reorg":
+        _reorg();
         break;
     }
   }

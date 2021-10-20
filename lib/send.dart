@@ -274,7 +274,8 @@ class SendState extends State<SendPage> {
 
     if (form.validate()) {
       form.save();
-      final aZEC = amountToString(amountInput?.amount ?? 0);
+      final amount = amountInput?.amount ?? 0;
+      final aZEC = amountToString(amount);
       final approved = await showDialog(
           context: context,
           barrierDismissible: false,
@@ -304,7 +305,7 @@ class SendState extends State<SendPage> {
               PaymentParams(
                   accountManager.active.id,
                   address,
-                  amountInput?.amount ?? 0,
+                  amount,
                   memo,
                   maxAmountPerNote,
                   settings.anchorOffset,
