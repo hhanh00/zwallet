@@ -10,6 +10,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
 
+import 'dualmoneyinput.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 
@@ -114,10 +115,9 @@ class PayRecipient extends StatefulWidget {
 
 class PayRecipientState extends State<PayRecipient> {
   final _formKey = GlobalKey<FormState>();
-  var _amount = Decimal.zero;
   final _addressController = TextEditingController();
-  var _currencyController = TextEditingController();
   final _memoController = TextEditingController();
+  final amountKey = GlobalKey<DualMoneyInputState>();
 
   @override
   Widget build(BuildContext context) {
@@ -155,12 +155,7 @@ class PayRecipientState extends State<PayRecipient> {
               IconButton(
                   icon: new Icon(MdiIcons.qrcodeScan), onPressed: _onScan)
             ]),
-            TextFormField(
-                decoration: InputDecoration(labelText: S.of(context).amount),
-                keyboardType: TextInputType.number,
-                controller: _currencyController,
-                inputFormatters: [makeInputFormatter(true)],
-                validator: _checkAmount),
+            DualMoneyInputWidget(key: amountKey),
             TextFormField(
               decoration: InputDecoration(labelText: S.of(context).memo),
               minLines: 4,
@@ -188,13 +183,13 @@ class PayRecipientState extends State<PayRecipient> {
 
     if (form.validate()) {
       form.save();
-      _amount = Decimal.parse(parseNumber(_currencyController.text).toString());
+      final amount = amountKey.currentState!.amount;
       final c =
           contacts.contacts.where((c) => c.name == _addressController.text);
       final address =
           c.isEmpty ? unwrapUA(_addressController.text) : c.first.address;
       final r = Recipient(
-          address, (_amount * ZECUNIT_DECIMAL).toInt(), _memoController.text);
+          address, amount, _memoController.text);
       Navigator.of(context).pop(r);
     }
   }
@@ -206,14 +201,6 @@ class PayRecipientState extends State<PayRecipient> {
     final zaddr = WarpApi.getSaplingFromUA(v);
     if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
-    return null;
-  }
-
-  String? _checkAmount(String? vs) {
-    if (vs == null) return S.of(context).amountMustBeANumber;
-    if (checkNumber(vs)) return S.of(context).amountMustBeANumber;
-    final v = parseNumber(vs);
-    if (v <= 0.0) return S.of(context).amountMustBePositive;
     return null;
   }
 }
