@@ -64,3 +64,13 @@ This will create a `root` directory will all the various apks (arm32, arm64, i32
 
 - On Windows, clone the repo with Unix line endings: `git clone ... --config core.autocrlf=input`
 - The builder image is a ~3GB download and 7GB uncompressed.
+
+## iOS
+
+- pod install
+- change bundle identifier / set signing profile
+- Increase min OS version to 12.1
+    - Runner/General/Deployment Info
+    - Runner/Flutter/AppFramework.info
+    - Pods
+
