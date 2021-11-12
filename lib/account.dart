@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
+import 'package:k_chart/entity/index.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -125,6 +126,7 @@ class _AccountPageState extends State<AccountPage>
     final theme = Theme.of(this.context);
     final hasTAddr = accountManager.taddress.isNotEmpty;
     final qrSize = getScreenSize(context) / 2.5;
+    final hasMultisign = accountManager.canPay || accountManager.active.share != null;
 
     return Scaffold(
       appBar: AppBar(
@@ -154,11 +156,12 @@ class _AccountPageState extends State<AccountPage>
                 if (accountManager.canPay)
                   PopupMenuItem(
                       child: Text(s.coldStorage), value: "Cold"),
-                if (accountManager.canPay)
-                  PopupMenuItem(
-                      child: Text(s.multipay), value: "MultiPay"),
+                PopupMenuItem(
+                    child: Text(s.multipay), value: "MultiPay"),
                 PopupMenuItem(
                     child: Text(s.broadcast), value: "Broadcast"),
+                if (coin.supportsMultisig && hasMultisign) PopupMenuItem(
+                    child: Text(s.multisig), value: "Multisig"),
                 PopupMenuItem(
                     child: Text(s.settings), value: "Settings"),
                 PopupMenuItem(child: Text(s.help), value: "Help"),
@@ -176,6 +179,10 @@ class _AccountPageState extends State<AccountPage>
             padding: EdgeInsets.all(20),
             child: Center(
                 child: Column(children: [
+              Observer(builder: (context) {
+                final share = accountManager.active.share;
+                return share != null ? Text("MULTISIG ${share.index}/${share.participants}") : SizedBox();
+              }),
               Observer(builder: (context) {
                 final _1 = eta.eta;
                 final _2 = syncStatus.syncedHeight;
@@ -464,6 +471,9 @@ class _AccountPageState extends State<AccountPage>
       case "Broadcast":
         _broadcast();
         break;
+      case "Multisig":
+        _multisig();
+        break;
       case "Settings":
         _settings();
         break;
@@ -517,6 +527,10 @@ class _AccountPageState extends State<AccountPage>
       final snackBar = SnackBar(content: Text(res));
       rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     }
+  }
+
+  _multisig() {
+    Navigator.of(context).pushNamed('/multisig');
   }
 
   _convertToWatchOnly() {
@@ -580,7 +594,7 @@ class BudgetState extends State<BudgetWidget>
                     style: Theme.of(context).textTheme.headline6),
                 Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                 Expanded(child: Padding(padding: EdgeInsets.only(right: 20),
-                    child: LineChartTimeSeries(accountManager.accountBalances)))
+                    child: LineChartTimeSeries.fromTimeSeries(accountManager.accountBalances)))
               ]))),
             ],
           );
@@ -659,7 +673,7 @@ class PnLChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final series = _createSeries(pnls, seriesIndex, context);
-    return LineChartTimeSeries(series);
+    return LineChartTimeSeries.fromTimeSeries(series);
   }
 
   static double _seriesData(PnL pnl, int index) {

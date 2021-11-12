@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'main.dart';
 import 'store.dart';
@@ -25,6 +25,7 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
         padding: EdgeInsets.all(8),
         scrollDirection: Axis.vertical,
         child: Observer(builder: (context) {
+          accountManager.sortedNotes;
           return PaginatedDataTable(
             columns: [
               DataColumn(
@@ -58,6 +59,9 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
             ],
             header: Text(S.of(context).selectNotesToExcludeFromPayments,
                 style: Theme.of(context).textTheme.bodyText2),
+            actions: [
+              IconButton(onPressed: _selectInverse, icon: Icon(MdiIcons.selectInverse)),
+            ],
             columnSpacing: 16,
             showCheckboxColumn: false,
             availableRowsPerPage: [5, 10, 25, 100],
@@ -73,6 +77,10 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
 
   _onRowSelected(Note note) {
     accountManager.excludeNote(note);
+  }
+
+  _selectInverse() {
+    accountManager.invertExcludedNotes();
   }
 }
 

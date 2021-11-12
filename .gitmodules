@@ -4,3 +4,6 @@
 [submodule "native/zcash-params"]
 	path = native/zcash-params
 	url = https://github.com/hhanh00/zcash-params.git
+[submodule "native/zcash-multisig"]
+	path = native/zcash-multisig
+	url = https://github.com/hhanh00/zcash-multisig.git

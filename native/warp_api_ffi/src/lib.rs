@@ -29,7 +29,7 @@ pub unsafe extern "C" fn get_latest_height() -> u32 {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn is_valid_key(seed: *mut c_char) -> bool {
+pub unsafe extern "C" fn is_valid_key(seed: *mut c_char) -> i8 {
     let seed = CStr::from_ptr(seed).to_string_lossy();
     sync::is_valid_key(&seed)
 }
@@ -64,40 +64,21 @@ pub unsafe extern "C" fn get_mempool_balance() -> i64 {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn send_payment(
-    account: u32,
-    address: *mut c_char,
-    amount: u64,
-    memo: *mut c_char,
-    max_amount_per_note: u64,
-    anchor_offset: u32,
-    use_transparent: bool,
-    port: i64,
-) -> *const c_char {
-    let address = CStr::from_ptr(address).to_string_lossy();
-    let memo = CStr::from_ptr(memo).to_string_lossy();
-    let tx_id = api::send_payment(
-        account,
-        &address,
-        amount,
-        &memo,
-        max_amount_per_note,
-        anchor_offset,
-        use_transparent,
-        port,
-    );
-    CString::new(tx_id).unwrap().into_raw()
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn send_multi_payment(
     account: u32,
     recipients_json: *mut c_char,
     anchor_offset: u32,
+    use_transparent: bool,
     port: i64,
 ) -> *const c_char {
     let recipients_json = CStr::from_ptr(recipients_json).to_string_lossy();
-    let tx_id = api::send_multi_payment(account, &recipients_json, anchor_offset, port);
+    let tx_id = api::send_multi_payment(
+        account,
+        &recipients_json,
+        use_transparent,
+        anchor_offset,
+        port,
+    );
     CString::new(tx_id).unwrap().into_raw()
 }
 
@@ -144,34 +125,28 @@ pub unsafe extern "C" fn set_lwd_url(url: *mut c_char) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn prepare_offline_tx(
+pub unsafe extern "C" fn prepare_multi_payment(
     account: u32,
-    to_address: *mut c_char,
-    amount: u64,
-    memo: *mut c_char,
-    max_amount_per_note: u64,
+    recipients_json: *mut c_char,
+    use_transparent: bool,
     anchor_offset: u32,
-    tx_filename: *mut c_char,
 ) -> *mut c_char {
-    let to_address = CStr::from_ptr(to_address).to_string_lossy();
-    let memo = CStr::from_ptr(memo).to_string_lossy();
-    let tx_filename = CStr::from_ptr(tx_filename).to_string_lossy();
-    let res = api::prepare_offline_tx(
-        account,
-        &to_address,
-        amount,
-        &memo,
-        max_amount_per_note,
-        anchor_offset,
-        &tx_filename,
-    );
-    CString::new(res).unwrap().into_raw()
+    let recipients_json = CStr::from_ptr(recipients_json).to_string_lossy();
+    let tx = api::prepare_multi_payment(account, &recipients_json, use_transparent, anchor_offset);
+    CString::new(tx).unwrap().into_raw()
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn broadcast(tx_filename: *mut c_char) -> *mut c_char {
     let tx_filename = CStr::from_ptr(tx_filename).to_string_lossy();
     let res = api::broadcast(&tx_filename);
+    CString::new(res).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn broadcast_txhex(txhex: *mut c_char) -> *mut c_char {
+    let txhex = CStr::from_ptr(txhex).to_string_lossy();
+    let res = api::broadcast_txhex(&txhex);
     CString::new(res).unwrap().into_raw()
 }
 
@@ -244,6 +219,60 @@ pub unsafe extern "C" fn parse_payment_uri(uri: *mut c_char) -> *mut c_char {
     let uri = CStr::from_ptr(uri).to_string_lossy();
     let payment_json = api::parse_payment_uri(&uri);
     CString::new(payment_json).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn store_share_secret(account: u32, secret: *mut c_char) {
+    let secret = CStr::from_ptr(secret).to_string_lossy();
+    api::store_share_secret(account, &secret);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn get_share_secret(account: u32) -> *mut c_char {
+    let secret = api::get_share_secret(account);
+    CString::new(secret).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn run_aggregator(secret_share: *mut c_char, port: u16, send_port: i64) {
+    let secret_share = CStr::from_ptr(secret_share).to_string_lossy();
+    api::run_aggregator(&secret_share, port, send_port);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn shutdown_aggregator() {
+    api::shutdown_aggregator();
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn submit_multisig_tx(tx_json: *mut c_char, port: u16) -> *mut c_char {
+    let tx_json = CStr::from_ptr(tx_json).to_string_lossy();
+    let raw_tx = api::submit_multisig_tx(&tx_json, port);
+    let raw_tx = hex::encode(raw_tx);
+    CString::new(raw_tx).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn run_multi_signer(
+    secret_share: *mut c_char,
+    aggregator_url: *mut c_char,
+    my_url: *mut c_char,
+    port: u16,
+) -> u32 {
+    let secret_share = CStr::from_ptr(secret_share).to_string_lossy();
+    let aggregator_url = CStr::from_ptr(aggregator_url).to_string_lossy();
+    let my_url = CStr::from_ptr(my_url).to_string_lossy();
+    api::run_multi_signer(&secret_share, &aggregator_url, &my_url, port)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn split_account(
+    threshold: u32,
+    participants: u32,
+    account: u32,
+) -> *mut c_char {
+    let r = api::split_account(threshold, participants, account);
+    CString::new(r).unwrap().into_raw()
 }
 
 #[no_mangle]

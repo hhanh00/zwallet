@@ -1661,6 +1661,136 @@ class S {
       args: [],
     );
   }
+
+  /// `Multisig`
+  String get multisig {
+    return Intl.message(
+      'Multisig',
+      name: 'multisig',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter secret share if account is multi-signature`
+  String get enterSecretShareIfAccountIsMultisignature {
+    return Intl.message(
+      'Enter secret share if account is multi-signature',
+      name: 'enterSecretShareIfAccountIsMultisignature',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Secret Share`
+  String get secretShare {
+    return Intl.message(
+      'Secret Share',
+      name: 'secretShare',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `File saved`
+  String get fileSaved {
+    return Intl.message(
+      'File saved',
+      name: 'fileSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{num} more signers needed`
+  String numMoreSignersNeeded(Object num) {
+    return Intl.message(
+      '$num more signers needed',
+      name: 'numMoreSignersNeeded',
+      desc: '',
+      args: [num],
+    );
+  }
+
+  /// `Sign Transaction`
+  String get sign {
+    return Intl.message(
+      'Sign Transaction',
+      name: 'sign',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Split Account`
+  String get splitAccount {
+    return Intl.message(
+      'Split Account',
+      name: 'splitAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm Signing`
+  String get confirmSigning {
+    return Intl.message(
+      'Confirm Signing',
+      name: 'confirmSigning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do you want to sign a transaction to {address} for {amount}`
+  String confirmSignATransactionToAddressFor(Object address, Object amount) {
+    return Intl.message(
+      'Do you want to sign a transaction to $address for $amount',
+      name: 'confirmSignATransactionToAddressFor',
+      desc: '',
+      args: [address, amount],
+    );
+  }
+
+  /// `Multisig Shares`
+  String get multisigShares {
+    return Intl.message(
+      'Multisig Shares',
+      name: 'multisigShares',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy`
+  String get copy {
+    return Intl.message(
+      'Copy',
+      name: 'copy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{text} copied to clipboard`
+  String textCopiedToClipboard(Object text) {
+    return Intl.message(
+      '$text copied to clipboard',
+      name: 'textCopiedToClipboard',
+      desc: '',
+      args: [text],
+    );
+  }
+
+  /// `multiple addresses`
+  String get multipleAddresses {
+    return Intl.message(
+      'multiple addresses',
+      name: 'multipleAddresses',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

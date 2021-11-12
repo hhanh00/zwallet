@@ -18,12 +18,15 @@ class BackupState extends State<BackupPage> {
   final _backupController = TextEditingController();
   final _skController = TextEditingController();
   final _ivkController = TextEditingController();
+  final _shareController = TextEditingController();
 
   Future<bool> _init() async {
     backup = await accountManager.getBackup(widget.accountId ?? accountManager.active.id);
     _backupController.text = backup.value();
     _skController.text = backup.sk ?? "";
     _ivkController.text = backup.ivk;
+    final share = backup.share;
+    _shareController.text = share?.value ?? "";
     return true;
   }
 
@@ -38,6 +41,8 @@ class BackupState extends State<BackupPage> {
 
   Widget _build(BuildContext context, AsyncSnapshot<void> snapshot) {
     if (!snapshot.hasData) return LinearProgressIndicator();
+    final name = backup.name;
+    final share = backup.share;
     final type = backup.type;
     final theme = Theme.of(context);
     return SingleChildScrollView(child: Card(
@@ -46,7 +51,7 @@ class BackupState extends State<BackupPage> {
           TextField(
             decoration: InputDecoration(
                 labelText: S.of(context).backupDataRequiredForRestore, prefixIcon: IconButton(icon: Icon(Icons.save),
-                onPressed: () => _showQR(backup.value()))),
+                onPressed: () => _showQR(backup.value(), "$name - backup"))),
             controller: _backupController,
             minLines: 3,
             maxLines: 10,
@@ -55,7 +60,7 @@ class BackupState extends State<BackupPage> {
           ),
           if (type == 0) TextField(
             decoration: InputDecoration(labelText: S.of(context).secretKey, prefixIcon: IconButton(icon: Icon(Icons.vpn_key),
-    onPressed: () => _showQR(backup.sk!))),
+              onPressed: () => _showQR(backup.sk!, "$name - sk"))),
             controller: _skController,
             minLines: 3,
             maxLines: 10,
@@ -64,12 +69,21 @@ class BackupState extends State<BackupPage> {
           ),
           if (type != 2) TextField(
             decoration: InputDecoration(labelText: S.of(context).viewingKey, prefixIcon: IconButton(icon: Icon(Icons.visibility),
-    onPressed: () => _showQR(backup.ivk))),
+              onPressed: () => _showQR(backup.ivk, "$name - vk"))),
             controller: _ivkController,
             minLines: 3,
             maxLines: 10,
             readOnly: true,
             style: theme.textTheme.caption
+          ),
+          if (share != null) TextField(
+              decoration: InputDecoration(labelText: S.of(context).secretShare, prefixIcon: IconButton(icon: Icon(Icons.share),
+                  onPressed: () => _showQR(share.value, "$name - ms ${share.index}/${share.participants}"))),
+              controller: _shareController,
+              minLines: 3,
+              maxLines: 10,
+              readOnly: true,
+              style: theme.textTheme.caption
           ),
           Padding(padding: EdgeInsets.symmetric(vertical: 4)),
           Text(S.of(context).tapAnIconToShowTheQrCode),
@@ -81,5 +95,5 @@ class BackupState extends State<BackupPage> {
     ));
   }
 
-  _showQR(String text) => showQR(context, text);
+  _showQR(String text, String title) => showQR(context, text, title);
 }
