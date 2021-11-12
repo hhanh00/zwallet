@@ -2,17 +2,18 @@ import 'dart:convert';
 
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp/store.dart';
 import 'package:warp_api/warp_api.dart';
+import 'package:warp_api/types.dart';
 
 import 'dualmoneyinput.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
+import 'send.dart';
 
 class MultiPayPage extends StatefulWidget {
   @override
@@ -51,14 +52,9 @@ class MultiPayState extends State<MultiPayPage> {
   }
 
   _add() async {
-    final r = await showDialog<Recipient>(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Dialog(
-              child: PayRecipient(),
-            ));
-    if (r != null) {
-      multipayData.addRecipient(r);
+    final recipient = await Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(isMulti: true, recipients: multipayData.recipients)) as Recipient?;
+    if (recipient != null) {
+      multipayData.addRecipient(recipient);
     }
   }
 
@@ -88,120 +84,11 @@ class MultiPayState extends State<MultiPayPage> {
                 cancelValue: false)));
 
     if (approved) {
-      final s = S.of(context);
-      Navigator.of(context).pop();
-
-      final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
-      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
-
-      final recipientsJson = jsonEncode(multipayData.recipients);
-      final tx = await WarpApi.sendMultiPayment(accountManager.active.id,
-          recipientsJson, settings.anchorOffset, (p) {});
-      final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
-      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+      await send(context, multipayData.recipients, false);
 
       multipayData.clear();
       await accountManager.fetchAccountData(true);
     }
-  }
-}
-
-class PayRecipient extends StatefulWidget {
-  PayRecipient();
-
-  @override
-  State<StatefulWidget> createState() => PayRecipientState();
-}
-
-class PayRecipientState extends State<PayRecipient> {
-  final _formKey = GlobalKey<FormState>();
-  final _addressController = TextEditingController();
-  final _memoController = TextEditingController();
-  final amountKey = GlobalKey<DualMoneyInputState>();
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        }, child: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(children: <Widget>[
-            Row(children: <Widget>[
-              Expanded(
-                child: TypeAheadFormField(
-                  textFieldConfiguration: TextFieldConfiguration(
-                      decoration: InputDecoration(
-                          labelText:
-                              S.of(context).sendCointickerTo(coin.ticker)),
-                      controller: _addressController,
-                      minLines: 4,
-                      maxLines: 10,
-                      keyboardType: TextInputType.multiline),
-                  validator: _checkAddress,
-                  onSuggestionSelected: (Contact contact) {
-                    _addressController.text = contact.name;
-                  },
-                  suggestionsCallback: (String pattern) {
-                    return contacts.contacts.where((c) =>
-                        c.name.toLowerCase().contains(pattern.toLowerCase()));
-                  },
-                  itemBuilder: (BuildContext context, Contact c) =>
-                      ListTile(title: Text(c.name)),
-                  noItemsFoundBuilder: (_) => SizedBox(),
-                ),
-              ),
-              IconButton(
-                  icon: new Icon(MdiIcons.qrcodeScan), onPressed: _onScan)
-            ]),
-            DualMoneyInputWidget(key: amountKey),
-            TextFormField(
-              decoration: InputDecoration(labelText: S.of(context).memo),
-              minLines: 4,
-              maxLines: null,
-              keyboardType: TextInputType.multiline,
-              controller: _memoController,
-            ),
-            ButtonBar(
-                children: confirmButtons(context, _onAdd,
-                    okLabel: S.of(context).add, okIcon: Icon(MdiIcons.plus)))
-          ]),
-        )));
-  }
-
-  void _onScan() async {
-    final address = await scanCode(context);
-    if (address != null)
-      setState(() {
-        _addressController.text = address;
-      });
-  }
-
-  void _onAdd() {
-    final form = _formKey.currentState!;
-
-    if (form.validate()) {
-      form.save();
-      final amount = amountKey.currentState!.amount;
-      final c =
-          contacts.contacts.where((c) => c.name == _addressController.text);
-      final address =
-          c.isEmpty ? unwrapUA(_addressController.text) : c.first.address;
-      final r = Recipient(
-          address, amount, _memoController.text);
-      Navigator.of(context).pop(r);
-    }
-  }
-
-  String? _checkAddress(String? v) {
-    if (v == null || v.isEmpty) return S.of(context).addressIsEmpty;
-    final c = contacts.contacts.where((c) => c.name == v);
-    if (c.isNotEmpty) return null;
-    final zaddr = WarpApi.getSaplingFromUA(v);
-    if (zaddr.isNotEmpty) return null;
-    if (!WarpApi.validAddress(v)) return S.of(context).invalidAddress;
-    return null;
   }
 }
 

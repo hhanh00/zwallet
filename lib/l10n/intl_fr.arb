@@ -159,5 +159,17 @@
   "color": "Couleur",
   "accentColor": "Couleur d'accent",
   "primary": "Primaire",
-  "secondary": "Secondaire"
+  "secondary": "Secondaire",
+  "multisig": "Multisig",
+  "enterSecretShareIfAccountIsMultisignature": "Enter secret share if account is multi-signature",
+  "secretShare": "Secret Share",
+  "fileSaved": "File saved",
+  "sign": "Sign",
+  "splitAccount": "Split Account",
+  "confirmSigning": "Confirm Signing",
+  "confirmSignATransactionToAddressFor": "Do you want to sign a transaction to {address} for {amount}",
+  "multisigShares": "Multisig Shares",
+  "copy": "Copy",
+  "textCopiedToClipboard": "{text} copied to clipboard",
+  "multipleAddresses": "multiple addresses"
 }

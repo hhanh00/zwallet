@@ -4,15 +4,23 @@ use android_logger::Config;
 use log::{error, info, Level};
 use once_cell::sync::OnceCell;
 use std::fs::File;
-use std::io::{Read, Write};
+use std::io::Read;
 use std::sync::{Mutex, MutexGuard};
 use sync::{broadcast_tx, ChainError, MemPool, Wallet};
 use tokio::runtime::Runtime;
+use tokio::time::Duration;
+use zcash_multisig::{
+    run_aggregator_service, run_signer_service, signer_connect_to_aggregator, submit_tx,
+    SecretShare,
+};
 use zcash_primitives::transaction::builder::Progress;
 
+static RUNTIME: OnceCell<Mutex<Runtime>> = OnceCell::new();
 static WALLET: OnceCell<Mutex<Wallet>> = OnceCell::new();
 static MEMPOOL: OnceCell<Mutex<MemPool>> = OnceCell::new();
 static SYNCLOCK: OnceCell<Mutex<()>> = OnceCell::new();
+static MULTISIG_AGG_LOCK: OnceCell<Mutex<MultisigAggregator>> = OnceCell::new();
+static MULTISIG_SIGN_LOCK: OnceCell<Mutex<MultisigClient>> = OnceCell::new();
 
 fn get_lock<T>(cell: &OnceCell<Mutex<T>>) -> anyhow::Result<MutexGuard<T>> {
     cell.get()
@@ -48,6 +56,7 @@ fn log_result_string(result: anyhow::Result<String>) -> String {
 pub fn init_wallet(db_path: &str, ld_url: &str) {
     android_logger::init_once(Config::default().with_min_level(Level::Info));
     info!("Init");
+    RUNTIME.get_or_init(|| Mutex::new(Runtime::new().unwrap()));
     WALLET.get_or_init(|| {
         info!("Wallet Init");
         let wallet = Wallet::new(db_path, ld_url);
@@ -59,6 +68,8 @@ pub fn init_wallet(db_path: &str, ld_url: &str) {
         Mutex::new(mempool)
     });
     SYNCLOCK.get_or_init(|| Mutex::new(()));
+    MULTISIG_AGG_LOCK.get_or_init(|| Mutex::new(MultisigAggregator::new()));
+    MULTISIG_SIGN_LOCK.get_or_init(|| Mutex::new(MultisigClient::new()));
 }
 
 pub fn new_account(name: &str, data: &str) -> i32 {
@@ -192,51 +203,29 @@ fn report_progress(progress: Progress, port: i64) {
     }
 }
 
-pub fn send_payment(
+pub fn send_multi_payment(
     account: u32,
-    address: &str,
-    amount: u64,
-    memo: &str,
-    max_amount_per_note: u64,
-    anchor_offset: u32,
+    recipients_json: &str,
     use_transparent: bool,
+    anchor_offset: u32,
     port: i64,
 ) -> String {
     let r = get_runtime();
     let res = r.block_on(async {
         let mut wallet = get_lock(&WALLET)?;
+        let height = sync::latest_height(&wallet.ld_url).await?;
+        let recipients = Wallet::parse_recipients(recipients_json)?;
         let res = wallet
-            .send_payment(
+            .build_sign_send_multi_payment(
                 account,
-                address,
-                amount,
-                memo,
-                max_amount_per_note,
-                anchor_offset,
+                height,
+                &recipients,
                 use_transparent,
+                anchor_offset,
                 move |progress| {
                     report_progress(progress, port);
                 },
             )
-            .await?;
-        Ok(res)
-    });
-    log_result_string(res)
-}
-
-pub fn send_multi_payment(
-    account: u32,
-    recipients_json: &str,
-    anchor_offset: u32,
-    port: i64,
-) -> String {
-    let r = get_runtime();
-    let res = r.block_on(async {
-        let mut wallet = get_lock(&WALLET)?;
-        let res = wallet
-            .send_multi_payment(account, recipients_json, anchor_offset, move |progress| {
-                report_progress(progress, port);
-            })
             .await?;
         Ok(res)
     });
@@ -306,7 +295,8 @@ pub fn shield_taddr(account: u32) -> String {
     let r = get_runtime();
     let res = r.block_on(async {
         let mut wallet = get_lock(&WALLET)?;
-        wallet.shield_taddr(account).await
+        let height = sync::latest_height(&wallet.ld_url).await?;
+        wallet.shield_taddr(account, height).await
     });
     log_result(res)
 }
@@ -319,48 +309,50 @@ pub fn set_lwd_url(url: &str) {
     log_result(res())
 }
 
-pub fn prepare_offline_tx(
+pub fn prepare_multi_payment(
     account: u32,
-    to_address: &str,
-    amount: u64,
-    memo: &str,
-    max_amount_per_note: u64,
+    recipients_json: &str,
+    use_transparent: bool,
     anchor_offset: u32,
-    tx_filename: &str,
 ) -> String {
     let r = get_runtime();
     let res = r.block_on(async {
-        let wallet = get_lock(&WALLET)?;
+        let mut wallet = get_lock(&WALLET)?;
+        let last_height = sync::latest_height(&wallet.ld_url).await?;
+        let recipients = Wallet::parse_recipients(recipients_json)?;
         let tx = wallet
-            .prepare_payment(
+            .build_only_multi_payment(
                 account,
-                to_address,
-                amount,
-                memo,
-                max_amount_per_note,
+                last_height,
+                &recipients,
+                use_transparent,
                 anchor_offset,
             )
             .await?;
-        let mut file = File::create(tx_filename)?;
-        writeln!(file, "{}", tx)?;
-        Ok("File saved".to_string())
+        Ok(tx)
     });
     log_result_string(res)
-}
-
-async fn _broadcast(tx_filename: &str, ld_url: &str) -> anyhow::Result<String> {
-    let mut file = File::open(&tx_filename)?;
-    let mut s = String::new();
-    file.read_to_string(&mut s)?;
-    let tx = hex::decode(s.trim_end())?;
-    broadcast_tx(&tx, ld_url).await
 }
 
 pub fn broadcast(tx_filename: &str) -> String {
     let r = get_runtime();
     let res = r.block_on(async {
         let wallet = get_lock(&WALLET)?;
-        _broadcast(tx_filename, &wallet.ld_url).await
+        let mut file = File::open(&tx_filename)?;
+        let mut s = String::new();
+        file.read_to_string(&mut s)?;
+        let tx = hex::decode(s.trim_end())?;
+        broadcast_tx(&tx, &wallet.ld_url).await
+    });
+    log_result_string(res)
+}
+
+pub fn broadcast_txhex(txhex: &str) -> String {
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let wallet = get_lock(&WALLET)?;
+        let tx = hex::decode(txhex)?;
+        broadcast_tx(&tx, &wallet.ld_url).await
     });
     log_result_string(res)
 }
@@ -438,6 +430,119 @@ pub fn parse_payment_uri(uri: &str) -> String {
     let res = || {
         let payment_json = Wallet::parse_payment_uri(uri)?;
         Ok(payment_json)
+    };
+    log_result(res())
+}
+
+pub fn store_share_secret(account: u32, secret: &str) {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.store_share_secret(account, secret)?;
+        Ok(())
+    };
+    log_result(res())
+}
+
+pub fn get_share_secret(account: u32) -> String {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        let secret = wallet.get_share_secret(account)?;
+        Ok(secret)
+    };
+    log_result(res())
+}
+
+struct MultisigAggregator {
+    shutdown_signal: Option<tokio::sync::oneshot::Sender<()>>,
+}
+
+impl MultisigAggregator {
+    pub fn new() -> Self {
+        MultisigAggregator {
+            shutdown_signal: None,
+        }
+    }
+}
+
+pub fn run_aggregator(secret_share: &str, port: u16, send_port: i64) {
+    let runtime = get_lock(&RUNTIME).unwrap();
+    let res = runtime.block_on(async {
+        let mut aggregator = get_lock(&MULTISIG_AGG_LOCK)?;
+        let (shutdown, _jh) = run_aggregator_service(
+            port,
+            secret_share,
+            Box::new(move || {
+                let mut null = ().into_dart();
+                unsafe {
+                    POST_COBJ.map(|p| {
+                        p(send_port, &mut null);
+                    });
+                }
+            }),
+        )
+        .await?;
+        aggregator.shutdown_signal = Some(shutdown);
+        Ok(())
+    });
+    log_result(res)
+}
+
+pub fn shutdown_aggregator() {
+    let res = || {
+        let mut aggregator = get_lock(&MULTISIG_AGG_LOCK)?;
+        let shutdown_signal = aggregator.shutdown_signal.take();
+        if let Some(shutdown_signal) = shutdown_signal {
+            let _ = shutdown_signal.send(());
+        }
+        Ok(())
+    };
+    log_result(res())
+}
+
+pub fn submit_multisig_tx(tx_str: &str, port: u16) -> Vec<u8> {
+    let r = get_runtime();
+    let res: anyhow::Result<_> = r.block_on(async {
+        let raw_tx = submit_tx(port, tx_str).await?;
+        Ok(raw_tx)
+    });
+    let mut v: Vec<u8> = vec![];
+    match res {
+        Ok(raw_tx) => {
+            v.push(0x00);
+            v.extend(raw_tx);
+        }
+        Err(e) => {
+            v.push(0x01);
+            v.extend(e.to_string().as_bytes());
+        }
+    }
+    v
+}
+
+struct MultisigClient {}
+
+impl MultisigClient {
+    pub fn new() -> Self {
+        MultisigClient {}
+    }
+}
+
+pub fn run_multi_signer(secret_share: &str, aggregator_url: &str, my_url: &str, port: u16) -> u32 {
+    let runtime = get_lock(&RUNTIME).unwrap();
+    let res = runtime.block_on(async {
+        let _jh = run_signer_service(port, secret_share).await?;
+        tokio::time::sleep(Duration::from_secs(3)).await;
+        let share = SecretShare::decode(secret_share)?;
+        let error_code = signer_connect_to_aggregator(aggregator_url, my_url, share.index).await?;
+        Ok(error_code)
+    });
+    log_result(res)
+}
+
+pub fn split_account(threshold: u32, participants: u32, account: u32) -> String {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.split_account(threshold as usize, participants as usize, account)
     };
     log_result(res())
 }

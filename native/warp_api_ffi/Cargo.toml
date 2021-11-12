@@ -22,7 +22,11 @@ hex = "0.4.3"
 
 [dependencies.zcash_primitives]
 git = "https://github.com/hhanh00/librustzcash.git"
-rev = "6baf1ba63261dda09e5b1d4b476977842a1f61c8"
+rev = "1518b145f8ee67e144fa8337c7dfd4c8cff899c9"
+
+[dependencies.zcash_multisig]
+git = "https://github.com/hhanh00/zcash-multisig.git"
+rev = "ce5baab5a25021950f51a9d53dc6c39ea9fe2997"
 
 [build-dependencies]
 cbindgen = "0.19.0"

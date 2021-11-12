@@ -31,6 +31,7 @@ import 'account_manager.dart';
 import 'backup.dart';
 import 'coin/coindef.dart';
 import 'multisend.dart';
+import 'multisign.dart';
 import 'payment_uri.dart';
 import 'settings.dart';
 import 'restore.dart';
@@ -92,6 +93,7 @@ void handleQuickAction(BuildContext context, String shortcut) {
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final home = ZWalletApp();
+  // final home = MultisigPage();
   runApp(FutureBuilder(
       future: settings.restore(),
       builder: (context, snapshot) {
@@ -127,6 +129,9 @@ void main() {
                           TransactionPage(routeSettings.arguments as Tx),
                       '/backup': (context) => BackupPage(routeSettings.arguments as int?),
                       '/multipay': (context) => MultiPayPage(),
+                      '/multisig': (context) => MultisigPage(),
+                      '/multisign': (context) => MultisigAggregatorPage(routeSettings.arguments as TxSummary),
+                      '/multisig_shares': (context) => MultisigSharesPage(routeSettings.arguments as String),
                       '/edit_theme': (context) => ThemeEditorPage(onSaved: settings.updateCustomThemeColors),
                     };
                     return MaterialPageRoute(builder: routes[routeSettings.name]!);
@@ -264,14 +269,26 @@ String unwrapUA(String address) {
   return zaddr.isNotEmpty ? zaddr : address;
 }
 
-void showQR(BuildContext context, String text) {
+void showQR(BuildContext context, String text, String title) {
+  final s = S.of(context);
   showDialog(
       context: context,
       barrierColor: Colors.black,
       builder: (context) => AlertDialog(
             content: Container(
                 width: double.maxFinite,
-                child: QrImage(data: text, backgroundColor: Colors.white)),
+                child: SingleChildScrollView(child: Column(children: [
+                  QrImage(data: text, backgroundColor: Colors.white),
+                  Padding(padding: EdgeInsets.all(8)),
+                  Text(title, style: Theme.of(context).textTheme.subtitle1),
+                  Padding(padding: EdgeInsets.all(4)),
+                  ElevatedButton.icon(onPressed: () {
+                    Navigator.of(context).pop();
+                    Clipboard.setData(ClipboardData(text: text));
+                    final snackBar = SnackBar(content: Text(s.textCopiedToClipboard(title)));
+                    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+                  }, icon: Icon(Icons.copy), label: Text(s.copy))
+                ])))
           ));
 }
 

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp/dualmoneyinput.dart';
+import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:decimal/decimal.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,6 +26,8 @@ class SendPage extends StatefulWidget {
 
   @override
   SendState createState() => SendState();
+
+  bool get isMulti => args?.isMulti ?? false;
 }
 
 class SendState extends State<SendPage> {
@@ -46,11 +49,15 @@ class SendState extends State<SendPage> {
   var _useMillis = true;
   var _useTransparent = settings.shieldBalance;
   ReactionDisposer? _newBlockAutorunDispose;
+  final _fee = DEFAULT_FEE;
+  var _usedBalance = 0;
 
   @override
   initState() {
     if (widget.args?.contact != null)
       _addressController.text = widget.args!.contact!.address;
+    final recipients = widget.args?.recipients ?? [];
+    _usedBalance = recipients.fold(0, (acc, r) => acc + r.amount);
 
     final uri = widget.args?.uri;
     if (uri != null)
@@ -67,7 +74,8 @@ class SendState extends State<SendPage> {
       final excludedBalance = await accountManager.getExcludedBalance();
       final underConfirmedBalance =
           await accountManager.getUnderConfirmedBalance();
-      final unconfirmedSpentBalance = await accountManager.getUnconfirmedSpentBalance();
+      final unconfirmedSpentBalance =
+          await accountManager.getUnconfirmedSpentBalance();
       final unconfirmedBalance = accountManager.unconfirmedBalance;
       setState(() {
         _sBalance = sBalance;
@@ -129,9 +137,13 @@ class SendState extends State<SendPage> {
                             icon: new Icon(MdiIcons.qrcodeScan),
                             onPressed: _onScan)
                       ]),
-                      DualMoneyInputWidget(key: _amountKey, child: TextButton(child: Text(s.max), onPressed: _onMax), spendable: spendable),
-                      BalanceTable(_sBalance, _tBalance, _useTransparent, _excludedBalance,
-                          _underConfirmedBalance, change),
+                      DualMoneyInputWidget(
+                          key: _amountKey,
+                          child:
+                              TextButton(child: Text(s.max), onPressed: _onMax),
+                          spendable: spendable),
+                      BalanceTable(_sBalance, _tBalance, _useTransparent,
+                          _excludedBalance, _underConfirmedBalance, change, _usedBalance, _fee),
                       ExpansionPanelList(
                           expansionCallback: (_, isExpanded) {
                             setState(() {
@@ -157,7 +169,7 @@ class SendState extends State<SendPage> {
                                     title: Text(s.roundToMillis),
                                     value: _useMillis,
                                     onChanged: _setUseMillis),
-                                if (accountManager.canPay)
+                                if (accountManager.canPay && !widget.isMulti)
                                   CheckboxListTile(
                                     title: Text(s.useTransparentBalance),
                                     value: _useTransparent,
@@ -169,7 +181,9 @@ class SendState extends State<SendPage> {
                                       labelText: s.maxAmountPerNote),
                                   keyboardType: TextInputType.number,
                                   controller: _maxAmountController,
-                                  inputFormatters: [makeInputFormatter(amountInput?.useMillis)],
+                                  inputFormatters: [
+                                    makeInputFormatter(amountInput?.useMillis)
+                                  ],
                                   validator: _checkMaxAmountPerNote,
                                   onSaved: _onSavedMaxAmountPerNote,
                                 )),
@@ -180,7 +194,8 @@ class SendState extends State<SendPage> {
                       Padding(padding: EdgeInsets.all(8)),
                       ButtonBar(
                           children: confirmButtons(context, _onSend,
-                              okLabel: s.send, okIcon: Icon(MdiIcons.send)))
+                              okLabel: widget.isMulti ? s.add : s.send,
+                              okIcon: Icon(MdiIcons.send)))
                     ])))));
   }
 
@@ -276,68 +291,52 @@ class SendState extends State<SendPage> {
       form.save();
       final amount = amountInput?.amount ?? 0;
       final aZEC = amountToString(amount);
-      final approved = await showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) => AlertDialog(
-              title: Text(s.pleaseConfirm),
-              content: SingleChildScrollView(
-                  child: Text(s.sendingAzecCointickerToAddress(
-                      aZEC, coin.ticker, _address))),
-              actions: confirmButtons(
-                  context, () => Navigator.of(context).pop(true),
-                  okLabel: s.approve, cancelValue: false)));
+      final approved = widget.isMulti ||
+          await showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) => AlertDialog(
+                  title: Text(s.pleaseConfirm),
+                  content: SingleChildScrollView(
+                      child: Text(s.sendingAzecCointickerToAddress(
+                          aZEC, coin.ticker, _address))),
+                  actions: confirmButtons(
+                      context, () => Navigator.of(context).pop(true),
+                      okLabel: s.approve, cancelValue: false)));
       if (approved) {
-        Navigator.of(context).pop();
-
-        final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
-        rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
-
         int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toInt();
         final memo = _memoController.text;
         final address = unwrapUA(_address);
+        final recipient = Recipient(
+          address,
+          amount,
+          memo,
+          maxAmountPerNote,
+        );
 
-        if (accountManager.canPay) {
-          if (settings.protectSend &&
-              !await authenticate(context, s.pleaseAuthenticateToSend)) return;
-          final tx = await compute(
-              sendPayment,
-              PaymentParams(
-                  accountManager.active.id,
-                  address,
-                  amount,
-                  memo,
-                  maxAmountPerNote,
-                  settings.anchorOffset,
-                  _useTransparent,
-                  progressPort.sendPort));
-
-          final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
-          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
-          await accountManager.fetchAccountData(true);
-        } else {
-          Directory tempDir = await getTemporaryDirectory();
-          String filename = "${tempDir.path}/tx.json";
-
-          final msg = WarpApi.prepareTx(accountManager.active.id, address,
-              amountInput?.amount ?? 0, memo, maxAmountPerNote, settings.anchorOffset, filename);
-
-          Share.shareFiles([filename], subject: s.unsignedTransactionFile);
-
-          final snackBar2 = SnackBar(content: Text(msg));
-          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
-        }
+        if (!widget.isMulti)
+          // send closes the page
+          await send(context, [recipient], _useTransparent);
+        else
+          Navigator.of(context).pop(recipient);
       }
     }
   }
+
 
   int amountInZAT(Decimal v) => (v * ZECUNIT_DECIMAL).toInt();
 
   String amountFromZAT(int v) =>
       (Decimal.fromInt(v) / ZECUNIT_DECIMAL).toString();
 
-  get spendable => math.max((_useTransparent ? _tBalance : 0) +
-      _sBalance - _excludedBalance - _underConfirmedBalance - DEFAULT_FEE, 0);
+  get spendable => math.max(
+      (_useTransparent ? _tBalance : 0) +
+          _sBalance -
+          _excludedBalance -
+          _underConfirmedBalance -
+          _usedBalance -
+          _fee,
+      0);
 
   get change => _unconfirmedSpentBalance + _unconfirmedBalance;
 
@@ -351,9 +350,11 @@ class BalanceTable extends StatelessWidget {
   final int excludedBalance;
   final int underConfirmedBalance;
   final int change;
+  final int used;
+  final int fee;
 
-  BalanceTable(this.sBalance, this.tBalance, this.useTBalance, this.excludedBalance,
-      this.underConfirmedBalance, this.change);
+  BalanceTable(this.sBalance, this.tBalance, this.useTBalance,
+      this.excludedBalance, this.underConfirmedBalance, this.change, this.used, this.fee);
 
   @override
   Widget build(BuildContext context) {
@@ -371,23 +372,31 @@ class BalanceTable extends StatelessWidget {
     ]));
 
     return Container(
-      decoration: BoxDecoration(border: Border.all(color: theme.dividerColor, width: 1),
-      borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(
+            border: Border.all(color: theme.dividerColor, width: 1),
+            borderRadius: BorderRadius.circular(8)),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      BalanceRow(Text(S.of(context).totalBalance), totalBalance),
-      BalanceRow(Text(S.of(context).underConfirmed), -underConfirmed),
-      BalanceRow(Text(S.of(context).excludedNotes), -excludedBalance),
-      if (!useTBalance) BalanceRow(tBalanceLabel, -tBalance),
-      BalanceRow(Text(S.of(context).spendableBalance), spendable,
-          style: TextStyle(color: Theme.of(context).primaryColor)),
-    ]));
+          BalanceRow(Text(S.of(context).totalBalance), totalBalance),
+          BalanceRow(Text(S.of(context).underConfirmed), -underConfirmed),
+          BalanceRow(Text(S.of(context).excludedNotes), -excludedBalance),
+          if (!useTBalance) BalanceRow(tBalanceLabel, -tBalance),
+          BalanceRow(Text(S.of(context).spendableBalance), spendable,
+              style: TextStyle(color: Theme.of(context).primaryColor)),
+        ]));
   }
 
-  get totalBalance => sBalance + tBalance + change;
+  get totalBalance => sBalance + tBalance + change - used - fee;
+
   get underConfirmed => -underConfirmedBalance - change;
 
   get spendable => math.max(
-      sBalance + (useTBalance ? tBalance : 0) - excludedBalance - underConfirmedBalance - DEFAULT_FEE, 0);
+      sBalance +
+          (useTBalance ? tBalance : 0) -
+          excludedBalance -
+          underConfirmedBalance -
+          used -
+          fee,
+      0);
 }
 
 class BalanceRow extends StatelessWidget {
@@ -402,23 +411,60 @@ class BalanceRow extends StatelessWidget {
     return ListTile(
         title: label,
         trailing: Text(amountToString(amount),
-            style: TextStyle(fontFeatures: [FontFeature.tabularFigures()]).merge(style)),
+            style: TextStyle(fontFeatures: [FontFeature.tabularFigures()])
+                .merge(style)),
         visualDensity: VisualDensity(horizontal: 0, vertical: -4));
   }
 }
 
-sendPayment(PaymentParams param) async {
-  param.port.send(0);
-  final tx = await WarpApi.sendPayment(
-      param.account,
-      param.address,
-      param.amount,
-      param.memo,
-      param.maxAmountPerNote,
-      param.anchorOffset,
-      param.useTransparent, (percent) {
-    param.port.send(percent);
-  });
-  param.port.send(0);
-  return tx;
+Future<void> send(BuildContext context, List<Recipient> recipients, bool useTransparent) async {
+  final s = S.of(context);
+
+  String address = "";
+  int amount = 0;
+  for (var r in recipients) {
+    amount += r.amount;
+    if (address.isEmpty)
+      address = r.address;
+    else
+      address = s.multipleAddresses;
+  }
+
+  final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
+  rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
+
+  if (accountManager.canPay) {
+    if (settings.protectSend &&
+        !await authenticate(context, s.pleaseAuthenticateToSend)) return;
+
+    Navigator.of(context).pop();
+    final tx = await WarpApi.sendPayment(accountManager.active.id, recipients,
+        useTransparent, settings.anchorOffset, (progress) {
+          progressPort.sendPort.send(progress);
+        });
+    progressPort.sendPort.send(0);
+
+    final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
+    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+    await accountManager.fetchAccountData(true);
+  } else {
+    Directory tempDir = await getTemporaryDirectory();
+    String filename = "${tempDir.path}/tx.json";
+
+    final txjson = WarpApi.prepareTx(accountManager.active.id, recipients,
+        useTransparent, settings.anchorOffset, filename);
+
+    if (coin.supportsMultisig && accountManager.active.share != null) {
+      final txSummary = TxSummary(address, amount, txjson);
+      Navigator.of(context).pushReplacementNamed('/multisign', arguments: txSummary);
+    } else {
+      final file = File(filename);
+      await file.writeAsString(txjson);
+      Share.shareFiles([filename], subject: s.unsignedTransactionFile);
+
+      final snackBar2 = SnackBar(content: Text(s.fileSaved));
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+      Navigator.of(context).pop();
+    }
+  }
 }

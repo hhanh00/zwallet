@@ -315,7 +315,7 @@ packages:
       name: fl_chart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.40.0"
+    version: "0.40.2"
   flex_color_scheme:
     dependency: "direct main"
     description:
@@ -555,6 +555,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.0"
+  k_chart:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "821f81681f8ee819cd721498f7b28d290f4ebe38"
+      resolved-ref: "821f81681f8ee819cd721498f7b28d290f4ebe38"
+      url: "https://github.com/hhanh00/k_chart.git"
+    source: git
+    version: "0.4.1"
   list_utilities:
     dependency: transitive
     description:
@@ -632,6 +641,48 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  network_info_plus:
+    dependency: "direct main"
+    description:
+      name: network_info_plus
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
+  network_info_plus_linux:
+    dependency: transitive
+    description:
+      name: network_info_plus_linux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
+  network_info_plus_macos:
+    dependency: transitive
+    description:
+      name: network_info_plus_macos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
+  network_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: network_info_plus_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
+  network_info_plus_web:
+    dependency: transitive
+    description:
+      name: network_info_plus_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  network_info_plus_windows:
+    dependency: transitive
+    description:
+      name: network_info_plus_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   nm:
     dependency: transitive
     description:
@@ -807,6 +858,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.3"
+  protobuf:
+    dependency: transitive
+    description:
+      name: protobuf
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   pub_semver:
     dependency: transitive
     description:

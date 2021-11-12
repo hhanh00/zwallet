@@ -10,14 +10,14 @@ zcashtest)
   export APP_NAME=zwallettest
   ;;
 zcash)
-  export APP_TITLE=WarpWallet
-  export APP_NAME=warpwallet
+  export APP_TITLE=ZWallet
+  export APP_NAME=zwallet
   ;;
 esac
 
 cp assets/$COIN.png assets/icon.png
 cp lib/coin/$COIN.dart lib/coin/coindef.dart
-cp native/zcash-sync/src/coindef/$COIN.rs native/zcash-sync/src/coin.rs
+cp native/zcash-params/src/coindef/$COIN.rs native/zcash-params/src/coin.rs
 
 mo pubspec.yaml.tpl > pubspec.yaml
 mo android/app/src/main/AndroidManifest.xml.tpl > android/app/src/main/AndroidManifest.xml
@@ -28,3 +28,6 @@ flutter pub run flutter_launcher_icons:main
 flutter pub run flutter_app_name
 flutter pub run build_runner build
 flutter pub run flutter_native_splash:create
+
+(cd packages/warp_api_ffi; flutter pub get; flutter pub run build_runner build)
+

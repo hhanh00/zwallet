@@ -10,6 +10,6 @@ class Coin {
     LWInstance("Lightwalletd", "https://lite.ycash.xyz:9067"),
   ];
   bool supportsUA = false;
-
+  bool supportsMultisig = true;
   List<int> weights = [5, 25, 250];
 }

@@ -150,43 +150,18 @@ class NativeLibrary {
   late final _dart_get_mempool_balance _get_mempool_balance =
       _get_mempool_balance_ptr.asFunction<_dart_get_mempool_balance>();
 
-  ffi.Pointer<ffi.Int8> send_payment(
-    int account,
-    ffi.Pointer<ffi.Int8> address,
-    int amount,
-    ffi.Pointer<ffi.Int8> memo,
-    int max_amount_per_note,
-    int anchor_offset,
-    int shield_transparent_balance,
-    int port,
-  ) {
-    return _send_payment(
-      account,
-      address,
-      amount,
-      memo,
-      max_amount_per_note,
-      anchor_offset,
-      shield_transparent_balance,
-      port,
-    );
-  }
-
-  late final _send_payment_ptr =
-      _lookup<ffi.NativeFunction<_c_send_payment>>('send_payment');
-  late final _dart_send_payment _send_payment =
-      _send_payment_ptr.asFunction<_dart_send_payment>();
-
   ffi.Pointer<ffi.Int8> send_multi_payment(
     int account,
     ffi.Pointer<ffi.Int8> recipients_json,
     int anchor_offset,
+    int use_transparent,
     int port,
   ) {
     return _send_multi_payment(
       account,
       recipients_json,
       anchor_offset,
+      use_transparent,
       port,
     );
   }
@@ -295,30 +270,25 @@ class NativeLibrary {
   late final _dart_set_lwd_url _set_lwd_url =
       _set_lwd_url_ptr.asFunction<_dart_set_lwd_url>();
 
-  ffi.Pointer<ffi.Int8> prepare_offline_tx(
+  ffi.Pointer<ffi.Int8> prepare_multi_payment(
     int account,
-    ffi.Pointer<ffi.Int8> to_address,
-    int amount,
-    ffi.Pointer<ffi.Int8> memo,
-    int max_amount_per_note,
+    ffi.Pointer<ffi.Int8> recipients_json,
+    int use_transparent,
     int anchor_offset,
-    ffi.Pointer<ffi.Int8> tx_filename,
   ) {
-    return _prepare_offline_tx(
+    return _prepare_multi_payment(
       account,
-      to_address,
-      amount,
-      memo,
-      max_amount_per_note,
+      recipients_json,
+      use_transparent,
       anchor_offset,
-      tx_filename,
     );
   }
 
-  late final _prepare_offline_tx_ptr =
-      _lookup<ffi.NativeFunction<_c_prepare_offline_tx>>('prepare_offline_tx');
-  late final _dart_prepare_offline_tx _prepare_offline_tx =
-      _prepare_offline_tx_ptr.asFunction<_dart_prepare_offline_tx>();
+  late final _prepare_multi_payment_ptr =
+      _lookup<ffi.NativeFunction<_c_prepare_multi_payment>>(
+          'prepare_multi_payment');
+  late final _dart_prepare_multi_payment _prepare_multi_payment =
+      _prepare_multi_payment_ptr.asFunction<_dart_prepare_multi_payment>();
 
   ffi.Pointer<ffi.Int8> broadcast(
     ffi.Pointer<ffi.Int8> tx_filename,
@@ -332,6 +302,19 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_broadcast>>('broadcast');
   late final _dart_broadcast _broadcast =
       _broadcast_ptr.asFunction<_dart_broadcast>();
+
+  ffi.Pointer<ffi.Int8> broadcast_txhex(
+    ffi.Pointer<ffi.Int8> txhex,
+  ) {
+    return _broadcast_txhex(
+      txhex,
+    );
+  }
+
+  late final _broadcast_txhex_ptr =
+      _lookup<ffi.NativeFunction<_c_broadcast_txhex>>('broadcast_txhex');
+  late final _dart_broadcast_txhex _broadcast_txhex =
+      _broadcast_txhex_ptr.asFunction<_dart_broadcast_txhex>();
 
   int sync_historical_prices(
     int now,
@@ -464,6 +447,112 @@ class NativeLibrary {
   late final _dart_parse_payment_uri _parse_payment_uri =
       _parse_payment_uri_ptr.asFunction<_dart_parse_payment_uri>();
 
+  void store_share_secret(
+    int account,
+    ffi.Pointer<ffi.Int8> secret,
+  ) {
+    return _store_share_secret(
+      account,
+      secret,
+    );
+  }
+
+  late final _store_share_secret_ptr =
+      _lookup<ffi.NativeFunction<_c_store_share_secret>>('store_share_secret');
+  late final _dart_store_share_secret _store_share_secret =
+      _store_share_secret_ptr.asFunction<_dart_store_share_secret>();
+
+  ffi.Pointer<ffi.Int8> get_share_secret(
+    int account,
+  ) {
+    return _get_share_secret(
+      account,
+    );
+  }
+
+  late final _get_share_secret_ptr =
+      _lookup<ffi.NativeFunction<_c_get_share_secret>>('get_share_secret');
+  late final _dart_get_share_secret _get_share_secret =
+      _get_share_secret_ptr.asFunction<_dart_get_share_secret>();
+
+  void run_aggregator(
+    ffi.Pointer<ffi.Int8> secret_share,
+    int port,
+    int send_port,
+  ) {
+    return _run_aggregator(
+      secret_share,
+      port,
+      send_port,
+    );
+  }
+
+  late final _run_aggregator_ptr =
+      _lookup<ffi.NativeFunction<_c_run_aggregator>>('run_aggregator');
+  late final _dart_run_aggregator _run_aggregator =
+      _run_aggregator_ptr.asFunction<_dart_run_aggregator>();
+
+  void shutdown_aggregator() {
+    return _shutdown_aggregator();
+  }
+
+  late final _shutdown_aggregator_ptr =
+      _lookup<ffi.NativeFunction<_c_shutdown_aggregator>>(
+          'shutdown_aggregator');
+  late final _dart_shutdown_aggregator _shutdown_aggregator =
+      _shutdown_aggregator_ptr.asFunction<_dart_shutdown_aggregator>();
+
+  ffi.Pointer<ffi.Int8> submit_multisig_tx(
+    ffi.Pointer<ffi.Int8> tx_json,
+    int port,
+  ) {
+    return _submit_multisig_tx(
+      tx_json,
+      port,
+    );
+  }
+
+  late final _submit_multisig_tx_ptr =
+      _lookup<ffi.NativeFunction<_c_submit_multisig_tx>>('submit_multisig_tx');
+  late final _dart_submit_multisig_tx _submit_multisig_tx =
+      _submit_multisig_tx_ptr.asFunction<_dart_submit_multisig_tx>();
+
+  int run_multi_signer(
+    ffi.Pointer<ffi.Int8> secret_share,
+    ffi.Pointer<ffi.Int8> aggregator_url,
+    ffi.Pointer<ffi.Int8> my_url,
+    int port,
+  ) {
+    return _run_multi_signer(
+      secret_share,
+      aggregator_url,
+      my_url,
+      port,
+    );
+  }
+
+  late final _run_multi_signer_ptr =
+      _lookup<ffi.NativeFunction<_c_run_multi_signer>>('run_multi_signer');
+  late final _dart_run_multi_signer _run_multi_signer =
+      _run_multi_signer_ptr.asFunction<_dart_run_multi_signer>();
+
+  ffi.Pointer<ffi.Int8> split_account(
+    int threshold,
+    int participants,
+    int account,
+  ) {
+    return _split_account(
+      threshold,
+      participants,
+      account,
+    );
+  }
+
+  late final _split_account_ptr =
+      _lookup<ffi.NativeFunction<_c_split_account>>('split_account');
+  late final _dart_split_account _split_account =
+      _split_account_ptr.asFunction<_dart_split_account>();
+
   void dummy_export() {
     return _dummy_export();
   }
@@ -554,32 +643,11 @@ typedef _c_get_mempool_balance = ffi.Int64 Function();
 
 typedef _dart_get_mempool_balance = int Function();
 
-typedef _c_send_payment = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint32 account,
-  ffi.Pointer<ffi.Int8> address,
-  ffi.Uint64 amount,
-  ffi.Pointer<ffi.Int8> memo,
-  ffi.Uint64 max_amount_per_note,
-  ffi.Uint32 anchor_offset,
-  ffi.Int8 shield_transparent_balance,
-  ffi.Int64 port,
-);
-
-typedef _dart_send_payment = ffi.Pointer<ffi.Int8> Function(
-  int account,
-  ffi.Pointer<ffi.Int8> address,
-  int amount,
-  ffi.Pointer<ffi.Int8> memo,
-  int max_amount_per_note,
-  int anchor_offset,
-  int shield_transparent_balance,
-  int port,
-);
-
 typedef _c_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
   ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> recipients_json,
   ffi.Uint32 anchor_offset,
+  ffi.Int8 use_transparent,
   ffi.Int64 port,
 );
 
@@ -587,6 +655,7 @@ typedef _dart_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
   int account,
   ffi.Pointer<ffi.Int8> recipients_json,
   int anchor_offset,
+  int use_transparent,
   int port,
 );
 
@@ -648,24 +717,18 @@ typedef _dart_set_lwd_url = void Function(
   ffi.Pointer<ffi.Int8> url,
 );
 
-typedef _c_prepare_offline_tx = ffi.Pointer<ffi.Int8> Function(
+typedef _c_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
   ffi.Uint32 account,
-  ffi.Pointer<ffi.Int8> to_address,
-  ffi.Uint64 amount,
-  ffi.Pointer<ffi.Int8> memo,
-  ffi.Uint64 max_amount_per_note,
+  ffi.Pointer<ffi.Int8> recipients_json,
+  ffi.Int8 use_transparent,
   ffi.Uint32 anchor_offset,
-  ffi.Pointer<ffi.Int8> tx_filename,
 );
 
-typedef _dart_prepare_offline_tx = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
   int account,
-  ffi.Pointer<ffi.Int8> to_address,
-  int amount,
-  ffi.Pointer<ffi.Int8> memo,
-  int max_amount_per_note,
+  ffi.Pointer<ffi.Int8> recipients_json,
+  int use_transparent,
   int anchor_offset,
-  ffi.Pointer<ffi.Int8> tx_filename,
 );
 
 typedef _c_broadcast = ffi.Pointer<ffi.Int8> Function(
@@ -674,6 +737,14 @@ typedef _c_broadcast = ffi.Pointer<ffi.Int8> Function(
 
 typedef _dart_broadcast = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> tx_filename,
+);
+
+typedef _c_broadcast_txhex = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> txhex,
+);
+
+typedef _dart_broadcast_txhex = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> txhex,
 );
 
 typedef _c_sync_historical_prices = ffi.Uint32 Function(
@@ -760,6 +831,76 @@ typedef _c_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
 
 typedef _dart_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> uri,
+);
+
+typedef _c_store_share_secret = ffi.Void Function(
+  ffi.Uint32 account,
+  ffi.Pointer<ffi.Int8> secret,
+);
+
+typedef _dart_store_share_secret = void Function(
+  int account,
+  ffi.Pointer<ffi.Int8> secret,
+);
+
+typedef _c_get_share_secret = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint32 account,
+);
+
+typedef _dart_get_share_secret = ffi.Pointer<ffi.Int8> Function(
+  int account,
+);
+
+typedef _c_run_aggregator = ffi.Void Function(
+  ffi.Pointer<ffi.Int8> secret_share,
+  ffi.Uint16 port,
+  ffi.Int64 send_port,
+);
+
+typedef _dart_run_aggregator = void Function(
+  ffi.Pointer<ffi.Int8> secret_share,
+  int port,
+  int send_port,
+);
+
+typedef _c_shutdown_aggregator = ffi.Void Function();
+
+typedef _dart_shutdown_aggregator = void Function();
+
+typedef _c_submit_multisig_tx = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> tx_json,
+  ffi.Uint16 port,
+);
+
+typedef _dart_submit_multisig_tx = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> tx_json,
+  int port,
+);
+
+typedef _c_run_multi_signer = ffi.Uint32 Function(
+  ffi.Pointer<ffi.Int8> secret_share,
+  ffi.Pointer<ffi.Int8> aggregator_url,
+  ffi.Pointer<ffi.Int8> my_url,
+  ffi.Uint16 port,
+);
+
+typedef _dart_run_multi_signer = int Function(
+  ffi.Pointer<ffi.Int8> secret_share,
+  ffi.Pointer<ffi.Int8> aggregator_url,
+  ffi.Pointer<ffi.Int8> my_url,
+  int port,
+);
+
+typedef _c_split_account = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint32 threshold,
+  ffi.Uint32 participants,
+  ffi.Uint32 account,
+);
+
+typedef _dart_split_account = ffi.Pointer<ffi.Int8> Function(
+  int threshold,
+  int participants,
+  int account,
 );
 
 typedef _c_dummy_export = ffi.Void Function();

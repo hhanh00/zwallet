@@ -1,4 +1,4 @@
-package me.hanh.zwallet
+package me.hanh.ywallet
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine

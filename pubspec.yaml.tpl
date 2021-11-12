@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.12+179
+version: 1.1.0+184
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -45,6 +45,10 @@ dependencies:
   flex_color_scheme: ^3.0.1
   flutter_colorpicker: ^0.6.0
   fl_chart: ^0.40.0
+  k_chart:
+    git:
+      url: https://github.com/hhanh00/k_chart.git
+      ref: 821f81681f8ee819cd721498f7b28d290f4ebe38
   grouped_list: ^4.1.0
   json_annotation: ^4.1.0
   share_plus: ^2.1.4
@@ -65,6 +69,7 @@ dependencies:
   uni_links: ^0.5.1
   quick_actions: ^0.6.0
   csv: ^5.0.0
+  network_info_plus : ^2.0.2
   flutter_localizations:
     sdk: flutter
 
