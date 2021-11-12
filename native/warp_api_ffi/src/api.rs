@@ -9,7 +9,10 @@ use std::sync::{Mutex, MutexGuard};
 use sync::{broadcast_tx, ChainError, MemPool, Wallet};
 use tokio::runtime::Runtime;
 use tokio::time::Duration;
-use zcash_multisig::{run_aggregator_service, run_signer_service, signer_connect_to_aggregator, submit_tx, SecretShare};
+use zcash_multisig::{
+    run_aggregator_service, run_signer_service, signer_connect_to_aggregator, submit_tx,
+    SecretShare,
+};
 use zcash_primitives::transaction::builder::Progress;
 
 static RUNTIME: OnceCell<Mutex<Runtime>> = OnceCell::new();
@@ -435,7 +438,13 @@ pub fn store_share_secret(account: u32, secret: &str) {
     let res = || {
         let wallet = get_lock(&WALLET)?;
         let share = SecretShare::decode(secret)?;
-        wallet.store_share_secret(account, secret, share.index, share.threshold, share.participants)?;
+        wallet.store_share_secret(
+            account,
+            secret,
+            share.index,
+            share.threshold,
+            share.participants,
+        )?;
         Ok(())
     };
     log_result(res())
