@@ -2560,7 +2560,7 @@ dependencies = [
  "tonic-build",
  "zcash_address",
  "zcash_client_backend",
- "zcash_params 0.1.0 (git+https://github.com/hhanh00/zcash-params.git?rev=f54214d0a6752188efd1404e39b10be58a27ea0f)",
+ "zcash_params",
  "zcash_primitives",
  "zcash_proofs",
 ]
@@ -3267,9 +3267,45 @@ name = "zcash_multisig"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "bech32",
+ "blake2b_simd",
+ "bls12_381",
+ "byteorder",
+ "chrono",
+ "clap",
+ "dotenv",
+ "env_logger",
+ "ff",
  "futures 0.3.17",
+ "group",
+ "hex",
  "jubjub",
+ "lazy_static",
+ "lazycell",
+ "log",
+ "prost",
+ "rand 0.8.4",
+ "rand_chacha 0.3.1",
+ "rayon",
+ "reqwest",
+ "ripemd160",
+ "rusqlite",
+ "rustyline",
+ "secp256k1",
+ "serde",
+ "serde_json",
+ "sha2 0.9.8",
+ "thiserror",
+ "tiny-bip39",
+ "tiny-hderive",
  "tokio",
+ "tokio-stream",
+ "tonic",
+ "tonic-build",
+ "zcash_client_backend",
+ "zcash_params",
+ "zcash_primitives",
+ "zcash_proofs",
 ]
 
 [[package]]
@@ -3289,24 +3325,6 @@ dependencies = [
 [[package]]
 name = "zcash_params"
 version = "0.1.0"
-dependencies = [
- "bls12_381",
- "byteorder",
- "ff",
- "funty",
- "group",
- "hex",
- "jubjub",
- "lazy_static",
- "rand 0.8.4",
- "serde",
- "zcash_primitives",
-]
-
-[[package]]
-name = "zcash_params"
-version = "0.1.0"
-source = "git+https://github.com/hhanh00/zcash-params.git?rev=f54214d0a6752188efd1404e39b10be58a27ea0f#f54214d0a6752188efd1404e39b10be58a27ea0f"
 dependencies = [
  "bls12_381",
  "byteorder",

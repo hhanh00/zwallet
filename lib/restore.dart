@@ -31,7 +31,7 @@ class _RestorePageState extends State<RestorePage> {
           onTap: () { FocusScope.of(context).unfocus(); },
           child: Form(
             key: _formKey,
-            child: Padding(
+            child: SingleChildScrollView(child: Padding(
                 padding: EdgeInsets.all(16),
                 child: Column(children: [
                   TextFormField(
@@ -78,7 +78,7 @@ class _RestorePageState extends State<RestorePage> {
                   ),
                   ButtonBar(children:
                   confirmButtons(context, _validKey ? _onOK : null, okLabel: s.add, okIcon: Icon(Icons.add)))
-                ])))));
+                ]))))));
   }
 
   _onOK() async {

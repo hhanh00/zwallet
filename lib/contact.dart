@@ -22,7 +22,7 @@ class ContactsState extends State<ContactsTab> {
       Padding(padding: EdgeInsets.all(8), child: contacts.contacts.isEmpty
           ? NoContact()
           : Column(children: [
-            if (contacts.dirty) OutlinedButton(onPressed: _onCommit, child: Text(S.of(context).saveToBlockchain), style: OutlinedButton.styleFrom(
+            if (contacts.dirty) OutlinedButton(onPressed: accountManager.canPay ? _onCommit : null, child: Text(S.of(context).saveToBlockchain), style: OutlinedButton.styleFrom(
           side: BorderSide(
               width: 1, color: Theme.of(context).primaryColor))),
               Expanded(child: ListView.builder(
