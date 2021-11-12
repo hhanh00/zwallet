@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.hanh.zwallettest">
+    package="me.hanh.zwallet">
    <application
-        android:label="ZWalletTest"
+        android:label="ZWallet"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -27,7 +27,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                        android:scheme="zcashtest"/>
+                        android:scheme="zcash"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

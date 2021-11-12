@@ -11,11 +11,16 @@ dependencies:
   flutter:
     sdk: flutter
   ffi: 1.1.2
+  convert: ^3.0.1
+  protobuf: ^2.0.0
+  json_annotation: ^4.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   ffigen: 2.4.2
+  build_runner: ^2.1.2
+  json_serializable: ^5.0.0
 
 ffigen:
   output: 'lib/warp_api_generated.dart'

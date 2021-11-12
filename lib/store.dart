@@ -10,6 +10,7 @@ import 'package:mobx/mobx.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:warp_api/warp_api.dart';
+import 'package:warp_api/types.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -111,9 +112,11 @@ abstract class _Settings with Store {
     protectSend = prefs.getBool('protect_send') ?? false;
 
     primaryColorValue = prefs.getInt('primary') ?? Colors.blue.value;
-    primaryVariantColorValue = prefs.getInt('primary.variant') ?? Colors.blueAccent.value;
+    primaryVariantColorValue =
+        prefs.getInt('primary.variant') ?? Colors.blueAccent.value;
     secondaryColorValue = prefs.getInt('secondary') ?? Colors.green.value;
-    secondaryVariantColorValue = prefs.getInt('secondary.variant') ?? Colors.greenAccent.value;
+    secondaryVariantColorValue =
+        prefs.getInt('secondary.variant') ?? Colors.greenAccent.value;
 
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
@@ -168,28 +171,25 @@ abstract class _Settings with Store {
 
   void _updateThemeData() {
     if (theme == 'custom') {
-      final colors = FlexSchemeColor(primary: Color(primaryColorValue),
+      final colors = FlexSchemeColor(
+          primary: Color(primaryColorValue),
           primaryVariant: Color(primaryVariantColorValue),
           secondary: Color(secondaryColorValue),
           secondaryVariant: Color(secondaryVariantColorValue));
-      final scheme = FlexSchemeData(name: 'custom',
+      final scheme = FlexSchemeData(
+          name: 'custom',
           description: 'Custom Theme',
           light: colors,
           dark: colors);
       switch (themeBrightness) {
         case 'light':
-          themeData = FlexColorScheme
-              .light(colors: scheme.light)
-              .toTheme;
+          themeData = FlexColorScheme.light(colors: scheme.light).toTheme;
           break;
         case 'dark':
-          themeData = FlexColorScheme
-              .dark(colors: scheme.dark)
-              .toTheme;
+          themeData = FlexColorScheme.dark(colors: scheme.dark).toTheme;
           break;
       }
-    }
-    else {
+    } else {
       FlexScheme scheme;
       switch (theme) {
         case 'gold':
@@ -209,21 +209,18 @@ abstract class _Settings with Store {
       }
       switch (themeBrightness) {
         case 'light':
-          themeData = FlexColorScheme
-              .light(scheme: scheme)
-              .toTheme;
+          themeData = FlexColorScheme.light(scheme: scheme).toTheme;
           break;
         case 'dark':
-          themeData = FlexColorScheme
-              .dark(scheme: scheme)
-              .toTheme;
+          themeData = FlexColorScheme.dark(scheme: scheme).toTheme;
           break;
       }
     }
   }
 
   @action
-  Future<void> updateCustomThemeColors(Color primary, Color primaryVariant, Color secondary, Color secondaryVariant) async {
+  Future<void> updateCustomThemeColors(Color primary, Color primaryVariant,
+      Color secondary, Color secondaryVariant) async {
     final prefs = await SharedPreferences.getInstance();
     primaryColorValue = primary.value;
     primaryVariantColorValue = primaryVariant.value;
@@ -347,7 +344,7 @@ abstract class _AccountManager with Store {
   late Database db;
 
   @observable
-  Account active = Account(0, "", "", 0);
+  Account active = Account(0, "", "", 0, null);
 
   @observable
   bool canPay = false;
@@ -454,10 +451,12 @@ abstract class _AccountManager with Store {
 
   Future<Backup> getBackup(int account) async {
     final List<Map> res = await db.rawQuery(
-        "SELECT seed, sk, ivk FROM accounts WHERE id_account = ?1",
+        "SELECT name, seed, sk, ivk FROM accounts WHERE id_account = ?1",
         [account]);
     if (res.isEmpty) throw Exception("Account N/A");
+    final share = await getShareInfo(account);
     final row = res[0];
+    final name = row['name'];
     final seed = row['seed'];
     final sk = row['sk'];
     final ivk = row['ivk'];
@@ -467,7 +466,7 @@ abstract class _AccountManager with Store {
     else if (sk != null)
       type = 1;
     else if (ivk != null) type = 2;
-    return Backup(type, seed, sk, ivk);
+    return Backup(type, name, seed, sk, ivk, share);
   }
 
   Future<int> _getBalance(int accountId) async {
@@ -480,29 +479,33 @@ abstract class _AccountManager with Store {
 
   Future<int> getShieldedBalance() async {
     return Sqflite.firstIntValue(await db.rawQuery(
-        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent IS NULL",
-        [active.id])) ?? 0;
+            "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent IS NULL",
+            [active.id])) ??
+        0;
   }
 
   Future<int> getUnconfirmedSpentBalance() async {
     return Sqflite.firstIntValue(await db.rawQuery(
-        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent = 0",
-        [active.id])) ?? 0;
+            "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent = 0",
+            [active.id])) ??
+        0;
   }
 
   Future<int> getUnderConfirmedBalance() async {
     final height = syncStatus.latestHeight - settings.anchorOffset;
     return Sqflite.firstIntValue(await db.rawQuery(
-        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND height > ?2",
-        [active.id, height])) ?? 0;
+            "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND height > ?2",
+            [active.id, height])) ??
+        0;
   }
 
   Future<int> getExcludedBalance() async {
     final height = syncStatus.latestHeight - settings.anchorOffset;
     final amount = Sqflite.firstIntValue(await db.rawQuery(
-        "SELECT SUM(value) FROM received_notes WHERE account = ?1 AND spent IS NULL "
-        "AND height <= ?2 AND excluded",
-        [active.id, height])) ?? 0;
+            "SELECT SUM(value) FROM received_notes WHERE account = ?1 AND spent IS NULL "
+            "AND height <= ?2 AND excluded",
+            [active.id, height])) ??
+        0;
     return amount;
   }
 
@@ -518,28 +521,45 @@ abstract class _AccountManager with Store {
 
   Future<List<Account>> _list() async {
     final List<Map> res = await db.rawQuery(
-        "WITH notes AS (SELECT a.id_account, a.name, a.address, CASE WHEN r.spent IS NULL THEN r.value ELSE 0 END AS nv FROM accounts a LEFT JOIN received_notes r ON a.id_account = r.account) "
-        "SELECT id_account, name, address, COALESCE(sum(nv), 0) AS balance FROM notes GROUP by id_account",
+        "WITH notes AS (SELECT a.id_account, a.name, a.address, CASE WHEN r.spent IS NULL THEN r.value ELSE 0 END AS nv FROM accounts a LEFT JOIN received_notes r ON a.id_account = r.account),"
+        "accounts2 AS (SELECT id_account, name, address, COALESCE(sum(nv), 0) AS balance FROM notes GROUP by id_account) "
+        "SELECT a.id_account, a.name, a.address, a.balance, ss.idx, ss.secret, ss.participants, ss.threshold FROM accounts2 a LEFT JOIN secret_shares ss ON a.id_account = ss.account",
         []);
-    return res
-        .map((r) =>
-            Account(r['id_account'], r['name'], r['address'], r['balance']))
-        .toList();
+    return res.map((r) {
+      final shareInfo = r['secret'] != null
+          ? ShareInfo(r['idx'], r['threshold'], r['participants'], r['secret'])
+          : null;
+      return Account(
+          r['id_account'], r['name'], r['address'], r['balance'], shareInfo);
+    }).toList();
   }
 
   @action
   Future<void> delete(int account) async {
     WarpApi.deleteAccount(account);
-    if (account == active.id)
-      resetToDefaultAccount();
+    if (account == active.id) resetToDefaultAccount();
   }
 
   @action
-  Future<void> changeAccountName(String name) async {
+  Future<void> changeAccountName(Account account, String name) async {
     await db.execute("UPDATE accounts SET name = ?2 WHERE id_account = ?1",
-        [active.id, name]);
+        [account.id, name]);
     await refresh();
-    await setActiveAccountId(active.id);
+  }
+
+  @action
+  void storeShareSecret(int account, String secretKey) {
+    WarpApi.storeShareSecret(account, secretKey);
+  }
+
+  Future<ShareInfo?> getShareInfo(int accountId) async {
+    final List<Map> res = await db.rawQuery(
+        "SELECT idx, threshold, participants, secret FROM secret_shares WHERE account = ?1",
+        [accountId]);
+    if (res.isEmpty) return null;
+    final row = res[0];
+    return ShareInfo(
+        row['idx'], row['threshold'], row['participants'], row['secret']);
   }
 
   @action
@@ -617,8 +637,16 @@ abstract class _AccountManager with Store {
       final shortTxid = fullTxId.substring(0, 8);
       final timestamp = txDateFormat
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
-      return Tx(row['id_tx'], row['height'], timestamp, shortTxid, fullTxId,
-          row['value'] / ZECUNIT, row['address'] ?? "", row['name'], row['memo'] ?? "");
+      return Tx(
+          row['id_tx'],
+          row['height'],
+          timestamp,
+          shortTxid,
+          fullTxId,
+          row['value'] / ZECUNIT,
+          row['address'] ?? "",
+          row['name'],
+          row['memo'] ?? "");
     }).toList();
 
     dataEpoch = DateTime.now().millisecondsSinceEpoch;
@@ -629,36 +657,45 @@ abstract class _AccountManager with Store {
   List<Note> get sortedNotes {
     var notes2 = [...notes];
     switch (noteSortConfig.field) {
-      case "time": return _sort(notes2, (Note note) => note.height, noteSortConfig.order);
-      case "amount": return _sort(notes2, (Note note) => note.value, noteSortConfig.order);
+      case "time":
+        return _sort(notes2, (Note note) => note.height, noteSortConfig.order);
+      case "amount":
+        return _sort(notes2, (Note note) => note.value, noteSortConfig.order);
     }
     return notes2;
   }
 
   @action
-  Future<void> sortNotes(String field) async {
-    noteSortConfig.sortOn(field);
+  void sortNotes(String field) {
+    noteSortConfig = noteSortConfig.sortOn(field);
   }
 
   @computed
   List<Tx> get sortedTxs {
     var txs2 = [...txs];
     switch (txSortConfig.field) {
-      case "time": return _sort(txs2, (Tx tx) => tx.height, txSortConfig.order);
-      case "amount": return _sort(txs2, (Tx tx) => tx.value, txSortConfig.order);
-      case "txid": return _sort(txs2, (Tx tx) => tx.txid, txSortConfig.order);
-      case "address": return _sort(txs2, (Tx tx) => tx.contact ?? tx.address, txSortConfig.order);
-      case "memo": return _sort(txs2, (Tx tx) => tx.memo, txSortConfig.order);
+      case "time":
+        return _sort(txs2, (Tx tx) => tx.height, txSortConfig.order);
+      case "amount":
+        return _sort(txs2, (Tx tx) => tx.value, txSortConfig.order);
+      case "txid":
+        return _sort(txs2, (Tx tx) => tx.txid, txSortConfig.order);
+      case "address":
+        return _sort(
+            txs2, (Tx tx) => tx.contact ?? tx.address, txSortConfig.order);
+      case "memo":
+        return _sort(txs2, (Tx tx) => tx.memo, txSortConfig.order);
     }
     return txs2;
   }
 
   @action
-  Future<void> sortTx(String field) async {
-    txSortConfig.sortOn(field);
+  void sortTx(String field) {
+    txSortConfig = txSortConfig.sortOn(field);
   }
 
-  List<C>  _sort<C extends HasHeight, T extends Comparable>(List<C> txs, T Function(C) project, SortOrder order) {
+  List<C> _sort<C extends HasHeight, T extends Comparable>(
+      List<C> txs, T Function(C) project, SortOrder order) {
     switch (order) {
       case SortOrder.Ascending:
         txs.sort((a, b) => project(a).compareTo(project(b)));
@@ -711,7 +748,8 @@ abstract class _AccountManager with Store {
       _accountBalances.add(ab);
       b -= value;
     }
-    _accountBalances.add(AccountBalance(DateTime.fromMillisecondsSinceEpoch(range.start), b / ZECUNIT));
+    _accountBalances.add(AccountBalance(
+        DateTime.fromMillisecondsSinceEpoch(range.start), b / ZECUNIT));
     _accountBalances = _accountBalances.reversed.toList();
     accountBalances = sampleDaily<AccountBalance, double, double>(
         _accountBalances,
@@ -814,7 +852,7 @@ abstract class _AccountManager with Store {
       var _pnls = [...pnls.reversed];
       return _pnls;
     }
-    return pnls; 
+    return pnls;
   }
 
   @action
@@ -833,6 +871,14 @@ abstract class _AccountManager with Store {
   }
 
   @action
+  Future<void> invertExcludedNotes() async {
+    await db.execute(
+        "UPDATE received_notes SET excluded = NOT(COALESCE(excluded, 0)) WHERE account = ?1",
+        [active.id]);
+    notes = notes.map((n) => n.invertExcluded).toList();
+  }
+
+  @action
   Future<void> updateTBalance() async {
     _updateTBalance(active.id);
   }
@@ -843,7 +889,8 @@ abstract class _AccountManager with Store {
   }
 
   void autoshield() {
-    if (settings.autoShieldThreshold != 0.0 && tbalance / ZECUNIT >= settings.autoShieldThreshold) {
+    if (settings.autoShieldThreshold != 0.0 &&
+        tbalance / ZECUNIT >= settings.autoShieldThreshold) {
       WarpApi.shieldTAddr(active.id);
     }
   }
@@ -869,8 +916,9 @@ class Account {
   final String name;
   final String address;
   final int balance;
+  final ShareInfo? share;
 
-  Account(this.id, this.name, this.address, this.balance);
+  Account(this.id, this.name, this.address, this.balance, this.share);
 }
 
 class PriceStore = _PriceStore with _$PriceStore;
@@ -941,17 +989,15 @@ abstract class _SyncStatus with Store {
   Future<void> sync(BuildContext context) async {
     eta.reset();
     syncing = true;
-    final snackBar =
-    SnackBar(content: Text(S
-        .of(context)
-        .rescanRequested));
+    final snackBar = SnackBar(content: Text(S.of(context).rescanRequested));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     setSyncHeight(0);
     WarpApi.rewindToHeight(0);
     WarpApi.truncateData();
     contacts.markContactsDirty(false);
     await syncStatus.update();
-    final params = SyncParams(settings.getTx, settings.anchorOffset, syncPort.sendPort);
+    final params =
+        SyncParams(settings.getTx, settings.anchorOffset, syncPort.sendPort);
     await compute(WarpApi.warpSync, params);
     syncing = false;
     eta.reset();
@@ -1017,12 +1063,16 @@ abstract class _ETAStore with Store {
     final p = prev;
     final c = current;
     if (p == null || c == null) return "";
-    if (c.timestamp.millisecondsSinceEpoch == p.timestamp.millisecondsSinceEpoch) return "";
-    final speed = (c.height - p.height) / (c.timestamp.millisecondsSinceEpoch - p.timestamp.millisecondsSinceEpoch);
+    if (c.timestamp.millisecondsSinceEpoch ==
+        p.timestamp.millisecondsSinceEpoch) return "";
+    final speed = (c.height - p.height) /
+        (c.timestamp.millisecondsSinceEpoch -
+            p.timestamp.millisecondsSinceEpoch);
     if (speed == 0) return "";
     final eta = (syncStatus.latestHeight - c.height) / speed;
     if (eta <= 0) return "";
-    final duration = Duration(milliseconds: eta.floor()).toString().split('.')[0];
+    final duration =
+        Duration(milliseconds: eta.floor()).toString().split('.')[0];
     return "(ETA: $duration)";
   }
 }
@@ -1109,6 +1159,9 @@ class Note extends HasHeight {
 
   Note(this.id, this.height, this.timestamp, this.value, this.excluded,
       this.spent);
+
+  Note get invertExcluded =>
+      Note(id, height, timestamp, value, !excluded, spent);
 }
 
 class Tx extends HasHeight {
@@ -1142,12 +1195,14 @@ class AccountBalance {
 }
 
 class Backup {
-  int type;
+  final int type;
+  final String name;
   final String? seed;
   final String? sk;
   final String ivk;
+  final ShareInfo? share;
 
-  Backup(this.type, this.seed, this.sk, this.ivk);
+  Backup(this.type, this.name, this.seed, this.sk, this.ivk, this.share);
 
   String value() {
     switch (type) {
@@ -1180,20 +1235,6 @@ enum SortOrder {
 
 SortOrder nextSortOrder(SortOrder order) =>
     SortOrder.values[(order.index + 1) % 3];
-
-@JsonSerializable()
-class Recipient {
-  final String address;
-  final int amount;
-  final String memo;
-
-  Recipient(this.address, this.amount, this.memo);
-
-  factory Recipient.fromJson(Map<String, dynamic> json) =>
-      _$RecipientFromJson(json);
-
-  Map<String, dynamic> toJson() => _$RecipientToJson(this);
-}
 
 class PnL {
   final DateTime timestamp;
@@ -1246,29 +1287,21 @@ class TimeRange {
 }
 
 class SortConfig {
-  @observable
   String field;
 
-  @observable
   SortOrder order;
 
   SortConfig(this.field, this.order);
 
-  @action
-  void sortOn(String field) {
-    if (field != this.field)
-      order = SortOrder.Ascending;
-    else
-      order = nextSortOrder(order);
-    this.field = field;
+  SortConfig sortOn(String field) {
+    final order = field != this.field ? SortOrder.Ascending : nextSortOrder(this.order);
+    return SortConfig(field, order);
   }
 
   String getIndicator(String field) {
     if (this.field != field) return '';
-    if (order == SortOrder.Ascending)
-      return ' \u2191';
-    if (order == SortOrder.Descending)
-      return ' \u2193';
+    if (order == SortOrder.Ascending) return ' \u2191';
+    if (order == SortOrder.Descending) return ' \u2193';
     return '';
   }
 }
@@ -1288,8 +1321,27 @@ class DecodedPaymentURI {
 }
 
 class SendPageArgs {
+  final bool isMulti;
   final Contact? contact;
   final String? uri;
+  final List<Recipient> recipients;
 
-  SendPageArgs({this.contact, this.uri});
+  SendPageArgs({this.isMulti = false, this.contact, this.uri, this.recipients = const[]});
+}
+
+class ShareInfo {
+  final int index;
+  final int threshold;
+  final int participants;
+  final String value;
+
+  ShareInfo(this.index, this.threshold, this.participants, this.value);
+}
+
+class TxSummary {
+  final String address;
+  final int amount;
+  final String txJson;
+
+  TxSummary(this.address, this.amount, this.txJson);
 }

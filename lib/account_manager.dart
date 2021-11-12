@@ -142,11 +142,11 @@ class AccountManagerState extends State<AccountManagerPage> {
         builder: (context) => AlertDialog(
             title: Text(S.of(context).changeAccountName),
             content: TextField(controller: _accountNameController),
-            actions: confirmButtons(context, _changeAccountName)));
+            actions: confirmButtons(context, () { _changeAccountName(account); })));
   }
 
-  _changeAccountName() {
-    accountManager.changeAccountName(_accountNameController.text);
+  _changeAccountName(Account account) {
+    accountManager.changeAccountName(account, _accountNameController.text);
     Navigator.of(context).pop();
   }
 
