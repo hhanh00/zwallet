@@ -9,10 +9,7 @@ use std::sync::{Mutex, MutexGuard};
 use sync::{broadcast_tx, ChainError, MemPool, Wallet};
 use tokio::runtime::Runtime;
 use tokio::time::Duration;
-use zcash_multisig::{
-    run_aggregator_service, run_signer_service, signer_connect_to_aggregator, submit_tx,
-    SecretShare,
-};
+use zcash_multisig::{run_aggregator_service, run_signer_service, signer_connect_to_aggregator, submit_tx, SecretShare};
 use zcash_primitives::transaction::builder::Progress;
 
 static RUNTIME: OnceCell<Mutex<Runtime>> = OnceCell::new();
@@ -437,7 +434,8 @@ pub fn parse_payment_uri(uri: &str) -> String {
 pub fn store_share_secret(account: u32, secret: &str) {
     let res = || {
         let wallet = get_lock(&WALLET)?;
-        wallet.store_share_secret(account, secret)?;
+        let share = SecretShare::decode(secret)?;
+        wallet.store_share_secret(account, secret, share.index, share.threshold, share.participants)?;
         Ok(())
     };
     log_result(res())
@@ -542,7 +540,9 @@ pub fn run_multi_signer(secret_share: &str, aggregator_url: &str, my_url: &str, 
 pub fn split_account(threshold: u32, participants: u32, account: u32) -> String {
     let res = || {
         let wallet = get_lock(&WALLET)?;
-        wallet.split_account(threshold as usize, participants as usize, account)
+        let sk = wallet.get_sk(account)?;
+        let shares = zcash_multisig::split_account(threshold as usize, participants as usize, &sk)?;
+        Ok(shares)
     };
     log_result(res())
 }
