@@ -74,3 +74,9 @@ This will create a `root` directory will all the various apks (arm32, arm64, i32
     - Runner/Flutter/AppFramework.info
     - Pods
 
+### Run in Simulator
+
+- Change architecture to ARCHS_STANDARD (Runner & Pods)
+- Add arm64 to Excluded Architecture / Any IOS Simulator SDK
+- Build warp with x86_64-apple-ios target
+- debugShowCheckedModeBanner: false in MaterialApp()
