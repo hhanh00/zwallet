@@ -60,7 +60,7 @@ class _RestorePageState extends State<RestorePage> {
                           icon: new Icon(MdiIcons.qrcodeScan), onPressed: _onScan)
                     ],
                   ),
-                  if (_isVK) Row(
+                  if (_isVK && coin.supportsMultisig) Row(
                     children: [
                       Expanded(
                           child: TextFormField(
