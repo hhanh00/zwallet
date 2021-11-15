@@ -74,7 +74,7 @@
   "accountNameIsRequired": "Account name is required",
   "enterSeed": "Enter Seed, Secret Key or Viewing Key. Leave blank for a new account",
   "scanStartingMomentarily": "Scan starting momentarily",
-  "key": "Seed, Secret Key or View Key",
+  "key": "Seed, Secret Key or View Key (optional)",
   "sendCointicker": "Send {ticker}",
   "max": "MAX",
   "advancedOptions": "Advanced Options",
@@ -172,5 +172,6 @@
   "multisigShares": "Multisig Shares",
   "copy": "Copy",
   "textCopiedToClipboard": "{text} copied to clipboard",
-  "multipleAddresses": "multiple addresses"
+  "multipleAddresses": "multiple addresses",
+  "addnew": "NEW/RESTORE"
 }

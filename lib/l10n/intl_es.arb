@@ -171,5 +171,6 @@
   "multisigShares": "Multisig Shares",
   "copy": "Copy",
   "textCopiedToClipboard": "{text} copied to clipboard",
-  "multipleAddresses": "multiple addresses"
+  "multipleAddresses": "multiple addresses",
+  "addnew": "AGGREGAR"
 }

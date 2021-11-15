@@ -801,10 +801,10 @@ class S {
     );
   }
 
-  /// `Seed, Secret Key or View Key`
+  /// `Seed, Secret Key or View Key (optional)`
   String get key {
     return Intl.message(
-      'Seed, Secret Key or View Key',
+      'Seed, Secret Key or View Key (optional)',
       name: 'key',
       desc: '',
       args: [],
@@ -1787,6 +1787,16 @@ class S {
     return Intl.message(
       'multiple addresses',
       name: 'multipleAddresses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NEW/RESTORE`
+  String get addnew {
+    return Intl.message(
+      'NEW/RESTORE',
+      name: 'addnew',
       desc: '',
       args: [],
     );

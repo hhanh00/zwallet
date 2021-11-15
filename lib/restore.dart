@@ -77,7 +77,7 @@ class _RestorePageState extends State<RestorePage> {
                     ],
                   ),
                   ButtonBar(children:
-                  confirmButtons(context, _validKey ? _onOK : null, okLabel: s.add, okIcon: Icon(Icons.add)))
+                  confirmButtons(context, _validKey ? _onOK : null, okLabel: s.addnew, okIcon: Icon(Icons.add)))
                 ]))))));
   }
 

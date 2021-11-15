@@ -8,6 +8,7 @@
 // ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
 // ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
 // ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
+// ignore_for_file:unnecessary_string_interpolations, unnecessary_string_escapes
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
@@ -70,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "addARecipientAndItWillShowHere": MessageLookupByLibrary.simpleMessage(
             "Add a recipient and it will show here"),
         "addContact": MessageLookupByLibrary.simpleMessage("Add Contact"),
+        "addnew": MessageLookupByLibrary.simpleMessage("NEW/RESTORE"),
         "address": MessageLookupByLibrary.simpleMessage("Address"),
         "addressCopiedToClipboard":
             MessageLookupByLibrary.simpleMessage("Address copied to clipboard"),
@@ -152,7 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "invalidAddress":
             MessageLookupByLibrary.simpleMessage("Invalid Address"),
         "key": MessageLookupByLibrary.simpleMessage(
-            "Seed, Secret Key or View Key"),
+            "Seed, Secret Key or View Key (optional)"),
         "largestSpendingLastMonth":
             MessageLookupByLibrary.simpleMessage("Largest Spending Last Month"),
         "largestSpendingsByAddress": MessageLookupByLibrary.simpleMessage(
