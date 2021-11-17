@@ -5,6 +5,10 @@ ycash)
   export APP_TITLE=YWallet
   export APP_NAME=ywallet
   ;;
+ycashtest)
+  export APP_TITLE=YWalletTest
+  export APP_NAME=ywallettest
+  ;;
 zcashtest)
   export APP_TITLE=ZWalletTest
   export APP_NAME=zwallettest
