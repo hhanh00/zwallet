@@ -254,15 +254,25 @@ pub unsafe extern "C" fn submit_multisig_tx(tx_json: *mut c_char, port: u16) -> 
 
 #[no_mangle]
 pub unsafe extern "C" fn run_multi_signer(
+    address: *mut c_char,
+    amount: u64,
     secret_share: *mut c_char,
     aggregator_url: *mut c_char,
     my_url: *mut c_char,
     port: u16,
 ) -> u32 {
+    let address = CStr::from_ptr(address).to_string_lossy();
     let secret_share = CStr::from_ptr(secret_share).to_string_lossy();
     let aggregator_url = CStr::from_ptr(aggregator_url).to_string_lossy();
     let my_url = CStr::from_ptr(my_url).to_string_lossy();
-    api::run_multi_signer(&secret_share, &aggregator_url, &my_url, port)
+    api::run_multi_signer(
+        &address,
+        amount,
+        &secret_share,
+        &aggregator_url,
+        &my_url,
+        port,
+    )
 }
 
 #[no_mangle]

@@ -236,8 +236,8 @@ class WarpApi {
     return await compute(submitTxIsolateFn, SubmitTxParams(txJson, port));
   }
 
-  static Future<int> runMultiSigner(String secretShare, String aggregatorUrl, String myUrl, int port) async {
-    return await compute(runMultiSignerIsolateFn, RunMultiSignerParams(secretShare, aggregatorUrl, myUrl, port));
+  static Future<int> runMultiSigner(String address, int amount, String secretShare, String aggregatorUrl, String myUrl, int port) async {
+    return await compute(runMultiSignerIsolateFn, RunMultiSignerParams(address, amount, secretShare, aggregatorUrl, myUrl, port));
   }
 
   static void stopAggregator() {
@@ -272,15 +272,19 @@ String submitTxIsolateFn(SubmitTxParams params) {
 }
 
 class RunMultiSignerParams {
+  String address;
+  int amount;
   String secretShare;
   String aggregatorUrl;
   String myUrl;
   int port;
-  RunMultiSignerParams(this.secretShare, this.aggregatorUrl, this.myUrl, this.port);
+  RunMultiSignerParams(this.address, this.amount, this.secretShare, this.aggregatorUrl, this.myUrl, this.port);
 }
 
 int runMultiSignerIsolateFn(RunMultiSignerParams params) {
-  return warp_api_lib.run_multi_signer(params.secretShare.toNativeUtf8().cast<Int8>(),
+  return warp_api_lib.run_multi_signer(
+      params.address.toNativeUtf8().cast<Int8>(), params.amount,
+      params.secretShare.toNativeUtf8().cast<Int8>(),
       params.aggregatorUrl.toNativeUtf8().cast<Int8>(), params.myUrl.toNativeUtf8().cast<Int8>(), params.port);
 }
 

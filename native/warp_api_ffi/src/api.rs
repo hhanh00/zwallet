@@ -534,10 +534,17 @@ impl MultisigClient {
     }
 }
 
-pub fn run_multi_signer(secret_share: &str, aggregator_url: &str, my_url: &str, port: u16) -> u32 {
+pub fn run_multi_signer(
+    address: &str,
+    amount: u64,
+    secret_share: &str,
+    aggregator_url: &str,
+    my_url: &str,
+    port: u16,
+) -> u32 {
     let runtime = get_lock(&RUNTIME).unwrap();
     let res = runtime.block_on(async {
-        let _jh = run_signer_service(port, secret_share).await?;
+        let _jh = run_signer_service(port, secret_share, address, amount).await?;
         tokio::time::sleep(Duration::from_secs(3)).await;
         let share = SecretShare::decode(secret_share)?;
         let error_code = signer_connect_to_aggregator(aggregator_url, my_url, share.index).await?;

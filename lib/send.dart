@@ -427,16 +427,16 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
     if (address.isEmpty)
       address = r.address;
     else
-      address = s.multipleAddresses;
+      address = '*';
   }
 
   final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
   rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
 
-  if (accountManager.canPay) {
-    if (settings.protectSend &&
-        !await authenticate(context, s.pleaseAuthenticateToSend)) return;
+  if (settings.protectSend &&
+      !await authenticate(context, s.pleaseAuthenticateToSend)) return;
 
+  if (accountManager.canPay) {
     Navigator.of(context).pop();
     final tx = await WarpApi.sendPayment(accountManager.active.id, recipients,
         useTransparent, settings.anchorOffset, (progress) {

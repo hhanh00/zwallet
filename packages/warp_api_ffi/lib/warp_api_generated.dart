@@ -518,12 +518,16 @@ class NativeLibrary {
       _submit_multisig_tx_ptr.asFunction<_dart_submit_multisig_tx>();
 
   int run_multi_signer(
+    ffi.Pointer<ffi.Int8> address,
+    int amount,
     ffi.Pointer<ffi.Int8> secret_share,
     ffi.Pointer<ffi.Int8> aggregator_url,
     ffi.Pointer<ffi.Int8> my_url,
     int port,
   ) {
     return _run_multi_signer(
+      address,
+      amount,
       secret_share,
       aggregator_url,
       my_url,
@@ -878,6 +882,8 @@ typedef _dart_submit_multisig_tx = ffi.Pointer<ffi.Int8> Function(
 );
 
 typedef _c_run_multi_signer = ffi.Uint32 Function(
+  ffi.Pointer<ffi.Int8> address,
+  ffi.Uint64 amount,
   ffi.Pointer<ffi.Int8> secret_share,
   ffi.Pointer<ffi.Int8> aggregator_url,
   ffi.Pointer<ffi.Int8> my_url,
@@ -885,6 +891,8 @@ typedef _c_run_multi_signer = ffi.Uint32 Function(
 );
 
 typedef _dart_run_multi_signer = int Function(
+  ffi.Pointer<ffi.Int8> address,
+  int amount,
   ffi.Pointer<ffi.Int8> secret_share,
   ffi.Pointer<ffi.Int8> aggregator_url,
   ffi.Pointer<ffi.Int8> my_url,

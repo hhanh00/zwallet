@@ -89,7 +89,12 @@ void shutdown_aggregator(void);
 
 char *submit_multisig_tx(char *tx_json, uint16_t port);
 
-uint32_t run_multi_signer(char *secret_share, char *aggregator_url, char *my_url, uint16_t port);
+uint32_t run_multi_signer(char *address,
+                          uint64_t amount,
+                          char *secret_share,
+                          char *aggregator_url,
+                          char *my_url,
+                          uint16_t port);
 
 char *split_account(uint32_t threshold, uint32_t participants, uint32_t account);
 

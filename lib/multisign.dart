@@ -234,6 +234,8 @@ class MultisigState extends State<MultisigPage> {
     final txParts = txSummaryString.split('|');
     _aggregatorUrl = txParts[0];
     _address = txParts[1];
+    if (_address == '*')
+      _address = s.multipleAddresses;
     _amount = int.parse(txParts[2]);
     final amount = amountToString(_amount);
     final approved = await showMessageBox(
@@ -241,7 +243,7 @@ class MultisigState extends State<MultisigPage> {
         s.confirmSigning,
         s.confirmSignATransactionToAddressFor(_address, amount),
         s.approve);
-    if (approved) await sign();
+    if (approved) await sign(txParts[1], _amount);
   }
 
   _split() async {
@@ -250,7 +252,7 @@ class MultisigState extends State<MultisigPage> {
     Navigator.of(context).pushNamed('/multisig_shares', arguments: shareString);
   }
 
-  sign() async {
+  sign(String address, int amount) async {
     final info = NetworkInfo();
     final wifiIP = await info.getWifiIP();
     final myUrl = 'http://$wifiIP:$SIGNER_PORT';
@@ -258,6 +260,7 @@ class MultisigState extends State<MultisigPage> {
     final share = accountManager.active.share;
     if (share != null && _aggregatorUrl != null) {
       final errorCode = await WarpApi.runMultiSigner(
+        address, amount,
           share.value, _aggregatorUrl, myUrl, SIGNER_PORT);
       String? msg;
       switch (errorCode) {
