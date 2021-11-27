@@ -33,6 +33,15 @@ class NativeLibrary {
   late final _dart_init_wallet _init_wallet =
       _init_wallet_ptr.asFunction<_dart_init_wallet>();
 
+  void reset_app() {
+    return _reset_app();
+  }
+
+  late final _reset_app_ptr =
+      _lookup<ffi.NativeFunction<_c_reset_app>>('reset_app');
+  late final _dart_reset_app _reset_app =
+      _reset_app_ptr.asFunction<_dart_reset_app>();
+
   void warp_sync(
     int get_tx,
     int anchor_offset,
@@ -576,6 +585,10 @@ typedef _dart_init_wallet = void Function(
   ffi.Pointer<ffi.Int8> db_path,
   ffi.Pointer<ffi.Int8> ld_url,
 );
+
+typedef _c_reset_app = ffi.Void Function();
+
+typedef _dart_reset_app = void Function();
 
 typedef _c_warp_sync = ffi.Void Function(
   ffi.Int8 get_tx,

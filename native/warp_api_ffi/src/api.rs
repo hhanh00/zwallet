@@ -72,6 +72,14 @@ pub fn init_wallet(db_path: &str, ld_url: &str) {
     MULTISIG_SIGN_LOCK.get_or_init(|| Mutex::new(MultisigClient::new()));
 }
 
+pub fn reset_app() {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.reset_db()
+    };
+    log_result(res())
+}
+
 pub fn new_account(name: &str, data: &str) -> i32 {
     let res = || {
         let wallet = get_lock(&WALLET)?;

@@ -85,6 +85,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Cantidad debe ser un positivo"),
         "amountTooHigh":
             MessageLookupByLibrary.simpleMessage("Cantidad demasiado alta"),
+        "applicationReset":
+            MessageLookupByLibrary.simpleMessage("Application Reset"),
         "approve": MessageLookupByLibrary.simpleMessage("APROBAR"),
         "areYouSureYouWantToDeleteThisContact":
             MessageLookupByLibrary.simpleMessage(
@@ -109,6 +111,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "color": MessageLookupByLibrary.simpleMessage("Color"),
         "confirmDeleteAccount": MessageLookupByLibrary.simpleMessage(
             "¿Está SEGURO de que desea BORRAR esta cuenta? DEBE tener una COPIA DE SEGURIDAD para recuperarla. Esta operación NO es reversible."),
+        "confirmResetApp": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to reset the app? Your accounts will NOT be deleted"),
         "confirmSignATransactionToAddressFor": m2,
         "confirmSigning":
             MessageLookupByLibrary.simpleMessage("Confirm Signing"),
@@ -159,6 +163,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "largestSpendingsByAddress": MessageLookupByLibrary.simpleMessage(
             "Pagos más grandes por dirección"),
         "light": MessageLookupByLibrary.simpleMessage("Día"),
+        "loading": MessageLookupByLibrary.simpleMessage("Loading..."),
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Monto máximo por nota"),
@@ -222,6 +227,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Escaneo solicitado…"),
         "rescanWalletFromTheFirstBlock": MessageLookupByLibrary.simpleMessage(
             "¿Escanear billetera desde el primer bloque?"),
+        "reset": MessageLookupByLibrary.simpleMessage("RESET"),
+        "restart": MessageLookupByLibrary.simpleMessage("Restart"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
             "Obtener detalles de la transacción"),
         "roundToMillis":

@@ -173,5 +173,11 @@
   "copy": "Copy",
   "textCopiedToClipboard": "{text} copied to clipboard",
   "multipleAddresses": "multiple addresses",
-  "addnew": "NEW/RESTORE"
+  "addnew": "NEW/RESTORE",
+  "applicationReset": "Application Reset",
+  "confirmResetApp": "Are you sure you want to reset the app? Your accounts will NOT be deleted",
+  "reset": "RESET",
+  "loading": "Loading...",
+  "restart": "Restart",
+  "pleaseQuitAndRestartTheAppNow": "Please Quit and Restart the app now"
 }

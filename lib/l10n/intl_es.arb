@@ -172,5 +172,10 @@
   "copy": "Copy",
   "textCopiedToClipboard": "{text} copied to clipboard",
   "multipleAddresses": "multiple addresses",
-  "addnew": "AGGREGAR"
+  "addnew": "AGGREGAR",
+  "applicationReset": "Application Reset",
+  "confirmResetApp": "Are you sure you want to reset the app? Your accounts will NOT be deleted",
+  "reset": "RESET",
+  "loading": "Loading...",
+  "restart": "Restart"
 }

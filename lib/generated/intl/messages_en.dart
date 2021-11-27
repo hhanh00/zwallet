@@ -87,6 +87,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Amount must be positive"),
         "amountTooHigh":
             MessageLookupByLibrary.simpleMessage("Amount too high"),
+        "applicationReset":
+            MessageLookupByLibrary.simpleMessage("Application Reset"),
         "approve": MessageLookupByLibrary.simpleMessage("APPROVE"),
         "areYouSureYouWantToDeleteThisContact":
             MessageLookupByLibrary.simpleMessage(
@@ -111,6 +113,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "color": MessageLookupByLibrary.simpleMessage("Color"),
         "confirmDeleteAccount": MessageLookupByLibrary.simpleMessage(
             "Are you SURE you want to DELETE this account? You MUST have a BACKUP to recover it. This operation is NOT reversible."),
+        "confirmResetApp": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to reset the app? Your accounts will NOT be deleted"),
         "confirmSignATransactionToAddressFor": m2,
         "confirmSigning":
             MessageLookupByLibrary.simpleMessage("Confirm Signing"),
@@ -160,6 +164,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "largestSpendingsByAddress": MessageLookupByLibrary.simpleMessage(
             "Largest Spendings by Address"),
         "light": MessageLookupByLibrary.simpleMessage("Light"),
+        "loading": MessageLookupByLibrary.simpleMessage("Loading..."),
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Max Amount per Note"),
@@ -201,6 +206,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Please authenticate to show account seed"),
         "pleaseConfirm": MessageLookupByLibrary.simpleMessage("Please Confirm"),
+        "pleaseQuitAndRestartTheAppNow": MessageLookupByLibrary.simpleMessage(
+            "Please Quit and Restart the app now"),
         "pnl": MessageLookupByLibrary.simpleMessage("Pnl"),
         "pnlHistory": MessageLookupByLibrary.simpleMessage("PNL History"),
         "preparingTransaction":
@@ -222,6 +229,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rescan Requested..."),
         "rescanWalletFromTheFirstBlock": MessageLookupByLibrary.simpleMessage(
             "Rescan wallet from the first block?"),
+        "reset": MessageLookupByLibrary.simpleMessage("RESET"),
+        "restart": MessageLookupByLibrary.simpleMessage("Restart"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
             "Retrieve Transaction Details"),
         "roundToMillis":

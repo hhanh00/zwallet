@@ -12,6 +12,8 @@ typedef void *DartPostCObjectFnType;
 
 void init_wallet(char *db_path, char *ld_url);
 
+void reset_app(void);
+
 void warp_sync(bool get_tx, uint32_t anchor_offset, int64_t port);
 
 void dart_post_cobject(DartPostCObjectFnType ptr);

@@ -14,6 +14,11 @@ pub unsafe extern "C" fn init_wallet(db_path: *mut c_char, ld_url: *mut c_char) 
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn reset_app() {
+    api::reset_app();
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn warp_sync(get_tx: bool, anchor_offset: u32, port: i64) {
     api::warp_sync(get_tx, anchor_offset, port);
 }

@@ -17,6 +17,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -70,9 +71,9 @@ Future<void> initUniLinks(BuildContext context) async {
   try {
     final initialLink = await getInitialLink();
     if (initialLink != null)
-      Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(uri: initialLink));
-  } on PlatformException {
-  }
+      Navigator.of(context).pushNamed(
+          '/send', arguments: SendPageArgs(uri: initialLink));
+  } on PlatformException {}
 
   subUniLinks = linkStream.listen((String? uri) {
     Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(uri: uri));
@@ -90,6 +91,51 @@ void handleQuickAction(BuildContext context, String shortcut) {
   }
 }
 
+class LoadProgress extends StatelessWidget {
+  double value;
+
+  LoadProgress(this.value);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        alignment: Alignment.center,
+        child: SizedBox(height: 200, width: 200, child:
+        Column(
+            children: [
+              Text(S.of(context).loading, style: Theme.of(context).textTheme.headline4),
+              Padding(padding: EdgeInsets.all(16)),
+              LinearProgressIndicator(value: value),
+              Padding(padding: EdgeInsets.all(16)),
+              ElevatedButton(
+                  onPressed: () => _reset(context), child: Text('EMERGENCY RESET'))
+            ]
+        )
+        ));
+  }
+
+  _reset(BuildContext context) async {
+    final s = S.of(context);
+    final confirmation = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) =>
+          AlertDialog(
+              title: Text(S.of(context).applicationReset),
+              content: Text(S.of(context).confirmResetApp),
+              actions: confirmButtons(context, () {
+                Navigator.of(context).pop(true);
+              }, okLabel: S.of(context).reset, cancelValue: false)),
+    ) ?? false;
+    if (confirmation) {
+      WarpApi.resetApp();
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      await showMessageBox(context, s.restart, s.pleaseQuitAndRestartTheAppNow, s.ok);
+    }
+  }
+}
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final home = ZWalletApp();
@@ -99,45 +145,50 @@ void main() {
       builder: (context, snapshot) {
         return snapshot.connectionState == ConnectionState.waiting
             ? MaterialApp(home: Container()) :
-              Observer(builder: (context) {
-                final theme = settings.themeData.copyWith(
-                    dataTableTheme: DataTableThemeData(
-                        headingRowColor: MaterialStateColor.resolveWith(
-                            (_) => settings.themeData.highlightColor)));
-                return MaterialApp(
-                  title: coin.app,
-                  theme: theme,
-                  home: home,
-                  scaffoldMessengerKey: rootScaffoldMessengerKey,
-                  localizationsDelegates: [
-                    S.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: S.delegate.supportedLocales,
-                  onGenerateRoute: (RouteSettings routeSettings) {
-                    var routes = <String, WidgetBuilder>{
-                      '/account': (context) => AccountPage(),
-                      '/restore': (context) => RestorePage(),
-                      '/send': (context) =>
-                          SendPage(routeSettings.arguments as SendPageArgs?),
-                      '/receive': (context) => PaymentURIPage(routeSettings.arguments as String?),
-                      '/accounts': (context) => AccountManagerPage(),
-                      '/settings': (context) => SettingsPage(),
-                      '/tx': (context) =>
-                          TransactionPage(routeSettings.arguments as Tx),
-                      '/backup': (context) => BackupPage(routeSettings.arguments as int?),
-                      '/multipay': (context) => MultiPayPage(),
-                      '/multisig': (context) => MultisigPage(),
-                      '/multisign': (context) => MultisigAggregatorPage(routeSettings.arguments as TxSummary),
-                      '/multisig_shares': (context) => MultisigSharesPage(routeSettings.arguments as String),
-                      '/edit_theme': (context) => ThemeEditorPage(onSaved: settings.updateCustomThemeColors),
-                    };
-                    return MaterialPageRoute(builder: routes[routeSettings.name]!);
-                  },
-                );
-              });
+        Observer(builder: (context) {
+          final theme = settings.themeData.copyWith(
+              dataTableTheme: DataTableThemeData(
+                  headingRowColor: MaterialStateColor.resolveWith(
+                          (_) => settings.themeData.highlightColor)));
+          return MaterialApp(
+            title: coin.app,
+            theme: theme,
+            home: home,
+            scaffoldMessengerKey: rootScaffoldMessengerKey,
+            localizationsDelegates: [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            onGenerateRoute: (RouteSettings routeSettings) {
+              var routes = <String, WidgetBuilder>{
+                '/account': (context) => AccountPage(),
+                '/restore': (context) => RestorePage(),
+                '/send': (context) =>
+                    SendPage(routeSettings.arguments as SendPageArgs?),
+                '/receive': (context) =>
+                    PaymentURIPage(routeSettings.arguments as String?),
+                '/accounts': (context) => AccountManagerPage(),
+                '/settings': (context) => SettingsPage(),
+                '/tx': (context) =>
+                    TransactionPage(routeSettings.arguments as Tx),
+                '/backup': (context) =>
+                    BackupPage(routeSettings.arguments as int?),
+                '/multipay': (context) => MultiPayPage(),
+                '/multisig': (context) => MultisigPage(),
+                '/multisign': (context) => MultisigAggregatorPage(
+                    routeSettings.arguments as TxSummary),
+                '/multisig_shares': (context) =>
+                    MultisigSharesPage(routeSettings.arguments as String),
+                '/edit_theme': (context) =>
+                    ThemeEditorPage(onSaved: settings.updateCustomThemeColors),
+              };
+              return MaterialPageRoute(builder: routes[routeSettings.name]!);
+            },
+          );
+        });
       }));
 }
 
@@ -201,7 +252,7 @@ class ZWalletAppState extends State<ZWalletApp> {
     return FutureBuilder(
         future: _init(context),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return Container();
+          if (!snapshot.hasData) return LoadProgress(0.7);
           return accountManager.accounts.isNotEmpty
               ? AccountPage()
               : AccountManagerPage();
@@ -210,31 +261,38 @@ class ZWalletAppState extends State<ZWalletApp> {
 }
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>();
+GlobalKey<ScaffoldMessengerState>();
 
-List<ElevatedButton> confirmButtons(
-    BuildContext context, VoidCallback? onPressed,
+List<ElevatedButton> confirmButtons(BuildContext context,
+    VoidCallback? onPressed,
     {String? okLabel, Icon? okIcon, cancelValue}) {
   final navigator = Navigator.of(context);
   return <ElevatedButton>[
     ElevatedButton.icon(
         icon: Icon(Icons.cancel),
-        label: Text(S.of(context).cancel),
+        label: Text(S
+            .of(context)
+            .cancel),
         onPressed: () {
           cancelValue != null ? navigator.pop(cancelValue) : navigator.pop();
         },
         style: ElevatedButton.styleFrom(
-            primary: Theme.of(context).buttonTheme.colorScheme!.secondary)),
+            primary: Theme
+                .of(context)
+                .buttonTheme
+                .colorScheme!
+                .secondary)),
     ElevatedButton.icon(
       icon: okIcon ?? Icon(Icons.done),
-      label: Text(okLabel ?? S.of(context).ok),
+      label: Text(okLabel ?? S
+          .of(context)
+          .ok),
       onPressed: onPressed,
     )
   ];
 }
 
-List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(
-    List<T> timeseries,
+List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(List<T> timeseries,
     int start,
     int end,
     int Function(T) getDay,
@@ -274,33 +332,45 @@ void showQR(BuildContext context, String text, String title) {
   showDialog(
       context: context,
       barrierColor: Colors.black,
-      builder: (context) => AlertDialog(
-            content: Container(
-                width: double.maxFinite,
-                child: SingleChildScrollView(child: Column(children: [
-                  QrImage(data: text, backgroundColor: Colors.white),
-                  Padding(padding: EdgeInsets.all(8)),
-                  Text(title, style: Theme.of(context).textTheme.subtitle1),
-                  Padding(padding: EdgeInsets.all(4)),
-                  ElevatedButton.icon(onPressed: () {
-                    Navigator.of(context).pop();
-                    Clipboard.setData(ClipboardData(text: text));
-                    final snackBar = SnackBar(content: Text(s.textCopiedToClipboard(title)));
-                    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
-                  }, icon: Icon(Icons.copy), label: Text(s.copy))
-                ])))
+      builder: (context) =>
+          AlertDialog(
+              content: Container(
+                  width: double.maxFinite,
+                  child: SingleChildScrollView(child: Column(children: [
+                    QrImage(data: text, backgroundColor: Colors.white),
+                    Padding(padding: EdgeInsets.all(8)),
+                    Text(title, style: Theme
+                        .of(context)
+                        .textTheme
+                        .subtitle1),
+                    Padding(padding: EdgeInsets.all(4)),
+                    ElevatedButton.icon(onPressed: () {
+                      Navigator.of(context).pop();
+                      Clipboard.setData(ClipboardData(text: text));
+                      final snackBar = SnackBar(
+                          content: Text(s.textCopiedToClipboard(title)));
+                      rootScaffoldMessengerKey.currentState?.showSnackBar(
+                          snackBar);
+                    }, icon: Icon(Icons.copy), label: Text(s.copy))
+                  ])))
           ));
 }
 
-Future<bool> rescanDialog(
-    BuildContext context) async {
+Future<bool> rescanDialog(BuildContext context) async {
   final approved = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-          title: Text(S.of(context).rescan),
-          content: Text(S.of(context).rescanWalletFromTheFirstBlock),
-          actions: confirmButtons(context, () => Navigator.of(context).pop(true), cancelValue: false))) ?? false;
+      builder: (context) =>
+          AlertDialog(
+              title: Text(S
+                  .of(context)
+                  .rescan),
+              content: Text(S
+                  .of(context)
+                  .rescanWalletFromTheFirstBlock),
+              actions: confirmButtons(
+                  context, () => Navigator.of(context).pop(true),
+                  cancelValue: false))) ?? false;
   if (approved)
     return await confirmWifi(context);
   return false;
@@ -312,31 +382,40 @@ Future<bool> confirmWifi(BuildContext context) async {
     return await showDialog<bool?>(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
-            title: Text(S.of(context).rescan),
-            content: Text('On Mobile Data, scanning may incur additional charges. Do you want to proceed?'),
-            actions: confirmButtons(context, () => Navigator.of(context).pop(true), cancelValue: false))) ?? false;
+        builder: (context) =>
+            AlertDialog(
+                title: Text(S
+                    .of(context)
+                    .rescan),
+                content: Text(
+                    'On Mobile Data, scanning may incur additional charges. Do you want to proceed?'),
+                actions: confirmButtons(
+                    context, () => Navigator.of(context).pop(true),
+                    cancelValue: false))) ?? false;
   }
   return true;
 }
 
-Future<bool> showMessageBox(
-    BuildContext context, String title, String content, String label) async {
+Future<bool> showMessageBox(BuildContext context, String title, String content,
+    String label) async {
   final confirm = await showDialog<bool>(
     context: context,
     barrierDismissible: false,
-    builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(content),
-        actions: confirmButtons(context, () {
-          Navigator.of(context).pop(true);
-        }, okLabel: label, cancelValue: false)),
+    builder: (context) =>
+        AlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: confirmButtons(context, () {
+              Navigator.of(context).pop(true);
+            }, okLabel: label, cancelValue: false)),
   );
   return confirm ?? false;
 }
 
 double getScreenSize(BuildContext context) {
-  final size = MediaQuery.of(context).size;
+  final size = MediaQuery
+      .of(context)
+      .size;
   return min(size.height, size.width);
 }
 
@@ -354,7 +433,8 @@ TextStyle fontWeight(TextStyle style, num v) {
     return style2.copyWith(fontWeight: FontWeight.w800);
   else if (value >= coin.weights[1])
     return style2.copyWith(fontWeight: FontWeight.w600);
-  else if (value >= coin.weights[0]) return style2.copyWith(fontWeight: FontWeight.w400);
+  else if (value >= coin.weights[0])
+    return style2.copyWith(fontWeight: FontWeight.w400);
   return style2.copyWith(fontWeight: FontWeight.w200);
 }
 
@@ -375,20 +455,25 @@ bool checkNumber(String s) {
   try {
     NumberFormat.currency().parse(s);
   }
-  on FormatException { return false; }
+  on FormatException {
+    return false;
+  }
   return true;
 }
 
 int precision(bool? mZEC) => (mZEC == null || mZEC) ? 3 : 8;
 
 Future<String?> scanCode(BuildContext context) async {
-  final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S.of(context).cancel, true, ScanMode.QR);
+  final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S
+      .of(context)
+      .cancel, true, ScanMode.QR);
   if (code == "-1") return null;
   return code;
 }
 
 String addressLeftTrim(String address) =>
-    address != "" ? address.substring(0, 8) + "..." + address.substring(address.length - 16) : "";
+    address != "" ? address.substring(0, 8) + "..." +
+        address.substring(address.length - 16) : "";
 
 void showSnackBar(String msg) {
   final snackBar = SnackBar(content: Text(msg));
@@ -396,11 +481,18 @@ void showSnackBar(String msg) {
 }
 
 enum DeviceWidth {
-  xs, sm, md, lg, xl
+  xs,
+  sm,
+  md,
+  lg,
+  xl
 }
 
 DeviceWidth getWidth(BuildContext context) {
-  final width = MediaQuery.of(context).size.width;
+  final width = MediaQuery
+      .of(context)
+      .size
+      .width;
   if (width < 600) return DeviceWidth.xs;
   if (width < 960) return DeviceWidth.sm;
   if (width < 1280) return DeviceWidth.md;
@@ -409,7 +501,8 @@ DeviceWidth getWidth(BuildContext context) {
 }
 
 String decimalFormat(double x, int decimalDigits, { String symbol = '' }) =>
-    NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol).format(x).trimRight();
+    NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol).format(
+        x).trimRight();
 
 String amountToString(int amount) => decimalFormat(amount / ZECUNIT, 8);
 
@@ -439,20 +532,24 @@ Future<void> shieldTAddr(BuildContext context) async {
   await showDialog(
     context: context,
     barrierDismissible: false,
-    builder: (context) => AlertDialog(
-        title: Text(S.of(context).shieldTransparentBalance),
-        content: Text(S
-            .of(context)
-            .doYouWantToTransferYourEntireTransparentBalanceTo(coin.ticker)),
-        actions: confirmButtons(context, () async {
-          final s = S.of(context);
-          Navigator.of(context).pop();
-          final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
-          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
-          final txid = await WarpApi.shieldTAddr(accountManager.active.id);
-          final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
-          rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
-        })),
+    builder: (context) =>
+        AlertDialog(
+            title: Text(S
+                .of(context)
+                .shieldTransparentBalance),
+            content: Text(S
+                .of(context)
+                .doYouWantToTransferYourEntireTransparentBalanceTo(
+                coin.ticker)),
+            actions: confirmButtons(context, () async {
+              final s = S.of(context);
+              Navigator.of(context).pop();
+              final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
+              rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
+              final txid = await WarpApi.shieldTAddr(accountManager.active.id);
+              final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
+              rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+            })),
   );
 }
 

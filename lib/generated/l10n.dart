@@ -1801,6 +1801,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Application Reset`
+  String get applicationReset {
+    return Intl.message(
+      'Application Reset',
+      name: 'applicationReset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to reset the app? Your accounts will NOT be deleted`
+  String get confirmResetApp {
+    return Intl.message(
+      'Are you sure you want to reset the app? Your accounts will NOT be deleted',
+      name: 'confirmResetApp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `RESET`
+  String get reset {
+    return Intl.message(
+      'RESET',
+      name: 'reset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading...`
+  String get loading {
+    return Intl.message(
+      'Loading...',
+      name: 'loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restart`
+  String get restart {
+    return Intl.message(
+      'Restart',
+      name: 'restart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Quit and Restart the app now`
+  String get pleaseQuitAndRestartTheAppNow {
+    return Intl.message(
+      'Please Quit and Restart the app now',
+      name: 'pleaseQuitAndRestartTheAppNow',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

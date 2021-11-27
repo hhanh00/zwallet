@@ -68,6 +68,10 @@ class WarpApi {
         dbPath.toNativeUtf8().cast<Int8>(), ldUrl.toNativeUtf8().cast<Int8>());
   }
 
+  static void resetApp() {
+    warp_api_lib.reset_app();
+  }
+
   static int newAccount(String name, String key) {
     return warp_api_lib.new_account(
         name.toNativeUtf8().cast<Int8>(), key.toNativeUtf8().cast<Int8>());
