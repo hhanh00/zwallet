@@ -838,7 +838,7 @@ dependencies = [
 [[package]]
 name = "equihash"
 version = "0.1.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?rev=f2d098abafd10e3744d23a28abe48ced19050f05#f2d098abafd10e3744d23a28abe48ced19050f05"
+source = "git+https://github.com/hhanh00/librustzcash.git?rev=71b6227a4d96faab2c838159f54b69e6ab034147#71b6227a4d96faab2c838159f54b69e6ab034147"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -3241,7 +3241,7 @@ dependencies = [
 [[package]]
 name = "zcash_client_backend"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?rev=f2d098abafd10e3744d23a28abe48ced19050f05#f2d098abafd10e3744d23a28abe48ced19050f05"
+source = "git+https://github.com/hhanh00/librustzcash.git?rev=71b6227a4d96faab2c838159f54b69e6ab034147#71b6227a4d96faab2c838159f54b69e6ab034147"
 dependencies = [
  "base64",
  "bech32",
@@ -3311,7 +3311,7 @@ dependencies = [
 [[package]]
 name = "zcash_note_encryption"
 version = "0.0.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?rev=f2d098abafd10e3744d23a28abe48ced19050f05#f2d098abafd10e3744d23a28abe48ced19050f05"
+source = "git+https://github.com/hhanh00/librustzcash.git?rev=71b6227a4d96faab2c838159f54b69e6ab034147#71b6227a4d96faab2c838159f54b69e6ab034147"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -3342,7 +3342,7 @@ dependencies = [
 [[package]]
 name = "zcash_primitives"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?rev=f2d098abafd10e3744d23a28abe48ced19050f05#f2d098abafd10e3744d23a28abe48ced19050f05"
+source = "git+https://github.com/hhanh00/librustzcash.git?rev=71b6227a4d96faab2c838159f54b69e6ab034147#71b6227a4d96faab2c838159f54b69e6ab034147"
 dependencies = [
  "aes",
  "bitvec 0.20.4",
@@ -3372,7 +3372,7 @@ dependencies = [
 [[package]]
 name = "zcash_proofs"
 version = "0.5.0"
-source = "git+https://github.com/hhanh00/librustzcash.git?rev=f2d098abafd10e3744d23a28abe48ced19050f05#f2d098abafd10e3744d23a28abe48ced19050f05"
+source = "git+https://github.com/hhanh00/librustzcash.git?rev=71b6227a4d96faab2c838159f54b69e6ab034147#71b6227a4d96faab2c838159f54b69e6ab034147"
 dependencies = [
  "bellman",
  "blake2b_simd",
