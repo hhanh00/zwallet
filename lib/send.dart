@@ -97,6 +97,7 @@ class SendState extends State<SendPage> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final simpleMode = settings.simpleMode;
     return Scaffold(
         appBar: AppBar(title: Text(s.sendCointicker(coin.ticker))),
         body: GestureDetector(
@@ -142,9 +143,9 @@ class SendState extends State<SendPage> {
                           child:
                               TextButton(child: Text(s.max), onPressed: _onMax),
                           spendable: spendable),
-                      BalanceTable(_sBalance, _tBalance, _useTransparent,
+                      if (!simpleMode) BalanceTable(_sBalance, _tBalance, _useTransparent,
                           _excludedBalance, _underConfirmedBalance, change, _usedBalance, _fee),
-                      ExpansionPanelList(
+                      if (!simpleMode) ExpansionPanelList(
                           expansionCallback: (_, isExpanded) {
                             setState(() {
                               _isExpanded = !isExpanded;

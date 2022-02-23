@@ -1861,6 +1861,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Mode`
+  String get mode {
+    return Intl.message(
+      'Mode',
+      name: 'mode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Simple`
+  String get simple {
+    return Intl.message(
+      'Simple',
+      name: 'simple',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Advanced`
+  String get advanced {
+    return Intl.message(
+      'Advanced',
+      name: 'advanced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Changing the mode will take effect at next restart`
+  String get changingTheModeWillTakeEffectAtNextRestart {
+    return Intl.message(
+      'Changing the mode will take effect at next restart',
+      name: 'changingTheModeWillTakeEffectAtNextRestart',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

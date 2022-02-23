@@ -29,6 +29,9 @@ abstract class _Settings with Store {
   bool linkHooksInitialized = false;
 
   @observable
+  bool simpleMode = true;
+
+  @observable
   String ldUrl = "";
 
   @observable
@@ -93,6 +96,7 @@ abstract class _Settings with Store {
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
     linkHooksInitialized = prefs.getBool('link_hooks') ?? false;
+    simpleMode = prefs.getBool('simple_mode') ?? true;
     ldUrlChoice = prefs.getString('lightwalletd_choice') ?? "Lightwalletd";
     ldUrl = prefs.getString('lightwalletd_custom') ?? "";
     prefs.setString('lightwalletd_choice', ldUrlChoice);
@@ -128,6 +132,12 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     linkHooksInitialized = true;
     prefs.setBool('link_hooks', true);
+  }
+
+  @action
+  Future<void> setMode(bool simple) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('simple_mode', simple);
   }
 
   @action

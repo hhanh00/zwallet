@@ -56,7 +56,7 @@ class _AccountPageState extends State<AccountPage>
   @override
   initState() {
     super.initState();
-    _tabController = TabController(length: 6, vsync: this);
+    _tabController = TabController(length: settings.simpleMode ? 3 : 6, vsync: this);
     _tabController.addListener(() {
       setState(() {
         _accountTab = _tabController.index == 0;
@@ -127,6 +127,7 @@ class _AccountPageState extends State<AccountPage>
     final hasTAddr = accountManager.taddress.isNotEmpty;
     final qrSize = getScreenSize(context) / 2.5;
     final hasMultisign = accountManager.canPay || accountManager.active.share != null;
+    final simpleMode = settings.simpleMode;
 
     return Scaffold(
       appBar: AppBar(
@@ -135,10 +136,10 @@ class _AccountPageState extends State<AccountPage>
             builder: (context) => Text("${accountManager.active.name}")),
         bottom: TabBar(controller: _tabController, isScrollable: true, tabs: [
           Tab(text: s.account),
-          Tab(text: s.notes),
+          if (!simpleMode) Tab(text: s.notes),
           Tab(text: s.history),
-          Tab(text: s.budget),
-          Tab(text: s.tradingPl),
+          if (!simpleMode) Tab(text: s.budget),
+          if (!simpleMode) Tab(text: s.tradingPl),
           Tab(text: s.contacts),
         ]),
         actions: [
@@ -153,14 +154,16 @@ class _AccountPageState extends State<AccountPage>
                     child: Text(s.backup), value: "Backup"),
                 PopupMenuItem(
                     child: Text(s.rescan), value: "Rescan"),
-                if (accountManager.canPay)
+                if (!simpleMode && accountManager.canPay)
                   PopupMenuItem(
                       child: Text(s.coldStorage), value: "Cold"),
-                PopupMenuItem(
+                if (!simpleMode)
+                  PopupMenuItem(
                     child: Text(s.multipay), value: "MultiPay"),
-                PopupMenuItem(
+                if (!simpleMode)
+                  PopupMenuItem(
                     child: Text(s.broadcast), value: "Broadcast"),
-                if (coin.supportsMultisig && hasMultisign) PopupMenuItem(
+                if (!simpleMode && coin.supportsMultisig && hasMultisign) PopupMenuItem(
                     child: Text(s.multisig), value: "Multisig"),
                 PopupMenuItem(
                     child: Text(s.settings), value: "Settings"),
@@ -179,6 +182,7 @@ class _AccountPageState extends State<AccountPage>
             padding: EdgeInsets.all(20),
             child: Center(
                 child: Column(children: [
+              if (simpleMode) Text("Simple Mode"),
               Observer(builder: (context) {
                 final share = accountManager.active.share;
                 return share != null ? Text("MULTISIG ${share.index}/${share.participants}") : SizedBox();
@@ -238,14 +242,14 @@ class _AccountPageState extends State<AccountPage>
                             onTap: _onReceive)),
                   ])),
                   Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-                  if (!showTAddr)
+                  if (!simpleMode && !showTAddr)
                     OutlinedButton(
                         child: Text(s.newSnapAddress),
                         style: OutlinedButton.styleFrom(
                             side: BorderSide(
                                 width: 1, color: theme.primaryColor)),
                         onPressed: _onSnapAddress),
-                  if (showTAddr)
+                  if (!simpleMode && showTAddr)
                     OutlinedButton(
                       child: Text(s.shieldTranspBalance),
                       style: OutlinedButton.styleFrom(
@@ -322,10 +326,10 @@ class _AccountPageState extends State<AccountPage>
               if (_progress > 0)
                 LinearProgressIndicator(value: _progress / 100.0),
             ]))),
-        NoteWidget(tabTo),
+        if (!simpleMode) NoteWidget(tabTo),
         HistoryWidget(tabTo),
-        BudgetWidget(),
-        PnLWidget(),
+        if (!simpleMode) BudgetWidget(),
+        if (!simpleMode) PnLWidget(),
         ContactsTab(key: contactKey),
       ]),
       floatingActionButton: _accountTab

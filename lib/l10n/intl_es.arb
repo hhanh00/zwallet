@@ -174,8 +174,12 @@
   "multipleAddresses": "multiple addresses",
   "addnew": "AGGREGAR",
   "applicationReset": "Application Reset",
-  "confirmResetApp": "Are you sure you want to reset the app? Your accounts will NOT be deleted",
+  "confirmResetApp": "¿Seguro que quieres restablecer la aplicación? Sus cuentas NO serán eliminadas",
   "reset": "RESET",
-  "loading": "Loading...",
-  "restart": "Restart"
+  "loading": "Cargando...",
+  "restart": "Reiniciar",
+  "mode": "Modo",
+  "simple": "Sencillo",
+  "advanced": "avanzado",
+  "changingTheModeWillTakeEffectAtNextRestart": "Cambiar el modo tendrá efecto en el próximo reinicio"
 }

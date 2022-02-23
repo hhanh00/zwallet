@@ -23,6 +23,8 @@ class SettingsState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final simpleMode = settings.simpleMode;
+
     List<FormBuilderFieldOption> options = coin.lwd
         .map((lwd) => FormBuilderFieldOption<dynamic>(
             child: Text(lwd.name), value: lwd.name))
@@ -48,6 +50,19 @@ class SettingsState extends State<SettingsPage> {
                     builder: (context) => SingleChildScrollView(
                             child: Column(children: [
                           FormBuilderRadioGroup(
+                              orientation: OptionsOrientation.horizontal,
+                              name: 'mode',
+                              decoration: InputDecoration(
+                                  labelText: s.mode),
+                              initialValue: settings.simpleMode ? 'simple' : 'advanced',
+                              onSaved: _onMode,
+                              options: [
+                                FormBuilderFieldOption(
+                                    child: Text(s.simple), value: 'simple'),
+                                FormBuilderFieldOption(
+                                    child: Text(s.advanced), value: 'advanced'),
+                              ]),
+                          if (!simpleMode) FormBuilderRadioGroup(
                               orientation: OptionsOrientation.vertical,
                               name: 'servers',
                               decoration: InputDecoration(
@@ -129,7 +144,7 @@ class SettingsState extends State<SettingsPage> {
                                       initialValue: settings.useUA,
                                       onSaved: _onUseUA)),
                           ]),
-                          FormBuilderTextField(
+                          if (!simpleMode) FormBuilderTextField(
                               decoration: InputDecoration(
                                   labelText: S
                                       .of(context)
@@ -138,7 +153,7 @@ class SettingsState extends State<SettingsPage> {
                               keyboardType: TextInputType.number,
                               controller: _anchorController,
                               onSaved: _onAnchorOffset),
-                          FormBuilderRadioGroup(
+                          if (!simpleMode) FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
                               name: 'pnl',
                               decoration: InputDecoration(
@@ -155,7 +170,7 @@ class SettingsState extends State<SettingsPage> {
                                 FormBuilderFieldOption(
                                     child: Text(s.Y1), value: '1Y'),
                               ]),
-                          FormBuilderCheckbox(
+                          if (!simpleMode) FormBuilderCheckbox(
                               name: 'get_tx',
                               title: Text(
                                   s.retrieveTransactionDetails),
@@ -167,7 +182,7 @@ class SettingsState extends State<SettingsPage> {
                                   s.autoHideBalance),
                               initialValue: settings.autoHide,
                               onSaved: _onAutoHide),
-                          TextFormField(
+                          if (!simpleMode) TextFormField(
                               decoration: InputDecoration(
                                   labelText: 'Auto Shield Threshold'),
                               keyboardType: TextInputType.number,
@@ -175,8 +190,8 @@ class SettingsState extends State<SettingsPage> {
                               inputFormatters: [makeInputFormatter(true)],
                               onSaved: _onAutoShieldThreshold,
                               validator: _checkAmount),
-                          FormBuilderCheckbox(
-                              name: 'shield_send',
+                          if (!simpleMode) FormBuilderCheckbox(
+                              name: 'use_trp',
                               title: Text(S.of(context).useTransparentBalance),
                               initialValue: settings.shieldBalance,
                               onSaved: _shieldBalance),
@@ -191,6 +206,13 @@ class SettingsState extends State<SettingsPage> {
     final v = parseNumber(vs);
     if (v < 0.0) return s.amountMustBePositive;
     return null;
+  }
+
+  _onMode(v) {
+    final simpleMode = v == 'simple';
+    if (settings.simpleMode != simpleMode)
+      showSnackBar(S.of(context).changingTheModeWillTakeEffectAtNextRestart);
+    settings.setMode(v == 'simple');
   }
 
   _onChoice(v) {

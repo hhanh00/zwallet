@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Adresse copiée dans le presse-papier"),
         "addressIsEmpty":
             MessageLookupByLibrary.simpleMessage("L\'adresse est vide"),
+        "advanced": MessageLookupByLibrary.simpleMessage("Avancé"),
         "advancedOptions":
             MessageLookupByLibrary.simpleMessage("Options avancées"),
         "amount": MessageLookupByLibrary.simpleMessage("Montant"),
@@ -88,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "amountTooHigh":
             MessageLookupByLibrary.simpleMessage("Montant trop haut"),
         "applicationReset":
-            MessageLookupByLibrary.simpleMessage("Application Reset"),
+            MessageLookupByLibrary.simpleMessage("Réinitialisation"),
         "approve": MessageLookupByLibrary.simpleMessage("APPROUVER"),
         "areYouSureYouWantToDeleteThisContact":
             MessageLookupByLibrary.simpleMessage(
@@ -108,13 +109,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("Annuler"),
         "changeAccountName":
             MessageLookupByLibrary.simpleMessage("Modifier le nom du compte"),
+        "changingTheModeWillTakeEffectAtNextRestart":
+            MessageLookupByLibrary.simpleMessage(
+                "Changer le mode prendra effet au prochain démarrage"),
         "coffee": MessageLookupByLibrary.simpleMessage("Café"),
         "coldStorage": MessageLookupByLibrary.simpleMessage("Stockage à froid"),
         "color": MessageLookupByLibrary.simpleMessage("Couleur"),
         "confirmDeleteAccount": MessageLookupByLibrary.simpleMessage(
             "Êtes-vous SUR de vouloir SUPPRIMER ce compte ? Vous DEVEZ avoir une SAUVEGARDE pour le récupérer. Cette opération n\'est PAS réversible."),
         "confirmResetApp": MessageLookupByLibrary.simpleMessage(
-            "Are you sure you want to reset the app? Your accounts will NOT be deleted"),
+            "Etes vous sur de vouloir réinitialiser. Vos comptes ne seront PAS perdus "),
         "confirmSignATransactionToAddressFor": m2,
         "confirmSigning":
             MessageLookupByLibrary.simpleMessage("Confirm Signing"),
@@ -164,12 +168,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "largestSpendingsByAddress": MessageLookupByLibrary.simpleMessage(
             "Dépenses les plus importantes par adresse"),
         "light": MessageLookupByLibrary.simpleMessage("Clair"),
-        "loading": MessageLookupByLibrary.simpleMessage("Loading..."),
+        "loading": MessageLookupByLibrary.simpleMessage("Chargement..."),
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Montant maximum par note"),
         "memo": MessageLookupByLibrary.simpleMessage("Mémo"),
         "mm": MessageLookupByLibrary.simpleMessage("Virtuel"),
+        "mode": MessageLookupByLibrary.simpleMessage("Mode"),
         "multiPay": MessageLookupByLibrary.simpleMessage("Envoyer à plusieurs"),
         "multipay": MessageLookupByLibrary.simpleMessage("Envoyer à plusieurs"),
         "multipleAddresses":
@@ -229,7 +234,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescanWalletFromTheFirstBlock": MessageLookupByLibrary.simpleMessage(
             "Reparcourir la chaine à partir du premier bloc?"),
         "reset": MessageLookupByLibrary.simpleMessage("RESET"),
-        "restart": MessageLookupByLibrary.simpleMessage("Restart"),
+        "restart": MessageLookupByLibrary.simpleMessage("Redémarrage"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
             "Récupérer les détails de la transaction"),
         "roundToMillis":
@@ -261,6 +266,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Masquage en cours..."),
         "sign": MessageLookupByLibrary.simpleMessage("Sign"),
+        "simple": MessageLookupByLibrary.simpleMessage("Simple"),
         "spendable": MessageLookupByLibrary.simpleMessage("Dépensable"),
         "spendableBalance":
             MessageLookupByLibrary.simpleMessage("Montant dépensable"),

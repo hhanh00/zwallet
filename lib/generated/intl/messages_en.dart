@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Address copied to clipboard"),
         "addressIsEmpty":
             MessageLookupByLibrary.simpleMessage("Address is empty"),
+        "advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
         "advancedOptions":
             MessageLookupByLibrary.simpleMessage("Advanced Options"),
         "amount": MessageLookupByLibrary.simpleMessage("Amount"),
@@ -108,6 +109,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "changeAccountName":
             MessageLookupByLibrary.simpleMessage("Change Account Name"),
+        "changingTheModeWillTakeEffectAtNextRestart":
+            MessageLookupByLibrary.simpleMessage(
+                "Changing the mode will take effect at next restart"),
         "coffee": MessageLookupByLibrary.simpleMessage("Coffee"),
         "coldStorage": MessageLookupByLibrary.simpleMessage("Cold Storage"),
         "color": MessageLookupByLibrary.simpleMessage("Color"),
@@ -170,6 +174,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Max Amount per Note"),
         "memo": MessageLookupByLibrary.simpleMessage("Memo"),
         "mm": MessageLookupByLibrary.simpleMessage("M/M"),
+        "mode": MessageLookupByLibrary.simpleMessage("Mode"),
         "multiPay": MessageLookupByLibrary.simpleMessage("Multi Pay"),
         "multipay": MessageLookupByLibrary.simpleMessage("MultiPay"),
         "multipleAddresses":
@@ -264,6 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Shielding in progress..."),
         "sign": MessageLookupByLibrary.simpleMessage("Sign Transaction"),
+        "simple": MessageLookupByLibrary.simpleMessage("Simple"),
         "spendable": MessageLookupByLibrary.simpleMessage("Spendable"),
         "spendableBalance":
             MessageLookupByLibrary.simpleMessage("Spendable Balance"),

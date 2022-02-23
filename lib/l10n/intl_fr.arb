@@ -173,9 +173,13 @@
   "textCopiedToClipboard": "{text} copied to clipboard",
   "multipleAddresses": "multiple addresses",
   "addnew": "AJOUTER",
-  "applicationReset": "Application Reset",
-  "confirmResetApp": "Are you sure you want to reset the app? Your accounts will NOT be deleted",
+  "applicationReset": "Réinitialisation",
+  "confirmResetApp": "Etes vous sur de vouloir réinitialiser. Vos comptes ne seront PAS perdus ",
   "reset": "RESET",
-  "loading": "Loading...",
-  "restart": "Restart"
+  "loading": "Chargement...",
+  "restart": "Redémarrage",
+  "mode": "Mode",
+  "simple": "Simple",
+  "advanced": "Avancé",
+  "changingTheModeWillTakeEffectAtNextRestart": "Changer le mode prendra effet au prochain démarrage"
 }

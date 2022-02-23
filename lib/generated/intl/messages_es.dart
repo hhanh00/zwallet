@@ -75,6 +75,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Dirección copiada al portapapeles"),
         "addressIsEmpty":
             MessageLookupByLibrary.simpleMessage("Dirección está vacía"),
+        "advanced": MessageLookupByLibrary.simpleMessage("avanzado"),
         "advancedOptions":
             MessageLookupByLibrary.simpleMessage("Opciones Avanzadas"),
         "amount": MessageLookupByLibrary.simpleMessage("Monto"),
@@ -106,13 +107,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
         "changeAccountName":
             MessageLookupByLibrary.simpleMessage("Cambiar nombre de la cuenta"),
+        "changingTheModeWillTakeEffectAtNextRestart":
+            MessageLookupByLibrary.simpleMessage(
+                "Cambiar el modo tendrá efecto en el próximo reinicio"),
         "coffee": MessageLookupByLibrary.simpleMessage("Café"),
         "coldStorage": MessageLookupByLibrary.simpleMessage("Billetera Fría"),
         "color": MessageLookupByLibrary.simpleMessage("Color"),
         "confirmDeleteAccount": MessageLookupByLibrary.simpleMessage(
             "¿Está SEGURO de que desea BORRAR esta cuenta? DEBE tener una COPIA DE SEGURIDAD para recuperarla. Esta operación NO es reversible."),
         "confirmResetApp": MessageLookupByLibrary.simpleMessage(
-            "Are you sure you want to reset the app? Your accounts will NOT be deleted"),
+            "¿Seguro que quieres restablecer la aplicación? Sus cuentas NO serán eliminadas"),
         "confirmSignATransactionToAddressFor": m2,
         "confirmSigning":
             MessageLookupByLibrary.simpleMessage("Confirm Signing"),
@@ -163,12 +167,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "largestSpendingsByAddress": MessageLookupByLibrary.simpleMessage(
             "Pagos más grandes por dirección"),
         "light": MessageLookupByLibrary.simpleMessage("Día"),
-        "loading": MessageLookupByLibrary.simpleMessage("Loading..."),
+        "loading": MessageLookupByLibrary.simpleMessage("Cargando..."),
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Monto máximo por nota"),
         "memo": MessageLookupByLibrary.simpleMessage("Nota"),
         "mm": MessageLookupByLibrary.simpleMessage("M/M"),
+        "mode": MessageLookupByLibrary.simpleMessage("Modo"),
         "multiPay": MessageLookupByLibrary.simpleMessage("Multi Pagos"),
         "multipay": MessageLookupByLibrary.simpleMessage("MultiPagos"),
         "multipleAddresses":
@@ -228,7 +233,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescanWalletFromTheFirstBlock": MessageLookupByLibrary.simpleMessage(
             "¿Escanear billetera desde el primer bloque?"),
         "reset": MessageLookupByLibrary.simpleMessage("RESET"),
-        "restart": MessageLookupByLibrary.simpleMessage("Restart"),
+        "restart": MessageLookupByLibrary.simpleMessage("Reiniciar"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
             "Obtener detalles de la transacción"),
         "roundToMillis":
@@ -260,6 +265,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Blindaje en progreso…"),
         "sign": MessageLookupByLibrary.simpleMessage("Sign"),
+        "simple": MessageLookupByLibrary.simpleMessage("Sencillo"),
         "spendable": MessageLookupByLibrary.simpleMessage("Gastable"),
         "spendableBalance":
             MessageLookupByLibrary.simpleMessage("Saldo Gastable"),
