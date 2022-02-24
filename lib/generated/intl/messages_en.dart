@@ -39,15 +39,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m7(ticker) => "Send ${ticker} to...";
 
-  static String m8(amount, ticker, count) =>
+  static String m8(app) => "Sent from ${app}";
+
+  static String m9(amount, ticker, count) =>
       "Sending a total of ${amount} ${ticker} to ${count} recipients";
 
-  static String m9(aZEC, ticker, address) =>
+  static String m10(aZEC, ticker, address) =>
       "Sending ${aZEC} ${ticker} to ${address}";
 
-  static String m10(text) => "${text} copied to clipboard";
+  static String m11(text) => "${text} copied to clipboard";
 
-  static String m11(currency) => "Use ${currency}";
+  static String m12(currency) => "Use ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -135,6 +137,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dark": MessageLookupByLibrary.simpleMessage("Dark"),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "datetime": MessageLookupByLibrary.simpleMessage("Date/Time"),
+        "defaultMemo": MessageLookupByLibrary.simpleMessage("Default Memo"),
         "delete": MessageLookupByLibrary.simpleMessage("DELETE"),
         "deleteAccount": MessageLookupByLibrary.simpleMessage("Delete Account"),
         "deleteContact": MessageLookupByLibrary.simpleMessage("Delete contact"),
@@ -255,8 +258,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "send": MessageLookupByLibrary.simpleMessage("Send"),
         "sendCointicker": m6,
         "sendCointickerTo": m7,
-        "sendingATotalOfAmountCointickerToCountRecipients": m8,
-        "sendingAzecCointickerToAddress": m9,
+        "sendFrom": m8,
+        "sendingATotalOfAmountCointickerToCountRecipients": m9,
+        "sendingAzecCointickerToAddress": m10,
         "server": MessageLookupByLibrary.simpleMessage("Server"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "shieldTranspBalance":
@@ -287,7 +291,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Tap QR Code for Transparent Address"),
         "tapTransactionForDetails":
             MessageLookupByLibrary.simpleMessage("Tap Transaction for Details"),
-        "textCopiedToClipboard": m10,
+        "textCopiedToClipboard": m11,
         "theme": MessageLookupByLibrary.simpleMessage("Theme"),
         "themeEditor": MessageLookupByLibrary.simpleMessage("Theme Editor"),
         "thisAccountAlreadyExists": MessageLookupByLibrary.simpleMessage(
@@ -316,7 +320,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("Unsigned Transaction File"),
-        "useSettingscurrency": m11,
+        "useSettingscurrency": m12,
         "useTransparentBalance":
             MessageLookupByLibrary.simpleMessage("Use Transparent Balance"),
         "useUa": MessageLookupByLibrary.simpleMessage("Use UA"),

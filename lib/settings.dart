@@ -17,6 +17,7 @@ class SettingsState extends State<SettingsPage> {
       TextEditingController(text: "${settings.anchorOffset}");
   var _thresholdController = TextEditingController(
       text: decimalFormat(settings.autoShieldThreshold, 3));
+  var _memoController = TextEditingController();
   var _currency = settings.currency;
   var _needAuth = false;
 
@@ -24,6 +25,7 @@ class SettingsState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final simpleMode = settings.simpleMode;
+    _memoController.text = settings.memoSignature ?? s.sendFrom(coin.app);
 
     List<FormBuilderFieldOption> options = coin.lwd
         .map((lwd) => FormBuilderFieldOption<dynamic>(
@@ -146,9 +148,7 @@ class SettingsState extends State<SettingsPage> {
                           ]),
                           if (!simpleMode) FormBuilderTextField(
                               decoration: InputDecoration(
-                                  labelText: S
-                                      .of(context)
-                                      .numberOfConfirmationsNeededBeforeSpending),
+                                  labelText: s.numberOfConfirmationsNeededBeforeSpending),
                               name: 'anchor',
                               keyboardType: TextInputType.number,
                               controller: _anchorController,
@@ -192,10 +192,17 @@ class SettingsState extends State<SettingsPage> {
                               validator: _checkAmount),
                           if (!simpleMode) FormBuilderCheckbox(
                               name: 'use_trp',
-                              title: Text(S.of(context).useTransparentBalance),
+                              title: Text(s.useTransparentBalance),
                               initialValue: settings.shieldBalance,
                               onSaved: _shieldBalance),
-                          ButtonBar(children: confirmButtons(context, _onSave))
+                        FormBuilderTextField(
+                            decoration: InputDecoration(
+                                labelText: s.defaultMemo),
+                            name: 'memo',
+                            keyboardType: TextInputType.number,
+                            controller: _memoController,
+                            onSaved: _onMemo),
+                        ButtonBar(children: confirmButtons(context, _onSave))
                         ]))))));
   }
 
@@ -271,6 +278,10 @@ class SettingsState extends State<SettingsPage> {
 
   _onGetTx(v) {
     settings.updateGetTx(v);
+  }
+
+  _onMemo(v) {
+    settings.setMemoSignature(v);
   }
 
   _editTheme() {

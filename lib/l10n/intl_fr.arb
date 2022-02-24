@@ -181,5 +181,7 @@
   "mode": "Mode",
   "simple": "Simple",
   "advanced": "Avancé",
-  "changingTheModeWillTakeEffectAtNextRestart": "Changer le mode prendra effet au prochain démarrage"
+  "changingTheModeWillTakeEffectAtNextRestart": "Changer le mode prendra effet au prochain démarrage",
+  "sendFrom": "Envoyé via {app}",
+  "defaultMemo": "Memo"
 }

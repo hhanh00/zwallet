@@ -98,6 +98,8 @@ class SendState extends State<SendPage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final simpleMode = settings.simpleMode;
+    _memoController.text = settings.memoSignature ?? s.sendFrom(coin.app);
+
     return Scaffold(
         appBar: AppBar(title: Text(s.sendCointicker(coin.ticker))),
         body: GestureDetector(

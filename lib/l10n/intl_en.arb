@@ -183,5 +183,7 @@
   "mode": "Mode",
   "simple": "Simple",
   "advanced": "Advanced",
-  "changingTheModeWillTakeEffectAtNextRestart": "Changing the mode will take effect at next restart"
+  "changingTheModeWillTakeEffectAtNextRestart": "Changing the mode will take effect at next restart",
+  "sendFrom": "Sent from {app}",
+  "defaultMemo": "Default Memo"
 }

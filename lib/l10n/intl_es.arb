@@ -180,6 +180,8 @@
   "restart": "Reiniciar",
   "mode": "Modo",
   "simple": "Sencillo",
-  "advanced": "avanzado",
-  "changingTheModeWillTakeEffectAtNextRestart": "Cambiar el modo tendrá efecto en el próximo reinicio"
+  "advanced": "Avanzado",
+  "changingTheModeWillTakeEffectAtNextRestart": "Cambiar el modo tendrá efecto en el próximo reinicio",
+  "sendFrom": "Enviado desde {app}",
+  "defaultMemo": "Nota"
 }

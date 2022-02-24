@@ -37,15 +37,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m7(ticker) => "Enviar ${ticker} a…";
 
-  static String m8(amount, ticker, count) =>
+  static String m8(app) => "Enviado desde ${app}";
+
+  static String m9(amount, ticker, count) =>
       "Enviando un total de ${amount} ${ticker} a ${count} direcciones";
 
-  static String m9(aZEC, ticker, address) =>
+  static String m10(aZEC, ticker, address) =>
       "Enviado ${aZEC} ${ticker} a ${address}";
 
-  static String m10(text) => "${text} copied to clipboard";
+  static String m11(text) => "${text} copied to clipboard";
 
-  static String m11(currency) => "Utilizar ${currency}";
+  static String m12(currency) => "Utilizar ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -75,7 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Dirección copiada al portapapeles"),
         "addressIsEmpty":
             MessageLookupByLibrary.simpleMessage("Dirección está vacía"),
-        "advanced": MessageLookupByLibrary.simpleMessage("avanzado"),
+        "advanced": MessageLookupByLibrary.simpleMessage("Avanzado"),
         "advancedOptions":
             MessageLookupByLibrary.simpleMessage("Opciones Avanzadas"),
         "amount": MessageLookupByLibrary.simpleMessage("Monto"),
@@ -135,6 +137,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dark": MessageLookupByLibrary.simpleMessage("Noche"),
         "date": MessageLookupByLibrary.simpleMessage("Fecha"),
         "datetime": MessageLookupByLibrary.simpleMessage("Fecha/Hora"),
+        "defaultMemo": MessageLookupByLibrary.simpleMessage("Nota"),
         "delete": MessageLookupByLibrary.simpleMessage("ELIMINAR"),
         "deleteAccount": MessageLookupByLibrary.simpleMessage("Borrar Cuenta"),
         "deleteContact":
@@ -254,8 +257,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "send": MessageLookupByLibrary.simpleMessage("Enviar"),
         "sendCointicker": m6,
         "sendCointickerTo": m7,
-        "sendingATotalOfAmountCointickerToCountRecipients": m8,
-        "sendingAzecCointickerToAddress": m9,
+        "sendFrom": m8,
+        "sendingATotalOfAmountCointickerToCountRecipients": m9,
+        "sendingAzecCointickerToAddress": m10,
         "server": MessageLookupByLibrary.simpleMessage("Servidor"),
         "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
         "shieldTranspBalance":
@@ -283,7 +287,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Pinchar QR para Dirección Transparente"),
         "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
             "Toque Transacción para detalles"),
-        "textCopiedToClipboard": m10,
+        "textCopiedToClipboard": m11,
         "theme": MessageLookupByLibrary.simpleMessage("Tema"),
         "themeEditor": MessageLookupByLibrary.simpleMessage("Editora de temas"),
         "thisAccountAlreadyExists":
@@ -312,7 +316,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Saldo sin blindaje"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Archivo de transaccion sin firmar"),
-        "useSettingscurrency": m11,
+        "useSettingscurrency": m12,
         "useTransparentBalance":
             MessageLookupByLibrary.simpleMessage("Usar Saldo Transp"),
         "useUa": MessageLookupByLibrary.simpleMessage("Usar UA"),

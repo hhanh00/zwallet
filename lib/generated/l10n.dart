@@ -1901,6 +1901,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Sent from {app}`
+  String sendFrom(Object app) {
+    return Intl.message(
+      'Sent from $app',
+      name: 'sendFrom',
+      desc: '',
+      args: [app],
+    );
+  }
+
+  /// `Default Memo`
+  String get defaultMemo {
+    return Intl.message(
+      'Default Memo',
+      name: 'defaultMemo',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -92,6 +92,9 @@ abstract class _Settings with Store {
   @observable
   int secondaryVariantColorValue = 0;
 
+  @observable
+  String? memoSignature;
+
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
@@ -121,6 +124,8 @@ abstract class _Settings with Store {
     secondaryColorValue = prefs.getInt('secondary') ?? Colors.green.value;
     secondaryVariantColorValue =
         prefs.getInt('secondary.variant') ?? Colors.greenAccent.value;
+
+    memoSignature = prefs.getString('memo_signature');
 
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
@@ -345,6 +350,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     protectSend = v;
     prefs.setBool('protect_send', protectSend);
+  }
+
+  @action
+  Future<void> setMemoSignature(String v) async {
+    final prefs = await SharedPreferences.getInstance();
+    memoSignature = v;
+    prefs.setString('memo_signature', v);
   }
 }
 
