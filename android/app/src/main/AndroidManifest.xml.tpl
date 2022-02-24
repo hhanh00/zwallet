@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.hanh.zwallet">
+    package="me.hanh.{{APP_NAME}}">
    <application
-        android:label="YWallet"
+        android:label="{{APP_TITLE}}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

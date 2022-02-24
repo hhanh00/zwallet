@@ -60,7 +60,7 @@ class _AccountPageState extends State<AccountPage>
     _tabController.addListener(() {
       setState(() {
         _accountTab = _tabController.index == 0;
-        _contactsTab = _tabController.index == 5;
+        _contactsTab = _tabController.index == (settings.simpleMode ? 2: 5);
       });
     });
     Future.microtask(() async {

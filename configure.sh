@@ -24,10 +24,11 @@ cp lib/coin/$COIN.dart lib/coin/coindef.dart
 cp native/zcash-params/src/coindef/$COIN.rs native/zcash-params/src/coin.rs
 
 mo pubspec.yaml.tpl > pubspec.yaml
-mo android/app/src/main/AndroidManifest.xml.tpl > android/app/src/main/AndroidManifest.xml
+mo ios/Runner/Info.plist.tpl > ios/Runner/Info.plist
 
 flutter pub get
 flutter pub run change_app_package_name:main me.hanh.$APP_NAME
+mo android/app/src/main/AndroidManifest.xml.tpl > android/app/src/main/AndroidManifest.xml
 flutter pub run flutter_launcher_icons:main
 flutter pub run flutter_app_name
 flutter pub run build_runner build
