@@ -527,7 +527,7 @@ class _AccountPageState extends State<AccountPage>
     final result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
-      final res = WarpApi.broadcast(result.files.single.path);
+      final res = WarpApi.broadcast(result.files.single.path!);
       final snackBar = SnackBar(content: Text(res));
       rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     }
