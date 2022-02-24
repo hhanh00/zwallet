@@ -195,7 +195,7 @@ class SettingsState extends State<SettingsPage> {
                               title: Text(s.useTransparentBalance),
                               initialValue: settings.shieldBalance,
                               onSaved: _shieldBalance),
-                        FormBuilderTextField(
+                          if (!simpleMode) FormBuilderTextField(
                             decoration: InputDecoration(
                                 labelText: s.defaultMemo),
                             name: 'memo',
