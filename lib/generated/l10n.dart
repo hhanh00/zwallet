@@ -1921,6 +1921,76 @@ class S {
       args: [],
     );
   }
+
+  /// `Full Backup`
+  String get fullBackup {
+    return Intl.message(
+      'Full Backup',
+      name: 'fullBackup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup Encryption Key`
+  String get backupEncryptionKey {
+    return Intl.message(
+      'Backup Encryption Key',
+      name: 'backupEncryptionKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Backup`
+  String get saveBackup {
+    return Intl.message(
+      'Save Backup',
+      name: 'saveBackup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{app} Encrypted Backup`
+  String encryptedBackup(Object app) {
+    return Intl.message(
+      '$app Encrypted Backup',
+      name: 'encryptedBackup',
+      desc: '',
+      args: [app],
+    );
+  }
+
+  /// `Full Restore`
+  String get fullRestore {
+    return Intl.message(
+      'Full Restore',
+      name: 'fullRestore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load Backup`
+  String get loadBackup {
+    return Intl.message(
+      'Load Backup',
+      name: 'loadBackup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup All Accounts`
+  String get backupAllAccounts {
+    return Intl.message(
+      'Backup All Accounts',
+      name: 'backupAllAccounts',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

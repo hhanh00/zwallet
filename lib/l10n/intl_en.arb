@@ -185,5 +185,12 @@
   "advanced": "Advanced",
   "changingTheModeWillTakeEffectAtNextRestart": "Changing the mode will take effect at next restart",
   "sendFrom": "Sent from {app}",
-  "defaultMemo": "Default Memo"
+  "defaultMemo": "Default Memo",
+  "fullBackup": "Full Backup",
+  "backupEncryptionKey": "Backup Encryption Key",
+  "saveBackup": "Save Backup",
+  "encryptedBackup": "{app} Encrypted Backup",
+  "fullRestore": "Full Restore",
+  "loadBackup": "Load Backup",
+  "backupAllAccounts": "Backup All Accounts"
 }

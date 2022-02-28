@@ -31,23 +31,25 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m3(ticker) =>
       "¿Quiere transferir su saldo transparente a su dirección blindada? ";
 
-  static String m5(ticker) => "Recibir ${ticker}";
+  static String m4(app) => "${app} Encrypted Backup";
 
-  static String m6(ticker) => "Enviar ${ticker}";
+  static String m6(ticker) => "Recibir ${ticker}";
 
-  static String m7(ticker) => "Enviar ${ticker} a…";
+  static String m7(ticker) => "Enviar ${ticker}";
 
-  static String m8(app) => "Enviado desde ${app}";
+  static String m8(ticker) => "Enviar ${ticker} a…";
 
-  static String m9(amount, ticker, count) =>
+  static String m9(app) => "Enviado desde ${app}";
+
+  static String m10(amount, ticker, count) =>
       "Enviando un total de ${amount} ${ticker} a ${count} direcciones";
 
-  static String m10(aZEC, ticker, address) =>
+  static String m11(aZEC, ticker, address) =>
       "Enviado ${aZEC} ${ticker} a ${address}";
 
-  static String m11(text) => "${text} copied to clipboard";
+  static String m12(text) => "${text} copied to clipboard";
 
-  static String m12(currency) => "Utilizar ${currency}";
+  static String m13(currency) => "Utilizar ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -98,8 +100,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "autoHideBalance": MessageLookupByLibrary.simpleMessage(
             "Ocultar Saldo Automáticamente"),
         "backup": MessageLookupByLibrary.simpleMessage("Copia De Seguridad"),
+        "backupAllAccounts":
+            MessageLookupByLibrary.simpleMessage("Backup All Accounts"),
         "backupDataRequiredForRestore": MessageLookupByLibrary.simpleMessage(
             "Copia De Seguridad - Requerido Para Restaurar"),
+        "backupEncryptionKey":
+            MessageLookupByLibrary.simpleMessage("Backup Encryption Key"),
         "backupWarning": MessageLookupByLibrary.simpleMessage(
             "Nadie puede recuperar sus claves secretas. Si no tiene una copia de seguridad, PERDERÁ SU DINERO si su teléfono se avería. Puede acceder a esta página mediante el menú de la aplicación y luego \'Copia de Seguridad\'"),
         "balance": MessageLookupByLibrary.simpleMessage("Saldo"),
@@ -148,6 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "doYouWantToTransferYourEntireTransparentBalanceTo": m3,
         "duplicateAccount":
             MessageLookupByLibrary.simpleMessage("Cuenta duplicada"),
+        "encryptedBackup": m4,
         "enterSecretShareIfAccountIsMultisignature":
             MessageLookupByLibrary.simpleMessage(
                 "Enter secret share if account is multi-signature"),
@@ -156,6 +163,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "excludedNotes":
             MessageLookupByLibrary.simpleMessage("Notas Excluidas"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("File saved"),
+        "fullBackup": MessageLookupByLibrary.simpleMessage("Full Backup"),
+        "fullRestore": MessageLookupByLibrary.simpleMessage("Full Restore"),
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "height": MessageLookupByLibrary.simpleMessage("Altura"),
         "help": MessageLookupByLibrary.simpleMessage("Ayuda"),
@@ -170,6 +179,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "largestSpendingsByAddress": MessageLookupByLibrary.simpleMessage(
             "Pagos más grandes por dirección"),
         "light": MessageLookupByLibrary.simpleMessage("Día"),
+        "loadBackup": MessageLookupByLibrary.simpleMessage("Load Backup"),
         "loading": MessageLookupByLibrary.simpleMessage("Cargando..."),
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
@@ -225,7 +235,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "purple": MessageLookupByLibrary.simpleMessage("Morada"),
         "qty": MessageLookupByLibrary.simpleMessage("Cantidad"),
         "realized": MessageLookupByLibrary.simpleMessage("Dio Cuenta"),
-        "receive": m5,
+        "receive": m6,
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Recibir un pago"),
         "rescan": MessageLookupByLibrary.simpleMessage("Escanear"),
@@ -241,6 +251,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Obtener detalles de la transacción"),
         "roundToMillis":
             MessageLookupByLibrary.simpleMessage("Redonda a millis"),
+        "saveBackup": MessageLookupByLibrary.simpleMessage("Save Backup"),
         "saveToBlockchain":
             MessageLookupByLibrary.simpleMessage("Guardar en blockchain?"),
         "scanStartingMomentarily": MessageLookupByLibrary.simpleMessage(
@@ -255,11 +266,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Seleccionar Notas a EXCLUIR de los pagos"),
         "send": MessageLookupByLibrary.simpleMessage("Enviar"),
-        "sendCointicker": m6,
-        "sendCointickerTo": m7,
-        "sendFrom": m8,
-        "sendingATotalOfAmountCointickerToCountRecipients": m9,
-        "sendingAzecCointickerToAddress": m10,
+        "sendCointicker": m7,
+        "sendCointickerTo": m8,
+        "sendFrom": m9,
+        "sendingATotalOfAmountCointickerToCountRecipients": m10,
+        "sendingAzecCointickerToAddress": m11,
         "server": MessageLookupByLibrary.simpleMessage("Servidor"),
         "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
         "shieldTranspBalance":
@@ -287,7 +298,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Pinchar QR para Dirección Transparente"),
         "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
             "Toque Transacción para detalles"),
-        "textCopiedToClipboard": m11,
+        "textCopiedToClipboard": m12,
         "theme": MessageLookupByLibrary.simpleMessage("Tema"),
         "themeEditor": MessageLookupByLibrary.simpleMessage("Editora de temas"),
         "thisAccountAlreadyExists":
@@ -316,7 +327,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Saldo sin blindaje"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Archivo de transaccion sin firmar"),
-        "useSettingscurrency": m12,
+        "useSettingscurrency": m13,
         "useTransparentBalance":
             MessageLookupByLibrary.simpleMessage("Usar Saldo Transp"),
         "useUa": MessageLookupByLibrary.simpleMessage("Usar UA"),

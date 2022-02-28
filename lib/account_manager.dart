@@ -74,8 +74,8 @@ class AccountManagerState extends State<AccountManagerPage> {
                           ));
                         }),
                 )),
-        floatingActionButton: FloatingActionButton(
-            onPressed: _onRestore, child: Icon(Icons.add)));
+        floatingActionButton: GestureDetector(onLongPress: _onFullRestore, child: FloatingActionButton(
+            onPressed: _onRestore, child: Icon(Icons.add))));
   }
 
   Future<bool> _onAccountDelete(Account account) async {
@@ -167,6 +167,10 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   _settings() {
     Navigator.of(this.context).pushNamed('/settings');
+  }
+
+  _onFullRestore() {
+    Navigator.of(this.context).pushNamed('/fullRestore');
   }
 }
 

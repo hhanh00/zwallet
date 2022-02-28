@@ -183,5 +183,12 @@
   "advanced": "Avancé",
   "changingTheModeWillTakeEffectAtNextRestart": "Changer le mode prendra effet au prochain démarrage",
   "sendFrom": "Envoyé via {app}",
-  "defaultMemo": "Memo"
+  "defaultMemo": "Memo",
+  "fullBackup": "Sauvegarde complète",
+  "backupEncryptionKey": "Clé de chiffrage",
+  "saveBackup": "Sauvegarder les comptes",
+  "encryptedBackup": "Sauvegarde de {app} ",
+  "fullRestore": "Restauration complète",
+  "loadBackup": "Recharger une sauvegarde",
+  "backupAllAccounts": "Sauver tous les comptes"
 }

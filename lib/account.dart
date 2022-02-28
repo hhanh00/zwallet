@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
-import 'package:k_chart/entity/index.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -169,6 +168,7 @@ class _AccountPageState extends State<AccountPage>
                     child: Text(s.settings), value: "Settings"),
                 PopupMenuItem(child: Text(s.help), value: "Help"),
                 PopupMenuItem(child: Text(s.about), value: "About"),
+                // PopupMenuItem(child: Text(s.reset), value: "Reset"),
                 // PopupMenuItem(child: Text("Reorg"), value: "Reorg"),
               ];
               },
@@ -490,6 +490,9 @@ class _AccountPageState extends State<AccountPage>
       case "Reorg":
         _reorg();
         break;
+      case "Reset":
+        _reset();
+        break;
     }
   }
 
@@ -544,6 +547,10 @@ class _AccountPageState extends State<AccountPage>
 
   _settings() {
     Navigator.of(context).pushNamed('/settings');
+  }
+
+  _reset() {
+    Navigator.of(context).pushNamed('/reset');
   }
 
   _onAddContact() async {

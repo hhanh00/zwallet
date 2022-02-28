@@ -183,5 +183,12 @@
   "advanced": "Avanzado",
   "changingTheModeWillTakeEffectAtNextRestart": "Cambiar el modo tendrá efecto en el próximo reinicio",
   "sendFrom": "Enviado desde {app}",
-  "defaultMemo": "Nota"
+  "defaultMemo": "Nota",
+  "fullBackup": "Full Backup",
+  "backupEncryptionKey": "Backup Encryption Key",
+  "saveBackup": "Save Backup",
+  "encryptedBackup": "{app} Encrypted Backup",
+  "fullRestore": "Full Restore",
+  "loadBackup": "Load Backup",
+  "backupAllAccounts": "Backup All Accounts"
 }

@@ -81,6 +81,12 @@ char *make_payment_uri(char *address, uint64_t amount, char *memo);
 
 char *parse_payment_uri(char *uri);
 
+char *generate_random_enc_key(void);
+
+char *get_full_backup(char *key);
+
+char *restore_full_backup(char *key, char *backup);
+
 void store_share_secret(uint32_t account, char *secret);
 
 char *get_share_secret(uint32_t account);

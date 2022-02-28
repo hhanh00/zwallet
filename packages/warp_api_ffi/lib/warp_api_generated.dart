@@ -456,6 +456,45 @@ class NativeLibrary {
   late final _dart_parse_payment_uri _parse_payment_uri =
       _parse_payment_uri_ptr.asFunction<_dart_parse_payment_uri>();
 
+  ffi.Pointer<ffi.Int8> generate_random_enc_key() {
+    return _generate_random_enc_key();
+  }
+
+  late final _generate_random_enc_key_ptr =
+      _lookup<ffi.NativeFunction<_c_generate_random_enc_key>>(
+          'generate_random_enc_key');
+  late final _dart_generate_random_enc_key _generate_random_enc_key =
+      _generate_random_enc_key_ptr.asFunction<_dart_generate_random_enc_key>();
+
+  ffi.Pointer<ffi.Int8> get_full_backup(
+    ffi.Pointer<ffi.Int8> key,
+  ) {
+    return _get_full_backup(
+      key,
+    );
+  }
+
+  late final _get_full_backup_ptr =
+      _lookup<ffi.NativeFunction<_c_get_full_backup>>('get_full_backup');
+  late final _dart_get_full_backup _get_full_backup =
+      _get_full_backup_ptr.asFunction<_dart_get_full_backup>();
+
+  ffi.Pointer<ffi.Int8> restore_full_backup(
+    ffi.Pointer<ffi.Int8> key,
+    ffi.Pointer<ffi.Int8> backup,
+  ) {
+    return _restore_full_backup(
+      key,
+      backup,
+    );
+  }
+
+  late final _restore_full_backup_ptr =
+      _lookup<ffi.NativeFunction<_c_restore_full_backup>>(
+          'restore_full_backup');
+  late final _dart_restore_full_backup _restore_full_backup =
+      _restore_full_backup_ptr.asFunction<_dart_restore_full_backup>();
+
   void store_share_secret(
     int account,
     ffi.Pointer<ffi.Int8> secret,
@@ -848,6 +887,28 @@ typedef _c_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
 
 typedef _dart_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> uri,
+);
+
+typedef _c_generate_random_enc_key = ffi.Pointer<ffi.Int8> Function();
+
+typedef _dart_generate_random_enc_key = ffi.Pointer<ffi.Int8> Function();
+
+typedef _c_get_full_backup = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> key,
+);
+
+typedef _dart_get_full_backup = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> key,
+);
+
+typedef _c_restore_full_backup = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> key,
+  ffi.Pointer<ffi.Int8> backup,
+);
+
+typedef _dart_restore_full_backup = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> key,
+  ffi.Pointer<ffi.Int8> backup,
 );
 
 typedef _c_store_share_secret = ffi.Void Function(

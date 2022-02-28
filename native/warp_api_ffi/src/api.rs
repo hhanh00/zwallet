@@ -442,6 +442,28 @@ pub fn parse_payment_uri(uri: &str) -> String {
     log_result(res())
 }
 
+pub fn generate_random_enc_key() -> String {
+    log_result(sync::generate_random_enc_key())
+}
+
+pub fn get_full_backup(key: &str) -> String {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        let backup = wallet.get_full_backup(key)?;
+        Ok(backup)
+    };
+    log_result(res())
+}
+
+pub fn restore_full_backup(key: &str, backup: &str) -> String {
+    let res = || {
+        let wallet = get_lock(&WALLET)?;
+        wallet.restore_full_backup(key, backup)?;
+        Ok(String::new())
+    };
+    log_result_string(res())
+}
+
 pub fn store_share_secret(account: u32, secret: &str) {
     let res = || {
         let wallet = get_lock(&WALLET)?;

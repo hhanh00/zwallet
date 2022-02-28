@@ -228,6 +228,20 @@ class WarpApi {
     return json.cast<Utf8>().toDartString();
   }
 
+  static String generateEncKey() {
+    return warp_api_lib.generate_random_enc_key().cast<Utf8>().toDartString();
+  }
+
+  static String getFullBackup(String key) {
+    final backup = warp_api_lib.get_full_backup(key.toNativeUtf8().cast<Int8>());
+    return backup.cast<Utf8>().toDartString();
+  }
+
+  static String restoreFullBackup(String key, String backup) {
+    final res = warp_api_lib.restore_full_backup(key.toNativeUtf8().cast<Int8>(), backup.toNativeUtf8().cast<Int8>());
+    return res.cast<Utf8>().toDartString();
+  }
+
   static void storeShareSecret(int account, String secret) {
     warp_api_lib.store_share_secret(account, secret.toNativeUtf8().cast<Int8>());
   }

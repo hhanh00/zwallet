@@ -227,6 +227,27 @@ pub unsafe extern "C" fn parse_payment_uri(uri: *mut c_char) -> *mut c_char {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn generate_random_enc_key() -> *mut c_char {
+    let key = api::generate_random_enc_key();
+    CString::new(key).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn get_full_backup(key: *mut c_char) -> *mut c_char {
+    let key = CStr::from_ptr(key).to_string_lossy();
+    let backup = api::get_full_backup(&key);
+    CString::new(backup).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn restore_full_backup(key: *mut c_char, backup: *mut c_char) -> *mut c_char {
+    let key = CStr::from_ptr(key).to_string_lossy();
+    let backup = CStr::from_ptr(backup).to_string_lossy();
+    let res = api::restore_full_backup(&key, &backup);
+    CString::new(res).unwrap().into_raw()
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn store_share_secret(account: u32, secret: *mut c_char) {
     let secret = CStr::from_ptr(secret).to_string_lossy();
     api::store_share_secret(account, &secret);

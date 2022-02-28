@@ -17,7 +17,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -34,6 +33,7 @@ import 'coin/coindef.dart';
 import 'multisend.dart';
 import 'multisign.dart';
 import 'payment_uri.dart';
+import 'reset.dart';
 import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
@@ -115,24 +115,7 @@ class LoadProgress extends StatelessWidget {
   }
 
   _reset(BuildContext context) async {
-    final s = S.of(context);
-    final confirmation = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) =>
-          AlertDialog(
-              title: Text(S.of(context).applicationReset),
-              content: Text(S.of(context).confirmResetApp),
-              actions: confirmButtons(context, () {
-                Navigator.of(context).pop(true);
-              }, okLabel: S.of(context).reset, cancelValue: false)),
-    ) ?? false;
-    if (confirmation) {
-      WarpApi.resetApp();
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
-      await showMessageBox(context, s.restart, s.pleaseQuitAndRestartTheAppNow, s.ok);
-    }
+    Navigator.of(context).pushNamed('/reset');
   }
 }
 
@@ -184,6 +167,9 @@ void main() {
                     MultisigSharesPage(routeSettings.arguments as String),
                 '/edit_theme': (context) =>
                     ThemeEditorPage(onSaved: settings.updateCustomThemeColors),
+                '/reset': (context) => ResetPage(),
+                '/fullBackup': (context) => FullBackupPage(),
+                '/fullRestore': (context) => FullRestorePage(),
               };
               return MaterialPageRoute(builder: routes[routeSettings.name]!);
             },
@@ -254,8 +240,8 @@ class ZWalletAppState extends State<ZWalletApp> {
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LoadProgress(0.7);
           return accountManager.accounts.isNotEmpty
-              ? AccountPage()
-              : AccountManagerPage();
+              ? AccountPage() :
+              AccountManagerPage();
         });
   }
 }
