@@ -8,7 +8,7 @@ curl -o sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-
 unzip sdk-tools.zip
 (cd cmdline-tools/bin &&
 yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses &&
-yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-30")
+yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-31")
 rm sdk-tools.zip
 
 curl -o ndk.zip https://dl.google.com/android/repository/android-ndk-r21e-linux-x86_64.zip
