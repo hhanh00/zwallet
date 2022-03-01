@@ -1,4 +1,4 @@
-FROM archlinux:base-devel AS builder
+FROM archlinux:base-devel-20220227.0.49015 AS builder
 
 COPY install-deps.sh .
 
