@@ -20,11 +20,9 @@ class NativeLibrary {
 
   void init_wallet(
     ffi.Pointer<ffi.Int8> db_path,
-    ffi.Pointer<ffi.Int8> ld_url,
   ) {
     return _init_wallet(
       db_path,
-      ld_url,
     );
   }
 
@@ -42,12 +40,14 @@ class NativeLibrary {
   late final _dart_reset_app _reset_app =
       _reset_app_ptr.asFunction<_dart_reset_app>();
 
-  void warp_sync(
+  int warp_sync(
+    int coin,
     int get_tx,
     int anchor_offset,
     int port,
   ) {
     return _warp_sync(
+      coin,
       get_tx,
       anchor_offset,
       port,
@@ -72,8 +72,12 @@ class NativeLibrary {
   late final _dart_dart_post_cobject _dart_post_cobject =
       _dart_post_cobject_ptr.asFunction<_dart_dart_post_cobject>();
 
-  int get_latest_height() {
-    return _get_latest_height();
+  int get_latest_height(
+    int coin,
+  ) {
+    return _get_latest_height(
+      coin,
+    );
   }
 
   late final _get_latest_height_ptr =
@@ -82,9 +86,11 @@ class NativeLibrary {
       _get_latest_height_ptr.asFunction<_dart_get_latest_height>();
 
   int is_valid_key(
+    int coin,
     ffi.Pointer<ffi.Int8> seed,
   ) {
     return _is_valid_key(
+      coin,
       seed,
     );
   }
@@ -95,9 +101,11 @@ class NativeLibrary {
       _is_valid_key_ptr.asFunction<_dart_is_valid_key>();
 
   int valid_address(
+    int coin,
     ffi.Pointer<ffi.Int8> address,
   ) {
     return _valid_address(
+      coin,
       address,
     );
   }
@@ -108,9 +116,11 @@ class NativeLibrary {
       _valid_address_ptr.asFunction<_dart_valid_address>();
 
   ffi.Pointer<ffi.Int8> new_address(
+    int coin,
     int account,
   ) {
     return _new_address(
+      coin,
       account,
     );
   }
@@ -121,9 +131,11 @@ class NativeLibrary {
       _new_address_ptr.asFunction<_dart_new_address>();
 
   void set_mempool_account(
+    int coin,
     int account,
   ) {
     return _set_mempool_account(
+      coin,
       account,
     );
   }
@@ -135,12 +147,16 @@ class NativeLibrary {
       _set_mempool_account_ptr.asFunction<_dart_set_mempool_account>();
 
   int new_account(
+    int coin,
     ffi.Pointer<ffi.Int8> name,
     ffi.Pointer<ffi.Int8> data,
+    int index,
   ) {
     return _new_account(
+      coin,
       name,
       data,
+      index,
     );
   }
 
@@ -149,8 +165,29 @@ class NativeLibrary {
   late final _dart_new_account _new_account =
       _new_account_ptr.asFunction<_dart_new_account>();
 
-  int get_mempool_balance() {
-    return _get_mempool_balance();
+  int new_sub_account(
+    int coin,
+    int id,
+    ffi.Pointer<ffi.Int8> name,
+  ) {
+    return _new_sub_account(
+      coin,
+      id,
+      name,
+    );
+  }
+
+  late final _new_sub_account_ptr =
+      _lookup<ffi.NativeFunction<_c_new_sub_account>>('new_sub_account');
+  late final _dart_new_sub_account _new_sub_account =
+      _new_sub_account_ptr.asFunction<_dart_new_sub_account>();
+
+  int get_mempool_balance(
+    int coin,
+  ) {
+    return _get_mempool_balance(
+      coin,
+    );
   }
 
   late final _get_mempool_balance_ptr =
@@ -160,6 +197,7 @@ class NativeLibrary {
       _get_mempool_balance_ptr.asFunction<_dart_get_mempool_balance>();
 
   ffi.Pointer<ffi.Int8> send_multi_payment(
+    int coin,
     int account,
     ffi.Pointer<ffi.Int8> recipients_json,
     int anchor_offset,
@@ -167,6 +205,7 @@ class NativeLibrary {
     int port,
   ) {
     return _send_multi_payment(
+      coin,
       account,
       recipients_json,
       anchor_offset,
@@ -180,23 +219,12 @@ class NativeLibrary {
   late final _dart_send_multi_payment _send_multi_payment =
       _send_multi_payment_ptr.asFunction<_dart_send_multi_payment>();
 
-  int try_warp_sync(
-    int get_tx,
-    int anchor_offset,
+  void skip_to_last_height(
+    int coin,
   ) {
-    return _try_warp_sync(
-      get_tx,
-      anchor_offset,
+    return _skip_to_last_height(
+      coin,
     );
-  }
-
-  late final _try_warp_sync_ptr =
-      _lookup<ffi.NativeFunction<_c_try_warp_sync>>('try_warp_sync');
-  late final _dart_try_warp_sync _try_warp_sync =
-      _try_warp_sync_ptr.asFunction<_dart_try_warp_sync>();
-
-  void skip_to_last_height() {
-    return _skip_to_last_height();
   }
 
   late final _skip_to_last_height_ptr =
@@ -206,9 +234,11 @@ class NativeLibrary {
       _skip_to_last_height_ptr.asFunction<_dart_skip_to_last_height>();
 
   void rewind_to_height(
+    int coin,
     int height,
   ) {
     return _rewind_to_height(
+      coin,
       height,
     );
   }
@@ -218,8 +248,12 @@ class NativeLibrary {
   late final _dart_rewind_to_height _rewind_to_height =
       _rewind_to_height_ptr.asFunction<_dart_rewind_to_height>();
 
-  int mempool_sync() {
-    return _mempool_sync();
+  int mempool_sync(
+    int coin,
+  ) {
+    return _mempool_sync(
+      coin,
+    );
   }
 
   late final _mempool_sync_ptr =
@@ -228,9 +262,11 @@ class NativeLibrary {
       _mempool_sync_ptr.asFunction<_dart_mempool_sync>();
 
   void mempool_reset(
+    int coin,
     int height,
   ) {
     return _mempool_reset(
+      coin,
       height,
     );
   }
@@ -241,9 +277,11 @@ class NativeLibrary {
       _mempool_reset_ptr.asFunction<_dart_mempool_reset>();
 
   int get_taddr_balance(
+    int coin,
     int account,
   ) {
     return _get_taddr_balance(
+      coin,
       account,
     );
   }
@@ -254,9 +292,11 @@ class NativeLibrary {
       _get_taddr_balance_ptr.asFunction<_dart_get_taddr_balance>();
 
   ffi.Pointer<ffi.Int8> shield_taddr(
+    int coin,
     int account,
   ) {
     return _shield_taddr(
+      coin,
       account,
     );
   }
@@ -267,9 +307,11 @@ class NativeLibrary {
       _shield_taddr_ptr.asFunction<_dart_shield_taddr>();
 
   void set_lwd_url(
+    int coin,
     ffi.Pointer<ffi.Int8> url,
   ) {
     return _set_lwd_url(
+      coin,
       url,
     );
   }
@@ -280,12 +322,14 @@ class NativeLibrary {
       _set_lwd_url_ptr.asFunction<_dart_set_lwd_url>();
 
   ffi.Pointer<ffi.Int8> prepare_multi_payment(
+    int coin,
     int account,
     ffi.Pointer<ffi.Int8> recipients_json,
     int use_transparent,
     int anchor_offset,
   ) {
     return _prepare_multi_payment(
+      coin,
       account,
       recipients_json,
       use_transparent,
@@ -300,9 +344,11 @@ class NativeLibrary {
       _prepare_multi_payment_ptr.asFunction<_dart_prepare_multi_payment>();
 
   ffi.Pointer<ffi.Int8> broadcast(
+    int coin,
     ffi.Pointer<ffi.Int8> tx_filename,
   ) {
     return _broadcast(
+      coin,
       tx_filename,
     );
   }
@@ -313,9 +359,11 @@ class NativeLibrary {
       _broadcast_ptr.asFunction<_dart_broadcast>();
 
   ffi.Pointer<ffi.Int8> broadcast_txhex(
+    int coin,
     ffi.Pointer<ffi.Int8> txhex,
   ) {
     return _broadcast_txhex(
+      coin,
       txhex,
     );
   }
@@ -326,11 +374,13 @@ class NativeLibrary {
       _broadcast_txhex_ptr.asFunction<_dart_broadcast_txhex>();
 
   int sync_historical_prices(
+    int coin,
     int now,
     int days,
     ffi.Pointer<ffi.Int8> currency,
   ) {
     return _sync_historical_prices(
+      coin,
       now,
       days,
       currency,
@@ -370,12 +420,14 @@ class NativeLibrary {
       _get_sapling_ptr.asFunction<_dart_get_sapling>();
 
   void store_contact(
+    int coin,
     int id,
     ffi.Pointer<ffi.Int8> name,
     ffi.Pointer<ffi.Int8> address,
     int dirty,
   ) {
     return _store_contact(
+      coin,
       id,
       name,
       address,
@@ -389,10 +441,12 @@ class NativeLibrary {
       _store_contact_ptr.asFunction<_dart_store_contact>();
 
   ffi.Pointer<ffi.Int8> commit_unsaved_contacts(
+    int coin,
     int account,
     int anchor_offset,
   ) {
     return _commit_unsaved_contacts(
+      coin,
       account,
       anchor_offset,
     );
@@ -405,9 +459,11 @@ class NativeLibrary {
       _commit_unsaved_contacts_ptr.asFunction<_dart_commit_unsaved_contacts>();
 
   void delete_account(
+    int coin,
     int account,
   ) {
     return _delete_account(
+      coin,
       account,
     );
   }
@@ -417,8 +473,12 @@ class NativeLibrary {
   late final _dart_delete_account _delete_account =
       _delete_account_ptr.asFunction<_dart_delete_account>();
 
-  void truncate_data() {
-    return _truncate_data();
+  void truncate_data(
+    int coin,
+  ) {
+    return _truncate_data(
+      coin,
+    );
   }
 
   late final _truncate_data_ptr =
@@ -427,11 +487,13 @@ class NativeLibrary {
       _truncate_data_ptr.asFunction<_dart_truncate_data>();
 
   ffi.Pointer<ffi.Int8> make_payment_uri(
+    int coin,
     ffi.Pointer<ffi.Int8> address,
     int amount,
     ffi.Pointer<ffi.Int8> memo,
   ) {
     return _make_payment_uri(
+      coin,
       address,
       amount,
       memo,
@@ -444,9 +506,11 @@ class NativeLibrary {
       _make_payment_uri_ptr.asFunction<_dart_make_payment_uri>();
 
   ffi.Pointer<ffi.Int8> parse_payment_uri(
+    int coin,
     ffi.Pointer<ffi.Int8> uri,
   ) {
     return _parse_payment_uri(
+      coin,
       uri,
     );
   }
@@ -496,10 +560,12 @@ class NativeLibrary {
       _restore_full_backup_ptr.asFunction<_dart_restore_full_backup>();
 
   void store_share_secret(
+    int coin,
     int account,
     ffi.Pointer<ffi.Int8> secret,
   ) {
     return _store_share_secret(
+      coin,
       account,
       secret,
     );
@@ -511,9 +577,11 @@ class NativeLibrary {
       _store_share_secret_ptr.asFunction<_dart_store_share_secret>();
 
   ffi.Pointer<ffi.Int8> get_share_secret(
+    int coin,
     int account,
   ) {
     return _get_share_secret(
+      coin,
       account,
     );
   }
@@ -589,11 +657,13 @@ class NativeLibrary {
       _run_multi_signer_ptr.asFunction<_dart_run_multi_signer>();
 
   ffi.Pointer<ffi.Int8> split_account(
+    int coin,
     int threshold,
     int participants,
     int account,
   ) {
     return _split_account(
+      coin,
       threshold,
       participants,
       account,
@@ -617,25 +687,25 @@ class NativeLibrary {
 
 typedef _c_init_wallet = ffi.Void Function(
   ffi.Pointer<ffi.Int8> db_path,
-  ffi.Pointer<ffi.Int8> ld_url,
 );
 
 typedef _dart_init_wallet = void Function(
   ffi.Pointer<ffi.Int8> db_path,
-  ffi.Pointer<ffi.Int8> ld_url,
 );
 
 typedef _c_reset_app = ffi.Void Function();
 
 typedef _dart_reset_app = void Function();
 
-typedef _c_warp_sync = ffi.Void Function(
+typedef _c_warp_sync = ffi.Int8 Function(
+  ffi.Uint8 coin,
   ffi.Int8 get_tx,
   ffi.Uint32 anchor_offset,
   ffi.Int64 port,
 );
 
-typedef _dart_warp_sync = void Function(
+typedef _dart_warp_sync = int Function(
+  int coin,
   int get_tx,
   int anchor_offset,
   int port,
@@ -649,57 +719,90 @@ typedef _dart_dart_post_cobject = void Function(
   ffi.Pointer<ffi.Void> ptr,
 );
 
-typedef _c_get_latest_height = ffi.Uint32 Function();
+typedef _c_get_latest_height = ffi.Uint32 Function(
+  ffi.Uint8 coin,
+);
 
-typedef _dart_get_latest_height = int Function();
+typedef _dart_get_latest_height = int Function(
+  int coin,
+);
 
 typedef _c_is_valid_key = ffi.Int8 Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> seed,
 );
 
 typedef _dart_is_valid_key = int Function(
+  int coin,
   ffi.Pointer<ffi.Int8> seed,
 );
 
 typedef _c_valid_address = ffi.Int8 Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> address,
 );
 
 typedef _dart_valid_address = int Function(
+  int coin,
   ffi.Pointer<ffi.Int8> address,
 );
 
 typedef _c_new_address = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
   ffi.Uint32 account,
 );
 
 typedef _dart_new_address = ffi.Pointer<ffi.Int8> Function(
+  int coin,
   int account,
 );
 
 typedef _c_set_mempool_account = ffi.Void Function(
+  ffi.Uint8 coin,
   ffi.Uint32 account,
 );
 
 typedef _dart_set_mempool_account = void Function(
+  int coin,
   int account,
 );
 
 typedef _c_new_account = ffi.Int32 Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> data,
+  ffi.Uint32 index,
 );
 
 typedef _dart_new_account = int Function(
+  int coin,
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> data,
+  int index,
 );
 
-typedef _c_get_mempool_balance = ffi.Int64 Function();
+typedef _c_new_sub_account = ffi.Int32 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+  ffi.Pointer<ffi.Int8> name,
+);
 
-typedef _dart_get_mempool_balance = int Function();
+typedef _dart_new_sub_account = int Function(
+  int coin,
+  int id,
+  ffi.Pointer<ffi.Int8> name,
+);
+
+typedef _c_get_mempool_balance = ffi.Int64 Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_get_mempool_balance = int Function(
+  int coin,
+);
 
 typedef _c_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
   ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> recipients_json,
   ffi.Uint32 anchor_offset,
@@ -708,6 +811,7 @@ typedef _c_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
 );
 
 typedef _dart_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
+  int coin,
   int account,
   ffi.Pointer<ffi.Int8> recipients_json,
   int anchor_offset,
@@ -715,65 +819,74 @@ typedef _dart_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
   int port,
 );
 
-typedef _c_try_warp_sync = ffi.Int8 Function(
-  ffi.Int8 get_tx,
-  ffi.Uint32 anchor_offset,
+typedef _c_skip_to_last_height = ffi.Void Function(
+  ffi.Uint8 coin,
 );
 
-typedef _dart_try_warp_sync = int Function(
-  int get_tx,
-  int anchor_offset,
+typedef _dart_skip_to_last_height = void Function(
+  int coin,
 );
-
-typedef _c_skip_to_last_height = ffi.Void Function();
-
-typedef _dart_skip_to_last_height = void Function();
 
 typedef _c_rewind_to_height = ffi.Void Function(
+  ffi.Uint8 coin,
   ffi.Uint32 height,
 );
 
 typedef _dart_rewind_to_height = void Function(
+  int coin,
   int height,
 );
 
-typedef _c_mempool_sync = ffi.Int64 Function();
+typedef _c_mempool_sync = ffi.Int64 Function(
+  ffi.Uint8 coin,
+);
 
-typedef _dart_mempool_sync = int Function();
+typedef _dart_mempool_sync = int Function(
+  int coin,
+);
 
 typedef _c_mempool_reset = ffi.Void Function(
+  ffi.Uint8 coin,
   ffi.Uint32 height,
 );
 
 typedef _dart_mempool_reset = void Function(
+  int coin,
   int height,
 );
 
 typedef _c_get_taddr_balance = ffi.Uint64 Function(
+  ffi.Uint8 coin,
   ffi.Uint32 account,
 );
 
 typedef _dart_get_taddr_balance = int Function(
+  int coin,
   int account,
 );
 
 typedef _c_shield_taddr = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
   ffi.Uint32 account,
 );
 
 typedef _dart_shield_taddr = ffi.Pointer<ffi.Int8> Function(
+  int coin,
   int account,
 );
 
 typedef _c_set_lwd_url = ffi.Void Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> url,
 );
 
 typedef _dart_set_lwd_url = void Function(
+  int coin,
   ffi.Pointer<ffi.Int8> url,
 );
 
 typedef _c_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
   ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> recipients_json,
   ffi.Int8 use_transparent,
@@ -781,6 +894,7 @@ typedef _c_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
 );
 
 typedef _dart_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
+  int coin,
   int account,
   ffi.Pointer<ffi.Int8> recipients_json,
   int use_transparent,
@@ -788,28 +902,34 @@ typedef _dart_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
 );
 
 typedef _c_broadcast = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> tx_filename,
 );
 
 typedef _dart_broadcast = ffi.Pointer<ffi.Int8> Function(
+  int coin,
   ffi.Pointer<ffi.Int8> tx_filename,
 );
 
 typedef _c_broadcast_txhex = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> txhex,
 );
 
 typedef _dart_broadcast_txhex = ffi.Pointer<ffi.Int8> Function(
+  int coin,
   ffi.Pointer<ffi.Int8> txhex,
 );
 
 typedef _c_sync_historical_prices = ffi.Uint32 Function(
+  ffi.Uint8 coin,
   ffi.Int64 now,
   ffi.Uint32 days,
   ffi.Pointer<ffi.Int8> currency,
 );
 
 typedef _dart_sync_historical_prices = int Function(
+  int coin,
   int now,
   int days,
   ffi.Pointer<ffi.Int8> currency,
@@ -834,6 +954,7 @@ typedef _dart_get_sapling = ffi.Pointer<ffi.Int8> Function(
 );
 
 typedef _c_store_contact = ffi.Void Function(
+  ffi.Uint8 coin,
   ffi.Uint32 id,
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> address,
@@ -841,6 +962,7 @@ typedef _c_store_contact = ffi.Void Function(
 );
 
 typedef _dart_store_contact = void Function(
+  int coin,
   int id,
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> address,
@@ -848,44 +970,56 @@ typedef _dart_store_contact = void Function(
 );
 
 typedef _c_commit_unsaved_contacts = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
   ffi.Uint32 account,
   ffi.Uint32 anchor_offset,
 );
 
 typedef _dart_commit_unsaved_contacts = ffi.Pointer<ffi.Int8> Function(
+  int coin,
   int account,
   int anchor_offset,
 );
 
 typedef _c_delete_account = ffi.Void Function(
+  ffi.Uint8 coin,
   ffi.Uint32 account,
 );
 
 typedef _dart_delete_account = void Function(
+  int coin,
   int account,
 );
 
-typedef _c_truncate_data = ffi.Void Function();
+typedef _c_truncate_data = ffi.Void Function(
+  ffi.Uint8 coin,
+);
 
-typedef _dart_truncate_data = void Function();
+typedef _dart_truncate_data = void Function(
+  int coin,
+);
 
 typedef _c_make_payment_uri = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> address,
   ffi.Uint64 amount,
   ffi.Pointer<ffi.Int8> memo,
 );
 
 typedef _dart_make_payment_uri = ffi.Pointer<ffi.Int8> Function(
+  int coin,
   ffi.Pointer<ffi.Int8> address,
   int amount,
   ffi.Pointer<ffi.Int8> memo,
 );
 
 typedef _c_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> uri,
 );
 
 typedef _dart_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
+  int coin,
   ffi.Pointer<ffi.Int8> uri,
 );
 
@@ -912,20 +1046,24 @@ typedef _dart_restore_full_backup = ffi.Pointer<ffi.Int8> Function(
 );
 
 typedef _c_store_share_secret = ffi.Void Function(
+  ffi.Uint8 coin,
   ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> secret,
 );
 
 typedef _dart_store_share_secret = void Function(
+  int coin,
   int account,
   ffi.Pointer<ffi.Int8> secret,
 );
 
 typedef _c_get_share_secret = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
   ffi.Uint32 account,
 );
 
 typedef _dart_get_share_secret = ffi.Pointer<ffi.Int8> Function(
+  int coin,
   int account,
 );
 
@@ -974,12 +1112,14 @@ typedef _dart_run_multi_signer = int Function(
 );
 
 typedef _c_split_account = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
   ffi.Uint32 threshold,
   ffi.Uint32 participants,
   ffi.Uint32 account,
 );
 
 typedef _dart_split_account = ffi.Pointer<ffi.Int8> Function(
+  int coin,
   int threshold,
   int participants,
   int account,

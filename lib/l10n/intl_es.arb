@@ -59,7 +59,7 @@
   "seed":"Semilla",
   "confirmDeleteAccount":"¿Está SEGURO de que desea BORRAR esta cuenta? DEBE tener una COPIA DE SEGURIDAD para recuperarla. Esta operación NO es reversible.",
   "changeAccountName":"Cambiar nombre de la cuenta",
-  "backupDataRequiredForRestore":"Copia De Seguridad - Requerido Para Restaurar",
+  "backupDataRequiredForRestore":"Copia De Seguridad - {name} - Requerido Para Restaurar",
   "secretKey":"Llave Secreta",
   "viewingKey":"Llave Lectura",
   "tapAnIconToShowTheQrCode":"Pinchar icono para mostrar código QR",
@@ -190,5 +190,10 @@
   "encryptedBackup": "{app} Encrypted Backup",
   "fullRestore": "Full Restore",
   "loadBackup": "Load Backup",
-  "backupAllAccounts": "Backup All Accounts"
+  "backupAllAccounts": "Backup All Accounts",
+  "simpleMode": "Simple Mode",
+  "accountIndex": "Account Index",
+  "subAccountOf": "Sub Account of {name}",
+  "newSubAccount": "New Sub Account",
+  "noActiveAccount": "No active account"
 }

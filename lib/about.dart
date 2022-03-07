@@ -11,7 +11,7 @@ import 'generated/l10n.dart';
 Future<void> showAbout(BuildContext context) async {
   final contentTemplate = await rootBundle.loadString('assets/about.md');
   final template = Template(contentTemplate);
-  var content = template.renderString({'APP': coin.app});
+  var content = template.renderString({'APP': APP_NAME});
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   String version = packageInfo.version;
   String code = packageInfo.buildNumber;
@@ -20,7 +20,7 @@ Future<void> showAbout(BuildContext context) async {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-              title: Text('${S.of(context).about} ${coin.app}'),
+              title: Text('${S.of(context).about} $APP_NAME'),
               contentPadding: EdgeInsets.zero,
               content: Container(
                 width: double.maxFinite,

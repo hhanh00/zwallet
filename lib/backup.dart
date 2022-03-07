@@ -3,9 +3,16 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'store.dart';
 import 'generated/l10n.dart';
+import 'accounts.dart' show getBackup;
+
+class AccountId {
+  final int coin;
+  final int id;
+  AccountId(this.coin, this.id);
+}
 
 class BackupPage extends StatefulWidget {
-  final int? accountId;
+  final AccountId? accountId;
 
   BackupPage(this.accountId);
 
@@ -21,14 +28,16 @@ class BackupState extends State<BackupPage> {
   final _shareController = TextEditingController();
 
   Future<bool> _init() async {
-    backup = await accountManager.getBackup(widget.accountId ?? accountManager.active.id);
-    _backupController.text = backup.value();
+    backup = await getBackup(widget.accountId ?? AccountId(active.coin, active.id));
+    _backupController.text = backupData;
     _skController.text = backup.sk ?? "";
     _ivkController.text = backup.ivk;
     final share = backup.share;
     _shareController.text = share?.value ?? "";
     return true;
   }
+
+  String get backupData => backup.value() + (backup.index != 0 ? " (Index: ${backup.index})" : "");
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +60,8 @@ class BackupState extends State<BackupPage> {
         children: [
           TextField(
             decoration: InputDecoration(
-                labelText: S.of(context).backupDataRequiredForRestore, prefixIcon: IconButton(icon: Icon(Icons.save),
-                onPressed: () => _showQR(backup.value(), "$name - backup"))),
+                labelText: s.backupDataRequiredForRestore(name), prefixIcon: IconButton(icon: Icon(Icons.save),
+                onPressed: () => _showQR(backupData, "$name - backup"))),
             controller: _backupController,
             minLines: 3,
             maxLines: 10,
@@ -88,17 +97,12 @@ class BackupState extends State<BackupPage> {
           ),
           Padding(padding: EdgeInsets.symmetric(vertical: 4)),
           Text(s.tapAnIconToShowTheQrCode),
-          Container(margin: EdgeInsets.all(8), padding: EdgeInsets.all(8), decoration: BoxDecoration(border: Border.all(width: 2, color: theme.primaryColor), borderRadius: BorderRadius.circular(4)),child:
-          GestureDetector(onLongPress: _onFullBackup, child: Text(s.backupWarning,
-          style: theme.textTheme.subtitle1!.copyWith(color: theme.primaryColor)))),
+          Container(margin: EdgeInsets.all(8), padding: EdgeInsets.all(8), decoration: BoxDecoration(border: Border.all(width: 2, color: theme.primaryColor), borderRadius: BorderRadius.circular(4)),
+            child: Text(s.backupWarning, style: theme.textTheme.subtitle1!.copyWith(color: theme.primaryColor))),
         ]
       ),
     ));
   }
 
   _showQR(String text, String title) => showQR(context, text, title);
-
-  _onFullBackup() {
-    Navigator.of(context).pushNamed('/fullBackup');
-  }
 }

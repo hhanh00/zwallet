@@ -1,5 +1,5 @@
-name: warp
-description: A new Flutter project.
+name: ZYWallet
+description: Z/Ycash Wallet
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.1.7+199
+version: 0.0.1+1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -63,6 +63,7 @@ dependencies:
     git:
       url: https://github.com/hhanh00/flutter_barcode_scanner.git
       ref: d338bdc5c0b797d81694f04bd5f52e8171939af5
+  flutter_speed_dial: ^5.0.0
   currency_text_input_formatter: ^2.1.2
   sensors_plus: ^1.1.0
   connectivity_plus: ^1.1.0
@@ -89,7 +90,7 @@ dev_dependencies:
   flutter_native_splash: ^1.2.3
 
 flutter_app_name:
-  name: "YWallet"
+  name: "ZYWallet"
 
 flutter_icons:
   android: true
@@ -120,6 +121,8 @@ flutter:
     - assets/wallet.svg
     - assets/contacts.svg
     - assets/multipay.svg
+    - assets/ycash.png
+    - assets/zcash.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

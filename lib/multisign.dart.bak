@@ -92,7 +92,7 @@ class MultisigAggregatorState extends State<MultisigAggregatorPage> {
     final tx = await WarpApi.submitTx(widget.txSummary.txJson, PORT);
     SnackBar snackBar;
     if (tx.startsWith("00")) { // first byte is success/error
-      final txId = WarpApi.broadcastHex(tx.substring(2));
+      final txId = WarpApi.broadcastHex(accountManager.coin, tx.substring(2));
       snackBar = SnackBar(content: Text("${s.txId}: $txId"));
     }
     else {
@@ -248,7 +248,7 @@ class MultisigState extends State<MultisigPage> {
 
   _split() async {
     final s = S.of(context);
-    final shareString = WarpApi.splitAccount(_threshold, _participants, accountManager.active.id);
+    final shareString = WarpApi.splitAccount(accountManager.coin, _threshold, _participants, accountManager.active.id);
     Navigator.of(context).pushNamed('/multisig_shares', arguments: shareString);
   }
 

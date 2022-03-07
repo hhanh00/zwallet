@@ -59,7 +59,7 @@
   "seed": "Graine",
   "confirmDeleteAccount": "Êtes-vous SUR de vouloir SUPPRIMER ce compte ? Vous DEVEZ avoir une SAUVEGARDE pour le récupérer. Cette opération n'est PAS réversible.",
   "changeAccountName": "Modifier le nom du compte",
-  "backupDataRequiredForRestore": "Données de sauvegarde - requises pour la restauration",
+  "backupDataRequiredForRestore": "Données de sauvegarde - {name} - requises pour la restauration",
   "secretKey": "Clé secrète",
   "viewingKey": "Affichage de la clé",
   "tapAnIconToShowTheQrCode": "Appuyez sur une icône pour afficher le code QR",
@@ -190,5 +190,10 @@
   "encryptedBackup": "Sauvegarde de {app} ",
   "fullRestore": "Restauration complète",
   "loadBackup": "Recharger une sauvegarde",
-  "backupAllAccounts": "Sauver tous les comptes"
+  "backupAllAccounts": "Sauver tous les comptes",
+  "simpleMode": "Mode Simple",
+  "accountIndex": "Index du Compte",
+  "subAccountOf": "Sous Compte de {name}",
+  "newSubAccount": "Nouveau Sous Compte",
+  "noActiveAccount": "Aucun Compte sélectionné"
 }

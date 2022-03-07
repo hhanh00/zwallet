@@ -54,5 +54,5 @@ jniLibs/
 ic_launcher.png
 Icon-App-*.png
 *.apk
-assets/icon.png
-lib/coin/coindef.dart
+
+Cargo.lock

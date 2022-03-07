@@ -6,7 +6,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:warp/store.dart';
+import 'coin/coins.dart';
+import 'settings.dart';
+import 'store.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:warp_api/types.dart';
 
@@ -78,7 +80,7 @@ class MultiPayState extends State<MultiPayPage> {
                 child: Text(S
                     .of(context)
                     .sendingATotalOfAmountCointickerToCountRecipients(
-                        amount, coin.ticker, count))),
+                        amount, activeCoin().ticker, count))),
             actions: confirmButtons(
                 context, () => Navigator.of(context).pop(true),
                 cancelValue: false)));
@@ -87,7 +89,7 @@ class MultiPayState extends State<MultiPayPage> {
       await send(context, multipayData.recipients, false);
 
       multipayData.clear();
-      await accountManager.fetchAccountData(true);
+      await active.update();
     }
   }
 }

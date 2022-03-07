@@ -41,7 +41,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "me.hanh.zwallet"
+        applicationId "me.hanh.zywallet"
         minSdkVersion 24
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()

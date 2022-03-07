@@ -6,9 +6,7 @@ import 'main.dart';
 import 'generated/l10n.dart';
 
 class HistoryWidget extends StatefulWidget {
-  final void Function(int index) tabTo;
-
-  HistoryWidget(this.tabTo);
+  HistoryWidget();
 
   @override
   State<StatefulWidget> createState() => HistoryState();
@@ -43,47 +41,47 @@ class HistoryState extends State<HistoryWidget>
                     }),
                 DataColumn(
                   label: Text(S.of(context).datetime +
-                      accountManager.txSortConfig.getIndicator("time")),
+                      active.txSortConfig.getIndicator("time")),
                   onSort: (_, __) {
                     setState(() {
-                      accountManager.sortTx("time");
+                      active.sortTx("time");
                     });
                   },
                 ),
                 DataColumn(
                   label: Text(S.of(context).amount +
-                      accountManager.txSortConfig.getIndicator("amount")),
+                      active.txSortConfig.getIndicator("amount")),
                   numeric: true,
                   onSort: (_, __) {
                     setState(() {
-                      accountManager.sortTx("amount");
+                      active.sortTx("amount");
                     });
                   },
                 ),
                 DataColumn(
                   label: Text(S.of(context).txId +
-                      accountManager.txSortConfig.getIndicator("txid")),
+                      active.txSortConfig.getIndicator("txid")),
                   onSort: (_, __) {
                     setState(() {
-                      accountManager.sortTx("txid");
+                      active.sortTx("txid");
                     });
                   },
                 ),
                 DataColumn(
                   label: Text(S.of(context).address +
-                      accountManager.txSortConfig.getIndicator("address")),
+                      active.txSortConfig.getIndicator("address")),
                   onSort: (_, __) {
                     setState(() {
-                      accountManager.sortTx("address");
+                      active.sortTx("address");
                     });
                   },
                 ),
                 DataColumn(
                   label: Text(S.of(context).memo +
-                      accountManager.txSortConfig.getIndicator("memo")),
+                      active.txSortConfig.getIndicator("memo")),
                   onSort: (_, __) {
                     setState(() {
-                      accountManager.sortTx("memo");
+                      active.sortTx("memo");
                     });
                   },
                 ),
@@ -101,7 +99,7 @@ class HistoryState extends State<HistoryWidget>
   }
 
   _onExport() async {
-    final csvData = accountManager.sortedTxs.map((tx) => [
+    final csvData = active.sortedTxs.map((tx) => [
       tx.fullTxId, tx.height, tx.timestamp, tx.address, tx.contact ?? '',
       tx.value, tx.memo]).toList();
     await shareCsv(csvData, 'tx_history.csv', S.of(context).transactionHistory);
@@ -115,7 +113,7 @@ class HistoryDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    final tx = accountManager.sortedTxs[index];
+    final tx = active.sortedTxs[index];
     final confsOrHeight = settings.showConfirmations
         ? syncStatus.latestHeight - tx.height + 1
         : tx.height;
@@ -144,7 +142,7 @@ class HistoryDataSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => accountManager.txs.length;
+  int get rowCount => active.txs.length;
 
   @override
   int get selectedRowCount => 0;

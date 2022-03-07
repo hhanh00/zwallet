@@ -12,7 +12,6 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
@@ -23,15 +22,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:quick_actions/quick_actions.dart';
-import 'package:flutter/services.dart' show PlatformException;
+import 'accounts.dart';
+import 'coin/coins.dart';
 import 'generated/l10n.dart';
 
-import 'account.dart';
 import 'account_manager.dart';
 import 'backup.dart';
-import 'coin/coindef.dart';
+import 'home.dart';
 import 'multisend.dart';
-import 'multisign.dart';
+// import 'multisign.dart';
 import 'payment_uri.dart';
 import 'reset.dart';
 import 'settings.dart';
@@ -41,58 +40,75 @@ import 'store.dart';
 import 'theme_editor.dart';
 import 'transaction.dart';
 
-var coin = Coin();
-
 const ZECUNIT = 100000000.0;
 var ZECUNIT_DECIMAL = Decimal.parse('100000000');
 const mZECUNIT = 100000;
 const DEFAULT_FEE = 1000;
 const MAXMONEY = 21000000;
 const DOC_URL = "https://hhanh00.github.io/zwallet/";
+const APP_NAME = "ZYWallet";
 
-var accountManager = AccountManager();
+// var accountManager = AccountManager();
 var priceStore = PriceStore();
 var syncStatus = SyncStatus();
 var settings = Settings();
 var multipayData = MultiPayStore();
 var eta = ETAStore();
 var contacts = ContactStore();
-
-Future<Database> getDatabase() async {
-  var databasesPath = await getDatabasesPath();
-  final path = join(databasesPath, 'zec.db');
-  var db = await openDatabase(path);
-  return db;
-}
+var accounts = AccountManager2();
+var active = ActiveAccount();
 
 StreamSubscription? subUniLinks;
 
+void handleUri(BuildContext context, Uri uri) {
+  final scheme = uri.scheme;
+  final coinDef = settings.coins.firstWhere((c) => c.def.currency == scheme);
+  final id = settings.coins[coinDef.coin].active;
+  if (id != 0) {
+    active.setActiveAccount(coinDef.coin, id);
+    Navigator.of(context).pushNamed(
+        '/send', arguments: SendPageArgs(uri: uri.toString()));
+  }
+}
+
 Future<void> initUniLinks(BuildContext context) async {
   try {
-    final initialLink = await getInitialLink();
-    if (initialLink != null)
-      Navigator.of(context).pushNamed(
-          '/send', arguments: SendPageArgs(uri: initialLink));
+    final uri = await getInitialUri();
+    if (uri != null) {
+      handleUri(context, uri);
+    }
   } on PlatformException {}
 
-  subUniLinks = linkStream.listen((String? uri) {
-    Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(uri: uri));
+  subUniLinks = linkStream.listen((String? uriString) {
+    if (uriString == null) return;
+    final uri = Uri.parse(uriString);
+    handleUri(context, uri);
   });
 }
 
-void handleQuickAction(BuildContext context, String shortcut) {
-  switch (shortcut) {
-    case 'receive':
-      Navigator.of(context).pushNamed('/receive');
-      break;
-    case 'send':
-      Navigator.of(context).pushNamed('/send');
-      break;
+void handleQuickAction(BuildContext context, String type) {
+  final t = type.split(".");
+  final coin = int.parse(t[0]);
+  final shortcut = t[1];
+  final a = settings.coins[coin].active;
+
+  if (a != 0) {
+    Future.microtask(() async {
+      await active.setActiveAccount(coin, a);
+      switch (shortcut) {
+        case 'receive':
+          Navigator.of(context).pushNamed('/receive');
+          break;
+        case 'send':
+          Navigator.of(context).pushNamed('/send');
+          break;
+      }
+    });
   }
 }
 
 class LoadProgress extends StatelessWidget {
-  double value;
+  final double value;
 
   LoadProgress(this.value);
 
@@ -134,7 +150,8 @@ void main() {
                   headingRowColor: MaterialStateColor.resolveWith(
                           (_) => settings.themeData.highlightColor)));
           return MaterialApp(
-            title: coin.app,
+            title: APP_NAME,
+            debugShowCheckedModeBanner: false,
             theme: theme,
             home: home,
             scaffoldMessengerKey: rootScaffoldMessengerKey,
@@ -147,7 +164,7 @@ void main() {
             supportedLocales: S.delegate.supportedLocales,
             onGenerateRoute: (RouteSettings routeSettings) {
               var routes = <String, WidgetBuilder>{
-                '/account': (context) => AccountPage(),
+                '/account': (context) => HomePage(),
                 '/restore': (context) => RestorePage(),
                 '/send': (context) =>
                     SendPage(routeSettings.arguments as SendPageArgs?),
@@ -158,13 +175,13 @@ void main() {
                 '/tx': (context) =>
                     TransactionPage(routeSettings.arguments as Tx),
                 '/backup': (context) =>
-                    BackupPage(routeSettings.arguments as int?),
+                    BackupPage(routeSettings.arguments as AccountId?),
                 '/multipay': (context) => MultiPayPage(),
-                '/multisig': (context) => MultisigPage(),
-                '/multisign': (context) => MultisigAggregatorPage(
-                    routeSettings.arguments as TxSummary),
-                '/multisig_shares': (context) =>
-                    MultisigSharesPage(routeSettings.arguments as String),
+                // '/multisig': (context) => MultisigPage(),
+                // '/multisign': (context) => MultisigAggregatorPage(
+                //     routeSettings.arguments as TxSummary),
+                // '/multisig_shares': (context) =>
+                //     MultisigSharesPage(routeSettings.arguments as String),
                 '/edit_theme': (context) =>
                     ThemeEditorPage(onSaved: settings.updateCustomThemeColors),
                 '/reset': (context) => ResetPage(),
@@ -185,6 +202,7 @@ class ZWalletApp extends StatefulWidget {
 
 class ZWalletAppState extends State<ZWalletApp> {
   bool initialized = false;
+  late Future<bool> init;
 
   RateMyApp rateMyApp = RateMyApp(
     preferencesPrefix: 'rateMyApp_',
@@ -201,32 +219,49 @@ class ZWalletAppState extends State<ZWalletApp> {
         rateMyApp.showRateDialog(this.context);
       }
     });
+    init = _init();
   }
 
-  Future<bool> _init(BuildContext context) async {
-    final s = S.of(this.context);
+  Future<bool> _init() async {
     if (!initialized) {
       initialized = true;
       final dbPath = await getDatabasesPath();
-      WarpApi.initWallet(dbPath + "/zec.db", settings.getLWD());
-      final db = await getDatabase();
-      await accountManager.init(db);
-      await contacts.init(db);
-      await syncStatus.init();
-      await initUniLinks(context);
+      await ycash.open(dbPath);
+      await zcash.open(dbPath);
+      WarpApi.initWallet(dbPath);
+      for (var s in settings.servers) {
+        WarpApi.updateLWD(s.coin, s.getLWDUrl());
+      }
+      await accounts.refresh();
+      await active.restore();
+      await syncStatus.update();
+      if (accounts.list.isEmpty) {
+        for (var c in settings.coins) {
+            syncStatus.markAsSynced(c.coin);
+          }
+        }
+
+      await initUniLinks(this.context);
       final quickActions = QuickActions();
       quickActions.initialize((type) {
         handleQuickAction(this.context, type);
       });
       if (!settings.linkHooksInitialized) {
-        quickActions.setShortcutItems(<ShortcutItem>[
-          ShortcutItem(type: 'receive',
-              localizedTitle: s.receive(coin.ticker),
-              icon: 'receive'),
-          ShortcutItem(type: 'send',
-              localizedTitle: s.sendCointicker(coin.ticker),
-              icon: 'send'),
-        ]);
+        Future.microtask(() {
+          final s = S.of(this.context);
+          List<ShortcutItem> shortcuts = [];
+          for (var c in settings.coins) {
+            final coin = c.coin;
+            final ticker = c.def.ticker;
+            shortcuts.add(ShortcutItem(type: '$coin.receive',
+                localizedTitle: s.receive(ticker),
+                icon: 'receive'));
+            shortcuts.add(ShortcutItem(type: '$coin.send',
+                localizedTitle: s.sendCointicker(ticker),
+                icon: 'send'));
+            }
+          quickActions.setShortcutItems(shortcuts);
+        });
         await settings.setLinkHooksInitialized();
       }
     }
@@ -236,12 +271,10 @@ class ZWalletAppState extends State<ZWalletApp> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _init(context),
+        future: init,
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LoadProgress(0.7);
-          return accountManager.accounts.isNotEmpty
-              ? AccountPage() :
-              AccountManagerPage();
+          return HomePage();
         });
   }
 }
@@ -414,6 +447,7 @@ Color amountColor(BuildContext context, num a) {
 
 TextStyle fontWeight(TextStyle style, num v) {
   final value = v.abs();
+  final coin = activeCoin();
   final style2 = style.copyWith(fontFeatures: [FontFeature.tabularFigures()]);
   if (value >= coin.weights[2])
     return style2.copyWith(fontWeight: FontWeight.w800);
@@ -526,13 +560,13 @@ Future<void> shieldTAddr(BuildContext context) async {
             content: Text(S
                 .of(context)
                 .doYouWantToTransferYourEntireTransparentBalanceTo(
-                coin.ticker)),
+                activeCoin().ticker)),
             actions: confirmButtons(context, () async {
               final s = S.of(context);
               Navigator.of(context).pop();
               final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
               rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
-              final txid = await WarpApi.shieldTAddr(accountManager.active.id);
+              final txid = await WarpApi.shieldTAddr(active.coin, active.id);
               final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
               rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
             })),

@@ -101,10 +101,10 @@ class FullBackupPage extends StatelessWidget {
 
   _onSave(BuildContext context) async {
     Directory tempDir = await getTemporaryDirectory();
-    String filename = "${tempDir.path}/${coin.app}.bak";
+    String filename = "${tempDir.path}/$APP_NAME.bak";
     final file = File(filename);
     await file.writeAsString(backup);
-    Share.shareFiles([filename], subject: S.of(context).encryptedBackup(coin.app));
+    Share.shareFiles([filename], subject: S.of(context).encryptedBackup(APP_NAME));
   }
 }
 
@@ -148,7 +148,7 @@ class _FullRestoreState extends State<FullRestorePage> {
         rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
       }
       else {
-        await accountManager.refresh();
+        await accounts.refresh();
         syncStatus.setAccountRestored(true);
         Navigator.of(context).pop();
       }
