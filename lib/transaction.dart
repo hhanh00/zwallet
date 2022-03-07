@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'main.dart';
+import 'settings.dart';
 import 'store.dart';
 import 'generated/l10n.dart';
 
@@ -41,6 +42,6 @@ class TransactionState extends State<TransactionPage> {
   }
 
   _onOpen() {
-    launch("${coin.explorerUrl}${widget.tx.fullTxId}");
+    launch("${activeCoin().explorerUrl}${widget.tx.fullTxId}");
   }
 }

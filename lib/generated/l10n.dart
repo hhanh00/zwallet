@@ -630,13 +630,13 @@ class S {
     );
   }
 
-  /// `Backup Data - Required for Restore`
-  String get backupDataRequiredForRestore {
+  /// `Backup Data - {name} - Required for Restore`
+  String backupDataRequiredForRestore(Object name) {
     return Intl.message(
-      'Backup Data - Required for Restore',
+      'Backup Data - $name - Required for Restore',
       name: 'backupDataRequiredForRestore',
       desc: '',
-      args: [],
+      args: [name],
     );
   }
 
@@ -1987,6 +1987,56 @@ class S {
     return Intl.message(
       'Backup All Accounts',
       name: 'backupAllAccounts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Simple Mode`
+  String get simpleMode {
+    return Intl.message(
+      'Simple Mode',
+      name: 'simpleMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account Index`
+  String get accountIndex {
+    return Intl.message(
+      'Account Index',
+      name: 'accountIndex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sub Account of {name}`
+  String subAccountOf(Object name) {
+    return Intl.message(
+      'Sub Account of $name',
+      name: 'subAccountOf',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `New Sub Account`
+  String get newSubAccount {
+    return Intl.message(
+      'New Sub Account',
+      name: 'newSubAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No active account`
+  String get noActiveAccount {
+    return Intl.message(
+      'No active account',
+      name: 'noActiveAccount',
       desc: '',
       args: [],
     );

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.hanh.zwallet">
+    package="me.hanh.zywallet">
    <application
-        android:label="ZWallet"
+        android:label="ZYWallet"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -21,6 +21,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                        android:scheme="ycash"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

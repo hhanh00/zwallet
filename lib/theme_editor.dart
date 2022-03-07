@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:warp/main.dart';
+import 'main.dart';
 
 import 'generated/l10n.dart';
 

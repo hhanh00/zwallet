@@ -7,9 +7,7 @@ import 'store.dart';
 import 'generated/l10n.dart';
 
 class NoteWidget extends StatefulWidget {
-  final void Function(int index) tabTo;
-
-  NoteWidget(this.tabTo);
+  NoteWidget();
 
   @override
   State<StatefulWidget> createState() => _NoteState();
@@ -21,11 +19,12 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SingleChildScrollView(
         padding: EdgeInsets.all(8),
         scrollDirection: Axis.vertical,
         child: Observer(builder: (context) {
-          accountManager.sortedNotes;
+          active.sortedNotes;
           return PaginatedDataTable(
             columns: [
               DataColumn(
@@ -39,20 +38,20 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
                   }),
               DataColumn(
                 label: Text(S.of(context).datetime +
-                    accountManager.noteSortConfig.getIndicator("time")),
+                    active.noteSortConfig.getIndicator("time")),
                 onSort: (_, __) {
                   setState(() {
-                    accountManager.sortNotes("time");
+                    active.sortNotes("time");
                   });
                 },
               ),
               DataColumn(
                 numeric: true,
                 label: Text(S.of(context).amount +
-                    accountManager.noteSortConfig.getIndicator("amount")),
+                    active.noteSortConfig.getIndicator("amount")),
                 onSort: (_, __) {
                   setState(() {
-                    accountManager.sortNotes("amount");
+                    active.sortNotes("amount");
                   });
                 },
               ),
@@ -76,11 +75,11 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
   }
 
   _onRowSelected(Note note) {
-    accountManager.excludeNote(note);
+    active.excludeNote(note);
   }
 
   _selectInverse() {
-    accountManager.invertExcludedNotes();
+    active.invertExcludedNotes();
   }
 }
 
@@ -92,7 +91,7 @@ class NotesDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    final note = accountManager.sortedNotes[index];
+    final note = active.sortedNotes[index];
     final theme = Theme.of(context);
     final confsOrHeight = settings.showConfirmations
         ? syncStatus.latestHeight - note.height + 1
@@ -127,7 +126,7 @@ class NotesDataSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => accountManager.notes.length;
+  int get rowCount => active.notes.length;
 
   @override
   int get selectedRowCount => 0;

@@ -1,10 +1,13 @@
+import 'package:ZYWallet/accounts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:warp/main.dart';
-import 'package:warp/store.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:warp_api/warp_api.dart';
+import 'backup.dart';
+import 'main.dart';
+import 'store.dart';
 import 'generated/l10n.dart';
-
 import 'about.dart';
 
 class AccountManagerPage extends StatefulWidget {
@@ -14,23 +17,20 @@ class AccountManagerPage extends StatefulWidget {
 
 class AccountManagerState extends State<AccountManagerPage> {
   var _accountNameController = TextEditingController();
-  var _tbalances = Map<int, int>();
 
   @override
   initState() {
     super.initState();
     Future.microtask(() async {
-      await accountManager.refresh();
-      final tbalances = await accountManager.getAllTBalances();
-      setState(() {
-        _tbalances = tbalances;
-      });
+      await accounts.refresh();
+      await accounts.updateTBalance();
     });
     showAboutOnce(this.context);
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
         appBar: AppBar(title: Text(S.of(context).selectAccount), actions: [
           PopupMenuButton<String>(
@@ -43,43 +43,73 @@ class AccountManagerState extends State<AccountManagerPage> {
               onSelected: _onMenu)
         ]),
         body: Padding(padding: EdgeInsets.all(8), child: Observer(
-            builder: (context) =>
-                  accountManager.accounts.isEmpty
-                      ? Center(child: NoAccount())
-                      : ListView.builder(
-                          itemCount: accountManager.accounts.length,
-                          itemBuilder: (BuildContext context, int index) {
-                          final a = accountManager.accounts[index];
-                          final zbal = a.balance / ZECUNIT;
-                          final tbal = (_tbalances[a.id] ?? 0) / ZECUNIT;
-                          final balance = zbal + tbal;
-                          return Card(
-                              child: Dismissible(
-                            key: Key(a.name),
-                            child: ListTile(
-                              title: Text(a.name,
-                                  style: Theme.of(context).textTheme.headline5),
-                              subtitle: Text("${decimalFormat(zbal, 3)} + ${_tbalances[a.id] != null ? decimalFormat(tbal, 3) : '?'}"),
-                              trailing: Text(decimalFormat(balance, 3)),
-                              onTap: () {
-                                _selectAccount(a);
-                              },
-                              onLongPress: () {
-                                _editAccount(a);
-                              },
-                            ),
-                            confirmDismiss: (d) => _onAccountDelete(a),
-                            onDismissed: (d) =>
-                                _onDismissed(index, a),
-                          ));
-                        }),
+            builder: (context) {
+              final _1 = accounts.epoch;
+              return accounts.list.isEmpty
+                  ? Center(child: NoAccount())
+                  : ListView.builder(
+                      itemCount: accounts.list.length,
+                      itemBuilder: (BuildContext context, int index) {
+                      final a = accounts.list[index];
+                      final weight = settings.coins[a.coin].active == a.id ? FontWeight.bold : FontWeight.normal;
+                      final zbal = a.balance / ZECUNIT;
+                      final tbal = a.tbalance / ZECUNIT;
+                      final balance = zbal + tbal;
+                      return Card(
+                          child: Dismissible(
+                        key: Key(a.name),
+                        child: ListTile(
+                          leading: CircleAvatar(backgroundImage: settings.coins[a.coin].def.image),
+                          title: Text(a.name,
+                              style: theme.textTheme.headline5
+                                ?.merge(TextStyle(fontWeight: weight))
+                                .apply(color: a.coin == 0 ? theme.colorScheme.primary : theme.colorScheme.secondary,
+                              )),
+                          subtitle: Text("${decimalFormat(zbal, 3)} + ${decimalFormat(tbal, 3)}"),
+                          trailing: Text(decimalFormat(balance, 3)),
+                          onTap: () {
+                            _selectAccount(a);
+                          },
+                          onLongPress: () {
+                            _editAccount(a);
+                          },
+                        ),
+                        confirmDismiss: (d) => _onAccountDelete(a),
+                        onDismissed: (d) =>
+                            _onDismissed(index, a),
+                      ));
+                    });},
                 )),
-        floatingActionButton: GestureDetector(onLongPress: _onFullRestore, child: FloatingActionButton(
-            onPressed: _onRestore, child: Icon(Icons.add))));
+        floatingActionButton: SpeedDial(
+          icon: Icons.add,
+          onPress: _onRestore,
+          children: [
+            SpeedDialChild(
+              child: Icon(Icons.download),
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              label: 'Restore Batch',
+              onTap: _onFullRestore,
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.upload),
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              label: 'Save Batch',
+              onTap: _onFullBackup,
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.subdirectory_arrow_right),
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+              label: 'New Sub-account',
+              onTap: _onNewSubaccount,
+            ),
+          ]
+        ));
   }
 
   Future<bool> _onAccountDelete(Account account) async {
-    if (accountManager.accounts.length == 1) return false;
     final confirm1 = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -94,7 +124,7 @@ class AccountManagerState extends State<AccountManagerPage> {
     if (!confirm2) return false;
 
     final zbal = account.balance;
-    final tbal = _tbalances[account.id] ?? 0;
+    final tbal = account.tbalance;
     if (zbal + tbal > 0) {
       final confirm3 = await showDialog<bool>(
         context: context,
@@ -112,27 +142,21 @@ class AccountManagerState extends State<AccountManagerPage> {
   }
 
   void _onDismissed(int index, Account account) async {
-    await accountManager.delete(account.id);
-    accountManager.refresh();
+    await accounts.delete(account.coin, account.id);
+    accounts.refresh();
   }
 
   _selectAccount(Account account) async {
-    await accountManager.setActiveAccount(account);
+    await active.setActiveAccount(account.coin, account.id);
     if (syncStatus.accountRestored) {
       syncStatus.setAccountRestored(false);
       final approved = await rescanDialog(context);
       if (approved)
-        syncStatus.sync(context);
-    }
-    else if (syncStatus.syncedHeight < 0) {
-      syncStatus.setSyncedToLatestHeight();
+        syncStatus.rescan(context);
     }
 
     final navigator = Navigator.of(context);
-    if (navigator.canPop())
-      navigator.pop();
-    else
-      navigator.pushReplacementNamed('/account');
+    navigator.pushNamedAndRemoveUntil('/account', (route) => false);
   }
 
   _editAccount(Account account) async {
@@ -146,7 +170,7 @@ class AccountManagerState extends State<AccountManagerPage> {
   }
 
   _changeAccountName(Account account) {
-    accountManager.changeAccountName(account, _accountNameController.text);
+    accounts.changeAccountName(account.coin, account.id, _accountNameController.text);
     Navigator.of(context).pop();
   }
 
@@ -167,6 +191,32 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   _settings() {
     Navigator.of(this.context).pushNamed('/settings');
+  }
+
+  _onNewSubaccount() async {
+    final s = S.of(context);
+    if (active.id == 0) {
+      showSnackBar(s.noActiveAccount);
+      return;
+    }
+    final newName = s.subAccountOf(active.account.name);
+    _accountNameController.text = newName;
+    final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+            title: Text(s.newSubAccount),
+            content: TextField(controller: _accountNameController),
+            actions: confirmButtons(context, () {
+              Navigator.of(context).pop(true);
+            })));
+    if (confirmed == true) {
+      WarpApi.newSubAccount(active.coin, active.id, _accountNameController.text);
+      await accounts.refresh();
+    }
+  }
+  
+  _onFullBackup() {
+    Navigator.of(context).pushNamed('/fullBackup');
   }
 
   _onFullRestore() {

@@ -1,16 +1,17 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:warp/dualmoneyinput.dart';
+import 'dualmoneyinput.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
 import 'generated/l10n.dart';
+import 'settings.dart';
 
 class PaymentURIPage extends StatefulWidget {
   final String address;
 
-  PaymentURIPage(String? _address): address = _address ?? accountManager.active.address;
+  PaymentURIPage(String? _address): address = _address ?? active.account.address;
 
   @override
   PaymentURIState createState() => PaymentURIState();
@@ -27,7 +28,7 @@ class PaymentURIState extends State<PaymentURIPage> {
     super.initState();
     qrText = widget.address;
     Future.microtask(() {
-      priceStore.fetchZecPrice();
+      priceStore.fetchCoinPrice(active.coin);
     });
   }
 
@@ -38,7 +39,7 @@ class PaymentURIState extends State<PaymentURIPage> {
     return Form(
         key: _formKey,
         child: Scaffold(
-          appBar: AppBar(title: Text(S.of(context).receive(coin.ticker))),
+          appBar: AppBar(title: Text(S.of(context).receive(activeCoin().ticker))),
           body: SingleChildScrollView(
             child: GestureDetector(
                 onTap: () { FocusScope.of(context).unfocus(); },
@@ -83,7 +84,7 @@ class PaymentURIState extends State<PaymentURIPage> {
 
     final String _qrText;
     if (amount > 0) {
-      _qrText = WarpApi.makePaymentURI(widget.address, amount, memo);
+      _qrText = WarpApi.makePaymentURI(active.coin, widget.address, amount, memo);
     } else
       _qrText = widget.address;
 

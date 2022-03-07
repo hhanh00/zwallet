@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:warp/dualmoneyinput.dart';
+import 'dualmoneyinput.dart';
 import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:decimal/decimal.dart';
@@ -68,15 +68,13 @@ class SendState extends State<SendPage> {
     super.initState();
 
     _newBlockAutorunDispose = autorun((_) async {
-      final _ = syncStatus.latestHeight;
-      final sBalance = await accountManager.getShieldedBalance();
-      final tBalance = accountManager.tbalance;
-      final excludedBalance = await accountManager.getExcludedBalance();
-      final underConfirmedBalance =
-          await accountManager.getUnderConfirmedBalance();
-      final unconfirmedSpentBalance =
-          await accountManager.getUnconfirmedSpentBalance();
-      final unconfirmedBalance = accountManager.unconfirmedBalance;
+      final _ = active.dataEpoch;
+      final sBalance = active.balances.shieldedBalance;
+      final tBalance = active.tbalance;
+      final excludedBalance = active.balances.excludedBalance;
+      final underConfirmedBalance = active.balances.underConfirmedBalance;
+      final unconfirmedSpentBalance = active.balances.unconfirmedBalance;
+      final unconfirmedBalance = active.balances.unconfirmedBalance;
       setState(() {
         _sBalance = sBalance;
         _tBalance = tBalance;
@@ -98,10 +96,10 @@ class SendState extends State<SendPage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final simpleMode = settings.simpleMode;
-    _memoController.text = settings.memoSignature ?? s.sendFrom(coin.app);
+    _memoController.text = settings.memoSignature ?? s.sendFrom(APP_NAME);
 
     return Scaffold(
-        appBar: AppBar(title: Text(s.sendCointicker(coin.ticker))),
+        appBar: AppBar(title: Text(s.sendCointicker(active.coinDef.ticker))),
         body: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
@@ -117,7 +115,7 @@ class SendState extends State<SendPage> {
                           textFieldConfiguration: TextFieldConfiguration(
                             controller: _addressController,
                             decoration: InputDecoration(
-                                labelText: s.sendCointickerTo(coin.ticker)),
+                                labelText: s.sendCointickerTo(active.coinDef.ticker)),
                             minLines: 4,
                             maxLines: 10,
                             keyboardType: TextInputType.multiline,
@@ -172,7 +170,7 @@ class SendState extends State<SendPage> {
                                     title: Text(s.roundToMillis),
                                     value: _useMillis,
                                     onChanged: _setUseMillis),
-                                if (accountManager.canPay && !widget.isMulti)
+                                if (active.canPay && !widget.isMulti)
                                   CheckboxListTile(
                                     title: Text(s.useTransparentBalance),
                                     value: _useTransparent,
@@ -209,7 +207,7 @@ class SendState extends State<SendPage> {
     if (c.isNotEmpty) return null;
     final zaddr = WarpApi.getSaplingFromUA(v);
     if (zaddr.isNotEmpty) return null;
-    if (!WarpApi.validAddress(v)) return s.invalidAddress;
+    if (!WarpApi.validAddress(active.coin, v)) return s.invalidAddress;
     return null;
   }
 
@@ -259,7 +257,7 @@ class SendState extends State<SendPage> {
   }
 
   void _setPaymentURI(String uri) {
-    final json = WarpApi.parsePaymentURI(uri);
+    final json = WarpApi.parsePaymentURI(active.coin, uri);
     try {
       final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
       setState(() {
@@ -302,7 +300,7 @@ class SendState extends State<SendPage> {
                   title: Text(s.pleaseConfirm),
                   content: SingleChildScrollView(
                       child: Text(s.sendingAzecCointickerToAddress(
-                          aZEC, coin.ticker, _address))),
+                          aZEC, active.coinDef.ticker, _address))),
                   actions: confirmButtons(
                       context, () => Navigator.of(context).pop(true),
                       okLabel: s.approve, cancelValue: false)));
@@ -424,9 +422,7 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
   final s = S.of(context);
 
   String address = "";
-  int amount = 0;
   for (var r in recipients) {
-    amount += r.amount;
     if (address.isEmpty)
       address = r.address;
     else
@@ -439,9 +435,9 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
   if (settings.protectSend &&
       !await authenticate(context, s.pleaseAuthenticateToSend)) return;
 
-  if (accountManager.canPay) {
+  if (active.canPay) {
     Navigator.of(context).pop();
-    final tx = await WarpApi.sendPayment(accountManager.active.id, recipients,
+    final tx = await WarpApi.sendPayment(active.coin, active.id, recipients,
         useTransparent, settings.anchorOffset, (progress) {
           progressPort.sendPort.send(progress);
         });
@@ -449,25 +445,20 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
 
     final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
-    await accountManager.fetchAccountData(true);
+    await active.update();
   } else {
     Directory tempDir = await getTemporaryDirectory();
     String filename = "${tempDir.path}/tx.json";
 
-    final txjson = WarpApi.prepareTx(accountManager.active.id, recipients,
+    final txjson = WarpApi.prepareTx(active.coin, active.id, recipients,
         useTransparent, settings.anchorOffset, filename);
 
-    if (coin.supportsMultisig && accountManager.active.share != null) {
-      final txSummary = TxSummary(address, amount, txjson);
-      Navigator.of(context).pushReplacementNamed('/multisign', arguments: txSummary);
-    } else {
-      final file = File(filename);
-      await file.writeAsString(txjson);
-      Share.shareFiles([filename], subject: s.unsignedTransactionFile);
+    final file = File(filename);
+    await file.writeAsString(txjson);
+    Share.shareFiles([filename], subject: s.unsignedTransactionFile);
 
-      final snackBar2 = SnackBar(content: Text(s.fileSaved));
-      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
-      Navigator.of(context).pop();
-    }
+    final snackBar2 = SnackBar(content: Text(s.fileSaved));
+    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+    Navigator.of(context).pop();
   }
 }

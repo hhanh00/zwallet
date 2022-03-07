@@ -17,8 +17,8 @@ class DualMoneyInputWidget extends StatefulWidget {
 class DualMoneyInputState extends State<DualMoneyInputWidget> {
   static final zero = decimalFormat(0, 3);
   var useMillis = true;
-  var inputInZEC = true;
-  var zecAmountController = TextEditingController(text: zero);
+  var inputInCoin = true;
+  var coinAmountController = TextEditingController(text: zero);
   var fiatAmountController = TextEditingController(text: zero);
   var amount = 0;
 
@@ -46,17 +46,17 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
         Row(children: [
           Expanded(
               child: TextFormField(
-                style: !inputInZEC
+                style: !inputInCoin
                     ? TextStyle(fontWeight: FontWeight.w200)
                     : TextStyle(),
                 decoration: InputDecoration(
                     labelText:
-                    s.amountInSettingscurrency(coin.ticker)),
-                controller: zecAmountController,
+                    s.amountInSettingscurrency(active.coinDef.ticker)),
+                controller: coinAmountController,
                 keyboardType: TextInputType.number,
                 inputFormatters: [makeInputFormatter(useMillis)],
                 onTap: () => setState(() {
-                  inputInZEC = true;
+                  inputInCoin = true;
                 }),
                 validator: _checkAmount,
                 onChanged: (_) => _updateFiatAmount(),
@@ -67,7 +67,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
         Row(children: [
           Expanded(
               child: TextFormField(
-                  style: inputInZEC
+                  style: inputInCoin
                       ? TextStyle(fontWeight: FontWeight.w200)
                       : TextStyle(),
                   decoration: InputDecoration(
@@ -78,7 +78,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
                   inputFormatters: [makeInputFormatter(useMillis)],
                   validator: (v) => _checkAmount(v, isFiat: true),
                   onTap: () => setState(() {
-                    inputInZEC = false;
+                    inputInCoin = false;
                   }),
                   onChanged: (_) => _updateAmount()))
         ]),
@@ -88,7 +88,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   void clear() {
     setState(() {
       useMillis = true;
-      zecAmountController.text = zero;
+      coinAmountController.text = zero;
       fiatAmountController.text = zero;
     });
   }
@@ -102,7 +102,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   void setAmount(int amount) {
     setState(() {
       useMillis = false;
-      zecAmountController.text = amountToString(amount);
+      coinAmountController.text = amountToString(amount);
       _updateFiatAmount();
     });
   }
@@ -123,17 +123,17 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   }
 
   void _updateAmount() {
-    final rate = 1.0 / priceStore.zecPrice;
+    final rate = 1.0 / priceStore.coinPrice;
     final amount = parseNumber(fiatAmountController.text);
     final otherAmount = decimalFormat(amount * rate, precision(useMillis));
     setState(() {
-      zecAmountController.text = otherAmount;
+      coinAmountController.text = otherAmount;
     });
   }
 
   void _updateFiatAmount() {
-    final rate = priceStore.zecPrice;
-    final amount = parseNumber(zecAmountController.text);
+    final rate = priceStore.coinPrice;
+    final amount = parseNumber(coinAmountController.text);
     final otherAmount = decimalFormat(amount * rate, precision(useMillis));
     setState(() {
       fiatAmountController.text = otherAmount;
