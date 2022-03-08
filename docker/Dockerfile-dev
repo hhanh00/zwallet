@@ -1,5 +1,11 @@
 #syntax=docker/dockerfile:1.2
-FROM hhanh00/zwallet_builder AS builder
+FROM archlinux:base-devel-20220227.0.49015 AS builder
+
+COPY install-deps.sh .
+
+RUN ./install-deps.sh
+
+FROM builder as builder2
 
 ENV ANDROID_SDK_ROOT /Android/sdk
 ENV PATH $PATH:$ANDROID_SDK_ROOT/platform-tools:/flutter/bin
@@ -11,4 +17,4 @@ RUN --mount=type=secret,id=pwd cd /zwallet && ./configure.sh zcash && ./build.sh
 
 FROM alpine:latest
 WORKDIR /root
-COPY --from=builder /zwallet/build/app/outputs/flutter-apk/* ./
+COPY --from=builder2 /zwallet/build/app/outputs/flutter-apk/* ./

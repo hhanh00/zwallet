@@ -44,6 +44,7 @@ class SendState extends State<SendPage> {
   var _unconfirmedBalance = 0;
   final _addressController = TextEditingController();
   final _memoController = TextEditingController();
+  var _memoInitialized = false;
   final _maxAmountController = TextEditingController(text: zero);
   var _isExpanded = false;
   var _useMillis = true;
@@ -96,7 +97,10 @@ class SendState extends State<SendPage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final simpleMode = settings.simpleMode;
-    _memoController.text = settings.memoSignature ?? s.sendFrom(APP_NAME);
+    if (!_memoInitialized) {
+      _memoController.text = settings.memoSignature ?? s.sendFrom(APP_NAME);
+      _memoInitialized = true;
+    }
 
     return Scaffold(
         appBar: AppBar(title: Text(s.sendCointicker(active.coinDef.ticker))),

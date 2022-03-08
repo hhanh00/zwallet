@@ -195,7 +195,6 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                             decoration: InputDecoration(
                                 labelText: s.defaultMemo),
                             name: 'memo',
-                            keyboardType: TextInputType.number,
                             controller: _memoController,
                             onSaved: _onMemo),
                         ButtonBar(children: confirmButtons(context, _onSave))
