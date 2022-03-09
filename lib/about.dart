@@ -12,10 +12,14 @@ Future<void> showAbout(BuildContext context) async {
   final contentTemplate = await rootBundle.loadString('assets/about.md');
   final template = Template(contentTemplate);
   var content = template.renderString({'APP': APP_NAME});
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  String version = packageInfo.version;
-  String code = packageInfo.buildNumber;
-  content += "`${S.of(context).version}: $version+$code`";
+  if (isMobile()) {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = packageInfo.version;
+    String code = packageInfo.buildNumber;
+    content += "`${S
+        .of(context)
+        .version}: $version+$code`";
+  }
   showDialog(
       context: context,
       barrierDismissible: false,

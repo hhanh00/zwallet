@@ -25,7 +25,8 @@ dependencies:
     sdk: flutter
   warp_api:
     path: packages/warp_api_ffi
-  sqflite: ^2.0.0+4
+  sqflite: ^2.0.2
+  sqflite_common_ffi: ^2.1.0
   flutter_mobx: ^2.0.2
   qr_flutter: ^4.0.0
   http: ^0.13.3
@@ -51,9 +52,9 @@ dependencies:
       ref: 821f81681f8ee819cd721498f7b28d290f4ebe38
   grouped_list: ^4.1.0
   json_annotation: ^4.1.0
-  share_plus: ^2.1.4
+  share_plus: ^3.1.0
   path_provider: ^2.0.3
-  file_picker: ^4.0.2
+  file_picker: ^4.5.0
   mustache_template: ^2.0.0
   rate_my_app: ^1.1.1
   flutter_palette: ^1.1.0+1

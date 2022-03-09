@@ -205,7 +205,7 @@ class HomeState extends State<HomePageInner> with TickerProviderStateMixin {
   }
 
   _backup() async {
-    final didAuthenticate = await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
+    final didAuthenticate = !isMobile() || await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
     if (didAuthenticate) {
       Navigator.of(context).pushNamed('/backup');
     }

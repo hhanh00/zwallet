@@ -100,11 +100,7 @@ class FullBackupPage extends StatelessWidget {
   }
 
   _onSave(BuildContext context) async {
-    Directory tempDir = await getTemporaryDirectory();
-    String filename = "${tempDir.path}/$APP_NAME.bak";
-    final file = File(filename);
-    await file.writeAsString(backup);
-    Share.shareFiles([filename], subject: S.of(context).encryptedBackup(APP_NAME));
+    await saveFile(backup, "$APP_NAME.bak", S.of(context).encryptedBackup(APP_NAME));
   }
 }
 

@@ -18,14 +18,14 @@ use zcash_multisig::{
 };
 use zcash_primitives::transaction::builder::Progress;
 
-static RUNTIME: OnceCell<Mutex<Runtime>> = OnceCell::new();
-static YWALLET: OnceCell<Mutex<Wallet>> = OnceCell::new();
-static ZWALLET: OnceCell<Mutex<Wallet>> = OnceCell::new();
-static YMEMPOOL: OnceCell<Mutex<MemPool>> = OnceCell::new();
-static ZMEMPOOL: OnceCell<Mutex<MemPool>> = OnceCell::new();
-static SYNCLOCK: OnceCell<Mutex<()>> = OnceCell::new();
-static MULTISIG_AGG_LOCK: OnceCell<Mutex<MultisigAggregator>> = OnceCell::new();
-static MULTISIG_SIGN_LOCK: OnceCell<Mutex<MultisigClient>> = OnceCell::new();
+#[used] static RUNTIME: OnceCell<Mutex<Runtime>> = OnceCell::new();
+#[used] static YWALLET: OnceCell<Mutex<Wallet>> = OnceCell::new();
+#[used] static ZWALLET: OnceCell<Mutex<Wallet>> = OnceCell::new();
+#[used] static YMEMPOOL: OnceCell<Mutex<MemPool>> = OnceCell::new();
+#[used] static ZMEMPOOL: OnceCell<Mutex<MemPool>> = OnceCell::new();
+#[used] static SYNCLOCK: OnceCell<Mutex<()>> = OnceCell::new();
+#[used] static MULTISIG_AGG_LOCK: OnceCell<Mutex<MultisigAggregator>> = OnceCell::new();
+#[used] static MULTISIG_SIGN_LOCK: OnceCell<Mutex<MultisigClient>> = OnceCell::new();
 
 fn get_lock<T>(cell: &OnceCell<Mutex<T>>) -> anyhow::Result<MutexGuard<T>> {
     cell.get()
