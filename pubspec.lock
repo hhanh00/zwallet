@@ -990,7 +990,7 @@ packages:
       name: share_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "3.1.0"
   share_plus_linux:
     dependency: transitive
     description:
@@ -1143,6 +1143,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
+  sqflite_common_ffi:
+    dependency: "direct main"
+    description:
+      name: sqflite_common_ffi
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0+2"
+  sqlite3:
+    dependency: transitive
+    description:
+      name: sqlite3
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.1"
   stack_trace:
     dependency: transitive
     description:

@@ -451,18 +451,13 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
     await active.update();
   } else {
-    Directory tempDir = await getTemporaryDirectory();
-    String filename = "${tempDir.path}/tx.json";
-
     final txjson = WarpApi.prepareTx(active.coin, active.id, recipients,
-        useTransparent, settings.anchorOffset, filename);
-
-    final file = File(filename);
-    await file.writeAsString(txjson);
-    Share.shareFiles([filename], subject: s.unsignedTransactionFile);
+        useTransparent, settings.anchorOffset);
+    await saveFile(txjson, "tx.json", s.unsignedTransactionFile);
 
     final snackBar2 = SnackBar(content: Text(s.fileSaved));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
     Navigator.of(context).pop();
   }
 }
+

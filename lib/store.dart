@@ -17,7 +17,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:convert/convert.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:sensors_plus/sensors_plus.dart';
+// import 'package:sensors_plus/sensors_plus.dart';
 
 import 'coin/coin.dart';
 import 'generated/l10n.dart';
@@ -198,7 +198,7 @@ abstract class _Settings with Store {
 
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
-    accelerometerEvents.listen(_handleAccel);
+    // accelerometerEvents.listen(_handleAccel);
     return true;
   }
 

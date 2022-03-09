@@ -80,3 +80,50 @@ This will create a `root` directory will all the various apks (arm32, arm64, i32
 - Add arm64 to Excluded Architecture / Any IOS Simulator SDK
 - Build warp with x86_64-apple-ios target
 - debugShowCheckedModeBanner: false in MaterialApp()
+
+## Desktop builds
+
+Desktop builds must be made on their native platform, i.e. MacOX
+needs a Mac, etc.
+
+First checkout how to use flutter desktop as there are requirements
+for each platform.
+
+The repository does not include the project generated files.
+Run `flutter create --platform=windows,linux,macos .` to generate them.
+
+First compile the rust code. In `native/warp_api_ffi`, edit `Cargo.toml`
+to change the library crate type to `cdylib`. Then `cargo build --release`.
+This should produce a dynamic library under `target/release` in the project root
+directory.
+
+Depending on the platform, the output library has a different name and
+a different way to include in the build.
+
+Build the flutter project: `flutter build windows` (macos or linux).
+The result is in `build/windows/runner/Release`.
+
+### Linux
+Copy `libwarp_api_ffi.so` into the `lib/` directory. Then tar/gzip and that's it.
+
+### Windows
+Copy `warp_api_ffi.dll` into the Release directory and also add:
+- `sqlite3.dll`
+- `msvcp140.dll`
+- `vcruntime140.dll`
+- `vcruntime140_1.dll`
+Then zip.
+
+### MacOS
+On M1 macs, run rustup default stable-x86_64-apple-darwin
+MacOS is the trickiest one. Open the xcode workspace.
+Add in Signing & Capabilities: Network server & Client and R/W file access
+to user selected files
+Go to the Runner project, Build Stages
+Drag `libwarp_api_ffi.so` into Runner/Frameworks
+Remove it from the link stage (we don't want to statically link)
+Add to Bundle Framework, Code Sign
+Then exit xcode and run `flutter build macos`
+If you want to create a DMG, use the npm package appdmg
+
+

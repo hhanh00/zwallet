@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:csv/csv.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:decimal/decimal.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -17,6 +18,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -213,12 +216,18 @@ class ZWalletAppState extends State<ZWalletApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      await rateMyApp.init();
-      if (mounted && rateMyApp.shouldOpenDialog) {
-        rateMyApp.showRateDialog(this.context);
-      }
-    });
+    if (isMobile()) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) async {
+        await rateMyApp.init();
+        if (mounted && rateMyApp.shouldOpenDialog) {
+          rateMyApp.showRateDialog(this.context);
+        }
+      });
+    }
+    else {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
     init = _init();
   }
 
@@ -241,28 +250,30 @@ class ZWalletAppState extends State<ZWalletApp> {
           }
         }
 
-      await initUniLinks(this.context);
-      final quickActions = QuickActions();
-      quickActions.initialize((type) {
-        handleQuickAction(this.context, type);
-      });
-      if (!settings.linkHooksInitialized) {
-        Future.microtask(() {
-          final s = S.of(this.context);
-          List<ShortcutItem> shortcuts = [];
-          for (var c in settings.coins) {
-            final coin = c.coin;
-            final ticker = c.def.ticker;
-            shortcuts.add(ShortcutItem(type: '$coin.receive',
-                localizedTitle: s.receive(ticker),
-                icon: 'receive'));
-            shortcuts.add(ShortcutItem(type: '$coin.send',
-                localizedTitle: s.sendCointicker(ticker),
-                icon: 'send'));
-            }
-          quickActions.setShortcutItems(shortcuts);
+      if (isMobile()) {
+        await initUniLinks(this.context);
+        final quickActions = QuickActions();
+        quickActions.initialize((type) {
+          handleQuickAction(this.context, type);
         });
-        await settings.setLinkHooksInitialized();
+        if (!settings.linkHooksInitialized) {
+          Future.microtask(() {
+            final s = S.of(this.context);
+            List<ShortcutItem> shortcuts = [];
+            for (var c in settings.coins) {
+              final coin = c.coin;
+              final ticker = c.def.ticker;
+              shortcuts.add(ShortcutItem(type: '$coin.receive',
+                  localizedTitle: s.receive(ticker),
+                  icon: 'receive'));
+              shortcuts.add(ShortcutItem(type: '$coin.send',
+                  localizedTitle: s.sendCointicker(ticker),
+                  icon: 'send'));
+            }
+            quickActions.setShortcutItems(shortcuts);
+          });
+          await settings.setLinkHooksInitialized();
+        }
       }
     }
     return true;
@@ -396,6 +407,7 @@ Future<bool> rescanDialog(BuildContext context) async {
 }
 
 Future<bool> confirmWifi(BuildContext context) async {
+  if (!isMobile()) return true;
   final connectivity = await Connectivity().checkConnectivity();
   if (connectivity == ConnectivityResult.mobile) {
     return await showDialog<bool?>(
@@ -576,10 +588,24 @@ Future<void> shieldTAddr(BuildContext context) async {
 Future<void> shareCsv(List<List> data, String filename, String title) async {
   final csvConverter = ListToCsvConverter();
   final csv = csvConverter.convert(data);
-  Directory tempDir = await getTemporaryDirectory();
-  String fn = "${tempDir.path}/$filename";
-  final file = File(fn);
-  await file.writeAsString(csv);
-  await Share.shareFiles([fn], subject: title);
+  await saveFile(csv, filename, title);
 }
 
+Future<void> saveFile(String data, String filename, String title) async {
+  if (isMobile()) {
+    Directory tempDir = await getTemporaryDirectory();
+    String fn = "${tempDir.path}/$filename";
+    final file = File(fn);
+    await file.writeAsString(data);
+    return Share.shareFiles([filename], subject: title);
+  }
+  else {
+    final fn = await FilePicker.platform.saveFile();
+    if (fn != null) {
+      final file = File(fn);
+      await file.writeAsString(data);
+    }
+  }
+}
+
+bool isMobile() => Platform.isAndroid || Platform.isIOS;

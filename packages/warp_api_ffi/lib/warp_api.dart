@@ -81,6 +81,9 @@ class WarpApi {
   static open() {
     if (Platform.isAndroid) return DynamicLibrary.open('libwarp_api_ffi.so');
     if (Platform.isIOS) return DynamicLibrary.executable();
+    if (Platform.isWindows) return DynamicLibrary.open('warp_api_ffi.dll');
+    if (Platform.isLinux) return DynamicLibrary.open('./lib/libwarp_api_ffi.so');
+    if (Platform.isMacOS) return DynamicLibrary.open('libwarp_api_ffi.dylib');
     throw UnsupportedError('This platform is not supported.');
   }
 
@@ -194,8 +197,7 @@ class WarpApi {
     int account,
     List<Recipient> recipients,
     bool useTransparent,
-    int anchorOffset,
-    String txFilename) {
+    int anchorOffset) {
     final recipientsJson = jsonEncode(recipients);
     final res = warp_api_lib.prepare_multi_payment(coin, account,
         recipientsJson.toNativeUtf8().cast<Int8>(),
