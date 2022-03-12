@@ -597,7 +597,7 @@ Future<void> saveFile(String data, String filename, String title) async {
     String fn = "${tempDir.path}/$filename";
     final file = File(fn);
     await file.writeAsString(data);
-    return Share.shareFiles([filename], subject: title);
+    return Share.shareFiles([fn], subject: title);
   }
   else {
     final fn = await FilePicker.platform.saveFile();
