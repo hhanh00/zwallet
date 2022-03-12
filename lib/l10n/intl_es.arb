@@ -195,5 +195,7 @@
   "accountIndex": "Account Index",
   "subAccountOf": "Sub Account of {name}",
   "newSubAccount": "New Sub Account",
-  "noActiveAccount": "No active account"
+  "noActiveAccount": "No active account",
+  "closeApplication": "Close Application",
+  "pleaseRestartNow": "Please Restart now"
 }

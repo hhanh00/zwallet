@@ -17,6 +17,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -50,6 +51,8 @@ const DEFAULT_FEE = 1000;
 const MAXMONEY = 21000000;
 const DOC_URL = "https://hhanh00.github.io/zwallet/";
 const APP_NAME = "ZYWallet";
+
+const RECOVERY_FILE = "recover.bin";
 
 // var accountManager = AccountManager();
 var priceStore = PriceStore();
@@ -110,10 +113,31 @@ void handleQuickAction(BuildContext context, String type) {
   }
 }
 
-class LoadProgress extends StatelessWidget {
+class LoadProgress extends StatefulWidget {
   final double value;
 
   LoadProgress(this.value);
+
+  @override
+  LoadProgressState createState() => LoadProgressState();
+}
+
+class LoadProgressState extends State<LoadProgress> {
+  Timer? _reset;
+
+  @override
+  void initState() {
+    super.initState();
+    _reset = Timer(Duration(seconds: 5), () {
+      _resetApp();
+    });
+  }
+
+  @override
+  void dispose() {
+    _reset?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,17 +148,32 @@ class LoadProgress extends StatelessWidget {
             children: [
               Text(S.of(context).loading, style: Theme.of(context).textTheme.headline4),
               Padding(padding: EdgeInsets.all(16)),
-              LinearProgressIndicator(value: value),
-              Padding(padding: EdgeInsets.all(16)),
-              ElevatedButton(
-                  onPressed: () => _reset(context), child: Text('EMERGENCY RESET'))
+              LinearProgressIndicator(value: widget.value),
             ]
         )
         ));
   }
 
-  _reset(BuildContext context) async {
-    Navigator.of(context).pushNamed('/reset');
+  _resetApp() async {
+    final s = S.of(context);
+    final confirmation = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+          title: Text(S.of(context).applicationReset),
+          content: Text(S.of(context).confirmResetApp),
+          actions: confirmButtons(context, () {
+            Navigator.of(context).pop(true);
+          }, okLabel: S.of(context).reset, cancelValue: false)),
+    ) ?? false;
+    if (confirmation) {
+      final backup = WarpApi.getFullBackup("");
+      final f = await getRecoveryFile();
+      f.writeAsString(backup);
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('recover', true);
+      await showMessageBox(context, s.closeApplication, s.pleaseRestartNow, s.ok);
+    }
   }
 }
 
@@ -232,12 +271,29 @@ class ZWalletAppState extends State<ZWalletApp> {
   }
 
   Future<bool> _init() async {
-    if (!initialized) {
+    final prefs = await SharedPreferences.getInstance();
+    final recover = prefs.getBool('recover') ?? false;
+    prefs.setBool('recover', false);
+
+    if (!initialized || recover) {
       initialized = true;
       final dbPath = await getDatabasesPath();
+      if (recover) {
+        ycash.delete(dbPath);
+        zcash.delete(dbPath);
+      }
       await ycash.open(dbPath);
       await zcash.open(dbPath);
       WarpApi.initWallet(dbPath);
+
+      if (recover) {
+        final f = await getRecoveryFile();
+        final backup = await f.readAsString();
+        final res = WarpApi.restoreFullBackup("", backup);
+        print("Recovery $res");
+        f.delete();
+      }
+
       for (var s in settings.servers) {
         WarpApi.updateLWD(s.coin, s.getLWDUrl());
       }
@@ -606,6 +662,13 @@ Future<void> saveFile(String data, String filename, String title) async {
       await file.writeAsString(data);
     }
   }
+}
+
+Future<File> getRecoveryFile() async {
+  Directory tempDir = await getTemporaryDirectory();
+  String fn = "${tempDir.path}/$RECOVERY_FILE";
+  final f = File(fn);
+  return f;
 }
 
 bool isMobile() => Platform.isAndroid || Platform.isIOS;

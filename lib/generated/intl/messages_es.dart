@@ -123,6 +123,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "changingTheModeWillTakeEffectAtNextRestart":
             MessageLookupByLibrary.simpleMessage(
                 "Cambiar el modo tendrá efecto en el próximo reinicio"),
+        "closeApplication":
+            MessageLookupByLibrary.simpleMessage("Close Application"),
         "coffee": MessageLookupByLibrary.simpleMessage("Café"),
         "coldStorage": MessageLookupByLibrary.simpleMessage("Billetera Fría"),
         "color": MessageLookupByLibrary.simpleMessage("Color"),
@@ -232,6 +234,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Autentíquese para ver la semilla de la cuenta"),
         "pleaseConfirm":
             MessageLookupByLibrary.simpleMessage("Por favor, confirmar"),
+        "pleaseRestartNow":
+            MessageLookupByLibrary.simpleMessage("Please Restart now"),
         "pnl": MessageLookupByLibrary.simpleMessage("G&P"),
         "pnlHistory": MessageLookupByLibrary.simpleMessage("Historia de G&P"),
         "preparingTransaction":
