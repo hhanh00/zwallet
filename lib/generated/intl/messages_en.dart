@@ -124,6 +124,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "changingTheModeWillTakeEffectAtNextRestart":
             MessageLookupByLibrary.simpleMessage(
                 "Changing the mode will take effect at next restart"),
+        "closeApplication":
+            MessageLookupByLibrary.simpleMessage("Close Application"),
         "coffee": MessageLookupByLibrary.simpleMessage("Coffee"),
         "coldStorage": MessageLookupByLibrary.simpleMessage("Cold Storage"),
         "color": MessageLookupByLibrary.simpleMessage("Color"),
@@ -234,6 +236,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "pleaseConfirm": MessageLookupByLibrary.simpleMessage("Please Confirm"),
         "pleaseQuitAndRestartTheAppNow": MessageLookupByLibrary.simpleMessage(
             "Please Quit and Restart the app now"),
+        "pleaseRestartNow":
+            MessageLookupByLibrary.simpleMessage("Please Restart now"),
         "pnl": MessageLookupByLibrary.simpleMessage("Pnl"),
         "pnlHistory": MessageLookupByLibrary.simpleMessage("PNL History"),
         "preparingTransaction":

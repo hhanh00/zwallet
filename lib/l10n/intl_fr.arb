@@ -195,5 +195,7 @@
   "accountIndex": "Index du Compte",
   "subAccountOf": "Sous Compte de {name}",
   "newSubAccount": "Nouveau Sous Compte",
-  "noActiveAccount": "Aucun Compte sélectionné"
+  "noActiveAccount": "Aucun Compte sélectionné",
+  "closeApplication": "Close Application",
+  "pleaseRestartNow": "Please Restart now"
 }

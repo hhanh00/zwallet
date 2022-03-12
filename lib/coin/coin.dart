@@ -27,4 +27,9 @@ abstract class CoinBase {
     final path = join(dbPath, dbName);
     db = await openDatabase(path);
   }
+
+  Future<void> delete(String dbPath) async {
+    final path = join(dbPath, dbName);
+    await deleteDatabase(path);
+  }
 }

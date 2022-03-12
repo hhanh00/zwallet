@@ -2041,6 +2041,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Close Application`
+  String get closeApplication {
+    return Intl.message(
+      'Close Application',
+      name: 'closeApplication',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Restart now`
+  String get pleaseRestartNow {
+    return Intl.message(
+      'Please Restart now',
+      name: 'pleaseRestartNow',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
