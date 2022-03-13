@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main.dart';
 import 'store.dart';
@@ -87,22 +88,39 @@ class BackupState extends State<BackupPage> {
             style: theme.textTheme.caption
           ),
           if (share != null) TextField(
-              decoration: InputDecoration(labelText: s.secretShare, prefixIcon: IconButton(icon: Icon(Icons.share),
-                  onPressed: () => _showQR(share.value, "$name - ms ${share.index}/${share.participants}"))),
+              decoration: InputDecoration(
+                  labelText: s.secretShare,
+                  prefixIcon: IconButton(
+                      icon: Icon(Icons.share),
+                      onPressed: () => _showQR(share.value,
+                          "$name - ms ${share.index}/${share.participants}"))),
               controller: _shareController,
               minLines: 3,
               maxLines: 10,
               readOnly: true,
-              style: theme.textTheme.caption
-          ),
-          Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-          Text(s.tapAnIconToShowTheQrCode),
-          Container(margin: EdgeInsets.all(8), padding: EdgeInsets.all(8), decoration: BoxDecoration(border: Border.all(width: 2, color: theme.primaryColor), borderRadius: BorderRadius.circular(4)),
-            child: Text(s.backupWarning, style: theme.textTheme.subtitle1!.copyWith(color: theme.primaryColor))),
-        ]
-      ),
+              style: theme.textTheme.caption),
+        Padding(padding: EdgeInsets.symmetric(vertical: 4)),
+        Text(s.tapAnIconToShowTheQrCode),
+        GestureDetector(
+            onLongPress: _exportDb,
+            child: Container(
+                margin: EdgeInsets.all(8),
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: theme.primaryColor),
+                    borderRadius: BorderRadius.circular(4)),
+                child: Text(s.backupWarning,
+                    style: theme.textTheme.subtitle1!
+                        .copyWith(color: theme.primaryColor)))),
+      ]),
     ));
   }
 
   _showQR(String text, String title) => showQR(context, text, title);
+
+  _exportDb() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('export_db', true);
+    showSnackBar('Backup scheduled');
+  }
 }

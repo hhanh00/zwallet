@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:ZYWallet/main.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LWInstance {
@@ -31,5 +35,14 @@ abstract class CoinBase {
   Future<void> delete(String dbPath) async {
     final path = join(dbPath, dbName);
     await deleteDatabase(path);
+  }
+
+  Future<void> export(String dbPath) async {
+    if (isMobile()) {
+      final path = join(dbPath, dbName);
+      db = await openDatabase(path);
+      await db.close();
+      return Share.shareFiles([path], subject: dbName);
+    }
   }
 }
