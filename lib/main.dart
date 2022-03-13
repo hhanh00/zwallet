@@ -310,24 +310,21 @@ class ZWalletAppState extends State<ZWalletApp> {
         quickActions.initialize((type) {
           handleQuickAction(this.context, type);
         });
-        if (!settings.linkHooksInitialized) {
-          Future.microtask(() {
-            final s = S.of(this.context);
-            List<ShortcutItem> shortcuts = [];
-            for (var c in settings.coins) {
-              final coin = c.coin;
-              final ticker = c.def.ticker;
-              shortcuts.add(ShortcutItem(type: '$coin.receive',
-                  localizedTitle: s.receive(ticker),
-                  icon: 'receive'));
-              shortcuts.add(ShortcutItem(type: '$coin.send',
-                  localizedTitle: s.sendCointicker(ticker),
-                  icon: 'send'));
-            }
-            quickActions.setShortcutItems(shortcuts);
-          });
-          await settings.setLinkHooksInitialized();
-        }
+        Future.microtask(() {
+          final s = S.of(this.context);
+          List<ShortcutItem> shortcuts = [];
+          for (var c in settings.coins) {
+            final coin = c.coin;
+            final ticker = c.def.ticker;
+            shortcuts.add(ShortcutItem(type: '$coin.receive',
+                localizedTitle: s.receive(ticker),
+                icon: 'receive'));
+            shortcuts.add(ShortcutItem(type: '$coin.send',
+                localizedTitle: s.sendCointicker(ticker),
+                icon: 'send'));
+          }
+          quickActions.setShortcutItems(shortcuts);
+        });
       }
     }
     _setProgress(1.0, 'Ready');
