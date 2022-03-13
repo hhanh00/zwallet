@@ -19,7 +19,6 @@ import 'package:rate_my_app/rate_my_app.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -114,9 +113,7 @@ void handleQuickAction(BuildContext context, String type) {
 }
 
 class LoadProgress extends StatefulWidget {
-  final double value;
-
-  LoadProgress(this.value);
+  LoadProgress({Key? key}): super(key: key);
 
   @override
   LoadProgressState createState() => LoadProgressState();
@@ -124,18 +121,22 @@ class LoadProgress extends StatefulWidget {
 
 class LoadProgressState extends State<LoadProgress> {
   Timer? _reset;
+  var _value = 0.0;
+  String _message = "";
+  var _disposed = false;
 
   @override
   void initState() {
     super.initState();
     _reset = Timer(Duration(seconds: 5), () {
-      _resetApp();
+      if (!_disposed) resetApp(context);
     });
   }
 
   @override
   void dispose() {
     _reset?.cancel();
+    _disposed = true;
     super.dispose();
   }
 
@@ -143,37 +144,26 @@ class LoadProgressState extends State<LoadProgress> {
   Widget build(BuildContext context) {
     return Container(
         alignment: Alignment.center,
-        child: SizedBox(height: 200, width: 200, child:
+        child: SizedBox(height: 240, width: 200, child:
         Column(
             children: [
+              Image(image: AssetImage('assets/icon.png'), height: 64),
+              Padding(padding: EdgeInsets.all(16)),
               Text(S.of(context).loading, style: Theme.of(context).textTheme.headline4),
               Padding(padding: EdgeInsets.all(16)),
-              LinearProgressIndicator(value: widget.value),
+              LinearProgressIndicator(value: _value),
+              Padding(padding: EdgeInsets.all(8)),
+              Text(_message, style: Theme.of(context).textTheme.caption),
             ]
         )
         ));
   }
 
-  _resetApp() async {
-    final s = S.of(context);
-    final confirmation = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-          title: Text(S.of(context).applicationReset),
-          content: Text(S.of(context).confirmResetApp),
-          actions: confirmButtons(context, () {
-            Navigator.of(context).pop(true);
-          }, okLabel: S.of(context).reset, cancelValue: false)),
-    ) ?? false;
-    if (confirmation) {
-      final backup = WarpApi.getFullBackup("");
-      final f = await getRecoveryFile();
-      f.writeAsString(backup);
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setBool('recover', true);
-      await showMessageBox(context, s.closeApplication, s.pleaseRestartNow, s.ok);
-    }
+  void setValue(double v, String message) {
+    setState(() {
+      _value = v;
+      _message = message;
+    });
   }
 }
 
@@ -245,6 +235,7 @@ class ZWalletApp extends StatefulWidget {
 class ZWalletAppState extends State<ZWalletApp> {
   bool initialized = false;
   late Future<bool> init;
+  final progressKey = GlobalKey<LoadProgressState>();
 
   RateMyApp rateMyApp = RateMyApp(
     preferencesPrefix: 'rateMyApp_',
@@ -282,8 +273,11 @@ class ZWalletAppState extends State<ZWalletApp> {
         ycash.delete(dbPath);
         zcash.delete(dbPath);
       }
+      _setProgress(0.1, 'Initializing Ycash');
       await ycash.open(dbPath);
+      _setProgress(0.2, 'Initializing Zcash');
       await zcash.open(dbPath);
+      _setProgress(0.4, 'Initializing Wallet');
       WarpApi.initWallet(dbPath);
 
       if (recover) {
@@ -297,8 +291,11 @@ class ZWalletAppState extends State<ZWalletApp> {
       for (var s in settings.servers) {
         WarpApi.updateLWD(s.coin, s.getLWDUrl());
       }
+      _setProgress(0.6, 'Loading Account Data');
       await accounts.refresh();
+      _setProgress(0.7, 'Restoring Active Account');
       await active.restore();
+      _setProgress(0.8, 'Checking Sync Status');
       await syncStatus.update();
       if (accounts.list.isEmpty) {
         for (var c in settings.coins) {
@@ -307,6 +304,7 @@ class ZWalletAppState extends State<ZWalletApp> {
         }
 
       if (isMobile()) {
+        _setProgress(0.9, 'Setting Dashboard Shortcuts');
         await initUniLinks(this.context);
         final quickActions = QuickActions();
         quickActions.initialize((type) {
@@ -332,6 +330,7 @@ class ZWalletAppState extends State<ZWalletApp> {
         }
       }
     }
+    _setProgress(1.0, 'Ready');
     return true;
   }
 
@@ -340,9 +339,13 @@ class ZWalletAppState extends State<ZWalletApp> {
     return FutureBuilder(
         future: init,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return LoadProgress(0.7);
+          if (!snapshot.hasData) return LoadProgress(key: progressKey);
           return HomePage();
         });
+  }
+
+  void _setProgress(double v, String message) {
+    progressKey.currentState?.setValue(v, message);
   }
 }
 
@@ -669,6 +672,28 @@ Future<File> getRecoveryFile() async {
   String fn = "${tempDir.path}/$RECOVERY_FILE";
   final f = File(fn);
   return f;
+}
+
+Future<void> resetApp(BuildContext context) async {
+  final s = S.of(context);
+  final confirmation = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+        title: Text(S.of(context).applicationReset),
+        content: Text(S.of(context).confirmResetApp),
+        actions: confirmButtons(context, () {
+          Navigator.of(context).pop(true);
+        }, okLabel: S.of(context).reset, cancelValue: false)),
+  ) ?? false;
+  if (confirmation) {
+    final backup = WarpApi.getFullBackup("");
+    final f = await getRecoveryFile();
+    f.writeAsString(backup);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('recover', true);
+    await showMessageBox(context, s.closeApplication, s.pleaseRestartNow, s.ok);
+  }
 }
 
 bool isMobile() => Platform.isAndroid || Platform.isIOS;
