@@ -9,27 +9,36 @@ import 'main.dart';
 import 'generated/l10n.dart';
 
 Future<void> showAbout(BuildContext context) async {
+  final s = S.of(context);
   final contentTemplate = await rootBundle.loadString('assets/about.md');
   final template = Template(contentTemplate);
   var content = template.renderString({'APP': APP_NAME});
+  String? versionString;
   if (isMobile()) {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String version = packageInfo.version;
     String code = packageInfo.buildNumber;
-    content += "`${S
-        .of(context)
-        .version}: $version+$code`";
+    versionString = "${s.version}: $version+$code";
   }
   showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
               title: Text('${S.of(context).about} $APP_NAME'),
-              contentPadding: EdgeInsets.zero,
-              content: Container(
-                width: double.maxFinite,
-                child: Markdown(data: content),
-              ),
+              contentPadding: EdgeInsets.all(16),
+              content: SingleChildScrollView(
+                  child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height - 140,
+                      child: Column(
+                        children: [
+                          MarkdownBody(data: content),
+                          Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+                          if (versionString != null) GestureDetector(
+                              onLongPress: () {resetApp(context);},
+                              child: Text("$versionString"))
+                        ],
+                      ))),
               actions: [
                 ElevatedButton.icon(
                     onPressed: () {

@@ -89,9 +89,6 @@ class Settings = _Settings with _$Settings;
 
 abstract class _Settings with Store {
   @observable
-  bool linkHooksInitialized = false;
-
-  @observable
   bool simpleMode = true;
 
   List<LWDServer> servers = [LWDServer(0, zcash), LWDServer(1, ycash)];
@@ -161,7 +158,6 @@ abstract class _Settings with Store {
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
-    linkHooksInitialized = prefs.getBool('link_hooks') ?? false;
     simpleMode = prefs.getBool('simple_mode') ?? true;
     anchorOffset = prefs.getInt('anchor_offset') ?? 3;
     getTx = prefs.getBool('get_txinfo') ?? true;
@@ -209,13 +205,6 @@ abstract class _Settings with Store {
     final _flat = inclination < 20;
     if (flat != _flat)
       flat = _flat;
-  }
-
-  @action
-  Future<void> setLinkHooksInitialized() async {
-    final prefs = await SharedPreferences.getInstance();
-    linkHooksInitialized = true;
-    prefs.setBool('link_hooks', true);
   }
 
   @action
