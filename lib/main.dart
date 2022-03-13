@@ -264,11 +264,17 @@ class ZWalletAppState extends State<ZWalletApp> {
   Future<bool> _init() async {
     final prefs = await SharedPreferences.getInstance();
     final recover = prefs.getBool('recover') ?? false;
+    final exportDb = prefs.getBool('export_db') ?? false;
     prefs.setBool('recover', false);
+    prefs.setBool('export_db', false);
 
-    if (!initialized || recover) {
+    if (!initialized || recover || exportDb) {
       initialized = true;
       final dbPath = await getDatabasesPath();
+      if (exportDb) {
+        await ycash.export(dbPath);
+        await zcash.export(dbPath);
+      }
       if (recover) {
         ycash.delete(dbPath);
         zcash.delete(dbPath);
