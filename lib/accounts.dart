@@ -93,8 +93,14 @@ abstract class _AccountManager2 with Store {
       //     ? ShareInfo(
       //     r['idx'], r['threshold'], r['participants'], r['secret'])
       //     : null; // TODO: Multisig
-      final account = Account(coin,
-          r['id_account'], r['name'], r['address'], r['balance'], 0, null);
+      final account = Account(
+          coin,
+          id,
+          r['name'],
+          r['address'],
+          r['balance'],
+          0,
+          null);
       accounts.add(account);
     }
     return accounts;
