@@ -20,14 +20,15 @@ Future<void> showAbout(BuildContext context) async {
     String code = packageInfo.buildNumber;
     versionString = "${s.version}: $version+$code";
   }
+  final mq = MediaQuery.of(context);
   showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
               title: Text('${S.of(context).about} $APP_NAME'),
               contentPadding: EdgeInsets.all(16),
-              content: SingleChildScrollView(
-                child: Column(
+              content: Container(width: mq.size.width, height: mq.size.height,
+                  child: SingleChildScrollView(child: Column(
                   children: [
                     MarkdownBody(data: content),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
@@ -35,7 +36,7 @@ Future<void> showAbout(BuildContext context) async {
                         onLongPress: () {resetApp(context);},
                         child: Text("$versionString"))
                   ],
-                )),
+                ))),
               actions: [
                 ElevatedButton.icon(
                     onPressed: () {

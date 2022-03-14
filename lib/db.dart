@@ -64,8 +64,10 @@ class DbReader {
 
   Future<List<Tx>> getTxs() async {
     final List<Map> res2 = await db.rawQuery(
-        "SELECT id_tx, txid, height, timestamp, t.address, c.name, value, memo FROM transactions t "
-            "LEFT JOIN contacts c ON t.address = c.address WHERE account = ?1 ORDER BY height DESC",
+        "SELECT id_tx, txid, height, timestamp, t.address, c.name AS cname, a.name AS aname, value, memo FROM transactions t "
+        "LEFT JOIN contacts c ON t.address = c.address "
+        "LEFT JOIN accounts a ON a.address = t.address "
+        "WHERE account = ?1 ORDER BY height DESC",
         [id]);
     final txs = res2.map((row) {
       Uint8List txid = row['txid'];
@@ -73,6 +75,9 @@ class DbReader {
       final shortTxid = fullTxId.substring(0, 8);
       final timestamp = txDateFormat
           .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
+      final String? contactName = row['cname'];
+      final String? accountName = row['aname'];
+      final name = contactName ?? accountName;
       return Tx(
           row['id_tx'],
           row['height'],
@@ -81,7 +86,7 @@ class DbReader {
           fullTxId,
           row['value'] / ZECUNIT,
           row['address'] ?? "",
-          row['name'],
+          name,
           row['memo'] ?? "");
     }).toList();
     print("TXS ${txs.length}");
