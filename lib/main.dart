@@ -128,7 +128,7 @@ class LoadProgressState extends State<LoadProgress> {
   @override
   void initState() {
     super.initState();
-    _reset = Timer(Duration(seconds: 5), () {
+    _reset = Timer(Duration(seconds: 15), () {
       if (!_disposed) resetApp(context);
     });
   }
