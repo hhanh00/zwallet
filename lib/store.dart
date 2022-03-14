@@ -1,12 +1,9 @@
 import 'dart:isolate';
 import 'dart:math';
-import 'dart:typed_data';
-import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:sqflite/sqflite.dart';
 import 'coin/coins.dart';
@@ -15,9 +12,8 @@ import 'package:warp_api/types.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-import 'package:convert/convert.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-// import 'package:sensors_plus/sensors_plus.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 import 'coin/coin.dart';
 import 'generated/l10n.dart';
@@ -194,7 +190,8 @@ abstract class _Settings with Store {
 
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
-    // accelerometerEvents.listen(_handleAccel);
+    if (isMobile())
+      accelerometerEvents.listen(_handleAccel);
     return true;
   }
 
