@@ -147,7 +147,9 @@ class LoadProgressState extends State<LoadProgress> {
         child: SizedBox(height: 240, width: 200, child:
         Column(
             children: [
-              Image(image: AssetImage('assets/icon.png'), height: 64),
+              GestureDetector(
+                onLongPress: exportDb,
+                child: Image(image: AssetImage('assets/icon.png'), height: 64)),
               Padding(padding: EdgeInsets.all(16)),
               Text(S.of(context).loading, style: Theme.of(context).textTheme.headline4),
               Padding(padding: EdgeInsets.all(16)),
@@ -697,6 +699,12 @@ Future<void> resetApp(BuildContext context) async {
     prefs.setBool('recover', true);
     await showMessageBox(context, s.closeApplication, s.pleaseRestartNow, s.ok);
   }
+}
+
+Future<void> exportDb() async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setBool('export_db', true);
+  showSnackBar('Backup scheduled');
 }
 
 bool isMobile() => Platform.isAndroid || Platform.isIOS;

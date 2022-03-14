@@ -102,7 +102,7 @@ class BackupState extends State<BackupPage> {
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
         Text(s.tapAnIconToShowTheQrCode),
         GestureDetector(
-            onLongPress: _exportDb,
+            onLongPress: exportDb,
             child: Container(
                 margin: EdgeInsets.all(8),
                 padding: EdgeInsets.all(8),
@@ -117,10 +117,4 @@ class BackupState extends State<BackupPage> {
   }
 
   _showQR(String text, String title) => showQR(context, text, title);
-
-  _exportDb() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('export_db', true);
-    showSnackBar('Backup scheduled');
-  }
 }
