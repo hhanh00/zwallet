@@ -27,18 +27,15 @@ Future<void> showAbout(BuildContext context) async {
               title: Text('${S.of(context).about} $APP_NAME'),
               contentPadding: EdgeInsets.all(16),
               content: SingleChildScrollView(
-                  child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height - 140,
-                      child: Column(
-                        children: [
-                          MarkdownBody(data: content),
-                          Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                          if (versionString != null) GestureDetector(
-                              onLongPress: () {resetApp(context);},
-                              child: Text("$versionString"))
-                        ],
-                      ))),
+                child: Column(
+                  children: [
+                    MarkdownBody(data: content),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+                    if (versionString != null) GestureDetector(
+                        onLongPress: () {resetApp(context);},
+                        child: Text("$versionString"))
+                  ],
+                )),
               actions: [
                 ElevatedButton.icon(
                     onPressed: () {
