@@ -46,7 +46,7 @@ class SyncStatusWidget extends StatelessWidget {
     final simpleMode = settings.simpleMode;
 
     return Column(children: [
-      if (simpleMode) Text(s.simpleMode),
+      if (simpleMode) Padding(padding: EdgeInsets.fromLTRB(0, 8, 0, 0), child: Text(s.simpleMode)),
       Observer(builder: (context) {
         final time = eta.eta;
         final syncedHeight = syncStatus.syncedHeight;
