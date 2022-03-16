@@ -207,7 +207,7 @@ void main() {
                 '/accounts': (context) => AccountManagerPage(),
                 '/settings': (context) => SettingsPage(),
                 '/tx': (context) =>
-                    TransactionPage(routeSettings.arguments as Tx),
+                    TransactionPage(routeSettings.arguments as int),
                 '/backup': (context) =>
                     BackupPage(routeSettings.arguments as AccountId?),
                 '/multipay': (context) => MultiPayPage(),

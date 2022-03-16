@@ -7,41 +7,67 @@ import 'store.dart';
 import 'generated/l10n.dart';
 
 class TransactionPage extends StatefulWidget {
-  final Tx tx;
+  final int txIndex;
 
-  TransactionPage(this.tx);
+  TransactionPage(this.txIndex);
 
   @override
   State<StatefulWidget> createState() => TransactionState();
 }
 
 class TransactionState extends State<TransactionPage> {
+  late int txIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    txIndex = widget.txIndex;
+  }
+
+  Tx get tx => active.sortedTxs[txIndex];
+
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final n = active.sortedTxs.length;
     return Scaffold(
         appBar: AppBar(title: Text(S.of(context).transactionDetails)),
         body: ListView(padding: EdgeInsets.all(16), children: [
           ListTile(
-              title: Text(S.of(context).txId), subtitle: SelectableText('${widget.tx.fullTxId}')),
+              title: Text(S.of(context).txId), subtitle: SelectableText('${tx.fullTxId}')),
           ListTile(
-              title: Text(S.of(context).height), subtitle: SelectableText('${widget.tx.height}')),
+              title: Text(S.of(context).height), subtitle: SelectableText('${tx.height}')),
           ListTile(
-              title: Text(S.of(context).confs), subtitle: SelectableText('${syncStatus.latestHeight - widget.tx.height + 1}')),
+              title: Text(S.of(context).confs), subtitle: SelectableText('${syncStatus.latestHeight - tx.height + 1}')),
           ListTile(
               title: Text(S.of(context).timestamp),
-              subtitle: Text('${widget.tx.timestamp}')),
-          ListTile(title: Text(S.of(context).amount), subtitle: SelectableText(decimalFormat(widget.tx.value, 8))),
+              subtitle: Text('${tx.timestamp}')),
+          ListTile(title: Text(S.of(context).amount), subtitle: SelectableText(decimalFormat(tx.value, 8))),
           ListTile(
-              title: Text(S.of(context).address), subtitle: SelectableText('${widget.tx.address}')),
+              title: Text(S.of(context).address), subtitle: SelectableText('${tx.address}')),
           ListTile(
-              title: Text(S.of(context).contactName), subtitle: SelectableText('${widget.tx.contact ?? "N/A"}')),
-          ListTile(title: Text(S.of(context).memo), subtitle: SelectableText('${widget.tx.memo}')),
-          ElevatedButton(onPressed: _onOpen, child: Text(S.of(context).openInExplorer))
+              title: Text(S.of(context).contactName), subtitle: SelectableText('${tx.contact ?? "N/A"}')),
+          ListTile(title: Text(S.of(context).memo), subtitle: SelectableText('${tx.memo}')),
+          ButtonBar(alignment: MainAxisAlignment.center, children: [
+            IconButton(onPressed: txIndex > 0 ? _prev : null, icon: Icon(Icons.chevron_left)),
+            ElevatedButton(onPressed: _onOpen, child: Text(S.of(context).openInExplorer)),
+            IconButton(onPressed: txIndex < n-1 ? _next : null, icon: Icon(Icons.chevron_right)),
+          ]),
         ]));
   }
 
   _onOpen() {
-    launch("${activeCoin().explorerUrl}${widget.tx.fullTxId}");
+    launch("${activeCoin().explorerUrl}${tx.fullTxId}");
+  }
+
+  _prev() {
+    setState(() {
+      txIndex -= 1;
+    });
+  }
+
+  _next() {
+    setState(() {
+      txIndex += 1;
+    });
   }
 }

@@ -134,7 +134,7 @@ class HistoryDataSource extends DataTableSource {
           DataCell(Text("$m")),
         ],
         onSelectChanged: (_) {
-          Navigator.of(this.context).pushNamed('/tx', arguments: tx);
+          Navigator.of(this.context).pushNamed('/tx', arguments: index);
         });
   }
 
