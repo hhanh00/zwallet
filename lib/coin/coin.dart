@@ -42,7 +42,7 @@ abstract class CoinBase {
       final path = join(dbPath, dbName);
       db = await openDatabase(path);
       await db.close();
-      return Share.shareFiles([path], subject: dbName);
+      await Share.shareFiles([path], subject: dbName);
     }
   }
 }
