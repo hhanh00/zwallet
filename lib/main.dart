@@ -268,14 +268,19 @@ class ZWalletAppState extends State<ZWalletApp> {
     final recover = prefs.getBool('recover') ?? false;
     final exportDb = prefs.getBool('export_db') ?? false;
     prefs.setBool('recover', false);
-    prefs.setBool('export_db', false);
 
     if (!initialized || recover || exportDb) {
       initialized = true;
       final dbPath = await getDatabasesPath();
       if (exportDb) {
+        print("Export ycash");
         await ycash.export(dbPath);
+        final r1 = await showMessageBox(context, 'Export', 'Export completed?', "OK");
+        print("Export zcash");
         await zcash.export(dbPath);
+        final r2 = await showMessageBox(context, 'Export', 'Export completed?', "OK");
+        print("Export done");
+        if (r1 && r2) prefs.setBool('export_db', false);
       }
       if (recover) {
         ycash.delete(dbPath);
