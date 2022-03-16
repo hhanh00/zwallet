@@ -23,12 +23,10 @@ class _AccountState extends State<AccountPage2> with AutomaticKeepAliveClientMix
   Widget build(BuildContext context) {
     super.build(context);
     return SingleChildScrollView(
-        padding: EdgeInsets.all(20),
         child: Observer(builder: (context) {
           final _1 = active.dataEpoch;
           return Column(children: [
             SyncStatusWidget(),
-            Padding(padding: EdgeInsets.symmetric(vertical: 8)),
             QRAddressWidget(),
             Padding(padding: EdgeInsets.symmetric(vertical: 8)),
             BalanceWidget(),
@@ -53,15 +51,20 @@ class SyncStatusWidget extends StatelessWidget {
         final time = eta.eta;
         final syncedHeight = syncStatus.syncedHeight;
         final latestHeight = syncStatus.latestHeight;
-        return syncedHeight == null
+        final text =  syncedHeight == null
             ? Text(s.rescanNeeded)
             : syncStatus.isSynced()
                 ? Text('$syncedHeight', style: theme.textTheme.caption)
                 : Text('$syncedHeight / $latestHeight $time',
                     style: theme.textTheme.caption!
                         .apply(color: theme.primaryColor));
+        return TextButton(onPressed: _onSync, child: text);
       })
     ]);
+  }
+
+  _onSync() {
+    Future.microtask(syncStatus.sync);
   }
 }
 
