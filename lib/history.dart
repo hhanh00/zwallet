@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'db.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 
@@ -126,7 +127,7 @@ class HistoryDataSource extends DataTableSource {
     return DataRow(
         cells: [
           DataCell(Text("$confsOrHeight")),
-          DataCell(Text("${tx.timestamp}")),
+          DataCell(Text("${txDateFormat.format(tx.timestamp)}")),
           DataCell(Text(decimalFormat(tx.value, 8),
               style: style, textAlign: TextAlign.left)),
           DataCell(Text("${tx.txid}")),

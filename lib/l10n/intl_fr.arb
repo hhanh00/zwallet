@@ -197,5 +197,6 @@
   "newSubAccount": "Nouveau Sous Compte",
   "noActiveAccount": "Aucun Compte sélectionné",
   "closeApplication": "Close Application",
-  "pleaseRestartNow": "Please Restart now"
+  "pleaseRestartNow": "Please Restart now",
+  "disconnected": "Déconnecté"
 }

@@ -2061,6 +2061,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Disconnected`
+  String get disconnected {
+    return Intl.message(
+      'Disconnected',
+      name: 'disconnected',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -157,6 +157,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Effacer un compte"),
         "deleteContact":
             MessageLookupByLibrary.simpleMessage("Effacer un contact"),
+        "disconnected": MessageLookupByLibrary.simpleMessage("Déconnecté"),
         "doYouWantToDeleteTheSecretKeyAndConvert":
             MessageLookupByLibrary.simpleMessage(
                 "Voulez-vous SUPPRIMER la clé secrète et convertir ce compte en un compte d\'observation ? Vous ne pourrez plus dépenser depuis cet appareil. Cette opération n\'est PAS réversible."),

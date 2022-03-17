@@ -1,17 +1,14 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'accounts.dart';
 import 'dualmoneyinput.dart';
 import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:decimal/decimal.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'dart:math' as math;
 
@@ -126,16 +123,21 @@ class SendState extends State<SendPage> {
                           ),
                           onSaved: _onAddress,
                           validator: _checkAddress,
-                          onSuggestionSelected: (Contact contact) {
-                            _addressController.text = contact.name;
+                          onSuggestionSelected: (Suggestion suggestion) {
+                            _addressController.text = suggestion.name;
                           },
                           suggestionsCallback: (String pattern) {
-                            return contacts.contacts.where((c) => c.name
+                            final matchingContacts = contacts.contacts.where((c) => c.name
                                 .toLowerCase()
-                                .contains(pattern.toLowerCase()));
+                                .contains(pattern.toLowerCase())).map((c) => ContactSuggestion(c));
+                            final matchingAccounts = accounts.list
+                                .where((a) => a.coin == active.coin && a.name
+                                .toLowerCase()
+                                .contains(pattern.toLowerCase())).map((a) => AccountSuggestion(a));
+                            return [...matchingContacts, ...matchingAccounts];
                           },
-                          itemBuilder: (BuildContext context, Contact c) =>
-                              ListTile(title: Text(c.name)),
+                          itemBuilder: (BuildContext context, Suggestion suggestion) =>
+                              ListTile(title: Text(suggestion.name)),
                           noItemsFoundBuilder: (_) => SizedBox(),
                         )),
                         IconButton(
@@ -204,11 +206,18 @@ class SendState extends State<SendPage> {
                     ])))));
   }
 
+  Suggestion? getSuggestion(String v) {
+    final c = contacts.contacts.where((c) => c.name == v);
+    if (c.isNotEmpty) return ContactSuggestion(c.first);
+    final a = accounts.list.where((a) => a.name == v);
+    if (a.isNotEmpty) return AccountSuggestion(a.first);
+  }
+
   String? _checkAddress(String? v) {
     final s = S.of(context);
     if (v == null || v.isEmpty) return s.addressIsEmpty;
-    final c = contacts.contacts.where((c) => c.name == v);
-    if (c.isNotEmpty) return null;
+    final suggestion = getSuggestion(v);
+    if (suggestion != null) return null;
     final zaddr = WarpApi.getSaplingFromUA(v);
     if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(active.coin, v)) return s.invalidAddress;
@@ -274,11 +283,11 @@ class SendState extends State<SendPage> {
   }
 
   void _onAddress(v) {
-    final c = contacts.contacts.where((c) => c.name == v);
-    if (c.isEmpty)
+    final suggestion = getSuggestion(v);
+    if (suggestion == null)
       _address = v;
     else {
-      _address = c.first.address;
+      _address = suggestion.address;
     }
   }
 
@@ -460,4 +469,28 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
     Navigator.of(context).pop();
   }
 }
+
+abstract class Suggestion {
+  String get name;
+  String get address;
+}
+
+class ContactSuggestion extends Suggestion {
+  final Contact contact;
+
+  ContactSuggestion(this.contact);
+
+  String get name => contact.name;
+  String get address => contact.address;
+}
+
+class AccountSuggestion extends Suggestion {
+  final Account account;
+
+  AccountSuggestion(this.account);
+
+  String get name => account.name;
+  String get address => account.address;
+}
+
 

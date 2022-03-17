@@ -51,8 +51,7 @@ class DbReader {
     final notes = res.map((row) {
       final id = row['id_note'];
       final height = row['height'];
-      final timestamp = noteDateFormat
-          .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
       final excluded = (row['excluded'] ?? 0) != 0;
       final spent = row['spent'] == 0;
       return Note(
@@ -73,8 +72,7 @@ class DbReader {
       Uint8List txid = row['txid'];
       final fullTxId = hex.encode(txid.reversed.toList());
       final shortTxid = fullTxId.substring(0, 8);
-      final timestamp = txDateFormat
-          .format(DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000));
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
       final String? contactName = row['cname'];
       final String? accountName = row['aname'];
       final name = contactName ?? accountName;

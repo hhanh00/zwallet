@@ -2,7 +2,8 @@
     package="me.hanh.zywallet">
    <application
         android:label="ZYWallet"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

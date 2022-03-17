@@ -1,3 +1,4 @@
+import 'package:ZYWallet/db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -115,7 +116,7 @@ class NotesDataSource extends DataTableSource {
               : theme.backgroundColor),
       cells: [
         DataCell(Text("$confsOrHeight", style: style)),
-        DataCell(Text("${note.timestamp}", style: style)),
+        DataCell(Text("${noteDateFormat.format(note.timestamp)}", style: style)),
         DataCell(Text(decimalFormat(note.value, 8), style: amountStyle)),
       ],
       onSelectChanged: (selected) => _noteSelected(note, selected),
