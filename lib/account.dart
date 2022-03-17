@@ -51,7 +51,8 @@ class SyncStatusWidget extends StatelessWidget {
         final time = eta.eta;
         final syncedHeight = syncStatus.syncedHeight;
         final latestHeight = syncStatus.latestHeight;
-        final text =  syncedHeight == null
+        final text =  latestHeight == 0 ? Text(s.disconnected)
+            : syncedHeight == null
             ? Text(s.rescanNeeded)
             : syncStatus.isSynced()
                 ? Text('$syncedHeight', style: theme.textTheme.caption)

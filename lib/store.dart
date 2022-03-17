@@ -665,7 +665,7 @@ abstract class HasHeight {
 class Note extends HasHeight {
   int id;
   int height;
-  String timestamp;
+  DateTime timestamp;
   double value;
   bool excluded;
   bool spent;
@@ -680,7 +680,7 @@ class Note extends HasHeight {
 class Tx extends HasHeight {
   int id;
   int height;
-  String timestamp;
+  DateTime timestamp;
   String txid;
   String fullTxId;
   double value;
