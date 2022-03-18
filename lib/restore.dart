@@ -22,7 +22,7 @@ class _RestorePageState extends State<RestorePage> {
   final _accountIndexController = TextEditingController(text: "0");
   final _shareController = TextEditingController();
   var _validKey = true;
-  var _coin = 0;
+  var _coin = 1;
   var _showIndex = false;
 
   @override

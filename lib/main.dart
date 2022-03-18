@@ -49,7 +49,7 @@ const mZECUNIT = 100000;
 const DEFAULT_FEE = 1000;
 const MAXMONEY = 21000000;
 const DOC_URL = "https://hhanh00.github.io/zwallet/";
-const APP_NAME = "ZYWallet";
+const APP_NAME = "YWallet";
 
 const RECOVERY_FILE = "recover.bin";
 
