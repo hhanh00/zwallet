@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.hanh.zywallet">
+    package="me.hanh.ywallet">
    <application
-        android:label="ZYWallet"
+        android:label="YWallet"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false">
         <activity
