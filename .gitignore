@@ -56,3 +56,5 @@ Icon-App-*.png
 *.apk
 
 Cargo.lock
+.flatpak-builder/
+build-dir/

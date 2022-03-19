@@ -103,8 +103,30 @@ a different way to include in the build.
 Build the flutter project: `flutter build windows` (macos or linux).
 The result is in `build/windows/runner/Release`.
 
-### Linux
-Copy `libwarp_api_ffi.so` into the `lib/` directory. Then tar/gzip and that's it.
+### Linux (Flatpak)
+
+- Use docker `Dockerfile-builder-linux` to create the builder image if you haven't done so,
+- Build `zwallet.tgz` and `libwarp_api_ffi.so`
+- Copy them into `misc`
+- Build the flatpak package
+
+```
+rm -rf ~/repo
+docker rm zwallet_linux
+
+cd $PROJECT_ROOT
+docker build -f docker/Dockerfile-builder-linux -t zwallet_builder_linux .
+docker build -f docker/Dockerfile-linux -t zwallet_linux .
+docker run --name zwallet_linux zwallet_linux
+cd misc
+docker cp zwallet_linux:/root .
+flatpak-builder --user --install --force-clean build-dir me.hanh.zwallet.Zwallet.yml 
+flatpak build-export ~/repo build-dir
+flatpak build-bundle ~/repo ywallet.flatpak me.hanh.zwallet.Ywallet
+
+rm -rf ~/repo
+docker rm zwallet_linux
+```
 
 ### Windows
 Copy `warp_api_ffi.dll` into the Release directory and also add:

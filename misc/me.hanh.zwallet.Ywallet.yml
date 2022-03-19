@@ -1,0 +1,46 @@
+id: me.hanh.zwallet.Ywallet
+runtime: org.freedesktop.Platform
+runtime-version: "21.08"
+sdk: org.freedesktop.Sdk
+command: ywallet
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=xdg-data/databases:create
+modules:
+  - name: zwallet_build
+    sources:
+      - type: file
+        path: root/zwallet.tgz
+    buildsystem: simple
+    build-commands:
+      - mkdir /app/bin
+      - tar xvf zwallet.tgz -C /app/bin
+  - name: warp_api_ffi
+    sources:
+      - type: file
+        path: root/libwarp_api_ffi.so
+    buildsystem: simple
+    build-commands:
+      - cp libwarp_api_ffi.so /app/lib
+  - name: misc
+    sources:
+      - type: file
+        path: ywallet.desktop
+      - type: file
+        path: ywallet.metainfo.xml
+      - type: file
+        path: ../assets/icon.png
+    buildsystem: simple
+    build-commands:
+      - install -Dp -m 644 icon.png /app/share/icons/hicolor/256x256/apps/me.hanh.zwallet.Ywallet.png
+      - install -Dp -m 644 ywallet.desktop /app/share/applications/me.hanh.zwallet.Ywallet.desktop
+      - install -Dp -m 644 ywallet.metainfo.xml /app/share/metainfo/me.hanh.zwallet.Ywallet.metainfo.xml
+  - name: zwallet
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/bin/.dart_tool/sqflite_common_ffi
+      - ln -sf /var/data/databases /app/bin/.dart_tool/sqflite_common_ffi/databases
