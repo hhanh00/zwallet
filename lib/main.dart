@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
@@ -25,6 +26,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:quick_actions/quick_actions.dart';
+import 'package:sqlite3/open.dart';
 import 'accounts.dart';
 import 'coin/coins.dart';
 import 'generated/l10n.dart';
@@ -257,8 +259,7 @@ class ZWalletAppState extends State<ZWalletApp> {
       });
     }
     else {
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
+      databaseFactory = createDatabaseFactoryFfi(ffiInit: sqlFfiInit);;
     }
     init = _init();
   }
@@ -489,8 +490,7 @@ Future<bool> confirmWifi(BuildContext context) async {
                 actions: confirmButtons(
                     context, () => Navigator.of(context).pop(true),
                     cancelValue: false))) ?? false;
-  }
-  return true;
+  }  return true;
 }
 
 Future<bool> showMessageBox(BuildContext context, String title, String content,
@@ -707,6 +707,21 @@ Future<void> exportDb() async {
   final prefs = await SharedPreferences.getInstance();
   prefs.setBool('export_db', true);
   showSnackBar('Backup scheduled');
+}
+
+void sqlFfiInit() {
+  open.overrideFor(OperatingSystem.linux, _openOnLinux);
+}
+
+DynamicLibrary _openOnLinux() {
+  try {
+    final library = DynamicLibrary.open('libsqlite3.so.0');
+    return library;
+  }
+  catch (e) {
+    print("Failed to load SQLite3: $e");
+    rethrow;
+  }
 }
 
 bool isMobile() => Platform.isAndroid || Platform.isIOS;
