@@ -43,4 +43,3 @@ modules:
     buildsystem: simple
     build-commands:
       - mkdir -p /app/bin/.dart_tool/sqflite_common_ffi
-      - ln -sf /var/data/databases /app/bin/.dart_tool/sqflite_common_ffi/databases

@@ -272,7 +272,7 @@ class ZWalletAppState extends State<ZWalletApp> {
 
     if (!initialized || recover || exportDb) {
       initialized = true;
-      final dbPath = await getDatabasesPath();
+      final dbPath = await getDbPath();
       if (exportDb) {
         await ycash.export(dbPath);
         final r1 = await showMessageBox(context, 'Export', 'Export completed?', "OK");
@@ -722,6 +722,12 @@ DynamicLibrary _openOnLinux() {
     print("Failed to load SQLite3: $e");
     rethrow;
   }
+}
+
+Future<String> getDbPath() async {
+  if (isMobile()) return await getDatabasesPath();
+  final home = Platform.environment['XDG_DATA_HOME'] ?? Platform.environment['HOME'] ?? '/';
+  return "$home/databases";
 }
 
 bool isMobile() => Platform.isAndroid || Platform.isIOS;
