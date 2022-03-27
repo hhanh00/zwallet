@@ -16,6 +16,7 @@ class RestorePage extends StatefulWidget {
 }
 
 class _RestorePageState extends State<RestorePage> {
+  final _keyRe = RegExp(r"(.*) \[(\d+)\]$");
   final _formKey = GlobalKey<FormState>();
   final _keyController = TextEditingController();
   final _nameController = TextEditingController();
@@ -113,10 +114,17 @@ class _RestorePageState extends State<RestorePage> {
   _onOK() async {
     final s = S.of(context);
     final form = _formKey.currentState!;
-    final accountIndex = int.parse(_accountIndexController.text);
+    String key = _keyController.text;
+    int accountIndex = int.parse(_accountIndexController.text);
+    final index = _keyRe.firstMatch(key);
+    if (index != null) {
+      key = index.group(1)!;
+      accountIndex = int.parse(index.group(2)!);
+    }
+
     if (form.validate()) {
       final account =
-        WarpApi.newAccount(_coin, _nameController.text, _keyController.text, accountIndex);
+        WarpApi.newAccount(_coin, _nameController.text, key, accountIndex);
       if (account < 0) {
         showDialog(
             context: context,
@@ -159,6 +167,10 @@ class _RestorePageState extends State<RestorePage> {
 
   _checkKey(key) {
     setState(() {
+      final index = _keyRe.firstMatch(key);
+      if (index != null) {
+        key = index.group(1)!;
+      }
       final keyType = WarpApi.validKey(_coin, key);
       _validKey = key == "" || keyType >= 0;
       // _isVK = keyType == 2;

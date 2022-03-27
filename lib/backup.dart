@@ -38,7 +38,7 @@ class BackupState extends State<BackupPage> {
     return true;
   }
 
-  String get backupData => backup.value() + (backup.index != 0 ? " (Index: ${backup.index})" : "");
+  String get backupData => backup.value() + (backup.index != 0 ? " [${backup.index}]" : "");
 
   @override
   Widget build(BuildContext context) {
