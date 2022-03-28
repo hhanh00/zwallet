@@ -29,6 +29,12 @@ class AccountManagerState extends State<AccountManagerPage> {
   }
 
   @override
+  void dispose() {
+    active.updateAccount();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(

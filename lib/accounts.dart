@@ -110,10 +110,9 @@ abstract class _AccountManager2 with Store {
 class ActiveAccount = _ActiveAccount with _$ActiveAccount;
 
 abstract class _ActiveAccount with Store {
-  @observable
-  int dataEpoch = 0;
+  @observable int dataEpoch = 0;
 
-  int coin = 0;
+  @observable int coin = 0;
   int id = 0;
 
   Account account = emptyAccount;
@@ -158,6 +157,7 @@ abstract class _ActiveAccount with Store {
 
   @action
   Future<void> setActiveAccount(int _coin, int _id) async {
+    print("setActiveAccount $_coin $_id");
     coin = _coin;
     id = _id;
     accounts.saveActive(coin, id);
@@ -187,6 +187,13 @@ abstract class _ActiveAccount with Store {
 
     await update();
     await priceStore.updateChart();
+  }
+
+  @action
+  Future<void> updateAccount() async {
+    final a = accounts.get(coin, id);
+    if (a.id != active.id)
+      await setActiveAccount(a.coin, a.id);
   }
 
   @action

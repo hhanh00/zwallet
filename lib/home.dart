@@ -9,6 +9,7 @@ import 'package:warp_api/warp_api.dart';
 import 'about.dart';
 import 'account.dart';
 import 'account_manager.dart';
+import 'accounts.dart';
 import 'budget.dart';
 import 'contact.dart';
 import 'history.dart';
@@ -65,6 +66,7 @@ class HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) => Observer(builder: (context) {
         final _simpleMode = settings.simpleMode;
+        final _dataEpoch = active.dataEpoch;
         final key = UniqueKey();
         return HomeInnerPage(key: key);
       });
