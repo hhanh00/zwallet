@@ -460,7 +460,8 @@ abstract class _SyncStatus with Store {
 
   @action
   setSyncHeight(int? height) {
-    syncedHeight = height;
+    if (height == null || syncedHeight != height)
+      syncedHeight = height;
   }
 
   @action
@@ -480,8 +481,7 @@ abstract class _SyncStatus with Store {
     latestHeight = await WarpApi.getLatestHeight(active.coin);
     final _syncedHeight = await getDbSyncedHeight();
     // if syncedHeight = 0, we just started sync therefore don't set it back to null
-    if (syncedHeight != 0 || _syncedHeight != null) setSyncHeight(
-        _syncedHeight);
+    if (syncedHeight != 0 || _syncedHeight != null) setSyncHeight(_syncedHeight);
     return latestHeight > 0 && syncedHeight == latestHeight;
   }
 

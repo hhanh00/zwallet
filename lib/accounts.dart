@@ -157,7 +157,6 @@ abstract class _ActiveAccount with Store {
 
   @action
   Future<void> setActiveAccount(int _coin, int _id) async {
-    print("setActiveAccount $_coin $_id");
     coin = _coin;
     id = _id;
     accounts.saveActive(coin, id);
@@ -228,6 +227,7 @@ abstract class _ActiveAccount with Store {
 
   @computed
   List<Note> get sortedNotes {
+    final _1 = syncStatus.syncedHeight;
     var notes2 = [...notes];
     switch (noteSortConfig.field) {
       case "time":
@@ -240,6 +240,7 @@ abstract class _ActiveAccount with Store {
 
   @computed
   List<Tx> get sortedTxs {
+    final _1 = syncStatus.syncedHeight;
     var txs2 = [...txs];
     switch (txSortConfig.field) {
       case "time":

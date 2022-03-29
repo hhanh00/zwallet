@@ -25,6 +25,7 @@ class HistoryState extends State<HistoryWidget>
         padding: EdgeInsets.all(4),
         scrollDirection: Axis.vertical,
         child: Observer(builder: (context) {
+          final _1 = active.sortedTxs;
           return PaginatedDataTable(
               header: Text(S.of(context).tapTransactionForDetails, style: Theme.of(context).textTheme.bodyText2),
               actions: [
