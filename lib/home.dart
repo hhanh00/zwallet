@@ -66,7 +66,6 @@ class HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) => Observer(builder: (context) {
         final _simpleMode = settings.simpleMode;
-        final _dataEpoch = active.dataEpoch;
         final key = UniqueKey();
         return HomeInnerPage(key: key);
       });

@@ -25,7 +25,7 @@ class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
         padding: EdgeInsets.all(8),
         scrollDirection: Axis.vertical,
         child: Observer(builder: (context) {
-          active.sortedNotes;
+          final _1 = active.sortedNotes;
           return PaginatedDataTable(
             columns: [
               DataColumn(
