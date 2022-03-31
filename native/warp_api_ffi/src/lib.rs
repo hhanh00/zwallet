@@ -175,6 +175,13 @@ pub unsafe extern "C" fn broadcast_txhex(coin: u8, txhex: *mut c_char) -> *mut c
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn ledger_sign(coin: u8, tx_filename: *mut c_char) -> *mut c_char {
+    let tx_filename = CStr::from_ptr(tx_filename).to_string_lossy();
+    let res = api::ledger_sign(coin, &tx_filename);
+    CString::new(res).unwrap().into_raw()
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn sync_historical_prices(
     coin: u8,
     now: i64,

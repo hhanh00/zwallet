@@ -373,6 +373,21 @@ class NativeLibrary {
   late final _dart_broadcast_txhex _broadcast_txhex =
       _broadcast_txhex_ptr.asFunction<_dart_broadcast_txhex>();
 
+  ffi.Pointer<ffi.Int8> ledger_sign(
+    int coin,
+    ffi.Pointer<ffi.Int8> tx_filename,
+  ) {
+    return _ledger_sign(
+      coin,
+      tx_filename,
+    );
+  }
+
+  late final _ledger_sign_ptr =
+      _lookup<ffi.NativeFunction<_c_ledger_sign>>('ledger_sign');
+  late final _dart_ledger_sign _ledger_sign =
+      _ledger_sign_ptr.asFunction<_dart_ledger_sign>();
+
   int sync_historical_prices(
     int coin,
     int now,
@@ -919,6 +934,16 @@ typedef _c_broadcast_txhex = ffi.Pointer<ffi.Int8> Function(
 typedef _dart_broadcast_txhex = ffi.Pointer<ffi.Int8> Function(
   int coin,
   ffi.Pointer<ffi.Int8> txhex,
+);
+
+typedef _c_ledger_sign = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> tx_filename,
+);
+
+typedef _dart_ledger_sign = ffi.Pointer<ffi.Int8> Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> tx_filename,
 );
 
 typedef _c_sync_historical_prices = ffi.Uint32 Function(

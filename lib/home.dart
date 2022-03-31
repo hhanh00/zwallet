@@ -132,6 +132,8 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             PopupMenuItem(child: Text(s.multipay), value: "MultiPay"),
           if (!simpleMode)
             PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
+          if (!simpleMode && !isMobile())
+            PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
           PopupMenuItem(child: Text(s.settings), value: "Settings"),
           PopupMenuItem(child: Text(s.help), value: "Help"),
           PopupMenuItem(child: Text(s.about), value: "About"),
@@ -158,17 +160,20 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         ),
         actions: [menu],
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          AccountPage2(),
-          if (!simpleMode) NoteWidget(),
-          HistoryWidget(),
-          if (!simpleMode) BudgetWidget(),
-          if (!simpleMode) PnLWidget(),
-          ContactsTab(key: contactKey),
-        ],
-      ),
+      body: Observer(builder: (context) {
+        final _1 = active.dataEpoch;
+        return TabBarView(
+          controller: _tabController,
+          children: [
+            AccountPage2(),
+            if (!simpleMode) NoteWidget(),
+            HistoryWidget(),
+            if (!simpleMode) BudgetWidget(),
+            if (!simpleMode) PnLWidget(),
+            ContactsTab(key: contactKey),
+          ],
+        );
+      }),
       floatingActionButton: button,
     );
   }
@@ -196,6 +201,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         break;
       case "Broadcast":
         _broadcast();
+        break;
+      case "Ledger":
+        _ledger();
         break;
       case "Settings":
         _settings();
@@ -244,6 +252,16 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
 
     if (result != null) {
       final res = WarpApi.broadcast(active.coin, result.files.single.path!);
+      final snackBar = SnackBar(content: Text(res));
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+    }
+  }
+
+  _ledger() async {
+    final result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      final res = WarpApi.ledgerSign(active.coin, result.files.single.path!);
       final snackBar = SnackBar(content: Text(res));
       rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     }

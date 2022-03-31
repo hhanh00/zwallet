@@ -198,5 +198,6 @@
   "noActiveAccount": "Aucun Compte sélectionné",
   "closeApplication": "Close Application",
   "pleaseRestartNow": "Please Restart now",
-  "disconnected": "Déconnecté"
+  "disconnected": "Déconnecté",
+  "ledger": "Ledger"
 }
