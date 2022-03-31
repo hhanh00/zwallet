@@ -66,6 +66,7 @@ class HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) => Observer(builder: (context) {
         final _simpleMode = settings.simpleMode;
+        final _active = active.id;
         final key = UniqueKey();
         return HomeInnerPage(key: key);
       });
@@ -132,8 +133,8 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             PopupMenuItem(child: Text(s.multipay), value: "MultiPay"),
           if (!simpleMode)
             PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
-          if (!simpleMode && !isMobile())
-            PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
+          // if (!simpleMode && !isMobile())
+          //   PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
           PopupMenuItem(child: Text(s.settings), value: "Settings"),
           PopupMenuItem(child: Text(s.help), value: "Help"),
           PopupMenuItem(child: Text(s.about), value: "About"),

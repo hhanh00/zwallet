@@ -113,7 +113,7 @@ abstract class _ActiveAccount with Store {
   @observable int dataEpoch = 0;
 
   @observable int coin = 0;
-  int id = 0;
+  @observable int id = 0;
 
   Account account = emptyAccount;
   CoinBase coinDef = ZcashCoin();
