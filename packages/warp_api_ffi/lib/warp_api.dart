@@ -215,6 +215,11 @@ class WarpApi {
     return res.cast<Utf8>().toDartString();
   }
 
+  static String ledgerSign(int coin, String txFilename) {
+    final res = warp_api_lib.ledger_sign(coin, txFilename.toNativeUtf8().cast<Int8>());
+    return res.cast<Utf8>().toDartString();
+  }
+
   static Future<int> syncHistoricalPrices(int coin, String currency) async {
     return await compute(syncHistoricalPricesIsolateFn, SyncHistoricalPricesParams(coin, currency));
   }

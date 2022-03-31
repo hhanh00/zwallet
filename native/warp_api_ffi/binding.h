@@ -66,6 +66,8 @@ char *broadcast(uint8_t coin, char *tx_filename);
 
 char *broadcast_txhex(uint8_t coin, char *txhex);
 
+char *ledger_sign(uint8_t coin, char *tx_filename);
+
 uint32_t sync_historical_prices(uint8_t coin, int64_t now, uint32_t days, char *currency);
 
 char *get_ua(char *sapling_addr, char *transparent_addr);

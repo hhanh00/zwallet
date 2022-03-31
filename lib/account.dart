@@ -23,9 +23,7 @@ class _AccountState extends State<AccountPage2> with AutomaticKeepAliveClientMix
   Widget build(BuildContext context) {
     super.build(context);
     return SingleChildScrollView(
-        child: Observer(builder: (context) {
-          final _1 = active.dataEpoch;
-          return Column(children: [
+        child: Column(children: [
             SyncStatusWidget(),
             QRAddressWidget(),
             Padding(padding: EdgeInsets.symmetric(vertical: 8)),
@@ -33,8 +31,8 @@ class _AccountState extends State<AccountPage2> with AutomaticKeepAliveClientMix
             Padding(padding: EdgeInsets.symmetric(vertical: 8)),
             MemPoolWidget(),
             ProgressWidget(),
-          ]);
-        }));
+          ])
+        );
   }
 }
 

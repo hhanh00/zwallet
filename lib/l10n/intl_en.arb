@@ -200,5 +200,6 @@
   "noActiveAccount": "No active account",
   "closeApplication": "Close Application",
   "pleaseRestartNow": "Please Restart now",
-  "disconnected": "Disconnected"
+  "disconnected": "Disconnected",
+  "ledger": "Ledger"
 }

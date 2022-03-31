@@ -189,6 +189,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Dépenses les plus importantes le mois dernier"),
         "largestSpendingsByAddress": MessageLookupByLibrary.simpleMessage(
             "Dépenses les plus importantes par adresse"),
+        "ledger": MessageLookupByLibrary.simpleMessage("Ledger"),
         "light": MessageLookupByLibrary.simpleMessage("Clair"),
         "loadBackup":
             MessageLookupByLibrary.simpleMessage("Recharger une sauvegarde"),

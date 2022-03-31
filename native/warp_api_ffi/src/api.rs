@@ -430,6 +430,15 @@ pub fn broadcast_txhex(coin: u8, txhex: &str) -> String {
     log_result_string(res)
 }
 
+pub fn ledger_sign(coin: u8, tx_filename: &str) -> String {
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let mut wallet = get_wallet_lock(coin)?;
+        wallet.ledger_sign(&tx_filename).await
+    });
+    log_result_string(res)
+}
+
 pub fn sync_historical_prices(coin: u8, now: i64, days: u32, currency: &str) -> u32 {
     let r = get_runtime();
     let res = r.block_on(async {

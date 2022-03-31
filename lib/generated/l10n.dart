@@ -2071,6 +2071,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Ledger`
+  String get ledger {
+    return Intl.message(
+      'Ledger',
+      name: 'ledger',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
