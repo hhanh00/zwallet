@@ -25,9 +25,9 @@
   "txId":"TX ID:",
   "pleaseAuthenticateToShowAccountSeed":"Autentíquese para ver la semilla de la cuenta",
   "noAuthenticationMethod":"Sin método de autenticación",
-  "rescanWalletFromTheFirstBlock":"¿Escanear billetera desde el primer bloque?",
+  "rescanFrom":"¿Escanear desde?",
   "cancel":"Cancelar",
-  "rescanRequested":"Escaneo solicitado…",
+  "rescanRequested":"Escaneo solicitado desde {height}…",
   "doYouWantToDeleteTheSecretKeyAndConvert":"¿Quiere BORRAR la clave secreta y convertir esta cuenta a solo lectura? Ya no podrá gastar desde este dispositivo. Esta operación NO es reversible.",
   "delete":"ELIMINAR",
   "confs":"Confs",
@@ -199,5 +199,6 @@
   "closeApplication": "Close Application",
   "pleaseRestartNow": "Please Restart now",
   "disconnected": "Disconnected",
-  "ledger": "Ledger"
+  "ledger": "Ledger",
+  "mobileCharges": "On Mobile Data, scanning may incur additional charges. Do you want to proceed?"
 }

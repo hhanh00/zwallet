@@ -6,6 +6,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:warp_api/warp_api.dart';
 import 'backup.dart';
 import 'main.dart';
+import 'rescan.dart';
 import 'store.dart';
 import 'generated/l10n.dart';
 import 'about.dart';
@@ -156,9 +157,9 @@ class AccountManagerState extends State<AccountManagerPage> {
     await active.setActiveAccount(account.coin, account.id);
     if (syncStatus.accountRestored) {
       syncStatus.setAccountRestored(false);
-      final approved = await rescanDialog(context);
-      if (approved)
-        syncStatus.rescan(context);
+      final height = await rescanDialog(context);
+      if (height != null)
+        syncStatus.rescan(context, height);
     }
 
     final navigator = Navigator.of(context);

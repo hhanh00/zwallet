@@ -310,11 +310,11 @@ class S {
     );
   }
 
-  /// `Rescan wallet from the first block?`
-  String get rescanWalletFromTheFirstBlock {
+  /// `Rescan from...`
+  String get rescanFrom {
     return Intl.message(
-      'Rescan wallet from the first block?',
-      name: 'rescanWalletFromTheFirstBlock',
+      'Rescan from...',
+      name: 'rescanFrom',
       desc: '',
       args: [],
     );
@@ -330,13 +330,13 @@ class S {
     );
   }
 
-  /// `Rescan Requested...`
-  String get rescanRequested {
+  /// `Rescan Requested from {height}...`
+  String rescanRequested(Object height) {
     return Intl.message(
-      'Rescan Requested...',
+      'Rescan Requested from $height...',
       name: 'rescanRequested',
       desc: '',
-      args: [],
+      args: [height],
     );
   }
 
@@ -2077,6 +2077,16 @@ class S {
     return Intl.message(
       'Ledger',
       name: 'ledger',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On Mobile Data, scanning may incur additional charges. Do you want to proceed?`
+  String get mobileCharges {
+    return Intl.message(
+      'On Mobile Data, scanning may incur additional charges. Do you want to proceed?',
+      name: 'mobileCharges',
       desc: '',
       args: [],
     );

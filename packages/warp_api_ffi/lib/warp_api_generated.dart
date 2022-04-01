@@ -388,6 +388,35 @@ class NativeLibrary {
   late final _dart_ledger_sign _ledger_sign =
       _ledger_sign_ptr.asFunction<_dart_ledger_sign>();
 
+  int get_activation_date(
+    int coin,
+  ) {
+    return _get_activation_date(
+      coin,
+    );
+  }
+
+  late final _get_activation_date_ptr =
+      _lookup<ffi.NativeFunction<_c_get_activation_date>>(
+          'get_activation_date');
+  late final _dart_get_activation_date _get_activation_date =
+      _get_activation_date_ptr.asFunction<_dart_get_activation_date>();
+
+  int get_block_by_time(
+    int coin,
+    int time,
+  ) {
+    return _get_block_by_time(
+      coin,
+      time,
+    );
+  }
+
+  late final _get_block_by_time_ptr =
+      _lookup<ffi.NativeFunction<_c_get_block_by_time>>('get_block_by_time');
+  late final _dart_get_block_by_time _get_block_by_time =
+      _get_block_by_time_ptr.asFunction<_dart_get_block_by_time>();
+
   int sync_historical_prices(
     int coin,
     int now,
@@ -944,6 +973,24 @@ typedef _c_ledger_sign = ffi.Pointer<ffi.Int8> Function(
 typedef _dart_ledger_sign = ffi.Pointer<ffi.Int8> Function(
   int coin,
   ffi.Pointer<ffi.Int8> tx_filename,
+);
+
+typedef _c_get_activation_date = ffi.Uint32 Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_get_activation_date = int Function(
+  int coin,
+);
+
+typedef _c_get_block_by_time = ffi.Uint32 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 time,
+);
+
+typedef _dart_get_block_by_time = int Function(
+  int coin,
+  int time,
 );
 
 typedef _c_sync_historical_prices = ffi.Uint32 Function(

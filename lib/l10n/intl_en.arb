@@ -25,9 +25,9 @@
   "txId": "TX ID",
   "pleaseAuthenticateToShowAccountSeed": "Please authenticate to show account seed",
   "noAuthenticationMethod": "No Authentication Method",
-  "rescanWalletFromTheFirstBlock": "Rescan wallet from the first block?",
+  "rescanFrom": "Rescan from...",
   "cancel": "Cancel",
-  "rescanRequested": "Rescan Requested...",
+  "rescanRequested": "Rescan Requested from {height}...",
   "doYouWantToDeleteTheSecretKeyAndConvert": "Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.",
   "delete": "DELETE",
   "confs": "Confs",
@@ -201,5 +201,6 @@
   "closeApplication": "Close Application",
   "pleaseRestartNow": "Please Restart now",
   "disconnected": "Disconnected",
-  "ledger": "Ledger"
+  "ledger": "Ledger",
+  "mobileCharges": "On Mobile Data, scanning may incur additional charges. Do you want to proceed?"
 }

@@ -23,7 +23,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:sqlite3/open.dart';
@@ -451,46 +450,6 @@ void showQR(BuildContext context, String text, String title) {
                     }, icon: Icon(Icons.copy), label: Text(s.copy))
                   ])))
           ));
-}
-
-Future<bool> rescanDialog(BuildContext context) async {
-  final approved = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) =>
-          AlertDialog(
-              title: Text(S
-                  .of(context)
-                  .rescan),
-              content: Text(S
-                  .of(context)
-                  .rescanWalletFromTheFirstBlock),
-              actions: confirmButtons(
-                  context, () => Navigator.of(context).pop(true),
-                  cancelValue: false))) ?? false;
-  if (approved)
-    return await confirmWifi(context);
-  return false;
-}
-
-Future<bool> confirmWifi(BuildContext context) async {
-  if (!isMobile()) return true;
-  final connectivity = await Connectivity().checkConnectivity();
-  if (connectivity == ConnectivityResult.mobile) {
-    return await showDialog<bool?>(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) =>
-            AlertDialog(
-                title: Text(S
-                    .of(context)
-                    .rescan),
-                content: Text(
-                    'On Mobile Data, scanning may incur additional charges. Do you want to proceed?'),
-                actions: confirmButtons(
-                    context, () => Navigator.of(context).pop(true),
-                    cancelValue: false))) ?? false;
-  }  return true;
 }
 
 Future<bool> showMessageBox(BuildContext context, String title, String content,

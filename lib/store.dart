@@ -518,13 +518,13 @@ abstract class _SyncStatus with Store {
   }
 
   @action
-  Future<void> rescan(BuildContext context) async {
+  Future<void> rescan(BuildContext context, int height) async {
     eta.reset();
-    final snackBar = SnackBar(content: Text(S.of(context).rescanRequested));
+    final snackBar = SnackBar(content: Text(S.of(context).rescanRequested(height)));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
-    syncedHeight = 0;
-    WarpApi.rewindToHeight(active.coin, 0);
+    syncedHeight = height;
     WarpApi.truncateData(active.coin);
+    WarpApi.rewindToHeight(active.coin, height);
     await sync();
   }
 
