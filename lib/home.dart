@@ -9,13 +9,13 @@ import 'package:warp_api/warp_api.dart';
 import 'about.dart';
 import 'account.dart';
 import 'account_manager.dart';
-import 'accounts.dart';
 import 'budget.dart';
 import 'contact.dart';
 import 'history.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
 import 'note.dart';
+import 'rescan.dart';
 import 'store.dart';
 
 class HomePage extends StatefulWidget {
@@ -226,9 +226,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   }
 
   _rescan() async {
-    final approved = await rescanDialog(context);
-    if (approved) {
-      syncStatus.rescan(context);
+    final height = await rescanDialog(context);
+    if (height != null) {
+      syncStatus.rescan(context, height);
     }
   }
 

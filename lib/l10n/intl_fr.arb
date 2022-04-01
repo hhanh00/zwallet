@@ -25,9 +25,9 @@
   "txId": "ID de tx",
   "pleaseAuthenticateToShowAccountSeed": "Veuillez vous authentifier pour voir la graine du compte",
   "noAuthenticationMethod": "Pas de méthode d'authentification",
-  "rescanWalletFromTheFirstBlock": "Reparcourir la chaine à partir du premier bloc?",
+  "rescanFrom": "Reparcourir à partir de...?",
   "cancel": "Annuler",
-  "rescanRequested": "Parcours demandé...",
+  "rescanRequested": "Parcours demandé à partir de {height}...",
   "doYouWantToDeleteTheSecretKeyAndConvert": "Voulez-vous SUPPRIMER la clé secrète et convertir ce compte en un compte d'observation ? Vous ne pourrez plus dépenser depuis cet appareil. Cette opération n'est PAS réversible.",
   "delete": "SUPPRIMER",
   "confs": "Confs",
@@ -199,5 +199,6 @@
   "closeApplication": "Close Application",
   "pleaseRestartNow": "Please Restart now",
   "disconnected": "Déconnecté",
-  "ledger": "Ledger"
+  "ledger": "Ledger",
+  "mobileCharges": "Sans Wi-fi, les frais peuvent être élevés. Voulez vous continuer?"
 }

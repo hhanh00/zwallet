@@ -311,11 +311,12 @@ pub fn skip_to_last_height(coin: u8) {
 }
 
 pub fn rewind_to_height(coin: u8, height: u32) {
-    let res = || {
+    let r = get_runtime();
+    let res = r.block_on(async {
         let mut wallet = get_wallet_lock(coin)?;
-        wallet.rewind_to_height(height)
-    };
-    log_result(res())
+        wallet.rewind_to_height(height).await
+    });
+    log_result(res)
 }
 
 pub fn mempool_sync(coin: u8) -> i64 {
@@ -437,6 +438,24 @@ pub fn ledger_sign(coin: u8, tx_filename: &str) -> String {
         wallet.ledger_sign(&tx_filename).await
     });
     log_result_string(res)
+}
+
+pub fn get_activation_date(coin: u8) -> u32 {
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let wallet = get_wallet_lock(coin)?;
+        wallet.get_activation_date().await
+    });
+    log_result(res)
+}
+
+pub fn get_block_by_time(coin: u8, time: u32) -> u32 {
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let wallet = get_wallet_lock(coin)?;
+        wallet.get_block_by_time(time).await
+    });
+    log_result(res)
 }
 
 pub fn sync_historical_prices(coin: u8, now: i64, days: u32, currency: &str) -> u32 {

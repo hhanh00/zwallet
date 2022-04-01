@@ -60,6 +60,12 @@ class GetTBalanceParams {
   GetTBalanceParams(this.coin, this.account);
 }
 
+class BlockHeightByTimeParams {
+  final int coin;
+  final int time;
+  BlockHeightByTimeParams(this.coin, this.time);
+}
+
 const DEFAULT_ACCOUNT = 1;
 
 final warp_api_lib = init();
@@ -220,6 +226,16 @@ class WarpApi {
     return res.cast<Utf8>().toDartString();
   }
 
+  static DateTime getActivationDate(int coin) {
+    final res = warp_api_lib.get_activation_date(coin);
+    return DateTime.fromMillisecondsSinceEpoch(res * 1000);
+  }
+
+  static Future<int> getBlockHeightByTime(int coin, DateTime time) async {
+    final res = await compute(getBlockHeightByTimeIsolateFn, BlockHeightByTimeParams(coin, time.millisecondsSinceEpoch ~/ 1000));
+    return res;
+  }
+
   static Future<int> syncHistoricalPrices(int coin, String currency) async {
     return await compute(syncHistoricalPricesIsolateFn, SyncHistoricalPricesParams(coin, currency));
   }
@@ -375,5 +391,9 @@ String commitUnsavedContactsIsolateFn(CommitContactsParams params) {
 
 int getTBalanceIsolateFn(GetTBalanceParams params) {
   return warp_api_lib.get_taddr_balance(params.coin, params.account);
+}
+
+int getBlockHeightByTimeIsolateFn(BlockHeightByTimeParams params) {
+  return warp_api_lib.get_block_by_time(params.coin, params.time);
 }
 

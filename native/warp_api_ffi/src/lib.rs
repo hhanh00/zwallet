@@ -182,6 +182,16 @@ pub unsafe extern "C" fn ledger_sign(coin: u8, tx_filename: *mut c_char) -> *mut
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn get_activation_date(coin: u8) -> u32 {
+    api::get_activation_date(coin)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn get_block_by_time(coin: u8, time: u32) -> u32 {
+    api::get_block_by_time(coin, time)
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn sync_historical_prices(
     coin: u8,
     now: i64,
