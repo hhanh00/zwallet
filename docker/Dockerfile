@@ -11,4 +11,4 @@ RUN --mount=type=secret,id=pwd cd /zwallet && ./configure.sh zcash && ./build.sh
 
 FROM alpine:latest
 WORKDIR /root
-COPY --from=builder /zwallet/build/app/outputs/flutter-apk/* ./
+COPY --from=builder /zwallet/build/app/outputs/bundle/release/* ./

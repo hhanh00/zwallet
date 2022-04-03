@@ -89,9 +89,12 @@ class FullBackupPage extends StatelessWidget {
             child: Column(children: [
           TextField(
             decoration: InputDecoration(labelText: s.backupEncryptionKey),
+            minLines: 1,
+            maxLines: 5,
             controller: controller,
             readOnly: true,
           ),
+          Padding(padding: EdgeInsets.symmetric(vertical: 8)),
           ElevatedButton.icon(
               onPressed: () => _onSave(context),
               icon: Icon(Icons.save),
@@ -120,8 +123,11 @@ class _FullRestoreState extends State<FullRestorePage> {
         body: Card(child: Column(children: [
           TextField(
             decoration: InputDecoration(labelText: s.backupEncryptionKey),
+            minLines: 1,
+            maxLines: 5,
             controller: controller,
           ),
+          Padding(padding: EdgeInsets.symmetric(vertical: 8)),
           ElevatedButton.icon(
               onPressed: _onLoad,
               icon: Icon(Icons.open_in_new),
