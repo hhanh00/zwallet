@@ -94,6 +94,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       });
     });
     _tabController = tabController;
+    showAboutOnce(this.context);
   }
 
   @override

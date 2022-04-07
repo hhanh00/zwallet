@@ -26,7 +26,6 @@ class AccountManagerState extends State<AccountManagerPage> {
       await accounts.refresh();
       await accounts.updateTBalance();
     });
-    showAboutOnce(this.context);
   }
 
   @override

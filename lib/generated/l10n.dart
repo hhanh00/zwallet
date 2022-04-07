@@ -2091,6 +2091,16 @@ class S {
       args: [],
     );
   }
+
+  /// `I have made a backup`
+  String get iHaveMadeABackup {
+    return Intl.message(
+      'I have made a backup',
+      name: 'iHaveMadeABackup',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

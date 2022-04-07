@@ -178,6 +178,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "height": MessageLookupByLibrary.simpleMessage("Height"),
         "help": MessageLookupByLibrary.simpleMessage("Help"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
+        "iHaveMadeABackup":
+            MessageLookupByLibrary.simpleMessage("I have made a backup"),
         "includeFeeInAmount":
             MessageLookupByLibrary.simpleMessage("Include Fee in Amount"),
         "invalidAddress":

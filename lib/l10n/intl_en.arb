@@ -202,5 +202,6 @@
   "pleaseRestartNow": "Please Restart now",
   "disconnected": "Disconnected",
   "ledger": "Ledger",
-  "mobileCharges": "On Mobile Data, scanning may incur additional charges. Do you want to proceed?"
+  "mobileCharges": "On Mobile Data, scanning may incur additional charges. Do you want to proceed?",
+  "iHaveMadeABackup": "I have made a backup"
 }
