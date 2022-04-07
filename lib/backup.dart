@@ -42,8 +42,8 @@ class BackupState extends State<BackupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text(S.of(context).backup)), body:
-        FutureBuilder(
+    return Scaffold(appBar: AppBar(title: Text(S.of(context).backup)),
+        body: FutureBuilder(
           future: _init(),
           builder: _build,
         ));
@@ -112,6 +112,12 @@ class BackupState extends State<BackupPage> {
                 child: Text(s.backupWarning,
                     style: theme.textTheme.subtitle1!
                         .copyWith(color: theme.primaryColor)))),
+          ElevatedButton.icon(
+            icon: Icon(Icons.check),
+            label: Text(S.of(context).iHaveMadeABackup),
+            onPressed: () { Navigator.of(context).pop(); },
+          ),
+          Padding(padding: EdgeInsets.symmetric(vertical: 4)),
       ]),
     ));
   }

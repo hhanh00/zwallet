@@ -77,6 +77,15 @@ abstract class _AccountManager2 with Store {
 
   Account get(int coin, int id) => list.firstWhere((e) => e.coin == coin && e.id == id, orElse: () => emptyAccount);
 
+  Future<bool> hasAccount(int coin) async {
+    final c = settings.coins[coin].def;
+    final db = c.db;
+    final List<Map> res = await db.rawQuery(
+        "SELECT 1 FROM accounts",
+        []);
+    return res.isNotEmpty;
+  }
+
   static Future<List<Account>> _getList(int coin) async {
     final c = settings.coins[coin].def;
     final db = c.db;

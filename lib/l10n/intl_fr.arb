@@ -200,5 +200,6 @@
   "pleaseRestartNow": "Please Restart now",
   "disconnected": "Déconnecté",
   "ledger": "Ledger",
-  "mobileCharges": "Sans Wi-fi, les frais peuvent être élevés. Voulez vous continuer?"
+  "mobileCharges": "Sans Wi-fi, les frais peuvent être élevés. Voulez vous continuer?",
+  "iHaveMadeABackup": "J'ai fait une sauvegarde"
 }

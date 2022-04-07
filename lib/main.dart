@@ -290,6 +290,18 @@ class ZWalletAppState extends State<ZWalletApp> {
       _setProgress(0.4, 'Initializing Wallet');
       WarpApi.initWallet(dbPath);
 
+      final about = prefs.getBool('about');
+      var synced = false;
+      if (about == null && !await accounts.hasAccount(1)) {
+        _setProgress(0.5, 'Creating First Account');
+        final accountId = WarpApi.newAccount(1, 'Main', '', 0);
+        await active.setActiveAccount(1, accountId);
+        Future.microtask(() {
+          Navigator.of(context).pushNamed('/backup', arguments: AccountId(1, accountId));
+        });
+        synced = true; // synced because no previous account
+      }
+
       if (recover) {
         final f = await getRecoveryFile();
         final backup = await f.readAsString();
@@ -307,7 +319,7 @@ class ZWalletAppState extends State<ZWalletApp> {
       await active.restore();
       _setProgress(0.8, 'Checking Sync Status');
       await syncStatus.update();
-      if (accounts.list.isEmpty) {
+      if (synced) {
         for (var c in settings.coins) {
             syncStatus.markAsSynced(c.coin);
           }
