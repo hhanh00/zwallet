@@ -118,6 +118,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "backupWarning": MessageLookupByLibrary.simpleMessage(
             "Vos clés ne sont pas récupérables. Si vous n\'avez pas de sauvegarde, vous pouvez PERDREZ VOTRE ARGENT. Cette page est accessible par Menu ... / Sauvegarde"),
         "balance": MessageLookupByLibrary.simpleMessage("Solde"),
+        "barcodeScannerIsNotAvailableOnDesktop":
+            MessageLookupByLibrary.simpleMessage(
+                "Le Barcode scanner est seulement disponible sur mobile"),
         "blue": MessageLookupByLibrary.simpleMessage("Bleu"),
         "broadcast": MessageLookupByLibrary.simpleMessage("Diffusion"),
         "budget": MessageLookupByLibrary.simpleMessage("Budget"),

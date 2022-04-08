@@ -2101,6 +2101,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Barcode scanner is not available on desktop`
+  String get barcodeScannerIsNotAvailableOnDesktop {
+    return Intl.message(
+      'Barcode scanner is not available on desktop',
+      name: 'barcodeScannerIsNotAvailableOnDesktop',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
