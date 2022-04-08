@@ -200,6 +200,7 @@
   "pleaseRestartNow": "Please Restart now",
   "disconnected": "Disconnected",
   "ledger": "Ledger",
-  "mobileCharges": "On Mobile Data, scanning may incur additional charges. Do you want to proceed?",
-  "iHaveMadeABackup": "He hecho una copia de seguridad"
+  "mobileCharges": "En datos móviles, el escaneo puede incurrir en cargos adicionales. Quieres proceder?",
+  "iHaveMadeABackup": "He hecho una copia de seguridad",
+  "barcodeScannerIsNotAvailableOnDesktop": "El escáner de código de barras no está disponible en el escritorio"
 }

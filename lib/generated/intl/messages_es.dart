@@ -116,6 +116,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "backupWarning": MessageLookupByLibrary.simpleMessage(
             "Nadie puede recuperar sus claves secretas. Si no tiene una copia de seguridad, PERDERÁ SU DINERO si su teléfono se avería. Puede acceder a esta página mediante el menú de la aplicación y luego \'Copia de Seguridad\'"),
         "balance": MessageLookupByLibrary.simpleMessage("Saldo"),
+        "barcodeScannerIsNotAvailableOnDesktop":
+            MessageLookupByLibrary.simpleMessage(
+                "El escáner de código de barras no está disponible en el escritorio"),
         "blue": MessageLookupByLibrary.simpleMessage("Azul"),
         "broadcast": MessageLookupByLibrary.simpleMessage("Transmisión"),
         "budget": MessageLookupByLibrary.simpleMessage("Presupuesto"),
@@ -200,7 +203,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "memo": MessageLookupByLibrary.simpleMessage("Nota"),
         "mm": MessageLookupByLibrary.simpleMessage("M/M"),
         "mobileCharges": MessageLookupByLibrary.simpleMessage(
-            "On Mobile Data, scanning may incur additional charges. Do you want to proceed?"),
+            "En datos móviles, el escaneo puede incurrir en cargos adicionales. Quieres proceder?"),
         "mode": MessageLookupByLibrary.simpleMessage("Modo"),
         "multiPay": MessageLookupByLibrary.simpleMessage("Multi Pagos"),
         "multipay": MessageLookupByLibrary.simpleMessage("MultiPagos"),

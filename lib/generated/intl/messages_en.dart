@@ -117,6 +117,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "backupWarning": MessageLookupByLibrary.simpleMessage(
             "No one can recover your secret keys. If you don\'t have a backup and your phone breaks down, you WILL LOSE YOUR MONEY. You can reach this page by the app menu then Backup"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
+        "barcodeScannerIsNotAvailableOnDesktop":
+            MessageLookupByLibrary.simpleMessage(
+                "Barcode scanner is not available on desktop"),
         "blue": MessageLookupByLibrary.simpleMessage("Blue"),
         "broadcast": MessageLookupByLibrary.simpleMessage("Broadcast"),
         "budget": MessageLookupByLibrary.simpleMessage("Budget"),

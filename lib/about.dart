@@ -14,12 +14,10 @@ Future<void> showAbout(BuildContext context) async {
   final template = Template(contentTemplate);
   var content = template.renderString({'APP': APP_NAME});
   String? versionString;
-  if (isMobile()) {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String version = packageInfo.version;
-    String code = packageInfo.buildNumber;
-    versionString = "${s.version}: $version+$code";
-  }
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  String version = packageInfo.version;
+  String code = packageInfo.buildNumber;
+  versionString = "${s.version}: $version+$code";
   final mq = MediaQuery.of(context);
   showDialog(
       context: context,

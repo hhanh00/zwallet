@@ -318,7 +318,7 @@ class SendState extends State<SendPage> {
                       context, () => Navigator.of(context).pop(true),
                       okLabel: s.approve, cancelValue: false)));
       if (approved) {
-        int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toInt();
+        int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toBigInt().toInt();
         final memo = _memoController.text;
         final address = unwrapUA(_address);
         final recipient = Recipient(
@@ -338,7 +338,7 @@ class SendState extends State<SendPage> {
   }
 
 
-  int amountInZAT(Decimal v) => (v * ZECUNIT_DECIMAL).toInt();
+  int amountInZAT(Decimal v) => (v * ZECUNIT_DECIMAL).toBigInt().toInt();
 
   String amountFromZAT(int v) =>
       (Decimal.fromInt(v) / ZECUNIT_DECIMAL).toString();

@@ -517,7 +517,7 @@ double parseNumber(String? s) {
 
 int stringToAmount(String? s) {
   final a = parseNumber(s);
-  return (Decimal.parse(a.toString()) * ZECUNIT_DECIMAL).toInt();
+  return (Decimal.parse(a.toString()) * ZECUNIT_DECIMAL).toBigInt().toInt();
 }
 
 bool checkNumber(String s) {
@@ -533,11 +533,17 @@ bool checkNumber(String s) {
 int precision(bool? mZEC) => (mZEC == null || mZEC) ? 3 : 8;
 
 Future<String?> scanCode(BuildContext context) async {
-  final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S
-      .of(context)
-      .cancel, true, ScanMode.QR);
-  if (code == "-1") return null;
-  return code;
+  if (!isMobile()) {
+    showSnackBar(S.of(context).barcodeScannerIsNotAvailableOnDesktop);
+    return null;
+  }
+  else {
+    final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S
+        .of(context)
+        .cancel, true, ScanMode.QR);
+    if (code == "-1") return null;
+    return code;
+  }
 }
 
 String addressLeftTrim(String address) =>

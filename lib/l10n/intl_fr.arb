@@ -201,5 +201,6 @@
   "disconnected": "Déconnecté",
   "ledger": "Ledger",
   "mobileCharges": "Sans Wi-fi, les frais peuvent être élevés. Voulez vous continuer?",
-  "iHaveMadeABackup": "J'ai fait une sauvegarde"
+  "iHaveMadeABackup": "J'ai fait une sauvegarde",
+  "barcodeScannerIsNotAvailableOnDesktop": "Le Barcode scanner est seulement disponible sur mobile"
 }
