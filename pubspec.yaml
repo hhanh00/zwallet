@@ -87,6 +87,7 @@ dev_dependencies:
   flutter_app_name: any
   change_app_package_name: any
   flutter_native_splash: ^2.1.3+1
+  msix: ^3.5.1
 
 flutter_app_name:
   name: "YWallet"
@@ -150,3 +151,13 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 flutter_intl:
   enabled: true
+
+msix_config:
+  display_name: Ywallet
+  publisher_display_name: Parallax Scroll
+  identity_name: 38664ParallaxScroll.Ywallet
+  publisher: CN=DF596492-B1AD-4B42-9ECB-4E6208B6D8CD
+  msix_version: 1.0.0.0
+  logo_path: assets\icon.png
+  store: true
+  capabilities: internetClient
