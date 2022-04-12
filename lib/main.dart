@@ -703,8 +703,12 @@ DynamicLibrary _openOnLinux() {
 
 Future<String> getDbPath() async {
   if (isMobile()) return await getDatabasesPath();
-  final home = Platform.environment['XDG_DATA_HOME'] ?? Platform.environment['HOME'] ?? '/';
-  return "$home/databases";
+  String? home;
+  if (Platform.isWindows) home = Platform.environment['LOCALAPPDATA'];
+  if (Platform.isLinux) home = Platform.environment['XDG_DATA_HOME'];
+  if (Platform.isMacOS) home = Platform.environment['HOME'];
+  final h = home ?? "";
+  return "$h/databases";
 }
 
 bool isMobile() => Platform.isAndroid || Platform.isIOS;
