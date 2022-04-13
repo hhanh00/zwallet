@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
+import 'package:convert/convert.dart';
 
 import 'about.dart';
 import 'account.dart';
@@ -132,6 +134,8 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             PopupMenuItem(child: Text(s.coldStorage), value: "Cold"),
           if (!simpleMode)
             PopupMenuItem(child: Text(s.multipay), value: "MultiPay"),
+          if (!simpleMode && active.canPay)
+            PopupMenuItem(child: Text(s.signOffline), value: "Sign"),
           if (!simpleMode)
             PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
           // if (!simpleMode && !isMobile())
@@ -201,6 +205,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       case "MultiPay":
         _multiPay();
         break;
+      case "Sign":
+        _sign();
+        break;
       case "Broadcast":
         _broadcast();
         break;
@@ -247,6 +254,29 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
 
   _multiPay() {
     Navigator.of(context).pushNamed('/multipay');
+  }
+
+  _sign() async {
+    final result = await FilePicker.platform.pickFiles();
+
+    String msg;
+    if (result != null) {
+      final res = await WarpApi.signOnly(active.coin, active.id, result.files.single.path!, (progress) {
+        progressPort.sendPort.send(progress);
+      });
+      progressPort.sendPort.send(0);
+      if (res.startsWith("00")) { // first byte is success/error
+        msg = WarpApi.broadcastHex(active.coin, res.substring(2));
+      }
+      else {
+        final msgHex = res.substring(2);
+        final s = hex.decode(msgHex);
+        final dec = Utf8Decoder();
+        msg = dec.convert(s);
+      }
+      final snackBar = SnackBar(content: Text(msg));
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+    }
   }
 
   _broadcast() async {

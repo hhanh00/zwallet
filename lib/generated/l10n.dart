@@ -2111,6 +2111,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Sign`
+  String get signOffline {
+    return Intl.message(
+      'Sign',
+      name: 'signOffline',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

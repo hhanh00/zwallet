@@ -62,6 +62,8 @@ char *prepare_multi_payment(uint8_t coin,
                             bool use_transparent,
                             uint32_t anchor_offset);
 
+char *sign(uint8_t coin, uint32_t account, char *tx_filename, int64_t port);
+
 char *broadcast(uint8_t coin, char *tx_filename);
 
 char *broadcast_txhex(uint8_t coin, char *txhex);

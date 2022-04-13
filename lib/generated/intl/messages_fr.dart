@@ -308,6 +308,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Masquage en cours..."),
         "sign": MessageLookupByLibrary.simpleMessage("Sign"),
+        "signOffline": MessageLookupByLibrary.simpleMessage("Signer"),
         "simple": MessageLookupByLibrary.simpleMessage("Simple"),
         "simpleMode": MessageLookupByLibrary.simpleMessage("Mode Simple"),
         "spendable": MessageLookupByLibrary.simpleMessage("Dépensable"),

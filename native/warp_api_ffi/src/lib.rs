@@ -161,6 +161,18 @@ pub unsafe extern "C" fn prepare_multi_payment(
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn sign(
+    coin: u8,
+    account: u32,
+    tx_filename: *mut c_char,
+    port: i64,
+) -> *mut c_char {
+    let tx_filename = CStr::from_ptr(tx_filename).to_string_lossy();
+    let res = api::sign(coin, account, &tx_filename, port);
+    CString::new(hex::encode(res)).unwrap().into_raw()
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn broadcast(coin: u8, tx_filename: *mut c_char) -> *mut c_char {
     let tx_filename = CStr::from_ptr(tx_filename).to_string_lossy();
     let res = api::broadcast(coin, &tx_filename);
