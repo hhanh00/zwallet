@@ -66,6 +66,21 @@ fn log_result_string(result: anyhow::Result<String>) -> String {
     }
 }
 
+fn encode_tx_result(res: anyhow::Result<Vec<u8>>) -> Vec<u8> {
+    let mut v = vec![];
+    match res {
+        Ok(raw_tx) => {
+            v.push(0x00);
+            v.extend(raw_tx);
+        }
+        Err(e) => {
+            v.push(0x01);
+            v.extend(e.to_string().as_bytes());
+        }
+    }
+    v
+}
+
 pub fn init_wallet(db_path: &str) {
     android_logger::init_once(Config::default().with_min_level(Level::Info));
     info!("Init");
@@ -408,6 +423,23 @@ pub fn prepare_multi_payment(
     log_result_string(res)
 }
 
+pub fn sign(coin: u8, account: u32, tx_filename: &str, port: i64) -> Vec<u8> {
+    let r = get_runtime();
+    let res = r.block_on(async {
+        let mut wallet = get_wallet_lock(coin)?;
+        let mut file = File::open(&tx_filename)?;
+        let mut s = String::new();
+        file.read_to_string(&mut s)?;
+        let raw_tx = wallet
+            .sign_only_multi_payment(&s, account, move |progress| {
+                report_progress(progress, port);
+            })
+            .await?;
+        Ok(raw_tx)
+    });
+    encode_tx_result(res)
+}
+
 pub fn broadcast(coin: u8, tx_filename: &str) -> String {
     let r = get_runtime();
     let res = r.block_on(async {
@@ -645,18 +677,7 @@ pub fn submit_multisig_tx(tx_str: &str, port: u16) -> Vec<u8> {
         let raw_tx = submit_tx(port, tx_str).await?;
         Ok(raw_tx)
     });
-    let mut v: Vec<u8> = vec![];
-    match res {
-        Ok(raw_tx) => {
-            v.push(0x00);
-            v.extend(raw_tx);
-        }
-        Err(e) => {
-            v.push(0x01);
-            v.extend(e.to_string().as_bytes());
-        }
-    }
-    v
+    encode_tx_result(res)
 }
 
 struct MultisigClient {}

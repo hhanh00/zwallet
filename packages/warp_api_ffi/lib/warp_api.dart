@@ -13,59 +13,6 @@ import 'types.dart';
 
 typedef report_callback = Void Function(Int32);
 const DAY_MS = 24 * 3600 * 1000;
-
-class SyncParams {
-  int coin;
-  bool getTx;
-  int anchorOffset;
-  SendPort? port;
-
-  SyncParams(this.coin, this.getTx, this.anchorOffset, this.port);
-}
-
-class PaymentParams {
-  int coin;
-  int account;
-  String recipientsJson;
-  bool useTransparent;
-  int anchorOffset;
-  SendPort port;
-
-  PaymentParams(this.coin, this.account, this.recipientsJson, this.useTransparent, this.anchorOffset, this.port);
-}
-
-class ShieldTAddrParams {
-  int coin;
-  int account;
-  ShieldTAddrParams(this.coin, this.account);
-}
-
-class CommitContactsParams {
-  int coin;
-  int account;
-  int anchorOffset;
-
-  CommitContactsParams(this.coin, this.account, this.anchorOffset);
-}
-
-class SyncHistoricalPricesParams {
-  int coin;
-  String currency;
-  SyncHistoricalPricesParams(this.coin, this.currency);
-}
-
-class GetTBalanceParams {
-  int coin;
-  int account;
-  GetTBalanceParams(this.coin, this.account);
-}
-
-class BlockHeightByTimeParams {
-  final int coin;
-  final int time;
-  BlockHeightByTimeParams(this.coin, this.time);
-}
-
 const DEFAULT_ACCOUNT = 1;
 
 final warp_api_lib = init();
@@ -209,6 +156,18 @@ class WarpApi {
         recipientsJson.toNativeUtf8().cast<Int8>(),
         useTransparent ? 1 : 0, anchorOffset);
     return res.cast<Utf8>().toDartString();
+  }
+
+  static Future<String> signOnly(int coin, int account, String txFilename, void Function(int) f) async {
+    var receivePort = ReceivePort();
+    receivePort.listen((progress) {
+      f(progress);
+    });
+
+    return await compute(
+        signOnlyIsolateFn,
+        SignOnlyParams(
+            coin, account, txFilename, receivePort.sendPort));
   }
 
   static String broadcast(int coin, String txFilename) {
@@ -365,6 +324,15 @@ String sendPaymentIsolateFn(PaymentParams params) {
   return txId.cast<Utf8>().toDartString();
 }
 
+String signOnlyIsolateFn(SignOnlyParams params) {
+  final txId = warp_api_lib.sign(
+      params.coin,
+      params.account,
+      params.txFilename.toNativeUtf8().cast<Int8>(),
+      params.port.nativePort);
+  return txId.cast<Utf8>().toDartString();
+}
+
 int getLatestHeightIsolateFn(int coin) {
   return warp_api_lib.get_latest_height(coin);
 }
@@ -397,3 +365,67 @@ int getBlockHeightByTimeIsolateFn(BlockHeightByTimeParams params) {
   return warp_api_lib.get_block_by_time(params.coin, params.time);
 }
 
+class SyncParams {
+  final int coin;
+  final bool getTx;
+  final int anchorOffset;
+  final SendPort? port;
+
+  SyncParams(this.coin, this.getTx, this.anchorOffset, this.port);
+}
+
+class PaymentParams {
+  final int coin;
+  final int account;
+  final String recipientsJson;
+  final bool useTransparent;
+  final int anchorOffset;
+  final SendPort port;
+
+  PaymentParams(this.coin, this.account, this.recipientsJson, this.useTransparent, this.anchorOffset, this.port);
+}
+
+class SignOnlyParams {
+  final int coin;
+  final int account;
+  final String txFilename;
+  final SendPort port;
+
+  SignOnlyParams(this.coin, this.account, this.txFilename, this.port);
+}
+
+class ShieldTAddrParams {
+  final int coin;
+  final int account;
+
+  ShieldTAddrParams(this.coin, this.account);
+}
+
+class CommitContactsParams {
+  final int coin;
+  final int account;
+  final int anchorOffset;
+
+  CommitContactsParams(this.coin, this.account, this.anchorOffset);
+}
+
+class SyncHistoricalPricesParams {
+  final int coin;
+  final String currency;
+
+  SyncHistoricalPricesParams(this.coin, this.currency);
+}
+
+class GetTBalanceParams {
+  final int coin;
+  final int account;
+
+  GetTBalanceParams(this.coin, this.account);
+}
+
+class BlockHeightByTimeParams {
+  final int coin;
+  final int time;
+
+  BlockHeightByTimeParams(this.coin, this.time);
+}

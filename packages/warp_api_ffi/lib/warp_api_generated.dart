@@ -343,6 +343,23 @@ class NativeLibrary {
   late final _dart_prepare_multi_payment _prepare_multi_payment =
       _prepare_multi_payment_ptr.asFunction<_dart_prepare_multi_payment>();
 
+  ffi.Pointer<ffi.Int8> sign(
+    int coin,
+    int account,
+    ffi.Pointer<ffi.Int8> tx_filename,
+    int port,
+  ) {
+    return _sign(
+      coin,
+      account,
+      tx_filename,
+      port,
+    );
+  }
+
+  late final _sign_ptr = _lookup<ffi.NativeFunction<_c_sign>>('sign');
+  late final _dart_sign _sign = _sign_ptr.asFunction<_dart_sign>();
+
   ffi.Pointer<ffi.Int8> broadcast(
     int coin,
     ffi.Pointer<ffi.Int8> tx_filename,
@@ -943,6 +960,20 @@ typedef _dart_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> recipients_json,
   int use_transparent,
   int anchor_offset,
+);
+
+typedef _c_sign = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+  ffi.Pointer<ffi.Int8> tx_filename,
+  ffi.Int64 port,
+);
+
+typedef _dart_sign = ffi.Pointer<ffi.Int8> Function(
+  int coin,
+  int account,
+  ffi.Pointer<ffi.Int8> tx_filename,
+  int port,
 );
 
 typedef _c_broadcast = ffi.Pointer<ffi.Int8> Function(
