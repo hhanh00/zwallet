@@ -258,6 +258,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "La configuración de envío protegido ha cambiado"),
         "purple": MessageLookupByLibrary.simpleMessage("Morada"),
         "qty": MessageLookupByLibrary.simpleMessage("Cantidad"),
+        "rawTransaction":
+            MessageLookupByLibrary.simpleMessage("Transacción con firmar"),
         "realized": MessageLookupByLibrary.simpleMessage("Dio Cuenta"),
         "receive": m7,
         "receivePayment":

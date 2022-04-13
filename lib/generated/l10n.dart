@@ -2121,6 +2121,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Raw Transaction`
+  String get rawTransaction {
+    return Intl.message(
+      'Raw Transaction',
+      name: 'rawTransaction',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

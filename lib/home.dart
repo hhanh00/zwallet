@@ -259,23 +259,23 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   _sign() async {
     final result = await FilePicker.platform.pickFiles();
 
-    String msg;
     if (result != null) {
       final res = await WarpApi.signOnly(active.coin, active.id, result.files.single.path!, (progress) {
         progressPort.sendPort.send(progress);
       });
       progressPort.sendPort.send(0);
       if (res.startsWith("00")) { // first byte is success/error
-        msg = WarpApi.broadcastHex(active.coin, res.substring(2));
+        final txRaw = res.substring(2);
+        await saveFile(txRaw, 'tx.raw', S.of(context).rawTransaction);
       }
       else {
         final msgHex = res.substring(2);
         final s = hex.decode(msgHex);
         final dec = Utf8Decoder();
-        msg = dec.convert(s);
+        final msg = dec.convert(s);
+        final snackBar = SnackBar(content: Text(msg));
+        rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
       }
-      final snackBar = SnackBar(content: Text(msg));
-      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     }
   }
 
