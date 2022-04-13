@@ -263,6 +263,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Changement de PIN avant envoi"),
         "purple": MessageLookupByLibrary.simpleMessage("Violet"),
         "qty": MessageLookupByLibrary.simpleMessage("Quantité"),
+        "rawTransaction":
+            MessageLookupByLibrary.simpleMessage("Transaction Signée"),
         "realized": MessageLookupByLibrary.simpleMessage("Réalisé"),
         "receive": m7,
         "receivePayment":

@@ -203,5 +203,6 @@
   "mobileCharges": "En datos móviles, el escaneo puede incurrir en cargos adicionales. Quieres proceder?",
   "iHaveMadeABackup": "He hecho una copia de seguridad",
   "barcodeScannerIsNotAvailableOnDesktop": "El escáner de código de barras no está disponible en el escritorio",
-  "signOffline": "Firmar"
+  "signOffline": "Firmar",
+  "rawTransaction": "Transacción con firmar"
 }

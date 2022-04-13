@@ -260,6 +260,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Protect Send setting changed"),
         "purple": MessageLookupByLibrary.simpleMessage("Purple"),
         "qty": MessageLookupByLibrary.simpleMessage("Qty"),
+        "rawTransaction":
+            MessageLookupByLibrary.simpleMessage("Raw Transaction"),
         "realized": MessageLookupByLibrary.simpleMessage("Realized"),
         "receive": m7,
         "receivePayment":

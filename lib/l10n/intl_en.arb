@@ -205,5 +205,6 @@
   "mobileCharges": "On Mobile Data, scanning may incur additional charges. Do you want to proceed?",
   "iHaveMadeABackup": "I have made a backup",
   "barcodeScannerIsNotAvailableOnDesktop": "Barcode scanner is not available on desktop",
-  "signOffline": "Sign"
+  "signOffline": "Sign",
+  "rawTransaction": "Raw Transaction"
 }
