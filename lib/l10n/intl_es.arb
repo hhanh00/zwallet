@@ -204,5 +204,6 @@
   "iHaveMadeABackup": "He hecho una copia de seguridad",
   "barcodeScannerIsNotAvailableOnDesktop": "El escáner de código de barras no está disponible en el escritorio",
   "signOffline": "Firmar",
-  "rawTransaction": "Transacción con firmar"
+  "rawTransaction": "Transacción con firmar",
+  "convertToWatchonly": "Convertir en solo vista"
 }

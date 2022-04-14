@@ -130,14 +130,16 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
           PopupMenuItem(child: Text(s.accounts), value: "Accounts"),
           PopupMenuItem(child: Text(s.backup), value: "Backup"),
           PopupMenuItem(child: Text(s.rescan), value: "Rescan"),
-          if (!simpleMode && active.canPay)
-            PopupMenuItem(child: Text(s.coldStorage), value: "Cold"),
           if (!simpleMode)
-            PopupMenuItem(child: Text(s.multipay), value: "MultiPay"),
-          if (!simpleMode && active.canPay)
-            PopupMenuItem(child: Text(s.signOffline), value: "Sign"),
-          if (!simpleMode)
-            PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
+            PopupMenuItem(child:
+              PopupMenuButton(
+                child: Text(s.advanced),
+                itemBuilder: (_) => [
+                  PopupMenuItem(child: Text(s.convertToWatchonly), enabled: active.canPay, value: "Cold"),
+                  PopupMenuItem(child: Text(s.signOffline), enabled: active.canPay, value: "Sign"),
+                  PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
+                  PopupMenuItem(child: Text(s.multipay), value: "MultiPay"),
+                ], onSelected: _onMenu)),
           // if (!simpleMode && !isMobile())
           //   PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
           PopupMenuItem(child: Text(s.settings), value: "Settings"),

@@ -204,5 +204,6 @@
   "iHaveMadeABackup": "J'ai fait une sauvegarde",
   "barcodeScannerIsNotAvailableOnDesktop": "Le Barcode scanner est seulement disponible sur mobile",
   "signOffline": "Signer",
-  "rawTransaction": "Transaction Signée"
+  "rawTransaction": "Transaction Signée",
+  "convertToWatchonly": "Convertir en Non-Depensable"
 }

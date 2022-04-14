@@ -206,5 +206,6 @@
   "iHaveMadeABackup": "I have made a backup",
   "barcodeScannerIsNotAvailableOnDesktop": "Barcode scanner is not available on desktop",
   "signOffline": "Sign",
-  "rawTransaction": "Raw Transaction"
+  "rawTransaction": "Raw Transaction",
+  "convertToWatchonly": "Convert to Watch-Only"
 }

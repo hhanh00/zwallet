@@ -145,6 +145,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "confs": MessageLookupByLibrary.simpleMessage("Confs"),
         "contactName": MessageLookupByLibrary.simpleMessage("Nom du Contact"),
         "contacts": MessageLookupByLibrary.simpleMessage("Mes Contacts"),
+        "convertToWatchonly":
+            MessageLookupByLibrary.simpleMessage("Convertir en Non-Depensable"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "createANewAccount": MessageLookupByLibrary.simpleMessage(
             "Créez un nouveau compte et il apparaîtra ici"),
