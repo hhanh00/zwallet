@@ -144,6 +144,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "contactName":
             MessageLookupByLibrary.simpleMessage("Nombre de contacto"),
         "contacts": MessageLookupByLibrary.simpleMessage("Contactos"),
+        "convertToWatchonly":
+            MessageLookupByLibrary.simpleMessage("Convertir en solo vista"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "createANewAccount": MessageLookupByLibrary.simpleMessage(
             "Crea una cuenta y aparecerá aquí."),

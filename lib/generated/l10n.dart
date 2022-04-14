@@ -2131,6 +2131,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Convert to Watch-Only`
+  String get convertToWatchonly {
+    return Intl.message(
+      'Convert to Watch-Only',
+      name: 'convertToWatchonly',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

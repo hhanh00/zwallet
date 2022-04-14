@@ -347,15 +347,18 @@ abstract class _Settings with Store {
 
   @action
   Future<void> _loadCurrencies() async {
-    final base = "api.coingecko.com";
-    final uri = Uri.https(base, '/api/v3/simple/supported_vs_currencies');
-    final rep = await http.get(uri);
-    if (rep.statusCode == 200) {
-      final _currencies = convert.jsonDecode(rep.body) as List<dynamic>;
-      final c = _currencies.map((v) => (v as String).toUpperCase()).toList();
-      c.sort();
-      currencies = c;
+    try {
+      final base = "api.coingecko.com";
+      final uri = Uri.https(base, '/api/v3/simple/supported_vs_currencies');
+      final rep = await http.get(uri);
+      if (rep.statusCode == 200) {
+        final _currencies = convert.jsonDecode(rep.body) as List<dynamic>;
+        final c = _currencies.map((v) => (v as String).toUpperCase()).toList();
+        c.sort();
+        currencies = c;
+      }
     }
+    catch (_) {}
   }
 
   @action
@@ -415,13 +418,16 @@ abstract class _PriceStore with Store {
     final base = "api.coingecko.com";
     final uri = Uri.https(base, '/api/v3/simple/price',
         {'ids': c.currency, 'vs_currencies': settings.currency});
-    final rep = await http.get(uri);
-    if (rep.statusCode == 200) {
-      final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
-      final p = json[c.currency][settings.currency.toLowerCase()];
-      coinPrice = (p is double) ? p : (p as int).toDouble();
-    } else
-      coinPrice = 0.0;
+    try {
+      final rep = await http.get(uri);
+      if (rep.statusCode == 200) {
+        final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
+        final p = json[c.currency][settings.currency.toLowerCase()];
+        coinPrice = (p is double) ? p : (p as int).toDouble();
+      } else
+        coinPrice = 0.0;
+    }
+    catch (_) {}
   }
 
   Future<void> updateChart() async {
