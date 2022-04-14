@@ -103,7 +103,7 @@ class FullBackupPage extends StatelessWidget {
   }
 
   _onSave(BuildContext context) async {
-    await saveFile(backup, "$APP_NAME.bak", S.of(context).encryptedBackup(APP_NAME));
+    await saveFile(context, backup, "$APP_NAME.bak", S.of(context).encryptedBackup(APP_NAME));
   }
 }
 

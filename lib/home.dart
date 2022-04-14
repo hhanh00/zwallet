@@ -266,7 +266,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       progressPort.sendPort.send(0);
       if (res.startsWith("00")) { // first byte is success/error
         final txRaw = res.substring(2);
-        await saveFile(txRaw, 'tx.raw', S.of(context).rawTransaction);
+        await saveFile(context, txRaw, 'tx.raw', S.of(context).rawTransaction);
       }
       else {
         final msgHex = res.substring(2);
