@@ -462,7 +462,7 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
   } else {
     final txjson = WarpApi.prepareTx(active.coin, active.id, recipients,
         useTransparent, settings.anchorOffset);
-    await saveFile(txjson, "tx.json", s.unsignedTransactionFile);
+    await saveFile(context, txjson, "tx.json", s.unsignedTransactionFile);
 
     final snackBar2 = SnackBar(content: Text(s.fileSaved));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);

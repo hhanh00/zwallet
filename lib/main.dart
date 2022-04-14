@@ -628,19 +628,20 @@ Future<void> shieldTAddr(BuildContext context) async {
   );
 }
 
-Future<void> shareCsv(List<List> data, String filename, String title) async {
+Future<void> shareCsv(BuildContext context, List<List> data, String filename, String title) async {
   final csvConverter = ListToCsvConverter();
   final csv = csvConverter.convert(data);
-  await saveFile(csv, filename, title);
+  await saveFile(context, csv, filename, title);
 }
 
-Future<void> saveFile(String data, String filename, String title) async {
+Future<void> saveFile(BuildContext context, String data, String filename, String title) async {
   if (isMobile()) {
+    Size size = MediaQuery.of(context).size;
     Directory tempDir = await getTemporaryDirectory();
     String fn = "${tempDir.path}/$filename";
     final file = File(fn);
     await file.writeAsString(data);
-    return Share.shareFiles([fn], subject: title);
+    return Share.shareFiles([fn], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
   }
   else {
     final fn = await FilePicker.platform.saveFile();
