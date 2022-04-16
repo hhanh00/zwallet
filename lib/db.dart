@@ -11,6 +11,8 @@ import 'main.dart';
 
 final DateFormat noteDateFormat = DateFormat("yy-MM-dd HH:mm");
 final DateFormat txDateFormat = DateFormat("MM-dd HH:mm");
+final DateFormat msgDateFormat = DateFormat("MM-dd HH:mm");
+final DateFormat msgDateFormatFull = DateFormat("yy-MM-dd HH:mm:ss");
 
 class DbReader {
   int coin;
@@ -197,6 +199,48 @@ class DbReader {
     return accountBalances;
   }
 
+  Future<List<ZMessage>> getMessages(String myAddress) async {
+    final List<Map> res = await db.rawQuery(
+        "SELECT m.id, m.timestamp, m.sender, m.recipient, c.name as scontact, a.name as saccount, c2.name as rcontact, a2.name as raccount, "
+        "subject, body, height, read FROM messages m "
+        "LEFT JOIN contacts c ON m.sender = c.address "
+        "LEFT JOIN accounts a ON m.sender = a.address "
+        "LEFT JOIN contacts c2 ON m.recipient = c2.address "
+        "LEFT JOIN accounts a2 ON m.recipient = a2.address "
+        "WHERE account = ?1 ORDER BY timestamp DESC",
+        [id]);
+    List<ZMessage> messages = [];
+    for (var row in res) {
+      final id = row['id'];
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
+      final height = row['height'];
+      final sender = row['sender'];
+      final from = row['scontact'] ?? row['saccount'] ?? sender;
+      final recipient = row['recipient'];
+      final to = row['rcontact'] ?? row['raccount'] ?? recipient;
+      final subject = row['subject'];
+      final body = row['body'];
+      final read = row['read'] == 1;
+      final incoming = recipient == myAddress;
+      messages.add(ZMessage(id, incoming, from, to, subject, body, timestamp, height, read));
+    }
+    return messages;
+  }
+
+  Future<int?> getPrevMessage(String subject, int height, int account) async {
+    final id = await Sqflite.firstIntValue(await db.rawQuery(
+        "SELECT MAX(id) FROM messages WHERE subject = ?1 AND height < ?2 and account = ?3",
+        [subject, height, account]));
+    return id;
+  }
+
+  Future<int?> getNextMessage(String subject, int height, int account) async {
+    final id = await Sqflite.firstIntValue(await db.rawQuery(
+        "SELECT MIN(id) FROM messages WHERE subject = ?1 AND height > ?2 and account = ?3",
+        [subject, height, account]));
+    return id;
+  }
+
   TimeRange _getChartRange() {
     final now = DateTime.now().toUtc();
     final today = DateTime.utc(now.year, now.month, now.day);
@@ -228,4 +272,24 @@ class Balances {
 
   Balances(this.balance, this.shieldedBalance, this.unconfirmedSpentBalance, this.underConfirmedBalance, this.excludedBalance, this.unconfirmedBalance);
   static Balances zero = Balances(0, 0, 0, 0, 0, 0);
+}
+
+class ZMessage {
+  final int id;
+  final bool incoming;
+  final String? sender;
+  final String recipient;
+  final String subject;
+  final String body;
+  final DateTime timestamp;
+  final int height;
+  final bool read;
+
+  ZMessage(this.id, this.incoming, this.sender, this.recipient, this.subject, this.body, this.timestamp, this.height, this.read);
+
+  ZMessage withRead(bool v) {
+    return ZMessage(id, incoming, sender, recipient, subject, body, timestamp, height, v);
+  }
+
+  String fromto() => incoming ? "\u{21e6} ${sender != null ? centerTrim(sender!) : ''}" : "\u{21e8} ${centerTrim(recipient)}";
 }

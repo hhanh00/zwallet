@@ -136,6 +136,7 @@ abstract class _ActiveAccount with Store {
   @observable List<Spending> spendings = [];
   @observable List<TimeSeriesPoint<double>> accountBalances = [];
   @observable List<PnL> pnls = [];
+  @observable ObservableList<ZMessage> messages = ObservableList();
 
   @observable
   bool showTAddr = false;
@@ -227,6 +228,7 @@ abstract class _ActiveAccount with Store {
     final dbr = DbReader(coin, id);
     notes = await dbr.getNotes();
     txs = await dbr.getTxs();
+    messages = ObservableList.of(await dbr.getMessages(account.address));
     dataEpoch += 1;
   }
 
@@ -341,6 +343,24 @@ abstract class _ActiveAccount with Store {
         "UPDATE accounts SET seed = NULL, sk = NULL WHERE id_account = ?1",
         [active.id]);
     canPay = false;
+  }
+
+  @action
+  void markMessageAsRead(int index) {
+    WarpApi.markMessageAsRead(active.coin, active.id, messages[index].id, true);
+    messages[index] = messages[index].withRead(true);
+  }
+
+  Future<int?> prevInThread(int index) async {
+    final message = messages[index];
+    final dbr = DbReader(active.coin, active.id);
+    return await dbr.getPrevMessage(message.subject, message.height, id);
+  }
+
+  Future<int?> nextInThread(int index) async {
+    final message = messages[index];
+    final dbr = DbReader(active.coin, active.id);
+    return await dbr.getNextMessage(message.subject, message.height, id);
   }
 }
 

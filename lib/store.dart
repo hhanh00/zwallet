@@ -133,6 +133,9 @@ abstract class _Settings with Store {
   bool autoHide = true;
 
   @observable
+  bool includeReplyTo = false;
+
+  @observable
   bool protectSend = false;
 
   @observable
@@ -168,6 +171,7 @@ abstract class _Settings with Store {
     useUA = prefs.getBool('use_ua') ?? false;
     autoHide = prefs.getBool('auto_hide') ?? true;
     protectSend = prefs.getBool('protect_send') ?? false;
+    includeReplyTo = prefs.getBool('include_reply_to') ?? false;
 
     primaryColorValue = prefs.getInt('primary') ?? Colors.blue.value;
     primaryVariantColorValue =
@@ -394,6 +398,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     protectSend = v;
     prefs.setBool('protect_send', protectSend);
+  }
+
+  @action
+  Future<void> setIncludeReplyTo(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    includeReplyTo = v;
+    prefs.setBool('include_reply_to', includeReplyTo);
   }
 
   @action
@@ -843,10 +854,12 @@ class DecodedPaymentURI {
 class SendPageArgs {
   final bool isMulti;
   final Contact? contact;
+  final String? address;
+  final String? subject;
   final String? uri;
   final List<Recipient> recipients;
 
-  SendPageArgs({this.isMulti = false, this.contact, this.uri, this.recipients = const[]});
+  SendPageArgs({this.isMulti = false, this.contact, this.address, this.subject, this.uri, this.recipients = const[]});
 }
 
 class ShareInfo {

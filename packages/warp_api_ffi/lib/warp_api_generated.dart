@@ -219,6 +219,25 @@ class NativeLibrary {
   late final _dart_send_multi_payment _send_multi_payment =
       _send_multi_payment_ptr.asFunction<_dart_send_multi_payment>();
 
+  void mark_message_read(
+    int coin,
+    int account,
+    int message,
+    int read,
+  ) {
+    return _mark_message_read(
+      coin,
+      account,
+      message,
+      read,
+    );
+  }
+
+  late final _mark_message_read_ptr =
+      _lookup<ffi.NativeFunction<_c_mark_message_read>>('mark_message_read');
+  late final _dart_mark_message_read _mark_message_read =
+      _mark_message_read_ptr.asFunction<_dart_mark_message_read>();
+
   void skip_to_last_height(
     int coin,
   ) {
@@ -878,6 +897,20 @@ typedef _dart_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
   int anchor_offset,
   int use_transparent,
   int port,
+);
+
+typedef _c_mark_message_read = ffi.Void Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+  ffi.Uint32 message,
+  ffi.Int8 read,
+);
+
+typedef _dart_mark_message_read = void Function(
+  int coin,
+  int account,
+  int message,
+  int read,
 );
 
 typedef _c_skip_to_last_height = ffi.Void Function(

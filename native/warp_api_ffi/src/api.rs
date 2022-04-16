@@ -298,7 +298,7 @@ pub fn send_multi_payment(
     let res = r.block_on(async {
         let mut wallet = get_wallet_lock(coin)?;
         let height = sync::latest_height(&wallet.ld_url).await?;
-        let recipients = Wallet::parse_recipients(recipients_json)?;
+        let recipients = wallet.parse_recipients(account, recipients_json)?;
         let res = wallet
             .build_sign_send_multi_payment(
                 account,
@@ -408,7 +408,7 @@ pub fn prepare_multi_payment(
     let res = r.block_on(async {
         let mut wallet = get_wallet_lock(coin)?;
         let last_height = sync::latest_height(&wallet.ld_url).await?;
-        let recipients = Wallet::parse_recipients(recipients_json)?;
+        let recipients = wallet.parse_recipients(account, recipients_json)?;
         let tx = wallet
             .build_only_multi_payment(
                 account,
@@ -531,6 +531,14 @@ pub fn commit_unsaved_contacts(coin: u8, account: u32, anchor_offset: u32) -> St
         wallet.commit_unsaved_contacts(account, anchor_offset).await
     });
     log_result_string(res)
+}
+
+pub fn mark_message_read(coin: u8, account: u32, message: u32, read: bool) {
+    let res = || {
+        let wallet = get_wallet_lock(coin)?;
+        wallet.mark_message_read(account, message, read)
+    };
+    log_result(res())
 }
 
 pub fn truncate_data(coin: u8) {

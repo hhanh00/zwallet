@@ -207,5 +207,15 @@
   "barcodeScannerIsNotAvailableOnDesktop": "Barcode scanner is not available on desktop",
   "signOffline": "Sign",
   "rawTransaction": "Raw Transaction",
-  "convertToWatchonly": "Convert to Watch-Only"
+  "convertToWatchonly": "Convert to Watch-Only",
+  "messages": "Messages",
+  "body": "Body",
+  "subject": "Subject",
+  "includeReplyTo": "Include My Address in Memo",
+  "sender": "Sender",
+  "message": "Message",
+  "reply": "Reply",
+  "recipient": "Recipient",
+  "fromto": "From/To",
+  "rescanning": "Rescanning..."
 }
