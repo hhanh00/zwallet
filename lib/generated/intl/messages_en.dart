@@ -121,6 +121,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Barcode scanner is not available on desktop"),
         "blue": MessageLookupByLibrary.simpleMessage("Blue"),
+        "body": MessageLookupByLibrary.simpleMessage("Body"),
         "broadcast": MessageLookupByLibrary.simpleMessage("Broadcast"),
         "budget": MessageLookupByLibrary.simpleMessage("Budget"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -177,6 +178,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Enter Seed, Secret Key or Viewing Key. Leave blank for a new account"),
         "excludedNotes": MessageLookupByLibrary.simpleMessage("Excluded Notes"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("File saved"),
+        "fromto": MessageLookupByLibrary.simpleMessage("From/To"),
         "fullBackup": MessageLookupByLibrary.simpleMessage("Full Backup"),
         "fullRestore": MessageLookupByLibrary.simpleMessage("Full Restore"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
@@ -187,6 +189,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("I have made a backup"),
         "includeFeeInAmount":
             MessageLookupByLibrary.simpleMessage("Include Fee in Amount"),
+        "includeReplyTo":
+            MessageLookupByLibrary.simpleMessage("Include My Address in Memo"),
         "invalidAddress":
             MessageLookupByLibrary.simpleMessage("Invalid Address"),
         "key": MessageLookupByLibrary.simpleMessage(
@@ -203,6 +207,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Max Amount per Note"),
         "memo": MessageLookupByLibrary.simpleMessage("Memo"),
+        "message": MessageLookupByLibrary.simpleMessage("Message"),
+        "messages": MessageLookupByLibrary.simpleMessage("Messages"),
         "mm": MessageLookupByLibrary.simpleMessage("M/M"),
         "mobileCharges": MessageLookupByLibrary.simpleMessage(
             "On Mobile Data, scanning may incur additional charges. Do you want to proceed?"),
@@ -268,10 +274,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive": m7,
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Receive Payment"),
+        "recipient": MessageLookupByLibrary.simpleMessage("Recipient"),
+        "reply": MessageLookupByLibrary.simpleMessage("Reply"),
         "rescan": MessageLookupByLibrary.simpleMessage("Rescan"),
         "rescanFrom": MessageLookupByLibrary.simpleMessage("Rescan from..."),
         "rescanNeeded": MessageLookupByLibrary.simpleMessage("Rescan Needed"),
         "rescanRequested": m8,
+        "rescanning": MessageLookupByLibrary.simpleMessage("Rescanning..."),
         "reset": MessageLookupByLibrary.simpleMessage("RESET"),
         "restart": MessageLookupByLibrary.simpleMessage("Restart"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
@@ -295,6 +304,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sendCointicker": m9,
         "sendCointickerTo": m10,
         "sendFrom": m11,
+        "sender": MessageLookupByLibrary.simpleMessage("Sender"),
         "sendingATotalOfAmountCointickerToCountRecipients": m12,
         "sendingAzecCointickerToAddress": m13,
         "server": MessageLookupByLibrary.simpleMessage("Server"),
@@ -317,6 +327,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Spendable Balance"),
         "splitAccount": MessageLookupByLibrary.simpleMessage("Split Account"),
         "subAccountOf": m14,
+        "subject": MessageLookupByLibrary.simpleMessage("Subject"),
         "synching": MessageLookupByLibrary.simpleMessage("Synching"),
         "table": MessageLookupByLibrary.simpleMessage("Table"),
         "tapAnIconToShowTheQrCode": MessageLookupByLibrary.simpleMessage(

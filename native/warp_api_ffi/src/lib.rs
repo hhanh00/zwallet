@@ -103,6 +103,10 @@ pub unsafe extern "C" fn send_multi_payment(
 // pub unsafe extern "C" fn try_warp_sync(coin: u8, get_tx: bool, anchor_offset: u32) -> i8 {
 //     api::try_warp_sync(coin, get_tx, anchor_offset)
 // }
+#[no_mangle]
+pub unsafe extern "C" fn mark_message_read(coin: u8, account: u32, message: u32, read: bool) {
+    api::mark_message_read(coin, account, message, read);
+}
 
 #[no_mangle]
 pub unsafe extern "C" fn skip_to_last_height(coin: u8) {

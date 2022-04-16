@@ -211,6 +211,10 @@ class WarpApi {
     return compute(commitUnsavedContactsIsolateFn, CommitContactsParams(coin, account, anchorOffset));
   }
 
+  static void markMessageAsRead(int coin, int account, int messageId, bool read) {
+    warp_api_lib.mark_message_read(coin, account, messageId, read ? 1 : 0);
+  }
+
   static void truncateData(int coin) {
     warp_api_lib.truncate_data(coin);
   }

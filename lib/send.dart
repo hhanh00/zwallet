@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'accounts.dart';
@@ -41,6 +42,7 @@ class SendState extends State<SendPage> {
   var _unconfirmedBalance = 0;
   final _addressController = TextEditingController();
   final _memoController = TextEditingController();
+  final _subjectController = TextEditingController();
   var _memoInitialized = false;
   final _maxAmountController = TextEditingController(text: zero);
   var _isExpanded = false;
@@ -49,11 +51,16 @@ class SendState extends State<SendPage> {
   ReactionDisposer? _newBlockAutorunDispose;
   final _fee = DEFAULT_FEE;
   var _usedBalance = 0;
+  var _replyTo = settings.includeReplyTo;
 
   @override
   initState() {
     if (widget.args?.contact != null)
       _addressController.text = widget.args!.contact!.address;
+    if (widget.args?.address != null)
+      _addressController.text = widget.args!.address!;
+    if (widget.args?.subject != null)
+      _subjectController.text = widget.args!.subject!;
     final recipients = widget.args?.recipients ?? [];
     _usedBalance = recipients.fold(0, (acc, r) => acc + r.amount);
 
@@ -151,6 +158,32 @@ class SendState extends State<SendPage> {
                           spendable: spendable),
                       if (!simpleMode) BalanceTable(_sBalance, _tBalance, _useTransparent,
                           _excludedBalance, _underConfirmedBalance, change, _usedBalance, _fee),
+                      Container(child: InputDecorator(
+                        decoration: InputDecoration(labelText: s.memo),
+                        child: Column(children: [
+                      FormBuilderCheckbox(
+                        name: 'reply-to',
+                        title: Text(s.includeReplyTo),
+                        initialValue: _replyTo,
+                        onChanged: (_) {
+                          setState(() {
+                            _replyTo = true;
+                          });
+                        },
+                      ),
+                      TextFormField(
+                        decoration:
+                        InputDecoration(labelText: s.subject),
+                        controller: _subjectController,
+                      ),
+                      TextFormField(
+                        decoration:
+                        InputDecoration(labelText: s.body),
+                        minLines: 4,
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                        controller: _memoController,
+                      )]))),
                       if (!simpleMode) ExpansionPanelList(
                           expansionCallback: (_, isExpanded) {
                             setState(() {
@@ -162,16 +195,6 @@ class SendState extends State<SendPage> {
                               headerBuilder: (_, __) =>
                                   ListTile(title: Text(s.advancedOptions)),
                               body: Column(children: [
-                                ListTile(
-                                  title: TextFormField(
-                                    decoration:
-                                        InputDecoration(labelText: s.memo),
-                                    minLines: 4,
-                                    maxLines: null,
-                                    keyboardType: TextInputType.multiline,
-                                    controller: _memoController,
-                                  ),
-                                ),
                                 CheckboxListTile(
                                     title: Text(s.roundToMillis),
                                     value: _useMillis,
@@ -321,9 +344,12 @@ class SendState extends State<SendPage> {
         int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toBigInt().toInt();
         final memo = _memoController.text;
         final address = unwrapUA(_address);
+        final subject = _subjectController.text;
         final recipient = Recipient(
           address,
           amount,
+          _replyTo,
+          subject,
           memo,
           maxAmountPerNote,
         );

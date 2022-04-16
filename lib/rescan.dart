@@ -20,8 +20,12 @@ Future<int?> rescanDialog(BuildContext context) async {
       false;
   if (approved) {
     final date = rescanKey.currentState!.startDate;
-    final height = await WarpApi.getBlockHeightByTime(active.coin, date);
-    if (await confirmWifi(context)) return height;
+    final approved = await confirmWifi(context);
+    if (approved) {
+      showSnackBar(S.of(context).rescanning);
+      final height = await WarpApi.getBlockHeightByTime(active.coin, date);
+      return height;
+    }
   }
   return null;
 }

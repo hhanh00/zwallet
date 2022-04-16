@@ -33,6 +33,7 @@ import 'generated/l10n.dart';
 import 'account_manager.dart';
 import 'backup.dart';
 import 'home.dart';
+import 'message.dart';
 import 'multisend.dart';
 // import 'multisign.dart';
 import 'payment_uri.dart';
@@ -63,6 +64,7 @@ var eta = ETAStore();
 var contacts = ContactStore();
 var accounts = AccountManager2();
 var active = ActiveAccount();
+final messageKey = GlobalKey<MessagesState>();
 
 StreamSubscription? subUniLinks;
 
@@ -209,6 +211,8 @@ void main() {
                 '/settings': (context) => SettingsPage(),
                 '/tx': (context) =>
                     TransactionPage(routeSettings.arguments as int),
+                '/message': (context) =>
+                    MessagePage(routeSettings.arguments as int),
                 '/backup': (context) =>
                     BackupPage(routeSettings.arguments as AccountId?),
                 '/multipay': (context) => MultiPayPage(),
@@ -546,9 +550,9 @@ Future<String?> scanCode(BuildContext context) async {
   }
 }
 
-String addressLeftTrim(String address) =>
-    address != "" ? address.substring(0, 8) + "..." +
-        address.substring(address.length - 16) : "";
+String centerTrim(String v) =>
+    v.length >= 16 ? v.substring(0, 8) + "..." +
+        v.substring(v.length - 16) : v;
 
 void showSnackBar(String msg) {
   final snackBar = SnackBar(content: Text(msg));

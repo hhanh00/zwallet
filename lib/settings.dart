@@ -178,6 +178,11 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                                   s.autoHideBalance),
                               initialValue: settings.autoHide,
                               onSaved: _onAutoHide),
+                          FormBuilderCheckbox(
+                              name: 'include_reply_to',
+                              title: Text(s.includeReplyTo),
+                              initialValue: settings.includeReplyTo,
+                              onSaved: _onIncludeReplyTo),
                           if (!simpleMode) TextFormField(
                               decoration: InputDecoration(
                                   labelText: 'Auto Shield Threshold'),
@@ -241,6 +246,10 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
 
   _onAutoHide(v) {
     settings.setAutoHide(v);
+  }
+
+  _onIncludeReplyTo(v) {
+    settings.setIncludeReplyTo(v);
   }
 
   _onProtectSend(v) {

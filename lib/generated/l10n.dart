@@ -2141,6 +2141,106 @@ class S {
       args: [],
     );
   }
+
+  /// `Messages`
+  String get messages {
+    return Intl.message(
+      'Messages',
+      name: 'messages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Body`
+  String get body {
+    return Intl.message(
+      'Body',
+      name: 'body',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subject`
+  String get subject {
+    return Intl.message(
+      'Subject',
+      name: 'subject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Include My Address in Memo`
+  String get includeReplyTo {
+    return Intl.message(
+      'Include My Address in Memo',
+      name: 'includeReplyTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sender`
+  String get sender {
+    return Intl.message(
+      'Sender',
+      name: 'sender',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Message`
+  String get message {
+    return Intl.message(
+      'Message',
+      name: 'message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reply`
+  String get reply {
+    return Intl.message(
+      'Reply',
+      name: 'reply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recipient`
+  String get recipient {
+    return Intl.message(
+      'Recipient',
+      name: 'recipient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `From/To`
+  String get fromto {
+    return Intl.message(
+      'From/To',
+      name: 'fromto',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rescanning...`
+  String get rescanning {
+    return Intl.message(
+      'Rescanning...',
+      name: 'rescanning',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

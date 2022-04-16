@@ -122,7 +122,7 @@ class HistoryDataSource extends DataTableSource {
     final color = amountColor(context, tx.value);
     var style = Theme.of(context).textTheme.bodyText2!.copyWith(color: color);
     style = fontWeight(style, tx.value);
-    final a = tx.contact ?? addressLeftTrim(tx.address);
+    final a = tx.contact ?? centerTrim(tx.address);
     final m = tx.memo.substring(0, min(tx.memo.length, 32));
 
     return DataRow(

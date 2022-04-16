@@ -205,5 +205,15 @@
   "barcodeScannerIsNotAvailableOnDesktop": "El escáner de código de barras no está disponible en el escritorio",
   "signOffline": "Firmar",
   "rawTransaction": "Transacción con firmar",
-  "convertToWatchonly": "Convertir en solo vista"
+  "convertToWatchonly": "Convertir en solo vista",
+  "messages": "Messages",
+  "body": "Body",
+  "subject": "Subject",
+  "includeReplyTo": "Include My Address in Memo",
+  "sender": "Sender",
+  "message": "Message",
+  "reply": "Reply",
+  "recipient": "Recipient",
+  "fromto": "From/To",
+  "rescanning": "Rescanning..."
 }

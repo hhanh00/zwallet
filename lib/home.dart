@@ -16,6 +16,7 @@ import 'contact.dart';
 import 'history.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
+import 'message.dart';
 import 'note.dart';
 import 'rescan.dart';
 import 'store.dart';
@@ -89,7 +90,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   @override
   void initState() {
     super.initState();
-    final tabController = TabController(length: settings.simpleMode ? 3 : 6, vsync: this);
+    final tabController = TabController(length: settings.simpleMode ? 4 : 7, vsync: this);
     tabController.addListener(() {
       setState(() {
         _tabIndex = tabController.index;
@@ -110,6 +111,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     }
 
     final contactTabIndex = simpleMode ? 2 : 5;
+    final msgTabIndex = contactTabIndex + 1;
     Widget button = Container();
     if (_tabIndex == 0)
       button = FloatingActionButton(
@@ -120,6 +122,12 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     else if (_tabIndex == contactTabIndex)
       button = FloatingActionButton(
         onPressed: _onAddContact,
+        backgroundColor: theme.colorScheme.secondary,
+        child: Icon(Icons.add),
+      );
+    else if (_tabIndex == msgTabIndex)
+      button = FloatingActionButton(
+        onPressed: _onSend,
         backgroundColor: theme.colorScheme.secondary,
         child: Icon(Icons.add),
       );
@@ -164,6 +172,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             if (!simpleMode) Tab(text: s.budget),
             if (!simpleMode) Tab(text: s.tradingPl),
             Tab(text: s.contacts),
+            Tab(text: s.messages),
           ],
         ),
         actions: [menu],
@@ -179,6 +188,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             if (!simpleMode) BudgetWidget(),
             if (!simpleMode) PnLWidget(),
             ContactsTab(key: contactKey),
+            MessagesTab(key: messageKey),
           ],
         );
       }),

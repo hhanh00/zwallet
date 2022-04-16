@@ -83,7 +83,7 @@ class QRAddressState extends State<QRAddressWidget> {
       final theme = Theme.of(context);
       final simpleMode = settings.simpleMode;
       final address = _address();
-      final shortAddress = addressLeftTrim(address);
+      final shortAddress = centerTrim(address);
       final showTAddr = active.showTAddr;
       final hasTAddr = active.taddress.isNotEmpty;
       final flat = settings.flat;

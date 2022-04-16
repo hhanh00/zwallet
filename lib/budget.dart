@@ -272,7 +272,7 @@ class BudgetTable extends StatelessWidget {
     final rows = spendings.asMap().entries.map((e) {
       final style = TextStyle(color: palette[e.key], fontFeatures: [FontFeature.tabularFigures()]);
       final address = e.value.address;
-      final shortAddress = addressLeftTrim(address);
+      final shortAddress = centerTrim(address);
       final addressOrContact = e.value.contact ?? shortAddress;
       return DataRow(cells: [
         DataCell(

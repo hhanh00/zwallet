@@ -120,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "El escáner de código de barras no está disponible en el escritorio"),
         "blue": MessageLookupByLibrary.simpleMessage("Azul"),
+        "body": MessageLookupByLibrary.simpleMessage("Body"),
         "broadcast": MessageLookupByLibrary.simpleMessage("Transmisión"),
         "budget": MessageLookupByLibrary.simpleMessage("Presupuesto"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
@@ -178,6 +179,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "excludedNotes":
             MessageLookupByLibrary.simpleMessage("Notas Excluidas"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("File saved"),
+        "fromto": MessageLookupByLibrary.simpleMessage("From/To"),
         "fullBackup": MessageLookupByLibrary.simpleMessage("Full Backup"),
         "fullRestore": MessageLookupByLibrary.simpleMessage("Full Restore"),
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
@@ -188,6 +190,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "He hecho una copia de seguridad"),
         "includeFeeInAmount": MessageLookupByLibrary.simpleMessage(
             "Incluir tarifa en la cantidad"),
+        "includeReplyTo":
+            MessageLookupByLibrary.simpleMessage("Include My Address in Memo"),
         "invalidAddress":
             MessageLookupByLibrary.simpleMessage("Dirección no es válida"),
         "key": MessageLookupByLibrary.simpleMessage("Llave"),
@@ -203,6 +207,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Monto máximo por nota"),
         "memo": MessageLookupByLibrary.simpleMessage("Nota"),
+        "message": MessageLookupByLibrary.simpleMessage("Message"),
+        "messages": MessageLookupByLibrary.simpleMessage("Messages"),
         "mm": MessageLookupByLibrary.simpleMessage("M/M"),
         "mobileCharges": MessageLookupByLibrary.simpleMessage(
             "En datos móviles, el escaneo puede incurrir en cargos adicionales. Quieres proceder?"),
@@ -266,11 +272,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive": m7,
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Recibir un pago"),
+        "recipient": MessageLookupByLibrary.simpleMessage("Recipient"),
+        "reply": MessageLookupByLibrary.simpleMessage("Reply"),
         "rescan": MessageLookupByLibrary.simpleMessage("Escanear"),
         "rescanFrom": MessageLookupByLibrary.simpleMessage("¿Escanear desde?"),
         "rescanNeeded":
             MessageLookupByLibrary.simpleMessage("Necesita Escanear"),
         "rescanRequested": m8,
+        "rescanning": MessageLookupByLibrary.simpleMessage("Rescanning..."),
         "reset": MessageLookupByLibrary.simpleMessage("RESET"),
         "restart": MessageLookupByLibrary.simpleMessage("Reiniciar"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
@@ -295,6 +304,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sendCointicker": m9,
         "sendCointickerTo": m10,
         "sendFrom": m11,
+        "sender": MessageLookupByLibrary.simpleMessage("Sender"),
         "sendingATotalOfAmountCointickerToCountRecipients": m12,
         "sendingAzecCointickerToAddress": m13,
         "server": MessageLookupByLibrary.simpleMessage("Servidor"),
@@ -314,6 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Saldo Gastable"),
         "splitAccount": MessageLookupByLibrary.simpleMessage("Split Account"),
         "subAccountOf": m14,
+        "subject": MessageLookupByLibrary.simpleMessage("Subject"),
         "synching": MessageLookupByLibrary.simpleMessage("Sincronizando"),
         "table": MessageLookupByLibrary.simpleMessage("Lista"),
         "tapAnIconToShowTheQrCode": MessageLookupByLibrary.simpleMessage(
