@@ -541,6 +541,14 @@ pub fn mark_message_read(coin: u8, account: u32, message: u32, read: bool) {
     log_result(res())
 }
 
+pub fn mark_all_messages_read(coin: u8, account: u32, read: bool) {
+    let res = || {
+        let wallet = get_wallet_lock(coin)?;
+        wallet.mark_all_messages_read(account, read)
+    };
+    log_result(res())
+}
+
 pub fn truncate_data(coin: u8) {
     let res = || {
         let wallet = get_wallet_lock(coin)?;

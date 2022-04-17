@@ -203,6 +203,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "light": MessageLookupByLibrary.simpleMessage("Día"),
         "loadBackup": MessageLookupByLibrary.simpleMessage("Load Backup"),
         "loading": MessageLookupByLibrary.simpleMessage("Cargando..."),
+        "markAllAsRead":
+            MessageLookupByLibrary.simpleMessage("Mark All as Read"),
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Monto máximo por nota"),

@@ -351,6 +351,14 @@ abstract class _ActiveAccount with Store {
     messages[index] = messages[index].withRead(true);
   }
 
+  @action
+  void markAllMessagesAsRead() {
+    WarpApi.markAllMessagesAsRead(active.coin, active.id, true);
+    for (var i = 0; i < messages.length; i++) {
+      messages[i] = messages[i].withRead(true);
+    }
+  }
+
   Future<int?> prevInThread(int index) async {
     final message = messages[index];
     final dbr = DbReader(active.coin, active.id);
