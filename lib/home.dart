@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:mobx/mobx.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:convert/convert.dart';
+import 'package:badges/badges.dart';
 
 import 'about.dart';
 import 'account.dart';
@@ -158,42 +160,49 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       onSelected: _onMenu,
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("${active.account.name}"),
-        bottom: TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabs: [
-            Tab(text: s.account),
-            if (!simpleMode) Tab(text: s.notes),
-            Tab(text: s.history),
-            if (!simpleMode) Tab(text: s.budget),
-            if (!simpleMode) Tab(text: s.tradingPl),
-            Tab(text: s.contacts),
-            Tab(text: s.messages),
-          ],
+    return Observer(builder: (context) {
+      final _1 = active.dataEpoch;
+      final unread = active.unread;
+      final messageTab = unread != 0 ?
+        Tab(child: Badge(
+            child: Text(s.messages),
+            badgeContent: Text('$unread'))) :
+        Tab(text: s.messages);
+
+      return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("${active.account.name}"),
+          bottom: TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            tabs: [
+              Tab(text: s.account),
+              if (!simpleMode) Tab(text: s.notes),
+              Tab(text: s.history),
+              if (!simpleMode) Tab(text: s.budget),
+              if (!simpleMode) Tab(text: s.tradingPl),
+              Tab(text: s.contacts),
+              messageTab,
+            ],
+          ),
+          actions: [menu],
         ),
-        actions: [menu],
-      ),
-      body: Observer(builder: (context) {
-        final _1 = active.dataEpoch;
-        return TabBarView(
-          controller: _tabController,
-          children: [
-            AccountPage2(),
-            if (!simpleMode) NoteWidget(),
-            HistoryWidget(),
-            if (!simpleMode) BudgetWidget(),
-            if (!simpleMode) PnLWidget(),
-            ContactsTab(key: contactKey),
-            MessagesTab(key: messageKey),
-          ],
-        );
-      }),
-      floatingActionButton: button,
-    );
+        body: TabBarView(
+            controller: _tabController,
+            children: [
+              AccountPage2(),
+              if (!simpleMode) NoteWidget(),
+              HistoryWidget(),
+              if (!simpleMode) BudgetWidget(),
+              if (!simpleMode) PnLWidget(),
+              ContactsTab(key: contactKey),
+              MessagesTab(key: messageKey),
+            ],
+          ),
+        floatingActionButton: button,
+      );
+    });
   }
 
   _onSend() {

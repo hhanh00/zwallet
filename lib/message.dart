@@ -133,7 +133,10 @@ class MessagePageState extends State<MessagePage> {
     Widget build(BuildContext context) {
     final s = S.of(context);
     final message = active.messages[index];
-    active.markMessageAsRead(index);
+    final i = index;
+    Future.microtask(() {
+      active.markMessageAsRead(i);
+    });
     messageKey.currentState?.onChanged();
 
     return Scaffold(

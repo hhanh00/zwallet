@@ -137,6 +137,7 @@ abstract class _ActiveAccount with Store {
   @observable List<TimeSeriesPoint<double>> accountBalances = [];
   @observable List<PnL> pnls = [];
   @observable ObservableList<ZMessage> messages = ObservableList();
+  @observable int unread = 0;
 
   @observable
   bool showTAddr = false;
@@ -229,6 +230,7 @@ abstract class _ActiveAccount with Store {
     notes = await dbr.getNotes();
     txs = await dbr.getTxs();
     messages = ObservableList.of(await dbr.getMessages(account.address));
+    unread = messages.where((m) => !m.read).length;
     dataEpoch += 1;
   }
 
@@ -347,8 +349,12 @@ abstract class _ActiveAccount with Store {
 
   @action
   void markMessageAsRead(int index) {
-    WarpApi.markMessageAsRead(active.coin, active.id, messages[index].id, true);
-    messages[index] = messages[index].withRead(true);
+    if (!messages[index].read) {
+      WarpApi.markMessageAsRead(active.coin, active.id, messages[index].id, true);
+      messages[index] = messages[index].withRead(true);
+      unread = unread - 1;
+      print("UNREAD $unread");
+    }
   }
 
   @action
@@ -357,6 +363,7 @@ abstract class _ActiveAccount with Store {
     for (var i = 0; i < messages.length; i++) {
       messages[i] = messages[i].withRead(true);
     }
+    unread = 0;
   }
 
   Future<int?> prevInThread(int index) async {
