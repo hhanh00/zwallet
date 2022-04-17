@@ -25,33 +25,36 @@ class MessagesState extends State<MessagesTab> with AutomaticKeepAliveClientMixi
     final s = S.of(context);
     final _source = MessagesDataSource(context);
     source = _source;
-    return Observer(builder: (context) {
-      final _ = active.messages;
-      return PaginatedDataTable(
-        columns: [
-          DataColumn(
-            label: Text(s.datetime),
-          ),
-          DataColumn(
-            label: Text(s.fromto),
-          ),
-          DataColumn(
-            label: Text(s.subject),
-          ),
-          DataColumn(
-            label: Text(s.body),
-          ),
-        ],
-        columnSpacing: 16,
-        showCheckboxColumn: false,
-        availableRowsPerPage: [5, 10, 25, 100],
-        onRowsPerPageChanged: (int? value) {
-          settings.setRowsPerPage(value ?? 25);
-        },
-        showFirstLastButtons: true,
-        rowsPerPage: settings.rowsPerPage,
-        source: _source);
-    });
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(8),
+      scrollDirection: Axis.vertical,
+      child: Observer(builder: (context) {
+        final _ = active.messages;
+        return PaginatedDataTable(
+          columns: [
+            DataColumn(
+              label: Text(s.datetime),
+            ),
+            DataColumn(
+              label: Text(s.fromto),
+            ),
+            DataColumn(
+              label: Text(s.subject),
+            ),
+            DataColumn(
+              label: Text(s.body),
+            ),
+          ],
+          columnSpacing: 16,
+          showCheckboxColumn: false,
+          availableRowsPerPage: [5, 10, 25, 100],
+          onRowsPerPageChanged: (int? value) {
+            settings.setRowsPerPage(value ?? 25);
+          },
+          showFirstLastButtons: true,
+          rowsPerPage: settings.rowsPerPage,
+          source: _source);
+    }));
   }
 
   onChanged() {
