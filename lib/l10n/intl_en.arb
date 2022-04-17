@@ -217,5 +217,6 @@
   "reply": "Reply",
   "recipient": "Recipient",
   "fromto": "From/To",
-  "rescanning": "Rescanning..."
+  "rescanning": "Rescanning...",
+  "markAllAsRead": "Mark All as Read"
 }

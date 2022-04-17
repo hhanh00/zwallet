@@ -2241,6 +2241,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Mark All as Read`
+  String get markAllAsRead {
+    return Intl.message(
+      'Mark All as Read',
+      name: 'markAllAsRead',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

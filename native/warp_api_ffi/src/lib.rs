@@ -109,6 +109,11 @@ pub unsafe extern "C" fn mark_message_read(coin: u8, account: u32, message: u32,
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn mark_all_messages_read(coin: u8, account: u32, read: bool) {
+    api::mark_all_messages_read(coin, account, read);
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn skip_to_last_height(coin: u8) {
     api::skip_to_last_height(coin)
 }

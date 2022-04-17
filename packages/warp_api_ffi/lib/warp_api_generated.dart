@@ -238,6 +238,24 @@ class NativeLibrary {
   late final _dart_mark_message_read _mark_message_read =
       _mark_message_read_ptr.asFunction<_dart_mark_message_read>();
 
+  void mark_all_messages_read(
+    int coin,
+    int account,
+    int read,
+  ) {
+    return _mark_all_messages_read(
+      coin,
+      account,
+      read,
+    );
+  }
+
+  late final _mark_all_messages_read_ptr =
+      _lookup<ffi.NativeFunction<_c_mark_all_messages_read>>(
+          'mark_all_messages_read');
+  late final _dart_mark_all_messages_read _mark_all_messages_read =
+      _mark_all_messages_read_ptr.asFunction<_dart_mark_all_messages_read>();
+
   void skip_to_last_height(
     int coin,
   ) {
@@ -910,6 +928,18 @@ typedef _dart_mark_message_read = void Function(
   int coin,
   int account,
   int message,
+  int read,
+);
+
+typedef _c_mark_all_messages_read = ffi.Void Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+  ffi.Int8 read,
+);
+
+typedef _dart_mark_all_messages_read = void Function(
+  int coin,
+  int account,
   int read,
 );
 

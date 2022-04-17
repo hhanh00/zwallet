@@ -31,6 +31,11 @@ class MessagesState extends State<MessagesTab> with AutomaticKeepAliveClientMixi
       child: Observer(builder: (context) {
         final _ = active.messages;
         return PaginatedDataTable(
+          header: Text(s.markAllAsRead,
+              style: Theme.of(context).textTheme.bodyText2),
+          actions: [
+            IconButton(onPressed: _onMarkRead, icon: Icon(Icons.check))
+          ],
           columns: [
             DataColumn(
               label: Text(s.datetime),
@@ -59,6 +64,11 @@ class MessagesState extends State<MessagesTab> with AutomaticKeepAliveClientMixi
 
   onChanged() {
     source?.onChanged();
+  }
+
+  _onMarkRead() {
+    active.markAllMessagesAsRead();
+    onChanged();
   }
 }
 

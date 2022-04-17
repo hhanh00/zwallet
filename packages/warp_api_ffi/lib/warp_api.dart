@@ -215,6 +215,10 @@ class WarpApi {
     warp_api_lib.mark_message_read(coin, account, messageId, read ? 1 : 0);
   }
 
+  static void markAllMessagesAsRead(int coin, int account, bool read) {
+    warp_api_lib.mark_all_messages_read(coin, account, read ? 1 : 0);
+  }
+
   static void truncateData(int coin) {
     warp_api_lib.truncate_data(coin);
   }

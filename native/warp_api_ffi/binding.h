@@ -44,6 +44,8 @@ const char *send_multi_payment(uint8_t coin,
 
 void mark_message_read(uint8_t coin, uint32_t account, uint32_t message, bool read);
 
+void mark_all_messages_read(uint8_t coin, uint32_t account, bool read);
+
 void skip_to_last_height(uint8_t coin);
 
 void rewind_to_height(uint8_t coin, uint32_t height);

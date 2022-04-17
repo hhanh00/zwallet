@@ -207,6 +207,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "loadBackup":
             MessageLookupByLibrary.simpleMessage("Recharger une sauvegarde"),
         "loading": MessageLookupByLibrary.simpleMessage("Chargement..."),
+        "markAllAsRead":
+            MessageLookupByLibrary.simpleMessage("Mark All as Read"),
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Montant maximum par note"),
