@@ -170,6 +170,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Duplicate Account"),
         "duplicateContact": MessageLookupByLibrary.simpleMessage(
             "Another contact has this address"),
+        "editContact": MessageLookupByLibrary.simpleMessage("Edit Contact"),
         "encryptedBackup": m5,
         "enterSecretShareIfAccountIsMultisignature":
             MessageLookupByLibrary.simpleMessage(

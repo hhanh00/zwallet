@@ -2261,6 +2261,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Edit Contact`
+  String get editContact {
+    return Intl.message(
+      'Edit Contact',
+      name: 'editContact',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

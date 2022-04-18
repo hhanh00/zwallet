@@ -172,6 +172,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "doYouWantToTransferYourEntireTransparentBalanceTo": m4,
         "duplicateAccount":
             MessageLookupByLibrary.simpleMessage("Compte en double"),
+        "editContact": MessageLookupByLibrary.simpleMessage("Edit Contact"),
         "encryptedBackup": m5,
         "enterSecretShareIfAccountIsMultisignature":
             MessageLookupByLibrary.simpleMessage(

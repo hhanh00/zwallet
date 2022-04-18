@@ -417,7 +417,7 @@ abstract class _Settings with Store {
     messageTable = v;
     prefs.setBool('message_table', messageTable);
   }
-  
+
   @action
   Future<void> setMemoSignature(String v) async {
     final prefs = await SharedPreferences.getInstance();
