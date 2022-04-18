@@ -331,7 +331,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
 
   _onAddContact() async {
     final contact = await contactKey.currentState
-        ?.showContactForm(context, Contact.empty());
+        ?.showContactForm(context, Contact.empty(), false);
     if (contact != null) {
       contacts.add(contact);
     }

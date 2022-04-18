@@ -219,5 +219,6 @@
   "fromto": "From/To",
   "rescanning": "Rescanning...",
   "markAllAsRead": "Mark All as Read",
-  "showMessagesAsTable": "Show Messages as Table"
+  "showMessagesAsTable": "Show Messages as Table",
+  "editContact": "Edit Contact"
 }

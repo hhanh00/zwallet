@@ -56,8 +56,10 @@ class ContactsState extends State<ContactsTab> {
   }
 
   _editContact(Contact c) async {
-    final contact = await showContactForm(context, c);
-    contacts.add(contact);
+    final contact = await showContactForm(context, c, true);
+    if (contact != null) {
+      contacts.add(contact);
+    }
   }
 
   Future<bool> _onConfirmDelContact(Contact c) async {
@@ -71,20 +73,20 @@ class ContactsState extends State<ContactsTab> {
     await contacts.remove(c);
   }
 
-  Future<Contact> showContactForm(BuildContext context, Contact c) async {
+  Future<Contact?> showContactForm(BuildContext context, Contact c, bool edit) async {
     final key = GlobalKey<ContactState>();
 
     final contact = await showDialog<Contact>(
         context: context,
         builder: (context) => AlertDialog(
               contentPadding: EdgeInsets.all(16),
-              title: Text(S.of(context).addContact),
+              title: Text(edit ? S.of(context).editContact : S.of(context).addContact),
               content: ContactForm(c, key: key),
               actions: confirmButtons(context, () {
                 key.currentState!.onOK();
               }),
             ));
-    return contact!;
+    return contact;
   }
 
   _onCommit() async {
@@ -150,7 +152,7 @@ class ContactState extends State<ContactForm> {
             controller: nameController,
             validator: _checkName,
           ),
-          AddressInput(S.of(context).address, address, (addr) {
+          AddressInput(widget.contact.id, S.of(context).address, address, (addr) {
                 address = addr ?? "";
               })
         ])));
@@ -173,11 +175,12 @@ class ContactState extends State<ContactForm> {
 }
 
 class AddressInput extends StatefulWidget {
+  final int id;
   final void Function(String?) onSaved;
   final String labelText;
   final String initialValue;
 
-  AddressInput(this.labelText, this.initialValue, this.onSaved);
+  AddressInput(this.id, this.labelText, this.initialValue, this.onSaved);
 
   @override
   State<StatefulWidget> createState() => AddressState();
@@ -215,7 +218,7 @@ class AddressState extends State<AddressInput> {
     final zaddr = WarpApi.getSaplingFromUA(v);
     if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(active.coin, v)) return S.of(context).invalidAddress;
-    if (contacts.contacts.where((c) => c.address == v).isNotEmpty) return S.of(context).duplicateContact;
+    if (contacts.contacts.where((c) => c.address == v && c.id != widget.id).isNotEmpty) return S.of(context).duplicateContact;
     return null;
   }
 
