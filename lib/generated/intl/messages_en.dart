@@ -320,6 +320,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Shield Transparent Balance When Sending"),
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Shielding in progress..."),
+        "showMessagesAsTable":
+            MessageLookupByLibrary.simpleMessage("Show Messages as Table"),
         "sign": MessageLookupByLibrary.simpleMessage("Sign Transaction"),
         "signOffline": MessageLookupByLibrary.simpleMessage("Sign"),
         "simple": MessageLookupByLibrary.simpleMessage("Simple"),

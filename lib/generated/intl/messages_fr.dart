@@ -323,6 +323,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Masquer le solde transparent"),
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Masquage en cours..."),
+        "showMessagesAsTable":
+            MessageLookupByLibrary.simpleMessage("Show Messages as Table"),
         "sign": MessageLookupByLibrary.simpleMessage("Sign"),
         "signOffline": MessageLookupByLibrary.simpleMessage("Signer"),
         "simple": MessageLookupByLibrary.simpleMessage("Simple"),

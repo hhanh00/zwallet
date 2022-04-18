@@ -2251,6 +2251,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Show Messages as Table`
+  String get showMessagesAsTable {
+    return Intl.message(
+      'Show Messages as Table',
+      name: 'showMessagesAsTable',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

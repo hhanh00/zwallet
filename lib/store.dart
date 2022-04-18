@@ -136,6 +136,9 @@ abstract class _Settings with Store {
   bool includeReplyTo = false;
 
   @observable
+  bool messageTable = false;
+
+  @observable
   bool protectSend = false;
 
   @observable
@@ -172,6 +175,7 @@ abstract class _Settings with Store {
     autoHide = prefs.getBool('auto_hide') ?? true;
     protectSend = prefs.getBool('protect_send') ?? false;
     includeReplyTo = prefs.getBool('include_reply_to') ?? false;
+    messageTable = prefs.getBool('message_table') ?? false;
 
     primaryColorValue = prefs.getInt('primary') ?? Colors.blue.value;
     primaryVariantColorValue =
@@ -407,6 +411,13 @@ abstract class _Settings with Store {
     prefs.setBool('include_reply_to', includeReplyTo);
   }
 
+  @action
+  Future<void> setMessageTable(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    messageTable = v;
+    prefs.setBool('message_table', messageTable);
+  }
+  
   @action
   Future<void> setMemoSignature(String v) async {
     final prefs = await SharedPreferences.getInstance();
