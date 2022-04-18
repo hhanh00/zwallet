@@ -21,7 +21,7 @@ class MessageItem extends StatelessWidget {
     final textTheme = theme.textTheme;
     final s = message.incoming ? message.sender : message.recipient;
     final initial = (s == null || s.isEmpty) ? "?" : s[0];
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.of(context).size.width - 96;
 
     final messageDate = message.timestamp.toLocal();
     final now = DateTime.now();
@@ -71,7 +71,7 @@ class MessageItem extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(width: width * 0.8,
+                  Container(width: width,
                     child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                       Text(message.fromto(), style: unreadStyle(textTheme.caption)),
                       Text(dateString)
@@ -80,7 +80,7 @@ class MessageItem extends StatelessWidget {
                     height: 5.0,
                   ),
                   Container(
-                      width: width * 0.6,
+                      width: width,
                       child: Text(
                           message.subject,
                           style: unreadStyle(textTheme.titleMedium), overflow: TextOverflow.ellipsis)),
@@ -88,7 +88,7 @@ class MessageItem extends StatelessWidget {
                     height: 4.0,
                   ),
                   Container(
-                    width: width * 0.8,
+                    width: width,
                     child: Text(
                       message.body,
                       softWrap: true, maxLines: 5, overflow: TextOverflow.ellipsis,
