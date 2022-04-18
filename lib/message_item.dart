@@ -50,7 +50,7 @@ class MessageItem extends StatelessWidget {
         },
         child: Container(
             margin: EdgeInsets.only(top: 3.0, bottom: 3.0, right: 0.0),
-            padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(children: [
               CircleAvatar(
                 backgroundColor: initialToColor(initial),
