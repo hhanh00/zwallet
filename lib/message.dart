@@ -6,6 +6,7 @@ import 'package:warp_api/warp_api.dart';
 import 'db.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
+import 'message_item.dart';
 import 'store.dart';
 
 class MessagesTab extends StatefulWidget {
@@ -23,6 +24,10 @@ class MessagesState extends State<MessagesTab> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
     final s = S.of(context);
+
+    if (!settings.messageTable)
+      return MessageList();
+
     final _source = MessagesDataSource(context);
     source = _source;
     return SingleChildScrollView(
@@ -113,6 +118,23 @@ class MessagesDataSource extends DataTableSource {
     Future(() {
       notifyListeners();
     });
+  }
+}
+
+class MessageList extends StatefulWidget {
+  @override
+  MessageListState createState() => MessageListState();
+}
+
+class MessageListState extends State<MessageList> {
+  @override
+  Widget build(BuildContext context) {
+    if (active.messages.isEmpty) return Container();
+    return Container(child: ListView.builder(
+      itemCount: active.messages.length,
+      itemBuilder: (context, index) {
+        return MessageItem(active.messages[index], index);
+    }));
   }
 }
 

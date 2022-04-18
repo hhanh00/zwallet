@@ -317,6 +317,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Blindar Saldo Transparente"),
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Blindaje en progreso…"),
+        "showMessagesAsTable":
+            MessageLookupByLibrary.simpleMessage("Show Messages as Table"),
         "sign": MessageLookupByLibrary.simpleMessage("Sign"),
         "signOffline": MessageLookupByLibrary.simpleMessage("Firmar"),
         "simple": MessageLookupByLibrary.simpleMessage("Sencillo"),

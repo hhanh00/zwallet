@@ -183,6 +183,11 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                               title: Text(s.includeReplyTo),
                               initialValue: settings.includeReplyTo,
                               onSaved: _onIncludeReplyTo),
+                          if (!simpleMode) FormBuilderCheckbox(
+                              name: 'message_table',
+                              title: Text(s.showMessagesAsTable),
+                              initialValue: settings.messageTable,
+                              onSaved: _onMessageTable),
                           if (!simpleMode) TextFormField(
                               decoration: InputDecoration(
                                   labelText: 'Auto Shield Threshold'),
@@ -250,6 +255,10 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
 
   _onIncludeReplyTo(v) {
     settings.setIncludeReplyTo(v);
+  }
+
+  _onMessageTable(v) {
+    settings.setMessageTable(v);
   }
 
   _onProtectSend(v) {

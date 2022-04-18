@@ -218,5 +218,6 @@
   "recipient": "Recipient",
   "fromto": "From/To",
   "rescanning": "Rescanning...",
-  "markAllAsRead": "Mark All as Read"
+  "markAllAsRead": "Mark All as Read",
+  "showMessagesAsTable": "Show Messages as Table"
 }
