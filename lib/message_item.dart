@@ -1,7 +1,13 @@
 import 'package:ZYWallet/db.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import 'generated/l10n.dart';
 import 'main.dart';
+
+final DateFormat todayDateFormat = DateFormat("HH:mm");
+final DateFormat monthDateFormat = DateFormat("MMMd");
+final DateFormat longAgoDateFormat = DateFormat("yy-MM-dd");
 
 class MessageItem extends StatelessWidget {
   final ZMessage message;
@@ -16,6 +22,22 @@ class MessageItem extends StatelessWidget {
     final s = message.incoming ? message.sender : message.recipient;
     final initial = (s == null || s.isEmpty) ? "?" : s[0];
     final width = MediaQuery.of(context).size.width;
+
+    final messageDate = message.timestamp.toLocal();
+    final now = DateTime.now();
+    final justNow = now.subtract(Duration(minutes: 1));
+    final midnight = DateTime(now.year, now.month, now.day);
+    final year = DateTime(now.year, 1, 1);
+
+    String dateString;
+    if (justNow.isBefore(messageDate)) 
+      dateString = S.of(context).now;
+    else if (midnight.isBefore(messageDate))
+      dateString = todayDateFormat.format(messageDate);
+    else if (year.isBefore(messageDate))
+      dateString = monthDateFormat.format(messageDate);
+    else
+      dateString = longAgoDateFormat.format(messageDate);
 
     final unreadStyle = (TextStyle? s) => message.read ? s : s?.copyWith(fontWeight: FontWeight.bold);
 
@@ -49,7 +71,11 @@ class MessageItem extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(message.fromto(), style: unreadStyle(textTheme.caption)),
+                  Container(width: width * 0.8,
+                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      Text(message.fromto(), style: unreadStyle(textTheme.caption)),
+                      Text(dateString)
+                  ])),
                   SizedBox(
                     height: 5.0,
                   ),
