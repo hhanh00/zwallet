@@ -241,6 +241,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "notEnoughBalance":
             MessageLookupByLibrary.simpleMessage("Not enough balance"),
         "notes": MessageLookupByLibrary.simpleMessage("Notes"),
+        "now": MessageLookupByLibrary.simpleMessage("Now"),
         "numMoreSignersNeeded": m6,
         "numberOfConfirmationsNeededBeforeSpending":
             MessageLookupByLibrary.simpleMessage(

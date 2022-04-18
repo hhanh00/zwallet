@@ -220,5 +220,6 @@
   "rescanning": "Rescanning...",
   "markAllAsRead": "Mark All as Read",
   "showMessagesAsTable": "Show Messages as Table",
-  "editContact": "Edit Contact"
+  "editContact": "Edit Contact",
+  "now": "Now"
 }
