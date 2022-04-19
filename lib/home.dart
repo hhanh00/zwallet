@@ -112,8 +112,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       return AccountManagerPage();
     }
 
-    final contactTabIndex = simpleMode ? 2 : 5;
-    final msgTabIndex = contactTabIndex + 1;
+    final contactTabIndex = simpleMode ? 3 : 6;
     Widget button = Container();
     if (_tabIndex == 0)
       button = FloatingActionButton(
@@ -127,11 +126,11 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         backgroundColor: theme.colorScheme.secondary,
         child: Icon(Icons.add),
       );
-    else if (_tabIndex == msgTabIndex)
+    else if (_tabIndex == 1)
       button = FloatingActionButton(
         onPressed: _onSend,
         backgroundColor: theme.colorScheme.secondary,
-        child: Icon(Icons.add),
+        child: Icon(Icons.send),
       );
 
     final menu = PopupMenuButton<String>(
@@ -178,12 +177,12 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             isScrollable: true,
             tabs: [
               Tab(text: s.account),
+              messageTab,
               if (!simpleMode) Tab(text: s.notes),
               Tab(text: s.history),
               if (!simpleMode) Tab(text: s.budget),
               if (!simpleMode) Tab(text: s.tradingPl),
               Tab(text: s.contacts),
-              messageTab,
             ],
           ),
           actions: [menu],
@@ -191,13 +190,13 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         body: TabBarView(
             controller: _tabController,
             children: [
-              AccountPage2(),
+              AccountPage(),
+              MessagesTab(key: messageKey),
               if (!simpleMode) NoteWidget(),
               HistoryWidget(),
               if (!simpleMode) BudgetWidget(),
               if (!simpleMode) PnLWidget(),
               ContactsTab(key: contactKey),
-              MessagesTab(key: messageKey),
             ],
           ),
         floatingActionButton: button,

@@ -10,12 +10,12 @@ import 'generated/l10n.dart';
 import 'main.dart';
 import 'store.dart';
 
-class AccountPage2 extends StatefulWidget {
+class AccountPage extends StatefulWidget {
   @override
   _AccountState createState() => _AccountState();
 }
 
-class _AccountState extends State<AccountPage2> with AutomaticKeepAliveClientMixin {
+class _AccountState extends State<AccountPage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; //Set to true
 
