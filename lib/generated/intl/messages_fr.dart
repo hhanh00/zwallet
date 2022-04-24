@@ -54,7 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m14(name) => "Sous Compte de ${name}";
 
-  static String m15(text) => "${text} copied to clipboard";
+  static String m15(text) => "${text} copié au presse-papier";
 
   static String m16(currency) => "Utiliser ${currency}";
 
@@ -122,7 +122,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Le Barcode scanner est seulement disponible sur mobile"),
         "blue": MessageLookupByLibrary.simpleMessage("Bleu"),
-        "body": MessageLookupByLibrary.simpleMessage("Body"),
+        "body": MessageLookupByLibrary.simpleMessage("Contenu"),
         "broadcast": MessageLookupByLibrary.simpleMessage("Diffusion"),
         "budget": MessageLookupByLibrary.simpleMessage("Budget"),
         "cancel": MessageLookupByLibrary.simpleMessage("Annuler"),
@@ -147,8 +147,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "contactName": MessageLookupByLibrary.simpleMessage("Nom du Contact"),
         "contacts": MessageLookupByLibrary.simpleMessage("Mes Contacts"),
         "convertToWatchonly":
-            MessageLookupByLibrary.simpleMessage("Convertir en Non-Depensable"),
-        "copy": MessageLookupByLibrary.simpleMessage("Copy"),
+            MessageLookupByLibrary.simpleMessage("Convertir en Non-Dépensable"),
+        "copy": MessageLookupByLibrary.simpleMessage("Copier"),
         "createANewAccount": MessageLookupByLibrary.simpleMessage(
             "Créez un nouveau compte et il apparaîtra ici"),
         "createANewContactAndItWillShowUpHere":
@@ -172,7 +172,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "doYouWantToTransferYourEntireTransparentBalanceTo": m4,
         "duplicateAccount":
             MessageLookupByLibrary.simpleMessage("Compte en double"),
-        "editContact": MessageLookupByLibrary.simpleMessage("Edit Contact"),
+        "editContact":
+            MessageLookupByLibrary.simpleMessage("Changer le Contact"),
         "encryptedBackup": m5,
         "enterSecretShareIfAccountIsMultisignature":
             MessageLookupByLibrary.simpleMessage(
@@ -181,7 +182,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Entrez la graine, la clé secrète ou la clé de visualisation. Laissez vide pour un nouveau compte"),
         "excludedNotes": MessageLookupByLibrary.simpleMessage("Billets exclus"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("File saved"),
-        "fromto": MessageLookupByLibrary.simpleMessage("From/To"),
+        "fromto": MessageLookupByLibrary.simpleMessage("Env/Dest."),
         "fullBackup":
             MessageLookupByLibrary.simpleMessage("Sauvegarde complète"),
         "fullRestore":
@@ -194,8 +195,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("J\'ai fait une sauvegarde"),
         "includeFeeInAmount": MessageLookupByLibrary.simpleMessage(
             "Inclure les frais dans le montant"),
-        "includeReplyTo":
-            MessageLookupByLibrary.simpleMessage("Include My Address in Memo"),
+        "includeReplyTo": MessageLookupByLibrary.simpleMessage(
+            "Inclure mon Adresse de Réponse"),
         "invalidAddress":
             MessageLookupByLibrary.simpleMessage("Adresse invalide"),
         "key": MessageLookupByLibrary.simpleMessage("Clé"),
@@ -209,7 +210,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Recharger une sauvegarde"),
         "loading": MessageLookupByLibrary.simpleMessage("Chargement..."),
         "markAllAsRead":
-            MessageLookupByLibrary.simpleMessage("Mark All as Read"),
+            MessageLookupByLibrary.simpleMessage("Marquer tous lus"),
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Montant maximum par note"),
@@ -223,7 +224,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "multiPay": MessageLookupByLibrary.simpleMessage("Envoyer à plusieurs"),
         "multipay": MessageLookupByLibrary.simpleMessage("Envoyer à plusieurs"),
         "multipleAddresses":
-            MessageLookupByLibrary.simpleMessage("multiple addresses"),
+            MessageLookupByLibrary.simpleMessage("plusieurs adresses"),
         "multisig": MessageLookupByLibrary.simpleMessage("Multisig"),
         "multisigShares":
             MessageLookupByLibrary.simpleMessage("Multisig Shares"),
@@ -245,7 +246,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "notEnoughBalance":
             MessageLookupByLibrary.simpleMessage("Solde insuffisant"),
         "notes": MessageLookupByLibrary.simpleMessage("Billets"),
-        "now": MessageLookupByLibrary.simpleMessage("Now"),
+        "now": MessageLookupByLibrary.simpleMessage("Maintenant"),
         "numberOfConfirmationsNeededBeforeSpending":
             MessageLookupByLibrary.simpleMessage(
                 "Nombre de confirmations nécessaires avant de dépenser"),
@@ -281,14 +282,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive": m7,
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Recevoir un payment"),
-        "recipient": MessageLookupByLibrary.simpleMessage("Recipient"),
-        "reply": MessageLookupByLibrary.simpleMessage("Reply"),
+        "recipient": MessageLookupByLibrary.simpleMessage("Destinataire"),
+        "reply": MessageLookupByLibrary.simpleMessage("Répondre"),
         "rescan": MessageLookupByLibrary.simpleMessage("Parcourir à nouveau"),
         "rescanFrom":
             MessageLookupByLibrary.simpleMessage("Reparcourir à partir de...?"),
         "rescanNeeded": MessageLookupByLibrary.simpleMessage("Scan nécessaire"),
         "rescanRequested": m8,
-        "rescanning": MessageLookupByLibrary.simpleMessage("Rescanning..."),
+        "rescanning":
+            MessageLookupByLibrary.simpleMessage("Rescannage en cours..."),
         "reset": MessageLookupByLibrary.simpleMessage("RESET"),
         "restart": MessageLookupByLibrary.simpleMessage("Redémarrage"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
@@ -314,7 +316,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sendCointicker": m9,
         "sendCointickerTo": m10,
         "sendFrom": m11,
-        "sender": MessageLookupByLibrary.simpleMessage("Sender"),
+        "sender": MessageLookupByLibrary.simpleMessage("Envoyeur"),
         "sendingATotalOfAmountCointickerToCountRecipients": m12,
         "sendingAzecCointickerToAddress": m13,
         "server": MessageLookupByLibrary.simpleMessage("Serveur"),
@@ -326,7 +328,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "shieldingInProgress":
             MessageLookupByLibrary.simpleMessage("Masquage en cours..."),
         "showMessagesAsTable":
-            MessageLookupByLibrary.simpleMessage("Show Messages as Table"),
+            MessageLookupByLibrary.simpleMessage("Messages vus en table"),
         "sign": MessageLookupByLibrary.simpleMessage("Sign"),
         "signOffline": MessageLookupByLibrary.simpleMessage("Signer"),
         "simple": MessageLookupByLibrary.simpleMessage("Simple"),
@@ -336,7 +338,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Montant dépensable"),
         "splitAccount": MessageLookupByLibrary.simpleMessage("Split Account"),
         "subAccountOf": m14,
-        "subject": MessageLookupByLibrary.simpleMessage("Subject"),
+        "subject": MessageLookupByLibrary.simpleMessage("Sujet"),
         "synching":
             MessageLookupByLibrary.simpleMessage("Synchronisation en cours"),
         "table": MessageLookupByLibrary.simpleMessage("Tableau"),
