@@ -1,0 +1,465 @@
+<!doctype html><html lang=en class="js csstransforms3d">
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=generator content="Hugo 0.91.2">
+<meta name=description content>
+<link rel=icon href=/images/favicon.png type=image/png>
+<title>Cold Storage :: YWallet</title>
+<link href=/css/nucleus.css?1650988472 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1650988472 rel=stylesheet>
+<link href=/css/hybrid.css?1650988472 rel=stylesheet>
+<link href=/css/featherlight.min.css?1650988472 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1650988472 rel=stylesheet>
+<link href=/css/auto-complete.css?1650988472 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1650988472 rel=stylesheet>
+<link href=/css/theme.css?1650988472 rel=stylesheet>
+<link href=/css/tabs.css?1650988472 rel=stylesheet>
+<link href=/css/hugo-theme.css?1650988472 rel=stylesheet>
+<link href=/css/theme-blue.css?1650988472 rel=stylesheet>
+<link href=/main.css?1650988472 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1650988472></script>
+<style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
+</head>
+<body data-url=/advanced/cold-storage/>
+<nav id=sidebar class=showVisitedLinks>
+<div id=header-wrapper>
+<div id=header>
+<a id=logo href=https://ywallet.app/>
+<img srcset="https://ywallet.app//logo.png 4x">
+</a>
+</div>
+<div class=searchbox>
+<label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span>
+</div>
+<script type=text/javascript src=/js/lunr.min.js?1650988472></script>
+<script type=text/javascript src=/js/auto-complete.js?1650988472></script>
+<script type=text/javascript>var baseurl="https://ywallet.app/"</script>
+<script type=text/javascript src=/js/search.js?1650988472></script>
+</div>
+<div class=highlightable>
+<ul class=topics>
+<li data-nav-id=/installation/ title=Install class=dd-item>
+<a href=/installation/>
+Install
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/features/ title=Features class=dd-item>
+<a href=/features/>
+Features
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/getting-started/ title="Getting Started" class=dd-item>
+<a href=/getting-started/>
+Getting Started
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/getting-started/ui_mode/ title="UI Mode" class=dd-item>
+<a href=/getting-started/ui_mode/>
+UI Mode
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/getting-started/first-account/ title="Your first account" class=dd-item>
+<a href=/getting-started/first-account/>
+Your first account
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/getting-started/account-summary/ title="Account summary" class=dd-item>
+<a href=/getting-started/account-summary/>
+Account summary
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/getting-started/receive/ title="Receive coins" class=dd-item>
+<a href=/getting-started/receive/>
+Receive coins
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/getting-started/send/ title="Send coins" class=dd-item>
+<a href=/getting-started/send/>
+Send coins
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/account/ title=Accounts class=dd-item>
+<a href=/account/>
+Accounts
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/account/overview/ title=Overview class=dd-item>
+<a href=/account/overview/>
+Overview
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/manager/ title="Account Manager" class=dd-item>
+<a href=/account/manager/>
+Account Manager
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/restore/ title="Backup Restore" class=dd-item>
+<a href=/account/restore/>
+Backup Restore
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/notes/ title=Notes class=dd-item>
+<a href=/account/notes/>
+Notes
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/payment_uri/ title="Payment URI" class=dd-item>
+<a href=/account/payment_uri/>
+Payment URI
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/transactions/ title=Transactions class=dd-item>
+<a href=/account/transactions/>
+Transactions
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/sync/ title=Synchronization class=dd-item>
+<a href=/account/sync/>
+Synchronization
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/watch-only/ title="Watch Only" class=dd-item>
+<a href=/account/watch-only/>
+Watch Only
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/messages/ title=Messages class=dd-item>
+<a href=/messages/>
+Messages
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/messages/center/ title="Message List" class=dd-item>
+<a href=/messages/center/>
+Message List
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/messages/details/ title="Message Details" class=dd-item>
+<a href=/messages/details/>
+Message Details
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/messages/send/ title="Send a Message" class=dd-item>
+<a href=/messages/send/>
+Send a Message
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/messages/settings/ title=Settings class=dd-item>
+<a href=/messages/settings/>
+Settings
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/messages/internal/ title="Internal Format" class=dd-item>
+<a href=/messages/internal/>
+Internal Format
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/contact/ title=Contacts class=dd-item>
+<a href=/contact/>
+Contacts
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/contact/manage/ title=Add/Edit/Delete class=dd-item>
+<a href=/contact/manage/>
+Add/Edit/Delete
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/contact/save/ title="Save to Blockchain" class=dd-item>
+<a href=/contact/save/>
+Save to Blockchain
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/advanced/ title="Advanced Usage" class="dd-item
+parent">
+<a href=/advanced/>
+Advanced Usage
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/advanced/auto-shield/ title="Auto-Shield Transparent Balance" class=dd-item>
+<a href=/advanced/auto-shield/>
+Auto-Shield Transparent Balance
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/coin-control/ title="Coin Control" class=dd-item>
+<a href=/advanced/coin-control/>
+Coin Control
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/advanced-send/ title="Send Options" class=dd-item>
+<a href=/advanced/advanced-send/>
+Send Options
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/budget/ title=Budget class=dd-item>
+<a href=/advanced/budget/>
+Budget
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/pnl/ title="Wallet Profit and Loss" class=dd-item>
+<a href=/advanced/pnl/>
+Wallet Profit and Loss
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/multipay/ title=MultiPay class=dd-item>
+<a href=/advanced/multipay/>
+MultiPay
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/cold-storage/ title="Cold Storage" class="dd-item active">
+<a href=/advanced/cold-storage/>
+Cold Storage
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/sub-account/ title=Sub-Account class=dd-item>
+<a href=/advanced/sub-account/>
+Sub-Account
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/batch-save/ title="Batch Save/Load" class=dd-item>
+<a href=/advanced/batch-save/>
+Batch Save/Load
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/reset/ title=Reset class=dd-item>
+<a href=/advanced/reset/>
+Reset
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/settings/ title=Settings class=dd-item>
+<a href=/settings/>
+Settings
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/settings/server/ title=Server class=dd-item>
+<a href=/settings/server/>
+Server
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/settings/theme/ title=Theme class=dd-item>
+<a href=/settings/theme/>
+Theme
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/settings/auto-shield/ title=Auto-Shield class=dd-item>
+<a href=/settings/auto-shield/>
+Auto-Shield
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/settings/currency/ title="Fiat Currency" class=dd-item>
+<a href=/settings/currency/>
+Fiat Currency
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/settings/chart-range/ title="Chart Range" class=dd-item>
+<a href=/settings/chart-range/>
+Chart Range
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/settings/misc/ title=Miscellaneous class=dd-item>
+<a href=/settings/misc/>
+Miscellaneous
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/faq/ title=FAQ class=dd-item>
+<a href=/faq/>
+FAQ
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+<section id=prefooter>
+<hr>
+<ul>
+<li><a class=padding href=# data-clear-history-toggle><i class="fas fa-history fa-fw"></i> Clear History</a></li>
+</ul>
+</section>
+<section id=footer>
+<p>Built with <a href=https://github.com/matcornic/hugo-theme-learn><i class="fas fa-heart"></i></a> from <a href=https://getgrav.org>Grav</a> and <a href=https://gohugo.io/>Hugo</a></p>
+</section>
+</div>
+</nav>
+<section id=body>
+<div id=overlay></div>
+<div class="padding highlightable">
+<div>
+<div id=top-bar>
+<div id=breadcrumbs itemscope itemtype=http://data-vocabulary.org/Breadcrumb>
+<span id=sidebar-toggle-span>
+<a href=# id=sidebar-toggle data-sidebar-toggle>
+<i class="fas fa-bars"></i>
+</a>
+</span>
+<span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links>
+<a href=/>YWallet</a> > <a href=/advanced/>Advanced Usage</a> > Cold Storage
+</span>
+</div>
+<div class=progress>
+<div class=wrapper>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#preparing-the-unsigned-transaction>Preparing the unsigned transaction</a></li>
+<li><a href=#sign>Sign</a>
+<ul>
+<li><a href=#command-line-tool>Command Line Tool</a></li>
+<li><a href=#offline-ywallet>Offline Ywallet</a></li>
+</ul>
+</li>
+<li><a href=#broadcast>Broadcast</a></li>
+<li><a href=#remarks>Remarks</a></li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+</div>
+<div id=head-tags>
+</div>
+<div id=body-inner>
+<h1>
+Cold Storage
+</h1>
+<p>In a cold storage transaction, the mobile account does not have
+the secret key needed for spending.
+However, it is able to build an unsigned transaction and export
+it as a file.</p>
+<p>The account owner moves the file to another computer that holds
+the secret key (preferably offline and air-gapped for security).</p>
+<p>On the offline computer, he signs the transaction and generate
+a now valid transaction that he saves to another file.</p>
+<p>After importing the later into the Y/ZWallet, the transaction
+is finalized and broadcast.</p>
+<p>This workflow ensures that the secret key never leave the computer
+that is isolated from the Internet.</p>
+<p><a href=https://en.bitcoin.it/wiki/Cold_storage>Cold Storage in the context of Bitcoin</a></p>
+<p>The same concept is applicable to Zcash.</p>
+<h2 id=preparing-the-unsigned-transaction>Preparing the unsigned transaction</h2>
+<img class="img mb-4" srcset="../img/2022-04-13_17-52-43.png 2x">
+<p>If the account does not have a secret key either because it was restored
+from viewing key or because it was converted to Cold Storage,
+the button Send is dimmed. Instead of signing and broadcasting a transaction,
+the Send page prepares an unsigned transaction.</p>
+<p>Depending on your phone OS, you can save the unsigned transaction to
+a USB key, or to the Cloud.</p>
+<p>The transaction file must be copied to the computer that has the <code>sign</code>
+application.</p>
+<img class=img src=../img/IMG_0094.PNG>
+<h2 id=sign>Sign</h2>
+<p>There are two options for signing the transaction. You can either use
+a command line tool (with no GUI) or use another phone/device with
+YWallet that you keep offline.</p>
+<h3 id=command-line-tool>Command Line Tool</h3>
+<p>You can build the <code>sign</code> app from its <a href=https://github.com/hhanh00/zcash-sync>source code</a></p>
+<p>To run the <code>sign</code> app, you need to create an <code>.env</code> file that has
+a line</p>
+<pre tabindex=0><code>KEY=&quot;&lt;seed or secret-key&gt;&quot;
+</code></pre><p>For example,</p>
+<pre tabindex=0><code>KEY=&quot;human tissue pony dose host stamp tag hockey begin wisdom humble divorce goose grief analyst hard axis fiscal flat cloud huge pair sunset into&quot;
+</code></pre><p>Then run the signer as follows:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sign &lt;unsigned filename&gt; &lt;signed filename&gt;
+</code></pre></div><p>For example,</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sign tx.json tx.raw
+</code></pre></div><p>Then copy <code>tx.raw</code> back to a USB drive (or Cloud storage)</p>
+<h3 id=offline-ywallet>Offline Ywallet</h3>
+<p>Use the &ldquo;Sign&rdquo; menu. It will ask you to open the unsigned transaction file
+and proceed to sign it. If the current account contains the secret key
+it will create a raw transaction and offer you to save it.</p>
+<h2 id=broadcast>Broadcast</h2>
+<p><img class=img src=../img/IMG_0095.PNG>
+<img class=img src=../img/IMG_0097.PNG>
+<img class=img src=../img/IMG_0098.PNG>
+</p>
+<ol>
+<li>Select &ldquo;Broadcast&rdquo; from the app menu</li>
+<li>Pick up the raw transaction file from the storage</li>
+<li>Wait for the transaction id</li>
+</ol>
+<h2 id=remarks>Remarks</h2>
+<ul>
+<li>USB drive is safer than Cloud storage but in any case, the files
+do not contain any information that could be used to reveal your secret key</li>
+</ul>
+<footer class=footline>
+</footer>
+</div>
+</div>
+<div id=navigation>
+<a class="nav nav-prev" href=/advanced/multipay/ title=MultiPay> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/advanced/sub-account/ title=Sub-Account style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+</div>
+</section>
+<div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
+<div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
+</div>
+<script src=/js/clipboard.min.js?1650988472></script>
+<script src=/js/perfect-scrollbar.min.js?1650988472></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1650988472></script>
+<script src=/js/jquery.sticky.js?1650988472></script>
+<script src=/js/featherlight.min.js?1650988472></script>
+<script src=/js/highlight.pack.js?1650988472></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<script src=/js/modernizr.custom-3.6.0.js?1650988472></script>
+<script src=/js/learn.js?1650988472></script>
+<script src=/js/hugo-learn.js?1650988472></script>
+<script src=/mermaid/mermaid.js?1650988472></script>
+<script>mermaid.initialize({startOnLoad:!0})</script>
+</body>
+</html>

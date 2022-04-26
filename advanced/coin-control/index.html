@@ -1,0 +1,401 @@
+<!doctype html><html lang=en class="js csstransforms3d">
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=generator content="Hugo 0.91.2">
+<meta name=description content>
+<link rel=icon href=/images/favicon.png type=image/png>
+<title>Coin Control :: YWallet</title>
+<link href=/css/nucleus.css?1650988472 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1650988472 rel=stylesheet>
+<link href=/css/hybrid.css?1650988472 rel=stylesheet>
+<link href=/css/featherlight.min.css?1650988472 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1650988472 rel=stylesheet>
+<link href=/css/auto-complete.css?1650988472 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1650988472 rel=stylesheet>
+<link href=/css/theme.css?1650988472 rel=stylesheet>
+<link href=/css/tabs.css?1650988472 rel=stylesheet>
+<link href=/css/hugo-theme.css?1650988472 rel=stylesheet>
+<link href=/css/theme-blue.css?1650988472 rel=stylesheet>
+<link href=/main.css?1650988472 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1650988472></script>
+<style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
+</head>
+<body data-url=/advanced/coin-control/>
+<nav id=sidebar class=showVisitedLinks>
+<div id=header-wrapper>
+<div id=header>
+<a id=logo href=https://ywallet.app/>
+<img srcset="https://ywallet.app//logo.png 4x">
+</a>
+</div>
+<div class=searchbox>
+<label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span>
+</div>
+<script type=text/javascript src=/js/lunr.min.js?1650988472></script>
+<script type=text/javascript src=/js/auto-complete.js?1650988472></script>
+<script type=text/javascript>var baseurl="https://ywallet.app/"</script>
+<script type=text/javascript src=/js/search.js?1650988472></script>
+</div>
+<div class=highlightable>
+<ul class=topics>
+<li data-nav-id=/installation/ title=Install class=dd-item>
+<a href=/installation/>
+Install
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/features/ title=Features class=dd-item>
+<a href=/features/>
+Features
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/getting-started/ title="Getting Started" class=dd-item>
+<a href=/getting-started/>
+Getting Started
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/getting-started/ui_mode/ title="UI Mode" class=dd-item>
+<a href=/getting-started/ui_mode/>
+UI Mode
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/getting-started/first-account/ title="Your first account" class=dd-item>
+<a href=/getting-started/first-account/>
+Your first account
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/getting-started/account-summary/ title="Account summary" class=dd-item>
+<a href=/getting-started/account-summary/>
+Account summary
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/getting-started/receive/ title="Receive coins" class=dd-item>
+<a href=/getting-started/receive/>
+Receive coins
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/getting-started/send/ title="Send coins" class=dd-item>
+<a href=/getting-started/send/>
+Send coins
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/account/ title=Accounts class=dd-item>
+<a href=/account/>
+Accounts
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/account/overview/ title=Overview class=dd-item>
+<a href=/account/overview/>
+Overview
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/manager/ title="Account Manager" class=dd-item>
+<a href=/account/manager/>
+Account Manager
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/restore/ title="Backup Restore" class=dd-item>
+<a href=/account/restore/>
+Backup Restore
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/notes/ title=Notes class=dd-item>
+<a href=/account/notes/>
+Notes
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/payment_uri/ title="Payment URI" class=dd-item>
+<a href=/account/payment_uri/>
+Payment URI
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/transactions/ title=Transactions class=dd-item>
+<a href=/account/transactions/>
+Transactions
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/sync/ title=Synchronization class=dd-item>
+<a href=/account/sync/>
+Synchronization
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/watch-only/ title="Watch Only" class=dd-item>
+<a href=/account/watch-only/>
+Watch Only
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/messages/ title=Messages class=dd-item>
+<a href=/messages/>
+Messages
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/messages/center/ title="Message List" class=dd-item>
+<a href=/messages/center/>
+Message List
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/messages/details/ title="Message Details" class=dd-item>
+<a href=/messages/details/>
+Message Details
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/messages/send/ title="Send a Message" class=dd-item>
+<a href=/messages/send/>
+Send a Message
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/messages/settings/ title=Settings class=dd-item>
+<a href=/messages/settings/>
+Settings
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/messages/internal/ title="Internal Format" class=dd-item>
+<a href=/messages/internal/>
+Internal Format
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/contact/ title=Contacts class=dd-item>
+<a href=/contact/>
+Contacts
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/contact/manage/ title=Add/Edit/Delete class=dd-item>
+<a href=/contact/manage/>
+Add/Edit/Delete
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/contact/save/ title="Save to Blockchain" class=dd-item>
+<a href=/contact/save/>
+Save to Blockchain
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/advanced/ title="Advanced Usage" class="dd-item
+parent">
+<a href=/advanced/>
+Advanced Usage
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/advanced/auto-shield/ title="Auto-Shield Transparent Balance" class=dd-item>
+<a href=/advanced/auto-shield/>
+Auto-Shield Transparent Balance
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/coin-control/ title="Coin Control" class="dd-item active">
+<a href=/advanced/coin-control/>
+Coin Control
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/advanced-send/ title="Send Options" class=dd-item>
+<a href=/advanced/advanced-send/>
+Send Options
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/budget/ title=Budget class=dd-item>
+<a href=/advanced/budget/>
+Budget
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/pnl/ title="Wallet Profit and Loss" class=dd-item>
+<a href=/advanced/pnl/>
+Wallet Profit and Loss
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/multipay/ title=MultiPay class=dd-item>
+<a href=/advanced/multipay/>
+MultiPay
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/cold-storage/ title="Cold Storage" class=dd-item>
+<a href=/advanced/cold-storage/>
+Cold Storage
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/sub-account/ title=Sub-Account class=dd-item>
+<a href=/advanced/sub-account/>
+Sub-Account
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/batch-save/ title="Batch Save/Load" class=dd-item>
+<a href=/advanced/batch-save/>
+Batch Save/Load
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/advanced/reset/ title=Reset class=dd-item>
+<a href=/advanced/reset/>
+Reset
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/settings/ title=Settings class=dd-item>
+<a href=/settings/>
+Settings
+<i class="fas fa-check read-icon"></i>
+</a>
+<ul>
+<li data-nav-id=/settings/server/ title=Server class=dd-item>
+<a href=/settings/server/>
+Server
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/settings/theme/ title=Theme class=dd-item>
+<a href=/settings/theme/>
+Theme
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/settings/auto-shield/ title=Auto-Shield class=dd-item>
+<a href=/settings/auto-shield/>
+Auto-Shield
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/settings/currency/ title="Fiat Currency" class=dd-item>
+<a href=/settings/currency/>
+Fiat Currency
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/settings/chart-range/ title="Chart Range" class=dd-item>
+<a href=/settings/chart-range/>
+Chart Range
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/settings/misc/ title=Miscellaneous class=dd-item>
+<a href=/settings/misc/>
+Miscellaneous
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/faq/ title=FAQ class=dd-item>
+<a href=/faq/>
+FAQ
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+</ul>
+<section id=prefooter>
+<hr>
+<ul>
+<li><a class=padding href=# data-clear-history-toggle><i class="fas fa-history fa-fw"></i> Clear History</a></li>
+</ul>
+</section>
+<section id=footer>
+<p>Built with <a href=https://github.com/matcornic/hugo-theme-learn><i class="fas fa-heart"></i></a> from <a href=https://getgrav.org>Grav</a> and <a href=https://gohugo.io/>Hugo</a></p>
+</section>
+</div>
+</nav>
+<section id=body>
+<div id=overlay></div>
+<div class="padding highlightable">
+<div>
+<div id=top-bar>
+<div id=breadcrumbs itemscope itemtype=http://data-vocabulary.org/Breadcrumb>
+<span id=sidebar-toggle-span>
+<a href=# id=sidebar-toggle data-sidebar-toggle>
+<i class="fas fa-bars"></i>
+</a>
+</span>
+<span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links>
+<a href=/>YWallet</a> > <a href=/advanced/>Advanced Usage</a> > Coin Control
+</span>
+</div>
+<div class=progress>
+<div class=wrapper>
+<nav id=TableOfContents></nav>
+</div>
+</div>
+</div>
+</div>
+<div id=head-tags>
+</div>
+<div id=body-inner>
+<h1>
+Coin Control
+</h1>
+<p>By default, every received note that has enough confirmations can
+be picked in an outgoing transaction. With Coin Control, you can
+exclude some notes from being selected.</p>
+<img class=img src=../img/IMG_0047.PNG>
+<ol>
+<li>Tap to select/deselect notes. Notes that are selected will <strong>not</strong>
+be spent</li>
+</ol>
+<footer class=footline>
+</footer>
+</div>
+</div>
+<div id=navigation>
+<a class="nav nav-prev" href=/advanced/auto-shield/ title="Auto-Shield Transparent Balance"> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/advanced/advanced-send/ title="Send Options" style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+</div>
+</section>
+<div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
+<div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
+</div>
+<script src=/js/clipboard.min.js?1650988472></script>
+<script src=/js/perfect-scrollbar.min.js?1650988472></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1650988472></script>
+<script src=/js/jquery.sticky.js?1650988472></script>
+<script src=/js/featherlight.min.js?1650988472></script>
+<script src=/js/highlight.pack.js?1650988472></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<script src=/js/modernizr.custom-3.6.0.js?1650988472></script>
+<script src=/js/learn.js?1650988472></script>
+<script src=/js/hugo-learn.js?1650988472></script>
+<script src=/mermaid/mermaid.js?1650988472></script>
+<script>mermaid.initialize({startOnLoad:!0})</script>
+</body>
+</html>
