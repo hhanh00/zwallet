@@ -5,7 +5,7 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>FAQ :: YWallet</title>
+<title>Contact List :: YWallet</title>
 <link href=/css/nucleus.css?1651554189 rel=stylesheet>
 <link href=/css/fontawesome-all.min.css?1651554189 rel=stylesheet>
 <link href=/css/hybrid.css?1651554189 rel=stylesheet>
@@ -21,7 +21,7 @@
 <script src=/js/jquery-3.3.1.min.js?1651554189></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 </head>
-<body data-url=/faq/>
+<body data-url=/contact/list/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -191,13 +191,14 @@ Internal Format
 </li>
 </ul>
 </li>
-<li data-nav-id=/contact/ title=Contacts class=dd-item>
+<li data-nav-id=/contact/ title=Contacts class="dd-item
+parent">
 <a href=/contact/>
 Contacts
 <i class="fas fa-check read-icon"></i>
 </a>
 <ul>
-<li data-nav-id=/contact/list/ title="Contact List" class=dd-item>
+<li data-nav-id=/contact/list/ title="Contact List" class="dd-item active">
 <a href=/contact/list/>
 Contact List
 <i class="fas fa-check read-icon"></i>
@@ -329,9 +330,7 @@ Miscellaneous
 </li>
 </ul>
 </li>
-<li data-nav-id=/faq/ title=FAQ class="dd-item
-parent
-active">
+<li data-nav-id=/faq/ title=FAQ class=dd-item>
 <a href=/faq/>
 FAQ
 <i class="fas fa-check read-icon"></i>
@@ -362,12 +361,16 @@ FAQ
 </span>
 <span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > FAQ
+<a href=/>YWallet</a> > <a href=/contact/>Contacts</a> > Contact List
 </span>
 </div>
 <div class=progress>
 <div class=wrapper>
-<nav id=TableOfContents></nav>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#remarks>Remarks</a></li>
+</ul>
+</nav>
 </div>
 </div>
 </div>
@@ -376,76 +379,31 @@ FAQ
 </div>
 <div id=body-inner>
 <h1>
-FAQ
+Contact List
 </h1>
+<img class=img src=../img/IMG_0070.PNG>
 <ol>
-<li>
-<p>Does it support transparent addresses?</p>
-<p>Yes, but we highly recommend shielding these coins before spending them.
-The app is Shielded by Default.</p>
-</li>
-<li>
-<p>How fast is the synchronization exactly?</p>
-<p>It depends on the hardware but for average phones, YWallet scans the entire blockchain
-(as of Sep 2021) in around 1-3 minutes. In the end, your account balances are
-fully available to spend. The reference wallet SDK is 100x slower.</p>
-</li>
-<li>
-<p>Was there a ZWallet and WarpWallet?</p>
-<p>There used to be different versions of the app for Ycash and Zcash. The app was
-initially built for Zcash and was called ZWallet. Then it was ported to Ycash
-and named YWallet.
-Unfortunately, the name ZWallet is taken on the Apple Store and the app
-had to be rebranded WarpWallet.</p>
-<p>Now we have a single version that works for both Ycash and Zcash and the app
-ZWallet is discontinued.</p>
-</li>
-<li>
-<p>Is it open source?</p>
-<p>Yes, the source code is available on <a href=https://github.com/hhanh00/zwallet>github</a>.</p>
-</li>
-<li>
-<p>Why is it not listed on the Zcash website?</p>
-<p>The source code is pending review by the Zcash team.
-However, it has been reviewed by the Ycash team and is listed on the Ycash
-Foundation website.</p>
-</li>
-<li>
-<p>Does it collect data?</p>
-<p><em>Absolutely no user data is collected</em>. The wallet only connects to a <code>lightwalletd</code> server
-(by default the officially sponsored server) and CoinGecko for market prices.</p>
-</li>
-<li>
-<p>Can it connect to any lightwalletd?</p>
-<p>Yes, the wallet uses the standard API of lightwalletd. It can connect to
-ZecWallet version of lightwalletd or your own deployment.</p>
-</li>
-<li>
-<p>Can I receive my mining rewards in my transparent address?</p>
-<p>It is best not to receive your mining rewards because they need to mature
-for 100 blocks before they can be spent. The Y/ZWallet cannot
-shield your balance if any of the UTXO is not old enough. Currently,
-<code>lightwalletd</code> does not provide an API to get the UTXO age and the
-shielding transaction will be rejected by the network.</p>
-</li>
-<li>
-<p>How can I keep my account safe?</p>
-<p>The number one reason for lost coins is failure to have a <em>backup</em> of the
-seed phrase.</p>
-<div class="notices warning"><p>Please, <strong>DO A BACKUP ASAP</strong> and make sure that it is kept in a
-safe place away from spying eyes.</p>
-</div>
-<p><em>All the application data can be recovered from the seed phrase!</em></p>
-<p><strong>Do not share your seed phrase with other people!</strong></p>
-</li>
+<li>Contact Name</li>
+<li>Contact Address</li>
+<li>Tap to go to the Send page with this contact address</li>
+<li>Add a new contact</li>
+<li>Long press to edit the name</li>
+<li>Swipe left/right to delete</li>
 </ol>
+<h2 id=remarks>Remarks</h2>
+<ul>
+<li>On the Send page, you can enter a contact name instead of an address</li>
+<li>Wherever the app displays an address, it will display a contact name
+if there is a contact with that address.</li>
+<li>Contacts are shared between all accounts</li>
+</ul>
 <footer class=footline>
 </footer>
 </div>
 </div>
 <div id=navigation>
-<a class="nav nav-prev" href=/settings/misc/ title=Miscellaneous> <i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=/installation/ title=Install style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/contact/ title=Contacts> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/contact/manage/ title=Add/Edit/Delete style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>

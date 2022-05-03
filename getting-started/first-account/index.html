@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>Your first account :: YWallet</title>
-<link href=/css/nucleus.css?1651537471 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1651537471 rel=stylesheet>
-<link href=/css/hybrid.css?1651537471 rel=stylesheet>
-<link href=/css/featherlight.min.css?1651537471 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1651537471 rel=stylesheet>
-<link href=/css/auto-complete.css?1651537471 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1651537471 rel=stylesheet>
-<link href=/css/theme.css?1651537471 rel=stylesheet>
-<link href=/css/tabs.css?1651537471 rel=stylesheet>
-<link href=/css/hugo-theme.css?1651537471 rel=stylesheet>
-<link href=/css/theme-blue.css?1651537471 rel=stylesheet>
-<link href=/main.css?1651537471 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1651537471></script>
+<link href=/css/nucleus.css?1651554189 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1651554189 rel=stylesheet>
+<link href=/css/hybrid.css?1651554189 rel=stylesheet>
+<link href=/css/featherlight.min.css?1651554189 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1651554189 rel=stylesheet>
+<link href=/css/auto-complete.css?1651554189 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1651554189 rel=stylesheet>
+<link href=/css/theme.css?1651554189 rel=stylesheet>
+<link href=/css/tabs.css?1651554189 rel=stylesheet>
+<link href=/css/hugo-theme.css?1651554189 rel=stylesheet>
+<link href=/css/theme-blue.css?1651554189 rel=stylesheet>
+<link href=/main.css?1651554189 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1651554189></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 </head>
 <body data-url=/getting-started/first-account/>
@@ -34,10 +34,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1651537471></script>
-<script type=text/javascript src=/js/auto-complete.js?1651537471></script>
+<script type=text/javascript src=/js/lunr.min.js?1651554189></script>
+<script type=text/javascript src=/js/auto-complete.js?1651554189></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1651537471></script>
+<script type=text/javascript src=/js/search.js?1651554189></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -107,6 +107,12 @@ Overview
 <li data-nav-id=/account/manager/ title="Account Manager" class=dd-item>
 <a href=/account/manager/>
 Account Manager
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
+<li data-nav-id=/account/add/ title="Adding More Accounts" class=dd-item>
+<a href=/account/add/>
+Adding More Accounts
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
@@ -192,6 +198,12 @@ Contacts
 <i class="fas fa-check read-icon"></i>
 </a>
 <ul>
+<li data-nav-id=/contact/list/ title="Contact List" class=dd-item>
+<a href=/contact/list/>
+Contact List
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
 <li data-nav-id=/contact/manage/ title=Add/Edit/Delete class=dd-item>
 <a href=/contact/manage/>
 Add/Edit/Delete
@@ -354,7 +366,11 @@ FAQ
 </div>
 <div class=progress>
 <div class=wrapper>
-<nav id=TableOfContents></nav>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#notes>Notes</a></li>
+</ul>
+</nav>
 </div>
 </div>
 </div>
@@ -365,50 +381,18 @@ FAQ
 <h1>
 Your first account
 </h1>
-<p>The first time you launch YWallet/ZWallet, the app will show the
-&ldquo;About&rdquo; page. Please read it and particularly the part about
-<strong>Keeping a backup</strong> of your accounts. It is the one and only
-way to make sure your coins are safe.</p>
-<blockquote>
-<p>Do not share your account seed with anyone</p>
-</blockquote>
-<p>At this point, you do not have any accounts. Let&rsquo;s get you a new one.</p>
-<img class=img src=../img/IMG_0033.PNG>
-<ol>
-<li>Press the button + in the bottom right corner. It opens the account
-creation and restoration page.</li>
-</ol>
-<img class="img mb-4" srcset="../img/2022-04-04_1-01-22.png 2x">
-<ol>
-<li>Choose the currency</li>
-<li>Give a name to your new account.</li>
-<li>But leave the field &ldquo;Seed/Secret Key/Viewing Key&rdquo;
-empty for a new account.</li>
-<li>Press the button &ldquo;NEW&mldr;&rdquo;. The app will show the account
-backup information.</li>
-</ol>
-<img class=img src=../img/IMG_0036.PNG>
-<ol>
-<li>Your backup is the 24 words in the top box. You must keep these words in a safe place. The
-order of the words is important.</li>
-<li>For your convenience, the app can show you a QR code for your seed phrase when you press the icon
-next to the box.</li>
-</ol>
-<p>Notes:</p>
+<p>YWallet automatically creates the first account. Please make sure that you save the seed words when it reminds you. The seed words are the list of 24 words shown on the backup page.
+If you lose access to your phone or wallet, all you need are these words. But conversely, anyone with these words also has access to your funds.</p>
+<div class="notices warning"><p>The seed words must be kept in a safe place and away from prying eyes. The order, spelling and capitalization of the seed words
+are significant.</p>
+</div>
+<h2 id=notes>Notes</h2>
 <ul>
-<li>The account name is required. It does not have to be unique.</li>
-<li>If the &ldquo;Seed/Secret Key or View key&rdquo; field is not blank but
-does not contain a valid value, the &ldquo;ADD&rdquo; button is disabled.</li>
-<li>If you want to restore a previous account, <a href=/account/restore/>go to this page</a></li>
-<li>Below the seed phrase, you will find your secret key and your viewing keys.
-You do not need to save them because they can be derived from your seed phrase. They are provided
-in case you need to use another app that does not support seed phrases.</li>
+<li>You can tap on the disc icon to get a QR code and save it instead.</li>
+<li>Do not save your seed words to Cloud storage.</li>
+<li>Treat the seed words as you would treat a <strong>signed blank check</strong> to all your funds</li>
 </ul>
-<img class=img src=../img/IMG_0037.PNG>
-<p>Once you close the Backup page, you will return to the Account Manager.</p>
-<ol>
-<li>Tap on the new account name</li>
-</ol>
+<img class=img src=../img/2022-05-03_12-27-01.png>
 <footer class=footline>
 </footer>
 </div>
@@ -421,17 +405,17 @@ in case you need to use another app that does not support seed phrases.</li>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1651537471></script>
-<script src=/js/perfect-scrollbar.min.js?1651537471></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1651537471></script>
-<script src=/js/jquery.sticky.js?1651537471></script>
-<script src=/js/featherlight.min.js?1651537471></script>
-<script src=/js/highlight.pack.js?1651537471></script>
+<script src=/js/clipboard.min.js?1651554189></script>
+<script src=/js/perfect-scrollbar.min.js?1651554189></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1651554189></script>
+<script src=/js/jquery.sticky.js?1651554189></script>
+<script src=/js/featherlight.min.js?1651554189></script>
+<script src=/js/highlight.pack.js?1651554189></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1651537471></script>
-<script src=/js/learn.js?1651537471></script>
-<script src=/js/hugo-learn.js?1651537471></script>
-<script src=/mermaid/mermaid.js?1651537471></script>
+<script src=/js/modernizr.custom-3.6.0.js?1651554189></script>
+<script src=/js/learn.js?1651554189></script>
+<script src=/js/hugo-learn.js?1651554189></script>
+<script src=/mermaid/mermaid.js?1651554189></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 </body>
 </html>
