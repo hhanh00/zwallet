@@ -1,0 +1,16 @@
+.mx-auto{margin-left:auto;margin-right:auto;}
+.mb-8{margin-bottom:2rem;}
+.px-6{padding-left:1.5rem;padding-right:1.5rem;}
+.text-4xl{font-size:2.25rem;line-height:2.5rem;}
+.text-2xl{font-size:1.5rem;line-height:2rem;}
+.font-bold{font-weight:700;}
+.uppercase{text-transform:uppercase;}
+.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity)) !important;}
+
+#body {
+    background: linear-gradient(90deg, #33A1FF 0%, #764ba2 100%)
+}
+
+#sidebar-toggle-span {
+    background-color: white;
+}
