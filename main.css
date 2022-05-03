@@ -7,7 +7,7 @@
 .uppercase{text-transform:uppercase;}
 .text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity)) !important;}
 
-#body {
+body {
     background: linear-gradient(90deg, #33A1FF 0%, #764ba2 100%)
 }
 
