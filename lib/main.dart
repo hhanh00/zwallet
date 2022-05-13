@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ffi';
+import 'dart:ffi' show DynamicLibrary;
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
@@ -254,7 +254,7 @@ class ZWalletAppState extends State<ZWalletApp> {
   void initState() {
     super.initState();
     if (isMobile()) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         await rateMyApp.init();
         if (mounted && rateMyApp.shouldOpenDialog) {
           rateMyApp.showRateDialog(this.context);
