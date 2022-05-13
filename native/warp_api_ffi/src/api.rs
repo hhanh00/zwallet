@@ -108,6 +108,7 @@ pub fn init_wallet(db_path: &str) {
     SYNCLOCK.get_or_init(|| Mutex::new(()));
     MULTISIG_AGG_LOCK.get_or_init(|| Mutex::new(MultisigAggregator::new()));
     MULTISIG_SIGN_LOCK.get_or_init(|| Mutex::new(MultisigClient::new()));
+    info!("Wallet initialized");
 }
 
 pub fn reset_app() {
