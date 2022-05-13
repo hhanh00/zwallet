@@ -13,6 +13,7 @@ ENV ANDROID_NDK_HOME $ANDROID_SDK_ROOT/ndk/21.4.7075529
 
 COPY . /zwallet
 
+RUN git config --global --add safe.directory /flutter
 RUN --mount=type=secret,id=pwd cd /zwallet && ./configure.sh zcash && ./build.sh
 
 FROM alpine:latest
