@@ -1,31 +1,32 @@
 #!/bin/sh
 
 ROOT_DIR=$1
+if [ "$ROOT_DIR" == "" ]; then
+  ROOT_DIR="/root"
+fi
+
+pacman -Sy --noconfirm unzip jdk8-openjdk wget
+
+wget -P /tmp -N https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
+wget -P /tmp -N https://dl.google.com/android/repository/android-ndk-r21e-linux-x86_64.zip
+wget -P /tmp -N https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.0.1-stable.tar.xz
+
+wget -P /tmp -N https://download.z.cash/downloads/sapling-output.params
+wget -P /tmp -N https://download.z.cash/downloads/sapling-spend.params
 
 mkdir -p $ROOT_DIR/Android/sdk
 export ANDROID_SDK_ROOT=$ROOT_DIR/Android/sdk
-pacman -Sy --noconfirm unzip jdk8-openjdk git cmake
 
-curl -o sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
-unzip sdk-tools.zip
-(cd cmdline-tools/bin &&
+(cd $ROOT_DIR;unzip -o /tmp/commandlinetools-linux-7583922_latest.zip;
+cd cmdline-tools/bin &&
 yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses &&
-yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-31" &&
-yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "ndk;21.4.7075529")
-rm sdk-tools.zip
+yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-31")
 
-pacman -Sy --noconfirm rustup
-rustup install stable
-rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
-cargo install --force cargo-make
+(cd $ANDROID_SDK_ROOT;unzip -o /tmp/android-ndk-r21e-linux-x86_64.zip)
+(cd $ROOT_DIR;tar xvf /tmp/flutter_linux_3.0.1-stable.tar.xz)
 
-curl -o flutter.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.0.0-stable.tar.xz
-tar xvf flutter.tar.xz
-rm -f flutter.tar.xz
+mkdir -p $HOME/.zcash-params
+cp /tmp/sapling-output.params /tmp/sapling-spend.params $HOME/.zcash-params
 
-mkdir $HOME/.zcash-params
-curl https://download.z.cash/downloads/sapling-output.params -o $HOME/.zcash-params/sapling-output.params
-curl https://download.z.cash/downloads/sapling-spend.params -o $HOME/.zcash-params/sapling-spend.params
-
-export ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/21.4.7075529
-export PATH=$PATH:/flutter/bin
+export ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/android-ndk-r21e
+export PATH=$PATH:$ROOT_DIR/flutter/bin
