@@ -4,7 +4,7 @@ ROOT_DIR=$1
 
 mkdir -p $ROOT_DIR/Android/sdk
 export ANDROID_SDK_ROOT=$ROOT_DIR/Android/sdk
-pacman -Sy --noconfirm unzip jdk8-openjdk git
+pacman -Sy --noconfirm unzip jdk8-openjdk git cmake
 
 curl -o sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
 unzip sdk-tools.zip
