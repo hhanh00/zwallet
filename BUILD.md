@@ -137,15 +137,13 @@ Copy `warp_api_ffi.dll` into the Release directory and also add:
 Then zip.
 
 ### MacOS
-On M1 macs, run rustup default stable-x86_64-apple-darwin
-MacOS is the trickiest one. Open the xcode workspace.
-Add in Signing & Capabilities: Network server & Client and R/W file access
+- On M1 macs, run rustup default stable-x86_64-apple-darwin
+- MacOS is the trickiest one. Open the xcode workspace.
+- Add in Signing & Capabilities: Network server & Client and R/W file access
 to user selected files
-Go to the Runner project, Build Stages
-Drag `libwarp_api_ffi.so` into Runner/Frameworks
-Remove it from the link stage (we don't want to statically link)
-Add to Bundle Framework, Code Sign
-Then exit xcode and run `flutter build macos`
+- Update the appicons
+- Go to the Runner project, Build Phases / Bundle Framework
+- Add `target/release/libwarp_api_ffi.dylib`
+Then exit xcode and run `flutter build macos`.
+
 If you want to create a DMG, use the npm package appdmg
-
-
