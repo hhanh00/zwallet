@@ -5,7 +5,7 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>Advanced Usage :: YWallet</title>
+<title>Warp Sync :: YWallet</title>
 <link href=/css/nucleus.css?1653537582 rel=stylesheet>
 <link href=/css/fontawesome-all.min.css?1653537582 rel=stylesheet>
 <link href=/css/hybrid.css?1653537582 rel=stylesheet>
@@ -21,7 +21,7 @@
 <script src=/js/jquery-3.3.1.min.js?1653537582></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 </head>
-<body data-url=/advanced/>
+<body data-url=/warp/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -217,9 +217,7 @@ Save to Blockchain
 </li>
 </ul>
 </li>
-<li data-nav-id=/advanced/ title="Advanced Usage" class="dd-item
-parent
-active">
+<li data-nav-id=/advanced/ title="Advanced Usage" class=dd-item>
 <a href=/advanced/>
 <svg class="icon"><use xlink:href="/sprite.svg#flask"/></svg>Advanced Usage
 <i class="fas fa-check read-icon"></i>
@@ -331,7 +329,9 @@ Miscellaneous
 </li>
 </ul>
 </li>
-<li data-nav-id=/warp/ title="Warp Sync" class=dd-item>
+<li data-nav-id=/warp/ title="Warp Sync" class="dd-item
+parent
+active">
 <a href=/warp/>
 <svg class="icon"><use xlink:href="/sprite.svg#rabbit"/></svg>Warp Sync
 <i class="fas fa-check read-icon"></i>
@@ -366,26 +366,76 @@ Miscellaneous
 <i class="fas fa-bars"></i>
 </a>
 </span>
+<span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > Advanced Usage
+<a href=/>YWallet</a> > Warp Sync
 </span>
+</div>
+<div class=progress>
+<div class=wrapper>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#whats-so-important-about-synchronization>What&rsquo;s so important about Synchronization?</a></li>
+<li><a href=#whats-warp-sync-explain-like-im-5>What&rsquo;s Warp Sync? Explain Like I&rsquo;m 5</a></li>
+<li><a href=#that-sounds-too-good-to-be-true>That sounds too good to be true</a></li>
+<li><a href=#any-drawback>Any drawback?</a></li>
+<li><a href=#other-tricks>Other tricks</a></li>
+</ul>
+</nav>
+</div>
 </div>
 </div>
 </div>
 <div id=head-tags>
 </div>
-<div id=chapter>
 <div id=body-inner>
-<h1 id=advanced-usage>Advanced Usage</h1>
-<p>For power users</p>
+<h1>
+Warp Sync
+</h1>
+<h2 id=whats-so-important-about-synchronization>What&rsquo;s so important about Synchronization?</h2>
+<p>If your wallet is slow, it is most likely because of synchronization.</p>
+<p>Wallets need to keep up with the latest data from the blockchain. This process is called synchronization and differs greatly between privacy coins and regular coins.</p>
+<p>Light wallets do not have the entire blockchain data. They rely on a server to give them enough information to rebuild the account balance and transaction history.</p>
+<p>With non-privacy coins, servers can index the blockchain and keep a database of every account. When light wallets ask them for their specific account data, the server retrieves the information and directly returns it to the client.</p>
+<p>However, this is not possible with privacy coins. They encrypt or shield the transactions recorded on the blockchain and prevent any external entity from knowing their details.</p>
+<p>Light wallets can either:
+download and decrypt the blockchain data themselves. But they would not be &ldquo;light&rdquo; anymore.
+send their decryption key (i.e. the viewing key) and let the server filter the transactions. But it reduces the user&rsquo;s privacy because now, the server has the viewing key.
+Zcash (and its forks) implements a mixed approach. A specialized server called <code>lightwalletd</code> filters the data from a full node <code>zcashd</code> and keeps only the data needed for transaction identification.</p>
+<p>Light wallets only have to download the trimmed data (Compact Blocks). Then they decrypt these compact blocks themselves.</p>
+<p>Yet, even decrypting and processing compact blocks can take a significant amount of time.</p>
+<h2 id=whats-warp-sync-explain-like-im-5>What&rsquo;s Warp Sync? Explain Like I&rsquo;m 5</h2>
+<p>Synchronization in wallets except Ywallet works by processing transactions one after the other. Warp Sync can process multiple transactions together.</p>
+<p>Here&rsquo;s an analogy. Let&rsquo;s say you want to calculate $1+2+3+4+5+6+&mldr;+1000$.</p>
+<p>We can perform the series of additions and keep a partial sum. $1+2 = 3$. Then $3+3 = 6$, and $6+4 = 10$, etc.
+Eventually, we reach $1000$ and we have our total sum.</p>
+<p>However, if we notice that $1+2+3+4+5+6+&mldr;+1000 = 1000 \times 1001/2 = 500500$, we can get the result much faster.</p>
+<p>In other words, Warp Sync skips the intermediate results and jumps straight
+to the final result.</p>
+<div class="notices note"><p>This is just an <strong>analogy</strong>. Zcash synchronization is much more complex. Warp Sync still has to do a lot of computation.</p>
+</div>
+<h2 id=that-sounds-too-good-to-be-true>That sounds too good to be true</h2>
+<p>It&rsquo;s because it&rsquo;s not exactly true. Warp Sync still has to perform a number of hash calculations proportional to the number of shielded transaction outputs. However, the usual synchronization method needs several times more hash calculations.</p>
+<h2 id=any-drawback>Any drawback?</h2>
+<p>Not really, in the end the result is identical bit by bit. We don&rsquo;t have the intermediate values but we don&rsquo;t need them anyway.</p>
+<h2 id=other-tricks>Other tricks</h2>
+<ul>
+<li>Warp Sync has a custom implementation of the Hash algorithm for an extra few percent speed up and leverages batch trial decryption for another few percentage points.</li>
+<li>It implements a streaming processing pipeline which can max out download speed and
+keep all your CPU cores fully utilized.</li>
+<li>The pipeline downloads and processes a moving window of the compact blockchain. It reduces the need for memory.</li>
+</ul>
+<script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"></script>
+<script type=text/x-mathjax-config>
+MathJax.Hub.Config({ tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]} })
+</script>
 <footer class=footline>
 </footer>
 </div>
 </div>
-</div>
 <div id=navigation>
-<a class="nav nav-prev" href=/contact/save/ title="Save to Blockchain"> <i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=/advanced/auto-shield/ title="Auto-Shield Transparent Balance" style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/settings/misc/ title=Miscellaneous> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/faq/ title=FAQ style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
