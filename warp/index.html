@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>Warp Sync :: YWallet</title>
-<link href=/css/nucleus.css?1653564391 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1653564391 rel=stylesheet>
-<link href=/css/hybrid.css?1653564391 rel=stylesheet>
-<link href=/css/featherlight.min.css?1653564391 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1653564391 rel=stylesheet>
-<link href=/css/auto-complete.css?1653564391 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1653564391 rel=stylesheet>
-<link href=/css/theme.css?1653564391 rel=stylesheet>
-<link href=/css/tabs.css?1653564391 rel=stylesheet>
-<link href=/css/hugo-theme.css?1653564391 rel=stylesheet>
-<link href=/css/theme-blue.css?1653564391 rel=stylesheet>
-<link href=/common.css?1653564391 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1653564391></script>
+<link href=/css/nucleus.css?1653564900 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1653564900 rel=stylesheet>
+<link href=/css/hybrid.css?1653564900 rel=stylesheet>
+<link href=/css/featherlight.min.css?1653564900 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1653564900 rel=stylesheet>
+<link href=/css/auto-complete.css?1653564900 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1653564900 rel=stylesheet>
+<link href=/css/theme.css?1653564900 rel=stylesheet>
+<link href=/css/tabs.css?1653564900 rel=stylesheet>
+<link href=/css/hugo-theme.css?1653564900 rel=stylesheet>
+<link href=/css/theme-blue.css?1653564900 rel=stylesheet>
+<link href=/common.css?1653564900 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1653564900></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
@@ -35,10 +35,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1653564391></script>
-<script type=text/javascript src=/js/auto-complete.js?1653564391></script>
+<script type=text/javascript src=/js/lunr.min.js?1653564900></script>
+<script type=text/javascript src=/js/auto-complete.js?1653564900></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1653564391></script>
+<script type=text/javascript src=/js/search.js?1653564900></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -380,6 +380,7 @@ active">
 <li><a href=#whats-warp-sync-explain-like-im-5>What&rsquo;s Warp Sync? Explain Like I&rsquo;m 5</a></li>
 <li><a href=#if-that-sounds-too-good-to-be-true>If that sounds too good to be true</a></li>
 <li><a href=#any-drawback>Any drawback?</a></li>
+<li><a href=#how-fast-is-warpsync-compared-to-normal-sync>How fast is WarpSync compared to Normal Sync</a></li>
 <li><a href=#other-performance-optimizations>Other Performance Optimizations</a></li>
 </ul>
 </nav>
@@ -399,10 +400,12 @@ Warp Sync
 <p>Light wallets do not have the entire blockchain data. They rely on a server to give them enough information to rebuild the account balance and transaction history.</p>
 <p>With non-privacy coins, servers can index the blockchain and keep a database of every account. When light wallets ask them for their specific account data, the server retrieves the information and directly returns it to the client.</p>
 <p>However, this is not possible with privacy coins. They encrypt or shield the transactions recorded on the blockchain and prevent any external entity from knowing their details.</p>
-<p>Light wallets can either:
-download and decrypt the blockchain data themselves. But they would not be &ldquo;light&rdquo; anymore.
-send their decryption key (i.e. the viewing key) and let the server filter the transactions. But it reduces the user&rsquo;s privacy because now, the server has the viewing key.
-Zcash (and its forks) implements a mixed approach. A specialized server called <code>lightwalletd</code> filters the data from a full node <code>zcashd</code> and keeps only the data needed for transaction identification.</p>
+<p>Light wallets can either:</p>
+<ul>
+<li>download and decrypt the blockchain data themselves. But they would not be &ldquo;light&rdquo; anymore.</li>
+<li>or send their decryption key (i.e. the viewing key) and let the server filter the transactions. But it reduces the user&rsquo;s privacy because now, the server has the viewing key.</li>
+</ul>
+<p>Zcash (and its forks) implements a mixed approach. A specialized server called <code>lightwalletd</code> filters the data from a full node <code>zcashd</code> and keeps only the data needed for transaction identification.</p>
 <p>Light wallets only have to download the trimmed data (Compact Blocks). Then they decrypt these compact blocks themselves.</p>
 <p>Yet, even decrypting and processing compact blocks can take a significant amount of time.</p>
 <h2 id=whats-warp-sync-explain-like-im-5>What&rsquo;s Warp Sync? Explain Like I&rsquo;m 5</h2>
@@ -426,6 +429,13 @@ jumps straight to the final result.</p>
 <p>It&rsquo;s because it&rsquo;s not exactly true. Warp Sync still has to perform a number of hash calculations proportional to the number of shielded transaction outputs. However, the usual synchronization method needs several times more than that.</p>
 <h2 id=any-drawback>Any drawback?</h2>
 <p>Not really, in the end the result is identical bit by bit. We don&rsquo;t have the intermediate values but we don&rsquo;t need them anyway.</p>
+<h2 id=how-fast-is-warpsync-compared-to-normal-sync>How fast is WarpSync compared to Normal Sync</h2>
+<p>In some cases, Warp Sync runs 300 times faster than Normal Sync.</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=doJeDS-zAV8&t=4427s">Nighthawk Benchmark</a></li>
+<li><a href=https://www.youtube.com/shorts/1AmoaQmj5Zk>Ywallet Benchmark</a></li>
+</ul>
+<p>Performance varies with wallets and hardware. Your experience may differ but you should see a significant improvement.</p>
 <h2 id=other-performance-optimizations>Other Performance Optimizations</h2>
 <ul>
 <li>Warp Sync has a custom implementation of the Hash algorithm for an extra few percent speed up</li>
@@ -446,17 +456,17 @@ keep all your CPU cores fully utilized.</li>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1653564391></script>
-<script src=/js/perfect-scrollbar.min.js?1653564391></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1653564391></script>
-<script src=/js/jquery.sticky.js?1653564391></script>
-<script src=/js/featherlight.min.js?1653564391></script>
-<script src=/js/highlight.pack.js?1653564391></script>
+<script src=/js/clipboard.min.js?1653564900></script>
+<script src=/js/perfect-scrollbar.min.js?1653564900></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1653564900></script>
+<script src=/js/jquery.sticky.js?1653564900></script>
+<script src=/js/featherlight.min.js?1653564900></script>
+<script src=/js/highlight.pack.js?1653564900></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1653564391></script>
-<script src=/js/learn.js?1653564391></script>
-<script src=/js/hugo-learn.js?1653564391></script>
-<script src=/mermaid/mermaid.js?1653564391></script>
+<script src=/js/modernizr.custom-3.6.0.js?1653564900></script>
+<script src=/js/learn.js?1653564900></script>
+<script src=/js/hugo-learn.js?1653564900></script>
+<script src=/mermaid/mermaid.js?1653564900></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
