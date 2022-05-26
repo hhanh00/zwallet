@@ -6,20 +6,21 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>Warp Sync :: YWallet</title>
-<link href=/css/nucleus.css?1653537582 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1653537582 rel=stylesheet>
-<link href=/css/hybrid.css?1653537582 rel=stylesheet>
-<link href=/css/featherlight.min.css?1653537582 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1653537582 rel=stylesheet>
-<link href=/css/auto-complete.css?1653537582 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1653537582 rel=stylesheet>
-<link href=/css/theme.css?1653537582 rel=stylesheet>
-<link href=/css/tabs.css?1653537582 rel=stylesheet>
-<link href=/css/hugo-theme.css?1653537582 rel=stylesheet>
-<link href=/css/theme-blue.css?1653537582 rel=stylesheet>
-<link href=/common.css?1653537582 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1653537582></script>
+<link href=/css/nucleus.css?1653564391 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1653564391 rel=stylesheet>
+<link href=/css/hybrid.css?1653564391 rel=stylesheet>
+<link href=/css/featherlight.min.css?1653564391 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1653564391 rel=stylesheet>
+<link href=/css/auto-complete.css?1653564391 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1653564391 rel=stylesheet>
+<link href=/css/theme.css?1653564391 rel=stylesheet>
+<link href=/css/tabs.css?1653564391 rel=stylesheet>
+<link href=/css/hugo-theme.css?1653564391 rel=stylesheet>
+<link href=/css/theme-blue.css?1653564391 rel=stylesheet>
+<link href=/common.css?1653564391 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1653564391></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
 <body data-url=/warp/>
 <nav id=sidebar class=showVisitedLinks>
@@ -34,10 +35,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1653537582></script>
-<script type=text/javascript src=/js/auto-complete.js?1653537582></script>
+<script type=text/javascript src=/js/lunr.min.js?1653564391></script>
+<script type=text/javascript src=/js/auto-complete.js?1653564391></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1653537582></script>
+<script type=text/javascript src=/js/search.js?1653564391></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -377,9 +378,9 @@ active">
 <ul>
 <li><a href=#whats-so-important-about-synchronization>What&rsquo;s so important about Synchronization?</a></li>
 <li><a href=#whats-warp-sync-explain-like-im-5>What&rsquo;s Warp Sync? Explain Like I&rsquo;m 5</a></li>
-<li><a href=#that-sounds-too-good-to-be-true>That sounds too good to be true</a></li>
+<li><a href=#if-that-sounds-too-good-to-be-true>If that sounds too good to be true</a></li>
 <li><a href=#any-drawback>Any drawback?</a></li>
-<li><a href=#other-tricks>Other tricks</a></li>
+<li><a href=#other-performance-optimizations>Other Performance Optimizations</a></li>
 </ul>
 </nav>
 </div>
@@ -405,30 +406,34 @@ Zcash (and its forks) implements a mixed approach. A specialized server called <
 <p>Light wallets only have to download the trimmed data (Compact Blocks). Then they decrypt these compact blocks themselves.</p>
 <p>Yet, even decrypting and processing compact blocks can take a significant amount of time.</p>
 <h2 id=whats-warp-sync-explain-like-im-5>What&rsquo;s Warp Sync? Explain Like I&rsquo;m 5</h2>
-<p>Synchronization in wallets except Ywallet works by processing transactions one after the other. Warp Sync can process multiple transactions together.</p>
+<p>Synchronization in other wallets works by processing transactions one by one. With Warp Sync, YWallet can process multiple transactions together.</p>
 <p>Here&rsquo;s an analogy. Let&rsquo;s say you want to calculate $1+2+3+4+5+6+&mldr;+1000$.</p>
 <p>We can perform the series of additions and keep a partial sum. $1+2 = 3$. Then $3+3 = 6$, and $6+4 = 10$, etc.
-Eventually, we reach $1000$ and we have our total sum.</p>
-<p>However, if we notice that $1+2+3+4+5+6+&mldr;+1000 = 1000 \times 1001/2 = 500500$, we can get the result much faster.</p>
-<p>In other words, Warp Sync skips the intermediate results and jumps straight
-to the final result.</p>
-<div class="notices note"><p>This is just an <strong>analogy</strong>. Zcash synchronization is much more complex. Warp Sync still has to do a lot of computation.</p>
+Eventually, we will reach $1000$ and have our total sum.</p>
+<p>However, when we notice that</p>
+<p>$$
+\begin{aligned}
+1+2+3+4+5+6+&mldr;+1000 &= \frac{1000 \times 1001}{2} \cr
+&= 500500
+\end{aligned}
+$$</p>
+<p>we get the result much faster.</p>
+<div class="notices note"><p>In other words, Warp Sync skips the intermediate results and
+jumps straight to the final result.</p>
 </div>
-<h2 id=that-sounds-too-good-to-be-true>That sounds too good to be true</h2>
-<p>It&rsquo;s because it&rsquo;s not exactly true. Warp Sync still has to perform a number of hash calculations proportional to the number of shielded transaction outputs. However, the usual synchronization method needs several times more hash calculations.</p>
+<p>This is just an <strong>analogy</strong>. Zcash synchronization is much more complex. Warp Sync still has to do a lot of computation.</p>
+<h2 id=if-that-sounds-too-good-to-be-true>If that sounds too good to be true</h2>
+<p>It&rsquo;s because it&rsquo;s not exactly true. Warp Sync still has to perform a number of hash calculations proportional to the number of shielded transaction outputs. However, the usual synchronization method needs several times more than that.</p>
 <h2 id=any-drawback>Any drawback?</h2>
 <p>Not really, in the end the result is identical bit by bit. We don&rsquo;t have the intermediate values but we don&rsquo;t need them anyway.</p>
-<h2 id=other-tricks>Other tricks</h2>
+<h2 id=other-performance-optimizations>Other Performance Optimizations</h2>
 <ul>
-<li>Warp Sync has a custom implementation of the Hash algorithm for an extra few percent speed up and leverages batch trial decryption for another few percentage points.</li>
-<li>It implements a streaming processing pipeline which can max out download speed and
+<li>Warp Sync has a custom implementation of the Hash algorithm for an extra few percent speed up</li>
+<li>It leverages batch trial decryption for another few percentage points.</li>
+<li>It implements a streaming processing pipeline which can maximize your download speed and
 keep all your CPU cores fully utilized.</li>
-<li>The pipeline downloads and processes a moving window of the compact blockchain. It reduces the need for memory.</li>
+<li>The pipeline downloads and processes a moving window of the compact blockchain. It limits memory usage to a minimum.</li>
 </ul>
-<script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"></script>
-<script type=text/x-mathjax-config>
-MathJax.Hub.Config({ tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]} })
-</script>
 <footer class=footline>
 </footer>
 </div>
@@ -441,17 +446,19 @@ MathJax.Hub.Config({ tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]} })
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1653537582></script>
-<script src=/js/perfect-scrollbar.min.js?1653537582></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1653537582></script>
-<script src=/js/jquery.sticky.js?1653537582></script>
-<script src=/js/featherlight.min.js?1653537582></script>
-<script src=/js/highlight.pack.js?1653537582></script>
+<script src=/js/clipboard.min.js?1653564391></script>
+<script src=/js/perfect-scrollbar.min.js?1653564391></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1653564391></script>
+<script src=/js/jquery.sticky.js?1653564391></script>
+<script src=/js/featherlight.min.js?1653564391></script>
+<script src=/js/highlight.pack.js?1653564391></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1653537582></script>
-<script src=/js/learn.js?1653537582></script>
-<script src=/js/hugo-learn.js?1653537582></script>
-<script src=/mermaid/mermaid.js?1653537582></script>
+<script src=/js/modernizr.custom-3.6.0.js?1653564391></script>
+<script src=/js/learn.js?1653564391></script>
+<script src=/js/hugo-learn.js?1653564391></script>
+<script src=/mermaid/mermaid.js?1653564391></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
 </body>
 </html>
