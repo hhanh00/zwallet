@@ -5,7 +5,7 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>Install :: YWallet</title>
+<title>Changelog :: YWallet</title>
 <link href=/css/nucleus.css?1654337502 rel=stylesheet>
 <link href=/css/fontawesome-all.min.css?1654337502 rel=stylesheet>
 <link href=/css/hybrid.css?1654337502 rel=stylesheet>
@@ -22,7 +22,7 @@
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
-<body data-url=/installation/>
+<body data-url=/changelog/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -42,9 +42,7 @@
 </div>
 <div class=highlightable>
 <ul class=topics>
-<li data-nav-id=/installation/ title=Install class="dd-item
-parent
-active">
+<li data-nav-id=/installation/ title=Install class=dd-item>
 <a href=/installation/>
 <svg class="icon"><use xlink:href="/sprite.svg#download"/></svg>Install
 <i class="fas fa-check read-icon"></i>
@@ -338,7 +336,9 @@ Miscellaneous
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/changelog/ title=Changelog class=dd-item>
+<li data-nav-id=/changelog/ title=Changelog class="dd-item
+parent
+active">
 <a href=/changelog/>
 <svg class="icon"><use xlink:href="/sprite.svg#wrench"/></svg>Changelog
 <i class="fas fa-check read-icon"></i>
@@ -375,15 +375,19 @@ Miscellaneous
 </span>
 <span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > Install
+<a href=/>YWallet</a> > Changelog
 </span>
 </div>
 <div class=progress>
 <div class=wrapper>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#mobile-app-stores>Mobile App Stores</a></li>
-<li><a href=#desktop-binaries>Desktop Binaries</a></li>
+<li>
+<ul>
+<li><a href=#126>1.2.6</a></li>
+<li><a href=#125>1.2.5</a></li>
+</ul>
+</li>
 </ul>
 </nav>
 </div>
@@ -394,68 +398,23 @@ Miscellaneous
 </div>
 <div id=body-inner>
 <h1>
-Install
+Changelog
 </h1>
-<h2 id=mobile-app-stores>Mobile App Stores</h2>
-<p><a href="https://play.google.com/store/apps/details?id=me.hanh.ywallet"><img srcset="../google-play-badge.png 4x"></a>
-<a href=https://apps.apple.com/us/app/ywallet/id1583859229><img src=../apple-store-badge.svg></a></p>
-<h2 id=desktop-binaries>Desktop Binaries</h2>
+<h3 id=126>1.2.6</h3>
 <ul>
-<li>MacOS: <a href=https://github.com/hhanh00/zwallet/releases/download/v1.2.5/ywallet.dmg>Intel Silicon</a>, <a href=https://github.com/hhanh00/zwallet/releases/download/v1.2.5/ywallet-m1.dmg>Apple Silicon</a></li>
-<li>Windows: <a href=https://github.com/hhanh00/zwallet/releases/download/v1.2.5/ywallet.zip>ZIP</a> or <a href=https://www.microsoft.com/en-us/p/ywallet/9pjz924hs2s6>Store</a></li>
-<li>Linux: <a href=https://github.com/hhanh00/zwallet/releases/download/v1.2.5/ywallet.flatpak>Flatpak</a></li>
+<li>Option to protect the app launch with a pin code / fingerprint</li>
 </ul>
-<div class="notices note"><p>ZWallet (the Zcash wallet version) is no longer updated since YWallet now supports both Zcash and Ycash.</p>
-</div>
-<div class="notices note"><p>Desktop versions are 1.2.5 because version 1.2.6 only has changes for mobile.</p>
-</div>
-<p><figure class=img-bordered>
-<figcaption>
-<h1>Android</h1>
-</figcaption>
-<a href="https://play.google.com/store/apps/details?id=me.hanh.ywallet">
-<img class=img srcset="../img/android.jpg 2x">
-</a>
-</figure>
-<figure class=img-bordered>
-<figcaption>
-<h1>Iphone</h1>
-</figcaption>
-<a href=https://apps.apple.com/us/app/ywallet/id1583859229>
-<img class=img srcset="../img/iphone.png 2x">
-</a>
-</figure>
-<figure class=img-bordered>
-<figcaption>
-<h1>MacOS</h1>
-</figcaption>
-<a href=https://github.com/hhanh00/zwallet/releases/download/v1.2.5/ywallet.dmg>
-<img class=img srcset="../img/macos.png 2x">
-</a>
-</figure>
-<figure class=img-bordered>
-<figcaption>
-<h1>Windows</h1>
-</figcaption>
-<a href=https://github.com/hhanh00/zwallet/releases/download/v1.2.5/ywallet.zip>
-<img class=img srcset="../img/windows.png 2x">
-</a>
-</figure>
-<figure class=img-bordered>
-<figcaption>
-<h1>Linux</h1>
-</figcaption>
-<a href=https://github.com/hhanh00/zwallet/releases/download/v1.2.5/ywallet.flatpak>
-<img class=img srcset="../img/linux.png 2x">
-</a>
-</figure></p>
+<h3 id=125>1.2.5</h3>
+<ul>
+<li>Support for the NU-5 transaction format</li>
+</ul>
 <footer class=footline>
 </footer>
 </div>
 </div>
 <div id=navigation>
-<a class="nav nav-prev" href=/ title=YWallet> <i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=/features/ title=Features style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/warp/ title="Warp Sync"> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/faq/ title=FAQ style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
