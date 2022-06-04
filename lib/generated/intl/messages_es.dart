@@ -268,6 +268,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Preparando la transacción…"),
         "price": MessageLookupByLibrary.simpleMessage("Precio"),
         "primary": MessageLookupByLibrary.simpleMessage("Primario"),
+        "protectOpen":
+            MessageLookupByLibrary.simpleMessage("Proteger presentar"),
         "protectSend": MessageLookupByLibrary.simpleMessage("Proteger enviar"),
         "protectSendSettingChanged": MessageLookupByLibrary.simpleMessage(
             "La configuración de envío protegido ha cambiado"),

@@ -219,5 +219,6 @@
   "markAllAsRead": "Marquer tous lus",
   "showMessagesAsTable": "Messages vus en table",
   "editContact": "Changer le Contact",
-  "now": "Maintenant"
+  "now": "Maintenant",
+  "protectOpen": "Ouverture protégée"
 }

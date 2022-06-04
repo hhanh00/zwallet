@@ -142,6 +142,9 @@ abstract class _Settings with Store {
   bool protectSend = false;
 
   @observable
+  bool protectOpen = false;
+
+  @observable
   int primaryColorValue = 0;
   @observable
   int primaryVariantColorValue = 0;
@@ -174,6 +177,7 @@ abstract class _Settings with Store {
     useUA = prefs.getBool('use_ua') ?? false;
     autoHide = prefs.getBool('auto_hide') ?? true;
     protectSend = prefs.getBool('protect_send') ?? false;
+    protectOpen = prefs.getBool('protect_open') ?? false;
     includeReplyTo = prefs.getBool('include_reply_to') ?? false;
     messageTable = prefs.getBool('message_table') ?? false;
 
@@ -402,6 +406,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     protectSend = v;
     prefs.setBool('protect_send', protectSend);
+  }
+
+  @action
+  Future<void> setProtectOpen(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    protectOpen = v;
+    prefs.setBool('protect_open', protectOpen);
   }
 
   @action

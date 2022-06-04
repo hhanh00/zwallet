@@ -271,6 +271,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Préparation de la transaction..."),
         "price": MessageLookupByLibrary.simpleMessage("Prix"),
         "primary": MessageLookupByLibrary.simpleMessage("Primaire"),
+        "protectOpen":
+            MessageLookupByLibrary.simpleMessage("Ouverture protégée"),
         "protectSend": MessageLookupByLibrary.simpleMessage("PIN avant envoi"),
         "protectSendSettingChanged": MessageLookupByLibrary.simpleMessage(
             "Changement de PIN avant envoi"),
