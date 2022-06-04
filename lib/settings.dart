@@ -134,6 +134,15 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                                       _needAuth = true;
                                     },
                                     onSaved: _onProtectSend)),
+                            Expanded(
+                                child: FormBuilderCheckbox(
+                                    name: 'protect_open',
+                                    title: Text(s.protectOpen),
+                                    initialValue: settings.protectOpen,
+                                    onChanged: (_) {
+                                      _needAuth = true;
+                                    },
+                                    onSaved: _onProtectOpen)),
                             // if (coin.supportsUA)
                             //   Expanded(
                             //       child: FormBuilderCheckbox(
@@ -263,6 +272,10 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
 
   _onProtectSend(v) {
     settings.setProtectSend(v);
+  }
+
+  _onProtectOpen(v) {
+    settings.setProtectOpen(v);
   }
 
   _onSave() async {

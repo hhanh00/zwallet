@@ -219,5 +219,6 @@
   "markAllAsRead": "Marcar Todo como Leido",
   "showMessagesAsTable": "Mostrar mensajes como Tabla",
   "editContact": "Editar Contacto",
-  "now": "Ahora"
+  "now": "Ahora",
+  "protectOpen": "Proteger presentar"
 }

@@ -221,5 +221,6 @@
   "markAllAsRead": "Mark All as Read",
   "showMessagesAsTable": "Show Messages as Table",
   "editContact": "Edit Contact",
-  "now": "Now"
+  "now": "Now",
+  "protectOpen": "Protect Open"
 }

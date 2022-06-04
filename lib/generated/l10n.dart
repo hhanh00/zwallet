@@ -2281,6 +2281,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Protect Open`
+  String get protectOpen {
+    return Intl.message(
+      'Protect Open',
+      name: 'protectOpen',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

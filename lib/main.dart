@@ -142,6 +142,12 @@ class LoadProgressState extends State<LoadProgress> {
     _disposed = true;
     super.dispose();
   }
+  
+  void cancelResetTimer() {
+    _reset?.cancel();
+    _reset = null;
+    _disposed = true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -354,6 +360,11 @@ class ZWalletAppState extends State<ZWalletApp> {
       }
     }
     _setProgress(1.0, 'Ready');
+    progressKey.currentState?.cancelResetTimer();
+    if (settings.protectOpen) {
+      while (!await authenticate(this.context, 'Protect Launch')) {
+      }
+    }
     return true;
   }
 
