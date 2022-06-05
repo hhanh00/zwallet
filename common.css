@@ -7,6 +7,6 @@
     display: inline-block;
 }
 
-#ms-badge {
-    width: 25% !important;
+.download-badge {
+    height: 40px !important;
 }
