@@ -94,8 +94,7 @@ class ContactsState extends State<ContactsTab> {
         S.of(context).areYouSureYouWantToSaveYourContactsIt(activeCoin().ticker),
         S.of(context).ok);
     if (approve) {
-      final tx = await WarpApi.commitUnsavedContacts(
-          active.coin, active.id, settings.anchorOffset);
+      final tx = await WarpApi.commitUnsavedContacts(settings.anchorOffset);
       final snackBar = SnackBar(content: Text("${S.of(context).txId}: $tx"));
       rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
       contacts.markContactsSaved(active.coin, true);
@@ -215,8 +214,6 @@ class AddressState extends State<AddressInput> {
 
   String? _checkAddress(String? v) {
     if (v == null || v.isEmpty) return S.of(context).addressIsEmpty;
-    final zaddr = WarpApi.getSaplingFromUA(v);
-    if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(active.coin, v)) return S.of(context).invalidAddress;
     if (contacts.contacts.where((c) => c.address == v && c.id != widget.id).isNotEmpty) return S.of(context).duplicateContact;
     return null;

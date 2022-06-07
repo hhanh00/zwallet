@@ -39,7 +39,7 @@ class DbReader {
         "SELECT SUM(value) FROM received_notes WHERE account = ?1 AND spent IS NULL "
             "AND height <= ?2 AND excluded",
         [id, confirmHeight])) ?? 0;
-    final unconfirmedBalance = await WarpApi.mempoolSync(coin);
+    final unconfirmedBalance = await WarpApi.mempoolSync();
 
     return Balances(balance, shieldedBalance, unconfirmedSpentBalance, underConfirmedBalance, excludedBalance, unconfirmedBalance);
   }
@@ -241,6 +241,21 @@ class DbReader {
     return id;
   }
 
+  Future<List<TAccount>> getTAccounts() async {
+    final List<Map> res = await db.rawQuery(
+        "SELECT aindex, address, value FROM taddr_scan", []);
+    List<TAccount> accounts = [];
+    for (var row in res) {
+      final aindex = row['aindex'];
+      final address = row['address'];
+      final balance = row['value'];
+      final account = TAccount(aindex, address, balance);
+      accounts.add(account);
+    }
+    db.execute("DELETE FROM taddr_scan");
+    return accounts;
+  }
+
   TimeRange _getChartRange() {
     final now = DateTime.now().toUtc();
     final today = DateTime.utc(now.year, now.month, now.day);
@@ -292,4 +307,11 @@ class ZMessage {
   }
 
   String fromto() => incoming ? "\u{21e6} ${sender != null ? centerTrim(sender!) : ''}" : "\u{21e8} ${centerTrim(recipient)}";
+}
+
+class TAccount {
+  final int aindex;
+  final String address;
+  final int balance;
+  TAccount(this.aindex, this.address, this.balance);
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:ZYWallet/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sqflite/sqflite.dart';
@@ -29,7 +30,8 @@ abstract class CoinBase {
 
   Future<void> open(String dbPath) async {
     final path = join(dbPath, dbName);
-    db = await openDatabase(path);
+    // schema handled in backend
+    db = await openDatabase(path/*, onCreate: createSchema, version: 1*/);
   }
 
   Future<void> delete(String dbPath) async {
@@ -46,3 +48,16 @@ abstract class CoinBase {
     }
   }
 }
+
+Future<void> createSchema(Database db, int version) async {
+  final script = await rootBundle.loadString("assets/create_db.sql");
+  final statements = script.split(";");
+  for (var s in statements) {
+    if (s.isNotEmpty) {
+      final sql = s.trim();
+      print(sql);
+      db.execute(sql);
+    }
+  }
+}
+

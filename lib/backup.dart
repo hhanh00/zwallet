@@ -29,7 +29,8 @@ class BackupState extends State<BackupPage> {
   final _shareController = TextEditingController();
 
   Future<bool> _init() async {
-    backup = await getBackup(widget.accountId ?? AccountId(active.coin, active.id));
+    backup =
+    await getBackup(widget.accountId ?? AccountId(active.coin, active.id));
     _backupController.text = backupData;
     _skController.text = backup.sk ?? "";
     _ivkController.text = backup.ivk;

@@ -193,7 +193,7 @@ abstract class _ActiveAccount with Store {
 
     showTAddr = false;
     balances = Balances.zero;
-    WarpApi.setMempoolAccount(coin, id);
+    WarpApi.setActiveAccount(coin, id);
 
     await update();
     await priceStore.updateChart();
@@ -213,7 +213,7 @@ abstract class _ActiveAccount with Store {
 
   @action
   void updateTBalance() {
-    tbalance = WarpApi.getTBalance(coin, id);
+    tbalance = WarpApi.getTBalance();
   }
 
   @action
@@ -235,7 +235,7 @@ abstract class _ActiveAccount with Store {
   }
 
   String newAddress() {
-    return WarpApi.newAddress(coin, id);
+    return WarpApi.newDiversifiedAddress();
   }
 
   @computed
@@ -350,7 +350,7 @@ abstract class _ActiveAccount with Store {
   @action
   void markMessageAsRead(int index) {
     if (!messages[index].read) {
-      WarpApi.markMessageAsRead(active.coin, active.id, messages[index].id, true);
+      WarpApi.markMessageAsRead(messages[index].id, true);
       messages[index] = messages[index].withRead(true);
       unread = unread - 1;
       print("UNREAD $unread");
@@ -359,7 +359,7 @@ abstract class _ActiveAccount with Store {
 
   @action
   void markAllMessagesAsRead() {
-    WarpApi.markAllMessagesAsRead(active.coin, active.id, true);
+    WarpApi.markAllMessagesAsRead(true);
     for (var i = 0; i < messages.length; i++) {
       messages[i] = messages[i].withRead(true);
     }

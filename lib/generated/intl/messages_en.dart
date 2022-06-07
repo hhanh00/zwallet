@@ -53,11 +53,13 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m13(aZEC, ticker, address) =>
       "Sending ${aZEC} ${ticker} to ${address}";
 
-  static String m14(name) => "Sub Account of ${name}";
+  static String m14(index, name) => "Sub Account ${index} of ${name}";
 
-  static String m15(text) => "${text} copied to clipboard";
+  static String m15(name) => "Sub Account of ${name}";
 
-  static String m16(currency) => "Use ${currency}";
+  static String m16(text) => "${text} copied to clipboard";
+
+  static String m17(currency) => "Use ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -182,6 +184,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "fromto": MessageLookupByLibrary.simpleMessage("From/To"),
         "fullBackup": MessageLookupByLibrary.simpleMessage("Full Backup"),
         "fullRestore": MessageLookupByLibrary.simpleMessage("Full Restore"),
+        "gapLimit": MessageLookupByLibrary.simpleMessage("Gap Limit"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "height": MessageLookupByLibrary.simpleMessage("Height"),
         "help": MessageLookupByLibrary.simpleMessage("Help"),
@@ -333,7 +336,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "spendableBalance":
             MessageLookupByLibrary.simpleMessage("Spendable Balance"),
         "splitAccount": MessageLookupByLibrary.simpleMessage("Split Account"),
-        "subAccountOf": m14,
+        "subAccountIndexOf": m14,
+        "subAccountOf": m15,
         "subject": MessageLookupByLibrary.simpleMessage("Subject"),
         "synching": MessageLookupByLibrary.simpleMessage("Synching"),
         "table": MessageLookupByLibrary.simpleMessage("Table"),
@@ -348,7 +352,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Tap QR Code for Transparent Address"),
         "tapTransactionForDetails":
             MessageLookupByLibrary.simpleMessage("Tap Transaction for Details"),
-        "textCopiedToClipboard": m15,
+        "textCopiedToClipboard": m16,
         "theme": MessageLookupByLibrary.simpleMessage("Theme"),
         "themeEditor": MessageLookupByLibrary.simpleMessage("Theme Editor"),
         "thisAccountAlreadyExists": MessageLookupByLibrary.simpleMessage(
@@ -377,7 +381,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("Unsigned Transaction File"),
-        "useSettingscurrency": m16,
+        "useSettingscurrency": m17,
         "useTransparentBalance":
             MessageLookupByLibrary.simpleMessage("Use Transparent Balance"),
         "useUa": MessageLookupByLibrary.simpleMessage("Use UA"),

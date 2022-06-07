@@ -145,6 +145,9 @@ abstract class _Settings with Store {
   bool protectOpen = false;
 
   @observable
+  int gapLimit = 10;
+
+  @observable
   int primaryColorValue = 0;
   @observable
   int primaryVariantColorValue = 0;
@@ -180,6 +183,7 @@ abstract class _Settings with Store {
     protectOpen = prefs.getBool('protect_open') ?? false;
     includeReplyTo = prefs.getBool('include_reply_to') ?? false;
     messageTable = prefs.getBool('message_table') ?? false;
+    gapLimit = prefs.getInt('gap_limit') ?? 10;
 
     primaryColorValue = prefs.getInt('primary') ?? Colors.blue.value;
     primaryVariantColorValue =
@@ -235,6 +239,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     anchorOffset = offset;
     prefs.setInt('anchor_offset', offset);
+  }
+
+  @action
+  Future<void> setGapLimit(int _gapLimit) async {
+    final prefs = await SharedPreferences.getInstance();
+    gapLimit = _gapLimit;
+    prefs.setInt('gap_limit', gapLimit);
   }
 
   @action
@@ -468,7 +479,7 @@ abstract class _PriceStore with Store {
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     if (_lastChartUpdateTime == null || now > _lastChartUpdateTime + 5 * 60) {
       await fetchCoinPrice(active.coin);
-      await WarpApi.syncHistoricalPrices(active.coin, settings.currency);
+      await WarpApi.syncHistoricalPrices(settings.currency);
       await active.fetchChartData();
       lastChartUpdateTime = _lastChartUpdateTime;
     }
@@ -517,7 +528,7 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<bool> update() async {
-    latestHeight = await WarpApi.getLatestHeight(active.coin);
+    latestHeight = await WarpApi.getLatestHeight();
     final _syncedHeight = await getDbSyncedHeight();
     // if syncedHeight = 0, we just started sync therefore don't set it back to null
     if (syncedHeight != 0 || _syncedHeight != null) setSyncHeight(_syncedHeight);
@@ -548,7 +559,7 @@ abstract class _SyncStatus with Store {
         if (_syncedHeight != null) {
           final rewindHeight = max(_syncedHeight - 20, 0);
           print("Block reorg detected. Rewind to $rewindHeight");
-          WarpApi.rewindToHeight(active.coin, rewindHeight);
+          WarpApi.rewindToHeight(rewindHeight);
         }
       }
     }
@@ -562,8 +573,8 @@ abstract class _SyncStatus with Store {
     final snackBar = SnackBar(content: Text(S.of(context).rescanRequested(height)));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     syncedHeight = height;
-    WarpApi.truncateData(active.coin);
-    WarpApi.rewindToHeight(active.coin, height);
+    WarpApi.truncateData();
+    WarpApi.rewindToHeight(height);
     await sync();
   }
 
@@ -575,7 +586,7 @@ abstract class _SyncStatus with Store {
   @action
   void setSyncedToLatestHeight() {
     setSyncHeight(latestHeight);
-    WarpApi.skipToLastHeight(active.coin);
+    WarpApi.skipToLastHeight(0xFF);
   }
 }
 
@@ -661,7 +672,7 @@ abstract class _ContactStore with Store {
 
   @action
   Future<void> add(Contact c) async {
-    WarpApi.storeContact(active.coin, c.id, c.name, c.address, true);
+    WarpApi.storeContact(c.id, c.name, c.address, true);
     markContactsSaved(active.coin, false);
     await fetchContacts();
   }
@@ -669,7 +680,7 @@ abstract class _ContactStore with Store {
   @action
   Future<void> remove(Contact c) async {
     contacts.removeWhere((contact) => contact.id == c.id);
-    WarpApi.storeContact(active.coin, c.id, c.name, "", true);
+    WarpApi.storeContact(c.id, c.name, "", true);
     markContactsSaved(active.coin, false);
     await fetchContacts();
   }

@@ -23,7 +23,7 @@ Future<int?> rescanDialog(BuildContext context) async {
     final approved = await confirmWifi(context);
     if (approved) {
       showSnackBar(S.of(context).rescanning);
-      final height = await WarpApi.getBlockHeightByTime(active.coin, date);
+      final height = await WarpApi.getBlockHeightByTime(date);
       return height;
     }
   }
@@ -38,7 +38,7 @@ class RescanForm extends StatefulWidget {
 }
 
 class RescanFormState extends State<RescanForm> {
-  DateTime minDate = WarpApi.getActivationDate(active.coin);
+  DateTime minDate = WarpApi.getActivationDate();
   DateTime maxDate = DateTime.now();
   late DateTime startDate;
 

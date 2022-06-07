@@ -196,6 +196,7 @@
   "simpleMode": "Simple Mode",
   "accountIndex": "Account Index",
   "subAccountOf": "Sub Account of {name}",
+  "subAccountIndexOf": "Sub Account {index} of {name}",
   "newSubAccount": "New Sub Account",
   "noActiveAccount": "No active account",
   "closeApplication": "Close Application",
@@ -222,5 +223,6 @@
   "showMessagesAsTable": "Show Messages as Table",
   "editContact": "Edit Contact",
   "now": "Now",
-  "protectOpen": "Protect Open"
+  "protectOpen": "Protect Open",
+  "gapLimit": "Gap Limit"
 }

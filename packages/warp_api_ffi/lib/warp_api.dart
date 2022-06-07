@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
-import 'package:convert/convert.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -54,35 +53,34 @@ class WarpApi {
         name.toNativeUtf8().cast<Int8>(), key.toNativeUtf8().cast<Int8>(), index);
   }
 
-  static int newSubAccount(int coin, int accountId, String name) {
-    return warp_api_lib.new_sub_account(coin, accountId,
-        name.toNativeUtf8().cast<Int8>());
+  static int newSubAccount(String name, int index) {
+    return warp_api_lib.new_sub_account(name.toNativeUtf8().cast<Int8>(), index);
   }
 
   static void skipToLastHeight(int coin) {
     warp_api_lib.skip_to_last_height(coin);
   }
 
-  static void rewindToHeight(int coin, int height) {
-    warp_api_lib.rewind_to_height(coin, height);
+  static void rewindToHeight(int height) {
+    warp_api_lib.rewind_to_height(height);
   }
 
   static int warpSync(SyncParams params) {
-    final res = warp_api_lib.warp_sync(params.coin, params.getTx ? 1 : 0, params.anchorOffset, params.port!.nativePort);
+    final res = warp_api_lib.warp(params.coin, params.getTx ? 1 : 0, params.anchorOffset, params.port!.nativePort);
     params.port!.send(null);
     return res;
   }
 
-  static void mempoolReset(int coin, int height) {
-    warp_api_lib.mempool_reset(coin, height);
+  static void mempoolReset() {
+    warp_api_lib.mempool_reset();
   }
 
-  static Future<int> mempoolSync(int coin) async {
-    return compute(mempoolSyncIsolateFn, coin);
+  static Future<int> mempoolSync() async {
+    return compute(mempoolSyncIsolateFn, null);
   }
 
-  static Future<int> getLatestHeight(int coin) async {
-    return await compute(getLatestHeightIsolateFn, coin);
+  static Future<int> getLatestHeight() async {
+    return await compute(getLatestHeightIsolateFn, null);
   }
 
   static int validKey(int coin, String key) {
@@ -93,27 +91,18 @@ class WarpApi {
     return warp_api_lib.valid_address(coin, address.toNativeUtf8().cast<Int8>()) != 0;
   }
 
-  static String newAddress(int coin, int account) {
-    final address = warp_api_lib.new_address(coin, account);
+  static String newDiversifiedAddress() {
+    final address = warp_api_lib.new_diversified_address();
     return address.cast<Utf8>().toDartString();
   }
 
-  static String getUA(String zaddress, String taddress) {
-    final ua = warp_api_lib.get_ua(zaddress.toNativeUtf8().cast<Int8>(), taddress.toNativeUtf8().cast<Int8>());
-    return ua.cast<Utf8>().toDartString();
+  static void setActiveAccount(int coin, int account) {
+    warp_api_lib.set_active(coin);
+    warp_api_lib.set_active_account(coin, account);
   }
 
-  static String getSaplingFromUA(String ua) {
-    final zaddr = warp_api_lib.get_sapling(ua.toNativeUtf8().cast<Int8>());
-    return zaddr.cast<Utf8>().toDartString();
-  }
-
-  static void setMempoolAccount(int coin, int account) {
-    return warp_api_lib.set_mempool_account(coin, account);
-  }
-
-  static int getUnconfirmedBalance(int coin) {
-    return warp_api_lib.get_mempool_balance(coin);
+  static int getUnconfirmedBalance() {
+    return warp_api_lib.get_mempool_balance();
   }
 
   static Future<String> sendPayment(int coin, int account, List<Recipient> recipients, bool useTransparent, int anchorOffset, void Function(int) f) async {
@@ -126,12 +115,11 @@ class WarpApi {
 
     return await compute(
         sendPaymentIsolateFn,
-        PaymentParams(
-            coin, account, recipientJson, useTransparent, anchorOffset, receivePort.sendPort));
+        PaymentParams(recipientJson, useTransparent, anchorOffset, receivePort.sendPort));
   }
 
-  static int getTBalance(int coin, int account) {
-    final balance = warp_api_lib.get_taddr_balance(coin, account);
+  static int getTBalance() {
+    final balance = warp_api_lib.get_taddr_balance(0xFF, 0);
     return balance;
   }
 
@@ -140,19 +128,26 @@ class WarpApi {
     return balance;
   }
 
-  static Future<String> shieldTAddr(int coin, int account) async {
-    final txId = compute(shieldTAddrIsolateFn, ShieldTAddrParams(coin, account));
+  static Future<String> shieldTAddr() async {
+    final txId = await compute(shieldTAddrIsolateFn, null);
     return txId;
   }
 
-  static String  prepareTx(
-    int coin,
-    int account,
+  static Future<void> scanTransparentAccounts(
+      int coin,
+      int account,
+      int gapLimit
+      ) async {
+    await compute(scanTransparentAccountsParamsIsolateFn, 
+      ScanTransparentAccountsParams(gapLimit));
+  }
+
+  static String prepareTx(
     List<Recipient> recipients,
     bool useTransparent,
     int anchorOffset) {
     final recipientsJson = jsonEncode(recipients);
-    final res = warp_api_lib.prepare_multi_payment(coin, account,
+    final res = warp_api_lib.prepare_multi_payment(
         recipientsJson.toNativeUtf8().cast<Int8>(),
         useTransparent ? 1 : 0, anchorOffset);
     return res.cast<Utf8>().toDartString();
@@ -167,78 +162,76 @@ class WarpApi {
     return await compute(
         signOnlyIsolateFn,
         SignOnlyParams(
-            coin, account, txFilename, receivePort.sendPort));
+            txFilename, receivePort.sendPort));
   }
 
-  static String broadcast(int coin, String txFilename) {
-    final res = warp_api_lib.broadcast(coin, txFilename.toNativeUtf8().cast<Int8>());
+  static String broadcast(String txFilename) {
+    final res = warp_api_lib.broadcast(txFilename.toNativeUtf8().cast<Int8>());
     return res.cast<Utf8>().toDartString();
   }
 
-  static String broadcastHex(int coin, String tx) {
-    final res = warp_api_lib.broadcast_txhex(coin, tx.toNativeUtf8().cast<Int8>());
+  static String broadcastHex(String tx) {
+    final res = warp_api_lib.broadcast_txhex(tx.toNativeUtf8().cast<Int8>());
     return res.cast<Utf8>().toDartString();
   }
 
-  static String ledgerSign(int coin, String txFilename) {
-    final res = warp_api_lib.ledger_sign(coin, txFilename.toNativeUtf8().cast<Int8>());
-    return res.cast<Utf8>().toDartString();
-  }
+  // static String ledgerSign(int coin, String txFilename) {
+  //   final res = warp_api_lib.ledger_sign(coin, txFilename.toNativeUtf8().cast<Int8>());
+  //   return res.cast<Utf8>().toDartString();
+  // }
 
-  static DateTime getActivationDate(int coin) {
-    final res = warp_api_lib.get_activation_date(coin);
+  static DateTime getActivationDate() {
+    final res = warp_api_lib.get_activation_date();
     return DateTime.fromMillisecondsSinceEpoch(res * 1000);
   }
 
-  static Future<int> getBlockHeightByTime(int coin, DateTime time) async {
-    final res = await compute(getBlockHeightByTimeIsolateFn, BlockHeightByTimeParams(coin, time.millisecondsSinceEpoch ~/ 1000));
+  static Future<int> getBlockHeightByTime(DateTime time) async {
+    final res = await compute(getBlockHeightByTimeIsolateFn, BlockHeightByTimeParams(time.millisecondsSinceEpoch ~/ 1000));
     return res;
   }
 
-  static Future<int> syncHistoricalPrices(int coin, String currency) async {
-    return await compute(syncHistoricalPricesIsolateFn, SyncHistoricalPricesParams(coin, currency));
+  static Future<int> syncHistoricalPrices(String currency) async {
+    return await compute(syncHistoricalPricesIsolateFn, SyncHistoricalPricesParams(currency));
   }
   
   static updateLWD(int coin, String url) {
-    warp_api_lib.set_lwd_url(coin, url.toNativeUtf8().cast<Int8>());
+    warp_api_lib.set_coin_lwd_url(coin, url.toNativeUtf8().cast<Int8>());
   }
 
-  static void storeContact(int coin, int id, String name, String address, bool dirty) {
-    warp_api_lib.store_contact(coin, id, name.toNativeUtf8().cast<Int8>(), address.toNativeUtf8().cast<Int8>(), dirty ? 1 : 0);
+  static void storeContact(int id, String name, String address, bool dirty) {
+    warp_api_lib.store_contact(id, name.toNativeUtf8().cast<Int8>(), address.toNativeUtf8().cast<Int8>(), dirty ? 1 : 0);
   }
 
-  static Future<String> commitUnsavedContacts(int coin, int account, int anchorOffset) async {
-    return compute(commitUnsavedContactsIsolateFn, CommitContactsParams(coin, account, anchorOffset));
+  static Future<String> commitUnsavedContacts(int anchorOffset) async {
+    return compute(commitUnsavedContactsIsolateFn, CommitContactsParams(anchorOffset));
   }
 
-  static void markMessageAsRead(int coin, int account, int messageId, bool read) {
-    warp_api_lib.mark_message_read(coin, account, messageId, read ? 1 : 0);
+  static void markMessageAsRead(int messageId, bool read) {
+    warp_api_lib.mark_message_read(messageId, read ? 1 : 0);
   }
 
-  static void markAllMessagesAsRead(int coin, int account, bool read) {
-    warp_api_lib.mark_all_messages_read(coin, account, read ? 1 : 0);
+  static void markAllMessagesAsRead(bool read) {
+    warp_api_lib.mark_all_messages_read(read ? 1 : 0);
   }
 
-  static void truncateData(int coin) {
-    warp_api_lib.truncate_data(coin);
+  static void truncateData() {
+    warp_api_lib.truncate_data();
   }
 
   static void deleteAccount(int coin, int account) {
     warp_api_lib.delete_account(coin, account);
   }
 
-  static String makePaymentURI(int coin, String address, int amount, String memo) {
+  static String makePaymentURI(String address, int amount, String memo) {
     final uri = warp_api_lib.make_payment_uri(
-        coin,
         address.toNativeUtf8().cast<Int8>(),
         amount,
         memo.toNativeUtf8().cast<Int8>());
     return uri.cast<Utf8>().toDartString();
   }
 
-  static String parsePaymentURI(int coin, String uri) {
+  static String parsePaymentURI(String uri) {
     final json = warp_api_lib.parse_payment_uri(
-        coin,
         uri.toNativeUtf8().cast<Int8>());
     return json.cast<Utf8>().toDartString();
   }
@@ -257,74 +250,72 @@ class WarpApi {
     return res.cast<Utf8>().toDartString();
   }
 
-  static void storeShareSecret(int coin, int account, String secret) {
-    warp_api_lib.store_share_secret(coin, account, secret.toNativeUtf8().cast<Int8>());
-  }
-
-  static Future<void> runAggregator(String secretShare, int port, SendPort sendPort) async {
-    compute(runAggregatorIsolateFn, RunAggregatorParams(secretShare, port, sendPort.nativePort));
-  }
-
-  static Future<String> submitTx(String txJson, int port) async {
-    return await compute(submitTxIsolateFn, SubmitTxParams(txJson, port));
-  }
-
-  static Future<int> runMultiSigner(String address, int amount, String secretShare, String aggregatorUrl, String myUrl, int port) async {
-    return await compute(runMultiSignerIsolateFn, RunMultiSignerParams(address, amount, secretShare, aggregatorUrl, myUrl, port));
-  }
-
-  static void stopAggregator() {
-    warp_api_lib.shutdown_aggregator();
-  }
-
-  static String splitAccount(int coin, int threshold, int participants, int account) {
-    return warp_api_lib.split_account(coin, threshold, participants, account).cast<Utf8>().toDartString();
-  }
+  // // static void storeShareSecret(int coin, int account, String secret) {
+  // //   warp_api_lib.store_share_secret(coin, account, secret.toNativeUtf8().cast<Int8>());
+  // // }
+  // //
+  // // static Future<void> runAggregator(String secretShare, int port, SendPort sendPort) async {
+  // //   compute(runAggregatorIsolateFn, RunAggregatorParams(secretShare, port, sendPort.nativePort));
+  // // }
+  //
+  // static Future<String> submitTx(String txJson, int port) async {
+  //   return await compute(submitTxIsolateFn, SubmitTxParams(txJson, port));
+  // }
+  //
+  // static Future<int> runMultiSigner(String address, int amount, String secretShare, String aggregatorUrl, String myUrl, int port) async {
+  //   return await compute(runMultiSignerIsolateFn, RunMultiSignerParams(address, amount, secretShare, aggregatorUrl, myUrl, port));
+  // }
+  //
+  // static void stopAggregator() {
+  //   warp_api_lib.shutdown_aggregator();
+  // }
+  //
+  // static String splitAccount(int coin, int threshold, int participants, int account) {
+  //   return warp_api_lib.split_account(coin, threshold, participants, account).cast<Utf8>().toDartString();
+  // }
 }
 
-class RunAggregatorParams {
-  String secretShare;
-  int port;
-  int sendPort;
-  RunAggregatorParams(this.secretShare, this.port, this.sendPort);
-}
-
-void runAggregatorIsolateFn(RunAggregatorParams params) {
-  warp_api_lib.run_aggregator(params.secretShare.toNativeUtf8().cast<Int8>(), params.port, params.sendPort);
-}
-
-class SubmitTxParams {
-  String txJson;
-  int port;
-  SubmitTxParams(this.txJson, this.port);
-}
-
-String submitTxIsolateFn(SubmitTxParams params) {
-  final r = warp_api_lib.submit_multisig_tx(params.txJson.toNativeUtf8().cast<Int8>(), params.port);
-  return r.cast<Utf8>().toDartString();
-}
-
-class RunMultiSignerParams {
-  String address;
-  int amount;
-  String secretShare;
-  String aggregatorUrl;
-  String myUrl;
-  int port;
-  RunMultiSignerParams(this.address, this.amount, this.secretShare, this.aggregatorUrl, this.myUrl, this.port);
-}
-
-int runMultiSignerIsolateFn(RunMultiSignerParams params) {
-  return warp_api_lib.run_multi_signer(
-      params.address.toNativeUtf8().cast<Int8>(), params.amount,
-      params.secretShare.toNativeUtf8().cast<Int8>(),
-      params.aggregatorUrl.toNativeUtf8().cast<Int8>(), params.myUrl.toNativeUtf8().cast<Int8>(), params.port);
-}
+// class RunAggregatorParams {
+//   String secretShare;
+//   int port;
+//   int sendPort;
+//   RunAggregatorParams(this.secretShare, this.port, this.sendPort);
+// }
+//
+// void runAggregatorIsolateFn(RunAggregatorParams params) {
+//   warp_api_lib.run_aggregator(params.secretShare.toNativeUtf8().cast<Int8>(), params.port, params.sendPort);
+// }
+//
+// class SubmitTxParams {
+//   String txJson;
+//   int port;
+//   SubmitTxParams(this.txJson, this.port);
+// }
+//
+// String submitTxIsolateFn(SubmitTxParams params) {
+//   final r = warp_api_lib.submit_multisig_tx(params.txJson.toNativeUtf8().cast<Int8>(), params.port);
+//   return r.cast<Utf8>().toDartString();
+// }
+//
+// class RunMultiSignerParams {
+//   String address;
+//   int amount;
+//   String secretShare;
+//   String aggregatorUrl;
+//   String myUrl;
+//   int port;
+//   RunMultiSignerParams(this.address, this.amount, this.secretShare, this.aggregatorUrl, this.myUrl, this.port);
+// }
+//
+// int runMultiSignerIsolateFn(RunMultiSignerParams params) {
+//   return warp_api_lib.run_multi_signer(
+//       params.address.toNativeUtf8().cast<Int8>(), params.amount,
+//       params.secretShare.toNativeUtf8().cast<Int8>(),
+//       params.aggregatorUrl.toNativeUtf8().cast<Int8>(), params.myUrl.toNativeUtf8().cast<Int8>(), params.port);
+// }
 
 String sendPaymentIsolateFn(PaymentParams params) {
   final txId = warp_api_lib.send_multi_payment(
-      params.coin,
-      params.account,
       params.recipientsJson.toNativeUtf8().cast<Int8>(),
       params.anchorOffset,
       params.useTransparent ? 1 : 0,
@@ -334,34 +325,32 @@ String sendPaymentIsolateFn(PaymentParams params) {
 
 String signOnlyIsolateFn(SignOnlyParams params) {
   final txId = warp_api_lib.sign(
-      params.coin,
-      params.account,
       params.txFilename.toNativeUtf8().cast<Int8>(),
       params.port.nativePort);
   return txId.cast<Utf8>().toDartString();
 }
 
-int getLatestHeightIsolateFn(int coin) {
-  return warp_api_lib.get_latest_height(coin);
+int getLatestHeightIsolateFn(Null n) {
+  return warp_api_lib.get_latest_height();
 }
 
-int mempoolSyncIsolateFn(int coin) {
-  return warp_api_lib.mempool_sync(coin);
+int mempoolSyncIsolateFn(Null n) {
+  return warp_api_lib.mempool_sync();
 }
 
-String shieldTAddrIsolateFn(ShieldTAddrParams params) {
-  final txId = warp_api_lib.shield_taddr(params.coin, params.account);
+String shieldTAddrIsolateFn(Null n) {
+  final txId = warp_api_lib.shield_taddr();
   return txId.cast<Utf8>().toDartString();
 }
 
 int syncHistoricalPricesIsolateFn(SyncHistoricalPricesParams params) {
   final now = DateTime.now();
   final today = DateTime.utc(now.year, now.month, now.day);
-  return warp_api_lib.sync_historical_prices(params.coin, today.millisecondsSinceEpoch ~/ 1000, 365, params.currency.toNativeUtf8().cast<Int8>());
+  return warp_api_lib.sync_historical_prices(today.millisecondsSinceEpoch ~/ 1000, 365, params.currency.toNativeUtf8().cast<Int8>());
 }
 
 String commitUnsavedContactsIsolateFn(CommitContactsParams params) {
-  final txId = warp_api_lib.commit_unsaved_contacts(params.coin, params.account, params.anchorOffset);
+  final txId = warp_api_lib.commit_unsaved_contacts(params.anchorOffset);
   return txId.cast<Utf8>().toDartString();
 }
 
@@ -370,7 +359,11 @@ int getTBalanceIsolateFn(GetTBalanceParams params) {
 }
 
 int getBlockHeightByTimeIsolateFn(BlockHeightByTimeParams params) {
-  return warp_api_lib.get_block_by_time(params.coin, params.time);
+  return warp_api_lib.get_block_by_time(params.time);
+}
+
+void scanTransparentAccountsParamsIsolateFn(ScanTransparentAccountsParams params) {
+  return warp_api_lib.scan_transparent_accounts(params.gapLimit);
 }
 
 class SyncParams {
@@ -383,23 +376,19 @@ class SyncParams {
 }
 
 class PaymentParams {
-  final int coin;
-  final int account;
   final String recipientsJson;
   final bool useTransparent;
   final int anchorOffset;
   final SendPort port;
 
-  PaymentParams(this.coin, this.account, this.recipientsJson, this.useTransparent, this.anchorOffset, this.port);
+  PaymentParams(this.recipientsJson, this.useTransparent, this.anchorOffset, this.port);
 }
 
 class SignOnlyParams {
-  final int coin;
-  final int account;
   final String txFilename;
   final SendPort port;
 
-  SignOnlyParams(this.coin, this.account, this.txFilename, this.port);
+  SignOnlyParams(this.txFilename, this.port);
 }
 
 class ShieldTAddrParams {
@@ -410,18 +399,15 @@ class ShieldTAddrParams {
 }
 
 class CommitContactsParams {
-  final int coin;
-  final int account;
   final int anchorOffset;
 
-  CommitContactsParams(this.coin, this.account, this.anchorOffset);
+  CommitContactsParams(this.anchorOffset);
 }
 
 class SyncHistoricalPricesParams {
-  final int coin;
   final String currency;
 
-  SyncHistoricalPricesParams(this.coin, this.currency);
+  SyncHistoricalPricesParams(this.currency);
 }
 
 class GetTBalanceParams {
@@ -432,8 +418,12 @@ class GetTBalanceParams {
 }
 
 class BlockHeightByTimeParams {
-  final int coin;
   final int time;
 
-  BlockHeightByTimeParams(this.coin, this.time);
+  BlockHeightByTimeParams(this.time);
+}
+
+class ScanTransparentAccountsParams {
+  final int gapLimit;
+  ScanTransparentAccountsParams(this.gapLimit);
 }
