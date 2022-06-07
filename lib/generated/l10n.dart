@@ -2022,6 +2022,16 @@ class S {
     );
   }
 
+  /// `Sub Account {index} of {name}`
+  String subAccountIndexOf(Object index, Object name) {
+    return Intl.message(
+      'Sub Account $index of $name',
+      name: 'subAccountIndexOf',
+      desc: '',
+      args: [index, name],
+    );
+  }
+
   /// `New Sub Account`
   String get newSubAccount {
     return Intl.message(
@@ -2287,6 +2297,16 @@ class S {
     return Intl.message(
       'Protect Open',
       name: 'protectOpen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gap Limit`
+  String get gapLimit {
+    return Intl.message(
+      'Gap Limit',
+      name: 'gapLimit',
       desc: '',
       args: [],
     );

@@ -1,6 +1,6 @@
 [env]
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
-CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS = ["native/warp_api_ffi"]
+CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS = ["native/zcash-sync"]
 ANDROID_PLATFORM_VERSION = "28"
 LIB_OUT_DIR = "debug"
 TARGET_OS = "unknown"
@@ -82,11 +82,11 @@ condition = { platforms = ["mac"] }
 script = [
     """
     cp ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/target/universal/${LIB_OUT_DIR}/lib${CARGO_MAKE_CRATE_FS_NAME}.a \
-    ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/${CARGO_MAKE_CRATE_FS_NAME}/ios/lib${CARGO_MAKE_CRATE_FS_NAME}.a
+    ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/warp_api_ffi/ios/lib${CARGO_MAKE_CRATE_FS_NAME}.a
     """,
     """
     cp ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/native/${CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER}/binding.h \
-    ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/${CARGO_MAKE_CRATE_FS_NAME}/ios/Classes/binding.h
+    ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/warp_api_ffi/ios/Classes/binding.h
     """,
 ]
 dependencies = ["restore-crate-type"]
@@ -189,10 +189,10 @@ run_task = "android-build-release"
 private = true
 script_runner = "@duckscript"
 script = [
-    "mkdir ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/${CARGO_MAKE_CRATE_FS_NAME}/android/src/main/jniLibs/arm64-v8a",
-    "mkdir ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/${CARGO_MAKE_CRATE_FS_NAME}/android/src/main/jniLibs/armeabi-v7a",
-    "mkdir ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/${CARGO_MAKE_CRATE_FS_NAME}/android/src/main/jniLibs/x86",
-    "mkdir ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/${CARGO_MAKE_CRATE_FS_NAME}/android/src/main/jniLibs/x86_64",
+    "mkdir ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/warp_api_ffi/android/src/main/jniLibs/arm64-v8a",
+    "mkdir ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/warp_api_ffi/android/src/main/jniLibs/armeabi-v7a",
+    "mkdir ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/warp_api_ffi/android/src/main/jniLibs/x86",
+    "mkdir ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/warp_api_ffi/android/src/main/jniLibs/x86_64",
 ]
 
 [tasks.copy-lib]
@@ -201,8 +201,8 @@ condition = { env_set = ["ANDROID_TARGET", "JNI_LIB_DIR"] }
 script_runner = "@duckscript"
 script = [
     """
-    cp ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/target/${ANDROID_TARGET}/${LIB_OUT_DIR}/lib${CARGO_MAKE_CRATE_FS_NAME}.so \
-    ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/${CARGO_MAKE_CRATE_FS_NAME}/android/src/main/jniLibs/${JNI_LIB_DIR}/lib${CARGO_MAKE_CRATE_FS_NAME}.so
+    cp ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/target/${ANDROID_TARGET}/${LIB_OUT_DIR}/libwarp_api_ffi.so \
+    ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/warp_api_ffi/android/src/main/jniLibs/${JNI_LIB_DIR}/libwarp_api_ffi.so
     """,
 ]
 

@@ -52,11 +52,13 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m13(aZEC, ticker, address) =>
       "Enviado ${aZEC} ${ticker} a ${address}";
 
-  static String m14(name) => "Subcuenta de ${name}";
+  static String m14(index, name) => "Subcuenta ${index} de ${name}";
 
-  static String m15(text) => "${text} copiado al portapapeles";
+  static String m15(name) => "Subcuenta de ${name}";
 
-  static String m16(currency) => "Utilizar ${currency}";
+  static String m16(text) => "${text} copiado al portapapeles";
+
+  static String m17(currency) => "Utilizar ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -185,6 +187,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "fullBackup": MessageLookupByLibrary.simpleMessage("Copia completa"),
         "fullRestore": MessageLookupByLibrary.simpleMessage(
             "Restauración copia de seguridad completa"),
+        "gapLimit": MessageLookupByLibrary.simpleMessage("Brecha"),
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "height": MessageLookupByLibrary.simpleMessage("Altura"),
         "help": MessageLookupByLibrary.simpleMessage("Ayuda"),
@@ -335,7 +338,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "spendableBalance":
             MessageLookupByLibrary.simpleMessage("Saldo Gastable"),
         "splitAccount": MessageLookupByLibrary.simpleMessage("Split Account"),
-        "subAccountOf": m14,
+        "subAccountIndexOf": m14,
+        "subAccountOf": m15,
         "subject": MessageLookupByLibrary.simpleMessage("Subject"),
         "synching": MessageLookupByLibrary.simpleMessage("Sincronizando"),
         "table": MessageLookupByLibrary.simpleMessage("Lista"),
@@ -350,7 +354,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Pinchar QR para Dirección Transparente"),
         "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
             "Toque Transacción para detalles"),
-        "textCopiedToClipboard": m15,
+        "textCopiedToClipboard": m16,
         "theme": MessageLookupByLibrary.simpleMessage("Tema"),
         "themeEditor": MessageLookupByLibrary.simpleMessage("Editora de temas"),
         "thisAccountAlreadyExists":
@@ -379,7 +383,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Saldo sin blindaje"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Archivo de transaccion sin firmar"),
-        "useSettingscurrency": m16,
+        "useSettingscurrency": m17,
         "useTransparentBalance":
             MessageLookupByLibrary.simpleMessage("Usar Saldo Transp"),
         "useUa": MessageLookupByLibrary.simpleMessage("Usar UA"),

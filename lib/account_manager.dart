@@ -111,6 +111,13 @@ class AccountManagerState extends State<AccountManagerPage> {
               label: 'New Sub-account',
               onTap: _onNewSubaccount,
             ),
+            SpeedDialChild(
+              child: Icon(Icons.scanner),
+              backgroundColor: Colors.yellow,
+              foregroundColor: Colors.white,
+              label: 'Scan Accounts',
+              onTap: _onScanSubAccounts,
+            ),
           ]
         ));
   }
@@ -216,7 +223,7 @@ class AccountManagerState extends State<AccountManagerPage> {
               Navigator.of(context).pop(true);
             })));
     if (confirmed == true) {
-      WarpApi.newSubAccount(active.coin, active.id, _accountNameController.text);
+      WarpApi.newSubAccount(_accountNameController.text, -1);
       await accounts.refresh();
     }
   }
@@ -227,6 +234,10 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   _onFullRestore() {
     Navigator.of(this.context).pushNamed('/fullRestore');
+  }
+
+  _onScanSubAccounts() {
+    Navigator.of(this.context).pushNamed('/scantaddr');
   }
 }
 

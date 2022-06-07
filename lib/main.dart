@@ -38,6 +38,7 @@ import 'multisend.dart';
 // import 'multisign.dart';
 import 'payment_uri.dart';
 import 'reset.dart';
+import 'scantaddr.dart';
 import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
@@ -232,6 +233,7 @@ void main() {
                 '/reset': (context) => ResetPage(),
                 '/fullBackup': (context) => FullBackupPage(),
                 '/fullRestore': (context) => FullRestorePage(),
+                '/scantaddr': (context) => ScanTAddrPage(),
               };
               return MaterialPageRoute(builder: routes[routeSettings.name]!);
             },
@@ -247,7 +249,6 @@ class ZWalletApp extends StatefulWidget {
 
 class ZWalletAppState extends State<ZWalletApp> {
   bool initialized = false;
-  late Future<bool> init;
   final progressKey = GlobalKey<LoadProgressState>();
 
   RateMyApp rateMyApp = RateMyApp(
@@ -270,108 +271,116 @@ class ZWalletAppState extends State<ZWalletApp> {
     else {
       databaseFactory = createDatabaseFactoryFfi(ffiInit: sqlFfiInit);;
     }
-    init = _init();
   }
 
   Future<bool> _init() async {
-    final prefs = await SharedPreferences.getInstance();
-    final recover = prefs.getBool('recover') ?? false;
-    final exportDb = prefs.getBool('export_db') ?? false;
-    prefs.setBool('recover', false);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final recover = prefs.getBool('recover') ?? false;
+      final exportDb = prefs.getBool('export_db') ?? false;
+      prefs.setBool('recover', false);
 
-    if (!initialized || recover || exportDb) {
-      initialized = true;
-      final dbPath = await getDbPath();
-      if (exportDb) {
-        await ycash.export(dbPath);
-        final r1 = await showMessageBox(context, 'Export', 'Export completed?', "OK");
-        await zcash.export(dbPath);
-        final r2 = await showMessageBox(context, 'Export', 'Export completed?', "OK");
-        if (r1 && r2) prefs.setBool('export_db', false);
-      }
-      if (recover) {
-        ycash.delete(dbPath);
-        zcash.delete(dbPath);
-      }
-      _setProgress(0.1, 'Initializing Ycash');
-      await ycash.open(dbPath);
-      _setProgress(0.2, 'Initializing Zcash');
-      await zcash.open(dbPath);
-      _setProgress(0.4, 'Initializing Wallet');
-      WarpApi.initWallet(dbPath);
+      if (!initialized || recover || exportDb) {
+        initialized = true;
+        final dbPath = await getDbPath();
+        if (exportDb) {
+          await ycash.export(dbPath);
+          final r1 = await showMessageBox(
+              context, 'Export', 'Export completed?', "OK");
+          await zcash.export(dbPath);
+          final r2 = await showMessageBox(
+              context, 'Export', 'Export completed?', "OK");
+          if (r1 && r2) prefs.setBool('export_db', false);
+        }
+        if (recover) {
+          ycash.delete(dbPath);
+          zcash.delete(dbPath);
+        }
+        _setProgress(0.1, 'Initializing Ycash');
+        await ycash.open(dbPath);
+        _setProgress(0.2, 'Initializing Zcash');
+        await zcash.open(dbPath);
+        _setProgress(0.3, 'Initializing Wallet');
+        WarpApi.initWallet(dbPath);
+        await ycash.open(dbPath);
+        await zcash.open(dbPath);
 
-      final about = prefs.getBool('about');
-      var synced = false;
-      if (about == null && !await accounts.hasAccount(1)) {
-        _setProgress(0.5, 'Creating First Account');
-        final accountId = WarpApi.newAccount(1, 'Main', '', 0);
-        await active.setActiveAccount(1, accountId);
-        Future.microtask(() {
-          Navigator.of(context).pushNamed('/backup', arguments: AccountId(1, accountId));
-        });
-        synced = true; // synced because no previous account
-      }
+        final about = prefs.getBool('about');
+        var synced = false;
+        if (about == null && !await accounts.hasAccount(1)) {
+          _setProgress(0.5, 'Creating First Account');
+          final accountId = WarpApi.newAccount(1, 'Main', '', 0);
+          await active.setActiveAccount(1, accountId);
+          Future.microtask(() {
+            Navigator.of(context).pushNamed(
+                '/backup', arguments: AccountId(1, accountId));
+          });
+          synced = true; // synced because no previous account
+        }
 
-      if (recover) {
-        final f = await getRecoveryFile();
-        final backup = await f.readAsString();
-        final res = WarpApi.restoreFullBackup("", backup);
-        print("Recovery $res");
-        f.delete();
-      }
+        if (recover) {
+          final f = await getRecoveryFile();
+          final backup = await f.readAsString();
+          final res = WarpApi.restoreFullBackup("", backup);
+          print("Recovery $res");
+          f.delete();
+        }
 
-      for (var s in settings.servers) {
-        WarpApi.updateLWD(s.coin, s.getLWDUrl());
-      }
-      _setProgress(0.6, 'Loading Account Data');
-      await accounts.refresh();
-      _setProgress(0.7, 'Restoring Active Account');
-      await active.restore();
-      _setProgress(0.8, 'Checking Sync Status');
-      await syncStatus.update();
-      if (synced) {
-        for (var c in settings.coins) {
+        for (var s in settings.servers) {
+          WarpApi.updateLWD(s.coin, s.getLWDUrl());
+        }
+        _setProgress(0.6, 'Loading Account Data');
+        await accounts.refresh();
+        _setProgress(0.7, 'Restoring Active Account');
+        await active.restore();
+        _setProgress(0.8, 'Checking Sync Status');
+        await syncStatus.update();
+        if (synced) {
+          for (var c in settings.coins) {
             syncStatus.markAsSynced(c.coin);
           }
         }
 
-      if (isMobile()) {
-        _setProgress(0.9, 'Setting Dashboard Shortcuts');
-        await initUniLinks(this.context);
-        final quickActions = QuickActions();
-        quickActions.initialize((type) {
-          handleQuickAction(this.context, type);
-        });
-        Future.microtask(() {
-          final s = S.of(this.context);
-          List<ShortcutItem> shortcuts = [];
-          for (var c in settings.coins) {
-            final coin = c.coin;
-            final ticker = c.def.ticker;
-            shortcuts.add(ShortcutItem(type: '$coin.receive',
-                localizedTitle: s.receive(ticker),
-                icon: 'receive'));
-            shortcuts.add(ShortcutItem(type: '$coin.send',
-                localizedTitle: s.sendCointicker(ticker),
-                icon: 'send'));
-          }
-          quickActions.setShortcutItems(shortcuts);
-        });
+        if (isMobile()) {
+          _setProgress(0.9, 'Setting Dashboard Shortcuts');
+          await initUniLinks(this.context);
+          final quickActions = QuickActions();
+          quickActions.initialize((type) {
+            handleQuickAction(this.context, type);
+          });
+          Future.microtask(() {
+            final s = S.of(this.context);
+            List<ShortcutItem> shortcuts = [];
+            for (var c in settings.coins) {
+              final coin = c.coin;
+              final ticker = c.def.ticker;
+              shortcuts.add(ShortcutItem(type: '$coin.receive',
+                  localizedTitle: s.receive(ticker),
+                  icon: 'receive'));
+              shortcuts.add(ShortcutItem(type: '$coin.send',
+                  localizedTitle: s.sendCointicker(ticker),
+                  icon: 'send'));
+            }
+            quickActions.setShortcutItems(shortcuts);
+          });
+        }
       }
-    }
-    _setProgress(1.0, 'Ready');
-    progressKey.currentState?.cancelResetTimer();
-    if (settings.protectOpen) {
-      while (!await authenticate(this.context, 'Protect Launch')) {
+      _setProgress(1.0, 'Ready');
+      progressKey.currentState?.cancelResetTimer();
+      if (settings.protectOpen) {
+        while (!await authenticate(this.context, 'Protect Launch')) {}
       }
+      return true;
+    } catch (e) {
+      print(e);
     }
-    return true;
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: init,
+        future: _init(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LoadProgress(key: progressKey);
           return HomePage();
@@ -443,11 +452,6 @@ List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(List<T> timeseries,
     ts.add(TimeSeriesPoint(i, acc));
   }
   return ts;
-}
-
-String unwrapUA(String address) {
-  final zaddr = WarpApi.getSaplingFromUA(address);
-  return zaddr.isNotEmpty ? zaddr : address;
 }
 
 void showQR(BuildContext context, String text, String title) {
@@ -636,7 +640,7 @@ Future<void> shieldTAddr(BuildContext context) async {
               Navigator.of(context).pop();
               final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
               rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
-              final txid = await WarpApi.shieldTAddr(active.coin, active.id);
+              final txid = await WarpApi.shieldTAddr();
               final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
               rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
             })),

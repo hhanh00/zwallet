@@ -152,7 +152,7 @@ class _RestorePageState extends State<RestorePage> {
         }
         else {
           if (accounts.list.where((e) => e.coin == active.coin).length == 1)
-            WarpApi.skipToLastHeight(0); // single new account -> quick sync
+            WarpApi.skipToLastHeight(0xFF); // single new account -> quick sync
           Navigator.of(context).pushReplacementNamed('/backup', arguments: AccountId(_coin, account)); // Need coin type
         }
       }

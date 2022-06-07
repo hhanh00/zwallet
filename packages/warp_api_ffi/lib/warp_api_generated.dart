@@ -18,47 +18,6 @@ class NativeLibrary {
           lookup)
       : _lookup = lookup;
 
-  void init_wallet(
-    ffi.Pointer<ffi.Int8> db_path,
-  ) {
-    return _init_wallet(
-      db_path,
-    );
-  }
-
-  late final _init_wallet_ptr =
-      _lookup<ffi.NativeFunction<_c_init_wallet>>('init_wallet');
-  late final _dart_init_wallet _init_wallet =
-      _init_wallet_ptr.asFunction<_dart_init_wallet>();
-
-  void reset_app() {
-    return _reset_app();
-  }
-
-  late final _reset_app_ptr =
-      _lookup<ffi.NativeFunction<_c_reset_app>>('reset_app');
-  late final _dart_reset_app _reset_app =
-      _reset_app_ptr.asFunction<_dart_reset_app>();
-
-  int warp_sync(
-    int coin,
-    int get_tx,
-    int anchor_offset,
-    int port,
-  ) {
-    return _warp_sync(
-      coin,
-      get_tx,
-      anchor_offset,
-      port,
-    );
-  }
-
-  late final _warp_sync_ptr =
-      _lookup<ffi.NativeFunction<_c_warp_sync>>('warp_sync');
-  late final _dart_warp_sync _warp_sync =
-      _warp_sync_ptr.asFunction<_dart_warp_sync>();
-
   void dart_post_cobject(
     ffi.Pointer<ffi.Void> ptr,
   ) {
@@ -72,26 +31,129 @@ class NativeLibrary {
   late final _dart_dart_post_cobject _dart_post_cobject =
       _dart_post_cobject_ptr.asFunction<_dart_dart_post_cobject>();
 
-  int get_latest_height(
-    int coin,
+  void init_wallet(
+    ffi.Pointer<ffi.Int8> db_path,
   ) {
-    return _get_latest_height(
-      coin,
+    return _init_wallet(
+      db_path,
     );
   }
 
-  late final _get_latest_height_ptr =
-      _lookup<ffi.NativeFunction<_c_get_latest_height>>('get_latest_height');
-  late final _dart_get_latest_height _get_latest_height =
-      _get_latest_height_ptr.asFunction<_dart_get_latest_height>();
+  late final _init_wallet_ptr =
+      _lookup<ffi.NativeFunction<_c_init_wallet>>('init_wallet');
+  late final _dart_init_wallet _init_wallet =
+      _init_wallet_ptr.asFunction<_dart_init_wallet>();
+
+  void set_active(
+    int active,
+  ) {
+    return _set_active(
+      active,
+    );
+  }
+
+  late final _set_active_ptr =
+      _lookup<ffi.NativeFunction<_c_set_active>>('set_active');
+  late final _dart_set_active _set_active =
+      _set_active_ptr.asFunction<_dart_set_active>();
+
+  void set_active_account(
+    int coin,
+    int id,
+  ) {
+    return _set_active_account(
+      coin,
+      id,
+    );
+  }
+
+  late final _set_active_account_ptr =
+      _lookup<ffi.NativeFunction<_c_set_active_account>>('set_active_account');
+  late final _dart_set_active_account _set_active_account =
+      _set_active_account_ptr.asFunction<_dart_set_active_account>();
+
+  void set_coin_lwd_url(
+    int coin,
+    ffi.Pointer<ffi.Int8> lwd_url,
+  ) {
+    return _set_coin_lwd_url(
+      coin,
+      lwd_url,
+    );
+  }
+
+  late final _set_coin_lwd_url_ptr =
+      _lookup<ffi.NativeFunction<_c_set_coin_lwd_url>>('set_coin_lwd_url');
+  late final _dart_set_coin_lwd_url _set_coin_lwd_url =
+      _set_coin_lwd_url_ptr.asFunction<_dart_set_coin_lwd_url>();
+
+  void reset_app() {
+    return _reset_app();
+  }
+
+  late final _reset_app_ptr =
+      _lookup<ffi.NativeFunction<_c_reset_app>>('reset_app');
+  late final _dart_reset_app _reset_app =
+      _reset_app_ptr.asFunction<_dart_reset_app>();
+
+  int new_account(
+    int coin,
+    ffi.Pointer<ffi.Int8> name,
+    ffi.Pointer<ffi.Int8> data,
+    int index,
+  ) {
+    return _new_account(
+      coin,
+      name,
+      data,
+      index,
+    );
+  }
+
+  late final _new_account_ptr =
+      _lookup<ffi.NativeFunction<_c_new_account>>('new_account');
+  late final _dart_new_account _new_account =
+      _new_account_ptr.asFunction<_dart_new_account>();
+
+  int new_sub_account(
+    ffi.Pointer<ffi.Int8> name,
+    int index,
+  ) {
+    return _new_sub_account(
+      name,
+      index,
+    );
+  }
+
+  late final _new_sub_account_ptr =
+      _lookup<ffi.NativeFunction<_c_new_sub_account>>('new_sub_account');
+  late final _dart_new_sub_account _new_sub_account =
+      _new_sub_account_ptr.asFunction<_dart_new_sub_account>();
+
+  int warp(
+    int coin,
+    int get_tx,
+    int anchor_offset,
+    int port,
+  ) {
+    return _warp(
+      coin,
+      get_tx,
+      anchor_offset,
+      port,
+    );
+  }
+
+  late final _warp_ptr = _lookup<ffi.NativeFunction<_c_warp>>('warp');
+  late final _dart_warp _warp = _warp_ptr.asFunction<_dart_warp>();
 
   int is_valid_key(
     int coin,
-    ffi.Pointer<ffi.Int8> seed,
+    ffi.Pointer<ffi.Int8> key,
   ) {
     return _is_valid_key(
       coin,
-      seed,
+      key,
     );
   }
 
@@ -115,101 +177,35 @@ class NativeLibrary {
   late final _dart_valid_address _valid_address =
       _valid_address_ptr.asFunction<_dart_valid_address>();
 
-  ffi.Pointer<ffi.Int8> new_address(
-    int coin,
-    int account,
-  ) {
-    return _new_address(
-      coin,
-      account,
-    );
+  ffi.Pointer<ffi.Int8> new_diversified_address() {
+    return _new_diversified_address();
   }
 
-  late final _new_address_ptr =
-      _lookup<ffi.NativeFunction<_c_new_address>>('new_address');
-  late final _dart_new_address _new_address =
-      _new_address_ptr.asFunction<_dart_new_address>();
+  late final _new_diversified_address_ptr =
+      _lookup<ffi.NativeFunction<_c_new_diversified_address>>(
+          'new_diversified_address');
+  late final _dart_new_diversified_address _new_diversified_address =
+      _new_diversified_address_ptr.asFunction<_dart_new_diversified_address>();
 
-  void set_mempool_account(
-    int coin,
-    int account,
-  ) {
-    return _set_mempool_account(
-      coin,
-      account,
-    );
+  int get_latest_height() {
+    return _get_latest_height();
   }
 
-  late final _set_mempool_account_ptr =
-      _lookup<ffi.NativeFunction<_c_set_mempool_account>>(
-          'set_mempool_account');
-  late final _dart_set_mempool_account _set_mempool_account =
-      _set_mempool_account_ptr.asFunction<_dart_set_mempool_account>();
-
-  int new_account(
-    int coin,
-    ffi.Pointer<ffi.Int8> name,
-    ffi.Pointer<ffi.Int8> data,
-    int index,
-  ) {
-    return _new_account(
-      coin,
-      name,
-      data,
-      index,
-    );
-  }
-
-  late final _new_account_ptr =
-      _lookup<ffi.NativeFunction<_c_new_account>>('new_account');
-  late final _dart_new_account _new_account =
-      _new_account_ptr.asFunction<_dart_new_account>();
-
-  int new_sub_account(
-    int coin,
-    int id,
-    ffi.Pointer<ffi.Int8> name,
-  ) {
-    return _new_sub_account(
-      coin,
-      id,
-      name,
-    );
-  }
-
-  late final _new_sub_account_ptr =
-      _lookup<ffi.NativeFunction<_c_new_sub_account>>('new_sub_account');
-  late final _dart_new_sub_account _new_sub_account =
-      _new_sub_account_ptr.asFunction<_dart_new_sub_account>();
-
-  int get_mempool_balance(
-    int coin,
-  ) {
-    return _get_mempool_balance(
-      coin,
-    );
-  }
-
-  late final _get_mempool_balance_ptr =
-      _lookup<ffi.NativeFunction<_c_get_mempool_balance>>(
-          'get_mempool_balance');
-  late final _dart_get_mempool_balance _get_mempool_balance =
-      _get_mempool_balance_ptr.asFunction<_dart_get_mempool_balance>();
+  late final _get_latest_height_ptr =
+      _lookup<ffi.NativeFunction<_c_get_latest_height>>('get_latest_height');
+  late final _dart_get_latest_height _get_latest_height =
+      _get_latest_height_ptr.asFunction<_dart_get_latest_height>();
 
   ffi.Pointer<ffi.Int8> send_multi_payment(
-    int coin,
-    int account,
     ffi.Pointer<ffi.Int8> recipients_json,
-    int anchor_offset,
     int use_transparent,
+    int anchor_offset,
     int port,
   ) {
     return _send_multi_payment(
-      coin,
-      account,
       recipients_json,
-      anchor_offset,
       use_transparent,
+      anchor_offset,
       port,
     );
   }
@@ -218,43 +214,6 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_send_multi_payment>>('send_multi_payment');
   late final _dart_send_multi_payment _send_multi_payment =
       _send_multi_payment_ptr.asFunction<_dart_send_multi_payment>();
-
-  void mark_message_read(
-    int coin,
-    int account,
-    int message,
-    int read,
-  ) {
-    return _mark_message_read(
-      coin,
-      account,
-      message,
-      read,
-    );
-  }
-
-  late final _mark_message_read_ptr =
-      _lookup<ffi.NativeFunction<_c_mark_message_read>>('mark_message_read');
-  late final _dart_mark_message_read _mark_message_read =
-      _mark_message_read_ptr.asFunction<_dart_mark_message_read>();
-
-  void mark_all_messages_read(
-    int coin,
-    int account,
-    int read,
-  ) {
-    return _mark_all_messages_read(
-      coin,
-      account,
-      read,
-    );
-  }
-
-  late final _mark_all_messages_read_ptr =
-      _lookup<ffi.NativeFunction<_c_mark_all_messages_read>>(
-          'mark_all_messages_read');
-  late final _dart_mark_all_messages_read _mark_all_messages_read =
-      _mark_all_messages_read_ptr.asFunction<_dart_mark_all_messages_read>();
 
   void skip_to_last_height(
     int coin,
@@ -271,11 +230,9 @@ class NativeLibrary {
       _skip_to_last_height_ptr.asFunction<_dart_skip_to_last_height>();
 
   void rewind_to_height(
-    int coin,
     int height,
   ) {
     return _rewind_to_height(
-      coin,
       height,
     );
   }
@@ -285,12 +242,8 @@ class NativeLibrary {
   late final _dart_rewind_to_height _rewind_to_height =
       _rewind_to_height_ptr.asFunction<_dart_rewind_to_height>();
 
-  int mempool_sync(
-    int coin,
-  ) {
-    return _mempool_sync(
-      coin,
-    );
+  int mempool_sync() {
+    return _mempool_sync();
   }
 
   late final _mempool_sync_ptr =
@@ -298,14 +251,8 @@ class NativeLibrary {
   late final _dart_mempool_sync _mempool_sync =
       _mempool_sync_ptr.asFunction<_dart_mempool_sync>();
 
-  void mempool_reset(
-    int coin,
-    int height,
-  ) {
-    return _mempool_reset(
-      coin,
-      height,
-    );
+  void mempool_reset() {
+    return _mempool_reset();
   }
 
   late final _mempool_reset_ptr =
@@ -313,13 +260,23 @@ class NativeLibrary {
   late final _dart_mempool_reset _mempool_reset =
       _mempool_reset_ptr.asFunction<_dart_mempool_reset>();
 
+  int get_mempool_balance() {
+    return _get_mempool_balance();
+  }
+
+  late final _get_mempool_balance_ptr =
+      _lookup<ffi.NativeFunction<_c_get_mempool_balance>>(
+          'get_mempool_balance');
+  late final _dart_get_mempool_balance _get_mempool_balance =
+      _get_mempool_balance_ptr.asFunction<_dart_get_mempool_balance>();
+
   int get_taddr_balance(
     int coin,
-    int account,
+    int id_account,
   ) {
     return _get_taddr_balance(
       coin,
-      account,
+      id_account,
     );
   }
 
@@ -328,14 +285,8 @@ class NativeLibrary {
   late final _dart_get_taddr_balance _get_taddr_balance =
       _get_taddr_balance_ptr.asFunction<_dart_get_taddr_balance>();
 
-  ffi.Pointer<ffi.Int8> shield_taddr(
-    int coin,
-    int account,
-  ) {
-    return _shield_taddr(
-      coin,
-      account,
-    );
+  ffi.Pointer<ffi.Int8> shield_taddr() {
+    return _shield_taddr();
   }
 
   late final _shield_taddr_ptr =
@@ -343,31 +294,27 @@ class NativeLibrary {
   late final _dart_shield_taddr _shield_taddr =
       _shield_taddr_ptr.asFunction<_dart_shield_taddr>();
 
-  void set_lwd_url(
-    int coin,
-    ffi.Pointer<ffi.Int8> url,
+  void scan_transparent_accounts(
+    int gap_limit,
   ) {
-    return _set_lwd_url(
-      coin,
-      url,
+    return _scan_transparent_accounts(
+      gap_limit,
     );
   }
 
-  late final _set_lwd_url_ptr =
-      _lookup<ffi.NativeFunction<_c_set_lwd_url>>('set_lwd_url');
-  late final _dart_set_lwd_url _set_lwd_url =
-      _set_lwd_url_ptr.asFunction<_dart_set_lwd_url>();
+  late final _scan_transparent_accounts_ptr =
+      _lookup<ffi.NativeFunction<_c_scan_transparent_accounts>>(
+          'scan_transparent_accounts');
+  late final _dart_scan_transparent_accounts _scan_transparent_accounts =
+      _scan_transparent_accounts_ptr
+          .asFunction<_dart_scan_transparent_accounts>();
 
   ffi.Pointer<ffi.Int8> prepare_multi_payment(
-    int coin,
-    int account,
     ffi.Pointer<ffi.Int8> recipients_json,
     int use_transparent,
     int anchor_offset,
   ) {
     return _prepare_multi_payment(
-      coin,
-      account,
       recipients_json,
       use_transparent,
       anchor_offset,
@@ -381,14 +328,10 @@ class NativeLibrary {
       _prepare_multi_payment_ptr.asFunction<_dart_prepare_multi_payment>();
 
   ffi.Pointer<ffi.Int8> sign(
-    int coin,
-    int account,
     ffi.Pointer<ffi.Int8> tx_filename,
     int port,
   ) {
     return _sign(
-      coin,
-      account,
       tx_filename,
       port,
     );
@@ -398,11 +341,9 @@ class NativeLibrary {
   late final _dart_sign _sign = _sign_ptr.asFunction<_dart_sign>();
 
   ffi.Pointer<ffi.Int8> broadcast(
-    int coin,
     ffi.Pointer<ffi.Int8> tx_filename,
   ) {
     return _broadcast(
-      coin,
       tx_filename,
     );
   }
@@ -413,11 +354,9 @@ class NativeLibrary {
       _broadcast_ptr.asFunction<_dart_broadcast>();
 
   ffi.Pointer<ffi.Int8> broadcast_txhex(
-    int coin,
     ffi.Pointer<ffi.Int8> txhex,
   ) {
     return _broadcast_txhex(
-      coin,
       txhex,
     );
   }
@@ -427,27 +366,8 @@ class NativeLibrary {
   late final _dart_broadcast_txhex _broadcast_txhex =
       _broadcast_txhex_ptr.asFunction<_dart_broadcast_txhex>();
 
-  ffi.Pointer<ffi.Int8> ledger_sign(
-    int coin,
-    ffi.Pointer<ffi.Int8> tx_filename,
-  ) {
-    return _ledger_sign(
-      coin,
-      tx_filename,
-    );
-  }
-
-  late final _ledger_sign_ptr =
-      _lookup<ffi.NativeFunction<_c_ledger_sign>>('ledger_sign');
-  late final _dart_ledger_sign _ledger_sign =
-      _ledger_sign_ptr.asFunction<_dart_ledger_sign>();
-
-  int get_activation_date(
-    int coin,
-  ) {
-    return _get_activation_date(
-      coin,
-    );
+  int get_activation_date() {
+    return _get_activation_date();
   }
 
   late final _get_activation_date_ptr =
@@ -457,11 +377,9 @@ class NativeLibrary {
       _get_activation_date_ptr.asFunction<_dart_get_activation_date>();
 
   int get_block_by_time(
-    int coin,
     int time,
   ) {
     return _get_block_by_time(
-      coin,
       time,
     );
   }
@@ -472,13 +390,11 @@ class NativeLibrary {
       _get_block_by_time_ptr.asFunction<_dart_get_block_by_time>();
 
   int sync_historical_prices(
-    int coin,
     int now,
     int days,
     ffi.Pointer<ffi.Int8> currency,
   ) {
     return _sync_historical_prices(
-      coin,
       now,
       days,
       currency,
@@ -491,41 +407,13 @@ class NativeLibrary {
   late final _dart_sync_historical_prices _sync_historical_prices =
       _sync_historical_prices_ptr.asFunction<_dart_sync_historical_prices>();
 
-  ffi.Pointer<ffi.Int8> get_ua(
-    ffi.Pointer<ffi.Int8> sapling_addr,
-    ffi.Pointer<ffi.Int8> transparent_addr,
-  ) {
-    return _get_ua(
-      sapling_addr,
-      transparent_addr,
-    );
-  }
-
-  late final _get_ua_ptr = _lookup<ffi.NativeFunction<_c_get_ua>>('get_ua');
-  late final _dart_get_ua _get_ua = _get_ua_ptr.asFunction<_dart_get_ua>();
-
-  ffi.Pointer<ffi.Int8> get_sapling(
-    ffi.Pointer<ffi.Int8> ua_addr,
-  ) {
-    return _get_sapling(
-      ua_addr,
-    );
-  }
-
-  late final _get_sapling_ptr =
-      _lookup<ffi.NativeFunction<_c_get_sapling>>('get_sapling');
-  late final _dart_get_sapling _get_sapling =
-      _get_sapling_ptr.asFunction<_dart_get_sapling>();
-
   void store_contact(
-    int coin,
     int id,
     ffi.Pointer<ffi.Int8> name,
     ffi.Pointer<ffi.Int8> address,
     int dirty,
   ) {
     return _store_contact(
-      coin,
       id,
       name,
       address,
@@ -539,13 +427,9 @@ class NativeLibrary {
       _store_contact_ptr.asFunction<_dart_store_contact>();
 
   ffi.Pointer<ffi.Int8> commit_unsaved_contacts(
-    int coin,
-    int account,
     int anchor_offset,
   ) {
     return _commit_unsaved_contacts(
-      coin,
-      account,
       anchor_offset,
     );
   }
@@ -555,6 +439,44 @@ class NativeLibrary {
           'commit_unsaved_contacts');
   late final _dart_commit_unsaved_contacts _commit_unsaved_contacts =
       _commit_unsaved_contacts_ptr.asFunction<_dart_commit_unsaved_contacts>();
+
+  void mark_message_read(
+    int message,
+    int read,
+  ) {
+    return _mark_message_read(
+      message,
+      read,
+    );
+  }
+
+  late final _mark_message_read_ptr =
+      _lookup<ffi.NativeFunction<_c_mark_message_read>>('mark_message_read');
+  late final _dart_mark_message_read _mark_message_read =
+      _mark_message_read_ptr.asFunction<_dart_mark_message_read>();
+
+  void mark_all_messages_read(
+    int read,
+  ) {
+    return _mark_all_messages_read(
+      read,
+    );
+  }
+
+  late final _mark_all_messages_read_ptr =
+      _lookup<ffi.NativeFunction<_c_mark_all_messages_read>>(
+          'mark_all_messages_read');
+  late final _dart_mark_all_messages_read _mark_all_messages_read =
+      _mark_all_messages_read_ptr.asFunction<_dart_mark_all_messages_read>();
+
+  void truncate_data() {
+    return _truncate_data();
+  }
+
+  late final _truncate_data_ptr =
+      _lookup<ffi.NativeFunction<_c_truncate_data>>('truncate_data');
+  late final _dart_truncate_data _truncate_data =
+      _truncate_data_ptr.asFunction<_dart_truncate_data>();
 
   void delete_account(
     int coin,
@@ -571,27 +493,12 @@ class NativeLibrary {
   late final _dart_delete_account _delete_account =
       _delete_account_ptr.asFunction<_dart_delete_account>();
 
-  void truncate_data(
-    int coin,
-  ) {
-    return _truncate_data(
-      coin,
-    );
-  }
-
-  late final _truncate_data_ptr =
-      _lookup<ffi.NativeFunction<_c_truncate_data>>('truncate_data');
-  late final _dart_truncate_data _truncate_data =
-      _truncate_data_ptr.asFunction<_dart_truncate_data>();
-
   ffi.Pointer<ffi.Int8> make_payment_uri(
-    int coin,
     ffi.Pointer<ffi.Int8> address,
     int amount,
     ffi.Pointer<ffi.Int8> memo,
   ) {
     return _make_payment_uri(
-      coin,
       address,
       amount,
       memo,
@@ -604,11 +511,9 @@ class NativeLibrary {
       _make_payment_uri_ptr.asFunction<_dart_make_payment_uri>();
 
   ffi.Pointer<ffi.Int8> parse_payment_uri(
-    int coin,
     ffi.Pointer<ffi.Int8> uri,
   ) {
     return _parse_payment_uri(
-      coin,
       uri,
     );
   }
@@ -656,158 +561,7 @@ class NativeLibrary {
           'restore_full_backup');
   late final _dart_restore_full_backup _restore_full_backup =
       _restore_full_backup_ptr.asFunction<_dart_restore_full_backup>();
-
-  void store_share_secret(
-    int coin,
-    int account,
-    ffi.Pointer<ffi.Int8> secret,
-  ) {
-    return _store_share_secret(
-      coin,
-      account,
-      secret,
-    );
-  }
-
-  late final _store_share_secret_ptr =
-      _lookup<ffi.NativeFunction<_c_store_share_secret>>('store_share_secret');
-  late final _dart_store_share_secret _store_share_secret =
-      _store_share_secret_ptr.asFunction<_dart_store_share_secret>();
-
-  ffi.Pointer<ffi.Int8> get_share_secret(
-    int coin,
-    int account,
-  ) {
-    return _get_share_secret(
-      coin,
-      account,
-    );
-  }
-
-  late final _get_share_secret_ptr =
-      _lookup<ffi.NativeFunction<_c_get_share_secret>>('get_share_secret');
-  late final _dart_get_share_secret _get_share_secret =
-      _get_share_secret_ptr.asFunction<_dart_get_share_secret>();
-
-  void run_aggregator(
-    ffi.Pointer<ffi.Int8> secret_share,
-    int port,
-    int send_port,
-  ) {
-    return _run_aggregator(
-      secret_share,
-      port,
-      send_port,
-    );
-  }
-
-  late final _run_aggregator_ptr =
-      _lookup<ffi.NativeFunction<_c_run_aggregator>>('run_aggregator');
-  late final _dart_run_aggregator _run_aggregator =
-      _run_aggregator_ptr.asFunction<_dart_run_aggregator>();
-
-  void shutdown_aggregator() {
-    return _shutdown_aggregator();
-  }
-
-  late final _shutdown_aggregator_ptr =
-      _lookup<ffi.NativeFunction<_c_shutdown_aggregator>>(
-          'shutdown_aggregator');
-  late final _dart_shutdown_aggregator _shutdown_aggregator =
-      _shutdown_aggregator_ptr.asFunction<_dart_shutdown_aggregator>();
-
-  ffi.Pointer<ffi.Int8> submit_multisig_tx(
-    ffi.Pointer<ffi.Int8> tx_json,
-    int port,
-  ) {
-    return _submit_multisig_tx(
-      tx_json,
-      port,
-    );
-  }
-
-  late final _submit_multisig_tx_ptr =
-      _lookup<ffi.NativeFunction<_c_submit_multisig_tx>>('submit_multisig_tx');
-  late final _dart_submit_multisig_tx _submit_multisig_tx =
-      _submit_multisig_tx_ptr.asFunction<_dart_submit_multisig_tx>();
-
-  int run_multi_signer(
-    ffi.Pointer<ffi.Int8> address,
-    int amount,
-    ffi.Pointer<ffi.Int8> secret_share,
-    ffi.Pointer<ffi.Int8> aggregator_url,
-    ffi.Pointer<ffi.Int8> my_url,
-    int port,
-  ) {
-    return _run_multi_signer(
-      address,
-      amount,
-      secret_share,
-      aggregator_url,
-      my_url,
-      port,
-    );
-  }
-
-  late final _run_multi_signer_ptr =
-      _lookup<ffi.NativeFunction<_c_run_multi_signer>>('run_multi_signer');
-  late final _dart_run_multi_signer _run_multi_signer =
-      _run_multi_signer_ptr.asFunction<_dart_run_multi_signer>();
-
-  ffi.Pointer<ffi.Int8> split_account(
-    int coin,
-    int threshold,
-    int participants,
-    int account,
-  ) {
-    return _split_account(
-      coin,
-      threshold,
-      participants,
-      account,
-    );
-  }
-
-  late final _split_account_ptr =
-      _lookup<ffi.NativeFunction<_c_split_account>>('split_account');
-  late final _dart_split_account _split_account =
-      _split_account_ptr.asFunction<_dart_split_account>();
-
-  void dummy_export() {
-    return _dummy_export();
-  }
-
-  late final _dummy_export_ptr =
-      _lookup<ffi.NativeFunction<_c_dummy_export>>('dummy_export');
-  late final _dart_dummy_export _dummy_export =
-      _dummy_export_ptr.asFunction<_dart_dummy_export>();
 }
-
-typedef _c_init_wallet = ffi.Void Function(
-  ffi.Pointer<ffi.Int8> db_path,
-);
-
-typedef _dart_init_wallet = void Function(
-  ffi.Pointer<ffi.Int8> db_path,
-);
-
-typedef _c_reset_app = ffi.Void Function();
-
-typedef _dart_reset_app = void Function();
-
-typedef _c_warp_sync = ffi.Int8 Function(
-  ffi.Uint8 coin,
-  ffi.Int8 get_tx,
-  ffi.Uint32 anchor_offset,
-  ffi.Int64 port,
-);
-
-typedef _dart_warp_sync = int Function(
-  int coin,
-  int get_tx,
-  int anchor_offset,
-  int port,
-);
 
 typedef _c_dart_post_cobject = ffi.Void Function(
   ffi.Pointer<ffi.Void> ptr,
@@ -817,22 +571,92 @@ typedef _dart_dart_post_cobject = void Function(
   ffi.Pointer<ffi.Void> ptr,
 );
 
-typedef _c_get_latest_height = ffi.Uint32 Function(
-  ffi.Uint8 coin,
+typedef _c_init_wallet = ffi.Void Function(
+  ffi.Pointer<ffi.Int8> db_path,
 );
 
-typedef _dart_get_latest_height = int Function(
+typedef _dart_init_wallet = void Function(
+  ffi.Pointer<ffi.Int8> db_path,
+);
+
+typedef _c_set_active = ffi.Void Function(
+  ffi.Uint8 active,
+);
+
+typedef _dart_set_active = void Function(
+  int active,
+);
+
+typedef _c_set_active_account = ffi.Void Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+);
+
+typedef _dart_set_active_account = void Function(
   int coin,
+  int id,
+);
+
+typedef _c_set_coin_lwd_url = ffi.Void Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> lwd_url,
+);
+
+typedef _dart_set_coin_lwd_url = void Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> lwd_url,
+);
+
+typedef _c_reset_app = ffi.Void Function();
+
+typedef _dart_reset_app = void Function();
+
+typedef _c_new_account = ffi.Uint32 Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> data,
+  ffi.Int32 index,
+);
+
+typedef _dart_new_account = int Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> data,
+  int index,
+);
+
+typedef _c_new_sub_account = ffi.Uint32 Function(
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Int32 index,
+);
+
+typedef _dart_new_sub_account = int Function(
+  ffi.Pointer<ffi.Int8> name,
+  int index,
+);
+
+typedef _c_warp = ffi.Uint8 Function(
+  ffi.Uint8 coin,
+  ffi.Int8 get_tx,
+  ffi.Uint32 anchor_offset,
+  ffi.Int64 port,
+);
+
+typedef _dart_warp = int Function(
+  int coin,
+  int get_tx,
+  int anchor_offset,
+  int port,
 );
 
 typedef _c_is_valid_key = ffi.Int8 Function(
   ffi.Uint8 coin,
-  ffi.Pointer<ffi.Int8> seed,
+  ffi.Pointer<ffi.Int8> key,
 );
 
 typedef _dart_is_valid_key = int Function(
   int coin,
-  ffi.Pointer<ffi.Int8> seed,
+  ffi.Pointer<ffi.Int8> key,
 );
 
 typedef _c_valid_address = ffi.Int8 Function(
@@ -845,102 +669,26 @@ typedef _dart_valid_address = int Function(
   ffi.Pointer<ffi.Int8> address,
 );
 
-typedef _c_new_address = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
-);
+typedef _c_new_diversified_address = ffi.Pointer<ffi.Int8> Function();
 
-typedef _dart_new_address = ffi.Pointer<ffi.Int8> Function(
-  int coin,
-  int account,
-);
+typedef _dart_new_diversified_address = ffi.Pointer<ffi.Int8> Function();
 
-typedef _c_set_mempool_account = ffi.Void Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
-);
+typedef _c_get_latest_height = ffi.Uint32 Function();
 
-typedef _dart_set_mempool_account = void Function(
-  int coin,
-  int account,
-);
-
-typedef _c_new_account = ffi.Int32 Function(
-  ffi.Uint8 coin,
-  ffi.Pointer<ffi.Int8> name,
-  ffi.Pointer<ffi.Int8> data,
-  ffi.Uint32 index,
-);
-
-typedef _dart_new_account = int Function(
-  int coin,
-  ffi.Pointer<ffi.Int8> name,
-  ffi.Pointer<ffi.Int8> data,
-  int index,
-);
-
-typedef _c_new_sub_account = ffi.Int32 Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 id,
-  ffi.Pointer<ffi.Int8> name,
-);
-
-typedef _dart_new_sub_account = int Function(
-  int coin,
-  int id,
-  ffi.Pointer<ffi.Int8> name,
-);
-
-typedef _c_get_mempool_balance = ffi.Int64 Function(
-  ffi.Uint8 coin,
-);
-
-typedef _dart_get_mempool_balance = int Function(
-  int coin,
-);
+typedef _dart_get_latest_height = int Function();
 
 typedef _c_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> recipients_json,
-  ffi.Uint32 anchor_offset,
   ffi.Int8 use_transparent,
+  ffi.Uint32 anchor_offset,
   ffi.Int64 port,
 );
 
 typedef _dart_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
-  int coin,
-  int account,
   ffi.Pointer<ffi.Int8> recipients_json,
-  int anchor_offset,
   int use_transparent,
+  int anchor_offset,
   int port,
-);
-
-typedef _c_mark_message_read = ffi.Void Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
-  ffi.Uint32 message,
-  ffi.Int8 read,
-);
-
-typedef _dart_mark_message_read = void Function(
-  int coin,
-  int account,
-  int message,
-  int read,
-);
-
-typedef _c_mark_all_messages_read = ffi.Void Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
-  ffi.Int8 read,
-);
-
-typedef _dart_mark_all_messages_read = void Function(
-  int coin,
-  int account,
-  int read,
 );
 
 typedef _c_skip_to_last_height = ffi.Void Function(
@@ -952,175 +700,110 @@ typedef _dart_skip_to_last_height = void Function(
 );
 
 typedef _c_rewind_to_height = ffi.Void Function(
-  ffi.Uint8 coin,
   ffi.Uint32 height,
 );
 
 typedef _dart_rewind_to_height = void Function(
-  int coin,
   int height,
 );
 
-typedef _c_mempool_sync = ffi.Int64 Function(
-  ffi.Uint8 coin,
-);
+typedef _c_mempool_sync = ffi.Int64 Function();
 
-typedef _dart_mempool_sync = int Function(
-  int coin,
-);
+typedef _dart_mempool_sync = int Function();
 
-typedef _c_mempool_reset = ffi.Void Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 height,
-);
+typedef _c_mempool_reset = ffi.Void Function();
 
-typedef _dart_mempool_reset = void Function(
-  int coin,
-  int height,
-);
+typedef _dart_mempool_reset = void Function();
+
+typedef _c_get_mempool_balance = ffi.Int64 Function();
+
+typedef _dart_get_mempool_balance = int Function();
 
 typedef _c_get_taddr_balance = ffi.Uint64 Function(
   ffi.Uint8 coin,
-  ffi.Uint32 account,
+  ffi.Uint32 id_account,
 );
 
 typedef _dart_get_taddr_balance = int Function(
   int coin,
-  int account,
+  int id_account,
 );
 
-typedef _c_shield_taddr = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
+typedef _c_shield_taddr = ffi.Pointer<ffi.Int8> Function();
+
+typedef _dart_shield_taddr = ffi.Pointer<ffi.Int8> Function();
+
+typedef _c_scan_transparent_accounts = ffi.Void Function(
+  ffi.Uint32 gap_limit,
 );
 
-typedef _dart_shield_taddr = ffi.Pointer<ffi.Int8> Function(
-  int coin,
-  int account,
-);
-
-typedef _c_set_lwd_url = ffi.Void Function(
-  ffi.Uint8 coin,
-  ffi.Pointer<ffi.Int8> url,
-);
-
-typedef _dart_set_lwd_url = void Function(
-  int coin,
-  ffi.Pointer<ffi.Int8> url,
+typedef _dart_scan_transparent_accounts = void Function(
+  int gap_limit,
 );
 
 typedef _c_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> recipients_json,
   ffi.Int8 use_transparent,
   ffi.Uint32 anchor_offset,
 );
 
 typedef _dart_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
-  int coin,
-  int account,
   ffi.Pointer<ffi.Int8> recipients_json,
   int use_transparent,
   int anchor_offset,
 );
 
 typedef _c_sign = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> tx_filename,
   ffi.Int64 port,
 );
 
 typedef _dart_sign = ffi.Pointer<ffi.Int8> Function(
-  int coin,
-  int account,
   ffi.Pointer<ffi.Int8> tx_filename,
   int port,
 );
 
 typedef _c_broadcast = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> tx_filename,
 );
 
 typedef _dart_broadcast = ffi.Pointer<ffi.Int8> Function(
-  int coin,
   ffi.Pointer<ffi.Int8> tx_filename,
 );
 
 typedef _c_broadcast_txhex = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> txhex,
 );
 
 typedef _dart_broadcast_txhex = ffi.Pointer<ffi.Int8> Function(
-  int coin,
   ffi.Pointer<ffi.Int8> txhex,
 );
 
-typedef _c_ledger_sign = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
-  ffi.Pointer<ffi.Int8> tx_filename,
-);
+typedef _c_get_activation_date = ffi.Uint32 Function();
 
-typedef _dart_ledger_sign = ffi.Pointer<ffi.Int8> Function(
-  int coin,
-  ffi.Pointer<ffi.Int8> tx_filename,
-);
-
-typedef _c_get_activation_date = ffi.Uint32 Function(
-  ffi.Uint8 coin,
-);
-
-typedef _dart_get_activation_date = int Function(
-  int coin,
-);
+typedef _dart_get_activation_date = int Function();
 
 typedef _c_get_block_by_time = ffi.Uint32 Function(
-  ffi.Uint8 coin,
   ffi.Uint32 time,
 );
 
 typedef _dart_get_block_by_time = int Function(
-  int coin,
   int time,
 );
 
 typedef _c_sync_historical_prices = ffi.Uint32 Function(
-  ffi.Uint8 coin,
   ffi.Int64 now,
   ffi.Uint32 days,
   ffi.Pointer<ffi.Int8> currency,
 );
 
 typedef _dart_sync_historical_prices = int Function(
-  int coin,
   int now,
   int days,
   ffi.Pointer<ffi.Int8> currency,
 );
 
-typedef _c_get_ua = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> sapling_addr,
-  ffi.Pointer<ffi.Int8> transparent_addr,
-);
-
-typedef _dart_get_ua = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> sapling_addr,
-  ffi.Pointer<ffi.Int8> transparent_addr,
-);
-
-typedef _c_get_sapling = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> ua_addr,
-);
-
-typedef _dart_get_sapling = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> ua_addr,
-);
-
 typedef _c_store_contact = ffi.Void Function(
-  ffi.Uint8 coin,
   ffi.Uint32 id,
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> address,
@@ -1128,7 +811,6 @@ typedef _c_store_contact = ffi.Void Function(
 );
 
 typedef _dart_store_contact = void Function(
-  int coin,
   int id,
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> address,
@@ -1136,16 +818,34 @@ typedef _dart_store_contact = void Function(
 );
 
 typedef _c_commit_unsaved_contacts = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
   ffi.Uint32 anchor_offset,
 );
 
 typedef _dart_commit_unsaved_contacts = ffi.Pointer<ffi.Int8> Function(
-  int coin,
-  int account,
   int anchor_offset,
 );
+
+typedef _c_mark_message_read = ffi.Void Function(
+  ffi.Uint32 message,
+  ffi.Int8 read,
+);
+
+typedef _dart_mark_message_read = void Function(
+  int message,
+  int read,
+);
+
+typedef _c_mark_all_messages_read = ffi.Void Function(
+  ffi.Int8 read,
+);
+
+typedef _dart_mark_all_messages_read = void Function(
+  int read,
+);
+
+typedef _c_truncate_data = ffi.Void Function();
+
+typedef _dart_truncate_data = void Function();
 
 typedef _c_delete_account = ffi.Void Function(
   ffi.Uint8 coin,
@@ -1157,35 +857,23 @@ typedef _dart_delete_account = void Function(
   int account,
 );
 
-typedef _c_truncate_data = ffi.Void Function(
-  ffi.Uint8 coin,
-);
-
-typedef _dart_truncate_data = void Function(
-  int coin,
-);
-
 typedef _c_make_payment_uri = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> address,
   ffi.Uint64 amount,
   ffi.Pointer<ffi.Int8> memo,
 );
 
 typedef _dart_make_payment_uri = ffi.Pointer<ffi.Int8> Function(
-  int coin,
   ffi.Pointer<ffi.Int8> address,
   int amount,
   ffi.Pointer<ffi.Int8> memo,
 );
 
 typedef _c_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> uri,
 );
 
 typedef _dart_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
-  int coin,
   ffi.Pointer<ffi.Int8> uri,
 );
 
@@ -1210,87 +898,3 @@ typedef _dart_restore_full_backup = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> key,
   ffi.Pointer<ffi.Int8> backup,
 );
-
-typedef _c_store_share_secret = ffi.Void Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
-  ffi.Pointer<ffi.Int8> secret,
-);
-
-typedef _dart_store_share_secret = void Function(
-  int coin,
-  int account,
-  ffi.Pointer<ffi.Int8> secret,
-);
-
-typedef _c_get_share_secret = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
-);
-
-typedef _dart_get_share_secret = ffi.Pointer<ffi.Int8> Function(
-  int coin,
-  int account,
-);
-
-typedef _c_run_aggregator = ffi.Void Function(
-  ffi.Pointer<ffi.Int8> secret_share,
-  ffi.Uint16 port,
-  ffi.Int64 send_port,
-);
-
-typedef _dart_run_aggregator = void Function(
-  ffi.Pointer<ffi.Int8> secret_share,
-  int port,
-  int send_port,
-);
-
-typedef _c_shutdown_aggregator = ffi.Void Function();
-
-typedef _dart_shutdown_aggregator = void Function();
-
-typedef _c_submit_multisig_tx = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> tx_json,
-  ffi.Uint16 port,
-);
-
-typedef _dart_submit_multisig_tx = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> tx_json,
-  int port,
-);
-
-typedef _c_run_multi_signer = ffi.Uint32 Function(
-  ffi.Pointer<ffi.Int8> address,
-  ffi.Uint64 amount,
-  ffi.Pointer<ffi.Int8> secret_share,
-  ffi.Pointer<ffi.Int8> aggregator_url,
-  ffi.Pointer<ffi.Int8> my_url,
-  ffi.Uint16 port,
-);
-
-typedef _dart_run_multi_signer = int Function(
-  ffi.Pointer<ffi.Int8> address,
-  int amount,
-  ffi.Pointer<ffi.Int8> secret_share,
-  ffi.Pointer<ffi.Int8> aggregator_url,
-  ffi.Pointer<ffi.Int8> my_url,
-  int port,
-);
-
-typedef _c_split_account = ffi.Pointer<ffi.Int8> Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 threshold,
-  ffi.Uint32 participants,
-  ffi.Uint32 account,
-);
-
-typedef _dart_split_account = ffi.Pointer<ffi.Int8> Function(
-  int coin,
-  int threshold,
-  int participants,
-  int account,
-);
-
-typedef _c_dummy_export = ffi.Void Function();
-
-typedef _dart_dummy_export = void Function();

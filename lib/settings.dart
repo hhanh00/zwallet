@@ -20,6 +20,7 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
   var _thresholdController = TextEditingController(
       text: decimalFormat(settings.autoShieldThreshold, 3));
   var _memoController = TextEditingController();
+  var _gapLimitController = TextEditingController(text: "${settings.gapLimit}");
   var _currency = settings.currency;
   var _needAuth = false;
   late TabController _tabController;
@@ -216,6 +217,13 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                             name: 'memo',
                             controller: _memoController,
                             onSaved: _onMemo),
+                          if (!simpleMode ) FormBuilderTextField(
+                              decoration: InputDecoration(
+                                  labelText: s.gapLimit),
+                              name: 'gap_limit',
+                              keyboardType: TextInputType.number,
+                              controller: _gapLimitController,
+                              onSaved: _ongapLimit),
                         ButtonBar(children: confirmButtons(context, _onSave))
                         ]))))));
   }
@@ -290,6 +298,10 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
 
   _onAnchorOffset(v) {
     settings.setAnchorOffset(int.parse(v));
+  }
+
+  _ongapLimit(v) {
+    settings.setGapLimit(int.parse(v));
   }
 
   _onGetTx(v) {

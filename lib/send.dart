@@ -241,8 +241,6 @@ class SendState extends State<SendPage> {
     if (v == null || v.isEmpty) return s.addressIsEmpty;
     final suggestion = getSuggestion(v);
     if (suggestion != null) return null;
-    final zaddr = WarpApi.getSaplingFromUA(v);
-    if (zaddr.isNotEmpty) return null;
     if (!WarpApi.validAddress(active.coin, v)) return s.invalidAddress;
     return null;
   }
@@ -293,7 +291,7 @@ class SendState extends State<SendPage> {
   }
 
   void _setPaymentURI(String uri) {
-    final json = WarpApi.parsePaymentURI(active.coin, uri);
+    final json = WarpApi.parsePaymentURI(uri);
     try {
       final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
       setState(() {
@@ -343,10 +341,9 @@ class SendState extends State<SendPage> {
       if (approved) {
         int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toBigInt().toInt();
         final memo = _memoController.text;
-        final address = unwrapUA(_address);
         final subject = _subjectController.text;
         final recipient = Recipient(
-          address,
+          _address,
           amount,
           _replyTo,
           subject,
@@ -486,7 +483,7 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
     await active.update();
   } else {
-    final txjson = WarpApi.prepareTx(active.coin, active.id, recipients,
+    final txjson = WarpApi.prepareTx(recipients,
         useTransparent, settings.anchorOffset);
     await saveFile(context, txjson, "tx.json", s.unsignedTransactionFile);
 

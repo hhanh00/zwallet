@@ -57,7 +57,7 @@ class HomeState extends State<HomePage> {
         syncStatus.setSyncHeight(h);
         eta.checkpoint(h, DateTime.now());
       } else {
-        WarpApi.mempoolReset(active.coin, syncStatus.latestHeight);
+        WarpApi.mempoolReset();
       }
     });
   }
@@ -303,20 +303,20 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     final result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
-      final res = WarpApi.broadcast(active.coin, result.files.single.path!);
+      final res = WarpApi.broadcast(result.files.single.path!);
       final snackBar = SnackBar(content: Text(res));
       rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     }
   }
 
   _ledger() async {
-    final result = await FilePicker.platform.pickFiles();
-
-    if (result != null) {
-      final res = WarpApi.ledgerSign(active.coin, result.files.single.path!);
-      final snackBar = SnackBar(content: Text(res));
-      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
-    }
+    // final result = await FilePicker.platform.pickFiles();
+    //
+    // if (result != null) {
+    //   final res = WarpApi.ledgerSign(active.coin, result.files.single.path!);
+    //   final snackBar = SnackBar(content: Text(res));
+    //   rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+    // }
   }
 
   _convertToWatchOnly() async {
