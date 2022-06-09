@@ -142,7 +142,7 @@ flutter pub run msix:create
 ```
 
 ### MacOS
-- On M1 macs, run rustup default stable-x86_64-apple-darwin
+- On M1 macs, run rustup default stable-x86_64-apple-darwin for x64 and stable-aarch64-apple-darwin for M1
 - MacOS is the trickiest one. Open the xcode workspace.
 - Add in Signing & Capabilities: Network server & Client and R/W file access
 to user selected files
