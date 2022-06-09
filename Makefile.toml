@@ -71,7 +71,7 @@ condition = { platforms = ["mac"], env_true = ["RELEASE"] }
 description = "Build ios targets."
 category = "Build"
 command = "cargo"
-args = ["lipo", "--release", "--targets", "aarch64-apple-ios"]
+args = ["lipo", "--release", "--targets", "aarch64-apple-ios", "--features", "dart_ffi"]
 dependencies = [
     "setup-crate-type-ios",
 ]
@@ -81,8 +81,8 @@ script_runner = "@duckscript"
 condition = { platforms = ["mac"] }
 script = [
     """
-    cp ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/target/universal/${LIB_OUT_DIR}/lib${CARGO_MAKE_CRATE_FS_NAME}.a \
-    ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/warp_api_ffi/ios/lib${CARGO_MAKE_CRATE_FS_NAME}.a
+    cp ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/target/universal/${LIB_OUT_DIR}/libwarp_api_ffi.a \
+    ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/warp_api_ffi/ios/libwarp_api_ffi.a
     """,
     """
     cp ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/native/${CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER}/binding.h \
