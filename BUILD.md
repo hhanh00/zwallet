@@ -136,6 +136,11 @@ Copy `warp_api_ffi.dll` into the Release directory and also add:
 - `vcruntime140_1.dll`
 Then zip.
 
+For a MSIX,
+```
+flutter pub run msix:create
+```
+
 ### MacOS
 - On M1 macs, run rustup default stable-x86_64-apple-darwin
 - MacOS is the trickiest one. Open the xcode workspace.
