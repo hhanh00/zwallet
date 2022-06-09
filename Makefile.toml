@@ -119,7 +119,8 @@ args = [
   "${ANDROID_PLATFORM_VERSION}", 
   "--target", 
   "${ANDROID_BUILD_TARGET}",
-  "build"
+  "build",
+  "--features=dart_ffi"
 ]
 
 [tasks.android-build-release]
@@ -133,7 +134,8 @@ args = [
   "--target", 
   "${ANDROID_BUILD_TARGET}", 
   "build",
-  "--release"
+  "--release",
+  "--features=dart_ffi"
 ]
 
 [tasks.android-aarch64]
