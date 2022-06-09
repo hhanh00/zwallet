@@ -92,8 +92,8 @@ for each platform.
 The repository does not include the project generated files.
 Run `flutter create --platform=windows,linux,macos .` to generate them.
 
-First compile the rust code. In `native/warp_api_ffi`, edit `Cargo.toml`
-to change the library crate type to `cdylib`. Then `cargo build --release`.
+First compile the rust code. In `native/zcash-sync`, edit `Cargo.toml`
+to change the library crate type to `cdylib`. Then `cargo build --release --features=dart_ffi`.
 This should produce a dynamic library under `target/release` in the project root
 directory.
 
