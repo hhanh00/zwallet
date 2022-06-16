@@ -39,6 +39,10 @@ class WarpApi {
     throw UnsupportedError('This platform is not supported.');
   }
 
+  static bool getError() {
+    return warp_api_lib.get_error() != 0;
+  }
+
   static initWallet(String dbPath) {
     warp_api_lib.init_wallet(
         dbPath.toNativeUtf8().cast<Int8>());

@@ -5,3 +5,6 @@ members = ["native/*"]
 lto = true
 codegen-units = 1
 debug = false
+
+[patch."https://github.com/hhanh00/zcash-params.git"]
+zcash_params = { path = "native/zcash-params" }

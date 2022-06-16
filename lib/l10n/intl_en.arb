@@ -22,7 +22,7 @@
   "shieldTransparentBalance": "Shield Transparent Balance",
   "doYouWantToTransferYourEntireTransparentBalanceTo": "Do you want to transfer your entire transparent balance to your shielded address? A Network fee of 0.01 m{ticker} will be deducted.",
   "shieldingInProgress": "Shielding in progress...",
-  "txId": "TX ID",
+  "txId": "TX ID: {txid}",
   "pleaseAuthenticateToShowAccountSeed": "Please authenticate to show account seed",
   "noAuthenticationMethod": "No Authentication Method",
   "rescanFrom": "Rescan from...",
@@ -224,5 +224,7 @@
   "editContact": "Edit Contact",
   "now": "Now",
   "protectOpen": "Protect Open",
-  "gapLimit": "Gap Limit"
+  "gapLimit": "Gap Limit",
+  "error": "ERROR: {msg}",
+  "paymentInProgress": "Payment in progress..."
 }

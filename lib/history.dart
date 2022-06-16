@@ -20,6 +20,7 @@ class HistoryState extends State<HistoryWidget>
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     super.build(context);
     return SingleChildScrollView(
         padding: EdgeInsets.all(4),
@@ -34,15 +35,15 @@ class HistoryState extends State<HistoryWidget>
               columns: [
                 DataColumn(
                     label: settings.showConfirmations
-                        ? Text(S.of(context).confs)
-                        : Text(S.of(context).height),
+                        ? Text(s.confs)
+                        : Text(s.height),
                     onSort: (_, __) {
                       setState(() {
                         settings.toggleShowConfirmations();
                       });
                     }),
                 DataColumn(
-                  label: Text(S.of(context).datetime +
+                  label: Text(s.datetime +
                       active.txSortConfig.getIndicator("time")),
                   onSort: (_, __) {
                     setState(() {
@@ -51,7 +52,7 @@ class HistoryState extends State<HistoryWidget>
                   },
                 ),
                 DataColumn(
-                  label: Text(S.of(context).amount +
+                  label: Text(s.amount +
                       active.txSortConfig.getIndicator("amount")),
                   numeric: true,
                   onSort: (_, __) {
@@ -61,7 +62,7 @@ class HistoryState extends State<HistoryWidget>
                   },
                 ),
                 DataColumn(
-                  label: Text(S.of(context).txId +
+                  label: Text('TXID' +
                       active.txSortConfig.getIndicator("txid")),
                   onSort: (_, __) {
                     setState(() {
@@ -70,7 +71,7 @@ class HistoryState extends State<HistoryWidget>
                   },
                 ),
                 DataColumn(
-                  label: Text(S.of(context).address +
+                  label: Text(s.address +
                       active.txSortConfig.getIndicator("address")),
                   onSort: (_, __) {
                     setState(() {
@@ -79,7 +80,7 @@ class HistoryState extends State<HistoryWidget>
                   },
                 ),
                 DataColumn(
-                  label: Text(S.of(context).memo +
+                  label: Text(s.memo +
                       active.txSortConfig.getIndicator("memo")),
                   onSort: (_, __) {
                     setState(() {

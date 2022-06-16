@@ -18,6 +18,15 @@ class NativeLibrary {
           lookup)
       : _lookup = lookup;
 
+  void dummy_export() {
+    return _dummy_export();
+  }
+
+  late final _dummy_export_ptr =
+      _lookup<ffi.NativeFunction<_c_dummy_export>>('dummy_export');
+  late final _dart_dummy_export _dummy_export =
+      _dummy_export_ptr.asFunction<_dart_dummy_export>();
+
   void dart_post_cobject(
     ffi.Pointer<ffi.Void> ptr,
   ) {
@@ -30,6 +39,15 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_dart_post_cobject>>('dart_post_cobject');
   late final _dart_dart_post_cobject _dart_post_cobject =
       _dart_post_cobject_ptr.asFunction<_dart_dart_post_cobject>();
+
+  int get_error() {
+    return _get_error();
+  }
+
+  late final _get_error_ptr =
+      _lookup<ffi.NativeFunction<_c_get_error>>('get_error');
+  late final _dart_get_error _get_error =
+      _get_error_ptr.asFunction<_dart_get_error>();
 
   void init_wallet(
     ffi.Pointer<ffi.Int8> db_path,
@@ -563,6 +581,10 @@ class NativeLibrary {
       _restore_full_backup_ptr.asFunction<_dart_restore_full_backup>();
 }
 
+typedef _c_dummy_export = ffi.Void Function();
+
+typedef _dart_dummy_export = void Function();
+
 typedef _c_dart_post_cobject = ffi.Void Function(
   ffi.Pointer<ffi.Void> ptr,
 );
@@ -570,6 +592,10 @@ typedef _c_dart_post_cobject = ffi.Void Function(
 typedef _dart_dart_post_cobject = void Function(
   ffi.Pointer<ffi.Void> ptr,
 );
+
+typedef _c_get_error = ffi.Int8 Function();
+
+typedef _dart_get_error = int Function();
 
 typedef _c_init_wallet = ffi.Void Function(
   ffi.Pointer<ffi.Int8> db_path,

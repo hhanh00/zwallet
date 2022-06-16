@@ -635,20 +635,21 @@ abstract class _ETAStore with Store {
 
   @computed
   String get eta {
+    final defaultMsg = "Calculating ETA";
     final p = prev;
     final c = current;
-    if (p == null || c == null) return "";
+    if (p == null || c == null) return defaultMsg;
     if (c.timestamp.millisecondsSinceEpoch ==
-        p.timestamp.millisecondsSinceEpoch) return "";
+        p.timestamp.millisecondsSinceEpoch) return defaultMsg;
     final speed = (c.height - p.height) /
         (c.timestamp.millisecondsSinceEpoch -
             p.timestamp.millisecondsSinceEpoch);
-    if (speed == 0) return "";
+    if (speed == 0) return defaultMsg;
     final eta = (syncStatus.latestHeight - c.height) / speed;
-    if (eta <= 0) return "";
+    if (eta <= 0) return defaultMsg;
     final duration =
         Duration(milliseconds: eta.floor()).toString().split('.')[0];
-    return "(ETA: $duration)";
+    return "ETA: $duration";
   }
 }
 

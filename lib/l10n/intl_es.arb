@@ -22,7 +22,7 @@
   "shieldTransparentBalance":"Blindar Saldo Transparente",
   "doYouWantToTransferYourEntireTransparentBalanceTo":"¿Quiere transferir su saldo transparente a su dirección blindada? ",
   "shieldingInProgress":"Blindaje en progreso…",
-  "txId":"TX ID:",
+  "txId":"TX ID: {txId}",
   "pleaseAuthenticateToShowAccountSeed":"Autentíquese para ver la semilla de la cuenta",
   "noAuthenticationMethod":"Sin método de autenticación",
   "rescanFrom":"¿Escanear desde?",
@@ -222,5 +222,7 @@
   "editContact": "Editar Contacto",
   "now": "Ahora",
   "protectOpen": "Proteger presentar",
-  "gapLimit": "Brecha"
+  "gapLimit": "Brecha",
+  "error": "FALTA: {msg}",
+  "paymentInProgress": "Pago en curso..."
 }
