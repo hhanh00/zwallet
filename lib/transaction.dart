@@ -33,7 +33,7 @@ class TransactionState extends State<TransactionPage> {
         appBar: AppBar(title: Text(S.of(context).transactionDetails)),
         body: ListView(padding: EdgeInsets.all(16), children: [
           ListTile(
-              title: Text(S.of(context).txId), subtitle: SelectableText('${tx.fullTxId}')),
+              title: Text('TXID'), subtitle: SelectableText('${tx.fullTxId}')),
           ListTile(
               title: Text(S.of(context).height), subtitle: SelectableText('${tx.height}')),
           ListTile(

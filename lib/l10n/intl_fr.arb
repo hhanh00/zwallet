@@ -22,7 +22,7 @@
   "shieldTransparentBalance": "Masquer le solde transparent",
   "doYouWantToTransferYourEntireTransparentBalanceTo": "Voulez-vous transférer l'intégralité de votre solde transparent à votre adresse protégée?",
   "shieldingInProgress": "Masquage en cours...",
-  "txId": "ID de tx",
+  "txId": "ID de tx: {txId}",
   "pleaseAuthenticateToShowAccountSeed": "Veuillez vous authentifier pour voir la graine du compte",
   "noAuthenticationMethod": "Pas de méthode d'authentification",
   "rescanFrom": "Reparcourir à partir de...?",
@@ -222,5 +222,7 @@
   "editContact": "Changer le Contact",
   "now": "Maintenant",
   "protectOpen": "Ouverture protégée",
-  "gapLimit": "Ecart Limite"
+  "gapLimit": "Ecart Limite",
+  "error": "ERREUR: {msg}",
+  "paymentInProgress": "Payment en cours..."
 }

@@ -280,13 +280,13 @@ class S {
     );
   }
 
-  /// `TX ID`
-  String get txId {
+  /// `TX ID: {txid}`
+  String txId(Object txid) {
     return Intl.message(
-      'TX ID',
+      'TX ID: $txid',
       name: 'txId',
       desc: '',
-      args: [],
+      args: [txid],
     );
   }
 
@@ -2307,6 +2307,26 @@ class S {
     return Intl.message(
       'Gap Limit',
       name: 'gapLimit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ERROR: {msg}`
+  String error(Object msg) {
+    return Intl.message(
+      'ERROR: $msg',
+      name: 'error',
+      desc: '',
+      args: [msg],
+    );
+  }
+
+  /// `Payment in progress...`
+  String get paymentInProgress {
+    return Intl.message(
+      'Payment in progress...',
+      name: 'paymentInProgress',
       desc: '',
       args: [],
     );

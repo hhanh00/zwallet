@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobx/mobx.dart';
@@ -473,13 +474,18 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
 
   if (active.canPay) {
     Navigator.of(context).pop();
-    final tx = await WarpApi.sendPayment(active.coin, active.id, recipients,
+    active.setBanner(s.paymentInProgress);
+    final res = await WarpApi.sendPayment(active.coin, active.id, recipients,
         useTransparent, settings.anchorOffset, (progress) {
           progressPort.sendPort.send(progress);
         });
     progressPort.sendPort.send(0);
-
-    final snackBar2 = SnackBar(content: Text("${s.txId}: $tx"));
+    active.setBanner("");
+    final isError = WarpApi.getError();
+    final msg = isError ? s.error(res) : s.txId(res);
+    final player = AudioPlayer();
+    await player.play(AssetSource(isError ? "error.mp3" : "success.mp3"));
+    final snackBar2 = SnackBar(content: Text(msg));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
     await active.update();
   } else {

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 import 'generated/l10n.dart';
 import 'main.dart';
@@ -49,14 +50,28 @@ class SyncStatusWidget extends StatelessWidget {
         final time = eta.eta;
         final syncedHeight = syncStatus.syncedHeight;
         final latestHeight = syncStatus.latestHeight;
+        final percent = latestHeight > 0 ? 100 * (syncedHeight ?? 0) ~/ latestHeight : 0;
         final text =  latestHeight == 0 ? Text(s.disconnected)
             : syncedHeight == null
             ? Text(s.rescanNeeded)
             : syncStatus.isSynced()
                 ? Text('$syncedHeight', style: theme.textTheme.caption)
-                : Text('$syncedHeight / $latestHeight $time',
-                    style: theme.textTheme.caption!
-                        .apply(color: theme.primaryColor));
+                : AnimatedTextKit(
+                    key: ValueKey(syncedHeight),
+                    repeatForever: true,
+                    animatedTexts: [
+                      FadeAnimatedText('$syncedHeight / $latestHeight',
+                          textStyle: theme.textTheme.caption!
+                              .apply(color: theme.primaryColor)),
+                      FadeAnimatedText('SYNCING $percent %',
+                          textStyle: theme.textTheme.caption!
+                              .apply(color: theme.primaryColor)),
+                      FadeAnimatedText('$time',
+                          textStyle: theme.textTheme.caption!
+                              .apply(color: theme.primaryColor)),
+
+        ]);
+
         return TextButton(onPressed: _onSync, child: text);
       })
     ]);
@@ -277,8 +292,17 @@ class ProgressState extends State<ProgressWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_progress == 0) return Container();
-    return LinearProgressIndicator(value: _progress / 100.0);
+    return Observer(builder: (context) => Column(children: [
+      if (active.banner.isNotEmpty) DefaultTextStyle(
+        style: TextStyle(fontSize: 17),
+          child: AnimatedTextKit(
+            repeatForever: true,
+            animatedTexts: [
+              TypewriterAnimatedText(active.banner)]
+      )),
+      Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+      if (_progress != 0) LinearProgressIndicator(value: _progress / 100.0),
+    ]));
   }
 }
 

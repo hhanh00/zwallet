@@ -138,6 +138,7 @@ abstract class _ActiveAccount with Store {
   @observable List<PnL> pnls = [];
   @observable ObservableList<ZMessage> messages = ObservableList();
   @observable int unread = 0;
+  @observable String banner = "";
 
   @observable
   bool showTAddr = false;
@@ -376,6 +377,11 @@ abstract class _ActiveAccount with Store {
     final message = messages[index];
     final dbr = DbReader(active.coin, active.id);
     return await dbr.getNextMessage(message.subject, message.height, id);
+  }
+
+  @action
+  void setBanner(String msg) {
+    banner = msg;
   }
 }
 
