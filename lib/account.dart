@@ -292,9 +292,11 @@ class ProgressState extends State<ProgressWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Observer(builder: (context) => Column(children: [
       if (active.banner.isNotEmpty) DefaultTextStyle(
-        style: TextStyle(fontSize: 17),
+        style: theme.textTheme.titleLarge!,
           child: AnimatedTextKit(
             repeatForever: true,
             animatedTexts: [

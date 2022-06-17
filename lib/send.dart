@@ -484,7 +484,7 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
     final isError = WarpApi.getError();
     final msg = isError ? s.error(res) : s.txId(res);
     final player = AudioPlayer();
-    await player.play(AssetSource(isError ? "error.mp3" : "success.mp3"));
+    await player.play(AssetSource(isError ? "fail.mp3" : "success.mp3"));
     final snackBar2 = SnackBar(content: Text(msg));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
     await active.update();
