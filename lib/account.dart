@@ -60,13 +60,13 @@ class SyncStatusWidget extends StatelessWidget {
                     key: ValueKey(syncedHeight),
                     repeatForever: true,
                     animatedTexts: [
-                      FadeAnimatedText('$syncedHeight / $latestHeight',
+                      WavyAnimatedText('$syncedHeight / $latestHeight',
                           textStyle: theme.textTheme.caption!
                               .apply(color: theme.primaryColor)),
-                      FadeAnimatedText('SYNCING $percent %',
+                      WavyAnimatedText('SYNCING $percent %',
                           textStyle: theme.textTheme.caption!
                               .apply(color: theme.primaryColor)),
-                      FadeAnimatedText('$time',
+                      WavyAnimatedText('$time',
                           textStyle: theme.textTheme.caption!
                               .apply(color: theme.primaryColor)),
 
