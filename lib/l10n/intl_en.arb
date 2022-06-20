@@ -226,5 +226,6 @@
   "protectOpen": "Protect Open",
   "gapLimit": "Gap Limit",
   "error": "ERROR: {msg}",
-  "paymentInProgress": "Payment in progress..."
+  "paymentInProgress": "Payment in progress...",
+  "useQrForOfflineSigning": "Use QR for offline signing"
 }

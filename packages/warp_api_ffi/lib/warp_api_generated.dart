@@ -346,11 +346,11 @@ class NativeLibrary {
       _prepare_multi_payment_ptr.asFunction<_dart_prepare_multi_payment>();
 
   ffi.Pointer<ffi.Int8> sign(
-    ffi.Pointer<ffi.Int8> tx_filename,
+    ffi.Pointer<ffi.Int8> tx,
     int port,
   ) {
     return _sign(
-      tx_filename,
+      tx,
       port,
     );
   }
@@ -358,31 +358,18 @@ class NativeLibrary {
   late final _sign_ptr = _lookup<ffi.NativeFunction<_c_sign>>('sign');
   late final _dart_sign _sign = _sign_ptr.asFunction<_dart_sign>();
 
-  ffi.Pointer<ffi.Int8> broadcast(
-    ffi.Pointer<ffi.Int8> tx_filename,
+  ffi.Pointer<ffi.Int8> broadcast_tx(
+    ffi.Pointer<ffi.Int8> tx_str,
   ) {
-    return _broadcast(
-      tx_filename,
+    return _broadcast_tx(
+      tx_str,
     );
   }
 
-  late final _broadcast_ptr =
-      _lookup<ffi.NativeFunction<_c_broadcast>>('broadcast');
-  late final _dart_broadcast _broadcast =
-      _broadcast_ptr.asFunction<_dart_broadcast>();
-
-  ffi.Pointer<ffi.Int8> broadcast_txhex(
-    ffi.Pointer<ffi.Int8> txhex,
-  ) {
-    return _broadcast_txhex(
-      txhex,
-    );
-  }
-
-  late final _broadcast_txhex_ptr =
-      _lookup<ffi.NativeFunction<_c_broadcast_txhex>>('broadcast_txhex');
-  late final _dart_broadcast_txhex _broadcast_txhex =
-      _broadcast_txhex_ptr.asFunction<_dart_broadcast_txhex>();
+  late final _broadcast_tx_ptr =
+      _lookup<ffi.NativeFunction<_c_broadcast_tx>>('broadcast_tx');
+  late final _dart_broadcast_tx _broadcast_tx =
+      _broadcast_tx_ptr.asFunction<_dart_broadcast_tx>();
 
   int get_activation_date() {
     return _get_activation_date();
@@ -579,6 +566,34 @@ class NativeLibrary {
           'restore_full_backup');
   late final _dart_restore_full_backup _restore_full_backup =
       _restore_full_backup_ptr.asFunction<_dart_restore_full_backup>();
+
+  ffi.Pointer<ffi.Int8> split_data(
+    int id,
+    ffi.Pointer<ffi.Int8> data,
+  ) {
+    return _split_data(
+      id,
+      data,
+    );
+  }
+
+  late final _split_data_ptr =
+      _lookup<ffi.NativeFunction<_c_split_data>>('split_data');
+  late final _dart_split_data _split_data =
+      _split_data_ptr.asFunction<_dart_split_data>();
+
+  ffi.Pointer<ffi.Int8> merge_data(
+    ffi.Pointer<ffi.Int8> drop,
+  ) {
+    return _merge_data(
+      drop,
+    );
+  }
+
+  late final _merge_data_ptr =
+      _lookup<ffi.NativeFunction<_c_merge_data>>('merge_data');
+  late final _dart_merge_data _merge_data =
+      _merge_data_ptr.asFunction<_dart_merge_data>();
 }
 
 typedef _c_dummy_export = ffi.Void Function();
@@ -780,29 +795,21 @@ typedef _dart_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
 );
 
 typedef _c_sign = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> tx_filename,
+  ffi.Pointer<ffi.Int8> tx,
   ffi.Int64 port,
 );
 
 typedef _dart_sign = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> tx_filename,
+  ffi.Pointer<ffi.Int8> tx,
   int port,
 );
 
-typedef _c_broadcast = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> tx_filename,
+typedef _c_broadcast_tx = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> tx_str,
 );
 
-typedef _dart_broadcast = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> tx_filename,
-);
-
-typedef _c_broadcast_txhex = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> txhex,
-);
-
-typedef _dart_broadcast_txhex = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> txhex,
+typedef _dart_broadcast_tx = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> tx_str,
 );
 
 typedef _c_get_activation_date = ffi.Uint32 Function();
@@ -923,4 +930,22 @@ typedef _c_restore_full_backup = ffi.Pointer<ffi.Int8> Function(
 typedef _dart_restore_full_backup = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> key,
   ffi.Pointer<ffi.Int8> backup,
+);
+
+typedef _c_split_data = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint32 id,
+  ffi.Pointer<ffi.Int8> data,
+);
+
+typedef _dart_split_data = ffi.Pointer<ffi.Int8> Function(
+  int id,
+  ffi.Pointer<ffi.Int8> data,
+);
+
+typedef _c_merge_data = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> drop,
+);
+
+typedef _dart_merge_data = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> drop,
 );

@@ -2331,6 +2331,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Use QR for offline signing`
+  String get useQrForOfflineSigning {
+    return Intl.message(
+      'Use QR for offline signing',
+      name: 'useQrForOfflineSigning',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

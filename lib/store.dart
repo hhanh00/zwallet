@@ -145,6 +145,9 @@ abstract class _Settings with Store {
   bool protectOpen = false;
 
   @observable
+  bool qrOffline = true;
+
+  @observable
   int gapLimit = 10;
 
   @observable
@@ -184,6 +187,7 @@ abstract class _Settings with Store {
     includeReplyTo = prefs.getBool('include_reply_to') ?? false;
     messageTable = prefs.getBool('message_table') ?? false;
     gapLimit = prefs.getInt('gap_limit') ?? 10;
+    qrOffline = prefs.getBool('qr_offline') ?? true;
 
     primaryColorValue = prefs.getInt('primary') ?? Colors.blue.value;
     primaryVariantColorValue =
@@ -438,6 +442,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     messageTable = v;
     prefs.setBool('message_table', messageTable);
+  }
+
+  @action
+  Future<void> setQrOffline(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('qr_offline', v);
+    qrOffline = v;
   }
 
   @action

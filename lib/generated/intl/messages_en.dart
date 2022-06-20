@@ -388,6 +388,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("Unsigned Transaction File"),
+        "useQrForOfflineSigning":
+            MessageLookupByLibrary.simpleMessage("Use QR for offline signing"),
         "useSettingscurrency": m19,
         "useTransparentBalance":
             MessageLookupByLibrary.simpleMessage("Use Transparent Balance"),

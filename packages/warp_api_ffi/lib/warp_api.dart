@@ -157,7 +157,7 @@ class WarpApi {
     return res.cast<Utf8>().toDartString();
   }
 
-  static Future<String> signOnly(int coin, int account, String txFilename, void Function(int) f) async {
+  static Future<String> signOnly(int coin, int account, String tx, void Function(int) f) async {
     var receivePort = ReceivePort();
     receivePort.listen((progress) {
       f(progress);
@@ -166,16 +166,11 @@ class WarpApi {
     return await compute(
         signOnlyIsolateFn,
         SignOnlyParams(
-            txFilename, receivePort.sendPort));
+            tx, receivePort.sendPort));
   }
 
-  static String broadcast(String txFilename) {
-    final res = warp_api_lib.broadcast(txFilename.toNativeUtf8().cast<Int8>());
-    return res.cast<Utf8>().toDartString();
-  }
-
-  static String broadcastHex(String tx) {
-    final res = warp_api_lib.broadcast_txhex(tx.toNativeUtf8().cast<Int8>());
+  static String broadcast(String txStr) {
+    final res = warp_api_lib.broadcast_tx(txStr.toNativeUtf8().cast<Int8>());
     return res.cast<Utf8>().toDartString();
   }
 
@@ -254,6 +249,17 @@ class WarpApi {
     return res.cast<Utf8>().toDartString();
   }
 
+  static List<String> splitData(int id, String data) {
+    final res = warp_api_lib.split_data(id, data.toNativeUtf8().cast<Int8>()).cast<Utf8>().toDartString();
+    final jsonMap = jsonDecode(res);
+    final raptorq = RaptorQDrops.fromJson(jsonMap);
+    return raptorq.drops;
+  }
+
+  static String mergeData(String drop) {
+    return warp_api_lib.merge_data(drop.toNativeUtf8().cast<Int8>()).cast<Utf8>().toDartString();
+  }
+
   // // static void storeShareSecret(int coin, int account, String secret) {
   // //   warp_api_lib.store_share_secret(coin, account, secret.toNativeUtf8().cast<Int8>());
   // // }
@@ -329,7 +335,7 @@ String sendPaymentIsolateFn(PaymentParams params) {
 
 String signOnlyIsolateFn(SignOnlyParams params) {
   final txId = warp_api_lib.sign(
-      params.txFilename.toNativeUtf8().cast<Int8>(),
+      params.tx.toNativeUtf8().cast<Int8>(),
       params.port.nativePort);
   return txId.cast<Utf8>().toDartString();
 }
@@ -389,10 +395,10 @@ class PaymentParams {
 }
 
 class SignOnlyParams {
-  final String txFilename;
+  final String tx;
   final SendPort port;
 
-  SignOnlyParams(this.txFilename, this.port);
+  SignOnlyParams(this.tx, this.port);
 }
 
 class ShieldTAddrParams {
