@@ -129,6 +129,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "blue": MessageLookupByLibrary.simpleMessage("Blue"),
         "body": MessageLookupByLibrary.simpleMessage("Body"),
         "broadcast": MessageLookupByLibrary.simpleMessage("Broadcast"),
+        "broadcastFromYourOnlineDevice": MessageLookupByLibrary.simpleMessage(
+            "Broadcast from your online device"),
         "budget": MessageLookupByLibrary.simpleMessage("Budget"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "changeAccountName":
@@ -337,6 +339,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Show Messages as Table"),
         "sign": MessageLookupByLibrary.simpleMessage("Sign Transaction"),
         "signOffline": MessageLookupByLibrary.simpleMessage("Sign"),
+        "signOnYourOfflineDevice":
+            MessageLookupByLibrary.simpleMessage("Sign on your offline device"),
+        "signedTx": MessageLookupByLibrary.simpleMessage("Signed Tx"),
         "simple": MessageLookupByLibrary.simpleMessage("Simple"),
         "simpleMode": MessageLookupByLibrary.simpleMessage("Simple Mode"),
         "spendable": MessageLookupByLibrary.simpleMessage("Spendable"),
@@ -388,6 +393,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
         "unsignedTransactionFile":
             MessageLookupByLibrary.simpleMessage("Unsigned Transaction File"),
+        "unsignedTx": MessageLookupByLibrary.simpleMessage("Unsigned Tx"),
         "useQrForOfflineSigning":
             MessageLookupByLibrary.simpleMessage("Use QR for offline signing"),
         "useSettingscurrency": m19,

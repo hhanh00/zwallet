@@ -225,5 +225,9 @@
   "gapLimit": "Brecha",
   "error": "FALTA: {msg}",
   "paymentInProgress": "Pago en curso...",
-  "useQrForOfflineSigning": "Use QR para firmar sin conexión"
+  "useQrForOfflineSigning": "Use QR para firmar sin conexión",
+  "unsignedTx": "No firmado Tx",
+  "signOnYourOfflineDevice": "Firme con tu dispositivo fuera de línea",
+  "signedTx": "Firmado Tx",
+  "broadcastFromYourOnlineDevice": "Transmite desde tu dispositivo en línea"
 }

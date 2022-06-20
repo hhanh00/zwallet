@@ -7,6 +7,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:string_splitter/string_splitter.dart';
 import 'package:warp_api/warp_api.dart';
 import 'generated/l10n.dart';
+import 'main.dart';
 
 class AnimatedQR extends StatefulWidget {
   final String title;
@@ -45,10 +46,13 @@ class AnimatedQRState extends State<AnimatedQR> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final idx = index % widget.chunks.length;
+    final qrSize = getScreenSize(context) / 1.2;
+    print(qrSize);
     return Scaffold(appBar: AppBar(title: Text(widget.title)),
-      body: Padding(padding: EdgeInsets.all(16), child: Column(
+      body: Padding(padding: EdgeInsets.all(16), child: Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          QrImage(key: ValueKey(idx), data: widget.chunks[idx], size: 400, foregroundColor: Colors.white, backgroundColor: Colors.black),
+          QrImage(key: ValueKey(idx), data: widget.chunks[idx], size: qrSize, foregroundColor: Colors.white, backgroundColor: Colors.black),
           Padding(padding: EdgeInsets.symmetric(vertical: 4)),
           Text(widget.caption, style: theme.textTheme.subtitle1),
           Padding(padding: EdgeInsets.symmetric(vertical: 4)),
@@ -59,7 +63,7 @@ class AnimatedQRState extends State<AnimatedQR> {
           )
         ]
       )
-    ));
+    )));
   }
 }
 
@@ -70,7 +74,8 @@ class QrOffline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedQR.init('Unsigned Tx', 'Sign on your offline device', txJson);
+    final s = S.of(context);
+    return AnimatedQR.init(s.unsignedTx, s.signOnYourOfflineDevice, txJson);
   }
 }
 
@@ -81,7 +86,8 @@ class ShowRawTx extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedQR.init('Signed Tx', 'Broadcast from your online device', rawTx);
+    final s = S.of(context);
+    return AnimatedQR.init(s.signedTx, s.broadcastFromYourOnlineDevice, rawTx);
   }
 }
 

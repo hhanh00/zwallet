@@ -472,6 +472,7 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
   if (settings.protectSend &&
       !await authenticate(context, s.pleaseAuthenticateToSend)) return;
 
+  final player = AudioPlayer();
   if (active.canPay) {
     Navigator.of(context).pop();
     active.setBanner(s.paymentInProgress);
@@ -483,7 +484,6 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
     active.setBanner("");
     final isError = WarpApi.getError();
     final msg = isError ? s.error(res) : s.txId(res);
-    final player = AudioPlayer();
     await player.play(AssetSource(isError ? "fail.mp3" : "success.mp3"));
     final snackBar2 = SnackBar(content: Text(msg));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
@@ -491,7 +491,14 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
   } else {
     final txjson = WarpApi.prepareTx(recipients,
         useTransparent, settings.anchorOffset);
-    print(txjson);
+    final isError = WarpApi.getError();
+    if (isError) {
+      final snackBar2 = SnackBar(content: Text(txjson));
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+      await player.play(AssetSource("fail.mp3"));
+      Navigator.of(context).pop();
+      return;
+    }
     if (settings.qrOffline) {
       Navigator.pushReplacementNamed(context, '/qroffline', arguments: txjson);
     }
