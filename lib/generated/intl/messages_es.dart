@@ -129,6 +129,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "blue": MessageLookupByLibrary.simpleMessage("Azul"),
         "body": MessageLookupByLibrary.simpleMessage("Body"),
         "broadcast": MessageLookupByLibrary.simpleMessage("Transmisión"),
+        "broadcastFromYourOnlineDevice": MessageLookupByLibrary.simpleMessage(
+            "Transmite desde tu dispositivo en línea"),
         "budget": MessageLookupByLibrary.simpleMessage("Presupuesto"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
         "changeAccountName":
@@ -339,6 +341,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Mostrar mensajes como Tabla"),
         "sign": MessageLookupByLibrary.simpleMessage("Sign"),
         "signOffline": MessageLookupByLibrary.simpleMessage("Firmar"),
+        "signOnYourOfflineDevice": MessageLookupByLibrary.simpleMessage(
+            "Firme con tu dispositivo fuera de línea"),
+        "signedTx": MessageLookupByLibrary.simpleMessage("Firmado Tx"),
         "simple": MessageLookupByLibrary.simpleMessage("Sencillo"),
         "simpleMode": MessageLookupByLibrary.simpleMessage("Modo simple"),
         "spendable": MessageLookupByLibrary.simpleMessage("Gastable"),
@@ -390,6 +395,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Saldo sin blindaje"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Archivo de transaccion sin firmar"),
+        "unsignedTx": MessageLookupByLibrary.simpleMessage("No firmado Tx"),
         "useQrForOfflineSigning": MessageLookupByLibrary.simpleMessage(
             "Use QR para firmar sin conexión"),
         "useSettingscurrency": m19,

@@ -227,5 +227,9 @@
   "gapLimit": "Gap Limit",
   "error": "ERROR: {msg}",
   "paymentInProgress": "Payment in progress...",
-  "useQrForOfflineSigning": "Use QR for offline signing"
+  "useQrForOfflineSigning": "Use QR for offline signing",
+  "unsignedTx": "Unsigned Tx",
+  "signOnYourOfflineDevice": "Sign on your offline device",
+  "signedTx": "Signed Tx",
+  "broadcastFromYourOnlineDevice": "Broadcast from your online device"
 }

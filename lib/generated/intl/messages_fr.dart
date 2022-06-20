@@ -130,6 +130,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "blue": MessageLookupByLibrary.simpleMessage("Bleu"),
         "body": MessageLookupByLibrary.simpleMessage("Contenu"),
         "broadcast": MessageLookupByLibrary.simpleMessage("Diffusion"),
+        "broadcastFromYourOnlineDevice": MessageLookupByLibrary.simpleMessage(
+            "Diffuser avec l\'appareil connecté en ligne"),
         "budget": MessageLookupByLibrary.simpleMessage("Budget"),
         "cancel": MessageLookupByLibrary.simpleMessage("Annuler"),
         "changeAccountName":
@@ -343,6 +345,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Messages vus en table"),
         "sign": MessageLookupByLibrary.simpleMessage("Sign"),
         "signOffline": MessageLookupByLibrary.simpleMessage("Signer"),
+        "signOnYourOfflineDevice": MessageLookupByLibrary.simpleMessage(
+            "Signer avec l\'appareil sans connexion"),
+        "signedTx": MessageLookupByLibrary.simpleMessage("Tx signée"),
         "simple": MessageLookupByLibrary.simpleMessage("Simple"),
         "simpleMode": MessageLookupByLibrary.simpleMessage("Mode Simple"),
         "spendable": MessageLookupByLibrary.simpleMessage("Dépensable"),
@@ -395,6 +400,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Solde Transparent"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Fichier de transaction non signée"),
+        "unsignedTx": MessageLookupByLibrary.simpleMessage("Tx non signée"),
         "useQrForOfflineSigning": MessageLookupByLibrary.simpleMessage(
             "Utiliser des QR pour signer sans connexion"),
         "useSettingscurrency": m19,

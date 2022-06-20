@@ -2341,6 +2341,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Unsigned Tx`
+  String get unsignedTx {
+    return Intl.message(
+      'Unsigned Tx',
+      name: 'unsignedTx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign on your offline device`
+  String get signOnYourOfflineDevice {
+    return Intl.message(
+      'Sign on your offline device',
+      name: 'signOnYourOfflineDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Signed Tx`
+  String get signedTx {
+    return Intl.message(
+      'Signed Tx',
+      name: 'signedTx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Broadcast from your online device`
+  String get broadcastFromYourOnlineDevice {
+    return Intl.message(
+      'Broadcast from your online device',
+      name: 'broadcastFromYourOnlineDevice',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
