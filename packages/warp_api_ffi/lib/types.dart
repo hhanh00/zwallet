@@ -22,3 +22,14 @@ class Recipient {
   Map<String, dynamic> toJson() => _$RecipientToJson(this);
 }
 
+@JsonSerializable()
+class RaptorQDrops {
+  final List<String> drops;
+
+  RaptorQDrops(this.drops);
+
+  factory RaptorQDrops.fromJson(Map<String, dynamic> json) =>
+      _$RaptorQDropsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RaptorQDropsToJson(this);
+}

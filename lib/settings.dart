@@ -211,6 +211,11 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                               title: Text(s.useTransparentBalance),
                               initialValue: settings.shieldBalance,
                               onSaved: _shieldBalance),
+                          if (!simpleMode) FormBuilderCheckbox(
+                              name: 'use_cold_qr',
+                              title: Text(S.of(context).useQrForOfflineSigning),
+                              initialValue: settings.qrOffline,
+                              onSaved: _qrOffline),
                           if (!simpleMode) FormBuilderTextField(
                             decoration: InputDecoration(
                                 labelText: s.defaultMemo),
@@ -255,6 +260,10 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
 
   _shieldBalance(v) {
     settings.setShieldBalance(v);
+  }
+
+  _qrOffline(v) {
+    settings.setQrOffline(v);
   }
 
   _onAutoShieldThreshold(_) {

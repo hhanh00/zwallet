@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:mobx/mobx.dart';
 import 'package:file_picker/file_picker.dart';
@@ -277,33 +278,55 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   }
 
   _sign() async {
-    final result = await FilePicker.platform.pickFiles();
+    String? tx = null;
+    if (settings.qrOffline) {
+      tx = await scanMultiCode(context);
+    } else {
+      final res = await FilePicker.platform.pickFiles();
+      if (res == null) return;
+      final path = res.files.single.path!;
+      final file = File(path);
+      tx = file.readAsStringSync();
+    }
 
-    if (result != null) {
-      final res = await WarpApi.signOnly(active.coin, active.id, result.files.single.path!, (progress) {
+    if (tx != null) {
+      final res = await WarpApi.signOnly(
+          active.coin, active.id, tx, (progress) {
         progressPort.sendPort.send(progress);
       });
       progressPort.sendPort.send(0);
-      if (res.startsWith("00")) { // first byte is success/error
-        final txRaw = res.substring(2);
-        await saveFile(context, txRaw, 'tx.raw', S.of(context).rawTransaction);
-      }
-      else {
-        final msgHex = res.substring(2);
-        final s = hex.decode(msgHex);
-        final dec = Utf8Decoder();
-        final msg = dec.convert(s);
-        final snackBar = SnackBar(content: Text(msg));
+      final isError = WarpApi.getError();
+      if (isError) {
+        final snackBar = SnackBar(content: Text(res));
         rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+        return;
+      }
+
+      if (settings.qrOffline) {
+        Navigator.of(context).pushReplacementNamed('/showRawTx', arguments: res);
+      } else {
+        await saveFile(context, res, 'tx.raw', S
+            .of(context)
+            .rawTransaction);
       }
     }
   }
 
   _broadcast() async {
-    final result = await FilePicker.platform.pickFiles();
+    String? rawTx;
+    if (settings.qrOffline) {
+      rawTx = await scanMultiCode(context);
+    } else {
+      final result = await FilePicker.platform.pickFiles();
+      if (result != null) {
+        String path = result.files.single.path!;
+        File f = File(path);
+        rawTx = f.readAsStringSync();
+      }
+    }
 
-    if (result != null) {
-      final res = WarpApi.broadcast(result.files.single.path!);
+    if (rawTx != null) {
+      final res = WarpApi.broadcast(rawTx);
       final snackBar = SnackBar(content: Text(res));
       rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     }

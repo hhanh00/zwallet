@@ -491,11 +491,17 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
   } else {
     final txjson = WarpApi.prepareTx(recipients,
         useTransparent, settings.anchorOffset);
-    await saveFile(context, txjson, "tx.json", s.unsignedTransactionFile);
+    print(txjson);
+    if (settings.qrOffline) {
+      Navigator.pushReplacementNamed(context, '/qroffline', arguments: txjson);
+    }
+    else {
+      await saveFile(context, txjson, "tx.json", s.unsignedTransactionFile);
 
-    final snackBar2 = SnackBar(content: Text(s.fileSaved));
-    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
-    Navigator.of(context).pop();
+      final snackBar2 = SnackBar(content: Text(s.fileSaved));
+      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+      Navigator.of(context).pop();
+    }
   }
 }
 

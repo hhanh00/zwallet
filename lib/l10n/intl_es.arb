@@ -224,5 +224,6 @@
   "protectOpen": "Proteger presentar",
   "gapLimit": "Brecha",
   "error": "FALTA: {msg}",
-  "paymentInProgress": "Pago en curso..."
+  "paymentInProgress": "Pago en curso...",
+  "useQrForOfflineSigning": "Use QR para firmar sin conexión"
 }

@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.2.8+239
+version: 1.2.8+240
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -63,7 +63,7 @@ dependencies:
   flutter_barcode_scanner:
     git:
       url: https://github.com/hhanh00/flutter_barcode_scanner.git
-      ref: d338bdc5c0b797d81694f04bd5f52e8171939af5
+      ref: c2c79def4f7fa8c17e9432ca43d307ba0b4a75a3
   flutter_speed_dial: ^5.0.0
   currency_text_input_formatter: ^2.1.2
   sensors_plus: ^1.1.0
@@ -75,6 +75,7 @@ dependencies:
   network_info_plus : ^2.0.2
   animated_text_kit: ^4.2.2
   audioplayers: ^1.0.0
+  string_splitter: any
   flutter_localizations:
     sdk: flutter
 
@@ -128,6 +129,7 @@ flutter:
     - assets/zcash.png
     - assets/success.mp3
     - assets/fail.mp3
+    - assets/ding.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

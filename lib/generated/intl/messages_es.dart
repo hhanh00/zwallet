@@ -390,6 +390,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Saldo sin blindaje"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Archivo de transaccion sin firmar"),
+        "useQrForOfflineSigning": MessageLookupByLibrary.simpleMessage(
+            "Use QR para firmar sin conexión"),
         "useSettingscurrency": m19,
         "useTransparentBalance":
             MessageLookupByLibrary.simpleMessage("Usar Saldo Transp"),
