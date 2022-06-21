@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>Cold Storage :: YWallet</title>
-<link href=/css/nucleus.css?1654395217 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1654395217 rel=stylesheet>
-<link href=/css/hybrid.css?1654395217 rel=stylesheet>
-<link href=/css/featherlight.min.css?1654395217 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1654395217 rel=stylesheet>
-<link href=/css/auto-complete.css?1654395217 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1654395217 rel=stylesheet>
-<link href=/css/theme.css?1654395217 rel=stylesheet>
-<link href=/css/tabs.css?1654395217 rel=stylesheet>
-<link href=/css/hugo-theme.css?1654395217 rel=stylesheet>
-<link href=/css/theme-blue.css?1654395217 rel=stylesheet>
-<link href=/common.css?1654395217 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1654395217></script>
+<link href=/css/nucleus.css?1655805793 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1655805793 rel=stylesheet>
+<link href=/css/hybrid.css?1655805793 rel=stylesheet>
+<link href=/css/featherlight.min.css?1655805793 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1655805793 rel=stylesheet>
+<link href=/css/auto-complete.css?1655805793 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1655805793 rel=stylesheet>
+<link href=/css/theme.css?1655805793 rel=stylesheet>
+<link href=/css/tabs.css?1655805793 rel=stylesheet>
+<link href=/css/hugo-theme.css?1655805793 rel=stylesheet>
+<link href=/css/theme-blue.css?1655805793 rel=stylesheet>
+<link href=/common.css?1655805793 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1655805793></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
@@ -35,10 +35,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1654395217></script>
-<script type=text/javascript src=/js/auto-complete.js?1654395217></script>
+<script type=text/javascript src=/js/lunr.min.js?1655805793></script>
+<script type=text/javascript src=/js/auto-complete.js?1655805793></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1654395217></script>
+<script type=text/javascript src=/js/search.js?1655805793></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -389,15 +389,26 @@ Older versions
 <div class=wrapper>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#preparing-the-unsigned-transaction>Preparing the unsigned transaction</a></li>
+<li><a href=#qr-codes-or-files>QR codes or Files</a></li>
+<li><a href=#preparing-the-unsigned-transaction>Preparing the unsigned transaction</a>
+<ul>
+<li><a href=#qr-code>QR Code</a></li>
+<li><a href=#files>Files</a></li>
+</ul>
+</li>
 <li><a href=#sign>Sign</a>
 <ul>
 <li><a href=#command-line-tool>Command Line Tool</a></li>
-<li><a href=#offline-ywallet>Offline Ywallet</a></li>
+</ul>
+</li>
+<li><a href=#offline-ywallet>Offline Ywallet</a>
+<ul>
+<li><a href=#qr-code-1>QR Code</a></li>
 </ul>
 </li>
 <li><a href=#broadcast>Broadcast</a></li>
 <li><a href=#remarks>Remarks</a></li>
+<li><a href=#demo>Demo</a></li>
 </ul>
 </nav>
 </div>
@@ -424,12 +435,26 @@ is finalized and broadcast.</p>
 that is isolated from the Internet.</p>
 <p><a href=https://en.bitcoin.it/wiki/Cold_storage>Cold Storage in the context of Bitcoin</a></p>
 <p>The same concept is applicable to Zcash.</p>
+<h2 id=qr-codes-or-files>QR codes or Files</h2>
+<img class="img mb-4" src=../img/2022-06-21_17-27-37.png>
+<ul>
+<li>Choose QR codes if your signing device and your cold wallets have
+cameras and are in close proximity,</li>
+<li>Use files otherwise</li>
+</ul>
 <h2 id=preparing-the-unsigned-transaction>Preparing the unsigned transaction</h2>
-<img class="img mb-4" srcset="../img/2022-04-13_17-52-43.png 2x">
 <p>If the account does not have a secret key either because it was restored
 from viewing key or because it was converted to Cold Storage,
 the button Send is dimmed. Instead of signing and broadcasting a transaction,
 the Send page prepares an unsigned transaction.</p>
+<h3 id=qr-code>QR Code</h3>
+<p>If you enabled the &ldquo;Use QR codes for offline signing&rdquo;,
+you will get an animated QR code:</p>
+<img class="img mb-4" src=../img/2022-06-21_17-26-12.png>
+<div class="notices note"><p>The transaction is too large to fit in a single QR code. YWallet uses
+animated QR codes with error correction (RaptorQ).</p>
+</div>
+<h3 id=files>Files</h3>
 <p>Depending on your phone OS, you can save the unsigned transaction to
 a USB key, or to the Cloud.</p>
 <p>The transaction file must be copied to the computer that has the <code>sign</code>
@@ -439,6 +464,9 @@ application.</p>
 <p>There are two options for signing the transaction. You can either use
 a command line tool (with no GUI) or use another phone/device with
 YWallet that you keep offline.</p>
+<div class="notices note"><p>We recommend using another phone as the signer. Please, make sure that it was
+factory reset and that it was never connected to the Internet.</p>
+</div>
 <h3 id=command-line-tool>Command Line Tool</h3>
 <p>You can build the <code>sign</code> app from its <a href=https://github.com/hhanh00/zcash-sync>source code</a></p>
 <p>To run the <code>sign</code> app, you need to create an <code>.env</code> file that has
@@ -451,10 +479,15 @@ a line</p>
 </code></pre></div><p>For example,</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sign tx.json tx.raw
 </code></pre></div><p>Then copy <code>tx.raw</code> back to a USB drive (or Cloud storage)</p>
-<h3 id=offline-ywallet>Offline Ywallet</h3>
+<h2 id=offline-ywallet>Offline Ywallet</h2>
+<img class="img mb-4" src=../img/2022-06-21_17-55-21.png>
 <p>Use the &ldquo;Sign&rdquo; menu. It will ask you to open the unsigned transaction file
 and proceed to sign it. If the current account contains the secret key
 it will create a raw transaction and offer you to save it.</p>
+<h3 id=qr-code-1>QR Code</h3>
+<p>Point your camera and scan the animated QR code. Every time a QR code is captured,
+your phone will make a little &ldquo;click&rdquo;. Once all the data is read, the wallet
+will sign the transaction and produce an animated QR code for it.</p>
 <h2 id=broadcast>Broadcast</h2>
 <p><img class=img src=../img/IMG_0095.PNG>
 <img class=img src=../img/IMG_0097.PNG>
@@ -462,14 +495,23 @@ it will create a raw transaction and offer you to save it.</p>
 </p>
 <ol>
 <li>Select &ldquo;Broadcast&rdquo; from the app menu</li>
-<li>Pick up the raw transaction file from the storage</li>
+<li>Pick up the raw transaction file from the storage (or point your camera
+to scan the animated QR code)</li>
 <li>Wait for the transaction id</li>
 </ol>
 <h2 id=remarks>Remarks</h2>
 <ul>
 <li>USB drive is safer than Cloud storage but in any case, the files
 do not contain any information that could be used to reveal your secret key</li>
+<li>Do not send the unsigned transaction without authentication over a unsecure
+channel. An attacker could <em>modify</em> the payment information and make the signer
+sign a different transaction!</li>
 </ul>
+<div class="notices warning"><p>You should use GPG to encrypt and sign your transaction if you
+transmit it over an unsecure channel.</p>
+</div>
+<h2 id=demo>Demo</h2>
+<p><a href="https://www.youtube.com/watch?v=Z5yXXHjjWNQ&t=547s">Youtube video</a></p>
 <footer class=footline>
 </footer>
 </div>
@@ -482,17 +524,17 @@ do not contain any information that could be used to reveal your secret key</li>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1654395217></script>
-<script src=/js/perfect-scrollbar.min.js?1654395217></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1654395217></script>
-<script src=/js/jquery.sticky.js?1654395217></script>
-<script src=/js/featherlight.min.js?1654395217></script>
-<script src=/js/highlight.pack.js?1654395217></script>
+<script src=/js/clipboard.min.js?1655805793></script>
+<script src=/js/perfect-scrollbar.min.js?1655805793></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1655805793></script>
+<script src=/js/jquery.sticky.js?1655805793></script>
+<script src=/js/featherlight.min.js?1655805793></script>
+<script src=/js/highlight.pack.js?1655805793></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1654395217></script>
-<script src=/js/learn.js?1654395217></script>
-<script src=/js/hugo-learn.js?1654395217></script>
-<script src=/mermaid/mermaid.js?1654395217></script>
+<script src=/js/modernizr.custom-3.6.0.js?1655805793></script>
+<script src=/js/learn.js?1655805793></script>
+<script src=/js/hugo-learn.js?1655805793></script>
+<script src=/mermaid/mermaid.js?1655805793></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
