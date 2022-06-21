@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:string_splitter/string_splitter.dart';
 import 'package:warp_api/warp_api.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
