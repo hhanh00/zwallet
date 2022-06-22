@@ -260,6 +260,10 @@ class WarpApi {
     return warp_api_lib.merge_data(drop.toNativeUtf8().cast<Int8>()).cast<Utf8>().toDartString();
   }
 
+  static String getTxSummary(String tx) {
+    return warp_api_lib.get_tx_summary(tx.toNativeUtf8().cast<Int8>()).cast<Utf8>().toDartString();
+  }
+
   // // static void storeShareSecret(int coin, int account, String secret) {
   // //   warp_api_lib.store_share_secret(coin, account, secret.toNativeUtf8().cast<Int8>());
   // // }

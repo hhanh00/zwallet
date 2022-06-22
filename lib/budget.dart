@@ -113,7 +113,7 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
       pnl.realized,
       pnl.unrealized,
       pnl.realized + pnl.unrealized]).toList();
-    await shareCsv(context, csvData, 'pnl_history.csv', S.of(context).pnlHistory);
+    await shareCsv(csvData, 'pnl_history.csv', S.of(context).pnlHistory);
   }
 }
 

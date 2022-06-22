@@ -45,6 +45,7 @@ import 'scantaddr.dart';
 import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
+import 'sign.dart';
 import 'store.dart';
 import 'theme_editor.dart';
 import 'transaction.dart';
@@ -182,10 +183,12 @@ class LoadProgressState extends State<LoadProgress> {
   }
 }
 
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final home = ZWalletApp();
-  // final home = MultisigPage();
+
   runApp(FutureBuilder(
       future: settings.restore(),
       builder: (context, snapshot) {
@@ -202,6 +205,7 @@ void main() {
             theme: theme,
             home: home,
             scaffoldMessengerKey: rootScaffoldMessengerKey,
+            navigatorKey: navigatorKey,
             localizationsDelegates: [
               S.delegate,
               GlobalMaterialLocalizations.delegate,
@@ -239,6 +243,7 @@ void main() {
                 '/scantaddr': (context) => ScanTAddrPage(),
                 '/qroffline': (context) => QrOffline(routeSettings.arguments as String),
                 '/showRawTx': (context) => ShowRawTx(routeSettings.arguments as String),
+                '/sign': (context) => Sign.init(routeSettings.arguments as String),
               };
               return MaterialPageRoute(builder: routes[routeSettings.name]!);
             },
@@ -677,14 +682,15 @@ Future<void> shieldTAddr(BuildContext context) async {
   );
 }
 
-Future<void> shareCsv(BuildContext context, List<List> data, String filename, String title) async {
+Future<void> shareCsv(List<List> data, String filename, String title) async {
   final csvConverter = ListToCsvConverter();
   final csv = csvConverter.convert(data);
-  await saveFile(context, csv, filename, title);
+  await saveFile(csv, filename, title);
 }
 
-Future<void> saveFile(BuildContext context, String data, String filename, String title) async {
+Future<void> saveFile(String data, String filename, String title) async {
   if (isMobile()) {
+    final context = navigatorKey.currentContext!;
     Size size = MediaQuery.of(context).size;
     Directory tempDir = await getTemporaryDirectory();
     String fn = "${tempDir.path}/$filename";

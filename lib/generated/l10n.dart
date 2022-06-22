@@ -2381,6 +2381,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Check Transaction`
+  String get checkTransaction {
+    return Intl.message(
+      'Check Transaction',
+      name: 'checkTransaction',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

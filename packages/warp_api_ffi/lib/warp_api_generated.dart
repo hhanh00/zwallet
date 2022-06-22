@@ -594,6 +594,19 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_merge_data>>('merge_data');
   late final _dart_merge_data _merge_data =
       _merge_data_ptr.asFunction<_dart_merge_data>();
+
+  ffi.Pointer<ffi.Int8> get_tx_summary(
+    ffi.Pointer<ffi.Int8> drop,
+  ) {
+    return _get_tx_summary(
+      drop,
+    );
+  }
+
+  late final _get_tx_summary_ptr =
+      _lookup<ffi.NativeFunction<_c_get_tx_summary>>('get_tx_summary');
+  late final _dart_get_tx_summary _get_tx_summary =
+      _get_tx_summary_ptr.asFunction<_dart_get_tx_summary>();
 }
 
 typedef _c_dummy_export = ffi.Void Function();
@@ -947,5 +960,13 @@ typedef _c_merge_data = ffi.Pointer<ffi.Int8> Function(
 );
 
 typedef _dart_merge_data = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> drop,
+);
+
+typedef _c_get_tx_summary = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> drop,
+);
+
+typedef _dart_get_tx_summary = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> drop,
 );

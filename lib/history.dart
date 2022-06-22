@@ -105,7 +105,7 @@ class HistoryState extends State<HistoryWidget>
     final csvData = active.sortedTxs.map((tx) => [
       tx.fullTxId, tx.height, tx.timestamp, tx.address, tx.contact ?? '',
       tx.value, tx.memo]).toList();
-    await shareCsv(context, csvData, 'tx_history.csv', S.of(context).transactionHistory);
+    await shareCsv(csvData, 'tx_history.csv', S.of(context).transactionHistory);
   }
 }
 
