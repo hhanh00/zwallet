@@ -507,6 +507,8 @@ abstract class _SyncStatus with Store {
   int latestHeight = 0;
 
   bool accountRestored = false;
+
+  @observable
   bool syncing = false;
 
   bool isSynced() {
@@ -580,6 +582,7 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<void> rescan(BuildContext context, int height) async {
+    if (syncing) return;
     eta.reset();
     final snackBar = SnackBar(content: Text(S.of(context).rescanRequested(height)));
     rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
