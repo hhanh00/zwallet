@@ -40,15 +40,19 @@ class Sign extends StatelessWidget {
   }
 
   _sign(BuildContext context) async {
-    final rawTransactionLabel = S.of(context).rawTransaction;
+    final s = S.of(context);
+    final rawTransactionLabel = s.rawTransaction;
+    final paymentInProgressLabel = s.paymentInProgress;
     Navigator.of(context).pop();
 
     if (txStr != null) {
+      active.setBanner(paymentInProgressLabel);
       final res = await WarpApi.signOnly(
           active.coin, active.id, txStr, (progress) {
         progressPort.sendPort.send(progress);
       });
       progressPort.sendPort.send(0);
+      active.setBanner("");
       final isError = WarpApi.getError();
       if (isError) {
         final snackBar = SnackBar(content: Text(res));
