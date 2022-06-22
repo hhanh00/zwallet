@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 import 'generated/l10n.dart';
@@ -15,7 +18,8 @@ class AnimatedQR extends StatefulWidget {
   final List<String> chunks;
 
   AnimatedQR.init(String title, String caption, String data):
-      this(title, caption, data, WarpApi.splitData(DateTime.now().millisecondsSinceEpoch ~/ 1000, base64Encode(utf8.encode(data))));
+      this(title, caption, data, WarpApi.splitData(DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          base64Encode(ZLibCodec().encode(utf8.encode(data)))));
 
   AnimatedQR(this.title, this.caption, this.data, this.chunks);
 
@@ -90,3 +94,27 @@ class ShowRawTx extends StatelessWidget {
   }
 }
 
+Future<String?> scanMultiCode(BuildContext context) async {
+  if (!isMobile()) {
+    showSnackBar(S.of(context).barcodeScannerIsNotAvailableOnDesktop);
+    return null;
+  }
+  else {
+    final player = AudioPlayer();
+    final ding = AssetSource("ding.mp3");
+    final dropStream = FlutterBarcodeScanner.getBarcodeStreamReceiver('#FF0000', S.of(context).cancel, true, ScanMode.QR);
+    var f = Completer<String>();
+    StreamSubscription? sub;
+    sub = dropStream?.listen((barcode) async {
+      await player.play(ding);
+      final res = WarpApi.mergeData(barcode);
+      if (res.isNotEmpty) {
+        FlutterBarcodeScanner.dismiss();
+        final decoded = utf8.decode(ZLibCodec().decode(base64Decode(res)));
+        sub?.cancel();
+        f.complete(decoded);
+      }
+    });
+    return f.future;
+  }
+}

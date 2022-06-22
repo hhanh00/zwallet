@@ -16,6 +16,7 @@ import 'package:upgrader/upgrader.dart';
 import 'about.dart';
 import 'account.dart';
 import 'account_manager.dart';
+import 'animated_qr.dart';
 import 'budget.dart';
 import 'contact.dart';
 import 'history.dart';
