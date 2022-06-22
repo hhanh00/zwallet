@@ -39,6 +39,7 @@ class AnimatedQRState extends State<AnimatedQR> {
   @override
   void dispose() {
     _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -46,7 +47,6 @@ class AnimatedQRState extends State<AnimatedQR> {
     final theme = Theme.of(context);
     final idx = index % widget.chunks.length;
     final qrSize = getScreenSize(context) / 1.2;
-    print(qrSize);
     return Scaffold(appBar: AppBar(title: Text(widget.title)),
       body: Padding(padding: EdgeInsets.all(16), child: Center(child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

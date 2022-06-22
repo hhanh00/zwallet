@@ -33,3 +33,28 @@ class RaptorQDrops {
 
   Map<String, dynamic> toJson() => _$RaptorQDropsToJson(this);
 }
+
+@JsonSerializable()
+class UnsignedTxSummary {
+  final List<RecipientSummary> recipients;
+
+  UnsignedTxSummary(this.recipients);
+
+  factory UnsignedTxSummary.fromJson(Map<String, dynamic> json) =>
+      _$UnsignedTxSummaryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UnsignedTxSummaryToJson(this);
+}
+
+@JsonSerializable()
+class RecipientSummary {
+  final int amount;
+  final String address;
+
+  RecipientSummary(this.amount, this.address);
+
+  factory RecipientSummary.fromJson(Map<String, dynamic> json) =>
+      _$RecipientSummaryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RecipientSummaryToJson(this);
+}

@@ -503,7 +503,7 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
       Navigator.pushReplacementNamed(context, '/qroffline', arguments: txjson);
     }
     else {
-      await saveFile(context, txjson, "tx.json", s.unsignedTransactionFile);
+      await saveFile(txjson, "tx.json", s.unsignedTransactionFile);
 
       final snackBar2 = SnackBar(content: Text(s.fileSaved));
       rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);

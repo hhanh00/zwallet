@@ -139,6 +139,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "changingTheModeWillTakeEffectAtNextRestart":
             MessageLookupByLibrary.simpleMessage(
                 "Changer le mode prendra effet au prochain démarrage"),
+        "checkTransaction":
+            MessageLookupByLibrary.simpleMessage("Verifier la Transaction"),
         "closeApplication":
             MessageLookupByLibrary.simpleMessage("Close Application"),
         "coffee": MessageLookupByLibrary.simpleMessage("Café"),

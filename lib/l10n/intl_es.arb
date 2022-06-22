@@ -229,5 +229,6 @@
   "unsignedTx": "No firmado Tx",
   "signOnYourOfflineDevice": "Firme con tu dispositivo fuera de línea",
   "signedTx": "Firmado Tx",
-  "broadcastFromYourOnlineDevice": "Transmite desde tu dispositivo en línea"
+  "broadcastFromYourOnlineDevice": "Transmite desde tu dispositivo en línea",
+  "checkTransaction": "Controlar la Transacción"
 }

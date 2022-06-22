@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:convert/convert.dart';
 import 'package:badges/badges.dart';
@@ -241,7 +242,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         _settings();
         break;
       case "Help":
-        launch(DOC_URL);
+        launchUrl(Uri.parse(DOC_URL));
         break;
       case "About":
         showAbout(this.context);
@@ -280,7 +281,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   }
 
   _sign() async {
-    String? tx = null;
+    final String? tx;
     if (settings.qrOffline) {
       tx = await scanMultiCode(context);
     } else {
@@ -290,28 +291,8 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       final file = File(path);
       tx = file.readAsStringSync();
     }
-
-    if (tx != null) {
-      final res = await WarpApi.signOnly(
-          active.coin, active.id, tx, (progress) {
-        progressPort.sendPort.send(progress);
-      });
-      progressPort.sendPort.send(0);
-      final isError = WarpApi.getError();
-      if (isError) {
-        final snackBar = SnackBar(content: Text(res));
-        rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
-        return;
-      }
-
-      if (settings.qrOffline) {
-        Navigator.of(context).pushReplacementNamed('/showRawTx', arguments: res);
-      } else {
-        await saveFile(context, res, 'tx.raw', S
-            .of(context)
-            .rawTransaction);
-      }
-    }
+    if (tx != null)
+      Navigator.of(context).pushNamed('/sign', arguments: tx);
   }
 
   _broadcast() async {
@@ -361,3 +342,4 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     }
   }
 }
+
