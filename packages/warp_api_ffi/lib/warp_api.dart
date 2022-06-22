@@ -43,6 +43,10 @@ class WarpApi {
     return warp_api_lib.get_error() != 0;
   }
 
+  static String getErrorMessage() {
+    return convertCString(warp_api_lib.get_error_msg());
+  }
+
   static initWallet(String dbPath) {
     warp_api_lib.init_wallet(
         dbPath.toNativeUtf8().cast<Int8>());
@@ -97,7 +101,7 @@ class WarpApi {
 
   static String newDiversifiedAddress() {
     final address = warp_api_lib.new_diversified_address();
-    return address.cast<Utf8>().toDartString();
+    return convertCString(address);
   }
 
   static void setActiveAccount(int coin, int account) {
@@ -154,7 +158,8 @@ class WarpApi {
     final res = warp_api_lib.prepare_multi_payment(
         recipientsJson.toNativeUtf8().cast<Int8>(),
         useTransparent ? 1 : 0, anchorOffset);
-    return res.cast<Utf8>().toDartString();
+    final json = convertCString(res);
+    return json;
   }
 
   static Future<String> signOnly(int coin, int account, String tx, void Function(int) f) async {
@@ -171,7 +176,7 @@ class WarpApi {
 
   static String broadcast(String txStr) {
     final res = warp_api_lib.broadcast_tx(txStr.toNativeUtf8().cast<Int8>());
-    return res.cast<Utf8>().toDartString();
+    return convertCString(res);
   }
 
   // static String ledgerSign(int coin, String txFilename) {
@@ -226,42 +231,42 @@ class WarpApi {
         address.toNativeUtf8().cast<Int8>(),
         amount,
         memo.toNativeUtf8().cast<Int8>());
-    return uri.cast<Utf8>().toDartString();
+    return convertCString(uri);
   }
 
   static String parsePaymentURI(String uri) {
     final json = warp_api_lib.parse_payment_uri(
         uri.toNativeUtf8().cast<Int8>());
-    return json.cast<Utf8>().toDartString();
+    return convertCString(json);
   }
 
   static String generateEncKey() {
-    return warp_api_lib.generate_random_enc_key().cast<Utf8>().toDartString();
+    return convertCString(warp_api_lib.generate_random_enc_key());
   }
 
   static String getFullBackup(String key) {
     final backup = warp_api_lib.get_full_backup(key.toNativeUtf8().cast<Int8>());
-    return backup.cast<Utf8>().toDartString();
+    return convertCString(backup);
   }
 
-  static String restoreFullBackup(String key, String backup) {
-    final res = warp_api_lib.restore_full_backup(key.toNativeUtf8().cast<Int8>(), backup.toNativeUtf8().cast<Int8>());
-    return res.cast<Utf8>().toDartString();
+  static void restoreFullBackup(String key, String backup) {
+    warp_api_lib.restore_full_backup(key.toNativeUtf8().cast<Int8>(), backup.toNativeUtf8().cast<Int8>());
   }
 
   static List<String> splitData(int id, String data) {
-    final res = warp_api_lib.split_data(id, data.toNativeUtf8().cast<Int8>()).cast<Utf8>().toDartString();
+    final res = convertCString(warp_api_lib.split_data(id, data.toNativeUtf8().cast<Int8>()));
     final jsonMap = jsonDecode(res);
     final raptorq = RaptorQDrops.fromJson(jsonMap);
     return raptorq.drops;
   }
 
   static String mergeData(String drop) {
-    return warp_api_lib.merge_data(drop.toNativeUtf8().cast<Int8>()).cast<Utf8>().toDartString();
+    return convertCString(warp_api_lib.merge_data(drop.toNativeUtf8().cast<Int8>()));
   }
 
   static String getTxSummary(String tx) {
-    return warp_api_lib.get_tx_summary(tx.toNativeUtf8().cast<Int8>()).cast<Utf8>().toDartString();
+    return convertCString(warp_api_lib.get_tx_summary(tx.toNativeUtf8().cast<Int8>()));
+    // TODO: Free
   }
 
   // // static void storeShareSecret(int coin, int account, String secret) {
@@ -334,14 +339,14 @@ String sendPaymentIsolateFn(PaymentParams params) {
       params.anchorOffset,
       params.useTransparent ? 1 : 0,
       params.port.nativePort);
-  return txId.cast<Utf8>().toDartString();
+  return convertCString(txId);
 }
 
 String signOnlyIsolateFn(SignOnlyParams params) {
   final txId = warp_api_lib.sign(
       params.tx.toNativeUtf8().cast<Int8>(),
       params.port.nativePort);
-  return txId.cast<Utf8>().toDartString();
+  return convertCString(txId);
 }
 
 int getLatestHeightIsolateFn(Null n) {
@@ -354,7 +359,7 @@ int mempoolSyncIsolateFn(Null n) {
 
 String shieldTAddrIsolateFn(Null n) {
   final txId = warp_api_lib.shield_taddr();
-  return txId.cast<Utf8>().toDartString();
+  return convertCString(txId);
 }
 
 int syncHistoricalPricesIsolateFn(SyncHistoricalPricesParams params) {
@@ -365,7 +370,7 @@ int syncHistoricalPricesIsolateFn(SyncHistoricalPricesParams params) {
 
 String commitUnsavedContactsIsolateFn(CommitContactsParams params) {
   final txId = warp_api_lib.commit_unsaved_contacts(params.anchorOffset);
-  return txId.cast<Utf8>().toDartString();
+  return convertCString(txId);
 }
 
 int getTBalanceIsolateFn(GetTBalanceParams params) {
@@ -441,3 +446,10 @@ class ScanTransparentAccountsParams {
   final int gapLimit;
   ScanTransparentAccountsParams(this.gapLimit);
 }
+
+String convertCString(Pointer<Int8> s) {
+  final str = s.cast<Utf8>().toDartString();
+  warp_api_lib.deallocate_str(s);
+  return str;
+}
+

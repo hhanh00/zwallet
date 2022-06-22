@@ -27,6 +27,19 @@ class NativeLibrary {
   late final _dart_dummy_export _dummy_export =
       _dummy_export_ptr.asFunction<_dart_dummy_export>();
 
+  void deallocate_str(
+    ffi.Pointer<ffi.Int8> s,
+  ) {
+    return _deallocate_str(
+      s,
+    );
+  }
+
+  late final _deallocate_str_ptr =
+      _lookup<ffi.NativeFunction<_c_deallocate_str>>('deallocate_str');
+  late final _dart_deallocate_str _deallocate_str =
+      _deallocate_str_ptr.asFunction<_dart_deallocate_str>();
+
   void dart_post_cobject(
     ffi.Pointer<ffi.Void> ptr,
   ) {
@@ -48,6 +61,15 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_get_error>>('get_error');
   late final _dart_get_error _get_error =
       _get_error_ptr.asFunction<_dart_get_error>();
+
+  ffi.Pointer<ffi.Int8> get_error_msg() {
+    return _get_error_msg();
+  }
+
+  late final _get_error_msg_ptr =
+      _lookup<ffi.NativeFunction<_c_get_error_msg>>('get_error_msg');
+  late final _dart_get_error_msg _get_error_msg =
+      _get_error_msg_ptr.asFunction<_dart_get_error_msg>();
 
   void init_wallet(
     ffi.Pointer<ffi.Int8> db_path,
@@ -551,7 +573,7 @@ class NativeLibrary {
   late final _dart_get_full_backup _get_full_backup =
       _get_full_backup_ptr.asFunction<_dart_get_full_backup>();
 
-  ffi.Pointer<ffi.Int8> restore_full_backup(
+  void restore_full_backup(
     ffi.Pointer<ffi.Int8> key,
     ffi.Pointer<ffi.Int8> backup,
   ) {
@@ -613,6 +635,14 @@ typedef _c_dummy_export = ffi.Void Function();
 
 typedef _dart_dummy_export = void Function();
 
+typedef _c_deallocate_str = ffi.Void Function(
+  ffi.Pointer<ffi.Int8> s,
+);
+
+typedef _dart_deallocate_str = void Function(
+  ffi.Pointer<ffi.Int8> s,
+);
+
 typedef _c_dart_post_cobject = ffi.Void Function(
   ffi.Pointer<ffi.Void> ptr,
 );
@@ -624,6 +654,10 @@ typedef _dart_dart_post_cobject = void Function(
 typedef _c_get_error = ffi.Int8 Function();
 
 typedef _dart_get_error = int Function();
+
+typedef _c_get_error_msg = ffi.Pointer<ffi.Int8> Function();
+
+typedef _dart_get_error_msg = ffi.Pointer<ffi.Int8> Function();
 
 typedef _c_init_wallet = ffi.Void Function(
   ffi.Pointer<ffi.Int8> db_path,
@@ -935,12 +969,12 @@ typedef _dart_get_full_backup = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> key,
 );
 
-typedef _c_restore_full_backup = ffi.Pointer<ffi.Int8> Function(
+typedef _c_restore_full_backup = ffi.Void Function(
   ffi.Pointer<ffi.Int8> key,
   ffi.Pointer<ffi.Int8> backup,
 );
 
-typedef _dart_restore_full_backup = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_restore_full_backup = void Function(
   ffi.Pointer<ffi.Int8> key,
   ffi.Pointer<ffi.Int8> backup,
 );

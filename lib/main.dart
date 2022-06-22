@@ -331,8 +331,7 @@ class ZWalletAppState extends State<ZWalletApp> {
         if (recover) {
           final f = await getRecoveryFile();
           final backup = await f.readAsString();
-          final res = WarpApi.restoreFullBackup("", backup);
-          print("Recovery $res");
+          WarpApi.restoreFullBackup("", backup);
           f.delete();
         }
 
