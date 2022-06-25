@@ -11,7 +11,6 @@ import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:convert/convert.dart';
 import 'package:badges/badges.dart';
-import 'package:upgrader/upgrader.dart';
 
 import 'about.dart';
 import 'account.dart';
@@ -191,8 +190,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
           ),
           actions: [menu],
         ),
-        body: UpgradeAlert(
-          child: TabBarView(
+        body: TabBarView(
             controller: _tabController,
             children: [
               AccountPage(),
@@ -203,7 +201,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
               if (!simpleMode) PnLWidget(),
               ContactsTab(key: contactKey),
             ],
-          )),
+          ),
         floatingActionButton: button,
       );
     });
