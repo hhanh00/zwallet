@@ -41,6 +41,8 @@ abstract class _AccountManager2 with Store {
     epoch += 1;
   }
 
+  bool get isEmpty { return list.isEmpty; }
+
   @action
   Future<void> updateTBalance() async {
     for (var a in list) {
@@ -125,7 +127,7 @@ abstract class _ActiveAccount with Store {
   @observable int id = 0;
 
   Account account = emptyAccount;
-  CoinBase coinDef = ZcashCoin();
+  CoinBase coinDef = zcash;
   bool canPay = false;
   @observable Balances balances = Balances.zero;
   String taddress = "";
@@ -160,15 +162,41 @@ abstract class _ActiveAccount with Store {
     final prefs = await SharedPreferences.getInstance();
     coin = prefs.getInt('coin') ?? 0;
     id = prefs.getInt('account') ?? 0;
-    setActiveAccount(coin, id);
+    await setActiveAccount(coin, id);
   }
 
-  void reset() {
-    setActiveAccount(0, 0);
+  Future<void> reset() async {
+    for (var coin_data in settings.coins) {
+      if (await refreshId(coin_data.coin) != 0)
+        return;
+    }
+    await setActiveAccount(0, 0);
+  }
+
+  // check that the active account still exists
+  // if not, pick any account
+  // if there are none, return null
+  Future<int> refreshId(int coin) async {
+    coinDef = settings.coins[coin].def;
+    final db = coinDef.db;
+    final List<Map> res1 = await db.rawQuery(
+        "SELECT 1 FROM accounts WHERE id_account = ?1", [active.id]);
+    if (res1.isNotEmpty)
+      return active.id;
+    final List<Map> res2 = await db.rawQuery(
+        "SELECT id_account FROM accounts", []);
+    if (res1.isNotEmpty) {
+      final id = res2[0]['id_account'];
+      await setActiveAccount(coin, id);
+      return id;
+    }
+    return 0;
   }
 
   @action
   Future<void> setActiveAccount(int _coin, int _id) async {
+    if (coin == _coin && id == _id) return;
+
     coin = _coin;
     id = _id;
     accounts.saveActive(coin, id);

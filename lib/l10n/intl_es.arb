@@ -230,5 +230,10 @@
   "signOnYourOfflineDevice": "Firme con tu dispositivo fuera de línea",
   "signedTx": "Firmado Tx",
   "broadcastFromYourOnlineDevice": "Transmite desde tu dispositivo en línea",
-  "checkTransaction": "Controlar la Transacción"
+  "checkTransaction": "Controlar la Transacción",
+  "crypto": "Crypto",
+  "restoreAnAccount": "Restaurar una Cuenta?",
+  "welcomeToYwallet": "Bienvenido a YWallet",
+  "thePrivateWalletMessenger": "La Cartera & Mensajero Privado",
+  "newAccount": "Nueva Cuenta"
 }

@@ -1,15 +1,15 @@
-import 'package:ZYWallet/accounts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:warp_api/warp_api.dart';
-import 'backup.dart';
 import 'main.dart';
 import 'rescan.dart';
 import 'store.dart';
 import 'generated/l10n.dart';
 import 'about.dart';
+import 'accounts.dart';
+import 'welcome.dart';
 
 class AccountManagerPage extends StatefulWidget {
   @override
@@ -37,6 +37,14 @@ class AccountManagerState extends State<AccountManagerPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    if (active.id == 0) {
+      Future.microtask(() {
+        Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (route) => false);
+      });
+      return SizedBox();
+    }
+
     return Scaffold(
         appBar: AppBar(title: Text(S.of(context).selectAccount), actions: [
           PopupMenuButton<String>(
@@ -51,9 +59,7 @@ class AccountManagerState extends State<AccountManagerPage> {
         body: Padding(padding: EdgeInsets.all(8), child: Observer(
             builder: (context) {
               final _1 = accounts.epoch;
-              return accounts.list.isEmpty
-                  ? Center(child: NoAccount())
-                  : ListView.builder(
+              return ListView.builder(
                       itemCount: accounts.list.length,
                       itemBuilder: (BuildContext context, int index) {
                       final a = accounts.list[index];
@@ -88,7 +94,7 @@ class AccountManagerState extends State<AccountManagerPage> {
                 )),
         floatingActionButton: SpeedDial(
           icon: Icons.add,
-          onPress: _onRestore,
+          onPress: _onAddAccount,
           children: [
             SpeedDialChild(
               child: Icon(Icons.download),
@@ -157,6 +163,9 @@ class AccountManagerState extends State<AccountManagerPage> {
   void _onDismissed(int index, Account account) async {
     await accounts.delete(account.coin, account.id);
     accounts.refresh();
+    final id = await active.refreshId(active.coin);
+    if (id == 0)
+      active.reset();
   }
 
   _selectAccount(Account account) async {
@@ -167,6 +176,7 @@ class AccountManagerState extends State<AccountManagerPage> {
       if (height != null)
         syncStatus.rescan(context, height);
     }
+    await syncStatus.update();
 
     final navigator = Navigator.of(context);
     navigator.pushNamedAndRemoveUntil('/account', (route) => false);
@@ -187,8 +197,8 @@ class AccountManagerState extends State<AccountManagerPage> {
     Navigator.of(context).pop();
   }
 
-  _onRestore() {
-    Navigator.of(context).pushNamed('/restore');
+  _onAddAccount() {
+    Navigator.of(context).pushNamed('/add_account');
   }
 
   _onMenu(String choice) {

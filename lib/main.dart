@@ -49,6 +49,7 @@ import 'sign.dart';
 import 'store.dart';
 import 'theme_editor.dart';
 import 'transaction.dart';
+import 'welcome.dart';
 
 const ZECUNIT = 100000000.0;
 var ZECUNIT_DECIMAL = Decimal.parse('100000000');
@@ -215,8 +216,10 @@ void main() {
             supportedLocales: S.delegate.supportedLocales,
             onGenerateRoute: (RouteSettings routeSettings) {
               var routes = <String, WidgetBuilder>{
+                '/welcome': (context) => WelcomePage(),
                 '/account': (context) => HomePage(),
-                '/restore': (context) => RestorePage(),
+                '/add_account': (context) => AddAccountPage(),
+                '/add_first_account': (context) => AddAccountPage(dismissible: false),
                 '/send': (context) =>
                     SendPage(routeSettings.arguments as SendPageArgs?),
                 '/receive': (context) =>
@@ -315,19 +318,6 @@ class ZWalletAppState extends State<ZWalletApp> {
         await ycash.open(dbPath);
         await zcash.open(dbPath);
 
-        final about = prefs.getBool('about');
-        var synced = false;
-        if (about == null && !await accounts.hasAccount(1)) {
-          _setProgress(0.5, 'Creating First Account');
-          final accountId = WarpApi.newAccount(1, 'Main', '', 0);
-          await active.setActiveAccount(1, accountId);
-          Future.microtask(() {
-            Navigator.of(context).pushNamed(
-                '/backup', arguments: AccountId(1, accountId));
-          });
-          synced = true; // synced because no previous account
-        }
-
         if (recover) {
           final f = await getRecoveryFile();
           final backup = await f.readAsString();
@@ -344,11 +334,6 @@ class ZWalletAppState extends State<ZWalletApp> {
         await active.restore();
         _setProgress(0.8, 'Checking Sync Status');
         await syncStatus.update();
-        if (synced) {
-          for (var c in settings.coins) {
-            syncStatus.markAsSynced(c.coin);
-          }
-        }
 
         if (isMobile()) {
           _setProgress(0.9, 'Setting Dashboard Shortcuts');
@@ -379,9 +364,18 @@ class ZWalletAppState extends State<ZWalletApp> {
       if (settings.protectOpen) {
         while (!await authenticate(this.context, 'Protect Launch')) {}
       }
+
+      await active.restore();
+      if (active.id == 0) {
+        for (var c in settings.coins) {
+          syncStatus.markAsSynced(c.coin);
+        }
+        await syncStatus.update();
+      }
+
       return true;
     } catch (e) {
-      print(e);
+      print("Init error: $e");
     }
     return false;
   }

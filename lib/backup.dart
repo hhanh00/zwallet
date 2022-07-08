@@ -116,7 +116,13 @@ class BackupState extends State<BackupPage> {
           ElevatedButton.icon(
             icon: Icon(Icons.check),
             label: Text(S.of(context).iHaveMadeABackup),
-            onPressed: () { Navigator.of(context).pop(); },
+            onPressed: () {
+              final nav = Navigator.of(context);
+              if (nav.canPop())
+                nav.pop();
+              else
+                nav.pushReplacementNamed('/account');
+            },
           ),
           Padding(padding: EdgeInsets.symmetric(vertical: 4)),
       ]),

@@ -10,18 +10,20 @@ import 'backup.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 
-class RestorePage extends StatefulWidget {
+class AddAccountPage extends StatefulWidget {
+  final bool dismissible;
+  AddAccountPage({this.dismissible = true});
+
   @override
-  State<StatefulWidget> createState() => _RestorePageState();
+  State<StatefulWidget> createState() => _AddAccountPageState();
 }
 
-class _RestorePageState extends State<RestorePage> {
-  final _keyRe = RegExp(r"(.*) \[(\d+)\]$");
+class _AddAccountPageState extends State<AddAccountPage> {
   final _formKey = GlobalKey<FormState>();
-  final _keyController = TextEditingController();
   final _nameController = TextEditingController();
   final _accountIndexController = TextEditingController(text: "0");
-  final _shareController = TextEditingController();
+  final _keyController = TextEditingController();
+  var _restore = false;
   var _validKey = true;
   var _coin = 1;
   var _showIndex = false;
@@ -29,86 +31,117 @@ class _RestorePageState extends State<RestorePage> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final t = Theme.of(context);
     return Scaffold(
         appBar: AppBar(
-          title: Text(APP_NAME),
+          title: Text('New Account'),
         ),
         body: GestureDetector(
-          onTap: () { FocusScope.of(context).unfocus(); },
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(children: [
-                  FormBuilderRadioGroup<int>(
-                      orientation: OptionsOrientation.horizontal,
-                      name: 'coin',
-                      initialValue: _coin,
-                      onChanged: (int? v) { _coin = v!; },
-                      options: [
-                        FormBuilderFieldOption(
-                            child: Text('Zcash'), value: 0),
-                        FormBuilderFieldOption(
-                            child: Text('Ycash'), value: 1),
-                      ]),
-                  TextFormField(
-                      decoration: InputDecoration(labelText: s.accountName),
-                      controller: _nameController,
-                      validator: (String? name) {
-                        if (name == null || name.isEmpty)
-                          return s.accountNameIsRequired;
-                        return null;
-                      },
-                    ),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: TextFormField(
-                        decoration: InputDecoration(
-                            labelText: s.key,
-                            hintText:
-                                s.enterSeed),
-                        minLines: 4,
-                        maxLines: 4,
-                        controller: _keyController,
-                        onChanged: _checkKey,
-                      )),
-                      GestureDetector(onLongPress: _toggleShowAccountIndex,
-                        child: IconButton(
-                          icon: new Icon(MdiIcons.qrcodeScan), onPressed: _onScan))
-                    ],
-                  ),
-                  // if (_isVK && coin.supportsMultisig) Row(
-                  //   children: [
-                  //     Expanded(
-                  //         child: TextFormField(
-                  //           decoration: InputDecoration(
-                  //               labelText: s.secretShare,
-                  //               hintText: s.enterSecretShareIfAccountIsMultisignature),
-                  //           minLines: 4,
-                  //           maxLines: 4,
-                  //           controller: _shareController,
-                  //           // TODO: Check share
-                  //         )),
-                  //     IconButton(
-                  //         icon: new Icon(MdiIcons.qrcodeScan), onPressed: _onScanShare)
-                  //   ],
-                  // ),
-                  if (_showIndex) TextFormField(
-                    decoration: InputDecoration(labelText: s.accountIndex),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
-                    controller: _accountIndexController,
-                    validator: (String? name) {
-                      if (name == null || name.isEmpty)
-                        return s.accountNameIsRequired;
-                      return null;
-                    },
-                  ),
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                    child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(children: [
+                          TextFormField(
+                            decoration:
+                                InputDecoration(labelText: s.accountName),
+                            controller: _nameController,
+                            validator: (String? name) {
+                              if (name == null || name.isEmpty)
+                                return s.accountNameIsRequired;
+                              return null;
+                            },
+                          ),
+                          FormBuilderRadioGroup<int>(
+                              decoration: InputDecoration(labelText: s.crypto),
+                              orientation: OptionsOrientation.vertical,
+                              name: 'coin',
+                              initialValue: _coin,
+                              onChanged: (int? v) {
+                                _coin = v!;
+                              },
+                              options: [
+                                FormBuilderFieldOption(
+                                    child: ListTile(
+                                        title: Text('Ycash'),
+                                        trailing: Image.asset(
+                                            'assets/ycash.png',
+                                            height: 32)),
+                                    value: 1),
+                                FormBuilderFieldOption(
+                                    child: ListTile(
+                                        title: Text('Zcash'),
+                                        trailing: Image.asset(
+                                            'assets/zcash.png',
+                                            height: 32)),
+                                    value: 0),
+                              ]),
+                          FormBuilderCheckbox(
+                            name: 'restore',
+                            title: Text(s.restoreAnAccount),
+                            onChanged: _setRestore,
+                          ),
+                          if (_restore)
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: TextFormField(
+                                  decoration: InputDecoration(
+                                      labelText: s.key, hintText: s.enterSeed),
+                                  minLines: 4,
+                                  maxLines: 4,
+                                  controller: _keyController,
+                                  onChanged: _checkKey,
+                                )),
+                                GestureDetector(
+                                    onLongPress: _toggleShowAccountIndex,
+                                    child: IconButton(
+                                        icon: new Icon(MdiIcons.qrcodeScan),
+                                        onPressed: _onScan))
+                              ],
+                            ),
+                          if (_restore && _showIndex)
+                            TextFormField(
+                              decoration:
+                              InputDecoration(labelText: s.accountIndex),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              controller: _accountIndexController,
+                              validator: (String? name) {
+                                if (name == null || name.isEmpty)
+                                  return s.accountNameIsRequired;
+                                return null;
+                              },
+                            ),
+                          ButtonBar(children: [
+                            if (widget.dismissible) ElevatedButton.icon(
+                                icon: Icon(Icons.cancel),
+                                label: Text(s.cancel),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    primary:
+                                        t.buttonTheme.colorScheme!.secondary)),
+                            ElevatedButton.icon(
+                              icon: Icon(Icons.add),
+                              label: Text(_restore ? 'Import' : 'New'),
+                              onPressed: _onOK,
+                            )
+                          ])
+                        ]))))));
+  }
 
-                  ButtonBar(children:
-                  confirmButtons(context, _validKey ? _onOK : null, okLabel: s.addnew, okIcon: Icon(Icons.add)))
-                ]))))));
+  _setRestore(bool? v) {
+    setState(() {
+      _restore = v ?? false;
+    });
   }
 
   _onOK() async {
@@ -124,45 +157,35 @@ class _RestorePageState extends State<RestorePage> {
 
     if (form.validate()) {
       final account =
-        WarpApi.newAccount(_coin, _nameController.text, key, accountIndex);
+          WarpApi.newAccount(_coin, _nameController.text, key, accountIndex);
       if (account < 0) {
         showDialog(
             context: context,
             barrierDismissible: false,
             builder: (context) => AlertDialog(
-                title: Text(s.duplicateAccount),
-                content: Text(s.thisAccountAlreadyExists),
-                actions: [
-                  ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      label: Text(s.ok),
-                      icon: Icon(Icons.done))
-                ]));
-      }
-      else {
-        // if (_shareController.text.isNotEmpty)
-        //   accountManager.storeShareSecret(account, _shareController.text);
-        // await accountManager.refresh();
+                    title: Text(s.duplicateAccount),
+                    content: Text(s.thisAccountAlreadyExists),
+                    actions: [
+                      ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          label: Text(s.ok),
+                          icon: Icon(Icons.done))
+                    ]));
+      } else {
         await accounts.refresh();
+        if (active.id == 0)
+          active.setActiveAccount(_coin, account);
         if (_keyController.text != "") {
           syncStatus.setAccountRestored(true);
           Navigator.of(context).pop();
-        }
-        else {
-          if (accounts.list.where((e) => e.coin == active.coin).length == 1)
-            WarpApi.skipToLastHeight(0xFF); // single new account -> quick sync
-          Navigator.of(context).pushReplacementNamed('/backup', arguments: AccountId(_coin, account)); // Need coin type
+        } else {
+          Navigator.of(context).pushReplacementNamed('/backup',
+              arguments: AccountId(_coin, account)); // Need coin type
         }
       }
     }
-  }
-
-  _toggleShowAccountIndex() {
-    setState(() {
-      _showIndex = !_showIndex;
-    });
   }
 
   _checkKey(key) {
@@ -186,11 +209,11 @@ class _RestorePageState extends State<RestorePage> {
       });
   }
 
-  void _onScanShare() async {
-    final key = await scanCode(context);
-    if (key != null)
-      setState(() {
-        _shareController.text = key;
-      });
+  _toggleShowAccountIndex() {
+    setState(() {
+      _showIndex = !_showIndex;
+    });
   }
 }
+
+final _keyRe = RegExp(r"(.*) \[(\d+)\]$");

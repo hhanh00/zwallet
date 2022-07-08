@@ -2391,6 +2391,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Crypto`
+  String get crypto {
+    return Intl.message(
+      'Crypto',
+      name: 'crypto',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore an account?`
+  String get restoreAnAccount {
+    return Intl.message(
+      'Restore an account?',
+      name: 'restoreAnAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to YWallet`
+  String get welcomeToYwallet {
+    return Intl.message(
+      'Welcome to YWallet',
+      name: 'welcomeToYwallet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The private wallet & messenger`
+  String get thePrivateWalletMessenger {
+    return Intl.message(
+      'The private wallet & messenger',
+      name: 'thePrivateWalletMessenger',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Account`
+  String get newAccount {
+    return Intl.message(
+      'New Account',
+      name: 'newAccount',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

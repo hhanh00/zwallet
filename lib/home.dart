@@ -18,6 +18,7 @@ import 'account_manager.dart';
 import 'animated_qr.dart';
 import 'budget.dart';
 import 'contact.dart';
+import 'restore.dart';
 import 'history.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
@@ -37,6 +38,7 @@ class HomeState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    if (active.id == 0) return;
     Future.microtask(() async {
       await syncStatus.update();
       await active.updateBalances();
@@ -74,9 +76,7 @@ class HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) => Observer(builder: (context) {
         final _simpleMode = settings.simpleMode;
-        final _active = active.id;
-        final key = UniqueKey();
-        return HomeInnerPage(key: key);
+        return HomeInnerPage(key: UniqueKey());
       });
 }
 
@@ -102,7 +102,6 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       });
     });
     _tabController = tabController;
-    showAboutOnce(this.context);
   }
 
   @override
@@ -110,10 +109,6 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     final s = S.of(context);
     final theme = Theme.of(context);
     final simpleMode = settings.simpleMode;
-
-    if (active.id == 0) {
-      return AccountManagerPage();
-    }
 
     final contactTabIndex = simpleMode ? 3 : 6;
     Widget button = Container();
@@ -163,6 +158,8 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     );
 
     return Observer(builder: (context) {
+      print("REBUILD");
+
       final _1 = active.dataEpoch;
       final unread = active.unread;
       final messageTab = unread != 0 ?
@@ -171,26 +168,35 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             badgeContent: Text('$unread'))) :
         Tab(text: s.messages);
 
-      return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("${active.account.name}"),
-          bottom: TabBar(
-            controller: _tabController,
-            isScrollable: true,
-            tabs: [
-              Tab(text: s.account),
-              messageTab,
-              if (!simpleMode) Tab(text: s.notes),
-              Tab(text: s.history),
-              if (!simpleMode) Tab(text: s.budget),
-              if (!simpleMode) Tab(text: s.tradingPl),
-              Tab(text: s.contacts),
-            ],
+      if (active.id == 0) {
+        Future.microtask(() async {
+          Navigator.of(context).pushReplacementNamed('/accounts');
+        });
+        return SizedBox(); // Show a placeholder
+      }
+
+      showAboutOnce(this.context);
+
+        return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text("${active.account.name}"),
+            bottom: TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              tabs: [
+                Tab(text: s.account),
+                messageTab,
+                if (!simpleMode) Tab(text: s.notes),
+                Tab(text: s.history),
+                if (!simpleMode) Tab(text: s.budget),
+                if (!simpleMode) Tab(text: s.tradingPl),
+                Tab(text: s.contacts),
+              ],
+            ),
+            actions: [menu],
           ),
-          actions: [menu],
-        ),
-        body: TabBarView(
+          body: TabBarView(
             controller: _tabController,
             children: [
               AccountPage(),
@@ -202,8 +208,8 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
               ContactsTab(key: contactKey),
             ],
           ),
-        floatingActionButton: button,
-      );
+          floatingActionButton: button,
+        );
     });
   }
 
