@@ -48,7 +48,7 @@ class SendState extends State<SendPage> {
   final _maxAmountController = TextEditingController(text: zero);
   var _isExpanded = false;
   var _useMillis = true;
-  var _useTransparent = settings.shieldBalance;
+  var _useTransparent = settings.shieldBalance || active.showTAddr;
   ReactionDisposer? _newBlockAutorunDispose;
   final _fee = DEFAULT_FEE;
   var _usedBalance = 0;

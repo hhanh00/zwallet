@@ -164,6 +164,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "createANewContactAndItWillShowUpHere":
             MessageLookupByLibrary.simpleMessage(
                 "Créez un nouveau contact et il apparaîtra ici"),
+        "crypto": MessageLookupByLibrary.simpleMessage("Crypto"),
         "currency": MessageLookupByLibrary.simpleMessage("Devise"),
         "custom": MessageLookupByLibrary.simpleMessage("Personnaliser"),
         "dark": MessageLookupByLibrary.simpleMessage("Sombre"),
@@ -242,6 +243,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Multisig Shares"),
         "na": MessageLookupByLibrary.simpleMessage("N/D"),
         "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Le nom est vide"),
+        "newAccount": MessageLookupByLibrary.simpleMessage("Nouveau Compte"),
         "newSnapAddress": MessageLookupByLibrary.simpleMessage(
             "Nouvelle adresse instantanée"),
         "newSubAccount":
@@ -309,6 +311,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rescannage en cours..."),
         "reset": MessageLookupByLibrary.simpleMessage("RESET"),
         "restart": MessageLookupByLibrary.simpleMessage("Redémarrage"),
+        "restoreAnAccount":
+            MessageLookupByLibrary.simpleMessage("Récuperation d\'un Compte?"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
             "Récupérer les détails de la transaction"),
         "roundToMillis":
@@ -374,6 +378,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
             "Presser sur une Transaction pour plus de details"),
         "textCopiedToClipboard": m17,
+        "thePrivateWalletMessenger": MessageLookupByLibrary.simpleMessage(
+            "Le Portefeuille et Messagerie Privé"),
         "theme": MessageLookupByLibrary.simpleMessage("Thème"),
         "themeEditor": MessageLookupByLibrary.simpleMessage("Editeur de Thème"),
         "thisAccountAlreadyExists":
@@ -411,6 +417,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "useUa": MessageLookupByLibrary.simpleMessage("Utiliser UA"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
         "viewingKey":
-            MessageLookupByLibrary.simpleMessage("Affichage de la clé")
+            MessageLookupByLibrary.simpleMessage("Affichage de la clé"),
+        "welcomeToYwallet":
+            MessageLookupByLibrary.simpleMessage("Bienvenue à YWallet")
       };
 }

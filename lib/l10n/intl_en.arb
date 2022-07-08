@@ -232,5 +232,10 @@
   "signOnYourOfflineDevice": "Sign on your offline device",
   "signedTx": "Signed Tx",
   "broadcastFromYourOnlineDevice": "Broadcast from your online device",
-  "checkTransaction": "Check Transaction"
+  "checkTransaction": "Check Transaction",
+  "crypto": "Crypto",
+  "restoreAnAccount": "Restore an account?",
+  "welcomeToYwallet": "Welcome to YWallet",
+  "thePrivateWalletMessenger": "The private wallet & messenger",
+  "newAccount": "New Account"
 }

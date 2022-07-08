@@ -230,5 +230,10 @@
   "signOnYourOfflineDevice": "Signer avec l'appareil sans connexion",
   "signedTx": "Tx signée",
   "broadcastFromYourOnlineDevice": "Diffuser avec l'appareil connecté en ligne",
-  "checkTransaction": "Verifier la Transaction"
+  "checkTransaction": "Verifier la Transaction",
+  "crypto": "Crypto",
+  "restoreAnAccount": "Récuperation d'un Compte?",
+  "welcomeToYwallet": "Bienvenue à YWallet",
+  "thePrivateWalletMessenger": "Le Portefeuille et Messagerie Privé",
+  "newAccount": "Nouveau Compte"
 }
