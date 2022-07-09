@@ -123,6 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backupWarning": MessageLookupByLibrary.simpleMessage(
             "No one can recover your secret keys. If you don\'t have a backup and your phone breaks down, you WILL LOSE YOUR MONEY. You can reach this page by the app menu then Backup"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
+        "barcode": MessageLookupByLibrary.simpleMessage("Barcode"),
         "barcodeScannerIsNotAvailableOnDesktop":
             MessageLookupByLibrary.simpleMessage(
                 "Barcode scanner is not available on desktop"),
@@ -205,8 +206,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Include Fee in Amount"),
         "includeReplyTo":
             MessageLookupByLibrary.simpleMessage("Include My Address in Memo"),
+        "inputBarcodeValue":
+            MessageLookupByLibrary.simpleMessage("Input barcode"),
         "invalidAddress":
             MessageLookupByLibrary.simpleMessage("Invalid Address"),
+        "invalidKey": MessageLookupByLibrary.simpleMessage("Invalid Key"),
         "key": MessageLookupByLibrary.simpleMessage(
             "Seed, Secret Key or View Key (optional)"),
         "largestSpendingLastMonth":

@@ -72,13 +72,16 @@ class SyncStatusWidget extends StatelessWidget {
 
         ]);
 
-        return TextButton(onPressed: _onSync, child: text);
+        return TextButton(onPressed: () => _onSync(context), child: text);
       })
     ]);
   }
 
-  _onSync() {
-    Future.microtask(syncStatus.sync);
+  _onSync(BuildContext context) {
+    if (syncStatus.syncedHeight != null)
+      Future.microtask(syncStatus.sync);
+    else
+      rescan(context);
   }
 }
 

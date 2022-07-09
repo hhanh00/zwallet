@@ -124,6 +124,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backupWarning": MessageLookupByLibrary.simpleMessage(
             "Vos clés ne sont pas récupérables. Si vous n\'avez pas de sauvegarde, vous pouvez PERDREZ VOTRE ARGENT. Cette page est accessible par Menu ... / Sauvegarde"),
         "balance": MessageLookupByLibrary.simpleMessage("Solde"),
+        "barcode": MessageLookupByLibrary.simpleMessage("Code Barre"),
         "barcodeScannerIsNotAvailableOnDesktop":
             MessageLookupByLibrary.simpleMessage(
                 "Le Barcode scanner est seulement disponible sur mobile"),
@@ -210,8 +211,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "Inclure les frais dans le montant"),
         "includeReplyTo": MessageLookupByLibrary.simpleMessage(
             "Inclure mon Adresse de Réponse"),
+        "inputBarcodeValue":
+            MessageLookupByLibrary.simpleMessage("Entrer le Code Barre"),
         "invalidAddress":
             MessageLookupByLibrary.simpleMessage("Adresse invalide"),
+        "invalidKey": MessageLookupByLibrary.simpleMessage("Clé invalide"),
         "key": MessageLookupByLibrary.simpleMessage("Clé"),
         "largestSpendingLastMonth": MessageLookupByLibrary.simpleMessage(
             "Dépenses les plus importantes le mois dernier"),

@@ -40,6 +40,7 @@ import 'message.dart';
 import 'multisend.dart';
 // import 'multisign.dart';
 import 'payment_uri.dart';
+import 'rescan.dart';
 import 'reset.dart';
 import 'scantaddr.dart';
 import 'settings.dart';
@@ -162,9 +163,7 @@ class LoadProgressState extends State<LoadProgress> {
         child: SizedBox(height: 240, width: 200, child:
         Column(
             children: [
-              GestureDetector(
-                onLongPress: exportDb,
-                child: Image(image: AssetImage('assets/icon.png'), height: 64)),
+              Image.asset('assets/icon.png', height: 64),
               Padding(padding: EdgeInsets.all(16)),
               Text(S.of(context).loading, style: Theme.of(context).textTheme.headline4),
               Padding(padding: EdgeInsets.all(16)),
@@ -219,7 +218,7 @@ void main() {
                 '/welcome': (context) => WelcomePage(),
                 '/account': (context) => HomePage(),
                 '/add_account': (context) => AddAccountPage(),
-                '/add_first_account': (context) => AddAccountPage(dismissible: false),
+                '/add_first_account': (context) => AddAccountPage(firstAccount: true),
                 '/send': (context) =>
                     SendPage(routeSettings.arguments as SendPageArgs?),
                 '/receive': (context) =>
@@ -555,9 +554,23 @@ bool checkNumber(String s) {
 int precision(bool? mZEC) => (mZEC == null || mZEC) ? 3 : 8;
 
 Future<String?> scanCode(BuildContext context) async {
+  final s = S.of(context);
   if (!isMobile()) {
-    showSnackBar(S.of(context).barcodeScannerIsNotAvailableOnDesktop);
-    return null;
+    final codeController = TextEditingController();
+    final code = await showDialog<String?>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+            title: Text(s.inputBarcodeValue),
+            content: TextFormField(
+              decoration: InputDecoration(
+                  labelText: s.barcode),
+              controller: codeController,
+            ),
+            actions: confirmButtons(
+                context, () => Navigator.of(context).pop(codeController.text),
+                cancelValue: null)));
+    return code;
   }
   else {
     final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S
@@ -708,6 +721,13 @@ Future<void> exportDb() async {
   final prefs = await SharedPreferences.getInstance();
   prefs.setBool('export_db', true);
   showSnackBar('Backup scheduled');
+}
+
+Future<void> rescan(BuildContext context) async {
+  final height = await rescanDialog(context);
+  if (height != null) {
+    syncStatus.rescan(context, height);
+  }
 }
 
 void sqlFfiInit() {

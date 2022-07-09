@@ -158,8 +158,6 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     );
 
     return Observer(builder: (context) {
-      print("REBUILD");
-
       final _1 = active.dataEpoch;
       final unread = active.unread;
       final messageTab = unread != 0 ?
@@ -262,13 +260,6 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     }
   }
 
-  _rescan() async {
-    final height = await rescanDialog(context);
-    if (height != null) {
-      syncStatus.rescan(context, height);
-    }
-  }
-
   _cold() {
     showDialog(
         context: context,
@@ -279,6 +270,10 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             Text(S.of(context).doYouWantToDeleteTheSecretKeyAndConvert),
             actions: confirmButtons(context, _convertToWatchOnly,
                 okLabel: S.of(context).delete)));
+  }
+
+  _rescan() {
+    rescan(context);
   }
 
   _multiPay() {

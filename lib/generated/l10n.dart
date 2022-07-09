@@ -2441,6 +2441,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Invalid Key`
+  String get invalidKey {
+    return Intl.message(
+      'Invalid Key',
+      name: 'invalidKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Barcode`
+  String get barcode {
+    return Intl.message(
+      'Barcode',
+      name: 'barcode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Input barcode`
+  String get inputBarcodeValue {
+    return Intl.message(
+      'Input barcode',
+      name: 'inputBarcodeValue',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
