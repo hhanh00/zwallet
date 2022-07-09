@@ -65,5 +65,5 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           files: |
-            ${{ steps.extract.outputs.destination }}/app-release.aab
+            ${{ steps.extract.outputs.destination }}/app-release.apk
 
