@@ -160,8 +160,8 @@ abstract class _ActiveAccount with Store {
   @action
   Future<void> restore() async {
     final prefs = await SharedPreferences.getInstance();
-    coin = prefs.getInt('coin') ?? 0;
-    id = prefs.getInt('account') ?? 0;
+    final coin = prefs.getInt('coin') ?? 0;
+    final id = prefs.getInt('account') ?? 0;
     await setActiveAccount(coin, id);
   }
 
@@ -185,7 +185,7 @@ abstract class _ActiveAccount with Store {
       return active.id;
     final List<Map> res2 = await db.rawQuery(
         "SELECT id_account FROM accounts", []);
-    if (res1.isNotEmpty) {
+    if (res2.isNotEmpty) {
       final id = res2[0]['id_account'];
       await setActiveAccount(coin, id);
       return id;

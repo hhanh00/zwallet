@@ -237,5 +237,8 @@
   "restoreAnAccount": "Restore an account?",
   "welcomeToYwallet": "Welcome to YWallet",
   "thePrivateWalletMessenger": "The private wallet & messenger",
-  "newAccount": "New Account"
+  "newAccount": "New Account",
+  "invalidKey": "Invalid Key",
+  "barcode": "Barcode",
+  "inputBarcodeValue": "Input barcode"
 }

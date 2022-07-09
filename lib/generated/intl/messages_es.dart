@@ -123,6 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backupWarning": MessageLookupByLibrary.simpleMessage(
             "Nadie puede recuperar sus claves secretas. Si no tiene una copia de seguridad, PERDERÁ SU DINERO si su teléfono se avería. Puede acceder a esta página mediante el menú de la aplicación y luego \'Copia de Seguridad\'"),
         "balance": MessageLookupByLibrary.simpleMessage("Saldo"),
+        "barcode": MessageLookupByLibrary.simpleMessage("Código de Barras"),
         "barcodeScannerIsNotAvailableOnDesktop":
             MessageLookupByLibrary.simpleMessage(
                 "El escáner de código de barras no está disponible en el escritorio"),
@@ -208,8 +209,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "Incluir tarifa en la cantidad"),
         "includeReplyTo":
             MessageLookupByLibrary.simpleMessage("Include My Address in Memo"),
+        "inputBarcodeValue":
+            MessageLookupByLibrary.simpleMessage("Escriba el Código de Barras"),
         "invalidAddress":
             MessageLookupByLibrary.simpleMessage("Dirección no es válida"),
+        "invalidKey": MessageLookupByLibrary.simpleMessage("Tecla inválida"),
         "key": MessageLookupByLibrary.simpleMessage("Llave"),
         "largestSpendingLastMonth":
             MessageLookupByLibrary.simpleMessage("Pago Más Grande Mes Pasado"),

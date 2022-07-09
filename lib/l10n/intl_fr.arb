@@ -235,5 +235,8 @@
   "restoreAnAccount": "Récuperation d'un Compte?",
   "welcomeToYwallet": "Bienvenue à YWallet",
   "thePrivateWalletMessenger": "Le Portefeuille et Messagerie Privé",
-  "newAccount": "Nouveau Compte"
+  "newAccount": "Nouveau Compte",
+  "invalidKey": "Clé invalide",
+  "barcode": "Code Barre",
+  "inputBarcodeValue": "Entrer le Code Barre"
 }
