@@ -152,3 +152,22 @@ to user selected files
 Then exit xcode and run `flutter build macos`.
 
 If you want to create a DMG, use the npm package appdmg
+
+## One script dev installation on a fresh distribution of ArchLinux
+
+Build an APK for Android
+
+- Clone the source code from github
+- Clone the submodules
+- Install all the dev tools (rust, android sdk, ndk & flutter)
+- Configure and build
+
+```
+$ git clone https://github.com/hhanh00/zwallet.git
+$ cd zwallet
+$ git submodule update --init
+$ ./install-dev.sh
+```
+
+Your `apk` is `build/app/outputs/flutter-apk/app-release.apk`
+
