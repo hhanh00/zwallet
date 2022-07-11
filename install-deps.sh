@@ -9,7 +9,7 @@ pacman -Sy --noconfirm unzip jdk8-openjdk wget
 
 wget -P /tmp -N https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
 wget -P /tmp -N https://dl.google.com/android/repository/android-ndk-r21e-linux-x86_64.zip
-wget -P /tmp -N https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.0.1-stable.tar.xz
+wget -P /tmp -N https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.0.4-stable.tar.xz
 
 wget -P /tmp -N https://download.z.cash/downloads/sapling-output.params
 wget -P /tmp -N https://download.z.cash/downloads/sapling-spend.params
