@@ -1,13 +1,15 @@
-#sudo pacman -Sy --noconfirm base-devel cmake rustup unzip wget jdk8-openjdk
-#./install-rust.sh
-#./install-deps.sh $HOME
+# For an base installation of archlinux
+sudo pacman -Sy --noconfirm base-devel cmake rustup unzip wget jdk8-openjdk
 
-#export ANDROID_SDK_ROOT=$HOME/Android/sdk
-#export ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/android-ndk-r21e
-#export PATH=$HOME/flutter/bin:$PATH
+./install-rust.sh
+./install-deps.sh $HOME
 
-#cp docker/zwallet-sample.jks docker/zwallet.jks
-#export JKS_PASSWORD=zwallet
+cp docker/zwallet-sample.jks docker/zwallet.jks
+export JKS_PASSWORD=zwallet
 
-#./configure.sh
+export ANDROID_SDK_ROOT=$HOME/Android/sdk
+export ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/android-ndk-r21e
+export PATH=$HOME/flutter/bin:$PATH
+
+./configure.sh
 ./build.sh
