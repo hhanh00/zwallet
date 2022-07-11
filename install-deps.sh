@@ -23,7 +23,7 @@ yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses &&
 yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-31")
 
 (cd $ANDROID_SDK_ROOT;unzip -o /tmp/android-ndk-r21e-linux-x86_64.zip)
-(cd $ROOT_DIR;tar xvf /tmp/flutter_linux_3.0.1-stable.tar.xz)
+(cd $ROOT_DIR;tar xvf /tmp/flutter_linux_3.0.4-stable.tar.xz)
 
 mkdir -p $HOME/.zcash-params
 cp /tmp/sapling-output.params /tmp/sapling-spend.params $HOME/.zcash-params
