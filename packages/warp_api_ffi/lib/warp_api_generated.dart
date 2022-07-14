@@ -27,19 +27,6 @@ class NativeLibrary {
   late final _dart_dummy_export _dummy_export =
       _dummy_export_ptr.asFunction<_dart_dummy_export>();
 
-  void deallocate_str(
-    ffi.Pointer<ffi.Int8> s,
-  ) {
-    return _deallocate_str(
-      s,
-    );
-  }
-
-  late final _deallocate_str_ptr =
-      _lookup<ffi.NativeFunction<_c_deallocate_str>>('deallocate_str');
-  late final _dart_deallocate_str _deallocate_str =
-      _deallocate_str_ptr.asFunction<_dart_deallocate_str>();
-
   void dart_post_cobject(
     ffi.Pointer<ffi.Void> ptr,
   ) {
@@ -52,6 +39,19 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_dart_post_cobject>>('dart_post_cobject');
   late final _dart_dart_post_cobject _dart_post_cobject =
       _dart_post_cobject_ptr.asFunction<_dart_dart_post_cobject>();
+
+  void deallocate_str(
+    ffi.Pointer<ffi.Int8> s,
+  ) {
+    return _deallocate_str(
+      s,
+    );
+  }
+
+  late final _deallocate_str_ptr =
+      _lookup<ffi.NativeFunction<_c_deallocate_str>>('deallocate_str');
+  late final _dart_deallocate_str _deallocate_str =
+      _deallocate_str_ptr.asFunction<_dart_deallocate_str>();
 
   int get_error() {
     return _get_error();
@@ -618,10 +618,10 @@ class NativeLibrary {
       _merge_data_ptr.asFunction<_dart_merge_data>();
 
   ffi.Pointer<ffi.Int8> get_tx_summary(
-    ffi.Pointer<ffi.Int8> drop,
+    ffi.Pointer<ffi.Int8> tx,
   ) {
     return _get_tx_summary(
-      drop,
+      tx,
     );
   }
 
@@ -629,19 +629,30 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_get_tx_summary>>('get_tx_summary');
   late final _dart_get_tx_summary _get_tx_summary =
       _get_tx_summary_ptr.asFunction<_dart_get_tx_summary>();
+
+  ffi.Pointer<ffi.Int8> get_best_server(
+    ffi.Pointer<ffi.Pointer<ffi.Int8>> servers,
+    int count,
+  ) {
+    return _get_best_server(
+      servers,
+      count,
+    );
+  }
+
+  late final _get_best_server_ptr =
+      _lookup<ffi.NativeFunction<_c_get_best_server>>('get_best_server');
+  late final _dart_get_best_server _get_best_server =
+      _get_best_server_ptr.asFunction<_dart_get_best_server>();
 }
+
+const int QR_DATA_SIZE = 256;
+
+const int MAX_OUTPUTS_PER_CHUNK = 200000;
 
 typedef _c_dummy_export = ffi.Void Function();
 
 typedef _dart_dummy_export = void Function();
-
-typedef _c_deallocate_str = ffi.Void Function(
-  ffi.Pointer<ffi.Int8> s,
-);
-
-typedef _dart_deallocate_str = void Function(
-  ffi.Pointer<ffi.Int8> s,
-);
 
 typedef _c_dart_post_cobject = ffi.Void Function(
   ffi.Pointer<ffi.Void> ptr,
@@ -649,6 +660,14 @@ typedef _c_dart_post_cobject = ffi.Void Function(
 
 typedef _dart_dart_post_cobject = void Function(
   ffi.Pointer<ffi.Void> ptr,
+);
+
+typedef _c_deallocate_str = ffi.Void Function(
+  ffi.Pointer<ffi.Int8> s,
+);
+
+typedef _dart_deallocate_str = void Function(
+  ffi.Pointer<ffi.Int8> s,
 );
 
 typedef _c_get_error = ffi.Int8 Function();
@@ -998,9 +1017,19 @@ typedef _dart_merge_data = ffi.Pointer<ffi.Int8> Function(
 );
 
 typedef _c_get_tx_summary = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> drop,
+  ffi.Pointer<ffi.Int8> tx,
 );
 
 typedef _dart_get_tx_summary = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> drop,
+  ffi.Pointer<ffi.Int8> tx,
+);
+
+typedef _c_get_best_server = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Pointer<ffi.Int8>> servers,
+  ffi.Uint32 count,
+);
+
+typedef _dart_get_best_server = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Pointer<ffi.Int8>> servers,
+  int count,
 );
