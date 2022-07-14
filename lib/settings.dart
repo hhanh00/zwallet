@@ -60,7 +60,7 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                                     child: Text(s.advanced), value: 'advanced'),
                               ]),
                           if (!simpleMode) TabBar(controller: _tabController, tabs: [Tab(text: "Zcash"), Tab(text: "Ycash")]),
-                          if (!simpleMode) SizedBox(height: 200, child: TabBarView(controller: _tabController, children: [ServerSelect(0), ServerSelect(1)])),
+                          if (!simpleMode) SizedBox(height: 270, child: TabBarView(controller: _tabController, children: [ServerSelect(0), ServerSelect(1)])),
                           // if (!simpleMode) FormBuilderRadioGroup(
                           //     orientation: OptionsOrientation.vertical,
                           //     name: 'servers',
@@ -355,6 +355,12 @@ class _ServerSelectState extends State<ServerSelect> with
         .map((lwd) => FormBuilderFieldOption<String>(
         child: Text(lwd.name), value: lwd.name))
         .toList();
+    options.insert(0,
+      FormBuilderFieldOption(
+          value: 'auto',
+          child: Text(s.auto))
+    );
+
     options.add(
       FormBuilderFieldOption(
           value: 'custom',
@@ -371,7 +377,8 @@ class _ServerSelectState extends State<ServerSelect> with
           )),
     );
 
-    return FormBuilderRadioGroup<String>(
+    return Column(children: [
+      FormBuilderRadioGroup<String>(
         orientation: OptionsOrientation.vertical,
         name: 'lwd ${coinDef.ticker}',
         decoration: InputDecoration(
@@ -383,7 +390,10 @@ class _ServerSelectState extends State<ServerSelect> with
           choice = v;
           _saved = false;
           },
-        options: options);
+        options: options),
+      Padding(padding: EdgeInsets.symmetric(vertical: 2)),
+      Text(settings.servers[coin].current),
+    ]);
   }
 
   void _save(_) async {

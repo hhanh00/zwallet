@@ -240,5 +240,6 @@
   "newAccount": "New Account",
   "invalidKey": "Invalid Key",
   "barcode": "Barcode",
-  "inputBarcodeValue": "Input barcode"
+  "inputBarcodeValue": "Input barcode",
+  "auto": "Auto"
 }

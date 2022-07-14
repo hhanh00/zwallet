@@ -238,5 +238,6 @@
   "newAccount": "Nouveau Compte",
   "invalidKey": "Clé invalide",
   "barcode": "Code Barre",
-  "inputBarcodeValue": "Entrer le Code Barre"
+  "inputBarcodeValue": "Entrer le Code Barre",
+  "auto": "Auto"
 }

@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sqflite/sqflite.dart';
 import 'coin/coins.dart';
 import 'package:warp_api/warp_api.dart';
@@ -26,9 +27,10 @@ class LWDServer {
   final CoinBase coinDef;
   late String choice;
   late String customUrl;
+  String current = "";
 
   LWDServer(this.coin, this.coinDef) {
-    choice = coinDef.lwd.first.name;
+    choice = "auto";
     customUrl = coinDef.lwd.first.url;
   }
 
@@ -44,7 +46,8 @@ class LWDServer {
     else {
       await savePrefs(choice, customUrl);
     }
-    return getLWDUrl();
+    current = getLWDUrl();
+    return current;
   }
 
   Future<void> savePrefs(String _choice, String _customUrl) async {
@@ -58,7 +61,12 @@ class LWDServer {
 
   String getLWDUrl() {
     final url;
-    if (choice == "custom")
+    if (choice == "auto") {
+      var servers = coinDef.lwd.map((s) => s.url).toList();
+      servers.add(customUrl);
+      url = WarpApi.getBestServer(servers);
+    }
+    else if (choice == "custom")
       url = customUrl;
     else {
       final lwd = coinDef.lwd.firstWhere((lwd) => lwd.name == choice,
@@ -89,6 +97,9 @@ abstract class _Settings with Store {
 
   List<LWDServer> servers = [LWDServer(0, zcash), LWDServer(1, ycash)];
   List<CoinData> coins = [CoinData(0, zcash), CoinData(1, ycash)];
+
+  @observable
+  String version = "1.0.0";
 
   @observable
   int anchorOffset = 10;
@@ -169,6 +180,7 @@ abstract class _Settings with Store {
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
+    version = prefs.getString('version') ?? "1.0.0";
     simpleMode = prefs.getBool('simple_mode') ?? true;
     anchorOffset = prefs.getInt('anchor_offset') ?? 3;
     getTx = prefs.getBool('get_txinfo') ?? true;
@@ -208,6 +220,10 @@ abstract class _Settings with Store {
       c.contactsSaved = prefs.getBool("$ticker.contacts_saved") ?? true;
     }
 
+    final packageInfo = await PackageInfo.fromPlatform();
+    version = packageInfo.version;
+    prefs.setString('version', version);
+
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
     if (isMobile())
@@ -222,6 +238,13 @@ abstract class _Settings with Store {
     final _flat = inclination < 20;
     if (flat != _flat)
       flat = _flat;
+  }
+
+  @action
+  Future<void> setVersion(String v) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('version', v);
+    version = v;
   }
 
   @action

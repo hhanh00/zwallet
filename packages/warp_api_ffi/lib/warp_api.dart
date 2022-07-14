@@ -269,6 +269,16 @@ class WarpApi {
     // TODO: Free
   }
 
+  static String getBestServer(List<String> servers) {
+    List<Pointer<Int8>> serversAsPointers = servers.map((s) => s.toNativeUtf8().cast<Int8>()).toList();
+    final Pointer<Pointer<Int8>> serverArray = malloc.allocate(sizeOf<Pointer<Utf8>>() * serversAsPointers.length);
+    serversAsPointers.asMap().forEach((index, utf) {
+      serverArray[index] = serversAsPointers[index];
+    });
+    final bestServer = warp_api_lib.get_best_server(serverArray, serversAsPointers.length);
+    return convertCString(bestServer);
+  }
+
   // // static void storeShareSecret(int coin, int account, String secret) {
   // //   warp_api_lib.store_share_secret(coin, account, secret.toNativeUtf8().cast<Int8>());
   // // }

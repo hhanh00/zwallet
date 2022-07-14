@@ -112,6 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Estás seguro de que deseas eliminar este contacto?"),
         "areYouSureYouWantToSaveYourContactsIt": m1,
+        "auto": MessageLookupByLibrary.simpleMessage("Auto"),
         "autoHideBalance": MessageLookupByLibrary.simpleMessage(
             "Ocultar Saldo Automáticamente"),
         "backup": MessageLookupByLibrary.simpleMessage("Copia De Seguridad"),
