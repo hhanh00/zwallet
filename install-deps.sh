@@ -1,4 +1,5 @@
 #!/bin/sh
+set -x
 
 ROOT_DIR=$1
 if [ "$ROOT_DIR" == "" ]; then
@@ -6,18 +7,18 @@ if [ "$ROOT_DIR" == "" ]; then
 fi
 
 DL_DIR=$2
-if [ "DL_DIR" == "" ]; then
+if [ "$DL_DIR" == "" ]; then
   DL_DIR="/tmp"
 fi
 
 pacman -Sy --noconfirm unzip jdk8-openjdk wget
 
-wget -P $DL_DIR -N https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
-wget -P $DL_DIR -N https://dl.google.com/android/repository/android-ndk-r21e-linux-x86_64.zip
-wget -P $DL_DIR -N https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.0.5-stable.tar.xz
+wget -qP $DL_DIR -N https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
+wget -qP $DL_DIR -N https://dl.google.com/android/repository/android-ndk-r21e-linux-x86_64.zip
+wget -qP $DL_DIR -N https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.0.5-stable.tar.xz
 
-wget -P $DL_DIR -N https://download.z.cash/downloads/sapling-output.params
-wget -P $DL_DIR -N https://download.z.cash/downloads/sapling-spend.params
+wget -qP $DL_DIR -N https://download.z.cash/downloads/sapling-output.params
+wget -qP $DL_DIR -N https://download.z.cash/downloads/sapling-spend.params
 
 mkdir -p $ROOT_DIR/Android/sdk
 export ANDROID_SDK_ROOT=$ROOT_DIR/Android/sdk
