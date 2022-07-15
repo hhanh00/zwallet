@@ -1,6 +1,8 @@
 #syntax=docker/dockerfile:1.2
 FROM archlinux:base-devel-20220227.0.49015 AS builder_rust
 
+RUN pacman -Syu --noconfirm
+
 COPY install-rust.sh .
 RUN ./install-rust.sh
 
