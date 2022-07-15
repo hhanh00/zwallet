@@ -127,6 +127,19 @@ class NativeLibrary {
   late final _dart_set_coin_lwd_url _set_coin_lwd_url =
       _set_coin_lwd_url_ptr.asFunction<_dart_set_coin_lwd_url>();
 
+  ffi.Pointer<ffi.Int8> get_lwd_url(
+    int coin,
+  ) {
+    return _get_lwd_url(
+      coin,
+    );
+  }
+
+  late final _get_lwd_url_ptr =
+      _lookup<ffi.NativeFunction<_c_get_lwd_url>>('get_lwd_url');
+  late final _dart_get_lwd_url _get_lwd_url =
+      _get_lwd_url_ptr.asFunction<_dart_get_lwd_url>();
+
   void reset_app() {
     return _reset_app();
   }
@@ -158,10 +171,12 @@ class NativeLibrary {
   int new_sub_account(
     ffi.Pointer<ffi.Int8> name,
     int index,
+    int count,
   ) {
     return _new_sub_account(
       name,
       index,
+      count,
     );
   }
 
@@ -714,6 +729,14 @@ typedef _dart_set_coin_lwd_url = void Function(
   ffi.Pointer<ffi.Int8> lwd_url,
 );
 
+typedef _c_get_lwd_url = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_get_lwd_url = ffi.Pointer<ffi.Int8> Function(
+  int coin,
+);
+
 typedef _c_reset_app = ffi.Void Function();
 
 typedef _dart_reset_app = void Function();
@@ -735,11 +758,13 @@ typedef _dart_new_account = int Function(
 typedef _c_new_sub_account = ffi.Uint32 Function(
   ffi.Pointer<ffi.Int8> name,
   ffi.Int32 index,
+  ffi.Uint32 count,
 );
 
 typedef _dart_new_sub_account = int Function(
   ffi.Pointer<ffi.Int8> name,
   int index,
+  int count,
 );
 
 typedef _c_warp = ffi.Uint8 Function(

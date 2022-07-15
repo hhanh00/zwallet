@@ -18,6 +18,7 @@ class AccountManagerPage extends StatefulWidget {
 
 class AccountManagerState extends State<AccountManagerPage> {
   var _accountNameController = TextEditingController();
+  var _countController = TextEditingController(text: '1');
 
   @override
   initState() {
@@ -228,12 +229,22 @@ class AccountManagerState extends State<AccountManagerPage> {
         context: context,
         builder: (context) => AlertDialog(
             title: Text(s.newSubAccount),
-            content: TextField(controller: _accountNameController),
+            content: Column(mainAxisSize: MainAxisSize.min, children: [
+              TextField(
+                decoration: InputDecoration(label: Text(s.accountName)),
+                controller: _accountNameController),
+              TextField(
+                decoration: InputDecoration(label: Text(s.count)),
+                controller: _countController,
+                keyboardType: TextInputType.number,
+              ),
+            ]),
             actions: confirmButtons(context, () {
               Navigator.of(context).pop(true);
             })));
     if (confirmed == true) {
-      WarpApi.newSubAccount(_accountNameController.text, -1);
+      WarpApi.newSubAccount(_accountNameController.text, -1,
+          int.parse(_countController.text));
       await accounts.refresh();
     }
   }

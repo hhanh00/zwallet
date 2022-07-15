@@ -22,14 +22,17 @@ import 'main.dart';
 
 part 'store.g.dart';
 
-class LWDServer {
+class LWDServer = _LWDServer with _$LWDServer;
+
+abstract class _LWDServer with Store {
   final int coin;
   final CoinBase coinDef;
   late String choice;
   late String customUrl;
+  @observable
   String current = "";
 
-  LWDServer(this.coin, this.coinDef) {
+  _LWDServer(this.coin, this.coinDef) {
     choice = "auto";
     customUrl = coinDef.lwd.first.url;
   }
@@ -46,8 +49,7 @@ class LWDServer {
     else {
       await savePrefs(choice, customUrl);
     }
-    current = getLWDUrl();
-    return current;
+    return getLWDUrl();
   }
 
   Future<void> savePrefs(String _choice, String _customUrl) async {
@@ -59,6 +61,7 @@ class LWDServer {
     prefs.setString('$ticker.lwd_custom', _customUrl);
   }
 
+  @action
   String getLWDUrl() {
     final url;
     if (choice == "auto") {
@@ -73,6 +76,7 @@ class LWDServer {
           orElse: () => coinDef.lwd.first);
       url = lwd.url;
     }
+    current = url;
     return url;
   }
 }
@@ -564,6 +568,11 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<bool> update() async {
+    final server = WarpApi.getLWD(active.coin);
+    if (server.isEmpty) {
+      final server = settings.servers[active.coin].getLWDUrl();
+      WarpApi.updateLWD(active.coin, server);
+    }
     latestHeight = await WarpApi.getLatestHeight();
     final _syncedHeight = await getDbSyncedHeight();
     // if syncedHeight = 0, we just started sync therefore don't set it back to null

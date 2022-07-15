@@ -241,5 +241,6 @@
   "invalidKey": "Invalid Key",
   "barcode": "Barcode",
   "inputBarcodeValue": "Input barcode",
-  "auto": "Auto"
+  "auto": "Auto",
+  "count": "Count"
 }
