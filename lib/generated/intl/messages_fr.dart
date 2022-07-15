@@ -161,6 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "convertToWatchonly":
             MessageLookupByLibrary.simpleMessage("Convertir en Non-Dépensable"),
         "copy": MessageLookupByLibrary.simpleMessage("Copier"),
+        "count": MessageLookupByLibrary.simpleMessage("Nombre"),
         "createANewAccount": MessageLookupByLibrary.simpleMessage(
             "Créez un nouveau compte et il apparaîtra ici"),
         "createANewContactAndItWillShowUpHere":

@@ -239,5 +239,6 @@
   "invalidKey": "Tecla inválida",
   "barcode": "Código de Barras",
   "inputBarcodeValue": "Escriba el Código de Barras",
-  "auto": "Auto"
+  "auto": "Auto",
+  "count": "Cuenta"
 }

@@ -392,7 +392,7 @@ class _ServerSelectState extends State<ServerSelect> with
           },
         options: options),
       Padding(padding: EdgeInsets.symmetric(vertical: 2)),
-      Text(settings.servers[coin].current),
+      Observer(builder: (context) => Text(settings.servers[coin].current)),
     ]);
   }
 

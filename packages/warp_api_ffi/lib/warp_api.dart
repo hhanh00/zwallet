@@ -61,8 +61,8 @@ class WarpApi {
         name.toNativeUtf8().cast<Int8>(), key.toNativeUtf8().cast<Int8>(), index);
   }
 
-  static int newSubAccount(String name, int index) {
-    return warp_api_lib.new_sub_account(name.toNativeUtf8().cast<Int8>(), index);
+  static void newSubAccount(String name, int index, int count) {
+    warp_api_lib.new_sub_account(name.toNativeUtf8().cast<Int8>(), index, count);
   }
 
   static void skipToLastHeight(int coin) {
@@ -202,6 +202,10 @@ class WarpApi {
     warp_api_lib.set_coin_lwd_url(coin, url.toNativeUtf8().cast<Int8>());
   }
 
+  static String getLWD(int coin) {
+    return convertCString(warp_api_lib.get_lwd_url(coin));
+  }
+
   static void storeContact(int id, String name, String address, bool dirty) {
     warp_api_lib.store_contact(id, name.toNativeUtf8().cast<Int8>(), address.toNativeUtf8().cast<Int8>(), dirty ? 1 : 0);
   }
@@ -275,8 +279,9 @@ class WarpApi {
     serversAsPointers.asMap().forEach((index, utf) {
       serverArray[index] = serversAsPointers[index];
     });
-    final bestServer = warp_api_lib.get_best_server(serverArray, serversAsPointers.length);
-    return convertCString(bestServer);
+    final bestServer = convertCString(warp_api_lib.get_best_server(serverArray, serversAsPointers.length));
+    malloc.free(serverArray);
+    return bestServer;
   }
 
   // // static void storeShareSecret(int coin, int account, String secret) {

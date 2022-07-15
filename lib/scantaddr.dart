@@ -50,7 +50,7 @@ class ScanTAddrPageState extends State<ScanTAddrPage> {
     final _accounts = tAccounts ?? [];
     for (var account in _accounts) {
       final name = s.subAccountIndexOf(account.aindex, active.account.name);
-      WarpApi.newSubAccount(name, account.aindex);
+      WarpApi.newSubAccount(name, account.aindex, 1);
     }
     await accounts.refresh();
     await accounts.updateTBalance();
