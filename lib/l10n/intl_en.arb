@@ -242,5 +242,7 @@
   "barcode": "Barcode",
   "inputBarcodeValue": "Input barcode",
   "auto": "Auto",
-  "count": "Count"
+  "count": "Count",
+  "close": "Close",
+  "changeTransparentKey": "Change Transparent Key"
 }

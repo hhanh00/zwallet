@@ -474,12 +474,9 @@ void showQR(BuildContext context, String text, String title) {
                         .subtitle1),
                     Padding(padding: EdgeInsets.all(4)),
                     ElevatedButton.icon(onPressed: () {
-                      Navigator.of(context).pop();
                       Clipboard.setData(ClipboardData(text: text));
-                      final snackBar = SnackBar(
-                          content: Text(s.textCopiedToClipboard(title)));
-                      rootScaffoldMessengerKey.currentState?.showSnackBar(
-                          snackBar);
+                      showSnackBar(s.textCopiedToClipboard(title));
+                      Navigator.of(context).pop();
                     }, icon: Icon(Icons.copy), label: Text(s.copy))
                   ])))
           ));
@@ -585,8 +582,12 @@ String centerTrim(String v) =>
     v.length >= 16 ? v.substring(0, 8) + "..." +
         v.substring(v.length - 16) : v;
 
-void showSnackBar(String msg) {
-  final snackBar = SnackBar(content: Text(msg));
+void showSnackBar(String msg, { bool autoClose = false }) {
+  final snackBar = SnackBar(content: SelectableText(msg),
+    duration: autoClose ? Duration(seconds: 4) : Duration(minutes: 1),
+    action: SnackBarAction(label: S.current.close, onPressed: () {
+      rootScaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+  }));
   rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
 }
 
@@ -654,11 +655,9 @@ Future<void> shieldTAddr(BuildContext context) async {
             actions: confirmButtons(context, () async {
               final s = S.of(context);
               Navigator.of(context).pop();
-              final snackBar1 = SnackBar(content: Text(s.shieldingInProgress));
-              rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
+              showSnackBar(s.shieldingInProgress, autoClose: true);
               final txid = await WarpApi.shieldTAddr();
-              final snackBar2 = SnackBar(content: Text("${s.txId}: $txid"));
-              rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+              showSnackBar("${s.txId}: $txid");
             })),
   );
 }
@@ -720,7 +719,7 @@ Future<void> resetApp(BuildContext context) async {
 Future<void> exportDb() async {
   final prefs = await SharedPreferences.getInstance();
   prefs.setBool('export_db', true);
-  showSnackBar('Backup scheduled');
+  showSnackBar('Backup scheduled', autoClose: true);
 }
 
 Future<void> rescan(BuildContext context) async {

@@ -240,5 +240,7 @@
   "barcode": "Código de Barras",
   "inputBarcodeValue": "Escriba el Código de Barras",
   "auto": "Auto",
-  "count": "Cuenta"
+  "count": "Cuenta",
+  "close": "Cambiar la Clave",
+  "changeTransparentKey": "Change Transparent Key"
 }

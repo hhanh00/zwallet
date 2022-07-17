@@ -146,8 +146,7 @@ class _FullRestoreState extends State<FullRestorePage> {
       final res = WarpApi.restoreFullBackup(key, backup);
 
       if (WarpApi.getError()) {
-        final snackBar = SnackBar(content: Text(WarpApi.getErrorMessage()));
-        rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+        showSnackBar(WarpApi.getErrorMessage());
       }
       else {
         await accounts.refresh();

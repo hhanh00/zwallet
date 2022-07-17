@@ -55,8 +55,7 @@ class Sign extends StatelessWidget {
       active.setBanner("");
       final isError = WarpApi.getError();
       if (isError) {
-        final snackBar = SnackBar(content: Text(res));
-        rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+        showSnackBar(res);
       }
       else {
         if (settings.qrOffline) {

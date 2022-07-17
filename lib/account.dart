@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:velocity_x/velocity_x.dart';
+import 'package:warp_api/warp_api.dart';
 
 import 'generated/l10n.dart';
 import 'main.dart';
@@ -37,40 +40,69 @@ class _AccountState extends State<AccountPage> with AutomaticKeepAliveClientMixi
   }
 }
 
-class SyncStatusWidget extends StatelessWidget {
+class SyncStatusWidget extends StatefulWidget {
+  SyncStatusState createState() => SyncStatusState();
+}
+
+class SyncStatusState extends State<SyncStatusWidget> {
+  var display = 0;
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = Theme.of(context);
     final simpleMode = settings.simpleMode;
+    final syncStyle = theme.textTheme.caption!.apply(color: theme.primaryColor);
+
+    dynamic createText(String text, bool animated) {
+      return animated ? WavyAnimatedText(text, textStyle: syncStyle) : Text(text, style: syncStyle);
+    }
 
     return Column(children: [
       if (simpleMode) Padding(padding: EdgeInsets.fromLTRB(0, 8, 0, 0), child: Text(s.simpleMode)),
       Observer(builder: (context) {
         final time = eta.eta;
         final syncedHeight = syncStatus.syncedHeight;
+        final timestamp = syncStatus.timestamp?.timeAgo() ?? s.na;
         final latestHeight = syncStatus.latestHeight;
+        final remaining = syncedHeight != null ? max(latestHeight-syncedHeight, 0) : 0;
         final percent = latestHeight > 0 ? 100 * (syncedHeight ?? 0) ~/ latestHeight : 0;
+
+        dynamic createSyncText(int iDisplay, bool animated) {
+          switch (iDisplay) {
+            case 0:
+              return createText('$syncedHeight / $latestHeight', animated);
+            case 1:
+              return createText('SYNCING $percent %', animated);
+            case 2:
+              return createText('$remaining...', animated);
+            case 3:
+              return createText('$timestamp', animated);
+            case 4:
+              return createText('$time', animated);
+          }
+        }
+
+        dynamic createSyncStatus() {
+          var d = display % 6;
+          if (d == 0)
+            return AnimatedTextKit(
+                key: ValueKey(syncedHeight),
+                repeatForever: true,
+                animatedTexts: [ for (int i = 0; i < 5; i++) createSyncText(i, true) ],
+                onTap: () => setState(() { display += 1; }),
+            );
+          return createSyncText(d-1, false);
+        }
+
         final text =  latestHeight == 0 ? Text(s.disconnected)
             : syncedHeight == null
             ? Text(s.rescanNeeded)
             : syncStatus.isSynced()
-                ? Text('$syncedHeight', style: theme.textTheme.caption)
-                : AnimatedTextKit(
-                    key: ValueKey(syncedHeight),
-                    repeatForever: true,
-                    animatedTexts: [
-                      WavyAnimatedText('$syncedHeight / $latestHeight',
-                          textStyle: theme.textTheme.caption!
-                              .apply(color: theme.primaryColor)),
-                      WavyAnimatedText('SYNCING $percent %',
-                          textStyle: theme.textTheme.caption!
-                              .apply(color: theme.primaryColor)),
-                      WavyAnimatedText('$time',
-                          textStyle: theme.textTheme.caption!
-                              .apply(color: theme.primaryColor)),
-
-        ]);
+            ? Text('$syncedHeight', style: theme.textTheme.caption)
+            : GestureDetector(
+              onTap: () => setState(() { display += 1; }),
+              child: createSyncStatus());
 
         return TextButton(onPressed: () => _onSync(context), child: text);
       })
@@ -99,6 +131,7 @@ class QRAddressState extends State<QRAddressWidget> {
     return Observer(builder: (context) {
       final s = S.of(context);
       final theme = Theme.of(context);
+      final _ = active.taddress;
       final simpleMode = settings.simpleMode;
       final address = _address();
       final shortAddress = centerTrim(address);
@@ -117,6 +150,7 @@ class QRAddressState extends State<QRAddressWidget> {
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
         GestureDetector(
             onTap: hasTAddr ? _onQRTap : null,
+            onLongPress: _onUpdateTAddr,
             child: RotatedBox(
                 quarterTurns: hide ? 2 : 0,
                 child: QrImage(
@@ -163,9 +197,7 @@ class QRAddressState extends State<QRAddressWidget> {
 
   _onAddressCopy() {
     Clipboard.setData(ClipboardData(text: _address()));
-    final snackBar =
-        SnackBar(content: Text(S.of(context).addressCopiedToClipboard));
-    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+    showSnackBar(S.of(context).addressCopiedToClipboard);
   }
 
   _onReceive() async {
@@ -183,6 +215,27 @@ class QRAddressState extends State<QRAddressWidget> {
         _useSnapAddress = false;
       });
     });
+  }
+
+  _onUpdateTAddr() async {
+    if (!active.showTAddr) return;
+    var pathController = TextEditingController();
+    final confirmed = await showDialog<bool>(context: context, builder: (context) => AlertDialog(
+        title: Text(S.of(context).changeTransparentKey),
+        content:
+          TextField(
+              decoration: InputDecoration(label: Text('Derivation Path'), hintText: "m/44'/133'/0'/0/0"),
+              controller: pathController),
+        actions: confirmButtons(context, () {
+          Navigator.of(context).pop(true);
+        }))) ?? false;
+    if (confirmed) {
+      WarpApi.importTransparentKey(active.coin, active.id, pathController.text);
+      if (WarpApi.getError()) {
+        showSnackBar(WarpApi.getErrorMessage());
+      }
+      else await active.refreshTAddr();
+    }
   }
 
   String _address() {

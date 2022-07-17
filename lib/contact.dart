@@ -95,8 +95,7 @@ class ContactsState extends State<ContactsTab> {
         S.of(context).ok);
     if (approve) {
       final tx = await WarpApi.commitUnsavedContacts(settings.anchorOffset);
-      final snackBar = SnackBar(content: Text("${S.of(context).txId}: $tx"));
-      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+      showSnackBar("${S.of(context).txId}: $tx");
       contacts.markContactsSaved(active.coin, true);
     }
   }
