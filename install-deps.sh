@@ -36,3 +36,5 @@ cp $DL_DIR/sapling-output.params $DL_DIR/sapling-spend.params $HOME/.zcash-param
 
 export ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/android-ndk-r21e
 export PATH=$PATH:$ROOT_DIR/flutter/bin
+
+rm $DL_DIR/android-ndk-r21e-linux-x86_64.zip $DL_DIR/commandlinetools-linux-7583922_latest.zip $DL_DIR/flutter_linux_3.0.5-stable.tar.xz
