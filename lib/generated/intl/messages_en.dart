@@ -137,11 +137,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "changeAccountName":
             MessageLookupByLibrary.simpleMessage("Change Account Name"),
+        "changeTransparentKey":
+            MessageLookupByLibrary.simpleMessage("Change Transparent Key"),
         "changingTheModeWillTakeEffectAtNextRestart":
             MessageLookupByLibrary.simpleMessage(
                 "Changing the mode will take effect at next restart"),
         "checkTransaction":
             MessageLookupByLibrary.simpleMessage("Check Transaction"),
+        "close": MessageLookupByLibrary.simpleMessage("Close"),
         "closeApplication":
             MessageLookupByLibrary.simpleMessage("Close Application"),
         "coffee": MessageLookupByLibrary.simpleMessage("Coffee"),

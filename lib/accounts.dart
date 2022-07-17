@@ -130,7 +130,7 @@ abstract class _ActiveAccount with Store {
   CoinBase coinDef = zcash;
   bool canPay = false;
   @observable Balances balances = Balances.zero;
-  String taddress = "";
+  @observable String taddress = "";
   int tbalance = 0;
 
   @observable List<Note> notes = [];
@@ -226,6 +226,15 @@ abstract class _ActiveAccount with Store {
 
     await update();
     await priceStore.updateChart();
+  }
+
+  @action
+  Future<void> refreshTAddr() async {
+    coinDef = settings.coins[coin].def;
+    final db = coinDef.db;
+    final List<Map> res1 = await db.rawQuery(
+        "SELECT address FROM taddrs WHERE account = ?1", [active.id]);
+    taddress = res1.isNotEmpty ? res1[0]['address'] : "";
   }
 
   @action

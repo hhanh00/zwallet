@@ -65,6 +65,10 @@ class WarpApi {
     warp_api_lib.new_sub_account(name.toNativeUtf8().cast<Int8>(), index, count);
   }
 
+  static void importTransparentKey(int coin, int id, String path) {
+    warp_api_lib.import_transparent_key(coin, id, path.toNativeUtf8().cast<Int8>());
+  }
+
   static void skipToLastHeight(int coin) {
     warp_api_lib.skip_to_last_height(coin);
   }

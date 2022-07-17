@@ -56,10 +56,11 @@ class HomeState extends State<HomePage> {
         await priceStore.updateChart();
       });
     });
-    _syncDispose = syncStream.listen((height) {
-      final h = height as int?;
-      if (h != null) {
-        syncStatus.setSyncHeight(h);
+    _syncDispose = syncStream.listen((_) async {
+      final syncedHeight = await syncStatus.getDbSyncedHeight();
+      if (syncedHeight != null) {
+        final h = syncedHeight.height;
+        syncStatus.setSyncHeight(h, syncedHeight.timestamp);
         eta.checkpoint(h, DateTime.now());
       } else {
         WarpApi.mempoolReset();
@@ -310,8 +311,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
 
     if (rawTx != null) {
       final res = WarpApi.broadcast(rawTx);
-      final snackBar = SnackBar(content: Text(res));
-      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+      showSnackBar(res);
     }
   }
 

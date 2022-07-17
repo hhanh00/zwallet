@@ -168,7 +168,7 @@ class NativeLibrary {
   late final _dart_new_account _new_account =
       _new_account_ptr.asFunction<_dart_new_account>();
 
-  int new_sub_account(
+  void new_sub_account(
     ffi.Pointer<ffi.Int8> name,
     int index,
     int count,
@@ -184,6 +184,24 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_new_sub_account>>('new_sub_account');
   late final _dart_new_sub_account _new_sub_account =
       _new_sub_account_ptr.asFunction<_dart_new_sub_account>();
+
+  void import_transparent_key(
+    int coin,
+    int id_account,
+    ffi.Pointer<ffi.Int8> path,
+  ) {
+    return _import_transparent_key(
+      coin,
+      id_account,
+      path,
+    );
+  }
+
+  late final _import_transparent_key_ptr =
+      _lookup<ffi.NativeFunction<_c_import_transparent_key>>(
+          'import_transparent_key');
+  late final _dart_import_transparent_key _import_transparent_key =
+      _import_transparent_key_ptr.asFunction<_dart_import_transparent_key>();
 
   int warp(
     int coin,
@@ -755,16 +773,28 @@ typedef _dart_new_account = int Function(
   int index,
 );
 
-typedef _c_new_sub_account = ffi.Uint32 Function(
+typedef _c_new_sub_account = ffi.Void Function(
   ffi.Pointer<ffi.Int8> name,
   ffi.Int32 index,
   ffi.Uint32 count,
 );
 
-typedef _dart_new_sub_account = int Function(
+typedef _dart_new_sub_account = void Function(
   ffi.Pointer<ffi.Int8> name,
   int index,
   int count,
+);
+
+typedef _c_import_transparent_key = ffi.Void Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id_account,
+  ffi.Pointer<ffi.Int8> path,
+);
+
+typedef _dart_import_transparent_key = void Function(
+  int coin,
+  int id_account,
+  ffi.Pointer<ffi.Int8> path,
 );
 
 typedef _c_warp = ffi.Uint8 Function(

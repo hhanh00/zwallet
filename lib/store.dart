@@ -533,6 +533,9 @@ abstract class _SyncStatus with Store {
   @observable
   int latestHeight = 0;
 
+  @observable
+  DateTime? timestamp = null;
+
   bool accountRestored = false;
 
   @observable
@@ -549,9 +552,10 @@ abstract class _SyncStatus with Store {
   }
 
   @action
-  setSyncHeight(int? height) {
+  setSyncHeight(int? height, DateTime? _timestamp) {
     if (height == null || syncedHeight != height)
       syncedHeight = height;
+    timestamp = _timestamp;
   }
 
   @action
@@ -559,11 +563,18 @@ abstract class _SyncStatus with Store {
     WarpApi.skipToLastHeight(coin);
   }
 
-  Future<int?> getDbSyncedHeight() async {
+  Future<BlockInfo?> getDbSyncedHeight() async {
     final db = active.coinDef.db;
-    final syncedHeight = Sqflite.firstIntValue(
-        await db.rawQuery("SELECT MAX(height) FROM blocks"));
-    return syncedHeight;
+    final rows = await db.rawQuery("SELECT height, timestamp FROM blocks WHERE height = (SELECT MAX(height) FROM blocks)");
+    if (rows.isNotEmpty) {
+      final row = rows.first;
+      final height = row['height'] as int;
+      final timestampEpoch = row['timestamp'] as int;
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(timestampEpoch * 1000);
+      final blockInfo = BlockInfo(height, timestamp);
+      return blockInfo;
+    }
+    return null;
   }
 
   @action
@@ -574,9 +585,9 @@ abstract class _SyncStatus with Store {
       WarpApi.updateLWD(active.coin, server);
     }
     latestHeight = await WarpApi.getLatestHeight();
-    final _syncedHeight = await getDbSyncedHeight();
+    final _syncedInfo = await getDbSyncedHeight();
     // if syncedHeight = 0, we just started sync therefore don't set it back to null
-    if (syncedHeight != 0 || _syncedHeight != null) setSyncHeight(_syncedHeight);
+    if (syncedHeight != 0 && _syncedInfo != null) setSyncHeight(_syncedInfo.height, _syncedInfo.timestamp);
     return latestHeight > 0 && syncedHeight == latestHeight;
   }
 
@@ -602,7 +613,7 @@ abstract class _SyncStatus with Store {
       else if (res == 1) { // Reorg
         final _syncedHeight = await getDbSyncedHeight();
         if (_syncedHeight != null) {
-          final rewindHeight = max(_syncedHeight - 20, 0);
+          final rewindHeight = max(_syncedHeight.height - 20, 0);
           print("Block reorg detected. Rewind to $rewindHeight");
           WarpApi.rewindToHeight(rewindHeight);
         }
@@ -616,8 +627,7 @@ abstract class _SyncStatus with Store {
   Future<void> rescan(BuildContext context, int height) async {
     if (syncing) return;
     eta.reset();
-    final snackBar = SnackBar(content: Text(S.of(context).rescanRequested(height)));
-    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+    showSnackBar(S.of(context).rescanRequested(height));
     syncedHeight = height;
     WarpApi.truncateData();
     WarpApi.rewindToHeight(height);
@@ -631,7 +641,7 @@ abstract class _SyncStatus with Store {
 
   @action
   void setSyncedToLatestHeight() {
-    setSyncHeight(latestHeight);
+    setSyncHeight(latestHeight, null);
     WarpApi.skipToLastHeight(0xFF);
   }
 }
@@ -957,4 +967,10 @@ class TxSummary {
   final String txJson;
 
   TxSummary(this.address, this.amount, this.txJson);
+}
+
+class BlockInfo {
+  final int height;
+  final DateTime timestamp;
+  BlockInfo(this.height, this.timestamp);
 }

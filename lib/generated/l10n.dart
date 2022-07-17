@@ -2491,6 +2491,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Close`
+  String get close {
+    return Intl.message(
+      'Close',
+      name: 'close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Transparent Key`
+  String get changeTransparentKey {
+    return Intl.message(
+      'Change Transparent Key',
+      name: 'changeTransparentKey',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

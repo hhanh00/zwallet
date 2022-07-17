@@ -466,8 +466,7 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
       address = '*';
   }
 
-  final snackBar1 = SnackBar(content: Text(s.preparingTransaction));
-  rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar1);
+  showSnackBar(s.preparingTransaction, autoClose: true);
 
   if (settings.protectSend &&
       !await authenticate(context, s.pleaseAuthenticateToSend)) return;
@@ -485,16 +484,13 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
     final isError = WarpApi.getError();
     final msg = isError ? s.error(res) : s.txId(res);
     await player.play(AssetSource(isError ? "fail.mp3" : "success.mp3"));
-    final snackBar2 = SnackBar(content: Text(msg));
-    rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+    showSnackBar(msg);
     await active.update();
   } else {
-    final txjson = WarpApi.prepareTx(recipients,
-        useTransparent, settings.anchorOffset);
+    final txjson = WarpApi.prepareTx(recipients, useTransparent, settings.anchorOffset);
     final isError = WarpApi.getError();
     if (isError) {
-      final snackBar2 = SnackBar(content: Text(txjson));
-      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+      showSnackBar(txjson);
       await player.play(AssetSource("fail.mp3"));
       Navigator.of(context).pop();
       return;
@@ -505,8 +501,7 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
     else {
       await saveFile(txjson, "tx.json", s.unsignedTransactionFile);
 
-      final snackBar2 = SnackBar(content: Text(s.fileSaved));
-      rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar2);
+      showSnackBar(s.fileSaved);
       Navigator.of(context).pop();
     }
   }
