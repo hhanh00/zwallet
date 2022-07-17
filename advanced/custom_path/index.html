@@ -5,7 +5,7 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>Contact List :: YWallet</title>
+<title>Custom Derivation Path :: YWallet</title>
 <link href=/css/nucleus.css?1658045278 rel=stylesheet>
 <link href=/css/fontawesome-all.min.css?1658045278 rel=stylesheet>
 <link href=/css/hybrid.css?1658045278 rel=stylesheet>
@@ -22,7 +22,7 @@
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
-<body data-url=/contact/list/>
+<body data-url=/advanced/custom_path/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -192,14 +192,13 @@ Internal Format
 </li>
 </ul>
 </li>
-<li data-nav-id=/contact/ title=Contacts class="dd-item
-parent">
+<li data-nav-id=/contact/ title=Contacts class=dd-item>
 <a href=/contact/>
 <svg class="icon"><use xlink:href="/sprite.svg#address-book"/></svg>Contacts
 <i class="fas fa-check read-icon"></i>
 </a>
 <ul>
-<li data-nav-id=/contact/list/ title="Contact List" class="dd-item active">
+<li data-nav-id=/contact/list/ title="Contact List" class=dd-item>
 <a href=/contact/list/>
 Contact List
 <i class="fas fa-check read-icon"></i>
@@ -219,7 +218,8 @@ Save to Blockchain
 </li>
 </ul>
 </li>
-<li data-nav-id=/advanced/ title="Advanced Usage" class=dd-item>
+<li data-nav-id=/advanced/ title="Advanced Usage" class="dd-item
+parent">
 <a href=/advanced/>
 <svg class="icon"><use xlink:href="/sprite.svg#flask"/></svg>Advanced Usage
 <i class="fas fa-check read-icon"></i>
@@ -273,7 +273,7 @@ Sub-Account
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/advanced/custom_path/ title="Custom Derivation Path" class=dd-item>
+<li data-nav-id=/advanced/custom_path/ title="Custom Derivation Path" class="dd-item active">
 <a href=/advanced/custom_path/>
 Custom Derivation Path
 <i class="fas fa-check read-icon"></i>
@@ -388,14 +388,19 @@ Older versions
 </span>
 <span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > <a href=/contact/>Contacts</a> > Contact List
+<a href=/>YWallet</a> > <a href=/advanced/>Advanced Usage</a> > Custom Derivation Path
 </span>
 </div>
 <div class=progress>
 <div class=wrapper>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#remarks>Remarks</a></li>
+<li><a href=#for-transparent-addresses-only>For Transparent Addresses Only</a></li>
+<li><a href=#ledger>Ledger</a></li>
+<li><a href=#path>Path</a></li>
+<li><a href=#how-to>How to</a></li>
+<li><a href=#demo>Demo</a></li>
+<li><a href=#disclaimer>Disclaimer</a></li>
 </ul>
 </nav>
 </div>
@@ -406,31 +411,65 @@ Older versions
 </div>
 <div id=body-inner>
 <h1>
-Contact List
+Custom Derivation Path
 </h1>
-<img class=img src=../img/IMG_0070.PNG>
-<ol>
-<li>Contact Name</li>
-<li>Contact Address</li>
-<li>Tap to go to the Send page with this contact address</li>
-<li>Add a new contact</li>
-<li>Long press to edit the name</li>
-<li>Swipe left/right to delete</li>
-</ol>
-<h2 id=remarks>Remarks</h2>
+<h2 id=for-transparent-addresses-only>For Transparent Addresses Only</h2>
+<div class="notices note"><p>For a single account, it is easier to use the
+scan sub account feature.</p>
+</div>
+<p>If you have funds in a legacy wallet (pre NU-5)
+that hasn&rsquo;t been upgraded to support transaction V5,
+your funds are inaccessible.</p>
+<p>However, you can create an account in YWallet using
+the same seed phrase and derivation path.</p>
+<p>The resulting secret key and address will be identical
+and you will be able to sweep your funds.</p>
+<h2 id=ledger>Ledger</h2>
+<p>For Ledger, the derivation path is <code>m/44'/133'/0'/0/0</code>
+For a second account in Ledger, the path is <code>m/44'/133'/1'/0/0</code>,
+and so on.</p>
+<p>If you have made several transactions, Ledger will have
+created additional addresses by incrementing the final number:
+<code>m/44'/133'/0'/0/1</code>, etc.</p>
+<div class="notices note"><p>The exact format of the path is important.
+<code>m/44'/133'/0'/0/1</code> is not the same as <code>m/44/133'/0'/0/1</code>
+Note the absence of <code>'</code> on 44.</p>
+</div>
+<p>You can use the website <a href=https://iancoleman.io/bip39/>Mnemonic Code Converter</a> to check your addresses. <em>Don&rsquo;t forget to switch the currency to ZEC</em>.</p>
+<h2 id=path>Path</h2>
+<p>Given <code>account_index</code> and <code>address_index</code>,
+the path is typically:</p>
+<p><code>m/44'/133'/account_index'/0/address_index</code></p>
+<p>for wallets that follow the BIP-44 spec.</p>
+<h2 id=how-to>How to</h2>
 <ul>
-<li>On the Send page, you can enter a contact name instead of an address</li>
-<li>Wherever the app displays an address, it will display a contact name
-if there is a contact with that address.</li>
-<li>Contacts are shared between all accounts</li>
+<li>Import an account using the seed phrase</li>
+<li>Switch to the account transparent address</li>
+<li>Long press on the QR code</li>
+<li>Enter the custom derivation path</li>
+<li>Check that the new transparent address matches what you expect</li>
 </ul>
+<p>This feature is not compatible with the autoscan feature.</p>
+<img class=img src=../img/2022-07-17_12-12-34.png>
+<h2 id=demo>Demo</h2>
+<div class=youtube-player data-id=LmIrVUA0tFM></div>
+</div>
+<h2 id=disclaimer>Disclaimer</h2>
+<div class="notices warning"><p>Be advised that using your seed phrase online or in a hot
+wallet compromises its security.
+YWallet does not upload any data but your device may
+be infected with malware that does.</p>
+</div>
+<p>To mitigate the risks, sweep all the other funds from your hardware wallet to a new seed phrase and never use the old one.</p>
+<link href=/youtube.css rel=stylesheet integrity>
+<script src=/youtube.js></script>
 <footer class=footline>
 </footer>
 </div>
 </div>
 <div id=navigation>
-<a class="nav nav-prev" href=/contact/ title=Contacts> <i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=/contact/manage/ title=Add/Edit/Delete style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/advanced/sub-account/ title=Sub-Account> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/advanced/batch-save/ title="Batch Save/Load" style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
