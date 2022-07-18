@@ -143,7 +143,10 @@ class _FullRestoreState extends State<FullRestorePage> {
       final file = File(filename);
       final backup = await file.readAsString();
       final key = controller.text;
-      final res = WarpApi.restoreFullBackup(key, backup);
+      if (key.isNotEmpty)
+        WarpApi.restoreFullBackup(key, backup);
+      else
+        WarpApi.importFromZWL("ZWL Imported Account", backup);
 
       if (WarpApi.getError()) {
         showSnackBar(WarpApi.getErrorMessage());
