@@ -6,6 +6,7 @@ class ZcashCoin extends CoinBase {
   String app = "ZWallet";
   String symbol = "\u24E9";
   String currency = "zcash";
+  int coinIndex = 133;
   String ticker = "ZEC";
   String dbName = "zec.db";
   String explorerUrl = "https://explorer.zcha.in/transactions/";

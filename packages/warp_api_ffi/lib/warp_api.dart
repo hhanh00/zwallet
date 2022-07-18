@@ -69,8 +69,8 @@ class WarpApi {
     warp_api_lib.import_transparent_key(coin, id, path.toNativeUtf8().cast<Int8>());
   }
 
-  static void importFromZWL(String name, String path) {
-    warp_api_lib.import_from_zwl(0, name.toNativeUtf8().cast<Int8>(), path.toNativeUtf8().cast<Int8>());
+  static void importFromZWL(int coin, String name, String path) {
+    warp_api_lib.import_from_zwl(coin, name.toNativeUtf8().cast<Int8>(), path.toNativeUtf8().cast<Int8>());
   }
 
   static void skipToLastHeight(int coin) {

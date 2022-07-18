@@ -146,7 +146,7 @@ class _FullRestoreState extends State<FullRestorePage> {
       if (key.isNotEmpty)
         WarpApi.restoreFullBackup(key, backup);
       else
-        WarpApi.importFromZWL("ZWL Imported Account", backup);
+        WarpApi.importFromZWL(active.coin, "ZWL Imported Account", backup);
 
       if (WarpApi.getError()) {
         showSnackBar(WarpApi.getErrorMessage());
