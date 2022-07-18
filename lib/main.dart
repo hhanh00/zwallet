@@ -657,7 +657,7 @@ Future<void> shieldTAddr(BuildContext context) async {
               Navigator.of(context).pop();
               showSnackBar(s.shieldingInProgress, autoClose: true);
               final txid = await WarpApi.shieldTAddr();
-              showSnackBar("${s.txId}: $txid");
+              showSnackBar(s.txId(txid));
             })),
   );
 }

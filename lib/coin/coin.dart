@@ -19,6 +19,7 @@ abstract class CoinBase {
   String get symbol;
   String get currency;
   String get ticker;
+  int get coinIndex;
   String get explorerUrl;
   AssetImage get image;
   String get dbName;

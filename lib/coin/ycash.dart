@@ -7,6 +7,7 @@ class YcashCoin extends CoinBase {
   String symbol = "\u24E8";
   String currency = "ycash";
   String ticker = "YEC";
+  int coinIndex = 347;
   String dbName = "yec.db";
   String explorerUrl = "https://yecblockexplorer.com/tx/";
   AssetImage image = AssetImage('assets/ycash.png');

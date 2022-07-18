@@ -219,12 +219,13 @@ class QRAddressState extends State<QRAddressWidget> {
 
   _onUpdateTAddr() async {
     if (!active.showTAddr) return;
+    final coinIndex = active.coinDef.coinIndex;
     var pathController = TextEditingController();
     final confirmed = await showDialog<bool>(context: context, builder: (context) => AlertDialog(
         title: Text(S.of(context).changeTransparentKey),
         content:
           TextField(
-              decoration: InputDecoration(label: Text('Derivation Path'), hintText: "m/44'/133'/0'/0/0"),
+              decoration: InputDecoration(label: Text('Derivation Path'), hintText: "m/44'/${coinIndex}'/0'/0/0"),
               controller: pathController),
         actions: confirmButtons(context, () {
           Navigator.of(context).pop(true);
