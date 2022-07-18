@@ -677,6 +677,23 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_get_best_server>>('get_best_server');
   late final _dart_get_best_server _get_best_server =
       _get_best_server_ptr.asFunction<_dart_get_best_server>();
+
+  void import_from_zwl(
+    int coin,
+    ffi.Pointer<ffi.Int8> name,
+    ffi.Pointer<ffi.Int8> path,
+  ) {
+    return _import_from_zwl(
+      coin,
+      name,
+      path,
+    );
+  }
+
+  late final _import_from_zwl_ptr =
+      _lookup<ffi.NativeFunction<_c_import_from_zwl>>('import_from_zwl');
+  late final _dart_import_from_zwl _import_from_zwl =
+      _import_from_zwl_ptr.asFunction<_dart_import_from_zwl>();
 }
 
 const int QR_DATA_SIZE = 256;
@@ -1087,4 +1104,16 @@ typedef _c_get_best_server = ffi.Pointer<ffi.Int8> Function(
 typedef _dart_get_best_server = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Pointer<ffi.Int8>> servers,
   int count,
+);
+
+typedef _c_import_from_zwl = ffi.Void Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> path,
+);
+
+typedef _dart_import_from_zwl = void Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> path,
 );
