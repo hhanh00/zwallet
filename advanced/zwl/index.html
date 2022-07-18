@@ -5,7 +5,7 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>Release Notes :: YWallet</title>
+<title>Import from ZecWallet Lite :: YWallet</title>
 <link href=/css/nucleus.css?1658121976 rel=stylesheet>
 <link href=/css/fontawesome-all.min.css?1658121976 rel=stylesheet>
 <link href=/css/hybrid.css?1658121976 rel=stylesheet>
@@ -22,7 +22,7 @@
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
-<body data-url=/release_notes/>
+<body data-url=/advanced/zwl/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -218,7 +218,8 @@ Save to Blockchain
 </li>
 </ul>
 </li>
-<li data-nav-id=/advanced/ title="Advanced Usage" class=dd-item>
+<li data-nav-id=/advanced/ title="Advanced Usage" class="dd-item
+parent">
 <a href=/advanced/>
 <svg class="icon"><use xlink:href="/sprite.svg#flask"/></svg>Advanced Usage
 <i class="fas fa-check read-icon"></i>
@@ -290,7 +291,7 @@ Reset
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/advanced/zwl/ title="Import from ZecWallet Lite" class=dd-item>
+<li data-nav-id=/advanced/zwl/ title="Import from ZecWallet Lite" class="dd-item active">
 <a href=/advanced/zwl/>
 Import from ZecWallet Lite
 <i class="fas fa-check read-icon"></i>
@@ -393,19 +394,15 @@ Older versions
 </span>
 <span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > Release Notes
+<a href=/>YWallet</a> > <a href=/advanced/>Advanced Usage</a> > Import from ZecWallet Lite
 </span>
 </div>
 <div class=progress>
 <div class=wrapper>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#1012>1.0.12</a>
-<ul>
-<li><a href=#how-to-upgrade>How to upgrade</a></li>
-<li><a href=#explanation-of-the-issue>Explanation of the issue</a></li>
-</ul>
-</li>
+<li><a href=#import-your-zwl-key-file>Import your ZWL key file</a></li>
+<li><a href=#demo>Demo</a></li>
 </ul>
 </nav>
 </div>
@@ -416,43 +413,55 @@ Older versions
 </div>
 <div id=body-inner>
 <h1>
-Release Notes
+Import from ZecWallet Lite
 </h1>
-<h2 id=1012>1.0.12</h2>
-<blockquote>
-<p><strong>IMPORTANT NOTICE</strong></p>
-</blockquote>
-<p>If you have received notes from YWallet after height 1046400 (Thu, 28 Oct 2021 21:26:48 UTC),
-you have to move them out to a <strong>transparent address</strong> before you upgrade.</p>
-<h3 id=how-to-upgrade>How to upgrade</h3>
-<ol>
-<li>DO A BACKUP OF YOUR SEED/SECRET KEY if you haven&rsquo;t done it already</li>
-<li>If you don&rsquo;t have have any notes after 1046400 skip to 4.</li>
-<li>Send these notes to a TRANSPARENT address that you own. DO NOT USE A SHIELDED ADDRESS!</li>
-<li>Upgrade to 1.0.12</li>
-<li>If you did step 3, transfer the funds from the transparent address back to your wallet</li>
-</ol>
-<h3 id=explanation-of-the-issue>Explanation of the issue</h3>
-<p>YWallet has incorrectly activated Canopy ZIP 212 on the Ycash branch at the same
-height as Zcash. It expects and creates notes with the new format. Unfortunately,
-this is not detected by the protocol rules and transactions are mined.</p>
-<blockquote>
-<p>These notes are not visible by the other wallets. They cannot be spent by
-them <em>and</em> by YWallet after the fix.</p>
-</blockquote>
-<p>Only YWallet 1.0.11 and below can see and spend these notes. Therefore they
-must be transferred to a <strong>transparent address</strong> before upgrading.</p>
-<p>Do not transfer to a shielded address because it would create another note with
-the same issue.</p>
-<p>If you upgrade without transferring these notes, you will need to rollback
-to version 1.0.11 and rescan your wallet.</p>
-<p><strong>YOUR FUNDS ARE NOT LOST</strong></p>
+<p>You can import your wallet keys from ZWL directly
+into YWallet without needing to synchronize ZWL.</p>
+<p>This can be useful when ZWL fails to open.</p>
+<p>ZecWallet Lite is not responsive until it is fully
+synced up. If your wallet cannot be synced, you will
+not be able to operate ZWL. For example, it may get
+appear stuck on the loading screen.</p>
+<p>However, <code>zecwallet-lite-cli</code> the command line version
+of ZWL has an option to by-pass synchronization.</p>
+<ul>
+<li><a href=https://github.com/adityapk00/zecwallet-light-cli/releases>Download</a> ZWL-cli for your platform,</li>
+<li>Uncompress and install</li>
+<li>Open a shell/command prompt/terminal</li>
+<li>Launch ZWL-cli with the nosync option and export your
+wallet to a file</li>
+</ul>
+<p>On Windows,</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>zecwallet-cli.exe --nosync export &gt; wallet.zwl
+</code></pre></div><h2 id=import-your-zwl-key-file>Import your ZWL key file</h2>
+<ul>
+<li>In YWallet, go to the account manager, and <em>long-press</em>
+the &ldquo;+&rdquo; button</li>
+</ul>
+<img class=img src=../img/2022-07-15_10-02-45.png>
+<ul>
+<li>Choose &ldquo;Restore Batch&rdquo;</li>
+</ul>
+<img class=img src=../img/Screenshot_20220403-144800.jpg>
+<ul>
+<li>Leave the Backup Encryption Key field empty</li>
+<li>Load your ZWL key file</li>
+</ul>
+<p>Your <strong>shielded</strong> addresses will be added to YWallet.</p>
+<div class="notices note"><p>Transparent addresses are not imported.</p>
+</div>
+<h2 id=demo>Demo</h2>
+<div class=youtube-player data-id=Shvfdx4aZwM></div>
+</div>
+<link href=/youtube.css rel=stylesheet integrity>
+<script src=/youtube.js></script>
 <footer class=footline>
 </footer>
 </div>
 </div>
 <div id=navigation>
-<a class="nav nav-next" href=/installation/ title=Install style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/advanced/reset/ title=Reset> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/settings/ title=Settings style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
