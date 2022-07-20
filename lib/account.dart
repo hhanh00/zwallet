@@ -62,6 +62,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
       if (simpleMode) Padding(padding: EdgeInsets.fromLTRB(0, 8, 0, 0), child: Text(s.simpleMode)),
       Observer(builder: (context) {
         final time = eta.eta;
+        final synced = syncStatus.isSynced();
         final syncedHeight = syncStatus.syncedHeight;
         final timestamp = syncStatus.timestamp?.timeAgo() ?? s.na;
         final latestHeight = syncStatus.latestHeight;
@@ -98,13 +99,13 @@ class SyncStatusState extends State<SyncStatusWidget> {
         final text =  latestHeight == 0 ? Text(s.disconnected)
             : syncedHeight == null
             ? Text(s.rescanNeeded)
-            : syncStatus.isSynced()
+            : synced
             ? Text('$syncedHeight', style: theme.textTheme.caption)
             : GestureDetector(
               onTap: () => setState(() { display += 1; }),
               child: createSyncStatus());
 
-        return TextButton(onPressed: () => _onSync(context), child: text);
+        return TextButton(onPressed: synced ? () => _onSync(context) : null, child: text);
       })
     ]);
   }
