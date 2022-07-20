@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>Import from ZecWallet Lite :: YWallet</title>
-<link href=/css/nucleus.css?1658285675 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1658285675 rel=stylesheet>
-<link href=/css/hybrid.css?1658285675 rel=stylesheet>
-<link href=/css/featherlight.min.css?1658285675 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1658285675 rel=stylesheet>
-<link href=/css/auto-complete.css?1658285675 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1658285675 rel=stylesheet>
-<link href=/css/theme.css?1658285675 rel=stylesheet>
-<link href=/css/tabs.css?1658285675 rel=stylesheet>
-<link href=/css/hugo-theme.css?1658285675 rel=stylesheet>
-<link href=/css/theme-blue.css?1658285675 rel=stylesheet>
-<link href=/common.css?1658285675 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1658285675></script>
+<link href=/css/nucleus.css?1658291496 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1658291496 rel=stylesheet>
+<link href=/css/hybrid.css?1658291496 rel=stylesheet>
+<link href=/css/featherlight.min.css?1658291496 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1658291496 rel=stylesheet>
+<link href=/css/auto-complete.css?1658291496 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1658291496 rel=stylesheet>
+<link href=/css/theme.css?1658291496 rel=stylesheet>
+<link href=/css/tabs.css?1658291496 rel=stylesheet>
+<link href=/css/hugo-theme.css?1658291496 rel=stylesheet>
+<link href=/css/theme-blue.css?1658291496 rel=stylesheet>
+<link href=/common.css?1658291496 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1658291496></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
@@ -35,10 +35,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1658285675></script>
-<script type=text/javascript src=/js/auto-complete.js?1658285675></script>
+<script type=text/javascript src=/js/lunr.min.js?1658291496></script>
+<script type=text/javascript src=/js/auto-complete.js?1658291496></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1658285675></script>
+<script type=text/javascript src=/js/search.js?1658291496></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -433,7 +433,20 @@ wallet to a file</li>
 </ul>
 <p>On Windows,</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>zecwallet-cli.exe --nosync export &gt; wallet.zwl
-</code></pre></div><h2 id=import-your-zwl-key-file>Import your ZWL key file</h2>
+</code></pre></div><p>On MacOs,</p>
+<ul>
+<li>Download zecwallet-lite-cli from github: <a href=https://github.com/adityapk00/zecwallet-light-cli/releases/download/v1.7.20/macOS-zecwallet-cli-v1.7.20.zip>https://github.com/adityapk00/zecwallet-light-cli/releases/download/v1.7.20/macOS-zecwallet-cli-v1.7.20.zip</a></li>
+<li>Double click on the file once downloaded, it will open it in “Finder”,</li>
+<li>Double click on “zecwallet-cli”, it will prompt a warning: “Bla bla unix app from the internet… Are you sure you want to open it?”,
+Click “Open”</li>
+<li>It will open a “Terminal” automatically for you and run the app</li>
+<li>The app will start scanning but you don’t want that.</li>
+<li>So press “Ctrl+C” and it will stop, leaving the terminal opened.</li>
+<li>Drag and drop the icon of “zecwallet-cli” from the finder into the terminal window, this will insert the full path to the program. But do not type return or it will start again.</li>
+<li>Add <code> --nosync export > wallet.zwl</code> (exactly, capitalization and space matter), then press return. This tells the program to skip syncing and to export the private keys into a file named wallet.zwl.</li>
+<li>Navigate to your home directory in Finder and you should find a wallet.zwl file.</li>
+</ul>
+<h2 id=import-your-zwl-key-file>Import your ZWL key file</h2>
 <ul>
 <li>In YWallet, go to the account manager, and <em>long-press</em>
 the &ldquo;+&rdquo; button</li>
@@ -467,17 +480,17 @@ the &ldquo;+&rdquo; button</li>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1658285675></script>
-<script src=/js/perfect-scrollbar.min.js?1658285675></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1658285675></script>
-<script src=/js/jquery.sticky.js?1658285675></script>
-<script src=/js/featherlight.min.js?1658285675></script>
-<script src=/js/highlight.pack.js?1658285675></script>
+<script src=/js/clipboard.min.js?1658291496></script>
+<script src=/js/perfect-scrollbar.min.js?1658291496></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1658291496></script>
+<script src=/js/jquery.sticky.js?1658291496></script>
+<script src=/js/featherlight.min.js?1658291496></script>
+<script src=/js/highlight.pack.js?1658291496></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1658285675></script>
-<script src=/js/learn.js?1658285675></script>
-<script src=/js/hugo-learn.js?1658285675></script>
-<script src=/mermaid/mermaid.js?1658285675></script>
+<script src=/js/modernizr.custom-3.6.0.js?1658291496></script>
+<script src=/js/learn.js?1658291496></script>
+<script src=/js/hugo-learn.js?1658291496></script>
+<script src=/mermaid/mermaid.js?1658291496></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
