@@ -629,6 +629,7 @@ abstract class _SyncStatus with Store {
     eta.reset();
     showSnackBar(S.of(context).rescanRequested(height));
     syncedHeight = height;
+    timestamp = null;
     WarpApi.truncateData();
     WarpApi.rewindToHeight(height);
     await sync();
