@@ -203,6 +203,15 @@ class NativeLibrary {
   late final _dart_import_transparent_key _import_transparent_key =
       _import_transparent_key_ptr.asFunction<_dart_import_transparent_key>();
 
+  void cancel_warp() {
+    return _cancel_warp();
+  }
+
+  late final _cancel_warp_ptr =
+      _lookup<ffi.NativeFunction<_c_cancel_warp>>('cancel_warp');
+  late final _dart_cancel_warp _cancel_warp =
+      _cancel_warp_ptr.asFunction<_dart_cancel_warp>();
+
   int warp(
     int coin,
     int get_tx,
@@ -681,12 +690,12 @@ class NativeLibrary {
   void import_from_zwl(
     int coin,
     ffi.Pointer<ffi.Int8> name,
-    ffi.Pointer<ffi.Int8> path,
+    ffi.Pointer<ffi.Int8> data,
   ) {
     return _import_from_zwl(
       coin,
       name,
-      path,
+      data,
     );
   }
 
@@ -813,6 +822,10 @@ typedef _dart_import_transparent_key = void Function(
   int id_account,
   ffi.Pointer<ffi.Int8> path,
 );
+
+typedef _c_cancel_warp = ffi.Void Function();
+
+typedef _dart_cancel_warp = void Function();
 
 typedef _c_warp = ffi.Uint8 Function(
   ffi.Uint8 coin,
@@ -1109,11 +1122,11 @@ typedef _dart_get_best_server = ffi.Pointer<ffi.Int8> Function(
 typedef _c_import_from_zwl = ffi.Void Function(
   ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> name,
-  ffi.Pointer<ffi.Int8> path,
+  ffi.Pointer<ffi.Int8> data,
 );
 
 typedef _dart_import_from_zwl = void Function(
   int coin,
   ffi.Pointer<ffi.Int8> name,
-  ffi.Pointer<ffi.Int8> path,
+  ffi.Pointer<ffi.Int8> data,
 );

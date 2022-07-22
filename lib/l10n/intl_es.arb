@@ -243,4 +243,7 @@
   "count": "Cuenta",
   "close": "Cerrar",
   "changeTransparentKey": "Cambiar la clave transparente"
+  "cancelScan": "Cancelar Escaneo",
+  "resumeScan": "Reanudar Escaneo",
+  "syncPaused": "Escaneo en pausa"
 }

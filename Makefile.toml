@@ -6,7 +6,6 @@ LIB_OUT_DIR = "debug"
 TARGET_OS = "unknown"
 DEV = true
 RELEASE = false
-FEATURES = { script = ["echo ${COIN}"] }
 
 [env.release]
 RELEASE = true
@@ -45,6 +44,7 @@ description = "Runs the rust compiler."
 category = "Build"
 dependencies = ["android"]
 # TODO replace with "android"
+args = ["build"]
 
 [tasks.build.mac]
 description = "Runs the rust compiler."

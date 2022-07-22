@@ -242,5 +242,8 @@
   "auto": "Auto",
   "count": "Nombre",
   "close": "Fermer",
-  "changeTransparentKey": "Changer la clé"
+  "changeTransparentKey": "Changer la clé",
+  "cancelScan": "Suspendre Sync",
+  "resumeScan": "Continuer Sync",
+  "syncPaused": "Sync en Pause"
 }

@@ -244,5 +244,8 @@
   "auto": "Auto",
   "count": "Count",
   "close": "Close",
-  "changeTransparentKey": "Change Transparent Key"
+  "changeTransparentKey": "Change Transparent Key",
+  "cancelScan": "Cancel Scan",
+  "resumeScan": "Resume Scan",
+  "syncPaused": "Sync Paused"
 }

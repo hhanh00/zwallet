@@ -132,34 +132,19 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         child: Icon(Icons.send),
       );
 
-    final menu = PopupMenuButton<String>(
-      itemBuilder: (context) {
-        return [
-          PopupMenuItem(child: Text(s.accounts), value: "Accounts"),
-          PopupMenuItem(child: Text(s.backup), value: "Backup"),
-          PopupMenuItem(child: Text(s.rescan), value: "Rescan", enabled: !syncStatus.syncing),
-          if (!simpleMode)
-            PopupMenuItem(child:
-              PopupMenuButton(
-                child: Text(s.advanced),
-                itemBuilder: (_) => [
-                  PopupMenuItem(child: Text(s.convertToWatchonly), enabled: active.canPay, value: "Cold"),
-                  PopupMenuItem(child: Text(s.signOffline), enabled: active.canPay, value: "Sign"),
-                  PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
-                  PopupMenuItem(child: Text(s.multipay), value: "MultiPay"),
-                ], onSelected: _onMenu)),
-          // if (!simpleMode && !isMobile())
-          //   PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
-          PopupMenuItem(child: Text(s.settings), value: "Settings"),
-          PopupMenuItem(child: Text(s.help), value: "Help"),
-          PopupMenuItem(child: Text(s.about), value: "About"),
-        ];
-      },
-      onSelected: _onMenu,
-    );
-
     return Observer(builder: (context) {
       final _1 = active.dataEpoch;
+      final _2 = syncStatus.paused;
+      final _3 = syncStatus.syncing;
+
+      final rescanMsg;
+      if (syncStatus.paused)
+        rescanMsg = s.resumeScan;
+      else if (syncStatus.syncing)
+        rescanMsg = s.cancelScan;
+      else
+        rescanMsg = s.rescan;
+
       final unread = active.unread;
       final messageTab = unread != 0 ?
         Tab(child: Badge(
@@ -173,6 +158,32 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         });
         return SizedBox(); // Show a placeholder
       }
+
+      final menu = PopupMenuButton<String>(
+        itemBuilder: (context) {
+          return [
+            PopupMenuItem(child: Text(s.accounts), value: "Accounts"),
+            PopupMenuItem(child: Text(s.backup), value: "Backup"),
+            PopupMenuItem(child: Text(rescanMsg), value: "Rescan"),
+            if (!simpleMode)
+              PopupMenuItem(child:
+              PopupMenuButton(
+                  child: Text(s.advanced),
+                  itemBuilder: (_) => [
+                    PopupMenuItem(child: Text(s.convertToWatchonly), enabled: active.canPay, value: "Cold"),
+                    PopupMenuItem(child: Text(s.signOffline), enabled: active.canPay, value: "Sign"),
+                    PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
+                    PopupMenuItem(child: Text(s.multipay), value: "MultiPay"),
+                  ], onSelected: _onMenu)),
+            // if (!simpleMode && !isMobile())
+            //   PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
+            PopupMenuItem(child: Text(s.settings), value: "Settings"),
+            PopupMenuItem(child: Text(s.help), value: "Help"),
+            PopupMenuItem(child: Text(s.about), value: "About"),
+          ];
+        },
+        onSelected: _onMenu,
+      );
 
       showAboutOnce(this.context);
 
@@ -274,7 +285,12 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   }
 
   _rescan() {
-    rescan(context);
+    if (syncStatus.paused)
+      syncStatus.setPause(false);
+    else if (syncStatus.syncing)
+      cancelScan(context);
+    else
+      rescan(context);
   }
 
   _multiPay() {
