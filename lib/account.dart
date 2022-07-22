@@ -62,12 +62,16 @@ class SyncStatusState extends State<SyncStatusWidget> {
       if (simpleMode) Padding(padding: EdgeInsets.fromLTRB(0, 8, 0, 0), child: Text(s.simpleMode)),
       Observer(builder: (context) {
         final time = eta.eta;
-        final synced = syncStatus.isSynced();
         final syncedHeight = syncStatus.syncedHeight;
         final timestamp = syncStatus.timestamp?.timeAgo() ?? s.na;
         final latestHeight = syncStatus.latestHeight;
         final remaining = syncedHeight != null ? max(latestHeight-syncedHeight, 0) : 0;
         final percent = latestHeight > 0 ? 100 * (syncedHeight ?? 0) ~/ latestHeight : 0;
+        final disconnected = latestHeight == 0;
+        final neverSynced = syncedHeight == null;
+        final synced = syncStatus.isSynced();
+        final paused = syncStatus.paused;
+        final syncing = !paused && !disconnected && !neverSynced && !synced;
 
         dynamic createSyncText(int iDisplay, bool animated) {
           switch (iDisplay) {
@@ -96,25 +100,34 @@ class SyncStatusState extends State<SyncStatusWidget> {
           return createSyncText(d-1, false);
         }
 
-        final text =  latestHeight == 0 ? Text(s.disconnected)
-            : syncedHeight == null
-            ? Text(s.rescanNeeded)
-            : synced
-            ? Text('$syncedHeight', style: theme.textTheme.caption)
-            : GestureDetector(
-              onTap: () => setState(() { display += 1; }),
-              child: createSyncStatus());
+        final text;
+        if (paused)
+          text = Text(s.syncPaused);
+        else if (disconnected)
+          text = Text(s.disconnected);
+        else if (neverSynced)
+          text = Text(s.rescanNeeded);
+        else if (synced)
+          text = Text('$syncedHeight', style: theme.textTheme.caption);
+        else
+          text = createSyncStatus();
 
-        return TextButton(onPressed: synced ? () => _onSync(context) : null, child: text);
+        return TextButton(onPressed: () { syncing ? _onNextDisplay() : _onSync(context); }, child: text);
       })
     ]);
   }
 
   _onSync(BuildContext context) {
-    if (syncStatus.syncedHeight != null)
+    if (syncStatus.paused)
+      syncStatus.setPause(false);
+    else if (syncStatus.syncedHeight != null)
       Future.microtask(syncStatus.sync);
     else
       rescan(context);
+  }
+
+  _onNextDisplay() {
+    setState(() { display += 1; });
   }
 }
 

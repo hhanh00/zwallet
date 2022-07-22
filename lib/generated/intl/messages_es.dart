@@ -135,6 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Transmite desde tu dispositivo en línea"),
         "budget": MessageLookupByLibrary.simpleMessage("Presupuesto"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
+        "cancelScan": MessageLookupByLibrary.simpleMessage("Cancelar Escaneo"),
         "changeAccountName":
             MessageLookupByLibrary.simpleMessage("Cambiar nombre de la cuenta"),
         "changeTransparentKey":
@@ -318,6 +319,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "restart": MessageLookupByLibrary.simpleMessage("Reiniciar"),
         "restoreAnAccount":
             MessageLookupByLibrary.simpleMessage("Restaurar una Cuenta?"),
+        "resumeScan": MessageLookupByLibrary.simpleMessage("Reanudar Escaneo"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
             "Obtener detalles de la transacción"),
         "roundToMillis":
@@ -368,6 +370,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "subAccountIndexOf": m15,
         "subAccountOf": m16,
         "subject": MessageLookupByLibrary.simpleMessage("Subject"),
+        "syncPaused": MessageLookupByLibrary.simpleMessage("Escaneo en pausa"),
         "synching": MessageLookupByLibrary.simpleMessage("Sincronizando"),
         "table": MessageLookupByLibrary.simpleMessage("Lista"),
         "tapAnIconToShowTheQrCode": MessageLookupByLibrary.simpleMessage(

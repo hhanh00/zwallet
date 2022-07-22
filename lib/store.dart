@@ -541,6 +541,9 @@ abstract class _SyncStatus with Store {
   @observable
   bool syncing = false;
 
+  @observable
+  bool paused = false;
+
   bool isSynced() {
     final sh = syncedHeight;
     return sh != null && sh >= latestHeight;
@@ -593,6 +596,7 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<void> sync() async {
+    if (paused) return;
     if (syncing) return;
     await syncStatus.update();
     if (syncedHeight == null) return;
@@ -644,6 +648,11 @@ abstract class _SyncStatus with Store {
   void setSyncedToLatestHeight() {
     setSyncHeight(latestHeight, null);
     WarpApi.skipToLastHeight(0xFF);
+  }
+
+  @action
+  void setPause(bool v) {
+    paused = v;
   }
 }
 

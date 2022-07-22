@@ -2511,6 +2511,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Cancel Scan`
+  String get cancelScan {
+    return Intl.message(
+      'Cancel Scan',
+      name: 'cancelScan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resume Scan`
+  String get resumeScan {
+    return Intl.message(
+      'Resume Scan',
+      name: 'resumeScan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sync Paused`
+  String get syncPaused {
+    return Intl.message(
+      'Sync Paused',
+      name: 'syncPaused',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

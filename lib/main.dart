@@ -729,6 +729,11 @@ Future<void> rescan(BuildContext context) async {
   }
 }
 
+void cancelScan(BuildContext context) {
+  syncStatus.setPause(true);
+  WarpApi.cancelSync();
+}
+
 void sqlFfiInit() {
   open.overrideFor(OperatingSystem.linux, _openOnLinux);
 }

@@ -87,6 +87,10 @@ class WarpApi {
     return res;
   }
 
+  static void cancelSync() {
+    warp_api_lib.cancel_warp();
+  }
+
   static void mempoolReset() {
     warp_api_lib.mempool_reset();
   }
