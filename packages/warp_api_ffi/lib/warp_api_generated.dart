@@ -203,6 +203,25 @@ class NativeLibrary {
   late final _dart_import_transparent_key _import_transparent_key =
       _import_transparent_key_ptr.asFunction<_dart_import_transparent_key>();
 
+  void import_transparent_secret_key(
+    int coin,
+    int id_account,
+    ffi.Pointer<ffi.Int8> secret_key,
+  ) {
+    return _import_transparent_secret_key(
+      coin,
+      id_account,
+      secret_key,
+    );
+  }
+
+  late final _import_transparent_secret_key_ptr =
+      _lookup<ffi.NativeFunction<_c_import_transparent_secret_key>>(
+          'import_transparent_secret_key');
+  late final _dart_import_transparent_secret_key
+      _import_transparent_secret_key = _import_transparent_secret_key_ptr
+          .asFunction<_dart_import_transparent_secret_key>();
+
   void cancel_warp() {
     return _cancel_warp();
   }
@@ -821,6 +840,18 @@ typedef _dart_import_transparent_key = void Function(
   int coin,
   int id_account,
   ffi.Pointer<ffi.Int8> path,
+);
+
+typedef _c_import_transparent_secret_key = ffi.Void Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id_account,
+  ffi.Pointer<ffi.Int8> secret_key,
+);
+
+typedef _dart_import_transparent_secret_key = void Function(
+  int coin,
+  int id_account,
+  ffi.Pointer<ffi.Int8> secret_key,
 );
 
 typedef _c_cancel_warp = ffi.Void Function();

@@ -247,5 +247,7 @@
   "changeTransparentKey": "Change Transparent Key",
   "cancelScan": "Cancel Scan",
   "resumeScan": "Resume Scan",
-  "syncPaused": "Sync Paused"
+  "syncPaused": "Sync Paused",
+  "derivationPath": "Derivation Path",
+  "privateKey": "Private Key"
 }

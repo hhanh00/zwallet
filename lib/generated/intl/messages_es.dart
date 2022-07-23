@@ -182,6 +182,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "deleteAccount": MessageLookupByLibrary.simpleMessage("Borrar Cuenta"),
         "deleteContact":
             MessageLookupByLibrary.simpleMessage("Borrar contacto"),
+        "derivationPath":
+            MessageLookupByLibrary.simpleMessage("Ruta de Derivación"),
         "disconnected": MessageLookupByLibrary.simpleMessage("Desconectado"),
         "doYouWantToDeleteTheSecretKeyAndConvert":
             MessageLookupByLibrary.simpleMessage(
@@ -294,6 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Preparando la transacción…"),
         "price": MessageLookupByLibrary.simpleMessage("Precio"),
         "primary": MessageLookupByLibrary.simpleMessage("Primario"),
+        "privateKey": MessageLookupByLibrary.simpleMessage("Clave Privada"),
         "protectOpen":
             MessageLookupByLibrary.simpleMessage("Proteger presentar"),
         "protectSend": MessageLookupByLibrary.simpleMessage("Proteger enviar"),

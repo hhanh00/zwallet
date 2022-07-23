@@ -245,5 +245,7 @@
   "changeTransparentKey": "Cambiar la clave transparente"
   "cancelScan": "Cancelar Escaneo",
   "resumeScan": "Reanudar Escaneo",
-  "syncPaused": "Escaneo en pausa"
+  "syncPaused": "Escaneo en pausa",
+  "derivationPath": "Ruta de Derivación",
+  "privateKey": "Clave Privada"
 }

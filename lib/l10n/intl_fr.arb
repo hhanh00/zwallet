@@ -245,5 +245,7 @@
   "changeTransparentKey": "Changer la clé",
   "cancelScan": "Suspendre Sync",
   "resumeScan": "Continuer Sync",
-  "syncPaused": "Sync en Pause"
+  "syncPaused": "Sync en Pause",
+  "derivationPath": "Chemin de Dérivation",
+  "privateKey": "Clé Privée"
 }
