@@ -39,6 +39,7 @@ class HomeState extends State<HomePage> {
   void initState() {
     super.initState();
     if (active.id == 0) return;
+
     Future.microtask(() async {
       await syncStatus.update();
       await active.updateBalances();

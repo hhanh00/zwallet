@@ -2541,6 +2541,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Derivation Path`
+  String get derivationPath {
+    return Intl.message(
+      'Derivation Path',
+      name: 'derivationPath',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Private Key`
+  String get privateKey {
+    return Intl.message(
+      'Private Key',
+      name: 'privateKey',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

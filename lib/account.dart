@@ -233,19 +233,29 @@ class QRAddressState extends State<QRAddressWidget> {
 
   _onUpdateTAddr() async {
     if (!active.showTAddr) return;
+    final s = S.of(context);
     final coinIndex = active.coinDef.coinIndex;
     var pathController = TextEditingController();
+    var keyController = TextEditingController();
     final confirmed = await showDialog<bool>(context: context, builder: (context) => AlertDialog(
         title: Text(S.of(context).changeTransparentKey),
-        content:
-          TextField(
-              decoration: InputDecoration(label: Text('Derivation Path'), hintText: "m/44'/${coinIndex}'/0'/0/0"),
-              controller: pathController),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+                decoration: InputDecoration(label: Text(s.derivationPath), hintText: "m/44'/${coinIndex}'/0'/0/0"),
+                controller: pathController),
+            TextField(
+                decoration: InputDecoration(label: Text(s.privateKey)),
+                controller: keyController)]),
         actions: confirmButtons(context, () {
           Navigator.of(context).pop(true);
         }))) ?? false;
     if (confirmed) {
-      WarpApi.importTransparentKey(active.coin, active.id, pathController.text);
+      if (pathController.text.isNotEmpty)
+        WarpApi.importTransparentPath(active.coin, active.id, pathController.text);
+      if (keyController.text.isNotEmpty)
+        WarpApi.importTransparentSecretKey(active.coin, active.id, keyController.text);
       if (WarpApi.getError()) {
         showSnackBar(WarpApi.getErrorMessage());
       }
