@@ -259,7 +259,10 @@ class QRAddressState extends State<QRAddressWidget> {
       if (WarpApi.getError()) {
         showSnackBar(WarpApi.getErrorMessage());
       }
-      else await active.refreshTAddr();
+      else {
+        await active.refreshTAddr();
+        active.updateTBalance();
+      }
     }
   }
 
