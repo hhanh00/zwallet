@@ -225,6 +225,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Adresse invalide"),
         "invalidKey": MessageLookupByLibrary.simpleMessage("Clé invalide"),
         "key": MessageLookupByLibrary.simpleMessage("Clé"),
+        "keyTool": MessageLookupByLibrary.simpleMessage("Clés Utilitaires"),
         "largestSpendingLastMonth": MessageLookupByLibrary.simpleMessage(
             "Dépenses les plus importantes le mois dernier"),
         "largestSpendingsByAddress": MessageLookupByLibrary.simpleMessage(
@@ -424,6 +425,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
             "Fichier de transaction non signée"),
         "unsignedTx": MessageLookupByLibrary.simpleMessage("Tx non signée"),
+        "update": MessageLookupByLibrary.simpleMessage("Recalculer"),
         "useQrForOfflineSigning": MessageLookupByLibrary.simpleMessage(
             "Utiliser des QR pour signer sans connexion"),
         "useSettingscurrency": m19,

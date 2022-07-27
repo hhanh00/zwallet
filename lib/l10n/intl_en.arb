@@ -249,5 +249,7 @@
   "resumeScan": "Resume Scan",
   "syncPaused": "Sync Paused",
   "derivationPath": "Derivation Path",
-  "privateKey": "Private Key"
+  "privateKey": "Private Key",
+  "keyTool": "Key Tool",
+  "update": "Recalc"
 }

@@ -175,6 +175,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
                     PopupMenuItem(child: Text(s.signOffline), enabled: active.canPay, value: "Sign"),
                     PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
                     PopupMenuItem(child: Text(s.multipay), value: "MultiPay"),
+                    PopupMenuItem(child: Text(s.keyTool), value: "KeyTool"),
                   ], onSelected: _onMenu)),
             // if (!simpleMode && !isMobile())
             //   PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
@@ -225,13 +226,13 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   }
 
   _onSend() {
-    Navigator.of(this.context).pushNamed('/send');
+    Navigator.of(context).pushNamed('/send');
   }
 
   _onMenu(String choice) {
     switch (choice) {
       case "Accounts":
-        Navigator.of(this.context).pushNamed('/accounts');
+        Navigator.of(context).pushNamed('/accounts');
         break;
       case "Backup":
         _backup();
@@ -250,6 +251,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         break;
       case "Broadcast":
         _broadcast();
+        break;
+      case "KeyTool":
+        Navigator.of(context).pushNamed('/keytool');
         break;
       case "Ledger":
         _ledger();

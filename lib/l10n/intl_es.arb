@@ -247,5 +247,7 @@
   "resumeScan": "Reanudar Escaneo",
   "syncPaused": "Escaneo en pausa",
   "derivationPath": "Ruta de Derivación",
-  "privateKey": "Clave Privada"
+  "privateKey": "Clave Privada",
+  "keyTool": "Clave Utilidad",
+  "update": "Recalcular"
 }

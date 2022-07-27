@@ -2561,6 +2561,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Key Tool`
+  String get keyTool {
+    return Intl.message(
+      'Key Tool',
+      name: 'keyTool',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recalc`
+  String get update {
+    return Intl.message(
+      'Recalc',
+      name: 'update',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

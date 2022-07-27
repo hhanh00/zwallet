@@ -247,5 +247,7 @@
   "resumeScan": "Continuer Sync",
   "syncPaused": "Sync en Pause",
   "derivationPath": "Chemin de Dérivation",
-  "privateKey": "Clé Privée"
+  "privateKey": "Clé Privée",
+  "keyTool": "Clés Utilitaires",
+  "update": "Recalculer"
 }

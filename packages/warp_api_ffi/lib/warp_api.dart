@@ -300,6 +300,19 @@ class WarpApi {
     return bestServer;
   }
 
+  static KeyPack deriveZip32(int coin, int idAccount, int accountIndex, int externalIndex, int? addressIndex) {
+    final res = convertCString(warp_api_lib.derive_zip32(
+        coin,
+        idAccount,
+        accountIndex,
+        externalIndex,
+        addressIndex != null ? 1 : 0,
+        addressIndex ?? 0));
+    final jsonMap = jsonDecode(res);
+    final kp = KeyPack.fromJson(jsonMap);
+    return kp;
+  }
+
   // // static void storeShareSecret(int coin, int account, String secret) {
   // //   warp_api_lib.store_share_secret(coin, account, secret.toNativeUtf8().cast<Int8>());
   // // }
