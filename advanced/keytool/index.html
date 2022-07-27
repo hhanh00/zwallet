@@ -5,7 +5,7 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>Settings :: YWallet</title>
+<title>Key Tool :: YWallet</title>
 <link href=/css/nucleus.css?1658890874 rel=stylesheet>
 <link href=/css/fontawesome-all.min.css?1658890874 rel=stylesheet>
 <link href=/css/hybrid.css?1658890874 rel=stylesheet>
@@ -22,7 +22,7 @@
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
-<body data-url=/settings/>
+<body data-url=/advanced/keytool/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -224,7 +224,8 @@ Save to Blockchain
 </li>
 </ul>
 </li>
-<li data-nav-id=/advanced/ title="Advanced Usage" class=dd-item>
+<li data-nav-id=/advanced/ title="Advanced Usage" class="dd-item
+parent">
 <a href=/advanced/>
 <svg class="icon"><use xlink:href="/sprite.svg#flask"/></svg>Advanced Usage
 <i class="fas fa-check read-icon"></i>
@@ -302,7 +303,7 @@ Import from ZecWallet Lite
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/advanced/keytool/ title="Key Tool" class=dd-item>
+<li data-nav-id=/advanced/keytool/ title="Key Tool" class="dd-item active">
 <a href=/advanced/keytool/>
 Key Tool
 <i class="fas fa-check read-icon"></i>
@@ -310,9 +311,7 @@ Key Tool
 </li>
 </ul>
 </li>
-<li data-nav-id=/settings/ title=Settings class="dd-item
-parent
-active">
+<li data-nav-id=/settings/ title=Settings class=dd-item>
 <a href=/settings/>
 <svg class="icon"><use xlink:href="/sprite.svg#gear"/></svg>Settings
 <i class="fas fa-check read-icon"></i>
@@ -405,26 +404,79 @@ Older versions
 <i class="fas fa-bars"></i>
 </a>
 </span>
+<span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > Settings
+<a href=/>YWallet</a> > <a href=/advanced/>Advanced Usage</a> > Key Tool
 </span>
+</div>
+<div class=progress>
+<div class=wrapper>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#transparent-wallets>Transparent Wallets</a></li>
+<li><a href=#shielded-wallets>Shielded Wallets</a></li>
+<li><a href=#special-note-for-zcashd>Special Note for Zcashd</a></li>
+<li><a href=#usage>Usage</a></li>
+</ul>
+</nav>
+</div>
 </div>
 </div>
 </div>
 <div id=head-tags>
 </div>
-<div id=chapter>
 <div id=body-inner>
-<h1 id=settings>Settings</h1>
-<p>Configuration and Customization</p>
+<h1>
+Key Tool
+</h1>
+<img class=img src=../img/2022-07-27_10-39-08.png>
+<p>The Key Tool is a transparent & secret key derivation tool based
+on BIP32/39/44 and ZIP32.</p>
+<p>It is similar to the <a href=https://iancoleman.io/bip39/>Mnemonic Code Converter</a> but specifically for Zcash and Ycash.</p>
+<p>With the Key Tool, you can extract
+the private keys of most (all?) of the other wallets,
+as long as they use a <strong>seed phrase</strong>.</p>
+<ul>
+<li>Ledger, Coinomi,</li>
+<li>Edge,</li>
+<li>Nighthawk,</li>
+<li>ZecWallet Lite</li>
+<li>Zcash (HDSeed)</li>
+</ul>
+<p>However, the information varies from wallet to wallet.</p>
+<h2 id=transparent-wallets>Transparent Wallets</h2>
+<p>They follow BIP32/44 and derive the secret key from
+<code>m/44'/133'/account'/external/address</code> (133 is for Zcash)</p>
+<p>For example, the external address #2 of account #5
+would be at <code>m/44'/133'/5'/0/2'</code>.
+The change address would be at <code>m/44'/133'/5'/1/2'</code></p>
+<p>Usually, they increase the address index automatically
+in order to avoid reusing the same address.
+The account index is incremented when the user creates
+a new account of the same currency.</p>
+<h2 id=shielded-wallets>Shielded Wallets</h2>
+<p>They follow ZIP32 and derive the secret key from
+either
+<code>m/44'/133'/account'</code> or <code>m/44'/133'/account'/address</code></p>
+<p>If you leave the address field <em>empty</em>, the Key Tool
+will generate the type of first path.</p>
+<h2 id=special-note-for-zcashd>Special Note for Zcashd</h2>
+<p>Zcashd has support for ZIP316 (Unified Addresses)
+and therefore generates their legacy sapling addresses
+backwards from the end to avoid clashing with UA.</p>
+<p>Therefore the first sapling address in Zcashd 5.0.0
+is at index 2,147,483,647 and then will go down.</p>
+<p>Pre 5.0.0 addresses are not supported.</p>
+<h2 id=usage>Usage</h2>
+<p>Once you have the secret keys you can import them
+in YWallet as regular accounts.</p>
 <footer class=footline>
 </footer>
 </div>
 </div>
-</div>
 <div id=navigation>
-<a class="nav nav-prev" href=/advanced/keytool/ title="Key Tool"> <i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=/settings/server/ title=Server style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/advanced/zwl/ title="Import from ZecWallet Lite"> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/settings/ title=Settings style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
