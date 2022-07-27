@@ -253,7 +253,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         _broadcast();
         break;
       case "KeyTool":
-        Navigator.of(context).pushNamed('/keytool');
+        _keyTool();
         break;
       case "Ledger":
         _ledger();
@@ -274,6 +274,13 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     final didAuthenticate = !isMobile() || await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
     if (didAuthenticate) {
       Navigator.of(context).pushNamed('/backup');
+    }
+  }
+
+  _keyTool() async {
+    final didAuthenticate = !isMobile() || await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
+    if (didAuthenticate) {
+      Navigator.of(context).pushNamed('/keytool');
     }
   }
 
