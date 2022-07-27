@@ -36,6 +36,7 @@ import 'generated/l10n.dart';
 import 'account_manager.dart';
 import 'backup.dart';
 import 'home.dart';
+import 'keytool.dart';
 import 'message.dart';
 import 'multisend.dart';
 // import 'multisign.dart';
@@ -246,6 +247,7 @@ void main() {
                 '/qroffline': (context) => QrOffline(routeSettings.arguments as String),
                 '/showRawTx': (context) => ShowRawTx(routeSettings.arguments as String),
                 '/sign': (context) => Sign.init(routeSettings.arguments as String),
+                '/keytool': (context) => KeyToolPage(),
               };
               return MaterialPageRoute(builder: routes[routeSettings.name]!);
             },

@@ -722,6 +722,29 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_import_from_zwl>>('import_from_zwl');
   late final _dart_import_from_zwl _import_from_zwl =
       _import_from_zwl_ptr.asFunction<_dart_import_from_zwl>();
+
+  ffi.Pointer<ffi.Int8> derive_zip32(
+    int coin,
+    int id_account,
+    int account,
+    int external_1,
+    int has_address,
+    int address,
+  ) {
+    return _derive_zip32(
+      coin,
+      id_account,
+      account,
+      external_1,
+      has_address,
+      address,
+    );
+  }
+
+  late final _derive_zip32_ptr =
+      _lookup<ffi.NativeFunction<_c_derive_zip32>>('derive_zip32');
+  late final _dart_derive_zip32 _derive_zip32 =
+      _derive_zip32_ptr.asFunction<_dart_derive_zip32>();
 }
 
 const int QR_DATA_SIZE = 256;
@@ -1160,4 +1183,22 @@ typedef _dart_import_from_zwl = void Function(
   int coin,
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> data,
+);
+
+typedef _c_derive_zip32 = ffi.Pointer<ffi.Int8> Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id_account,
+  ffi.Uint32 account,
+  ffi.Uint32 external_1,
+  ffi.Int8 has_address,
+  ffi.Uint32 address,
+);
+
+typedef _dart_derive_zip32 = ffi.Pointer<ffi.Int8> Function(
+  int coin,
+  int id_account,
+  int account,
+  int external_1,
+  int has_address,
+  int address,
 );

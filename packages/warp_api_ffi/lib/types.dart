@@ -58,3 +58,18 @@ class RecipientSummary {
 
   Map<String, dynamic> toJson() => _$RecipientSummaryToJson(this);
 }
+
+@JsonSerializable()
+class KeyPack {
+  final String t_addr;
+  final String t_key;
+  final String z_addr;
+  final String z_key;
+
+  KeyPack(this.t_addr, this.t_key, this.z_addr, this.z_key);
+
+  factory KeyPack.fromJson(Map<String, dynamic> json) =>
+      _$KeyPackFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KeyPackToJson(this);
+}
