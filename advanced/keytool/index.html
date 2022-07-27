@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>Key Tool :: YWallet</title>
-<link href=/css/nucleus.css?1658890874 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1658890874 rel=stylesheet>
-<link href=/css/hybrid.css?1658890874 rel=stylesheet>
-<link href=/css/featherlight.min.css?1658890874 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1658890874 rel=stylesheet>
-<link href=/css/auto-complete.css?1658890874 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1658890874 rel=stylesheet>
-<link href=/css/theme.css?1658890874 rel=stylesheet>
-<link href=/css/tabs.css?1658890874 rel=stylesheet>
-<link href=/css/hugo-theme.css?1658890874 rel=stylesheet>
-<link href=/css/theme-blue.css?1658890874 rel=stylesheet>
-<link href=/common.css?1658890874 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1658890874></script>
+<link href=/css/nucleus.css?1658927471 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1658927471 rel=stylesheet>
+<link href=/css/hybrid.css?1658927471 rel=stylesheet>
+<link href=/css/featherlight.min.css?1658927471 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1658927471 rel=stylesheet>
+<link href=/css/auto-complete.css?1658927471 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1658927471 rel=stylesheet>
+<link href=/css/theme.css?1658927471 rel=stylesheet>
+<link href=/css/tabs.css?1658927471 rel=stylesheet>
+<link href=/css/hugo-theme.css?1658927471 rel=stylesheet>
+<link href=/css/theme-blue.css?1658927471 rel=stylesheet>
+<link href=/common.css?1658927471 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1658927471></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
@@ -35,10 +35,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1658890874></script>
-<script type=text/javascript src=/js/auto-complete.js?1658890874></script>
+<script type=text/javascript src=/js/lunr.min.js?1658927471></script>
+<script type=text/javascript src=/js/auto-complete.js?1658927471></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1658890874></script>
+<script type=text/javascript src=/js/search.js?1658927471></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -432,44 +432,47 @@ Key Tool
 <img class=img src=../img/2022-07-27_10-39-08.png>
 <p>The Key Tool is a transparent & secret key derivation tool based
 on BIP32/39/44 and ZIP32.</p>
-<p>It is similar to the <a href=https://iancoleman.io/bip39/>Mnemonic Code Converter</a> but specifically for Zcash and Ycash.</p>
+<p>It is similar to the <a href=https://iancoleman.io/bip39/>Mnemonic Code Converter</a> but built specifically for Zcash and Ycash.</p>
 <p>With the Key Tool, you can extract
-the private keys of most (all?) of the other wallets,
+the private keys of most (all?) wallets,
 as long as they use a <strong>seed phrase</strong>.</p>
 <ul>
 <li>Ledger, Coinomi,</li>
 <li>Edge,</li>
 <li>Nighthawk,</li>
 <li>ZecWallet Lite</li>
-<li>Zcash (HDSeed)</li>
+<li>Zcash (HDSeed),</li>
+<li>etc.</li>
 </ul>
-<p>However, the information varies from wallet to wallet.</p>
+<p>However, the derivation path they use varies from wallet to wallet.</p>
 <h2 id=transparent-wallets>Transparent Wallets</h2>
-<p>They follow BIP32/44 and derive the secret key from
+<p>Transparent Wallets follow BIP32/44 and derive the secret key at
 <code>m/44'/133'/account'/external/address</code> (133 is for Zcash)</p>
 <p>For example, the external address #2 of account #5
-would be at <code>m/44'/133'/5'/0/2'</code>.
-The change address would be at <code>m/44'/133'/5'/1/2'</code></p>
+is at <code>m/44'/133'/5'/0/2'</code>.
+The change address is at <code>m/44'/133'/5'/1/2'</code></p>
 <p>Usually, they increase the address index automatically
-in order to avoid reusing the same address.
+to avoid reusing the same address.
 The account index is incremented when the user creates
-a new account of the same currency.</p>
+a new account for the same currency.</p>
 <h2 id=shielded-wallets>Shielded Wallets</h2>
-<p>They follow ZIP32 and derive the secret key from
+<p>Shielded Wallets follow ZIP32 and derive the secret key at
 either
 <code>m/44'/133'/account'</code> or <code>m/44'/133'/account'/address</code></p>
 <p>If you leave the address field <em>empty</em>, the Key Tool
-will generate the type of first path.</p>
+will generate the first type of path.</p>
 <h2 id=special-note-for-zcashd>Special Note for Zcashd</h2>
 <p>Zcashd has support for ZIP316 (Unified Addresses)
-and therefore generates their legacy sapling addresses
-backwards from the end to avoid clashing with UA.</p>
+and generates its legacy sapling addresses
+backward from the end to avoid clashing with UA.</p>
 <p>Therefore the first sapling address in Zcashd 5.0.0
 is at index 2,147,483,647 and then will go down.</p>
-<p>Pre 5.0.0 addresses are not supported.</p>
+<p>Pre-5.0.0 addresses are not supported.</p>
 <h2 id=usage>Usage</h2>
 <p>Once you have the secret keys you can import them
-in YWallet as regular accounts.</p>
+into YWallet as regular accounts.</p>
+<div class="notices note"><p>Using the Key Tool requires fingerprint/pin authentication.</p>
+</div>
 <footer class=footline>
 </footer>
 </div>
@@ -482,17 +485,17 @@ in YWallet as regular accounts.</p>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1658890874></script>
-<script src=/js/perfect-scrollbar.min.js?1658890874></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1658890874></script>
-<script src=/js/jquery.sticky.js?1658890874></script>
-<script src=/js/featherlight.min.js?1658890874></script>
-<script src=/js/highlight.pack.js?1658890874></script>
+<script src=/js/clipboard.min.js?1658927471></script>
+<script src=/js/perfect-scrollbar.min.js?1658927471></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1658927471></script>
+<script src=/js/jquery.sticky.js?1658927471></script>
+<script src=/js/featherlight.min.js?1658927471></script>
+<script src=/js/highlight.pack.js?1658927471></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1658890874></script>
-<script src=/js/learn.js?1658890874></script>
-<script src=/js/hugo-learn.js?1658890874></script>
-<script src=/mermaid/mermaid.js?1658890874></script>
+<script src=/js/modernizr.custom-3.6.0.js?1658927471></script>
+<script src=/js/learn.js?1658927471></script>
+<script src=/js/hugo-learn.js?1658927471></script>
+<script src=/mermaid/mermaid.js?1658927471></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>

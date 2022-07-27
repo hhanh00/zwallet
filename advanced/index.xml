@@ -24,6 +24,6 @@ But if you really don&amp;rsquo;t have the seed phrase and the app is still work
 This can be useful when ZWL fails to open.
 ZecWallet Lite is not responsive until it is fully synced up. If your wallet cannot be synced, you will not be able to operate ZWL. For example, it may get appear stuck on the loading screen.
 However, zecwallet-lite-cli the command line version of ZWL has an option to by-pass synchronization.</description></item><item><title>Key Tool</title><link>https://ywallet.app/advanced/keytool/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://ywallet.app/advanced/keytool/</guid><description>The Key Tool is a transparent &amp;amp; secret key derivation tool based on BIP32/39/44 and ZIP32.
-It is similar to the Mnemonic Code Converter but specifically for Zcash and Ycash.
-With the Key Tool, you can extract the private keys of most (all?) of the other wallets, as long as they use a seed phrase.
-Ledger, Coinomi, Edge, Nighthawk, ZecWallet Lite Zcash (HDSeed) However, the information varies from wallet to wallet.</description></item></channel></rss>
+It is similar to the Mnemonic Code Converter but built specifically for Zcash and Ycash.
+With the Key Tool, you can extract the private keys of most (all?) wallets, as long as they use a seed phrase.
+Ledger, Coinomi, Edge, Nighthawk, ZecWallet Lite Zcash (HDSeed), etc. However, the derivation path they use varies from wallet to wallet.</description></item></channel></rss>
