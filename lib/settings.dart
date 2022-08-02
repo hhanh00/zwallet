@@ -213,9 +213,14 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                               onSaved: _shieldBalance),
                           if (!simpleMode) FormBuilderCheckbox(
                               name: 'use_cold_qr',
-                              title: Text(S.of(context).useQrForOfflineSigning),
+                              title: Text(s.useQrForOfflineSigning),
                               initialValue: settings.qrOffline,
                               onSaved: _qrOffline),
+                          if (!simpleMode) FormBuilderCheckbox(
+                              name: 'antispam',
+                              title: Text(s.antispamFilter),
+                              initialValue: settings.antispam,
+                              onSaved: _antispam),
                           if (!simpleMode) FormBuilderTextField(
                             decoration: InputDecoration(
                                 labelText: s.defaultMemo),
@@ -293,6 +298,10 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
 
   _onProtectOpen(v) {
     settings.setProtectOpen(v);
+  }
+
+  _antispam(v) {
+    settings.setAntiSpam(v);
   }
 
   _onSave() async {

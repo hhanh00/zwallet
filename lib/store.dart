@@ -181,6 +181,9 @@ abstract class _Settings with Store {
   @observable
   bool flat = false;
 
+  @observable
+  bool antispam = false;
+
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
@@ -213,6 +216,7 @@ abstract class _Settings with Store {
         prefs.getInt('secondary.variant') ?? Colors.greenAccent.value;
 
     memoSignature = prefs.getString('memo_signature');
+    antispam = prefs.getBool('antispam') ?? false;
 
     for (var s in servers) {
       await s.loadPrefs();
@@ -270,6 +274,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     anchorOffset = offset;
     prefs.setInt('anchor_offset', offset);
+  }
+
+  @action
+  Future<void> setAntiSpam(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    antispam = v;
+    prefs.setBool('antispam', antispam);
   }
 
   @action
@@ -605,6 +616,7 @@ abstract class _SyncStatus with Store {
     if (!isSynced()) {
       final params = SyncParams(
           active.coin, settings.getTx, settings.anchorOffset,
+          settings.antispam ? 20 : 1000000,
           syncPort.sendPort);
       final res = await compute(WarpApi.warpSync, params);
       if (res == 0) {

@@ -235,12 +235,14 @@ class NativeLibrary {
     int coin,
     int get_tx,
     int anchor_offset,
+    int max_cost,
     int port,
   ) {
     return _warp(
       coin,
       get_tx,
       anchor_offset,
+      max_cost,
       port,
     );
   }
@@ -885,6 +887,7 @@ typedef _c_warp = ffi.Uint8 Function(
   ffi.Uint8 coin,
   ffi.Int8 get_tx,
   ffi.Uint32 anchor_offset,
+  ffi.Uint32 max_cost,
   ffi.Int64 port,
 );
 
@@ -892,6 +895,7 @@ typedef _dart_warp = int Function(
   int coin,
   int get_tx,
   int anchor_offset,
+  int max_cost,
   int port,
 );
 
