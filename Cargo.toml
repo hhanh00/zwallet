@@ -8,3 +8,6 @@ debug = false
 
 [patch."https://github.com/hhanh00/zcash-params.git"]
 zcash_params = { path = "native/zcash-params" }
+
+[patch.crates-io]
+jubjub = { git = "https://github.com/hhanh00/jubjub.git", rev = "4a3edf3d242f368b5aa418ec659d01f191127cf3" }
