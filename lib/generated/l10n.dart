@@ -2581,6 +2581,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Anti-Spam Filter`
+  String get antispamFilter {
+    return Intl.message(
+      'Anti-Spam Filter',
+      name: 'antispamFilter',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

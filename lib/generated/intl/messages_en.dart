@@ -105,6 +105,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Amount must be positive"),
         "amountTooHigh":
             MessageLookupByLibrary.simpleMessage("Amount too high"),
+        "antispamFilter":
+            MessageLookupByLibrary.simpleMessage("Anti-Spam Filter"),
         "applicationReset":
             MessageLookupByLibrary.simpleMessage("Application Reset"),
         "approve": MessageLookupByLibrary.simpleMessage("APPROVE"),

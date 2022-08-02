@@ -86,7 +86,7 @@ class WarpApi {
   }
 
   static int warpSync(SyncParams params) {
-    final res = warp_api_lib.warp(params.coin, params.getTx ? 1 : 0, params.anchorOffset, params.port!.nativePort);
+    final res = warp_api_lib.warp(params.coin, params.getTx ? 1 : 0, params.anchorOffset, params.maxCost, params.port!.nativePort);
     params.port!.send(null);
     return res;
   }
@@ -433,9 +433,10 @@ class SyncParams {
   final int coin;
   final bool getTx;
   final int anchorOffset;
+  final int maxCost;
   final SendPort? port;
 
-  SyncParams(this.coin, this.getTx, this.anchorOffset, this.port);
+  SyncParams(this.coin, this.getTx, this.anchorOffset, this.maxCost, this.port);
 }
 
 class PaymentParams {

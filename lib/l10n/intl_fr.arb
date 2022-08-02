@@ -249,5 +249,6 @@
   "derivationPath": "Chemin de Dérivation",
   "privateKey": "Clé Privée",
   "keyTool": "Clés Utilitaires",
-  "update": "Recalculer"
+  "update": "Recalculer",
+  "antispamFilter": "Anti-Spam Filter"
 }

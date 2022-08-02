@@ -251,5 +251,6 @@
   "derivationPath": "Derivation Path",
   "privateKey": "Private Key",
   "keyTool": "Key Tool",
-  "update": "Recalc"
+  "update": "Recalc",
+  "antispamFilter": "Anti-Spam Filter"
 }

@@ -249,5 +249,6 @@
   "derivationPath": "Ruta de Derivación",
   "privateKey": "Clave Privada",
   "keyTool": "Clave Utilidad",
-  "update": "Recalcular"
+  "update": "Recalcular",
+  "antispamFilter": "Anti-Spam Filter"
 }
