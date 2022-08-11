@@ -1,9 +1,16 @@
 #syntax=docker/dockerfile:1.2
-FROM ubuntu
+FROM ubuntu:focal
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
-RUN apt-get install -yq curl
+RUN apt-get install -yq curl gnupg2
+
+# Cuda
+RUN curl -o cuda-keyring_1.0-1_all.deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
+RUN dpkg -i cuda-keyring_1.0-1_all.deb
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq cuda
+
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
 RUN apt-get update
 RUN apt-get install -yq unzip xz-utils clang cmake git ninja-build pkg-config libgtk-3-dev liblzma-dev libgstreamer-plugins-base1.0-dev

@@ -5,7 +5,7 @@ ENV PATH $PATH:/flutter/bin:/root/.cargo/bin
 
 COPY . /zwallet
 
-RUN cd /zwallet/native/zcash-sync && cargo build --release --features=dart_ffi
+RUN cd /zwallet/native/zcash-sync && cargo build --release --features=dart_ffi,cuda
 RUN cd /zwallet && ./build-linux.sh
 RUN cd /zwallet/build/linux/x64/release/bundle && tar cvzf /zwallet.tgz *
 
