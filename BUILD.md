@@ -128,6 +128,18 @@ rm -rf ~/repo
 docker rm zwallet_linux
 ```
 
+### Installation on Ubuntu
+- Install NVidia drivers *515*
+- Then,
+```
+apt get update
+add-apt-repository ppa:flatpak/stable (if needed)
+apt install flatpak
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak install ywallet.flatpak
+```
+- Check that the version number has 'CUDA' (in the about page)
+
 ### Windows
 Copy `warp_api_ffi.dll` into the Release directory and also add:
 - `sqlite3.dll`
