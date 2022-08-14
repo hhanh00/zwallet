@@ -4,6 +4,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:mustache_template/mustache.dart';
+import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
 import 'generated/l10n.dart';
@@ -18,6 +19,8 @@ Future<void> showAbout(BuildContext context) async {
   String version = packageInfo.version;
   String code = packageInfo.buildNumber;
   versionString = "${s.version}: $version+$code";
+  if (WarpApi.hasCuda())
+    versionString += "-CUDA";
   final mq = MediaQuery.of(context);
   showDialog(
       context: context,
