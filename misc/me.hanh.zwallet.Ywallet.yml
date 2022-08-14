@@ -2,7 +2,7 @@ id: me.hanh.zwallet.Ywallet
 runtime: org.freedesktop.Platform
 runtime-version: "21.08"
 platform-extensions:
-  - org.freedesktop.Platform.GL
+  - org.freedesktop.Platform.GL.nvidia
 sdk: org.freedesktop.Sdk
 command: ywallet
 finish-args:

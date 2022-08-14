@@ -747,11 +747,18 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_derive_zip32>>('derive_zip32');
   late final _dart_derive_zip32 _derive_zip32 =
       _derive_zip32_ptr.asFunction<_dart_derive_zip32>();
+
+  int has_cuda() {
+    return _has_cuda();
+  }
+
+  late final _has_cuda_ptr =
+      _lookup<ffi.NativeFunction<_c_has_cuda>>('has_cuda');
+  late final _dart_has_cuda _has_cuda =
+      _has_cuda_ptr.asFunction<_dart_has_cuda>();
 }
 
 const int QR_DATA_SIZE = 256;
-
-const int MAX_OUTPUTS_PER_CHUNK = 200000;
 
 typedef _c_dummy_export = ffi.Void Function();
 
@@ -1206,3 +1213,7 @@ typedef _dart_derive_zip32 = ffi.Pointer<ffi.Int8> Function(
   int has_address,
   int address,
 );
+
+typedef _c_has_cuda = ffi.Int8 Function();
+
+typedef _dart_has_cuda = int Function();
