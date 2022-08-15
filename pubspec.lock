@@ -636,6 +636,13 @@ packages:
       url: "https://github.com/hhanh00/k_chart.git"
     source: git
     version: "0.4.1"
+  key_guardmanager:
+    dependency: "direct main"
+    description:
+      name: key_guardmanager
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   lint:
     dependency: transitive
     description:

@@ -16,6 +16,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:key_guardmanager/key_guardmanager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
@@ -622,8 +623,14 @@ String amountToString(int amount) => decimalFormat(amount / ZECUNIT, 8);
 Future<bool> authenticate(BuildContext context, String reason) async {
   final localAuth = LocalAuthentication();
   try {
-    final didAuthenticate = await localAuth.authenticate(
-        localizedReason: reason);
+    final bool didAuthenticate;
+    if (Platform.isAndroid && !await localAuth.canCheckBiometrics) {
+      didAuthenticate = await KeyGuardmanager.authStatus == "true";
+    }
+    else  {
+      didAuthenticate = await localAuth.authenticate(
+          localizedReason: reason, options: AuthenticationOptions());
+    }
     if (didAuthenticate) {
       return true;
     }
@@ -633,9 +640,7 @@ Future<bool> authenticate(BuildContext context, String reason) async {
         barrierDismissible: true,
         builder: (context) =>
             AlertDialog(
-                title: Text(S
-                    .of(context)
-                    .noAuthenticationMethod),
+                title: Text(S.of(context).noAuthenticationMethod),
                 content: Text(e.message ?? "")));
   }
   return false;
