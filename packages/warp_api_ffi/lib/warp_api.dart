@@ -313,6 +313,14 @@ class WarpApi {
     return kp;
   }
 
+  static int getDownloadedSize() {
+    return warp_api_lib.get_downloaded_size();
+  }
+
+  static int getTrialDecryptionCount() {
+    return warp_api_lib.get_trial_decryptions_count();
+  }
+
   static bool hasCuda() {
     return warp_api_lib.has_cuda() != 0;
   }
