@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -67,6 +68,8 @@ class SyncStatusState extends State<SyncStatusWidget> {
         final latestHeight = syncStatus.latestHeight;
         final remaining = syncedHeight != null ? max(latestHeight-syncedHeight, 0) : 0;
         final percent = latestHeight > 0 ? 100 * (syncedHeight ?? 0) ~/ latestHeight : 0;
+        final downloadedSize = NumberFormat.compact().format(syncStatus.downloadedSize);
+        final trialDecryptionCount = NumberFormat.compact().format(syncStatus.trialDecryptionCount);
         final disconnected = latestHeight == 0;
         final neverSynced = syncedHeight == null;
         final synced = syncStatus.isSynced();
@@ -85,16 +88,20 @@ class SyncStatusState extends State<SyncStatusWidget> {
               return createText('$timestamp', animated);
             case 4:
               return createText('$time', animated);
+            case 5:
+              return createText('\u{2193} $downloadedSize', animated);
+            case 6:
+              return createText('\u{2192} $trialDecryptionCount', animated);
           }
         }
 
         dynamic createSyncStatus() {
-          var d = display % 6;
+          var d = display % 8;
           if (d == 0)
             return AnimatedTextKit(
                 key: ValueKey(syncedHeight),
                 repeatForever: true,
-                animatedTexts: [ for (int i = 0; i < 5; i++) createSyncText(i, true) ],
+                animatedTexts: [ for (int i = 0; i < 6; i++) createSyncText(i, true) ],
                 onTap: () => setState(() { display += 1; }),
             );
           return createSyncText(d-1, false);

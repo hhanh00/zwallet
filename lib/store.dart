@@ -555,6 +555,12 @@ abstract class _SyncStatus with Store {
   @observable
   bool paused = false;
 
+  @observable
+  int downloadedSize = 0;
+
+  @observable
+  int trialDecryptionCount = 0;
+
   bool isSynced() {
     final sh = syncedHeight;
     return sh != null && sh >= latestHeight;
@@ -607,6 +613,8 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<void> sync() async {
+    setDownloadedSize(WarpApi.getDownloadedSize());
+    setTrialDecryptionCount(WarpApi.getTrialDecryptionCount());
     if (paused) return;
     if (syncing) return;
     await syncStatus.update();
@@ -665,6 +673,16 @@ abstract class _SyncStatus with Store {
   @action
   void setPause(bool v) {
     paused = v;
+  }
+
+  @action
+  void setDownloadedSize(int v) {
+    downloadedSize = v;
+  }
+
+  @action
+  void setTrialDecryptionCount(int v) {
+    trialDecryptionCount = v;
   }
 }
 
