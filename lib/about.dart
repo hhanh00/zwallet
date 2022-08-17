@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -6,6 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:mustache_template/mustache.dart';
 import 'package:warp_api/warp_api.dart';
 
+import 'coin/coins.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 
@@ -26,7 +28,9 @@ Future<void> showAbout(BuildContext context) async {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-              title: Text('${S.of(context).about} $APP_NAME'),
+              title: GestureDetector(
+                onLongPress: () { onImportDb(context); },
+                child: Text('${S.of(context).about} $APP_NAME')),
               contentPadding: EdgeInsets.all(16),
               content: Container(width: mq.size.width, height: mq.size.height,
                   child: SingleChildScrollView(child: Column(
@@ -46,6 +50,33 @@ Future<void> showAbout(BuildContext context) async {
                     label: Text(S.of(context).ok),
                     icon: Icon(Icons.done))
               ]));
+}
+
+Future<void> onImportDb(BuildContext context) async {
+  final confirmation = await showConfirmDialog(context, 'DB', S.of(context).doYouWantToRestore);
+  if (!confirmation) return;
+  final s = S.of(context);
+  final result = await FilePicker.platform.pickFiles();
+
+  if (result != null) {
+    final file = result.files.single;
+    bool imported = false;
+    for (var coin in [ycash, zcash]) {
+      if (await coin.tryImport(file)) {
+        imported = true;
+        break;
+      }
+    }
+    if (imported) {
+      await showMessageBox(context, 'Db Import Successful',
+          'Database updated. Please restart the app.', s.ok);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('recover', true);
+    }
+    else
+      await showMessageBox(
+          context, 'Db Import Failed', 'Please check the database file', s.ok);
+  }
 }
 
 Future<void> showAboutOnce(BuildContext context) async {

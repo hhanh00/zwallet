@@ -2591,6 +2591,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Do you want to restore your database? THIS WILL ERASE YOUR CURRENT DATA`
+  String get doYouWantToRestore {
+    return Intl.message(
+      'Do you want to restore your database? THIS WILL ERASE YOUR CURRENT DATA',
+      name: 'doYouWantToRestore',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:ZYWallet/main.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -23,26 +25,57 @@ abstract class CoinBase {
   String get explorerUrl;
   AssetImage get image;
   String get dbName;
+  late String dbPath;
   late Database db;
   List<LWInstance> get lwd;
   bool get supportsUA;
   bool get supportsMultisig;
   List<double> get weights;
 
-  Future<void> open(String dbPath) async {
-    final path = join(dbPath, dbName);
+  void init(String dbDirPath) {
+    dbPath = getPath(dbDirPath);
+  }
+
+  Future<void> open() async {
     // schema handled in backend
-    db = await openDatabase(path/*, onCreate: createSchema, version: 1*/);
+    db = await openDatabase(dbPath/*, onCreate: createSchema, version: 1*/);
   }
 
   Future<void> delete(String dbPath) async {
-    final path = join(dbPath, dbName);
-    await deleteDatabase(path);
+    await File(p.join(dbPath, dbName)).delete();
+    await File(p.join(dbPath, "${dbName}-shm")).delete();
+    await File(p.join(dbPath, "${dbName}-wal")).delete();
+  }
+
+  Future<bool> tryImport(PlatformFile file) async {
+    if (file.name == dbName) {
+      Directory tempDir = await getTemporaryDirectory();
+      final dest = p.join(tempDir.path, dbName);
+      await File(file.path!).copy(dest); // save to temporary directory
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> importFromTemp() async {
+    Directory tempDir = await getTemporaryDirectory();
+    final src = File(p.join(tempDir.path, dbName));
+    print("Import from ${src.path}");
+    if (await src.exists()) {
+      print("copied to ${dbPath}");
+      await src.copy(dbPath);
+      await src.delete();
+    }
+  }
+
+  String getPath(String dbPath) {
+    final path = p.join(dbPath, dbName);
+    return path;
   }
 
   Future<void> export(String dbPath) async {
     if (isMobile()) {
-      final path = join(dbPath, dbName);
+      final path = getPath(dbPath);
       db = await openDatabase(path);
       await db.close();
       await Share.shareFiles([path], subject: dbName);

@@ -101,7 +101,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
             return AnimatedTextKit(
                 key: ValueKey(syncedHeight),
                 repeatForever: true,
-                animatedTexts: [ for (int i = 0; i < 6; i++) createSyncText(i, true) ],
+                animatedTexts: [ for (int i = 0; i < 7; i++) createSyncText(i, true) ],
                 onTap: () => setState(() { display += 1; }),
             );
           return createSyncText(d-1, false);
