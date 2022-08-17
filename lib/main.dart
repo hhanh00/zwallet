@@ -288,6 +288,8 @@ class ZWalletAppState extends State<ZWalletApp> {
     }
   }
 
+  final coins = [ycash, zcash];
+
   Future<bool> _init() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -295,9 +297,13 @@ class ZWalletAppState extends State<ZWalletApp> {
       final exportDb = prefs.getBool('export_db') ?? false;
       prefs.setBool('recover', false);
 
+      print("recover ${recover}");
       if (!initialized || recover || exportDb) {
         initialized = true;
         final dbPath = await getDbPath();
+        for (var coin in coins)
+          coin.init(dbPath);
+
         if (exportDb) {
           await ycash.export(dbPath);
           final r1 = await showMessageBox(
@@ -308,23 +314,27 @@ class ZWalletAppState extends State<ZWalletApp> {
           if (r1 && r2) prefs.setBool('export_db', false);
         }
         if (recover) {
-          ycash.delete(dbPath);
-          zcash.delete(dbPath);
+          for (var coin in coins) {
+            await coin.delete(dbPath);
+            await coin.importFromTemp();
+          }
         }
         _setProgress(0.1, 'Initializing Ycash');
-        await ycash.open(dbPath);
+        await ycash.open();
         _setProgress(0.2, 'Initializing Zcash');
-        await zcash.open(dbPath);
+        await zcash.open();
         _setProgress(0.3, 'Initializing Wallet');
         WarpApi.initWallet(dbPath);
-        await ycash.open(dbPath);
-        await zcash.open(dbPath);
+        for (var coin in coins)
+          await coin.open();
 
         if (recover) {
           final f = await getRecoveryFile();
-          final backup = await f.readAsString();
-          WarpApi.restoreFullBackup("", backup);
-          f.delete();
+          if (f.existsSync()) {
+            final backup = await f.readAsString();
+            WarpApi.restoreFullBackup("", backup);
+            f.delete();
+          }
         }
 
         for (var s in settings.servers) {
@@ -721,6 +731,21 @@ Future<void> resetApp(BuildContext context) async {
     prefs.setBool('recover', true);
     await showMessageBox(context, s.closeApplication, s.pleaseRestartNow, s.ok);
   }
+}
+
+Future<bool> showConfirmDialog(BuildContext context, String title, String body) async {
+  final s = S.of(context);
+  final confirmation = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(body),
+        actions: confirmButtons(context, () {
+          Navigator.of(context).pop(true);
+        }, okLabel: S.of(context).ok, cancelValue: false)),
+  ) ?? false;
+  return confirmation;
 }
 
 Future<void> exportDb() async {

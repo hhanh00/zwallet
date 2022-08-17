@@ -250,5 +250,6 @@
   "privateKey": "Clé Privée",
   "keyTool": "Clés Utilitaires",
   "update": "Recalculer",
-  "antispamFilter": "Anti-Spam Filter"
+  "antispamFilter": "Anti-Spam Filter",
+  "doYouWantToRestore": "Voulez vous restaurer vos données? CECI VA EFFACER VOS COMPTES."
 }

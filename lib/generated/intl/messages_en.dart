@@ -187,6 +187,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "doYouWantToDeleteTheSecretKeyAndConvert":
             MessageLookupByLibrary.simpleMessage(
                 "Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible."),
+        "doYouWantToRestore": MessageLookupByLibrary.simpleMessage(
+            "Do you want to restore your database? THIS WILL ERASE YOUR CURRENT DATA"),
         "doYouWantToTransferYourEntireTransparentBalanceTo": m4,
         "duplicateAccount":
             MessageLookupByLibrary.simpleMessage("Duplicate Account"),
