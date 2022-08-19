@@ -325,6 +325,13 @@ class WarpApi {
     return warp_api_lib.has_cuda() != 0;
   }
 
+  static bool hasVulkan() {
+    return warp_api_lib.has_vulkan() != 0;
+  }
+
+  static bool hasMetal() {
+    return warp_api_lib.has_metal() != 0;
+  }
   // // static void storeShareSecret(int coin, int account, String secret) {
   // //   warp_api_lib.store_share_secret(coin, account, secret.toNativeUtf8().cast<Int8>());
   // // }

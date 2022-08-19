@@ -23,6 +23,10 @@ Future<void> showAbout(BuildContext context) async {
   versionString = "${s.version}: $version+$code";
   if (WarpApi.hasCuda())
     versionString += "-CUDA";
+  if (WarpApi.hasVulkan())
+    versionString += "-VULKAN";
+  if (WarpApi.hasMetal())
+    versionString += "-METAL";
   final mq = MediaQuery.of(context);
   showDialog(
       context: context,

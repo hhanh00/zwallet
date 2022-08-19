@@ -777,9 +777,33 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_has_cuda>>('has_cuda');
   late final _dart_has_cuda _has_cuda =
       _has_cuda_ptr.asFunction<_dart_has_cuda>();
+
+  int has_vulkan() {
+    return _has_vulkan();
+  }
+
+  late final _has_vulkan_ptr =
+      _lookup<ffi.NativeFunction<_c_has_vulkan>>('has_vulkan');
+  late final _dart_has_vulkan _has_vulkan =
+      _has_vulkan_ptr.asFunction<_dart_has_vulkan>();
+
+  int has_metal() {
+    return _has_metal();
+  }
+
+  late final _has_metal_ptr =
+      _lookup<ffi.NativeFunction<_c_has_metal>>('has_metal');
+  late final _dart_has_metal _has_metal =
+      _has_metal_ptr.asFunction<_dart_has_metal>();
 }
 
 const int QR_DATA_SIZE = 256;
+
+const int N = 200000;
+
+const int DATA_SIZE = 416;
+
+const int THREADS_PER_BLOCK = 64;
 
 typedef _c_dummy_export = ffi.Void Function();
 
@@ -1246,3 +1270,11 @@ typedef _dart_get_trial_decryptions_count = int Function();
 typedef _c_has_cuda = ffi.Int8 Function();
 
 typedef _dart_has_cuda = int Function();
+
+typedef _c_has_vulkan = ffi.Int8 Function();
+
+typedef _dart_has_vulkan = int Function();
+
+typedef _c_has_metal = ffi.Int8 Function();
+
+typedef _dart_has_metal = int Function();
