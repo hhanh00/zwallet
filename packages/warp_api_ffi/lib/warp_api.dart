@@ -332,6 +332,18 @@ class WarpApi {
   static bool hasMetal() {
     return warp_api_lib.has_metal() != 0;
   }
+
+  static bool hasGPU() {
+    return warp_api_lib.has_gpu() != 0;
+  }
+
+  static void useGPU(bool v) {
+    warp_api_lib.use_gpu(v ? 1 : 0);
+  }
+  
+  static void setGPUCacheDir(String dir) {
+    warp_api_lib.set_gpu_cache_dir(dir.toNativeUtf8().cast<Int8>());
+  }
   // // static void storeShareSecret(int coin, int account, String secret) {
   // //   warp_api_lib.store_share_secret(coin, account, secret.toNativeUtf8().cast<Int8>());
   // // }

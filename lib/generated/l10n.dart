@@ -2601,6 +2601,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Use GPU`
+  String get useGpu {
+    return Intl.message(
+      'Use GPU',
+      name: 'useGpu',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

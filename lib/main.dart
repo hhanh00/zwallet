@@ -300,6 +300,7 @@ class ZWalletAppState extends State<ZWalletApp> {
       print("recover ${recover}");
       if (!initialized || recover || exportDb) {
         initialized = true;
+        WarpApi.setGPUCacheDir((await getTemporaryDirectory()).path);
         final dbPath = await getDbPath();
         for (var coin in coins)
           coin.init(dbPath);

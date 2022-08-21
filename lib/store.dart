@@ -184,6 +184,9 @@ abstract class _Settings with Store {
   @observable
   bool antispam = false;
 
+  @observable
+  bool useGPU = false;
+
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
@@ -217,6 +220,8 @@ abstract class _Settings with Store {
 
     memoSignature = prefs.getString('memo_signature');
     antispam = prefs.getBool('antispam') ?? false;
+    useGPU = prefs.getBool('gpu') ?? false;
+    WarpApi.useGPU(useGPU);
 
     for (var s in servers) {
       await s.loadPrefs();
@@ -281,6 +286,14 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     antispam = v;
     prefs.setBool('antispam', antispam);
+  }
+
+  @action
+  Future<void> setUseGPU(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    useGPU = v;
+    prefs.setBool('gpu', useGPU);
+    WarpApi.useGPU(useGPU);
   }
 
   @action

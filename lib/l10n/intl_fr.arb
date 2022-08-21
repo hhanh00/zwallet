@@ -251,5 +251,6 @@
   "keyTool": "Clés Utilitaires",
   "update": "Recalculer",
   "antispamFilter": "Anti-Spam Filter",
-  "doYouWantToRestore": "Voulez vous restaurer vos données? CECI VA EFFACER VOS COMPTES."
+  "doYouWantToRestore": "Voulez vous restaurer vos données? CECI VA EFFACER VOS COMPTES.",
+  "useGpu": "Utiliser le GPU"
 }

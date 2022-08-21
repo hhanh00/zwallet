@@ -423,6 +423,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unsigned Transaction File"),
         "unsignedTx": MessageLookupByLibrary.simpleMessage("Unsigned Tx"),
         "update": MessageLookupByLibrary.simpleMessage("Recalc"),
+        "useGpu": MessageLookupByLibrary.simpleMessage("Use GPU"),
         "useQrForOfflineSigning":
             MessageLookupByLibrary.simpleMessage("Use QR for offline signing"),
         "useSettingscurrency": m19,
