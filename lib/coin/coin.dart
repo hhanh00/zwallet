@@ -8,6 +8,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:warp_api/warp_api.dart';
 
 class LWInstance {
   String name;
@@ -74,12 +75,11 @@ abstract class CoinBase {
   }
 
   Future<void> export(String dbPath) async {
-    if (isMobile()) {
-      final path = getPath(dbPath);
-      db = await openDatabase(path);
-      await db.close();
-      await Share.shareFiles([path], subject: dbName);
-    }
+    final path = getPath(dbPath);
+    WarpApi.disableWAL(path);
+    db = await openDatabase(path);
+    await db.close();
+    await exportFile(path, dbName);
   }
 }
 

@@ -769,6 +769,19 @@ class NativeLibrary {
       _get_trial_decryptions_count_ptr
           .asFunction<_dart_get_trial_decryptions_count>();
 
+  void disable_wal(
+    ffi.Pointer<ffi.Int8> db_path,
+  ) {
+    return _disable_wal(
+      db_path,
+    );
+  }
+
+  late final _disable_wal_ptr =
+      _lookup<ffi.NativeFunction<_c_disable_wal>>('disable_wal');
+  late final _dart_disable_wal _disable_wal =
+      _disable_wal_ptr.asFunction<_dart_disable_wal>();
+
   int has_cuda() {
     return _has_cuda();
   }
@@ -777,15 +790,6 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_has_cuda>>('has_cuda');
   late final _dart_has_cuda _has_cuda =
       _has_cuda_ptr.asFunction<_dart_has_cuda>();
-
-  int has_vulkan() {
-    return _has_vulkan();
-  }
-
-  late final _has_vulkan_ptr =
-      _lookup<ffi.NativeFunction<_c_has_vulkan>>('has_vulkan');
-  late final _dart_has_vulkan _has_vulkan =
-      _has_vulkan_ptr.asFunction<_dart_has_vulkan>();
 
   int has_metal() {
     return _has_metal();
@@ -813,19 +817,6 @@ class NativeLibrary {
 
   late final _use_gpu_ptr = _lookup<ffi.NativeFunction<_c_use_gpu>>('use_gpu');
   late final _dart_use_gpu _use_gpu = _use_gpu_ptr.asFunction<_dart_use_gpu>();
-
-  void set_gpu_cache_dir(
-    ffi.Pointer<ffi.Int8> dir,
-  ) {
-    return _set_gpu_cache_dir(
-      dir,
-    );
-  }
-
-  late final _set_gpu_cache_dir_ptr =
-      _lookup<ffi.NativeFunction<_c_set_gpu_cache_dir>>('set_gpu_cache_dir');
-  late final _dart_set_gpu_cache_dir _set_gpu_cache_dir =
-      _set_gpu_cache_dir_ptr.asFunction<_dart_set_gpu_cache_dir>();
 }
 
 const int QR_DATA_SIZE = 256;
@@ -1298,13 +1289,17 @@ typedef _c_get_trial_decryptions_count = ffi.Int64 Function();
 
 typedef _dart_get_trial_decryptions_count = int Function();
 
+typedef _c_disable_wal = ffi.Void Function(
+  ffi.Pointer<ffi.Int8> db_path,
+);
+
+typedef _dart_disable_wal = void Function(
+  ffi.Pointer<ffi.Int8> db_path,
+);
+
 typedef _c_has_cuda = ffi.Int8 Function();
 
 typedef _dart_has_cuda = int Function();
-
-typedef _c_has_vulkan = ffi.Int8 Function();
-
-typedef _dart_has_vulkan = int Function();
 
 typedef _c_has_metal = ffi.Int8 Function();
 
@@ -1320,12 +1315,4 @@ typedef _c_use_gpu = ffi.Void Function(
 
 typedef _dart_use_gpu = void Function(
   int v,
-);
-
-typedef _c_set_gpu_cache_dir = ffi.Void Function(
-  ffi.Pointer<ffi.Int8> dir,
-);
-
-typedef _dart_set_gpu_cache_dir = void Function(
-  ffi.Pointer<ffi.Int8> dir,
 );
