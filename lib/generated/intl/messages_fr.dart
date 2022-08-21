@@ -430,6 +430,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Fichier de transaction non signée"),
         "unsignedTx": MessageLookupByLibrary.simpleMessage("Tx non signée"),
         "update": MessageLookupByLibrary.simpleMessage("Recalculer"),
+        "useGpu": MessageLookupByLibrary.simpleMessage("Utiliser le GPU"),
         "useQrForOfflineSigning": MessageLookupByLibrary.simpleMessage(
             "Utiliser des QR pour signer sans connexion"),
         "useSettingscurrency": m19,

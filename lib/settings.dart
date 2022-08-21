@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:warp_api/warp_api.dart';
 import 'coin/coins.dart';
 
 import 'coin/coin.dart';
@@ -221,6 +222,11 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                               title: Text(s.antispamFilter),
                               initialValue: settings.antispam,
                               onSaved: _antispam),
+                          if (!simpleMode && WarpApi.hasGPU()) FormBuilderCheckbox(
+                              name: 'gpu',
+                              title: Text(s.useGpu),
+                              initialValue: settings.useGPU,
+                              onSaved: _useGPU),
                           if (!simpleMode) FormBuilderTextField(
                             decoration: InputDecoration(
                                 labelText: s.defaultMemo),
@@ -302,6 +308,10 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
 
   _antispam(v) {
     settings.setAntiSpam(v);
+  }
+
+  _useGPU(v) {
+    settings.setUseGPU(v);
   }
 
   _onSave() async {

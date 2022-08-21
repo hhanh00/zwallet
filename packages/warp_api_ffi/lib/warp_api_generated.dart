@@ -795,6 +795,37 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_has_metal>>('has_metal');
   late final _dart_has_metal _has_metal =
       _has_metal_ptr.asFunction<_dart_has_metal>();
+
+  int has_gpu() {
+    return _has_gpu();
+  }
+
+  late final _has_gpu_ptr = _lookup<ffi.NativeFunction<_c_has_gpu>>('has_gpu');
+  late final _dart_has_gpu _has_gpu = _has_gpu_ptr.asFunction<_dart_has_gpu>();
+
+  void use_gpu(
+    int v,
+  ) {
+    return _use_gpu(
+      v,
+    );
+  }
+
+  late final _use_gpu_ptr = _lookup<ffi.NativeFunction<_c_use_gpu>>('use_gpu');
+  late final _dart_use_gpu _use_gpu = _use_gpu_ptr.asFunction<_dart_use_gpu>();
+
+  void set_gpu_cache_dir(
+    ffi.Pointer<ffi.Int8> dir,
+  ) {
+    return _set_gpu_cache_dir(
+      dir,
+    );
+  }
+
+  late final _set_gpu_cache_dir_ptr =
+      _lookup<ffi.NativeFunction<_c_set_gpu_cache_dir>>('set_gpu_cache_dir');
+  late final _dart_set_gpu_cache_dir _set_gpu_cache_dir =
+      _set_gpu_cache_dir_ptr.asFunction<_dart_set_gpu_cache_dir>();
 }
 
 const int QR_DATA_SIZE = 256;
@@ -1278,3 +1309,23 @@ typedef _dart_has_vulkan = int Function();
 typedef _c_has_metal = ffi.Int8 Function();
 
 typedef _dart_has_metal = int Function();
+
+typedef _c_has_gpu = ffi.Int8 Function();
+
+typedef _dart_has_gpu = int Function();
+
+typedef _c_use_gpu = ffi.Void Function(
+  ffi.Int8 v,
+);
+
+typedef _dart_use_gpu = void Function(
+  int v,
+);
+
+typedef _c_set_gpu_cache_dir = ffi.Void Function(
+  ffi.Pointer<ffi.Int8> dir,
+);
+
+typedef _dart_set_gpu_cache_dir = void Function(
+  ffi.Pointer<ffi.Int8> dir,
+);
