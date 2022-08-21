@@ -300,7 +300,6 @@ class ZWalletAppState extends State<ZWalletApp> {
       print("recover ${recover}");
       if (!initialized || recover || exportDb) {
         initialized = true;
-        WarpApi.setGPUCacheDir((await getTemporaryDirectory()).path);
         final dbPath = await getDbPath();
         for (var coin in coins)
           coin.init(dbPath);
@@ -701,6 +700,21 @@ Future<void> saveFile(String data, String filename, String title) async {
     if (fn != null) {
       final file = File(fn);
       await file.writeAsString(data);
+    }
+  }
+}
+
+Future<void> exportFile(String path, String title) async {
+  if (isMobile()) {
+    final context = navigatorKey.currentContext!;
+    Size size = MediaQuery.of(context).size;
+    return Share.shareFiles([path], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
+  }
+  else {
+    final fn = await FilePicker.platform.saveFile();
+    if (fn != null) {
+      final file = File(path);
+      await file.copy(fn);
     }
   }
 }

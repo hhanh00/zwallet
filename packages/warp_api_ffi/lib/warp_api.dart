@@ -321,12 +321,12 @@ class WarpApi {
     return warp_api_lib.get_trial_decryptions_count();
   }
 
-  static bool hasCuda() {
-    return warp_api_lib.has_cuda() != 0;
+  static void disableWAL(String dbPath) {
+    warp_api_lib.disable_wal(dbPath.toNativeUtf8().cast<Int8>());
   }
 
-  static bool hasVulkan() {
-    return warp_api_lib.has_vulkan() != 0;
+  static bool hasCuda() {
+    return warp_api_lib.has_cuda() != 0;
   }
 
   static bool hasMetal() {
@@ -339,10 +339,6 @@ class WarpApi {
 
   static void useGPU(bool v) {
     warp_api_lib.use_gpu(v ? 1 : 0);
-  }
-  
-  static void setGPUCacheDir(String dir) {
-    warp_api_lib.set_gpu_cache_dir(dir.toNativeUtf8().cast<Int8>());
   }
   // // static void storeShareSecret(int coin, int account, String secret) {
   // //   warp_api_lib.store_share_secret(coin, account, secret.toNativeUtf8().cast<Int8>());
