@@ -38,7 +38,15 @@ class HomeState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    if (active.id == 0) return;
+    if (active.id == 0) {
+      Future.microtask(() async {
+        await syncStatus.update();
+          for (var c in settings.coins) {
+        syncStatus.markAsSynced(c.coin);
+        }
+      });
+      return;
+    }
 
     Future.microtask(() async {
       await syncStatus.update();

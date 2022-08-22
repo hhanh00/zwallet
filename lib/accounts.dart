@@ -55,8 +55,7 @@ abstract class _AccountManager2 with Store {
   @action
   Future<void> delete(int coin, int id) async {
     WarpApi.deleteAccount(coin, id);
-    if (active.coin == coin && active.id == id)
-      active.reset();
+    await active.checkAndUpdate();
   }
 
   @action
@@ -157,40 +156,62 @@ abstract class _ActiveAccount with Store {
   @observable
   bool pnlDesc = false;
 
+  AccountId toId() { return AccountId(coin, id); }
+
   @action
   Future<void> restore() async {
     final prefs = await SharedPreferences.getInstance();
     final coin = prefs.getInt('coin') ?? 0;
-    final id = prefs.getInt('account') ?? 0;
-    await setActiveAccount(coin, id);
+    var id = prefs.getInt('account') ?? 0;
+    active.coin = coin;
+    active.id = id;
+    await checkAndUpdate();
+    await refreshAccount();
   }
 
-  Future<void> reset() async {
-    for (var coin_data in settings.coins) {
-      if (await refreshId(coin_data.coin) != 0)
-        return;
+  Future<void> checkAndUpdate() async {
+    final aid = await getAvailableId(active.toId());
+    if (aid == null) {
+      await setActiveAccount(0, 0);
     }
-    await setActiveAccount(0, 0);
+    else if (aid != active.toId()) {
+      await setActiveAccount(aid.coin, aid.id);
+      await refreshAccount();
+    }
   }
 
-  // check that the active account still exists
+  Future<AccountId?> getAvailableId(AccountId aid) async {
+    final nid = await getAvailableIdForCoin(aid.coin, aid.id);
+    if (nid != null) return nid;
+    for (var coin_data in settings.coins) {
+      // look for an account in any other coin
+      if (coin_data.coin != coin) {
+        final nid = await getAvailableIdForCoin(coin_data.coin, coin_data.active);
+        if (nid != null)
+          return nid;
+      }
+    }
+    // We have no accounts
+    return null;
+  }
+
+  // check that the account still exists
   // if not, pick any account
-  // if there are none, return null
-  Future<int> refreshId(int coin) async {
+  // if there are none, return 0
+  Future<AccountId?> getAvailableIdForCoin(int coin, int id) async {
     coinDef = settings.coins[coin].def;
     final db = coinDef.db;
     final List<Map> res1 = await db.rawQuery(
-        "SELECT 1 FROM accounts WHERE id_account = ?1", [active.id]);
+        "SELECT 1 FROM accounts WHERE id_account = ?1", [id]);
     if (res1.isNotEmpty)
-      return active.id;
+      return AccountId(coin, id);
     final List<Map> res2 = await db.rawQuery(
         "SELECT id_account FROM accounts", []);
     if (res2.isNotEmpty) {
       final id = res2[0]['id_account'];
-      await setActiveAccount(coin, id);
-      return id;
+      return AccountId(coin, id);
     }
-    return 0;
+    return null;
   }
 
   @action
@@ -204,7 +225,11 @@ abstract class _ActiveAccount with Store {
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('coin', coin);
     prefs.setInt('account', id);
+    WarpApi.setActiveAccount(coin, id);
+  }
 
+  @action
+  Future<void> refreshAccount() async {
     coinDef = settings.coins[coin].def;
     final db = coinDef.db;
 
@@ -222,10 +247,9 @@ abstract class _ActiveAccount with Store {
 
     showTAddr = false;
     balances = Balances.zero;
-    WarpApi.setActiveAccount(coin, id);
 
     await update();
-    await priceStore.updateChart();
+    Future.microtask(priceStore.updateChart);
   }
 
   @action

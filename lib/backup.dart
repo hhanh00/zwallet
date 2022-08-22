@@ -10,6 +10,10 @@ class AccountId {
   final int coin;
   final int id;
   AccountId(this.coin, this.id);
+
+  bool operator ==(covariant AccountId other) {
+    return coin == other.coin && id == other.id;
+  }
 }
 
 class BackupPage extends StatefulWidget {

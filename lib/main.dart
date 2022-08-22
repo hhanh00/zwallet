@@ -344,8 +344,6 @@ class ZWalletAppState extends State<ZWalletApp> {
         await accounts.refresh();
         _setProgress(0.7, 'Restoring Active Account');
         await active.restore();
-        _setProgress(0.8, 'Checking Sync Status');
-        await syncStatus.update();
 
         if (isMobile()) {
           _setProgress(0.9, 'Setting Dashboard Shortcuts');
@@ -378,12 +376,6 @@ class ZWalletAppState extends State<ZWalletApp> {
       }
 
       await active.restore();
-      if (active.id == 0) {
-        for (var c in settings.coins) {
-          syncStatus.markAsSynced(c.coin);
-        }
-        await syncStatus.update();
-      }
 
       return true;
     } catch (e) {
