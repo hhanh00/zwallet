@@ -163,14 +163,13 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   void _onDismissed(int index, Account account) async {
     await accounts.delete(account.coin, account.id);
-    accounts.refresh();
-    final id = await active.refreshId(active.coin);
-    if (id == 0)
-      active.reset();
+    await accounts.refresh();
+    await active.checkAndUpdate();
   }
 
   _selectAccount(Account account) async {
     await active.setActiveAccount(account.coin, account.id);
+    await active.refreshAccount();
     if (syncStatus.accountRestored) {
       syncStatus.setAccountRestored(false);
       final height = await rescanDialog(context);
