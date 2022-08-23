@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>Miscellaneous :: YWallet</title>
-<link href=/css/nucleus.css?1660663396 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1660663396 rel=stylesheet>
-<link href=/css/hybrid.css?1660663396 rel=stylesheet>
-<link href=/css/featherlight.min.css?1660663396 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1660663396 rel=stylesheet>
-<link href=/css/auto-complete.css?1660663396 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1660663396 rel=stylesheet>
-<link href=/css/theme.css?1660663396 rel=stylesheet>
-<link href=/css/tabs.css?1660663396 rel=stylesheet>
-<link href=/css/hugo-theme.css?1660663396 rel=stylesheet>
-<link href=/css/theme-blue.css?1660663396 rel=stylesheet>
-<link href=/common.css?1660663396 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1660663396></script>
+<link href=/css/nucleus.css?1661265920 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1661265920 rel=stylesheet>
+<link href=/css/hybrid.css?1661265920 rel=stylesheet>
+<link href=/css/featherlight.min.css?1661265920 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1661265920 rel=stylesheet>
+<link href=/css/auto-complete.css?1661265920 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1661265920 rel=stylesheet>
+<link href=/css/theme.css?1661265920 rel=stylesheet>
+<link href=/css/tabs.css?1661265920 rel=stylesheet>
+<link href=/css/hugo-theme.css?1661265920 rel=stylesheet>
+<link href=/css/theme-blue.css?1661265920 rel=stylesheet>
+<link href=/common.css?1661265920 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1661265920></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
@@ -35,10 +35,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1660663396></script>
-<script type=text/javascript src=/js/auto-complete.js?1660663396></script>
+<script type=text/javascript src=/js/lunr.min.js?1661265920></script>
+<script type=text/javascript src=/js/auto-complete.js?1661265920></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1660663396></script>
+<script type=text/javascript src=/js/search.js?1661265920></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -347,6 +347,12 @@ Chart Range
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
+<li data-nav-id=/settings/pin-protect/ title="Pin Protect" class=dd-item>
+<a href=/settings/pin-protect/>
+Pin Protect
+<i class="fas fa-check read-icon"></i>
+</a>
+</li>
 <li data-nav-id=/settings/misc/ title=Miscellaneous class="dd-item active">
 <a href=/settings/misc/>
 Miscellaneous
@@ -426,17 +432,25 @@ Older versions
 <h1>
 Miscellaneous
 </h1>
-<p><img class=img src=../img/IMG_0100_2.PNG>
-<img class="img mb-4" src=../img/2022-06-04_14-34-48.png>
-</p>
+<img class=img src=../img/2022-08-23_22-29-48.png>
 <ol>
 <li>When checked, the app retrieves your transaction details (address & memo).
 It needs to send the transaction ID to the server. Therefore, the server
 can know which transactions belong to you</li>
 <li>When checked, your account balance will be hidden on the account page if
-your device is tilted forward or is put down</li>
-<li>When checked, sending coins require pin or biometrics authentication</li>
-<li>When checked, opening the app require pin or biometrics authentication</li>
+your device is tilted forward or is put down on a table</li>
+<li>When checked, your shielded address is included as
+a sender address in your outgoing messages. Receipients
+with Ywallet can reply to you.</li>
+<li>Instead of showing your messages as a list, they are
+shown as a table</li>
+<li>When checked, your transparent balance will be available for spending by default</li>
+<li>Cold wallet transactions are exchanged between hot/cold devices by QR codes.
+When disabled, they are saved in a file</li>
+<li>The Anti-spam filter will skip trial decryptions of transactions that have
+a large number of outputs</li>
+<li>The memo included in by default</li>
+<li>The maximum gap between unused transparent addresses before scanning stops</li>
 </ol>
 <h2 id=remarks>Remarks</h2>
 <ul>
@@ -449,24 +463,24 @@ all of your information private</li>
 </div>
 </div>
 <div id=navigation>
-<a class="nav nav-prev" href=/settings/chart-range/ title="Chart Range"> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-prev" href=/settings/pin-protect/ title="Pin Protect"> <i class="fa fa-chevron-left"></i></a>
 <a class="nav nav-next" href=/warp/ title="Warp Sync" style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1660663396></script>
-<script src=/js/perfect-scrollbar.min.js?1660663396></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1660663396></script>
-<script src=/js/jquery.sticky.js?1660663396></script>
-<script src=/js/featherlight.min.js?1660663396></script>
-<script src=/js/highlight.pack.js?1660663396></script>
+<script src=/js/clipboard.min.js?1661265920></script>
+<script src=/js/perfect-scrollbar.min.js?1661265920></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1661265920></script>
+<script src=/js/jquery.sticky.js?1661265920></script>
+<script src=/js/featherlight.min.js?1661265920></script>
+<script src=/js/highlight.pack.js?1661265920></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1660663396></script>
-<script src=/js/learn.js?1660663396></script>
-<script src=/js/hugo-learn.js?1660663396></script>
-<script src=/mermaid/mermaid.js?1660663396></script>
+<script src=/js/modernizr.custom-3.6.0.js?1661265920></script>
+<script src=/js/learn.js?1661265920></script>
+<script src=/js/hugo-learn.js?1661265920></script>
+<script src=/mermaid/mermaid.js?1661265920></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>

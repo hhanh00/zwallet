@@ -5,7 +5,7 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>Features :: YWallet</title>
+<title>Pin Protect :: YWallet</title>
 <link href=/css/nucleus.css?1661265920 rel=stylesheet>
 <link href=/css/fontawesome-all.min.css?1661265920 rel=stylesheet>
 <link href=/css/hybrid.css?1661265920 rel=stylesheet>
@@ -22,7 +22,7 @@
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
-<body data-url=/features/>
+<body data-url=/settings/pin-protect/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -48,9 +48,7 @@
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/features/ title=Features class="dd-item
-parent
-active">
+<li data-nav-id=/features/ title=Features class=dd-item>
 <a href=/features/>
 <svg class="icon"><use xlink:href="/sprite.svg#list"/></svg>Features
 <i class="fas fa-check read-icon"></i>
@@ -312,7 +310,8 @@ Key Tool
 </li>
 </ul>
 </li>
-<li data-nav-id=/settings/ title=Settings class=dd-item>
+<li data-nav-id=/settings/ title=Settings class="dd-item
+parent">
 <a href=/settings/>
 <svg class="icon"><use xlink:href="/sprite.svg#gear"/></svg>Settings
 <i class="fas fa-check read-icon"></i>
@@ -348,7 +347,7 @@ Chart Range
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/settings/pin-protect/ title="Pin Protect" class=dd-item>
+<li data-nav-id=/settings/pin-protect/ title="Pin Protect" class="dd-item active">
 <a href=/settings/pin-protect/>
 Pin Protect
 <i class="fas fa-check read-icon"></i>
@@ -413,17 +412,12 @@ Older versions
 </span>
 <span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > Features
+<a href=/>YWallet</a> > <a href=/settings/>Settings</a> > Pin Protect
 </span>
 </div>
 <div class=progress>
 <div class=wrapper>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#main-features>Main Features</a></li>
-<li><a href=#other-features>Other Features</a></li>
-</ul>
-</nav>
+<nav id=TableOfContents></nav>
 </div>
 </div>
 </div>
@@ -432,61 +426,21 @@ Older versions
 </div>
 <div id=body-inner>
 <h1>
-Features
+Pin Protect
 </h1>
-<h2 id=main-features>Main Features</h2>
-<ul>
-<li>Warp Sync: <strong>PROCESSES ~10 000 BLOCKS PER SECOND</strong> (1)</li>
-<li><strong>Transparent</strong> and <strong>Shielded</strong> Address support</li>
-<li>Scalable Design: Supports <strong>hundreds of thousands of transactions and received notes</strong></li>
-<li><strong>Low Requirements</strong>: Android 7.0+, iPhone 7, 2 GB of RAM</li>
-</ul>
-<h2 id=other-features>Other Features</h2>
-<ul>
-<li><em>Multi-account</em></li>
-<li><em>Watch only account</em> from <strong>viewing key</strong></li>
-<li>Import seed phrase (<strong>ZIP 32 compliant</strong>) or secret key (<strong>Zcashd standard</strong>)</li>
-<li>One-touch transparent account shielding</li>
-<li><strong>Automatic shielding</strong> above a configurable threshold</li>
-<li>Snap (i.e. <strong>diversified</strong>) addresses</li>
-<li>Show equivalents in <strong>Fiat currencies</strong> (USD, EUR, JPY, RMB, etc.)</li>
-<li>Display and select notes (<strong>Coin Control</strong>)</li>
-<li>Specify spending amount in Fiat or ZEC</li>
-<li>Prepare <strong>unsigned transactions online</strong> and <strong>sign them offline</strong> (cold storage scenario)</li>
-<li><strong>Broadcast raw transactions</strong></li>
-<li><strong>Multiple recipient</strong> payments</li>
-<li><em>Transaction History</em></li>
-<li><strong>Memo</strong></li>
-<li><em>Auto Split Notes</em></li>
-<li>Account <em>Balance History</em></li>
-<li>Largest Past <em>Payees Chart</em></li>
-<li><strong>Wallet P/L Charts and Reports</strong></li>
-<li><em>Contact Address Book</em> (with optional storage in memos)</li>
-<li><strong>Color and Dark/Light Themes</strong></li>
-<li><strong>Custom themes</strong></li>
-<li>Customizable anchor offset</li>
-<li><strong>QR code scanner support</strong></li>
-<li>Payment URI with <strong>Deep Links</strong></li>
-<li>Integration with iOS/Android dashboard <strong>Quick Actions</strong></li>
-<li><strong>Localization</strong> in English, Spanish, French (more to come)</li>
-<li><em>Fluent and Responsive UI</em></li>
-</ul>
-<h1 id=privacy-features>Privacy Features</h1>
-<ul>
-<li>No data upload</li>
-<li><strong>All information recoverable from seed phrase or secret key</strong></li>
-<li>Customizable <code>lightwalletd</code> server URL</li>
-</ul>
+<img class=img src=../img/2022-08-23_22-40-24.png>
+<p>When checked, <em>biometrics</em> or <em>device pin</em> is required,</p>
 <ol>
-<li>Tested on OnePlus 7T - Snapdragon 855+</li>
+<li>for making transactions, ie. spending</li>
+<li>for opening the app.</li>
 </ol>
 <footer class=footline>
 </footer>
 </div>
 </div>
 <div id=navigation>
-<a class="nav nav-prev" href=/installation/ title=Install> <i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=/getting-started/ title="Getting Started" style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/settings/chart-range/ title="Chart Range"> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/settings/misc/ title=Miscellaneous style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
