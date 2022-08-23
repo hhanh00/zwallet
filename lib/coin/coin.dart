@@ -26,7 +26,8 @@ abstract class CoinBase {
   String get explorerUrl;
   AssetImage get image;
   String get dbName;
-  late String dbPath;
+  late String dbDir;
+  late String dbFullPath;
   late Database db;
   List<LWInstance> get lwd;
   bool get supportsUA;
@@ -34,18 +35,13 @@ abstract class CoinBase {
   List<double> get weights;
 
   void init(String dbDirPath) {
-    dbPath = getPath(dbDirPath);
+    dbDir = dbDirPath;
+    dbFullPath = _getFullPath(dbDir);
   }
 
   Future<void> open() async {
     // schema handled in backend
-    db = await openDatabase(dbPath/*, onCreate: createSchema, version: 1*/);
-  }
-
-  Future<void> delete(String dbPath) async {
-    await File(p.join(dbPath, dbName)).delete();
-    await File(p.join(dbPath, "${dbName}-shm")).delete();
-    await File(p.join(dbPath, "${dbName}-wal")).delete();
+    db = await openDatabase(dbFullPath/*, onCreate: createSchema, version: 1*/);
   }
 
   Future<bool> tryImport(PlatformFile file) async {
@@ -63,23 +59,30 @@ abstract class CoinBase {
     final src = File(p.join(tempDir.path, dbName));
     print("Import from ${src.path}");
     if (await src.exists()) {
-      print("copied to ${dbPath}");
-      await src.copy(dbPath);
+      print("copied to ${dbFullPath}");
+      await _delete();
+      await src.copy(dbFullPath);
       await src.delete();
     }
   }
 
-  String getPath(String dbPath) {
-    final path = p.join(dbPath, dbName);
-    return path;
-  }
-
   Future<void> export(String dbPath) async {
-    final path = getPath(dbPath);
+    final path = _getFullPath(dbPath);
     WarpApi.disableWAL(path);
     db = await openDatabase(path);
     await db.close();
     await exportFile(path, dbName);
+  }
+
+  Future<void> _delete() async {
+    await File(p.join(dbDir, dbName)).delete();
+    await File(p.join(dbDir, "${dbName}-shm")).delete();
+    await File(p.join(dbDir, "${dbName}-wal")).delete();
+  }
+
+  String _getFullPath(String dbPath) {
+    final path = p.join(dbPath, dbName);
+    return path;
   }
 }
 

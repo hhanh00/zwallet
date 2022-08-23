@@ -315,7 +315,6 @@ class ZWalletAppState extends State<ZWalletApp> {
         }
         if (recover) {
           for (var coin in coins) {
-            await coin.delete(dbPath);
             await coin.importFromTemp();
           }
         }
