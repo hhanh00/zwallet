@@ -60,6 +60,7 @@ class HomeState extends State<HomePage> {
       Timer.periodic(Duration(seconds: 15), (Timer t) async {
         syncStatus.sync();
         await active.updateBalances();
+        await active.updateUnconfirmedBalance();
       });
       Timer.periodic(Duration(minutes: 5), (Timer t) async {
         await priceStore.updateChart();

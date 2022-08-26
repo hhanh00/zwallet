@@ -252,5 +252,7 @@
   "update": "Recalculer",
   "antispamFilter": "Anti-Spam Filter",
   "doYouWantToRestore": "Voulez vous restaurer vos données? CECI VA EFFACER VOS COMPTES.",
-  "useGpu": "Utiliser le GPU"
+  "useGpu": "Utiliser le GPU",
+  "import": "Importer",
+  "newLabel": "Nouveau"
 }

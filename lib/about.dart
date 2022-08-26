@@ -31,6 +31,7 @@ Future<void> showAbout(BuildContext context) async {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
               title: GestureDetector(
+                onDoubleTap: () { onImportSyncData(context); },
                 onLongPress: () { onImportDb(context); },
                 child: Text('${S.of(context).about} $APP_NAME')),
               contentPadding: EdgeInsets.all(16),
@@ -80,6 +81,24 @@ Future<void> onImportDb(BuildContext context) async {
           context, 'Db Import Failed', 'Please check the database file', s.ok);
   }
 }
+
+Future<void> onImportSyncData(BuildContext context) async {
+  final s = S.of(context);
+  final result = await FilePicker.platform.pickFiles();
+
+  if (result != null) {
+    final path = result.files.single.path!;
+    WarpApi.importSyncFile(active.coin, path);
+    if (WarpApi.getError()) {
+      final message = WarpApi.getErrorMessage();
+      await showMessageBox(context, 'Import failed', message, s.ok);
+    }
+    else {
+      await active.refreshAccount();
+    }
+  }
+}
+
 
 Future<void> showAboutOnce(BuildContext context) async {
   final prefs = await SharedPreferences.getInstance();

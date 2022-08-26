@@ -163,8 +163,7 @@ abstract class _ActiveAccount with Store {
     final prefs = await SharedPreferences.getInstance();
     final coin = prefs.getInt('coin') ?? 0;
     var id = prefs.getInt('account') ?? 0;
-    active.coin = coin;
-    active.id = id;
+    await setActiveAccount(coin, id);
     await checkAndUpdate();
     await refreshAccount();
   }
@@ -216,8 +215,6 @@ abstract class _ActiveAccount with Store {
 
   @action
   Future<void> setActiveAccount(int _coin, int _id) async {
-    if (coin == _coin && id == _id) return;
-
     coin = _coin;
     id = _id;
     accounts.saveActive(coin, id);
@@ -282,6 +279,12 @@ abstract class _ActiveAccount with Store {
   Future<void> updateBalances() async {
     final dbr = DbReader(coin, id);
     balances = await dbr.getBalance(syncStatus.confirmHeight);
+  }
+
+  @action
+  Future<void> updateUnconfirmedBalance() async {
+    final unconfirmedBalance = await WarpApi.mempoolSync();
+    balances = balances.updateUnconfirmed(unconfirmedBalance);
   }
 
   @action

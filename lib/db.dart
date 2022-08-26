@@ -39,9 +39,8 @@ class DbReader {
         "SELECT SUM(value) FROM received_notes WHERE account = ?1 AND spent IS NULL "
             "AND height <= ?2 AND excluded",
         [id, confirmHeight])) ?? 0;
-    final unconfirmedBalance = await WarpApi.mempoolSync();
 
-    return Balances(balance, shieldedBalance, unconfirmedSpentBalance, underConfirmedBalance, excludedBalance, unconfirmedBalance);
+    return Balances(balance, shieldedBalance, unconfirmedSpentBalance, underConfirmedBalance, excludedBalance, 0);
   }
 
   Future<List<Note>> getNotes() async {
@@ -283,9 +282,13 @@ class Balances {
   final int unconfirmedSpentBalance;
   final int underConfirmedBalance;
   final int excludedBalance;
-  final int unconfirmedBalance;
+  int unconfirmedBalance;
 
   Balances(this.balance, this.shieldedBalance, this.unconfirmedSpentBalance, this.underConfirmedBalance, this.excludedBalance, this.unconfirmedBalance);
+  Balances updateUnconfirmed(int v) {
+    return Balances(this.balance, this.shieldedBalance, this.unconfirmedBalance, this.underConfirmedBalance, this.excludedBalance, v);
+  }
+
   static Balances zero = Balances(0, 0, 0, 0, 0, 0);
 }
 

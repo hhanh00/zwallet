@@ -140,7 +140,7 @@ class LoadProgressState extends State<LoadProgress> {
   @override
   void initState() {
     super.initState();
-    _reset = Timer(Duration(seconds: 15), () {
+    _reset = Timer(Duration(minutes: 3), () {
       if (!_disposed) resetApp(context);
     });
   }
@@ -297,7 +297,6 @@ class ZWalletAppState extends State<ZWalletApp> {
       final exportDb = prefs.getBool('export_db') ?? false;
       prefs.setBool('recover', false);
 
-      print("recover ${recover}");
       if (!initialized || recover || exportDb) {
         initialized = true;
         final dbPath = await getDbPath();
