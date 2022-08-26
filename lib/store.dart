@@ -219,7 +219,7 @@ abstract class _Settings with Store {
         prefs.getInt('secondary.variant') ?? Colors.greenAccent.value;
 
     memoSignature = prefs.getString('memo_signature');
-    antispam = prefs.getBool('antispam') ?? false;
+    antispam = prefs.getBool('antispam') ?? true;
     useGPU = prefs.getBool('gpu') ?? false;
     WarpApi.useGPU(useGPU);
 

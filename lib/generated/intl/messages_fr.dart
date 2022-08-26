@@ -219,6 +219,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "history": MessageLookupByLibrary.simpleMessage("Historique"),
         "iHaveMadeABackup":
             MessageLookupByLibrary.simpleMessage("J\'ai fait une sauvegarde"),
+        "import": MessageLookupByLibrary.simpleMessage("Importer"),
         "includeFeeInAmount": MessageLookupByLibrary.simpleMessage(
             "Inclure les frais dans le montant"),
         "includeReplyTo": MessageLookupByLibrary.simpleMessage(
@@ -261,6 +262,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "na": MessageLookupByLibrary.simpleMessage("N/D"),
         "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Le nom est vide"),
         "newAccount": MessageLookupByLibrary.simpleMessage("Nouveau Compte"),
+        "newLabel": MessageLookupByLibrary.simpleMessage("Nouveau"),
         "newSnapAddress": MessageLookupByLibrary.simpleMessage(
             "Nouvelle adresse instantanée"),
         "newSubAccount":

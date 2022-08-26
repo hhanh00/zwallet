@@ -817,15 +817,26 @@ class NativeLibrary {
 
   late final _use_gpu_ptr = _lookup<ffi.NativeFunction<_c_use_gpu>>('use_gpu');
   late final _dart_use_gpu _use_gpu = _use_gpu_ptr.asFunction<_dart_use_gpu>();
+
+  void import_sync_file(
+    int coin,
+    ffi.Pointer<ffi.Int8> path,
+  ) {
+    return _import_sync_file(
+      coin,
+      path,
+    );
+  }
+
+  late final _import_sync_file_ptr =
+      _lookup<ffi.NativeFunction<_c_import_sync_file>>('import_sync_file');
+  late final _dart_import_sync_file _import_sync_file =
+      _import_sync_file_ptr.asFunction<_dart_import_sync_file>();
 }
 
 const int QR_DATA_SIZE = 256;
 
 const int N = 200000;
-
-const int DATA_SIZE = 416;
-
-const int THREADS_PER_BLOCK = 64;
 
 typedef _c_dummy_export = ffi.Void Function();
 
@@ -1315,4 +1326,14 @@ typedef _c_use_gpu = ffi.Void Function(
 
 typedef _dart_use_gpu = void Function(
   int v,
+);
+
+typedef _c_import_sync_file = ffi.Void Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> path,
+);
+
+typedef _dart_import_sync_file = void Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> path,
 );

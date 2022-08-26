@@ -41,7 +41,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
     final t = Theme.of(context);
     return Scaffold(
         appBar: AppBar(
-          title: Text('New Account'),
+          title: Text(s.newAccount),
         ),
         body: GestureDetector(
             onTap: () {
@@ -143,7 +143,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                         t.buttonTheme.colorScheme!.secondary)),
                             ElevatedButton.icon(
                               icon: Icon(Icons.add),
-                              label: Text(_restore ? 'Import' : 'New'),
+                              label: Text(_restore ? s.import : s.newLabel),
                               onPressed: _onOK,
                             )
                           ])

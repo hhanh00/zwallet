@@ -214,6 +214,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "history": MessageLookupByLibrary.simpleMessage("History"),
         "iHaveMadeABackup":
             MessageLookupByLibrary.simpleMessage("I have made a backup"),
+        "import": MessageLookupByLibrary.simpleMessage("Import"),
         "includeFeeInAmount":
             MessageLookupByLibrary.simpleMessage("Include Fee in Amount"),
         "includeReplyTo":
@@ -256,6 +257,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "na": MessageLookupByLibrary.simpleMessage("N/A"),
         "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Name is empty"),
         "newAccount": MessageLookupByLibrary.simpleMessage("New Account"),
+        "newLabel": MessageLookupByLibrary.simpleMessage("New"),
         "newSnapAddress":
             MessageLookupByLibrary.simpleMessage("New Snap Address"),
         "newSubAccount":

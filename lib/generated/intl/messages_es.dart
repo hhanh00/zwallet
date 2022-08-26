@@ -89,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "addARecipientAndItWillShowHere": MessageLookupByLibrary.simpleMessage(
             "Agregar un destinatario y se mostrará aquí"),
         "addContact": MessageLookupByLibrary.simpleMessage("Agregar Contacto"),
-        "addnew": MessageLookupByLibrary.simpleMessage("AGGREGAR"),
+        "addnew": MessageLookupByLibrary.simpleMessage("AGREGAR"),
         "address": MessageLookupByLibrary.simpleMessage("Dirección"),
         "addressCopiedToClipboard": MessageLookupByLibrary.simpleMessage(
             "Dirección copiada al portapapeles"),
@@ -117,7 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "areYouSureYouWantToSaveYourContactsIt": m1,
         "auto": MessageLookupByLibrary.simpleMessage("Auto"),
         "autoHideBalance": MessageLookupByLibrary.simpleMessage(
-            "Ocultar Saldo Automáticamente"),
+            "Ocultar saldo automáticamente"),
         "backup": MessageLookupByLibrary.simpleMessage("Copia de seguridad"),
         "backupAllAccounts":
             MessageLookupByLibrary.simpleMessage("Copia de seguridad completa"),
@@ -147,8 +147,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Cambiar el modo tendrá efecto en el próximo reinicio"),
         "checkTransaction":
-            MessageLookupByLibrary.simpleMessage("Controlar la transacción"),
-        "close": MessageLookupByLibrary.simpleMessage("Cambiar la Clave"),
+            MessageLookupByLibrary.simpleMessage("Verificar la transacción"),
+        "close": MessageLookupByLibrary.simpleMessage("Cerrar"),
         "closeApplication":
             MessageLookupByLibrary.simpleMessage("Cierra la aplicación"),
         "coffee": MessageLookupByLibrary.simpleMessage("Café"),
@@ -161,7 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirmSignATransactionToAddressFor": m3,
         "confirmSigning":
             MessageLookupByLibrary.simpleMessage("Confirmar firma"),
-        "confs": MessageLookupByLibrary.simpleMessage("Confs"),
+        "confs": MessageLookupByLibrary.simpleMessage("Confir"),
         "contactName":
             MessageLookupByLibrary.simpleMessage("Nombre del contacto"),
         "contacts": MessageLookupByLibrary.simpleMessage("Contactos"),
@@ -215,9 +215,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "height": MessageLookupByLibrary.simpleMessage("Altura"),
         "help": MessageLookupByLibrary.simpleMessage("Ayuda"),
-        "history": MessageLookupByLibrary.simpleMessage("Historia"),
+        "history": MessageLookupByLibrary.simpleMessage("Historial"),
         "iHaveMadeABackup": MessageLookupByLibrary.simpleMessage(
             "He hecho una copia de seguridad"),
+        "import": MessageLookupByLibrary.simpleMessage("Importar"),
         "includeFeeInAmount": MessageLookupByLibrary.simpleMessage(
             "Incluir comisión en la cantidad"),
         "includeReplyTo": MessageLookupByLibrary.simpleMessage(
@@ -239,27 +240,28 @@ class MessageLookup extends MessageLookupByLibrary {
             "Respaldar copia de seguridad"),
         "loading": MessageLookupByLibrary.simpleMessage("Cargando..."),
         "markAllAsRead":
-            MessageLookupByLibrary.simpleMessage("Marcar todo como leido"),
+            MessageLookupByLibrary.simpleMessage("Marcar todo como leído"),
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Monto máximo por nota"),
         "memo": MessageLookupByLibrary.simpleMessage("Nota"),
         "message": MessageLookupByLibrary.simpleMessage("Mensaje"),
-        "messages": MessageLookupByLibrary.simpleMessage("Mensages"),
+        "messages": MessageLookupByLibrary.simpleMessage("Mensajes"),
         "mm": MessageLookupByLibrary.simpleMessage("M/M"),
         "mobileCharges": MessageLookupByLibrary.simpleMessage(
             "Con datos móviles, el escaneo puede incurrir en cargos adicionales. ¿Quieres proceder?"),
         "mode": MessageLookupByLibrary.simpleMessage("Modo"),
-        "multiPay": MessageLookupByLibrary.simpleMessage("Multi Pagos"),
-        "multipay": MessageLookupByLibrary.simpleMessage("MultiPagos"),
+        "multiPay": MessageLookupByLibrary.simpleMessage("Multi-Pagos"),
+        "multipay": MessageLookupByLibrary.simpleMessage("Multi-Pagos"),
         "multipleAddresses":
             MessageLookupByLibrary.simpleMessage("Múltiples direcciones"),
         "multisig": MessageLookupByLibrary.simpleMessage("Multi-firma"),
         "multisigShares":
             MessageLookupByLibrary.simpleMessage("Acciones multi-firmas"),
         "na": MessageLookupByLibrary.simpleMessage("N/A"),
-        "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Nombre vacio"),
+        "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Nombre vacío"),
         "newAccount": MessageLookupByLibrary.simpleMessage("Nueva cuenta"),
+        "newLabel": MessageLookupByLibrary.simpleMessage("Nueva"),
         "newSnapAddress":
             MessageLookupByLibrary.simpleMessage("Nueva Dirección instantánea"),
         "newSubAccount":
@@ -274,7 +276,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noSpendingInTheLast30Days":
             MessageLookupByLibrary.simpleMessage("Sin pagos en 30 días"),
         "notEnoughBalance":
-            MessageLookupByLibrary.simpleMessage("Saldo Insuficiente"),
+            MessageLookupByLibrary.simpleMessage("Saldo insuficiente"),
         "notes": MessageLookupByLibrary.simpleMessage("Notas"),
         "now": MessageLookupByLibrary.simpleMessage("Ahora"),
         "numberOfConfirmationsNeededBeforeSpending":
@@ -295,7 +297,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pleaseConfirm":
             MessageLookupByLibrary.simpleMessage("Por favor, confirmar"),
         "pleaseRestartNow":
-            MessageLookupByLibrary.simpleMessage("Reinicie ahora"),
+            MessageLookupByLibrary.simpleMessage("Reiniciar ahora"),
         "pnl": MessageLookupByLibrary.simpleMessage("G&P"),
         "pnlHistory": MessageLookupByLibrary.simpleMessage("Historia de G&P"),
         "preparingTransaction":
@@ -304,21 +306,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "primary": MessageLookupByLibrary.simpleMessage("Primario"),
         "privateKey": MessageLookupByLibrary.simpleMessage("Clave Privada"),
         "protectOpen": MessageLookupByLibrary.simpleMessage("Bloquer al abrir"),
-        "protectSend": MessageLookupByLibrary.simpleMessage("Bloquear envío"),
+        "protectSend":
+            MessageLookupByLibrary.simpleMessage("Autenticar al enviar"),
         "protectSendSettingChanged": MessageLookupByLibrary.simpleMessage(
-            "La configuración de bloquear envío ha cambiado"),
+            "La configuración de Autenticar al enviar ha cambiado"),
         "purple": MessageLookupByLibrary.simpleMessage("Morado"),
         "qty": MessageLookupByLibrary.simpleMessage("Cantidad"),
         "rawTransaction":
-            MessageLookupByLibrary.simpleMessage("Transacción con firmar"),
+            MessageLookupByLibrary.simpleMessage("Transacción con Firmar"),
         "realized": MessageLookupByLibrary.simpleMessage("Realizado"),
         "receive": m8,
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Recibir un pago"),
         "recipient": MessageLookupByLibrary.simpleMessage("Destinatario"),
-        "reply": MessageLookupByLibrary.simpleMessage("Respuesta"),
+        "reply": MessageLookupByLibrary.simpleMessage("Responder"),
         "rescan": MessageLookupByLibrary.simpleMessage("Escanear"),
-        "rescanFrom": MessageLookupByLibrary.simpleMessage("¿Escanear desde?"),
+        "rescanFrom":
+            MessageLookupByLibrary.simpleMessage("¿Escanear desde...?"),
         "rescanNeeded":
             MessageLookupByLibrary.simpleMessage("Necesita escanear"),
         "rescanRequested": m9,
@@ -331,7 +335,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
             "Obtener detalles de la transacción"),
         "roundToMillis":
-            MessageLookupByLibrary.simpleMessage("Redondear a milési"),
+            MessageLookupByLibrary.simpleMessage("Redondear a milésimas"),
         "saveBackup":
             MessageLookupByLibrary.simpleMessage("Guardar copia de seguridad"),
         "saveToBlockchain":
@@ -368,9 +372,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "signOffline": MessageLookupByLibrary.simpleMessage("Firmar"),
         "signOnYourOfflineDevice": MessageLookupByLibrary.simpleMessage(
             "Firmar con tu dispositivo fuera de línea"),
-        "signedTx": MessageLookupByLibrary.simpleMessage("Tx Firmado"),
+        "signedTx": MessageLookupByLibrary.simpleMessage("Tx firmada"),
         "simple": MessageLookupByLibrary.simpleMessage("Básico"),
-        "simpleMode": MessageLookupByLibrary.simpleMessage("Modo simple"),
+        "simpleMode": MessageLookupByLibrary.simpleMessage("Modo básico"),
         "spendable": MessageLookupByLibrary.simpleMessage("Disponible"),
         "spendableBalance":
             MessageLookupByLibrary.simpleMessage("Saldo disponible"),
@@ -391,7 +395,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tapQrCodeForTransparentAddress": MessageLookupByLibrary.simpleMessage(
             "Toca el QR para Dirección transparente"),
         "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
-            "Tocar Transacción para detalles"),
+            "Toca una Transacción para ver detalles"),
         "textCopiedToClipboard": m17,
         "thePrivateWalletMessenger": MessageLookupByLibrary.simpleMessage(
             "Billetera & Mensajería Privada"),
@@ -405,16 +409,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "timestamp": MessageLookupByLibrary.simpleMessage("Fecha/Hora"),
         "toMakeAContactSendThemAMemoWithContact":
             MessageLookupByLibrary.simpleMessage(
-                "Para contactar, enviarles una nota con ‘Contact:’"),
+                "Para contactar, enviar un memo con \'Contact:\'"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
         "totalBalance": MessageLookupByLibrary.simpleMessage("Saldo Total"),
         "tradingChartRange":
             MessageLookupByLibrary.simpleMessage("Rango del gráfico"),
         "tradingPl": MessageLookupByLibrary.simpleMessage("Intercambio G&P"),
         "transactionDetails":
-            MessageLookupByLibrary.simpleMessage("Detalles de transacción"),
+            MessageLookupByLibrary.simpleMessage("Detalles de la transacción"),
         "transactionHistory":
-            MessageLookupByLibrary.simpleMessage("Historia de transacciones"),
+            MessageLookupByLibrary.simpleMessage("Historial de transacciones"),
         "txId": m18,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Confirmaciones insuficiente"),
@@ -422,15 +426,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "unshieldedBalance":
             MessageLookupByLibrary.simpleMessage("Saldo sin blindaje"),
         "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
-            "Archivo de transaccion sin firmar"),
-        "unsignedTx": MessageLookupByLibrary.simpleMessage("Tx no firmado "),
+            "Archivo de transacción sin firmar"),
+        "unsignedTx": MessageLookupByLibrary.simpleMessage("Tx no firmada"),
         "update": MessageLookupByLibrary.simpleMessage("Recalcular"),
         "useGpu": MessageLookupByLibrary.simpleMessage("Utilizar GPU"),
         "useQrForOfflineSigning": MessageLookupByLibrary.simpleMessage(
             "Usar QR para firmar sin conexión"),
         "useSettingscurrency": m19,
         "useTransparentBalance":
-            MessageLookupByLibrary.simpleMessage("Usar saldo transp"),
+            MessageLookupByLibrary.simpleMessage("Usar saldo transp."),
         "useUa": MessageLookupByLibrary.simpleMessage("Usar DU"),
         "version": MessageLookupByLibrary.simpleMessage("Versión"),
         "viewingKey":

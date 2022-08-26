@@ -340,6 +340,10 @@ class WarpApi {
   static void useGPU(bool v) {
     warp_api_lib.use_gpu(v ? 1 : 0);
   }
+
+  static void importSyncFile(int coin, String path) {
+    warp_api_lib.import_sync_file(coin, path.toNativeUtf8().cast<Int8>());
+  }
   // // static void storeShareSecret(int coin, int account, String secret) {
   // //   warp_api_lib.store_share_secret(coin, account, secret.toNativeUtf8().cast<Int8>());
   // // }
