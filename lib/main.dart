@@ -294,8 +294,10 @@ class ZWalletAppState extends State<ZWalletApp> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final recover = prefs.getBool('recover') ?? false;
+      final resetRecover = prefs.getBool('reset_recover') ?? false;
       final exportDb = prefs.getBool('export_db') ?? false;
       prefs.setBool('recover', false);
+      prefs.setBool('reset_recover', false);
 
       if (!initialized || recover || exportDb) {
         initialized = true;
@@ -322,11 +324,17 @@ class ZWalletAppState extends State<ZWalletApp> {
         _setProgress(0.2, 'Initializing Zcash');
         await zcash.open();
         _setProgress(0.3, 'Initializing Wallet');
+
+        if (resetRecover) {
+          for (var coin in coins)
+            await coin.delete();
+        }
+
         WarpApi.initWallet(dbPath);
         for (var coin in coins)
           await coin.open();
 
-        if (recover) {
+        if (resetRecover) {
           final f = await getRecoveryFile();
           if (f.existsSync()) {
             final backup = await f.readAsString();
@@ -733,7 +741,7 @@ Future<void> resetApp(BuildContext context) async {
     final f = await getRecoveryFile();
     f.writeAsString(backup);
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('recover', true);
+    prefs.setBool('reset_recover', true);
     await showMessageBox(context, s.closeApplication, s.pleaseRestartNow, s.ok);
   }
 }

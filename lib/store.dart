@@ -187,6 +187,8 @@ abstract class _Settings with Store {
   @observable
   bool useGPU = false;
 
+  bool instantSync = kDebugMode;
+
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
