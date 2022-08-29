@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>FAQ :: YWallet</title>
-<link href=/css/nucleus.css?1661758648 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1661758648 rel=stylesheet>
-<link href=/css/hybrid.css?1661758648 rel=stylesheet>
-<link href=/css/featherlight.min.css?1661758648 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1661758648 rel=stylesheet>
-<link href=/css/auto-complete.css?1661758648 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1661758648 rel=stylesheet>
-<link href=/css/theme.css?1661758648 rel=stylesheet>
-<link href=/css/tabs.css?1661758648 rel=stylesheet>
-<link href=/css/hugo-theme.css?1661758648 rel=stylesheet>
-<link href=/css/theme-blue.css?1661758648 rel=stylesheet>
-<link href=/common.css?1661758648 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1661758648></script>
+<link href=/css/nucleus.css?1661775309 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1661775309 rel=stylesheet>
+<link href=/css/hybrid.css?1661775309 rel=stylesheet>
+<link href=/css/featherlight.min.css?1661775309 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1661775309 rel=stylesheet>
+<link href=/css/auto-complete.css?1661775309 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1661775309 rel=stylesheet>
+<link href=/css/theme.css?1661775309 rel=stylesheet>
+<link href=/css/tabs.css?1661775309 rel=stylesheet>
+<link href=/css/hugo-theme.css?1661775309 rel=stylesheet>
+<link href=/css/theme-blue.css?1661775309 rel=stylesheet>
+<link href=/common.css?1661775309 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1661775309></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
@@ -35,10 +35,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1661758648></script>
-<script type=text/javascript src=/js/auto-complete.js?1661758648></script>
+<script type=text/javascript src=/js/lunr.min.js?1661775309></script>
+<script type=text/javascript src=/js/auto-complete.js?1661775309></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1661758648></script>
+<script type=text/javascript src=/js/search.js?1661775309></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -438,6 +438,7 @@ slowdown in synchronization speed after block ~1,700,000. This is
 being addressed by the Zcash dev team. In the meantime, I recommend
 performing a full rescan only when you have Wifi or Ethernet because it
 will download more than 5 GB of data.</p>
+<img class=img src=img/chart.png>
 </li>
 <li>
 <p>I have made a transfer into YWallet but I do not see my funds.</p>
@@ -457,7 +458,7 @@ the balance shown on the account page is not final.</p>
 <p>I still do not see my funds.</p>
 <p>If you have generated additional shielded or transparent addresses in ZWL, they
 will not be seen by YWallet by default. You will need to create
-<a href=/advanced/sub-account/>sub accounts</a> to recover them or
+<a href=/advanced/sub-account/#sub-accounts>sub accounts</a> to recover them or
 <a href=/advanced/sub-account/#scan-transparent-addresses>scan transparent addesses</a>.</p>
 </li>
 <li>
@@ -471,12 +472,6 @@ the account is not synchronized yet.</p>
 <p>Does it support transparent addresses?</p>
 <p>Yes, but we highly recommend shielding these coins before spending them.
 The app is Shielded by Default.</p>
-</li>
-<li>
-<p>How fast is the synchronization exactly?</p>
-<p>It depends on the hardware but for average phones, YWallet scans the entire blockchain
-(as of Sep 2021) in around 1-3 minutes. In the end, your account balances are
-fully available to spend. The reference wallet SDK is 100x slower.</p>
 </li>
 <li>
 <p>Was there a ZWallet and WarpWallet?</p>
@@ -499,31 +494,28 @@ ZWallet is discontinued.</p>
 </li>
 <li>
 <p>Can it connect to any lightwalletd?</p>
-</li>
-</ol>
 <p>Yes, the wallet uses the standard API of lightwalletd. It can connect to
 ZecWallet version of lightwalletd or your own deployment.</p>
-<ol start=11>
-<li>Can I receive my mining rewards in my transparent address?</li>
-</ol>
+</li>
+<li>
+<p>Can I receive my mining rewards in my transparent address?</p>
 <p>It is best not to receive your mining rewards because they need to mature
 for 100 blocks before they can be spent. The Y/ZWallet cannot
 shield your balance if any of the UTXO is not old enough. Currently,
 <code>lightwalletd</code> does not provide an API to get the UTXO age and the
 shielding transaction will be rejected by the network.</p>
-<ol start=12>
-<li>How can I keep my account safe?</li>
-</ol>
+</li>
+<li>
+<p>How can I keep my account safe?</p>
 <p>The number one reason for lost coins is failure to have a <em>backup</em> of the
 seed phrase.</p>
-<div class="notices warning"><p>Please, <strong>DO A BACKUP ASAP</strong> and make sure that it is kept in a
-safe place away from spying eyes.</p>
-</div>
-<p><em>All the application data can be recovered from the seed phrase!</em></p>
-<p><strong>Do not share your seed phrase with other people!</strong></p>
-<ol start=13>
-<li>I would like to donate</li>
+</li>
 </ol>
+<div class="notices warning"><p>Please, <strong>DO A BACKUP ASAP</strong> and make sure that it is kept in a
+safe place away from spying eyes.
+<em>All the application data can be recovered from the seed phrase!</em>
+<strong>Do not share your seed phrase with other people!</strong></p>
+</div>
 <p>Thanks for your support. <a href="ycash:ys1jl5whtnlq56x5g3zcr36jmjhz9e295mgjmc64qsw7dcqdjp9l6ekydp2k0hj9k27x8sgqh6580t?amount=10&memo=9g">Click here to donate 10 YEC</a> but Any amount is welcome.</p>
 <footer class=footline>
 </footer>
@@ -537,17 +529,17 @@ safe place away from spying eyes.</p>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1661758648></script>
-<script src=/js/perfect-scrollbar.min.js?1661758648></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1661758648></script>
-<script src=/js/jquery.sticky.js?1661758648></script>
-<script src=/js/featherlight.min.js?1661758648></script>
-<script src=/js/highlight.pack.js?1661758648></script>
+<script src=/js/clipboard.min.js?1661775309></script>
+<script src=/js/perfect-scrollbar.min.js?1661775309></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1661775309></script>
+<script src=/js/jquery.sticky.js?1661775309></script>
+<script src=/js/featherlight.min.js?1661775309></script>
+<script src=/js/highlight.pack.js?1661775309></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1661758648></script>
-<script src=/js/learn.js?1661758648></script>
-<script src=/js/hugo-learn.js?1661758648></script>
-<script src=/mermaid/mermaid.js?1661758648></script>
+<script src=/js/modernizr.custom-3.6.0.js?1661775309></script>
+<script src=/js/learn.js?1661775309></script>
+<script src=/js/hugo-learn.js?1661775309></script>
+<script src=/mermaid/mermaid.js?1661775309></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
