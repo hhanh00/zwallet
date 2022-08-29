@@ -75,9 +75,12 @@ abstract class CoinBase {
   }
 
   Future<void> delete() async {
-    await File(p.join(dbDir, dbName)).delete();
-    await File(p.join(dbDir, "${dbName}-shm")).delete();
-    await File(p.join(dbDir, "${dbName}-wal")).delete();
+    try {
+      await File(p.join(dbDir, dbName)).delete();
+      await File(p.join(dbDir, "${dbName}-shm")).delete();
+      await File(p.join(dbDir, "${dbName}-wal")).delete();
+    }
+    catch (e) {} // ignore failure
   }
 
   String _getFullPath(String dbPath) {
