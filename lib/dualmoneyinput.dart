@@ -7,8 +7,10 @@ import 'main.dart';
 class DualMoneyInputWidget extends StatefulWidget {
   final Widget? child;
   final int? spendable;
+  final int? initialValue;
+  final bool useMillis;
 
-  DualMoneyInputWidget({Key? key, this.child, this.spendable}): super(key: key);
+  DualMoneyInputWidget({Key? key, this.child, this.initialValue, this.spendable, this.useMillis = true}): super(key: key);
 
   @override
   DualMoneyInputState createState() => DualMoneyInputState();
@@ -27,6 +29,12 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   @override
   void initState() {
     super.initState();
+    final initialValue = widget.initialValue ?? 0;
+    useMillis = widget.useMillis;
+    final amount = amountToString(initialValue, precision(useMillis));
+    coinAmountController.text = amount;
+    _updateFiatAmount();
+
     priceAutorunDispose = autorun((_) {
       _updateFiatAmount();
     });
@@ -102,7 +110,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   void setAmount(int amount) {
     setState(() {
       useMillis = false;
-      coinAmountController.text = amountToString(amount);
+      coinAmountController.text = amountToString(amount, MAX_PRECISION);
       _updateFiatAmount();
     });
   }

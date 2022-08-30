@@ -54,11 +54,11 @@ class HomeState extends State<HomePage> {
       await priceStore.updateChart();
 
       await Future.delayed(Duration(seconds: 3));
-      await syncStatus.sync();
+      await syncStatus.sync(false);
       await contacts.fetchContacts();
 
       Timer.periodic(Duration(seconds: 15), (Timer t) async {
-        syncStatus.sync();
+        syncStatus.sync(false);
         await active.updateBalances();
         await active.updateUnconfirmedBalance();
       });

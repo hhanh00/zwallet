@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'accounts.dart';
@@ -33,6 +34,7 @@ class SendState extends State<SendPage> {
   static final zero = decimalFormat(0, 3);
   final _formKey = GlobalKey<FormState>();
   final _amountKey = GlobalKey<DualMoneyInputState>();
+  var _initialAmount = 0;
   var _address = "";
   var _maxAmountPerNote = Decimal.zero;
   var _sBalance = 0;
@@ -56,6 +58,20 @@ class SendState extends State<SendPage> {
 
   @override
   initState() {
+    super.initState();
+
+    final draftRecipient = active.draftRecipient;
+    if (draftRecipient != null) {
+      _addressController.text = draftRecipient.address;
+      _initialAmount = draftRecipient.amount;
+      _maxAmountController.text = NumberFormat.currency().format(draftRecipient.max_amount_per_note);
+      _memoController.text = draftRecipient.memo;
+      _replyTo = draftRecipient.reply_to;
+      _subjectController.text = draftRecipient.subject;
+      _memoInitialized = true;
+      active.setDraftRecipient(null);
+    }
+
     if (widget.args?.contact != null)
       _addressController.text = widget.args!.contact!.address;
     if (widget.args?.address != null)
@@ -70,8 +86,6 @@ class SendState extends State<SendPage> {
       Future.microtask(() {
         _setPaymentURI(uri);
       });
-
-    super.initState();
 
     _newBlockAutorunDispose = autorun((_) async {
       final _ = active.dataEpoch;
@@ -156,6 +170,8 @@ class SendState extends State<SendPage> {
                           key: _amountKey,
                           child:
                               TextButton(child: Text(s.max), onPressed: _onMax),
+                          initialValue: _initialAmount,
+                          useMillis: _useMillis,
                           spendable: spendable),
                       if (!simpleMode) BalanceTable(_sBalance, _tBalance, _useTransparent,
                           _excludedBalance, _underConfirmedBalance, change, _usedBalance, _fee),
@@ -326,7 +342,7 @@ class SendState extends State<SendPage> {
     if (form.validate()) {
       form.save();
       final amount = amountInput?.amount ?? 0;
-      final aZEC = amountToString(amount);
+      final aZEC = amountToString(amount, MAX_PRECISION);
       final approved = widget.isMulti ||
           await showDialog(
               context: context,
@@ -351,6 +367,7 @@ class SendState extends State<SendPage> {
           memo,
           maxAmountPerNote,
         );
+        active.setDraftRecipient(recipient);
 
         if (!widget.isMulti)
           // send closes the page
@@ -448,7 +465,7 @@ class BalanceRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
         title: label,
-        trailing: Text(amountToString(amount),
+        trailing: Text(amountToString(amount, MAX_PRECISION),
             style: TextStyle(fontFeatures: [FontFeature.tabularFigures()])
                 .merge(style)),
         visualDensity: VisualDensity(horizontal: 0, vertical: -4));
@@ -492,9 +509,12 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
     if (isError) {
       showSnackBar(txjson);
       await player.play(AssetSource("fail.mp3"));
+      if (recipients.length == 1)
+        active.setDraftRecipient(recipients[0]);
       Navigator.of(context).pop();
       return;
     }
+    active.setDraftRecipient(null);
     if (settings.qrOffline) {
       Navigator.pushReplacementNamed(context, '/qroffline', arguments: txjson);
     }

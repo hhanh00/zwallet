@@ -307,12 +307,8 @@ class ZWalletAppState extends State<ZWalletApp> {
 
         if (exportDb) {
           await ycash.export(dbPath);
-          final r1 = await showMessageBox(
-              context, 'Export', 'Export completed?', "OK");
           await zcash.export(dbPath);
-          final r2 = await showMessageBox(
-              context, 'Export', 'Export completed?', "OK");
-          if (r1 && r2) prefs.setBool('export_db', false);
+          prefs.setBool('export_db', false);
         }
         if (recover) {
           for (var coin in coins) {
@@ -626,7 +622,9 @@ String decimalFormat(double x, int decimalDigits, { String symbol = '' }) =>
     NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol).format(
         x).trimRight();
 
-String amountToString(int amount) => decimalFormat(amount / ZECUNIT, 8);
+const MAX_PRECISION = 8;
+
+String amountToString(int amount, int decimalDigits) => decimalFormat(amount / ZECUNIT, decimalDigits);
 
 Future<bool> authenticate(BuildContext context, String reason) async {
   final localAuth = LocalAuthentication();
@@ -706,7 +704,7 @@ Future<void> exportFile(String path, String title) async {
   if (isMobile()) {
     final context = navigatorKey.currentContext!;
     Size size = MediaQuery.of(context).size;
-    return Share.shareFiles([path], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
+    await Share.shareFilesWithResult([path], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
   }
   else {
     final fn = await FilePicker.platform.saveFile();

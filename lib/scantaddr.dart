@@ -37,7 +37,7 @@ class ScanTAddrPageState extends State<ScanTAddrPage> {
               itemCount: _accounts.length,
               itemBuilder: (BuildContext context, int index) {
                 final a = _accounts[index];
-                return ListTile(title: Text(a.address), subtitle: Text(amountToString(a.balance)));
+                return ListTile(title: Text(a.address), subtitle: Text(amountToString(a.balance, MAX_PRECISION)));
               })),
           ButtonBar(children: confirmButtons(this.context, onPressed))
         ]

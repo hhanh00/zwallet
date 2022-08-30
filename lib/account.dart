@@ -63,11 +63,13 @@ class SyncStatusState extends State<SyncStatusWidget> {
       if (simpleMode) Padding(padding: EdgeInsets.fromLTRB(0, 8, 0, 0), child: Text(s.simpleMode)),
       Observer(builder: (context) {
         final time = eta.eta;
-        final syncedHeight = syncStatus.syncedHeight;
+        final syncedHeight = syncStatus.syncedHeight ?? 0;
+        final startHeight = syncStatus.startSyncedHeight;
         final timestamp = syncStatus.timestamp?.timeAgo() ?? s.na;
         final latestHeight = syncStatus.latestHeight;
         final remaining = syncedHeight != null ? max(latestHeight-syncedHeight, 0) : 0;
-        final percent = latestHeight > 0 ? 100 * (syncedHeight ?? 0) ~/ latestHeight : 0;
+        final total = latestHeight - startHeight;
+        final percent = total > 0 ? 100 * (syncedHeight - startHeight) ~/ total : 0;
         final downloadedSize = NumberFormat.compact().format(syncStatus.downloadedSize);
         final trialDecryptionCount = NumberFormat.compact().format(syncStatus.trialDecryptionCount);
         final disconnected = latestHeight == 0;
@@ -81,7 +83,8 @@ class SyncStatusState extends State<SyncStatusWidget> {
             case 0:
               return createText('$syncedHeight / $latestHeight', animated);
             case 1:
-              return createText('SYNCING $percent %', animated);
+              final m = syncStatus.isRescan ? "RESCAN" : "CATCH UP";
+              return createText('$m $percent %', animated);
             case 2:
               return createText('$remaining...', animated);
             case 3:
@@ -128,7 +131,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
     if (syncStatus.paused)
       syncStatus.setPause(false);
     else if (syncStatus.syncedHeight != null)
-      Future.microtask(syncStatus.sync);
+      Future.microtask(() => syncStatus.sync(false));
     else
       rescan(context);
   }
