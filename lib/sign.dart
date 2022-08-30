@@ -32,7 +32,7 @@ class Sign extends StatelessWidget {
           itemBuilder: (context, index) {
             final r = txSummary.recipients[index];
             return ListTile(title: Text(r.address),
-              subtitle: Text(amountToString(r.amount)));
+              subtitle: Text(amountToString(r.amount, MAX_PRECISION)));
           })),
           ButtonBar(children: confirmButtons(context, () { _sign(context); },
             okLabel: S.of(context).sign))

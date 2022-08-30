@@ -554,6 +554,12 @@ class SyncStatus = _SyncStatus with _$SyncStatus;
 
 abstract class _SyncStatus with Store {
   @observable
+  int startSyncedHeight = 0;
+
+  @observable
+  bool isRescan = false;
+
+  @observable
   int? syncedHeight;
 
   @observable
@@ -627,7 +633,7 @@ abstract class _SyncStatus with Store {
   }
 
   @action
-  Future<void> sync() async {
+  Future<void> sync(bool _isRescan) async {
     setDownloadedSize(WarpApi.getDownloadedSize());
     setTrialDecryptionCount(WarpApi.getTrialDecryptionCount());
     if (paused) return;
@@ -635,6 +641,8 @@ abstract class _SyncStatus with Store {
     await syncStatus.update();
     if (syncedHeight == null) return;
     syncing = true;
+    startSyncedHeight = syncedHeight!;
+    isRescan = _isRescan;
     final currentSyncedHeight = syncedHeight;
     if (!isSynced()) {
       final params = SyncParams(
@@ -671,7 +679,7 @@ abstract class _SyncStatus with Store {
     timestamp = null;
     WarpApi.truncateData();
     WarpApi.rewindToHeight(height);
-    await sync();
+    await sync(true);
   }
 
   @action

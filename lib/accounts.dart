@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:warp_api/types.dart';
 import 'coin/coins.dart';
 import 'package:mobx/mobx.dart';
 import 'db.dart';
@@ -156,6 +157,9 @@ abstract class _ActiveAccount with Store {
   @observable
   bool pnlDesc = false;
 
+  @observable
+  Recipient? draftRecipient = null;
+
   AccountId toId() { return AccountId(coin, id); }
 
   @action
@@ -244,6 +248,7 @@ abstract class _ActiveAccount with Store {
 
     showTAddr = false;
     balances = Balances.zero;
+    draftRecipient = null;
 
     await update();
     Future.microtask(priceStore.updateChart);
@@ -297,6 +302,11 @@ abstract class _ActiveAccount with Store {
     messages = ObservableList.of(await dbr.getMessages(account.address));
     unread = messages.where((m) => !m.read).length;
     dataEpoch += 1;
+  }
+
+  @action
+  void setDraftRecipient(Recipient? v) {
+    draftRecipient = v;
   }
 
   String newAddress() {
