@@ -256,5 +256,6 @@
   "doYouWantToRestore": "Do you want to restore your database? THIS WILL ERASE YOUR CURRENT DATA",
   "useGpu": "Use GPU",
   "import": "Import",
-  "newLabel": "New"
+  "newLabel": "New",
+  "invalidQrCode": "Invalid QR code"
 }

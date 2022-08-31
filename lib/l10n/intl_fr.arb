@@ -254,5 +254,6 @@
   "doYouWantToRestore": "Voulez vous restaurer vos données? CECI VA EFFACER VOS COMPTES.",
   "useGpu": "Utiliser le GPU",
   "import": "Importer",
-  "newLabel": "Nouveau"
+  "newLabel": "Nouveau",
+  "invalidQrCode": "QR code invalide"
 }

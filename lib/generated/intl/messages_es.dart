@@ -228,6 +228,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "invalidAddress":
             MessageLookupByLibrary.simpleMessage("La Dirección no es válida"),
         "invalidKey": MessageLookupByLibrary.simpleMessage("Tecla inválida"),
+        "invalidQrCode": MessageLookupByLibrary.simpleMessage("QR inválido"),
         "key": MessageLookupByLibrary.simpleMessage("Clave"),
         "keyTool": MessageLookupByLibrary.simpleMessage("Clave Utilidad"),
         "largestSpendingLastMonth": MessageLookupByLibrary.simpleMessage(

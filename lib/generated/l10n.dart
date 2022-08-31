@@ -2631,6 +2631,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Invalid QR code`
+  String get invalidQrCode {
+    return Intl.message(
+      'Invalid QR code',
+      name: 'invalidQrCode',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
