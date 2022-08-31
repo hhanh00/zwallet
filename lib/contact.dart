@@ -222,7 +222,8 @@ class AddressState extends State<AddressInput> {
     var address = await scanCode(context);
     if (address != null)
       setState(() {
-        _addressController.text = address;
+        final paymentURI = decodeAddress(context, address);
+        _addressController.text = paymentURI.address;
       });
   }
 }

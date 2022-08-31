@@ -224,6 +224,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "invalidAddress":
             MessageLookupByLibrary.simpleMessage("Invalid Address"),
         "invalidKey": MessageLookupByLibrary.simpleMessage("Invalid Key"),
+        "invalidQrCode":
+            MessageLookupByLibrary.simpleMessage("Invalid QR code"),
         "key": MessageLookupByLibrary.simpleMessage(
             "Seed, Secret Key or View Key (optional)"),
         "keyTool": MessageLookupByLibrary.simpleMessage("Key Tool"),

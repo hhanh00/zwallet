@@ -288,14 +288,7 @@ class SendState extends State<SendPage> {
   void _onScan() async {
     final code = await scanCode(context);
     if (code != null) {
-      if (_checkAddress(code) != null) {
-        _setPaymentURI(code); // not an address
-      } else {
-        setState(() {
-          _address = code;
-          _addressController.text = _address;
-        });
-      }
+      _setPaymentURI(code);
     }
   }
 
@@ -307,17 +300,21 @@ class SendState extends State<SendPage> {
     });
   }
 
-  void _setPaymentURI(String uri) {
-    final json = WarpApi.parsePaymentURI(uri);
+  void _setPaymentURI(String uriOrAddress) {
     try {
-      final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
+      final paymentURI = decodeAddress(context, uriOrAddress);
       setState(() {
-        _address = payment.address;
+        _address = paymentURI.address;
         _addressController.text = _address;
-        _memoController.text = payment.memo;
-        amountInput?.setAmount(payment.amount);
+        if (paymentURI.memo.isNotEmpty)
+          _memoController.text = paymentURI.memo;
+        if (paymentURI.amount != 0)
+          amountInput?.setAmount(paymentURI.amount);
       });
-    } on FormatException {}
+    }
+    on String {
+      showSnackBar(S.of(context).invalidQrCode);
+    }
   }
 
   void _onAddress(v) {

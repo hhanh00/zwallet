@@ -626,6 +626,17 @@ const MAX_PRECISION = 8;
 
 String amountToString(int amount, int decimalDigits) => decimalFormat(amount / ZECUNIT, decimalDigits);
 
+DecodedPaymentURI decodeAddress(BuildContext context, String? v) {
+  final s = S.of(context);
+  if (v == null || v.isEmpty) throw s.addressIsEmpty;
+  if (WarpApi.validAddress(active.coin, v)) return DecodedPaymentURI(v, 0, "");
+  // not a valid address, try as a payment URI
+  final json = WarpApi.parsePaymentURI(v);
+  if (WarpApi.getError()) throw s.invalidAddress;
+  final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
+  return payment;
+}
+
 Future<bool> authenticate(BuildContext context, String reason) async {
   final localAuth = LocalAuthentication();
   try {
