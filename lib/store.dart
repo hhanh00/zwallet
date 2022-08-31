@@ -647,7 +647,7 @@ abstract class _SyncStatus with Store {
     if (!isSynced()) {
       final params = SyncParams(
           active.coin, settings.getTx, settings.anchorOffset,
-          settings.antispam ? 20 : 1000000,
+          settings.antispam ? 50 : 1000000,
           syncPort.sendPort);
       final res = await compute(WarpApi.warpSync, params);
       if (res == 0) {
