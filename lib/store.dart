@@ -250,8 +250,8 @@ abstract class _Settings with Store {
   void _handleAccel(event) {
     final n = sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
     final inclination = acos(event.z / n) / pi * 180 * event.y.sign;
-    final _flat = inclination < 20;
-    if (flat != _flat)
+    final _flat = inclination < 20 ? true : inclination > 40 ? false : null;
+    if (_flat != null && flat != _flat)
       flat = _flat;
   }
 
