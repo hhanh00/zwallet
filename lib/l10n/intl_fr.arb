@@ -256,5 +256,6 @@
   "import": "Importer",
   "newLabel": "Nouveau",
   "invalidQrCode": "QR code invalide",
-  "expert": "Expert"
+  "expert": "Expert",
+  "blockReorgDetectedRewind": "Réorganisation détectée. Retour à {rewindHeight}"
 }

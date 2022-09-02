@@ -195,7 +195,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
           if (widget.firstAccount) {
             final height = await rescanDialog(context);
             if (height != null)
-              syncStatus.rescan(context, height);
+              syncStatus.rescan(height);
             nav.pushReplacementNamed('/account');
           }
           else

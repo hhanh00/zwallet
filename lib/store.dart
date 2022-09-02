@@ -697,16 +697,18 @@ abstract class _SyncStatus with Store {
     final _syncedHeight = await getDbSyncedHeight();
     if (_syncedHeight != null) {
       final rewindHeight = max(_syncedHeight.height - 20, 0);
-      print("Block reorg detected. Rewind to $rewindHeight");
-      WarpApi.rewindToHeight(rewindHeight);
+      final height = WarpApi.rewindToHeight(rewindHeight);
+      showSnackBar(S.current.blockReorgDetectedRewind(height));
+      syncStatus.reset();
+      await syncStatus.update();
     }
   }
 
   @action
-  Future<void> rescan(BuildContext context, int height) async {
+  Future<void> rescan(int height) async {
     if (syncing) return;
     eta.reset();
-    showSnackBar(S.of(context).rescanRequested(height));
+    showSnackBar(S.current.rescanRequested(height));
     syncedHeight = height;
     timestamp = null;
     WarpApi.truncateData();

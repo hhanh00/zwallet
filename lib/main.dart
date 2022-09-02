@@ -342,7 +342,9 @@ class ZWalletAppState extends State<ZWalletApp> {
         }
 
         for (var s in settings.servers) {
-          WarpApi.updateLWD(s.coin, s.getLWDUrl());
+          final server = s.getLWDUrl();
+          if (server.isNotEmpty)
+            WarpApi.updateLWD(s.coin, server);
         }
         _setProgress(0.6, 'Loading Account Data');
         await accounts.refresh();
@@ -775,7 +777,7 @@ Future<bool> showConfirmDialog(BuildContext context, String title, String body) 
 Future<void> rescan(BuildContext context) async {
   final height = await rescanDialog(context);
   if (height != null) {
-    syncStatus.rescan(context, height);
+    syncStatus.rescan(height);
   }
 }
 

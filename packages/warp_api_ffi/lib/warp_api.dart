@@ -81,8 +81,8 @@ class WarpApi {
     warp_api_lib.skip_to_last_height(coin);
   }
 
-  static void rewindToHeight(int height) {
-    warp_api_lib.rewind_to_height(height);
+  static int rewindToHeight(int height) {
+    return warp_api_lib.rewind_to_height(height);
   }
 
   static int warpSync(SyncParams params) {
