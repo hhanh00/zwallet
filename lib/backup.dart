@@ -106,17 +106,15 @@ class BackupState extends State<BackupPage> {
               style: theme.textTheme.caption),
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
         Text(s.tapAnIconToShowTheQrCode),
-        GestureDetector(
-            onLongPress: exportDb,
-            child: Container(
-                margin: EdgeInsets.all(8),
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: theme.primaryColor),
-                    borderRadius: BorderRadius.circular(4)),
-                child: Text(s.backupWarning,
-                    style: theme.textTheme.subtitle1!
-                        .copyWith(color: theme.primaryColor)))),
+        Container(
+            margin: EdgeInsets.all(8),
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+                border: Border.all(width: 2, color: theme.primaryColor),
+                borderRadius: BorderRadius.circular(4)),
+            child: Text(s.backupWarning,
+                style: theme.textTheme.subtitle1!
+                    .copyWith(color: theme.primaryColor))),
           ElevatedButton.icon(
             icon: Icon(Icons.check),
             label: Text(S.of(context).iHaveMadeABackup),

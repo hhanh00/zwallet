@@ -257,5 +257,6 @@
   "useGpu": "Use GPU",
   "import": "Import",
   "newLabel": "New",
-  "invalidQrCode": "Invalid QR code"
+  "invalidQrCode": "Invalid QR code",
+  "expert": "Expert"
 }

@@ -1,30 +1,23 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:mobx/mobx.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:convert/convert.dart';
 import 'package:badges/badges.dart';
 
 import 'about.dart';
 import 'account.dart';
-import 'account_manager.dart';
 import 'animated_qr.dart';
 import 'budget.dart';
 import 'contact.dart';
-import 'restore.dart';
 import 'history.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
 import 'message.dart';
 import 'note.dart';
-import 'rescan.dart';
 import 'store.dart';
 
 class HomePage extends StatefulWidget {
@@ -38,16 +31,6 @@ class HomeState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    if (active.id == 0) {
-      Future.microtask(() async {
-        await syncStatus.update();
-          for (var c in settings.coins) {
-        syncStatus.markAsSynced(c.coin);
-        }
-      });
-      return;
-    }
-
     Future.microtask(() async {
       await syncStatus.update();
       await active.updateBalances();
@@ -59,8 +42,10 @@ class HomeState extends State<HomePage> {
 
       Timer.periodic(Duration(seconds: 15), (Timer t) async {
         syncStatus.sync(false);
-        await active.updateBalances();
-        await active.updateUnconfirmedBalance();
+        if (active.id != 0) {
+          await active.updateBalances();
+          await active.updateUnconfirmedBalance();
+        }
       });
       Timer.periodic(Duration(minutes: 5), (Timer t) async {
         await priceStore.updateChart();
@@ -188,6 +173,8 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
                   ], onSelected: _onMenu)),
             // if (!simpleMode && !isMobile())
             //   PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
+            if (settings.isDeveloper)             
+              PopupMenuItem(child: Text(s.expert), value: "Expert"),
             PopupMenuItem(child: Text(s.settings), value: "Settings"),
             PopupMenuItem(child: Text(s.help), value: "Help"),
             PopupMenuItem(child: Text(s.about), value: "About"),
@@ -263,6 +250,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         break;
       case "KeyTool":
         _keyTool();
+        break;
+      case "Expert":
+        Navigator.of(context).pushNamed('/dev');
         break;
       case "Ledger":
         _ledger();

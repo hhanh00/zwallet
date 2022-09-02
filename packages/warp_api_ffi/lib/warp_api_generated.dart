@@ -568,6 +568,15 @@ class NativeLibrary {
   late final _dart_truncate_data _truncate_data =
       _truncate_data_ptr.asFunction<_dart_truncate_data>();
 
+  void truncate_sync_data() {
+    return _truncate_sync_data();
+  }
+
+  late final _truncate_sync_data_ptr =
+      _lookup<ffi.NativeFunction<_c_truncate_sync_data>>('truncate_sync_data');
+  late final _dart_truncate_sync_data _truncate_sync_data =
+      _truncate_sync_data_ptr.asFunction<_dart_truncate_sync_data>();
+
   void delete_account(
     int coin,
     int account,
@@ -1173,6 +1182,10 @@ typedef _dart_mark_all_messages_read = void Function(
 typedef _c_truncate_data = ffi.Void Function();
 
 typedef _dart_truncate_data = void Function();
+
+typedef _c_truncate_sync_data = ffi.Void Function();
+
+typedef _dart_truncate_sync_data = void Function();
 
 typedef _c_delete_account = ffi.Void Function(
   ffi.Uint8 coin,

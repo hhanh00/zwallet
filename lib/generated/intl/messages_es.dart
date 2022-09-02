@@ -206,6 +206,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error": m6,
         "excludedNotes":
             MessageLookupByLibrary.simpleMessage("Notas excluidas"),
+        "expert": MessageLookupByLibrary.simpleMessage("Expert"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("Archivo guardado"),
         "fromto": MessageLookupByLibrary.simpleMessage("Rem/Dest."),
         "fullBackup": MessageLookupByLibrary.simpleMessage("Copia completa"),

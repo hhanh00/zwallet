@@ -206,6 +206,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Entrez la graine, la clé secrète ou la clé de visualisation. Laissez vide pour un nouveau compte"),
         "error": m6,
         "excludedNotes": MessageLookupByLibrary.simpleMessage("Billets exclus"),
+        "expert": MessageLookupByLibrary.simpleMessage("Expert"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("File saved"),
         "fromto": MessageLookupByLibrary.simpleMessage("Env/Dest."),
         "fullBackup":

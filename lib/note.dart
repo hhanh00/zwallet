@@ -1,10 +1,10 @@
-import 'package:ZYWallet/db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'main.dart';
 import 'store.dart';
+import 'db.dart';
 import 'generated/l10n.dart';
 
 class NoteWidget extends StatefulWidget {
