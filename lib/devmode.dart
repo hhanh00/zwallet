@@ -33,6 +33,7 @@ class DevPageState extends State<DevPage> {
           ListTile(title: Text('Reset App'), trailing: Icon(Icons.chevron_right), onTap: _resetApp),
           ListTile(title: Text('Trigger Reorg'), trailing: Icon(Icons.chevron_right), onTap: _reorg),
           ListTile(title: Text('Rewind Height'), trailing: Icon(Icons.chevron_right), onTap: _rewindHeight),
+          ListTile(title: Text('Mark as Synced'), trailing: Icon(Icons.chevron_right), onTap: _markAsSynced),
         ]
       )
     );
@@ -131,8 +132,10 @@ class DevPageState extends State<DevPage> {
     if (confirmed) {
       final height = int.tryParse(heightNameController.text);
       if (height != null) {
-        showSnackBar('Rewinding to ${height}', autoClose: true);
-        WarpApi.rewindToHeight(height);
+        final newHeight = WarpApi.rewindToHeight(height);
+        showSnackBar('Rewinding to ${height}, got ${newHeight}');
+        syncStatus.reset();
+        await syncStatus.update();
       }
     }
   }
@@ -143,5 +146,9 @@ class DevPageState extends State<DevPage> {
 
   _reorg() async {
     await syncStatus.reorg();
+  }
+
+  _markAsSynced() {
+    WarpApi.skipToLastHeight(active.coin);
   }
 }

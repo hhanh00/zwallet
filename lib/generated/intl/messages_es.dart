@@ -28,41 +28,44 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m2(name) =>
       "Copia de seguridad - ${name} - Requerida para restaurar";
 
-  static String m3(address, amount) =>
+  static String m3(rewindHeight) =>
+      "Block reorg detected. Rewind to ${rewindHeight}";
+
+  static String m4(address, amount) =>
       "Desea firmar una transacción a ${address} por ${amount}";
 
-  static String m4(ticker) =>
+  static String m5(ticker) =>
       "¿Quiere transferir su saldo transparente a su dirección blindada? ";
 
-  static String m5(app) => "${app} Copia completa";
+  static String m6(app) => "${app} Copia completa";
 
-  static String m6(msg) => "ERROR: ${msg}";
+  static String m7(msg) => "ERROR: ${msg}";
 
-  static String m8(ticker) => "Recibir ${ticker}";
+  static String m9(ticker) => "Recibir ${ticker}";
 
-  static String m9(height) => "Escaneo solicitado desde ${height}…";
+  static String m10(height) => "Escaneo solicitado desde ${height}…";
 
-  static String m10(ticker) => "Enviar ${ticker}";
+  static String m11(ticker) => "Enviar ${ticker}";
 
-  static String m11(ticker) => "Enviar ${ticker} a…";
+  static String m12(ticker) => "Enviar ${ticker} a…";
 
-  static String m12(app) => "Enviado desde ${app}";
+  static String m13(app) => "Enviado desde ${app}";
 
-  static String m13(amount, ticker, count) =>
+  static String m14(amount, ticker, count) =>
       "Enviando un total de ${amount} ${ticker} a ${count} direcciones";
 
-  static String m14(aZEC, ticker, address) =>
+  static String m15(aZEC, ticker, address) =>
       "Enviado ${aZEC} ${ticker} a ${address}";
 
-  static String m15(index, name) => "Subcuenta ${index} de ${name}";
+  static String m16(index, name) => "Subcuenta ${index} de ${name}";
 
-  static String m16(name) => "Subcuenta de ${name}";
+  static String m17(name) => "Subcuenta de ${name}";
 
-  static String m17(text) => "${text} copiado al portapapeles";
+  static String m18(text) => "${text} copiado al portapapeles";
 
-  static String m18(txid) => "TX ID: ${txid}";
+  static String m19(txid) => "TX ID: ${txid}";
 
-  static String m19(currency) => "Utilizar ${currency}";
+  static String m20(currency) => "Utilizar ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -131,6 +134,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "barcodeScannerIsNotAvailableOnDesktop":
             MessageLookupByLibrary.simpleMessage(
                 "El escáner de código de barras no está disponible en el escritorio"),
+        "blockReorgDetectedRewind": m3,
         "blue": MessageLookupByLibrary.simpleMessage("Azul"),
         "body": MessageLookupByLibrary.simpleMessage("Cuerpo"),
         "broadcast": MessageLookupByLibrary.simpleMessage("Transmisión"),
@@ -158,7 +162,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "¿Está SEGURO de que desea BORRAR esta cuenta? DEBE tener una COPIA DE SEGURIDAD para recuperarla. Esta operación NO es reversible."),
         "confirmResetApp": MessageLookupByLibrary.simpleMessage(
             "¿Seguro que quieres restablecer la aplicación? Sus cuentas NO serán eliminadas"),
-        "confirmSignATransactionToAddressFor": m3,
+        "confirmSignATransactionToAddressFor": m4,
         "confirmSigning":
             MessageLookupByLibrary.simpleMessage("Confirmar firma"),
         "confs": MessageLookupByLibrary.simpleMessage("Confir"),
@@ -193,17 +197,17 @@ class MessageLookup extends MessageLookupByLibrary {
                 "¿Quiere BORRAR la clave secreta y convertir esta cuenta a solo lectura? Ya no podrá gastar desde este dispositivo. Esta operación NO es reversible."),
         "doYouWantToRestore": MessageLookupByLibrary.simpleMessage(
             "Do you want to restore your database? THIS WILL ERASE YOUR CURRENT DATA"),
-        "doYouWantToTransferYourEntireTransparentBalanceTo": m4,
+        "doYouWantToTransferYourEntireTransparentBalanceTo": m5,
         "duplicateAccount":
             MessageLookupByLibrary.simpleMessage("Cuenta duplicada"),
         "editContact": MessageLookupByLibrary.simpleMessage("Editar contacto"),
-        "encryptedBackup": m5,
+        "encryptedBackup": m6,
         "enterSecretShareIfAccountIsMultisignature":
             MessageLookupByLibrary.simpleMessage(
                 "Introduzca la clave secreta si la cuenta es multi-firma"),
         "enterSeed": MessageLookupByLibrary.simpleMessage(
             "Ingrese la Semilla, Clave secreta o Clave de visualización. Dejar en blanco para una nueva cuenta"),
-        "error": m6,
+        "error": m7,
         "excludedNotes":
             MessageLookupByLibrary.simpleMessage("Notas excluidas"),
         "expert": MessageLookupByLibrary.simpleMessage("Expert"),
@@ -317,7 +321,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rawTransaction":
             MessageLookupByLibrary.simpleMessage("Transacción con Firmar"),
         "realized": MessageLookupByLibrary.simpleMessage("Realizado"),
-        "receive": m8,
+        "receive": m9,
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Recibir un pago"),
         "recipient": MessageLookupByLibrary.simpleMessage("Destinatario"),
@@ -327,7 +331,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("¿Escanear desde...?"),
         "rescanNeeded":
             MessageLookupByLibrary.simpleMessage("Necesita escanear"),
-        "rescanRequested": m9,
+        "rescanRequested": m10,
         "rescanning": MessageLookupByLibrary.simpleMessage("Escanear..."),
         "reset": MessageLookupByLibrary.simpleMessage("RESTABLECER"),
         "restart": MessageLookupByLibrary.simpleMessage("Reiniciar"),
@@ -354,12 +358,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Seleccionar Notas a EXCLUIR de los pagos"),
         "send": MessageLookupByLibrary.simpleMessage("Enviar"),
-        "sendCointicker": m10,
-        "sendCointickerTo": m11,
-        "sendFrom": m12,
+        "sendCointicker": m11,
+        "sendCointickerTo": m12,
+        "sendFrom": m13,
         "sender": MessageLookupByLibrary.simpleMessage("Remitente"),
-        "sendingATotalOfAmountCointickerToCountRecipients": m13,
-        "sendingAzecCointickerToAddress": m14,
+        "sendingATotalOfAmountCointickerToCountRecipients": m14,
+        "sendingAzecCointickerToAddress": m15,
         "server": MessageLookupByLibrary.simpleMessage("Servidor"),
         "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
         "shieldTranspBalance":
@@ -381,8 +385,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "spendableBalance":
             MessageLookupByLibrary.simpleMessage("Saldo disponible"),
         "splitAccount": MessageLookupByLibrary.simpleMessage("Cuenta dividida"),
-        "subAccountIndexOf": m15,
-        "subAccountOf": m16,
+        "subAccountIndexOf": m16,
+        "subAccountOf": m17,
         "subject": MessageLookupByLibrary.simpleMessage("Asunto"),
         "syncPaused": MessageLookupByLibrary.simpleMessage("Escaneo en pausa"),
         "synching": MessageLookupByLibrary.simpleMessage("Sincronizando"),
@@ -398,7 +402,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Toca el QR para Dirección transparente"),
         "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
             "Toca una Transacción para ver detalles"),
-        "textCopiedToClipboard": m17,
+        "textCopiedToClipboard": m18,
         "thePrivateWalletMessenger": MessageLookupByLibrary.simpleMessage(
             "Billetera & Mensajería Privada"),
         "theme": MessageLookupByLibrary.simpleMessage("Tema"),
@@ -421,7 +425,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Detalles de la transacción"),
         "transactionHistory":
             MessageLookupByLibrary.simpleMessage("Historial de transacciones"),
-        "txId": m18,
+        "txId": m19,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Confirmaciones insuficiente"),
         "unshielded": MessageLookupByLibrary.simpleMessage("Sin blindaje"),
@@ -434,7 +438,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "useGpu": MessageLookupByLibrary.simpleMessage("Utilizar GPU"),
         "useQrForOfflineSigning": MessageLookupByLibrary.simpleMessage(
             "Usar QR para firmar sin conexión"),
-        "useSettingscurrency": m19,
+        "useSettingscurrency": m20,
         "useTransparentBalance":
             MessageLookupByLibrary.simpleMessage("Usar saldo transp."),
         "useUa": MessageLookupByLibrary.simpleMessage("Usar DU"),

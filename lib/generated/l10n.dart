@@ -2651,6 +2651,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Block reorg detected. Rewind to {rewindHeight}`
+  String blockReorgDetectedRewind(Object rewindHeight) {
+    return Intl.message(
+      'Block reorg detected. Rewind to $rewindHeight',
+      name: 'blockReorgDetectedRewind',
+      desc: '',
+      args: [rewindHeight],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

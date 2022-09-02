@@ -332,7 +332,7 @@ class NativeLibrary {
   late final _dart_skip_to_last_height _skip_to_last_height =
       _skip_to_last_height_ptr.asFunction<_dart_skip_to_last_height>();
 
-  void rewind_to_height(
+  int rewind_to_height(
     int height,
   ) {
     return _rewind_to_height(
@@ -1043,11 +1043,11 @@ typedef _dart_skip_to_last_height = void Function(
   int coin,
 );
 
-typedef _c_rewind_to_height = ffi.Void Function(
+typedef _c_rewind_to_height = ffi.Uint32 Function(
   ffi.Uint32 height,
 );
 
-typedef _dart_rewind_to_height = void Function(
+typedef _dart_rewind_to_height = int Function(
   int height,
 );
 

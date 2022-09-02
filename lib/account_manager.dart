@@ -179,7 +179,7 @@ class AccountManagerState extends State<AccountManagerPage> {
       syncStatus.setAccountRestored(false);
       final height = await rescanDialog(context);
       if (height != null)
-        syncStatus.rescan(context, height);
+        syncStatus.rescan(height);
     }
     await syncStatus.update();
 
