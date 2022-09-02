@@ -203,6 +203,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Enter Seed, Secret Key or Viewing Key. Leave blank for a new account"),
         "error": m6,
         "excludedNotes": MessageLookupByLibrary.simpleMessage("Excluded Notes"),
+        "expert": MessageLookupByLibrary.simpleMessage("Expert"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("File saved"),
         "fromto": MessageLookupByLibrary.simpleMessage("From/To"),
         "fullBackup": MessageLookupByLibrary.simpleMessage("Full Backup"),

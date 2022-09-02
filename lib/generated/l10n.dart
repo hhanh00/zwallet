@@ -2641,6 +2641,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Expert`
+  String get expert {
+    return Intl.message(
+      'Expert',
+      name: 'expert',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

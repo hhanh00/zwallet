@@ -38,10 +38,15 @@ class AccountManagerState extends State<AccountManagerPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final nav = Navigator.of(context);
 
     if (active.id == 0) {
-      Future.microtask(() {
-        Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (route) => false);
+      Future.microtask(() async {
+        nav.pushNamedAndRemoveUntil('/welcome', (route) => false);
+        await syncStatus.update();
+        for (var c in settings.coins) {
+          syncStatus.markAsSynced(c.coin);
+        }
       });
       return SizedBox();
     }

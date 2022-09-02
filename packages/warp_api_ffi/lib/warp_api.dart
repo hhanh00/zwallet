@@ -242,6 +242,10 @@ class WarpApi {
     warp_api_lib.truncate_data();
   }
 
+  static void truncateSyncData() {
+    warp_api_lib.truncate_sync_data();
+  }
+
   static void deleteAccount(int coin, int account) {
     warp_api_lib.delete_account(coin, account);
   }

@@ -63,6 +63,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
       if (simpleMode) Padding(padding: EdgeInsets.fromLTRB(0, 8, 0, 0), child: Text(s.simpleMode)),
       Observer(builder: (context) {
         final time = eta.eta;
+        final neverSynced = syncStatus.syncedHeight == null;
         final syncedHeight = syncStatus.syncedHeight ?? 0;
         final startHeight = syncStatus.startSyncedHeight;
         final timestamp = syncStatus.timestamp?.timeAgo() ?? s.na;
@@ -73,7 +74,6 @@ class SyncStatusState extends State<SyncStatusWidget> {
         final downloadedSize = NumberFormat.compact().format(syncStatus.downloadedSize);
         final trialDecryptionCount = NumberFormat.compact().format(syncStatus.trialDecryptionCount);
         final disconnected = latestHeight == 0;
-        final neverSynced = syncedHeight == null;
         final synced = syncStatus.isSynced();
         final paused = syncStatus.paused;
         final syncing = !paused && !disconnected && !neverSynced && !synced;

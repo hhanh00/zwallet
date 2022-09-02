@@ -189,6 +189,9 @@ abstract class _Settings with Store {
 
   bool instantSync = kDebugMode;
 
+  @observable
+  int developerMode = 10;
+
   @action
   Future<bool> restore() async {
     final prefs = await SharedPreferences.getInstance();
@@ -224,6 +227,9 @@ abstract class _Settings with Store {
     antispam = prefs.getBool('antispam') ?? true;
     useGPU = prefs.getBool('gpu') ?? false;
     WarpApi.useGPU(useGPU);
+
+    final _developerMode = prefs.getBool('developer_mode') ?? false;
+    developerMode = _developerMode ? 0 : 10;
 
     for (var s in servers) {
       await s.loadPrefs();
@@ -510,6 +516,19 @@ abstract class _Settings with Store {
     memoSignature = v;
     prefs.setString('memo_signature', v);
   }
+
+  @action
+  Future<void> tapDeveloperMode() async {
+    if (developerMode > 0)
+      developerMode -= 1;
+    if (developerMode == 0) {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('developer_mode', true);
+      showSnackBar("You are now a developer");
+    }
+  }
+
+  bool get isDeveloper => developerMode == 0;
 }
 
 class PriceStore = _PriceStore with _$PriceStore;
@@ -600,6 +619,14 @@ abstract class _SyncStatus with Store {
   }
 
   @action
+  void reset() {
+    isRescan = false;
+    syncedHeight = null;
+    syncing = false;
+    paused = false;
+  }
+
+  @action
   void markAsSynced(int coin) {
     WarpApi.skipToLastHeight(coin);
   }
@@ -657,17 +684,22 @@ abstract class _SyncStatus with Store {
           await contacts.fetchContacts();
         }
       }
-      else if (res == 1) { // Reorg
-        final _syncedHeight = await getDbSyncedHeight();
-        if (_syncedHeight != null) {
-          final rewindHeight = max(_syncedHeight.height - 20, 0);
-          print("Block reorg detected. Rewind to $rewindHeight");
-          WarpApi.rewindToHeight(rewindHeight);
-        }
+      else if (res == 1) {
+        await reorg();
       }
     }
     syncing = false;
     eta.reset();
+  }
+
+  @action
+  Future<void> reorg() async {
+    final _syncedHeight = await getDbSyncedHeight();
+    if (_syncedHeight != null) {
+      final rewindHeight = max(_syncedHeight.height - 20, 0);
+      print("Block reorg detected. Rewind to $rewindHeight");
+      WarpApi.rewindToHeight(rewindHeight);
+    }
   }
 
   @action

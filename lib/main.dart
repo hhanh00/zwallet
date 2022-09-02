@@ -32,6 +32,7 @@ import 'package:sqlite3/open.dart';
 import 'accounts.dart';
 import 'animated_qr.dart';
 import 'coin/coins.dart';
+import 'devmode.dart';
 import 'generated/l10n.dart';
 
 import 'account_manager.dart';
@@ -249,6 +250,7 @@ void main() {
                 '/showRawTx': (context) => ShowRawTx(routeSettings.arguments as String),
                 '/sign': (context) => Sign.init(routeSettings.arguments as String),
                 '/keytool': (context) => KeyToolPage(),
+                '/dev': (context) => DevPage(),
               };
               return MaterialPageRoute(builder: routes[routeSettings.name]!);
             },
@@ -768,12 +770,6 @@ Future<bool> showConfirmDialog(BuildContext context, String title, String body) 
         }, okLabel: S.of(context).ok, cancelValue: false)),
   ) ?? false;
   return confirmation;
-}
-
-Future<void> exportDb() async {
-  final prefs = await SharedPreferences.getInstance();
-  prefs.setBool('export_db', true);
-  showSnackBar('Backup scheduled', autoClose: true);
 }
 
 Future<void> rescan(BuildContext context) async {
