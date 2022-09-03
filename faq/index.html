@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>FAQ :: YWallet</title>
-<link href=/css/nucleus.css?1662181229 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1662181229 rel=stylesheet>
-<link href=/css/hybrid.css?1662181229 rel=stylesheet>
-<link href=/css/featherlight.min.css?1662181229 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1662181229 rel=stylesheet>
-<link href=/css/auto-complete.css?1662181229 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1662181229 rel=stylesheet>
-<link href=/css/theme.css?1662181229 rel=stylesheet>
-<link href=/css/tabs.css?1662181229 rel=stylesheet>
-<link href=/css/hugo-theme.css?1662181229 rel=stylesheet>
-<link href=/css/theme-blue.css?1662181229 rel=stylesheet>
-<link href=/common.css?1662181229 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1662181229></script>
+<link href=/css/nucleus.css?1662220243 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1662220243 rel=stylesheet>
+<link href=/css/hybrid.css?1662220243 rel=stylesheet>
+<link href=/css/featherlight.min.css?1662220243 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1662220243 rel=stylesheet>
+<link href=/css/auto-complete.css?1662220243 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1662220243 rel=stylesheet>
+<link href=/css/theme.css?1662220243 rel=stylesheet>
+<link href=/css/tabs.css?1662220243 rel=stylesheet>
+<link href=/css/hugo-theme.css?1662220243 rel=stylesheet>
+<link href=/css/theme-blue.css?1662220243 rel=stylesheet>
+<link href=/common.css?1662220243 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1662220243></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
@@ -35,10 +35,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1662181229></script>
-<script type=text/javascript src=/js/auto-complete.js?1662181229></script>
+<script type=text/javascript src=/js/lunr.min.js?1662220243></script>
+<script type=text/javascript src=/js/auto-complete.js?1662220243></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1662181229></script>
+<script type=text/javascript src=/js/search.js?1662220243></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -418,7 +418,13 @@ active">
 </div>
 <div class=progress>
 <div class=wrapper>
-<nav id=TableOfContents></nav>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#synchronization>Synchronization</a></li>
+<li><a href=#funds>Funds</a></li>
+<li><a href=#other-questions>Other questions</a></li>
+</ul>
+</nav>
 </div>
 </div>
 </div>
@@ -429,6 +435,7 @@ active">
 <h1>
 FAQ
 </h1>
+<h2 id=synchronization>Synchronization</h2>
 <ol>
 <li>
 <p>Why is synchronization taking so long?</p>
@@ -440,6 +447,39 @@ performing a full rescan only when you have Wifi or Ethernet because it
 will download more than 5 GB of data.</p>
 <img class=img src=img/chart.png>
 </li>
+<li>
+<p>But why is the synchronization of BTC/ETH/DOT/ADA/etc.
+so quick then?</p>
+<p>Because they are not private coins. When your BTC wallet
+synchronizes, it does not interact with the blockchain
+directly. It connects to a third-party service that
+has <em>indexed</em> every account (it functions like a block explorer). Then your
+wallet can leverage this index and just download the data it needs.
+Think of it as &ldquo;searching for the definition of a word
+in a dictionary&rdquo;. You can find the definition of any word very quickly because
+the dictionary is sorted alphabetically.</p>
+<p>However, your transactions are private with ZEC/YEC/XMR/etc, because they cannot be
+decrypted without the viewing key.
+Consequently, third-party services <em>cannot index</em> the shielded addresses.
+When a shielded wallet synchronizes, it must <em>download</em> and <em>process</em>
+the blockchain locally. In ZEC/YEC, Lightwallets use a protocol that allows
+them to skip downloading ~80% of the blockchain but it still is several
+GB now for ZEC.</p>
+</li>
+<li>
+<p>But it used to be fast before!</p>
+<p>Before there were very few shielded transactions. Less than 1 per block in average.
+Since July, we see thousands of such transactions.</p>
+<p>Why now and not before? No one knows.</p>
+<p>But the protocol allows it. Either we change the protocol or we improve the technology.
+Both options are being discussed. Currently, it is very inexpensive for someone
+to create large transactions and saturate the network.
+One can argue that the technology is behind the economics. In other words, spam
+is cheap, so spam happens.</p>
+</li>
+</ol>
+<h2 id=funds>Funds</h2>
+<ol>
 <li>
 <p>I have made a transfer into YWallet but I do not see my funds.</p>
 <p>If you have transferred to the <em>transparent</em> address, make sure you
@@ -473,6 +513,9 @@ the account is not synchronized yet.</p>
 <p>Yes, but we highly recommend shielding these coins before spending them.
 The app is Shielded by Default.</p>
 </li>
+</ol>
+<h2 id=other-questions>Other questions</h2>
+<ol>
 <li>
 <p>Was there a ZWallet and WarpWallet?</p>
 <p>There used to be different versions of the app for Ycash and Zcash. The app was
@@ -529,17 +572,17 @@ safe place away from spying eyes.
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1662181229></script>
-<script src=/js/perfect-scrollbar.min.js?1662181229></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1662181229></script>
-<script src=/js/jquery.sticky.js?1662181229></script>
-<script src=/js/featherlight.min.js?1662181229></script>
-<script src=/js/highlight.pack.js?1662181229></script>
+<script src=/js/clipboard.min.js?1662220243></script>
+<script src=/js/perfect-scrollbar.min.js?1662220243></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1662220243></script>
+<script src=/js/jquery.sticky.js?1662220243></script>
+<script src=/js/featherlight.min.js?1662220243></script>
+<script src=/js/highlight.pack.js?1662220243></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1662181229></script>
-<script src=/js/learn.js?1662181229></script>
-<script src=/js/hugo-learn.js?1662181229></script>
-<script src=/mermaid/mermaid.js?1662181229></script>
+<script src=/js/modernizr.custom-3.6.0.js?1662220243></script>
+<script src=/js/learn.js?1662220243></script>
+<script src=/js/hugo-learn.js?1662220243></script>
+<script src=/mermaid/mermaid.js?1662220243></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
