@@ -20,11 +20,14 @@ Future<int?> rescanDialog(BuildContext context) async {
       false;
   if (approved) {
     final date = rescanKey.currentState!.startDate;
+    final heightText = rescanKey.currentState!.heightController.text;
     final approved = await confirmWifi(context);
     if (approved) {
       showSnackBar(S.of(context).rescanning, autoClose: true);
-      final height = await WarpApi.getBlockHeightByTime(date);
-      return height;
+      final height = int.tryParse(heightText);
+      if (height != null) return height;
+      final height2 = await WarpApi.getBlockHeightByTime(date);
+      return height2;
     }
   }
   return null;
@@ -41,6 +44,7 @@ class RescanFormState extends State<RescanForm> {
   DateTime minDate = WarpApi.getActivationDate();
   DateTime maxDate = DateTime.now();
   late DateTime startDate;
+  var heightController = TextEditingController();
 
   @override
   void initState() {
@@ -52,8 +56,15 @@ class RescanFormState extends State<RescanForm> {
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('yyyy-MM-dd');
     return SingleChildScrollView(
-        child: OutlinedButton(onPressed: _showDatePicker, child: Text(dateFormat.format(startDate)))
-            );
+      child: Column(children: [
+        OutlinedButton(onPressed: _showDatePicker, child: Text(dateFormat.format(startDate))),
+        Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Text('OR')),
+        TextFormField(
+          decoration: InputDecoration(labelText: S.of(context).height),
+          keyboardType: TextInputType.number,
+          controller: heightController,
+        ),
+      ]));
   }
 
   _showDatePicker() async {

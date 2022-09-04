@@ -6,7 +6,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:sqflite/sqflite.dart';
 import 'coin/coins.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:warp_api/types.dart';
@@ -518,14 +517,30 @@ abstract class _Settings with Store {
   }
 
   @action
-  Future<void> tapDeveloperMode() async {
-    if (developerMode > 0)
-      developerMode -= 1;
-    if (developerMode == 0) {
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setBool('developer_mode', true);
-      showSnackBar("You are now a developer");
+  Future<void> tapDeveloperMode(BuildContext context) async {
+    developerMode -= 1;
+    if (developerMode > 5) return;
+    if (developerMode > 0) {
+      showSnackBar("You are ${developerMode} steps away from being a developer", autoClose: true);
+      return;
     }
+    else if (developerMode == 0) {
+      final authenticated = await authenticate(context, 'Developer Mode');
+      if (authenticated) {
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setBool('developer_mode', true);
+        showSnackBar("You are now a developer");
+        return;
+      }
+    }
+    developerMode += 1;
+  }
+
+  @action
+  Future<void> resetDevMode() async {
+    developerMode = 10;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('developer_mode', false);
   }
 
   bool get isDeveloper => developerMode == 0;
@@ -696,7 +711,7 @@ abstract class _SyncStatus with Store {
   Future<void> reorg() async {
     final _syncedHeight = await getDbSyncedHeight();
     if (_syncedHeight != null) {
-      final rewindHeight = max(_syncedHeight.height - 20, 0);
+      final rewindHeight = max(_syncedHeight.height - settings.anchorOffset, 0);
       final height = WarpApi.rewindToHeight(rewindHeight);
       showSnackBar(S.current.blockReorgDetectedRewind(height));
       syncStatus.reset();

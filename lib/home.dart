@@ -188,7 +188,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Text("${active.account.name}"),
+            title: GestureDetector(
+              onTap: () => settings.tapDeveloperMode(context),
+              child: Text("${active.account.name}")),
             bottom: TabBar(
               controller: _tabController,
               isScrollable: true,

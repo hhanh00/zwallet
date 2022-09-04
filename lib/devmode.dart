@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:mobx/mobx.dart' as mobx;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -34,18 +35,16 @@ class DevPageState extends State<DevPage> {
           ListTile(title: Text('Trigger Reorg'), trailing: Icon(Icons.chevron_right), onTap: _reorg),
           ListTile(title: Text('Rewind Height'), trailing: Icon(Icons.chevron_right), onTap: _rewindHeight),
           ListTile(title: Text('Mark as Synced'), trailing: Icon(Icons.chevron_right), onTap: _markAsSynced),
+          ListTile(title: Text('Revoke Dev mode'), trailing: Icon(Icons.chevron_right), onTap: _resetDevMode),
         ]
       )
     );
   }
 
   Future<void> _exportDb() async {
-    final authenticated = await authenticate(context, 'Export DB');
-    if (authenticated) {
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setBool('export_db', true);
-      showSnackBar('Backup scheduled', autoClose: true);
-    }
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('export_db', true);
+    showSnackBar('Backup scheduled', autoClose: true);
   }
 
   Future<void> _importDb() async {
@@ -150,5 +149,9 @@ class DevPageState extends State<DevPage> {
 
   _markAsSynced() {
     WarpApi.skipToLastHeight(active.coin);
+  }
+
+  _resetDevMode() {
+    settings.resetDevMode();
   }
 }

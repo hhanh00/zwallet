@@ -28,9 +28,7 @@ Future<void> showAbout(BuildContext context) async {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-              title: GestureDetector(
-                onTap: settings.tapDeveloperMode,
-                child: Text('${S.of(context).about} $APP_NAME')),
+              title: Text('${S.of(context).about} $APP_NAME'),
               contentPadding: EdgeInsets.all(16),
               content: Container(width: mq.size.width, height: mq.size.height,
                   child: SingleChildScrollView(child: Column(
