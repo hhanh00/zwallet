@@ -2661,6 +2661,16 @@ class S {
       args: [rewindHeight],
     );
   }
+
+  /// `Show Transaction`
+  String get goToTransaction {
+    return Intl.message(
+      'Show Transaction',
+      name: 'goToTransaction',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

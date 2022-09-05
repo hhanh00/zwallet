@@ -593,9 +593,10 @@ String centerTrim(String v) =>
     v.length >= 16 ? v.substring(0, 8) + "..." +
         v.substring(v.length - 16) : v;
 
-void showSnackBar(String msg, { bool autoClose = false }) {
+void showSnackBar(String msg, { bool autoClose = false, bool quick = false }) {
+  final duration = quick ? Duration(seconds: 1) : Duration(seconds: 4);
   final snackBar = SnackBar(content: SelectableText(msg),
-    duration: autoClose ? Duration(seconds: 4) : Duration(minutes: 1),
+    duration: autoClose ? duration : Duration(minutes: 1),
     action: SnackBarAction(label: S.current.close, onPressed: () {
       rootScaffoldMessengerKey.currentState?.hideCurrentSnackBar();
   }));

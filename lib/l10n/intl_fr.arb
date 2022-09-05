@@ -257,5 +257,6 @@
   "newLabel": "Nouveau",
   "invalidQrCode": "QR code invalide",
   "expert": "Expert",
-  "blockReorgDetectedRewind": "Réorganisation détectée. Retour à {rewindHeight}"
+  "blockReorgDetectedRewind": "Réorganisation détectée. Retour à {rewindHeight}",
+  "goToTransaction": "Voir la Transaction"
 }
