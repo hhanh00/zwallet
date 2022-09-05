@@ -521,7 +521,8 @@ abstract class _Settings with Store {
     developerMode -= 1;
     if (developerMode > 5) return;
     if (developerMode > 0) {
-      showSnackBar("You are ${developerMode} steps away from being a developer", autoClose: true);
+      showSnackBar("You are ${developerMode} steps away from being a developer",
+          autoClose: true, quick: true);
       return;
     }
     else if (developerMode == 0) {
@@ -727,7 +728,7 @@ abstract class _SyncStatus with Store {
     syncedHeight = height;
     timestamp = null;
     WarpApi.truncateData();
-    WarpApi.rewindToHeight(height);
+    WarpApi.rewindToHeight(height, exact: true);
     await sync(true);
   }
 

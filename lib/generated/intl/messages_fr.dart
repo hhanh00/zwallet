@@ -218,6 +218,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "fullRestore":
             MessageLookupByLibrary.simpleMessage("Restauration complète"),
         "gapLimit": MessageLookupByLibrary.simpleMessage("Ecart Limite"),
+        "goToTransaction":
+            MessageLookupByLibrary.simpleMessage("Voir la Transaction"),
         "gold": MessageLookupByLibrary.simpleMessage("Or"),
         "height": MessageLookupByLibrary.simpleMessage("Hauteur"),
         "help": MessageLookupByLibrary.simpleMessage("Aide"),

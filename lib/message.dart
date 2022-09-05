@@ -182,6 +182,7 @@ class MessagePageState extends State<MessagePage> {
           title: Text(s.body), subtitle: SelectableText('${message.body}')),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
             ElevatedButton.icon(onPressed: _hasReplyTo() ? _reply : null, icon: Icon(Icons.reply), label: Text(s.reply)),
+            ElevatedButton.icon(onPressed: message.txId != 0 ? _goTx : null, icon: Icon(Icons.chevron_right), label: Text(s.goToTransaction)),
           ]),
         ],
     ));
@@ -221,5 +222,19 @@ class MessagePageState extends State<MessagePage> {
   _reply() {
     final message = active.messages[index];
     Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(address: message.sender, subject: message.subject));
+  }
+
+  _goTx() {
+    final id = _getTxIndex();
+    if (id != null)
+      Navigator.of(context).pushNamed('/tx', arguments: id);
+  }
+
+  int? _getTxIndex() {
+    final message = active.messages[index];
+    if (message.txId == 0) return null;
+    final idx = active.sortedTxs.indexWhere((tx) => tx.id == message.txId);
+    if (idx < 0) return null;
+    return idx;
   }
 }

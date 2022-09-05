@@ -217,6 +217,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "fullRestore": MessageLookupByLibrary.simpleMessage(
             "Restauración de la copia de seguridad completada"),
         "gapLimit": MessageLookupByLibrary.simpleMessage("Brecha"),
+        "goToTransaction":
+            MessageLookupByLibrary.simpleMessage("Ver Transacción"),
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "height": MessageLookupByLibrary.simpleMessage("Altura"),
         "help": MessageLookupByLibrary.simpleMessage("Ayuda"),

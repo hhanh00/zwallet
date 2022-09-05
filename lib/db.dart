@@ -200,7 +200,7 @@ class DbReader {
 
   Future<List<ZMessage>> getMessages(String myAddress) async {
     final List<Map> res = await db.rawQuery(
-        "SELECT m.id, m.timestamp, m.sender, m.recipient, c.name as scontact, a.name as saccount, c2.name as rcontact, a2.name as raccount, "
+        "SELECT m.id, m.id_tx, m.timestamp, m.sender, m.recipient, c.name as scontact, a.name as saccount, c2.name as rcontact, a2.name as raccount, "
         "subject, body, height, read FROM messages m "
         "LEFT JOIN contacts c ON m.sender = c.address "
         "LEFT JOIN accounts a ON m.sender = a.address "
@@ -211,6 +211,7 @@ class DbReader {
     List<ZMessage> messages = [];
     for (var row in res) {
       final id = row['id'];
+      final txId = row['id_tx'] ?? 0;
       final timestamp = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
       final height = row['height'];
       final sender = row['sender'];
@@ -221,7 +222,7 @@ class DbReader {
       final body = row['body'];
       final read = row['read'] == 1;
       final incoming = recipient == myAddress;
-      messages.add(ZMessage(id, incoming, from, to, subject, body, timestamp, height, read));
+      messages.add(ZMessage(id, txId, incoming, from, to, subject, body, timestamp, height, read));
     }
     return messages;
   }
@@ -294,6 +295,7 @@ class Balances {
 
 class ZMessage {
   final int id;
+  final int txId;
   final bool incoming;
   final String? sender;
   final String recipient;
@@ -303,10 +305,10 @@ class ZMessage {
   final int height;
   final bool read;
 
-  ZMessage(this.id, this.incoming, this.sender, this.recipient, this.subject, this.body, this.timestamp, this.height, this.read);
+  ZMessage(this.id, this.txId, this.incoming, this.sender, this.recipient, this.subject, this.body, this.timestamp, this.height, this.read);
 
   ZMessage withRead(bool v) {
-    return ZMessage(id, incoming, sender, recipient, subject, body, timestamp, height, v);
+    return ZMessage(id, txId, incoming, sender, recipient, subject, body, timestamp, height, v);
   }
 
   String fromto() => incoming ? "\u{21e6} ${sender != null ? centerTrim(sender!) : ''}" : "\u{21e8} ${centerTrim(recipient)}";

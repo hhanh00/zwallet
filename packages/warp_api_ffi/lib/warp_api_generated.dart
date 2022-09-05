@@ -334,9 +334,11 @@ class NativeLibrary {
 
   int rewind_to_height(
     int height,
+    int exact,
   ) {
     return _rewind_to_height(
       height,
+      exact,
     );
   }
 
@@ -1045,10 +1047,12 @@ typedef _dart_skip_to_last_height = void Function(
 
 typedef _c_rewind_to_height = ffi.Uint32 Function(
   ffi.Uint32 height,
+  ffi.Int8 exact,
 );
 
 typedef _dart_rewind_to_height = int Function(
   int height,
+  int exact,
 );
 
 typedef _c_mempool_sync = ffi.Int64 Function();
