@@ -272,14 +272,14 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   }
 
   _backup() async {
-    final didAuthenticate = !isMobile() || await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
+    final didAuthenticate = await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
     if (didAuthenticate) {
       Navigator.of(context).pushNamed('/backup');
     }
   }
 
   _keyTool() async {
-    final didAuthenticate = !isMobile() || await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
+    final didAuthenticate = await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
     if (didAuthenticate) {
       Navigator.of(context).pushNamed('/keytool');
     }

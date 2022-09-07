@@ -643,6 +643,7 @@ DecodedPaymentURI decodeAddress(BuildContext context, String? v) {
 }
 
 Future<bool> authenticate(BuildContext context, String reason) async {
+  if (!isMobile()) return true;
   final localAuth = LocalAuthentication();
   try {
     final bool didAuthenticate;
