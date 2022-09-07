@@ -131,7 +131,7 @@ class DevPageState extends State<DevPage> {
     if (confirmed) {
       final height = int.tryParse(heightNameController.text);
       if (height != null) {
-        final newHeight = WarpApi.rewindToHeight(height);
+        final newHeight = WarpApi.rewindTo(height);
         showSnackBar('Rewinding to ${height}, got ${newHeight}');
         syncStatus.reset();
         await syncStatus.update();

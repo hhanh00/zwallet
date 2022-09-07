@@ -713,7 +713,7 @@ abstract class _SyncStatus with Store {
     final _syncedHeight = await getDbSyncedHeight();
     if (_syncedHeight != null) {
       final rewindHeight = max(_syncedHeight.height - settings.anchorOffset, 0);
-      final height = WarpApi.rewindToHeight(rewindHeight);
+      final height = WarpApi.rewindTo(rewindHeight);
       showSnackBar(S.current.blockReorgDetectedRewind(height));
       syncStatus.reset();
       await syncStatus.update();
@@ -727,8 +727,7 @@ abstract class _SyncStatus with Store {
     showSnackBar(S.current.rescanRequested(height));
     syncedHeight = height;
     timestamp = null;
-    WarpApi.truncateData();
-    WarpApi.rewindToHeight(height, exact: true);
+    WarpApi.rescanFrom(height);
     await sync(true);
   }
 

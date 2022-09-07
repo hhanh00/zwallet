@@ -332,20 +332,31 @@ class NativeLibrary {
   late final _dart_skip_to_last_height _skip_to_last_height =
       _skip_to_last_height_ptr.asFunction<_dart_skip_to_last_height>();
 
-  int rewind_to_height(
+  int rewind_to(
     int height,
-    int exact,
   ) {
-    return _rewind_to_height(
+    return _rewind_to(
       height,
-      exact,
     );
   }
 
-  late final _rewind_to_height_ptr =
-      _lookup<ffi.NativeFunction<_c_rewind_to_height>>('rewind_to_height');
-  late final _dart_rewind_to_height _rewind_to_height =
-      _rewind_to_height_ptr.asFunction<_dart_rewind_to_height>();
+  late final _rewind_to_ptr =
+      _lookup<ffi.NativeFunction<_c_rewind_to>>('rewind_to');
+  late final _dart_rewind_to _rewind_to =
+      _rewind_to_ptr.asFunction<_dart_rewind_to>();
+
+  void rescan_from(
+    int height,
+  ) {
+    return _rescan_from(
+      height,
+    );
+  }
+
+  late final _rescan_from_ptr =
+      _lookup<ffi.NativeFunction<_c_rescan_from>>('rescan_from');
+  late final _dart_rescan_from _rescan_from =
+      _rescan_from_ptr.asFunction<_dart_rescan_from>();
 
   int mempool_sync() {
     return _mempool_sync();
@@ -1045,14 +1056,20 @@ typedef _dart_skip_to_last_height = void Function(
   int coin,
 );
 
-typedef _c_rewind_to_height = ffi.Uint32 Function(
+typedef _c_rewind_to = ffi.Uint32 Function(
   ffi.Uint32 height,
-  ffi.Int8 exact,
 );
 
-typedef _dart_rewind_to_height = int Function(
+typedef _dart_rewind_to = int Function(
   int height,
-  int exact,
+);
+
+typedef _c_rescan_from = ffi.Void Function(
+  ffi.Uint32 height,
+);
+
+typedef _dart_rescan_from = void Function(
+  int height,
 );
 
 typedef _c_mempool_sync = ffi.Int64 Function();
