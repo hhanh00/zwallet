@@ -78,7 +78,7 @@ class DevPageState extends State<DevPage> {
     final s = S.of(context);
 
     final String path;
-    if (settings.instantSync) {
+    if (kExperimental && settings.instantSync) {
       final confirm = await showConfirmDialog(context, "Do you want to use Instant-Sync?", "Your viewing key will be sent to a remote server for processing.");
       if (!confirm) return;
       final backup = await getBackup(active.toId());
