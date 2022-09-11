@@ -65,6 +65,8 @@ const APP_NAME = "YWallet";
 
 const RECOVERY_FILE = "recover.bin";
 
+const kExperimental = true;
+
 // var accountManager = AccountManager();
 var priceStore = PriceStore();
 var syncStatus = SyncStatus();
