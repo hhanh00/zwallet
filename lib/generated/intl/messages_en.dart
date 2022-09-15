@@ -373,6 +373,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Shielding in progress..."),
         "showMessagesAsTable":
             MessageLookupByLibrary.simpleMessage("Show Messages as Table"),
+        "showNotesAsTable":
+            MessageLookupByLibrary.simpleMessage("Show Notes as Table"),
+        "showTransactionsAsTable":
+            MessageLookupByLibrary.simpleMessage("Show Transactions as Table"),
         "sign": MessageLookupByLibrary.simpleMessage("Sign Transaction"),
         "signOffline": MessageLookupByLibrary.simpleMessage("Sign"),
         "signOnYourOfflineDevice":

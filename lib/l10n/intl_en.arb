@@ -260,5 +260,7 @@
   "invalidQrCode": "Invalid QR code",
   "expert": "Expert",
   "blockReorgDetectedRewind": "Block reorg detected. Rewind to {rewindHeight}",
-  "goToTransaction": "Show Transaction"
+  "goToTransaction": "Show Transaction",
+  "showNotesAsTable": "Show Notes as Table",
+  "showTransactionsAsTable": "Show Transactions as Table"
 }

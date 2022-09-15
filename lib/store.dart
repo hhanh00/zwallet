@@ -153,6 +153,12 @@ abstract class _Settings with Store {
   bool messageTable = false;
 
   @observable
+  bool noteTable = true;
+
+  @observable
+  bool txTable = true;
+
+  @observable
   bool protectSend = false;
 
   @observable
@@ -212,6 +218,8 @@ abstract class _Settings with Store {
     protectOpen = prefs.getBool('protect_open') ?? false;
     includeReplyTo = prefs.getBool('include_reply_to') ?? false;
     messageTable = prefs.getBool('message_table') ?? false;
+    noteTable = prefs.getBool('note_table') ?? true;
+    txTable = prefs.getBool('tx_table') ?? true;
     gapLimit = prefs.getInt('gap_limit') ?? 10;
     qrOffline = prefs.getBool('qr_offline') ?? true;
 
@@ -500,6 +508,20 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     messageTable = v;
     prefs.setBool('message_table', messageTable);
+  }
+
+  @action
+  Future<void> setNoteTable(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    noteTable = v;
+    prefs.setBool('note_table', noteTable);
+  }
+
+  @action
+  Future<void> setTxTable(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    txTable = v;
+    prefs.setBool('tx_table', txTable);
   }
 
   @action

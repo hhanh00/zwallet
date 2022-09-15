@@ -5,10 +5,6 @@ import 'generated/l10n.dart';
 import 'main.dart';
 import 'db.dart';
 
-final DateFormat todayDateFormat = DateFormat("HH:mm");
-final DateFormat monthDateFormat = DateFormat("MMMd");
-final DateFormat longAgoDateFormat = DateFormat("yy-MM-dd");
-
 class MessageItem extends StatelessWidget {
   final ZMessage message;
   final int index;
@@ -22,22 +18,7 @@ class MessageItem extends StatelessWidget {
     final s = message.incoming ? message.sender : message.recipient;
     final initial = (s == null || s.isEmpty) ? "?" : s[0];
     final width = MediaQuery.of(context).size.width - 96;
-
-    final messageDate = message.timestamp.toLocal();
-    final now = DateTime.now();
-    final justNow = now.subtract(Duration(minutes: 1));
-    final midnight = DateTime(now.year, now.month, now.day);
-    final year = DateTime(now.year, 1, 1);
-
-    String dateString;
-    if (justNow.isBefore(messageDate)) 
-      dateString = S.of(context).now;
-    else if (midnight.isBefore(messageDate))
-      dateString = todayDateFormat.format(messageDate);
-    else if (year.isBefore(messageDate))
-      dateString = monthDateFormat.format(messageDate);
-    else
-      dateString = longAgoDateFormat.format(messageDate);
+    final dateString = humanizeDateTime(message.timestamp);
 
     final unreadStyle = (TextStyle? s) => message.read ? s : s?.copyWith(fontWeight: FontWeight.bold);
 

@@ -2671,6 +2671,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Show Notes as Table`
+  String get showNotesAsTable {
+    return Intl.message(
+      'Show Notes as Table',
+      name: 'showNotesAsTable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show Transactions as Table`
+  String get showTransactionsAsTable {
+    return Intl.message(
+      'Show Transactions as Table',
+      name: 'showTransactionsAsTable',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

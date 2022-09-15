@@ -2,18 +2,33 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'db.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
+import 'message_item.dart';
+import 'store.dart';
 
-class HistoryWidget extends StatefulWidget {
-  HistoryWidget();
-
+class HistoryWidget extends StatelessWidget {
   @override
-  State<StatefulWidget> createState() => HistoryState();
+  Widget build(BuildContext context) {
+    return Observer(builder: (context) {
+      if (settings.txTable)
+        return HistoryWidgetTable();
+      else
+        return HistoryWidgetList();
+    });
+  }
 }
 
-class HistoryState extends State<HistoryWidget>
+class HistoryWidgetTable extends StatefulWidget {
+  HistoryWidgetTable();
+
+  @override
+  HistoryState createState() => HistoryState();
+}
+
+class HistoryState extends State<HistoryWidgetTable>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; //Set to true
@@ -149,4 +164,99 @@ class HistoryDataSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
+}
+
+class HistoryWidgetList extends StatefulWidget {
+  @override
+  HistoryListState createState() => HistoryListState();
+}
+
+class HistoryListState extends State<HistoryWidgetList> {
+  @override
+  Widget build(BuildContext context) {
+    return Observer(builder: (context) {
+      final txs = active.sortedTxs;
+      return ListView.builder(
+          itemCount: txs.length,
+          itemBuilder: (context, index) {
+            final tx = txs[index];
+            ZMessage? message;
+            try {
+              message = active.messages.firstWhere((m) => m.txId == tx.id);
+            }
+            on StateError {
+              message = null;
+            }
+            return TxItem(tx, message, index);
+          });
+    });
+  }
+}
+
+class TxItem extends StatelessWidget {
+  final Tx tx;
+  final int index;
+  final ZMessage? message;
+  TxItem(this.tx, this.message, this.index);
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+    final contact = tx.contact.isEmptyOrNull ? '?' : tx.contact!;
+    final initial = contact[0];
+    final color = amountColor(context, tx.value);
+    return Container(
+      margin: EdgeInsets.only(top: 3.0, bottom: 3.0, right: 0.0),
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: GestureDetector(
+        onTap: () { _gotoTx(context); },
+        child: Row(
+          children: [
+            Column(children: [
+              CircleAvatar( child: Text(initial, style: theme.textTheme.headlineSmall!.apply(color: Colors.white)),
+                backgroundColor: initialToColor(contact)),
+              Padding(padding: EdgeInsets.symmetric(vertical: 4)),
+              Text('${tx.txid}', style: theme.textTheme.labelSmall),
+            ]),
+            Padding(padding: EdgeInsets.symmetric(horizontal: 4)),
+            Expanded(child: MessageWidget(tx.contact ?? tx.address, message, tx.memo)),
+            SizedBox(
+              width: 100,
+              child: Column(children: [
+                Text('${tx.value}', style: theme.textTheme.titleLarge!.copyWith(color: color)),
+                Text('${humanizeDateTime(tx.timestamp)}')
+            ])),
+          ]
+      ))
+    );
+  }
+
+  _gotoTx(BuildContext context) {
+    Navigator.of(context).pushNamed('/tx', arguments: index);
+  }
+}
+
+class MessageWidget extends StatelessWidget {
+  final String address;
+  final ZMessage? message;
+  final String memo;
+
+  MessageWidget(this.address, this.message, this.memo);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final m = message;
+    if (m != null) {
+      return Column(children: [
+        Text('${trailing(address, 8)}', style: theme.textTheme.labelMedium),
+        Text("${m.subject}", style: theme.textTheme.titleSmall),
+        if (m.subject != m.body) Text("${m.body}", style: theme.textTheme.bodySmall),
+      ]);
+    }
+    else {
+      return Text(memo, style: theme.textTheme.bodySmall);
+    }
+  }
 }

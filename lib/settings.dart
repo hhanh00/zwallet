@@ -199,6 +199,16 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                               title: Text(s.showMessagesAsTable),
                               initialValue: settings.messageTable,
                               onSaved: _onMessageTable),
+                          if (!simpleMode) FormBuilderCheckbox(
+                              name: 'note_table',
+                              title: Text(s.showNotesAsTable),
+                              initialValue: settings.noteTable,
+                              onSaved: _onNoteTable),
+                          if (!simpleMode) FormBuilderCheckbox(
+                              name: 'tx_table',
+                              title: Text(s.showTransactionsAsTable),
+                              initialValue: settings.txTable,
+                              onSaved: _onTxTable),
                           if (!simpleMode) TextFormField(
                               decoration: InputDecoration(
                                   labelText: 'Auto Shield Threshold'),
@@ -296,6 +306,14 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
 
   _onMessageTable(v) {
     settings.setMessageTable(v);
+  }
+
+  _onNoteTable(v) {
+    settings.setNoteTable(v);
+  }
+
+  _onTxTable(v) {
+    settings.setTxTable(v);
   }
 
   _onProtectSend(v) {
