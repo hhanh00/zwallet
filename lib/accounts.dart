@@ -293,6 +293,15 @@ abstract class _ActiveAccount with Store {
   }
 
   @action
+  void clear() {
+    messages.clear();
+    notes.clear();
+    txs.clear();
+    unread = 0;
+    dataEpoch += 1;
+  }
+
+  @action
   Future<void> update() async {
     await updateBalances();
     updateTBalance();
