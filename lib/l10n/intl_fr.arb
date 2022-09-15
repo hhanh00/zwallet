@@ -259,6 +259,5 @@
   "expert": "Expert",
   "blockReorgDetectedRewind": "Réorganisation détectée. Retour à {rewindHeight}",
   "goToTransaction": "Voir la Transaction",
-  "showNotesAsTable": "Show Notes as Table",
-  "showTransactionsAsTable": "Show Transactions as Table"
+  "transactions": "Transactions"
 }

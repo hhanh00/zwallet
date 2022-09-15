@@ -376,10 +376,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Blindaje en progreso…"),
         "showMessagesAsTable":
             MessageLookupByLibrary.simpleMessage("Mostrar mensajes como tabla"),
-        "showNotesAsTable":
-            MessageLookupByLibrary.simpleMessage("Show Notes as Table"),
-        "showTransactionsAsTable":
-            MessageLookupByLibrary.simpleMessage("Show Transactions as Table"),
         "sign": MessageLookupByLibrary.simpleMessage("Firma"),
         "signOffline": MessageLookupByLibrary.simpleMessage("Firmar"),
         "signOnYourOfflineDevice": MessageLookupByLibrary.simpleMessage(
@@ -431,6 +427,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Detalles de la transacción"),
         "transactionHistory":
             MessageLookupByLibrary.simpleMessage("Historial de transacciones"),
+        "transactions": MessageLookupByLibrary.simpleMessage("Transacciónes"),
         "txId": m19,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Confirmaciones insuficiente"),

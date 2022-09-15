@@ -379,10 +379,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Masquage en cours..."),
         "showMessagesAsTable":
             MessageLookupByLibrary.simpleMessage("Messages vus en table"),
-        "showNotesAsTable":
-            MessageLookupByLibrary.simpleMessage("Show Notes as Table"),
-        "showTransactionsAsTable":
-            MessageLookupByLibrary.simpleMessage("Show Transactions as Table"),
         "sign": MessageLookupByLibrary.simpleMessage("Sign"),
         "signOffline": MessageLookupByLibrary.simpleMessage("Signer"),
         "signOnYourOfflineDevice": MessageLookupByLibrary.simpleMessage(
@@ -435,6 +431,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Détails de la transaction"),
         "transactionHistory":
             MessageLookupByLibrary.simpleMessage("Historique des Transactions"),
+        "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
         "txId": m19,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Pas assez de confs"),

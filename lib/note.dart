@@ -11,22 +11,26 @@ class NoteWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      if (settings.noteTable)
-        return NoteWidgetTable();
-      else
-        return NoteWidgetList();
+      switch (settings.noteView) {
+        case ViewStyle.Table: return NoteTable();
+        case ViewStyle.List: return NoteList();
+        case ViewStyle.Auto: return OrientationBuilder(builder: (context, orientation) {
+          if (orientation == Orientation.portrait) return NoteList();
+          else return NoteTable();
+        });
+      }
     });
   }
 }
 
-class NoteWidgetTable extends StatefulWidget {
-  NoteWidgetTable();
+class NoteTable extends StatefulWidget {
+  NoteTable();
 
   @override
-  State<StatefulWidget> createState() => _NoteState();
+  State<StatefulWidget> createState() => _NoteTableState();
 }
 
-class _NoteState extends State<NoteWidgetTable> with AutomaticKeepAliveClientMixin {
+class _NoteTableState extends State<NoteTable> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; //Set to true
 
@@ -151,15 +155,15 @@ class NotesDataSource extends DataTableSource {
   }
 }
 
-class NoteWidgetList extends StatefulWidget {
+class NoteList extends StatefulWidget {
   @override
   NoteListState createState() => NoteListState();
 }
 
-class NoteListState extends State<NoteWidgetList> {
+class NoteListState extends State<NoteList> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    super.build(context);
     final s = S.of(context);
     return Observer(builder: (context) {
       final notes = active.sortedNotes;
@@ -184,6 +188,9 @@ class NoteListState extends State<NoteWidgetList> {
   _onInvert() {
     active.invertExcludedNotes();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class NoteItem extends StatefulWidget {

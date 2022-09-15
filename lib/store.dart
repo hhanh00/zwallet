@@ -21,6 +21,10 @@ import 'main.dart';
 
 part 'store.g.dart';
 
+enum ViewStyle {
+  Auto, Table, List
+}
+
 class LWDServer = _LWDServer with _$LWDServer;
 
 abstract class _LWDServer with Store {
@@ -150,13 +154,13 @@ abstract class _Settings with Store {
   bool includeReplyTo = false;
 
   @observable
-  bool messageTable = false;
+  ViewStyle messageView = ViewStyle.Auto;
 
   @observable
-  bool noteTable = true;
+  ViewStyle noteView = ViewStyle.Auto;
 
   @observable
-  bool txTable = true;
+  ViewStyle txView = ViewStyle.Auto;
 
   @observable
   bool protectSend = false;
@@ -217,9 +221,9 @@ abstract class _Settings with Store {
     protectSend = prefs.getBool('protect_send') ?? false;
     protectOpen = prefs.getBool('protect_open') ?? false;
     includeReplyTo = prefs.getBool('include_reply_to') ?? false;
-    messageTable = prefs.getBool('message_table') ?? false;
-    noteTable = prefs.getBool('note_table') ?? true;
-    txTable = prefs.getBool('tx_table') ?? true;
+    messageView = ViewStyle.values[(prefs.getInt('message_view') ?? 0)];
+    noteView = ViewStyle.values[(prefs.getInt('note_view') ?? 0)];
+    txView = ViewStyle.values[(prefs.getInt('tx_view') ?? 0)];
     gapLimit = prefs.getInt('gap_limit') ?? 10;
     qrOffline = prefs.getBool('qr_offline') ?? true;
 
@@ -504,24 +508,24 @@ abstract class _Settings with Store {
   }
 
   @action
-  Future<void> setMessageTable(bool v) async {
+  Future<void> setMessageView(ViewStyle v) async {
     final prefs = await SharedPreferences.getInstance();
-    messageTable = v;
-    prefs.setBool('message_table', messageTable);
+    messageView = v;
+    prefs.setInt('message_view', v.index);
   }
 
   @action
-  Future<void> setNoteTable(bool v) async {
+  Future<void> setNoteView(ViewStyle v) async {
     final prefs = await SharedPreferences.getInstance();
-    noteTable = v;
-    prefs.setBool('note_table', noteTable);
+    noteView = v;
+    prefs.setInt('note_view', v.index);
   }
 
   @action
-  Future<void> setTxTable(bool v) async {
+  Future<void> setTxView(ViewStyle v) async {
     final prefs = await SharedPreferences.getInstance();
-    txTable = v;
-    prefs.setBool('tx_table', txTable);
+    txView = v;
+    prefs.setInt('tx_view', v.index);
   }
 
   @action

@@ -13,22 +13,26 @@ class HistoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      if (settings.txTable)
-        return HistoryWidgetTable();
-      else
-        return HistoryWidgetList();
+      switch (settings.txView) {
+        case ViewStyle.Table: return HistoryTable();
+        case ViewStyle.List: return HistoryList();
+        case ViewStyle.Auto: return OrientationBuilder(builder: (context, orientation) {
+          if (orientation == Orientation.portrait) return HistoryList();
+          else return HistoryTable();
+        });
+      }
     });
   }
 }
 
-class HistoryWidgetTable extends StatefulWidget {
-  HistoryWidgetTable();
+class HistoryTable extends StatefulWidget {
+  HistoryTable();
 
   @override
   HistoryState createState() => HistoryState();
 }
 
-class HistoryState extends State<HistoryWidgetTable>
+class HistoryState extends State<HistoryTable>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; //Set to true
@@ -166,12 +170,12 @@ class HistoryDataSource extends DataTableSource {
   int get selectedRowCount => 0;
 }
 
-class HistoryWidgetList extends StatefulWidget {
+class HistoryList extends StatefulWidget {
   @override
   HistoryListState createState() => HistoryListState();
 }
 
-class HistoryListState extends State<HistoryWidgetList> {
+class HistoryListState extends State<HistoryList> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
@@ -191,6 +195,9 @@ class HistoryListState extends State<HistoryWidgetList> {
           });
     });
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class TxItem extends StatelessWidget {
@@ -220,7 +227,7 @@ class TxItem extends StatelessWidget {
               Text('${tx.txid}', style: theme.textTheme.labelSmall),
             ]),
             Padding(padding: EdgeInsets.symmetric(horizontal: 4)),
-            Expanded(child: MessageWidget(tx.contact ?? tx.address, message, tx.memo)),
+            Expanded(child: MessageContentWidget(tx.contact ?? tx.address, message, tx.memo)),
             SizedBox(
               width: 100,
               child: Column(children: [
@@ -237,12 +244,12 @@ class TxItem extends StatelessWidget {
   }
 }
 
-class MessageWidget extends StatelessWidget {
+class MessageContentWidget extends StatelessWidget {
   final String address;
   final ZMessage? message;
   final String memo;
 
-  MessageWidget(this.address, this.message, this.memo);
+  MessageContentWidget(this.address, this.message, this.memo);
 
   @override
   Widget build(BuildContext context) {
