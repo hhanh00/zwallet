@@ -9,13 +9,32 @@ import 'main.dart';
 import 'message_item.dart';
 import 'store.dart';
 
-class MessagesTab extends StatefulWidget {
-  MessagesTab({Key? key}): super(key: key);
+class MessageWidget extends StatelessWidget {
+  final Key key;
+  MessageWidget(this.key);
+
   @override
-  MessagesState createState() => MessagesState();
+  Widget build(BuildContext context) {
+    return Observer(builder: (context) {
+      switch (settings.messageView) {
+        case ViewStyle.Table: return MessageTable(key: key);
+        case ViewStyle.List: return MessageList();
+        case ViewStyle.Auto: return OrientationBuilder(builder: (context, orientation) {
+          if (orientation == Orientation.portrait) return MessageList();
+          else return MessageTable();
+        });
+      }
+    });
+  }
 }
 
-class MessagesState extends State<MessagesTab> with AutomaticKeepAliveClientMixin {
+class MessageTable extends StatefulWidget {
+  MessageTable({Key? key}): super(key: key);
+  @override
+  MessageTableState createState() => MessageTableState();
+}
+
+class MessageTableState extends State<MessageTable> with AutomaticKeepAliveClientMixin {
   MessagesDataSource? source;
   @override
   bool get wantKeepAlive => true; //Set to true
@@ -24,9 +43,6 @@ class MessagesState extends State<MessagesTab> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
     final s = S.of(context);
-
-    if (!settings.messageTable)
-      return MessageList();
 
     final _source = MessagesDataSource(context);
     source = _source;
@@ -126,9 +142,10 @@ class MessageList extends StatefulWidget {
   MessageListState createState() => MessageListState();
 }
 
-class MessageListState extends State<MessageList> {
+class MessageListState extends State<MessageList> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (active.messages.isEmpty) return Container();
     return Container(child: ListView.builder(
       itemCount: active.messages.length,
@@ -136,6 +153,9 @@ class MessageListState extends State<MessageList> {
         return MessageItem(active.messages[index], index);
     }));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class MessagePage extends StatefulWidget {

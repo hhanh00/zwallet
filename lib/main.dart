@@ -76,7 +76,7 @@ var eta = ETAStore();
 var contacts = ContactStore();
 var accounts = AccountManager2();
 var active = ActiveAccount();
-final messageKey = GlobalKey<MessagesState>();
+final messageKey = GlobalKey<MessageTableState>();
 
 StreamSubscription? subUniLinks;
 

@@ -1,3 +1,4 @@
+import 'package:YWallet/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -15,7 +16,8 @@ class SettingsPage extends StatefulWidget {
 
 final _settingsFormKey = GlobalKey<FormBuilderState>();
 
-class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMixin {
+class SettingsState extends State<SettingsPage>
+    with SingleTickerProviderStateMixin {
   var _anchorController =
       TextEditingController(text: "${settings.anchorOffset}");
   var _thresholdController = TextEditingController(
@@ -24,6 +26,9 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
   var _gapLimitController = TextEditingController(text: "${settings.gapLimit}");
   var _currency = settings.currency;
   var _needAuth = false;
+  var _messageView = settings.messageView;
+  var _noteView = settings.noteView;
+  var _txView = settings.txView;
   late TabController _tabController;
 
   @override
@@ -50,9 +55,9 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
                               name: 'mode',
-                              decoration: InputDecoration(
-                                  labelText: s.mode),
-                              initialValue: settings.simpleMode ? 'simple' : 'advanced',
+                              decoration: InputDecoration(labelText: s.mode),
+                              initialValue:
+                                  settings.simpleMode ? 'simple' : 'advanced',
                               onSaved: _onMode,
                               options: [
                                 FormBuilderFieldOption(
@@ -60,8 +65,19 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                                 FormBuilderFieldOption(
                                     child: Text(s.advanced), value: 'advanced'),
                               ]),
-                          if (!simpleMode) TabBar(controller: _tabController, tabs: [Tab(text: "Zcash"), Tab(text: "Ycash")]),
-                          if (!simpleMode) SizedBox(height: 270, child: TabBarView(controller: _tabController, children: [ServerSelect(0), ServerSelect(1)])),
+                          if (!simpleMode)
+                            TabBar(
+                                controller: _tabController,
+                                tabs: [Tab(text: "Zcash"), Tab(text: "Ycash")]),
+                          if (!simpleMode)
+                            SizedBox(
+                                height: 270,
+                                child: TabBarView(
+                                    controller: _tabController,
+                                    children: [
+                                      ServerSelect(0),
+                                      ServerSelect(1)
+                                    ])),
                           // if (!simpleMode) FormBuilderRadioGroup(
                           //     orientation: OptionsOrientation.vertical,
                           //     name: 'servers',
@@ -73,47 +89,43 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
                               name: 'themes',
-                              decoration: InputDecoration(
-                                  labelText: s.theme),
+                              decoration: InputDecoration(labelText: s.theme),
                               initialValue: settings.theme,
                               onChanged: _onTheme,
                               options: [
                                 FormBuilderFieldOption(
                                     child: Text(s.gold), value: 'gold'),
                                 FormBuilderFieldOption(
-                                    child: Text(s.blue),
-                                    value: 'blue'),
+                                    child: Text(s.blue), value: 'blue'),
                                 FormBuilderFieldOption(
-                                    child: Text(s.pink),
-                                    value: 'pink'),
+                                    child: Text(s.pink), value: 'pink'),
                                 FormBuilderFieldOption(
-                                    child: Text(s.purple),
-                                    value: 'purple'),
+                                    child: Text(s.purple), value: 'purple'),
                                 FormBuilderFieldOption(
-                                    child: Text(s.custom),
-                                    value: 'custom'),
+                                    child: Text(s.custom), value: 'custom'),
                               ]),
-                          Row(children: [Expanded(child: FormBuilderRadioGroup(
-                              orientation: OptionsOrientation.horizontal,
-                              name: 'brightness',
-                              initialValue: settings.themeBrightness,
-                              onChanged: _onThemeBrightness,
-                              options: [
-                                FormBuilderFieldOption(
-                                    child: Text(s.light),
-                                    value: 'light'),
-                                FormBuilderFieldOption(
-                                    child: Text(s.dark),
-                                    value: 'dark'),
-                              ])),
-                            IconButton(onPressed: _editTheme, icon: Icon(Icons.edit))
+                          Row(children: [
+                            Expanded(
+                                child: FormBuilderRadioGroup(
+                                    orientation: OptionsOrientation.horizontal,
+                                    name: 'brightness',
+                                    initialValue: settings.themeBrightness,
+                                    onChanged: _onThemeBrightness,
+                                    options: [
+                                  FormBuilderFieldOption(
+                                      child: Text(s.light), value: 'light'),
+                                  FormBuilderFieldOption(
+                                      child: Text(s.dark), value: 'dark'),
+                                ])),
+                            IconButton(
+                                onPressed: _editTheme, icon: Icon(Icons.edit))
                           ]),
                           Row(children: [
                             SizedBox(
                                 width: 100,
                                 child: DropdownButtonFormField<String>(
-                                    decoration: InputDecoration(
-                                        labelText: s.currency),
+                                    decoration:
+                                        InputDecoration(labelText: s.currency),
                                     value: _currency,
                                     items: settings.currencies
                                         .map((c) => DropdownMenuItem(
@@ -153,40 +165,42 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                             //           initialValue: settings.useUA,
                             //           onSaved: _onUseUA)),
                           ]),
-                          if (!simpleMode) FormBuilderTextField(
-                              decoration: InputDecoration(
-                                  labelText: s.numberOfConfirmationsNeededBeforeSpending),
-                              name: 'anchor',
-                              keyboardType: TextInputType.number,
-                              controller: _anchorController,
-                              onSaved: _onAnchorOffset),
-                          if (!simpleMode) FormBuilderRadioGroup(
-                              orientation: OptionsOrientation.horizontal,
-                              name: 'pnl',
-                              decoration: InputDecoration(
-                                  labelText: s.tradingChartRange),
-                              initialValue: settings.chartRange,
-                              onSaved: _onChartRange,
-                              options: [
-                                FormBuilderFieldOption(
-                                    child: Text(s.M1), value: '1M'),
-                                FormBuilderFieldOption(
-                                    child: Text(s.M3), value: '3M'),
-                                FormBuilderFieldOption(
-                                    child: Text(s.M6), value: '6M'),
-                                FormBuilderFieldOption(
-                                    child: Text(s.Y1), value: '1Y'),
-                              ]),
-                          if (!simpleMode) FormBuilderCheckbox(
-                              name: 'get_tx',
-                              title: Text(
-                                  s.retrieveTransactionDetails),
-                              initialValue: settings.getTx,
-                              onSaved: _onGetTx),
+                          if (!simpleMode)
+                            FormBuilderTextField(
+                                decoration: InputDecoration(
+                                    labelText: s
+                                        .numberOfConfirmationsNeededBeforeSpending),
+                                name: 'anchor',
+                                keyboardType: TextInputType.number,
+                                controller: _anchorController,
+                                onSaved: _onAnchorOffset),
+                          if (!simpleMode)
+                            FormBuilderRadioGroup(
+                                orientation: OptionsOrientation.horizontal,
+                                name: 'pnl',
+                                decoration: InputDecoration(
+                                    labelText: s.tradingChartRange),
+                                initialValue: settings.chartRange,
+                                onSaved: _onChartRange,
+                                options: [
+                                  FormBuilderFieldOption(
+                                      child: Text(s.M1), value: '1M'),
+                                  FormBuilderFieldOption(
+                                      child: Text(s.M3), value: '3M'),
+                                  FormBuilderFieldOption(
+                                      child: Text(s.M6), value: '6M'),
+                                  FormBuilderFieldOption(
+                                      child: Text(s.Y1), value: '1Y'),
+                                ]),
+                          if (!simpleMode)
+                            FormBuilderCheckbox(
+                                name: 'get_tx',
+                                title: Text(s.retrieveTransactionDetails),
+                                initialValue: settings.getTx,
+                                onSaved: _onGetTx),
                           FormBuilderCheckbox(
                               name: 'auto_hide',
-                              title: Text(
-                                  s.autoHideBalance),
+                              title: Text(s.autoHideBalance),
                               initialValue: settings.autoHide,
                               onSaved: _onAutoHide),
                           FormBuilderCheckbox(
@@ -194,63 +208,100 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
                               title: Text(s.includeReplyTo),
                               initialValue: settings.includeReplyTo,
                               onSaved: _onIncludeReplyTo),
-                          if (!simpleMode) FormBuilderCheckbox(
-                              name: 'message_table',
-                              title: Text(s.showMessagesAsTable),
-                              initialValue: settings.messageTable,
-                              onSaved: _onMessageTable),
-                          if (!simpleMode) FormBuilderCheckbox(
-                              name: 'note_table',
-                              title: Text(s.showNotesAsTable),
-                              initialValue: settings.noteTable,
-                              onSaved: _onNoteTable),
-                          if (!simpleMode) FormBuilderCheckbox(
-                              name: 'tx_table',
-                              title: Text(s.showTransactionsAsTable),
-                              initialValue: settings.txTable,
-                              onSaved: _onTxTable),
-                          if (!simpleMode) TextFormField(
-                              decoration: InputDecoration(
-                                  labelText: 'Auto Shield Threshold'),
-                              keyboardType: TextInputType.number,
-                              controller: _thresholdController,
-                              inputFormatters: [makeInputFormatter(true)],
-                              onSaved: _onAutoShieldThreshold,
-                              validator: _checkAmount),
-                          if (!simpleMode) FormBuilderCheckbox(
-                              name: 'use_trp',
-                              title: Text(s.useTransparentBalance),
-                              initialValue: settings.shieldBalance,
-                              onSaved: _shieldBalance),
-                          if (!simpleMode) FormBuilderCheckbox(
-                              name: 'use_cold_qr',
-                              title: Text(s.useQrForOfflineSigning),
-                              initialValue: settings.qrOffline,
-                              onSaved: _qrOffline),
-                          if (!simpleMode) FormBuilderCheckbox(
-                              name: 'antispam',
-                              title: Text(s.antispamFilter),
-                              initialValue: settings.antispam,
-                              onSaved: _antispam),
-                          if (!simpleMode && WarpApi.hasGPU()) FormBuilderCheckbox(
-                              name: 'gpu',
-                              title: Text(s.useGpu),
-                              initialValue: settings.useGPU,
-                              onSaved: _useGPU),
-                          if (!simpleMode) FormBuilderTextField(
-                            decoration: InputDecoration(
-                                labelText: s.defaultMemo),
-                            name: 'memo',
-                            controller: _memoController,
-                            onSaved: _onMemo),
-                          if (!simpleMode ) FormBuilderTextField(
-                              decoration: InputDecoration(
-                                  labelText: s.gapLimit),
-                              name: 'gap_limit',
-                              keyboardType: TextInputType.number,
-                              controller: _gapLimitController,
-                              onSaved: _ongapLimit),
-                        ButtonBar(children: confirmButtons(context, _onSave))
+                          if (!simpleMode) Row(children: [
+                            Expanded(child: DropdownButtonFormField<ViewStyle>(
+                                decoration: InputDecoration(labelText: s.messages),
+                                value: _messageView,
+                                items: ViewStyle.values.map((v) => DropdownMenuItem(
+                                        child: Text(v.name), value: v)).toList(),
+                                onChanged: (v) {
+                                  setState(() { _messageView = v!; });
+                                },
+                                onSaved: (_) {
+                                  settings.setMessageView(_messageView);
+                                })),
+                            Expanded(child: DropdownButtonFormField<ViewStyle>(
+                                decoration: InputDecoration(labelText: s.notes),
+                                value: _noteView,
+                                items: ViewStyle.values.map((v) => DropdownMenuItem(
+                                    child: Text(v.name), value: v)).toList(),
+                                onChanged: (v) {
+                                  setState(() { _noteView = v!; });
+                                },
+                                onSaved: (_) {
+                                  settings.setNoteView(_noteView);
+                                })),
+                            Expanded(child: DropdownButtonFormField<ViewStyle>(
+                                decoration: InputDecoration(labelText: s.transactions),
+                                value: _txView,
+                                items: ViewStyle.values.map((v) => DropdownMenuItem(
+                                    child: Text(v.name), value: v)).toList(),
+                                onChanged: (v) {
+                                  setState(() { _txView = v!; });
+                                },
+                                onSaved: (_) {
+                                  settings.setTxView(_txView);
+                                })),
+                          ]),
+                          // if (!simpleMode) FormBuilderCheckbox(
+                          //     name: 'note_table',
+                          //     title: Text(s.showNotesAsTable),
+                          //     initialValue: settings.noteTable,
+                          //     onSaved: _onNoteTable),
+                          // if (!simpleMode) FormBuilderCheckbox(
+                          //     name: 'tx_table',
+                          //     title: Text(s.showTransactionsAsTable),
+                          //     initialValue: settings.txTable,
+                          //     onSaved: _onTxTable),
+                          if (!simpleMode)
+                            TextFormField(
+                                decoration: InputDecoration(
+                                    labelText: 'Auto Shield Threshold'),
+                                keyboardType: TextInputType.number,
+                                controller: _thresholdController,
+                                inputFormatters: [makeInputFormatter(true)],
+                                onSaved: _onAutoShieldThreshold,
+                                validator: _checkAmount),
+                          if (!simpleMode)
+                            FormBuilderCheckbox(
+                                name: 'use_trp',
+                                title: Text(s.useTransparentBalance),
+                                initialValue: settings.shieldBalance,
+                                onSaved: _shieldBalance),
+                          if (!simpleMode)
+                            FormBuilderCheckbox(
+                                name: 'use_cold_qr',
+                                title: Text(s.useQrForOfflineSigning),
+                                initialValue: settings.qrOffline,
+                                onSaved: _qrOffline),
+                          if (!simpleMode)
+                            FormBuilderCheckbox(
+                                name: 'antispam',
+                                title: Text(s.antispamFilter),
+                                initialValue: settings.antispam,
+                                onSaved: _antispam),
+                          if (!simpleMode && WarpApi.hasGPU())
+                            FormBuilderCheckbox(
+                                name: 'gpu',
+                                title: Text(s.useGpu),
+                                initialValue: settings.useGPU,
+                                onSaved: _useGPU),
+                          if (!simpleMode)
+                            FormBuilderTextField(
+                                decoration:
+                                    InputDecoration(labelText: s.defaultMemo),
+                                name: 'memo',
+                                controller: _memoController,
+                                onSaved: _onMemo),
+                          if (!simpleMode)
+                            FormBuilderTextField(
+                                decoration:
+                                    InputDecoration(labelText: s.gapLimit),
+                                name: 'gap_limit',
+                                keyboardType: TextInputType.number,
+                                controller: _gapLimitController,
+                                onSaved: _ongapLimit),
+                          ButtonBar(children: confirmButtons(context, _onSave))
                         ]))))));
   }
 
@@ -305,15 +356,15 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
   }
 
   _onMessageTable(v) {
-    settings.setMessageTable(v);
+    settings.setMessageView(v);
   }
 
   _onNoteTable(v) {
-    settings.setNoteTable(v);
+    settings.setNoteView(v);
   }
 
   _onTxTable(v) {
-    settings.setTxTable(v);
+    settings.setTxView(v);
   }
 
   _onProtectSend(v) {
@@ -335,7 +386,9 @@ class SettingsState extends State<SettingsPage> with SingleTickerProviderStateMi
   _onSave() async {
     final form = _settingsFormKey.currentState!;
     if (form.validate()) {
-      if (_needAuth && !await authenticate(context, S.of(context).protectSendSettingChanged)) return;
+      if (_needAuth &&
+          !await authenticate(context, S.of(context).protectSendSettingChanged))
+        return;
       form.save();
       settings.updateLWD();
       Navigator.of(context).pop();
@@ -370,8 +423,8 @@ class ServerSelect extends StatefulWidget {
   _ServerSelectState createState() => _ServerSelectState(coin);
 }
 
-class _ServerSelectState extends State<ServerSelect> with
-  AutomaticKeepAliveClientMixin {
+class _ServerSelectState extends State<ServerSelect>
+    with AutomaticKeepAliveClientMixin {
   final int coin;
   late String choice;
   late String customUrl;
@@ -390,13 +443,10 @@ class _ServerSelectState extends State<ServerSelect> with
     final s = S.of(context);
     List<FormBuilderFieldOption<String>> options = coinDef.lwd
         .map((lwd) => FormBuilderFieldOption<String>(
-        child: Text(lwd.name), value: lwd.name))
+            child: Text(lwd.name), value: lwd.name))
         .toList();
-    options.insert(0,
-      FormBuilderFieldOption(
-          value: 'auto',
-          child: Text(s.auto))
-    );
+    options.insert(
+        0, FormBuilderFieldOption(value: 'auto', child: Text(s.auto)));
 
     options.add(
       FormBuilderFieldOption(
@@ -410,24 +460,23 @@ class _ServerSelectState extends State<ServerSelect> with
               if (v == null) return;
               customUrl = v;
               _saved = false;
-              },
+            },
           )),
     );
 
     return Column(children: [
       FormBuilderRadioGroup<String>(
-        orientation: OptionsOrientation.vertical,
-        name: 'lwd ${coinDef.ticker}',
-        decoration: InputDecoration(
-            labelText: s.server),
-        initialValue: choice,
-        onSaved: _save,
-        onChanged: (v) {
-          if (v == null) return;
-          choice = v;
-          _saved = false;
+          orientation: OptionsOrientation.vertical,
+          name: 'lwd ${coinDef.ticker}',
+          decoration: InputDecoration(labelText: s.server),
+          initialValue: choice,
+          onSaved: _save,
+          onChanged: (v) {
+            if (v == null) return;
+            choice = v;
+            _saved = false;
           },
-        options: options),
+          options: options),
       Padding(padding: EdgeInsets.symmetric(vertical: 2)),
       Observer(builder: (context) => Text(settings.servers[coin].current)),
     ]);

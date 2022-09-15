@@ -211,7 +211,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             controller: _tabController,
             children: [
               AccountPage(),
-              MessagesTab(key: messageKey),
+              MessageWidget(messageKey),
               if (!simpleMode) NoteWidget(),
               HistoryWidget(),
               if (!simpleMode) BudgetWidget(),
