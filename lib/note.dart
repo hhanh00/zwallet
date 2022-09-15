@@ -7,14 +7,26 @@ import 'store.dart';
 import 'db.dart';
 import 'generated/l10n.dart';
 
-class NoteWidget extends StatefulWidget {
-  NoteWidget();
+class NoteWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Observer(builder: (context) {
+      if (settings.noteTable)
+        return NoteWidgetTable();
+      else
+        return NoteWidgetList();
+    });
+  }
+}
+
+class NoteWidgetTable extends StatefulWidget {
+  NoteWidgetTable();
 
   @override
   State<StatefulWidget> createState() => _NoteState();
 }
 
-class _NoteState extends State<NoteWidget> with AutomaticKeepAliveClientMixin {
+class _NoteState extends State<NoteWidgetTable> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; //Set to true
 
@@ -99,13 +111,13 @@ class NotesDataSource extends DataTableSource {
         : note.height;
 
     var style = theme.textTheme.bodyText2!;
-    if (!_confirmed(note.height))
+    if (!confirmed(note.height))
       style = style.copyWith(color: style.color!.withOpacity(0.5));
 
     if (note.spent)
       style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
 
-    final amountStyle = fontWeight(style, note.value);
+    final amountStyle = weightFromAmount(style, note.value);
 
     return DataRow.byIndex(
       index: index,
@@ -132,13 +144,102 @@ class NotesDataSource extends DataTableSource {
   @override
   int get selectedRowCount => 0;
 
-  bool _confirmed(int height) {
-    return syncStatus.latestHeight - height >= settings.anchorOffset;
-  }
-
   void _noteSelected(Note note, bool? selected) {
     note.excluded = !note.excluded;
     notifyListeners();
     onRowSelected(note);
   }
 }
+
+class NoteWidgetList extends StatefulWidget {
+  @override
+  NoteListState createState() => NoteListState();
+}
+
+class NoteListState extends State<NoteWidgetList> {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final s = S.of(context);
+    return Observer(builder: (context) {
+      final notes = active.sortedNotes;
+      return Padding(padding: EdgeInsets.all(16), child: CustomScrollView(
+        key: UniqueKey(),
+        slivers: [
+          SliverToBoxAdapter(child: ListTile(
+            onTap: _onInvert,
+            title: Text(s.selectNotesToExcludeFromPayments),
+            trailing: Icon(Icons.select_all),
+          )),
+          SliverFixedExtentList(
+            itemExtent: 50,
+            delegate: SliverChildBuilderDelegate((context, index) {
+              return NoteItem(notes[index], index);
+            }, childCount: notes.length))
+        ],
+      ));
+    });
+  }
+
+  _onInvert() {
+    active.invertExcludedNotes();
+  }
+}
+
+class NoteItem extends StatefulWidget {
+  final Note note;
+  final int index;
+  NoteItem(this.note, this.index);
+
+  @override
+  NoteItemState createState() => NoteItemState();
+}
+
+class NoteItemState extends State<NoteItem> {
+  var excluded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    excluded = widget.note.excluded;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final note = widget.note;
+    final timestamp = humanizeDateTime(note.timestamp);
+    final confirmations = syncStatus.latestHeight - note.height + 1;
+    var style = theme.textTheme.titleLarge!;
+    if (!confirmed(note.height))
+      style = style.merge(TextStyle(color: style.color!.withOpacity(0.5)));
+    if (note.spent)
+      style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
+
+    final amountStyle = weightFromAmount(style, note.value);
+
+    return GestureDetector(onTap: _onSelected, behavior: HitTestBehavior.opaque, child:
+      ColoredBox(color: excluded ? theme.primaryColor.withOpacity(0.5) : theme.backgroundColor, child:
+        Padding(padding: EdgeInsets.all(8), child:
+          Row(children: [
+            Column(children: [Text("${note.height}", style: theme.textTheme.bodySmall),
+              Text("${confirmations}", style: theme.textTheme.bodyMedium),
+            ]),
+            Expanded(child: Center(child: Text("${note.value}", style: amountStyle))),
+            Text("${timestamp}"),
+      ]))));
+  }
+
+  _onSelected() {
+    setState(() {
+      excluded = !excluded;
+      widget.note.excluded = excluded;
+      active.excludeNote(widget.note);
+    });
+  }
+}
+
+bool confirmed(int height) {
+  return syncStatus.latestHeight - height >= settings.anchorOffset;
+}
+

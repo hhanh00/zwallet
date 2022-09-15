@@ -525,7 +525,7 @@ Color amountColor(BuildContext context, num a) {
   return theme.textTheme.bodyText1!.color!;
 }
 
-TextStyle fontWeight(TextStyle style, num v) {
+TextStyle weightFromAmount(TextStyle style, num v) {
   final value = v.abs();
   final coin = activeCoin();
   final style2 = style.copyWith(fontFeatures: [FontFeature.tabularFigures()]);
@@ -809,6 +809,7 @@ Future<bool> showConfirmDialog(BuildContext context, String title, String body) 
 Future<void> rescan(BuildContext context) async {
   final height = await rescanDialog(context);
   if (height != null) {
+    active.clear();
     syncStatus.rescan(height);
   }
 }

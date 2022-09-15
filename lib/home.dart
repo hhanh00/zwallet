@@ -57,6 +57,7 @@ class HomeState extends State<HomePage> {
         final h = syncedHeight.height;
         syncStatus.setSyncHeight(h, syncedHeight.timestamp);
         eta.checkpoint(h, DateTime.now());
+        await active.update();
       } else {
         WarpApi.mempoolReset();
       }
