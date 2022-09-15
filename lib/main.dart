@@ -592,8 +592,13 @@ Future<String?> scanCode(BuildContext context) async {
 }
 
 String centerTrim(String v) =>
-    v.length >= 16 ? v.substring(0, 8) + "..." +
-        v.substring(v.length - 16) : v;
+  v.length >= 16 ? v.substring(0, 8) + "..." +
+      v.substring(v.length - 16) : v;
+
+String trailing(String v, int n) {
+  final len = min(n, v.length);
+  return v.substring(v.length - len);
+}
 
 void showSnackBar(String msg, { bool autoClose = false, bool quick = false }) {
   final duration = quick ? Duration(seconds: 1) : Duration(seconds: 4);
@@ -623,6 +628,29 @@ DeviceWidth getWidth(BuildContext context) {
   if (width < 1280) return DeviceWidth.md;
   if (width < 1920) return DeviceWidth.lg;
   return DeviceWidth.xl;
+}
+
+final DateFormat todayDateFormat = DateFormat("HH:mm");
+final DateFormat monthDateFormat = DateFormat("MMMd");
+final DateFormat longAgoDateFormat = DateFormat("yy-MM-dd");
+
+String humanizeDateTime(DateTime datetime) {
+  final messageDate = datetime.toLocal();
+  final now = DateTime.now();
+  final justNow = now.subtract(Duration(minutes: 1));
+  final midnight = DateTime(now.year, now.month, now.day);
+  final year = DateTime(now.year, 1, 1);
+
+  String dateString;
+  if (justNow.isBefore(messageDate))
+    dateString = S.current.now;
+  else if (midnight.isBefore(messageDate))
+    dateString = todayDateFormat.format(messageDate);
+  else if (year.isBefore(messageDate))
+    dateString = monthDateFormat.format(messageDate);
+  else
+    dateString = longAgoDateFormat.format(messageDate);
+  return dateString;
 }
 
 String decimalFormat(double x, int decimalDigits, { String symbol = '' }) =>
