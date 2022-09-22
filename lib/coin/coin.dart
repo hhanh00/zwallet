@@ -67,12 +67,12 @@ abstract class CoinBase {
     }
   }
 
-  Future<void> export(String dbPath) async {
+  Future<void> export(BuildContext context, String dbPath) async {
     final path = _getFullPath(dbPath);
     WarpApi.disableWAL(path);
     db = await openDatabase(path);
     await db.close();
-    await exportFile(path, dbName);
+    await exportFile(context, path, dbName);
   }
 
   Future<void> delete() async {

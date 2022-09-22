@@ -24,6 +24,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uni_links/uni_links.dart';
@@ -310,8 +311,8 @@ class ZWalletAppState extends State<ZWalletApp> {
           coin.init(dbPath);
 
         if (exportDb) {
-          await ycash.export(dbPath);
-          await zcash.export(dbPath);
+          await ycash.export(context, dbPath);
+          await zcash.export(context, dbPath);
           prefs.setBool('export_db', false);
         }
         if (recover) {
@@ -345,7 +346,7 @@ class ZWalletAppState extends State<ZWalletApp> {
 
         for (var s in settings.servers) {
           final server = s.getLWDUrl();
-          if (server.isNotEmpty)
+          if (server != null && server.isNotEmpty)
             WarpApi.updateLWD(s.coin, server);
         }
         _setProgress(0.6, 'Loading Account Data');
@@ -663,13 +664,18 @@ String amountToString(int amount, int decimalDigits) => decimalFormat(amount / Z
 
 DecodedPaymentURI decodeAddress(BuildContext context, String? v) {
   final s = S.of(context);
-  if (v == null || v.isEmpty) throw s.addressIsEmpty;
-  if (WarpApi.validAddress(active.coin, v)) return DecodedPaymentURI(v, 0, "");
-  // not a valid address, try as a payment URI
-  final json = WarpApi.parsePaymentURI(v);
-  if (WarpApi.getError()) throw s.invalidAddress;
-  final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
-  return payment;
+  try {
+    if (v == null || v.isEmpty) throw s.addressIsEmpty;
+    if (WarpApi.validAddress(active.coin, v))
+      return DecodedPaymentURI(v, 0, "");
+    // not a valid address, try as a payment URI
+    final json = WarpApi.parsePaymentURI(v);
+    final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
+    return payment;
+  }
+  on String {
+    throw s.invalidAddress;
+  }
 }
 
 Future<bool> authenticate(BuildContext context, String reason) async {
@@ -747,7 +753,9 @@ Future<void> saveFile(String data, String filename, String title) async {
   }
 }
 
-Future<void> exportFile(String path, String title) async {
+Future<void> exportFile(BuildContext context, String path, String title) async {
+  final confirmed = await showMessageBox(context, title, "Exporting ${path}", S.of(context).ok);
+  if (!confirmed) return;
   if (isMobile()) {
     final context = navigatorKey.currentContext!;
     Size size = MediaQuery.of(context).size;

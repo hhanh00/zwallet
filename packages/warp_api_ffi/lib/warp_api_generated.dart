@@ -53,24 +53,6 @@ class NativeLibrary {
   late final _dart_deallocate_str _deallocate_str =
       _deallocate_str_ptr.asFunction<_dart_deallocate_str>();
 
-  int get_error() {
-    return _get_error();
-  }
-
-  late final _get_error_ptr =
-      _lookup<ffi.NativeFunction<_c_get_error>>('get_error');
-  late final _dart_get_error _get_error =
-      _get_error_ptr.asFunction<_dart_get_error>();
-
-  ffi.Pointer<ffi.Int8> get_error_msg() {
-    return _get_error_msg();
-  }
-
-  late final _get_error_msg_ptr =
-      _lookup<ffi.NativeFunction<_c_get_error_msg>>('get_error_msg');
-  late final _dart_get_error_msg _get_error_msg =
-      _get_error_msg_ptr.asFunction<_dart_get_error_msg>();
-
   void init_wallet(
     ffi.Pointer<ffi.Int8> db_path,
   ) {
@@ -149,7 +131,7 @@ class NativeLibrary {
   late final _dart_reset_app _reset_app =
       _reset_app_ptr.asFunction<_dart_reset_app>();
 
-  int new_account(
+  CResult_u32 new_account(
     int coin,
     ffi.Pointer<ffi.Int8> name,
     ffi.Pointer<ffi.Int8> data,
@@ -231,7 +213,7 @@ class NativeLibrary {
   late final _dart_cancel_warp _cancel_warp =
       _cancel_warp_ptr.asFunction<_dart_cancel_warp>();
 
-  int warp(
+  CResult_u8 warp(
     int coin,
     int get_tx,
     int anchor_offset,
@@ -280,7 +262,7 @@ class NativeLibrary {
   late final _dart_valid_address _valid_address =
       _valid_address_ptr.asFunction<_dart_valid_address>();
 
-  ffi.Pointer<ffi.Int8> new_diversified_address() {
+  CResult_____c_char new_diversified_address() {
     return _new_diversified_address();
   }
 
@@ -290,7 +272,7 @@ class NativeLibrary {
   late final _dart_new_diversified_address _new_diversified_address =
       _new_diversified_address_ptr.asFunction<_dart_new_diversified_address>();
 
-  int get_latest_height() {
+  CResult_u32 get_latest_height() {
     return _get_latest_height();
   }
 
@@ -299,7 +281,7 @@ class NativeLibrary {
   late final _dart_get_latest_height _get_latest_height =
       _get_latest_height_ptr.asFunction<_dart_get_latest_height>();
 
-  ffi.Pointer<ffi.Int8> send_multi_payment(
+  CResult_____c_char send_multi_payment(
     ffi.Pointer<ffi.Int8> recipients_json,
     int use_transparent,
     int anchor_offset,
@@ -332,7 +314,7 @@ class NativeLibrary {
   late final _dart_skip_to_last_height _skip_to_last_height =
       _skip_to_last_height_ptr.asFunction<_dart_skip_to_last_height>();
 
-  int rewind_to(
+  CResult_u32 rewind_to(
     int height,
   ) {
     return _rewind_to(
@@ -358,7 +340,7 @@ class NativeLibrary {
   late final _dart_rescan_from _rescan_from =
       _rescan_from_ptr.asFunction<_dart_rescan_from>();
 
-  int mempool_sync() {
+  CResult_i64 mempool_sync() {
     return _mempool_sync();
   }
 
@@ -386,7 +368,7 @@ class NativeLibrary {
   late final _dart_get_mempool_balance _get_mempool_balance =
       _get_mempool_balance_ptr.asFunction<_dart_get_mempool_balance>();
 
-  int get_taddr_balance(
+  CResult_u64 get_taddr_balance(
     int coin,
     int id_account,
   ) {
@@ -401,7 +383,7 @@ class NativeLibrary {
   late final _dart_get_taddr_balance _get_taddr_balance =
       _get_taddr_balance_ptr.asFunction<_dart_get_taddr_balance>();
 
-  ffi.Pointer<ffi.Int8> shield_taddr() {
+  CResult_____c_char shield_taddr() {
     return _shield_taddr();
   }
 
@@ -425,7 +407,7 @@ class NativeLibrary {
       _scan_transparent_accounts_ptr
           .asFunction<_dart_scan_transparent_accounts>();
 
-  ffi.Pointer<ffi.Int8> prepare_multi_payment(
+  CResult_____c_char prepare_multi_payment(
     ffi.Pointer<ffi.Int8> recipients_json,
     int use_transparent,
     int anchor_offset,
@@ -443,7 +425,7 @@ class NativeLibrary {
   late final _dart_prepare_multi_payment _prepare_multi_payment =
       _prepare_multi_payment_ptr.asFunction<_dart_prepare_multi_payment>();
 
-  ffi.Pointer<ffi.Int8> sign(
+  CResult_____c_char sign(
     ffi.Pointer<ffi.Int8> tx,
     int port,
   ) {
@@ -456,7 +438,7 @@ class NativeLibrary {
   late final _sign_ptr = _lookup<ffi.NativeFunction<_c_sign>>('sign');
   late final _dart_sign _sign = _sign_ptr.asFunction<_dart_sign>();
 
-  ffi.Pointer<ffi.Int8> broadcast_tx(
+  CResult_____c_char broadcast_tx(
     ffi.Pointer<ffi.Int8> tx_str,
   ) {
     return _broadcast_tx(
@@ -469,7 +451,7 @@ class NativeLibrary {
   late final _dart_broadcast_tx _broadcast_tx =
       _broadcast_tx_ptr.asFunction<_dart_broadcast_tx>();
 
-  int get_activation_date() {
+  CResult_u32 get_activation_date() {
     return _get_activation_date();
   }
 
@@ -479,7 +461,7 @@ class NativeLibrary {
   late final _dart_get_activation_date _get_activation_date =
       _get_activation_date_ptr.asFunction<_dart_get_activation_date>();
 
-  int get_block_by_time(
+  CResult_u32 get_block_by_time(
     int time,
   ) {
     return _get_block_by_time(
@@ -492,7 +474,7 @@ class NativeLibrary {
   late final _dart_get_block_by_time _get_block_by_time =
       _get_block_by_time_ptr.asFunction<_dart_get_block_by_time>();
 
-  int sync_historical_prices(
+  CResult_u32 sync_historical_prices(
     int now,
     int days,
     ffi.Pointer<ffi.Int8> currency,
@@ -529,7 +511,7 @@ class NativeLibrary {
   late final _dart_store_contact _store_contact =
       _store_contact_ptr.asFunction<_dart_store_contact>();
 
-  ffi.Pointer<ffi.Int8> commit_unsaved_contacts(
+  CResult_____c_char commit_unsaved_contacts(
     int anchor_offset,
   ) {
     return _commit_unsaved_contacts(
@@ -605,7 +587,7 @@ class NativeLibrary {
   late final _dart_delete_account _delete_account =
       _delete_account_ptr.asFunction<_dart_delete_account>();
 
-  ffi.Pointer<ffi.Int8> make_payment_uri(
+  CResult_____c_char make_payment_uri(
     ffi.Pointer<ffi.Int8> address,
     int amount,
     ffi.Pointer<ffi.Int8> memo,
@@ -622,7 +604,7 @@ class NativeLibrary {
   late final _dart_make_payment_uri _make_payment_uri =
       _make_payment_uri_ptr.asFunction<_dart_make_payment_uri>();
 
-  ffi.Pointer<ffi.Int8> parse_payment_uri(
+  CResult_____c_char parse_payment_uri(
     ffi.Pointer<ffi.Int8> uri,
   ) {
     return _parse_payment_uri(
@@ -635,7 +617,7 @@ class NativeLibrary {
   late final _dart_parse_payment_uri _parse_payment_uri =
       _parse_payment_uri_ptr.asFunction<_dart_parse_payment_uri>();
 
-  ffi.Pointer<ffi.Int8> generate_random_enc_key() {
+  CResult_____c_char generate_random_enc_key() {
     return _generate_random_enc_key();
   }
 
@@ -645,7 +627,7 @@ class NativeLibrary {
   late final _dart_generate_random_enc_key _generate_random_enc_key =
       _generate_random_enc_key_ptr.asFunction<_dart_generate_random_enc_key>();
 
-  ffi.Pointer<ffi.Int8> get_full_backup(
+  CResult_____c_char get_full_backup(
     ffi.Pointer<ffi.Int8> key,
   ) {
     return _get_full_backup(
@@ -674,7 +656,7 @@ class NativeLibrary {
   late final _dart_restore_full_backup _restore_full_backup =
       _restore_full_backup_ptr.asFunction<_dart_restore_full_backup>();
 
-  ffi.Pointer<ffi.Int8> split_data(
+  CResult_____c_char split_data(
     int id,
     ffi.Pointer<ffi.Int8> data,
   ) {
@@ -689,7 +671,7 @@ class NativeLibrary {
   late final _dart_split_data _split_data =
       _split_data_ptr.asFunction<_dart_split_data>();
 
-  ffi.Pointer<ffi.Int8> merge_data(
+  CResult_____c_char merge_data(
     ffi.Pointer<ffi.Int8> drop,
   ) {
     return _merge_data(
@@ -702,7 +684,7 @@ class NativeLibrary {
   late final _dart_merge_data _merge_data =
       _merge_data_ptr.asFunction<_dart_merge_data>();
 
-  ffi.Pointer<ffi.Int8> get_tx_summary(
+  CResult_____c_char get_tx_summary(
     ffi.Pointer<ffi.Int8> tx,
   ) {
     return _get_tx_summary(
@@ -715,7 +697,7 @@ class NativeLibrary {
   late final _dart_get_tx_summary _get_tx_summary =
       _get_tx_summary_ptr.asFunction<_dart_get_tx_summary>();
 
-  ffi.Pointer<ffi.Int8> get_best_server(
+  CResult_____c_char get_best_server(
     ffi.Pointer<ffi.Pointer<ffi.Int8>> servers,
     int count,
   ) {
@@ -747,7 +729,7 @@ class NativeLibrary {
   late final _dart_import_from_zwl _import_from_zwl =
       _import_from_zwl_ptr.asFunction<_dart_import_from_zwl>();
 
-  ffi.Pointer<ffi.Int8> derive_zip32(
+  CResult_____c_char derive_zip32(
     int coin,
     int id_account,
     int account,
@@ -856,6 +838,40 @@ class NativeLibrary {
       _import_sync_file_ptr.asFunction<_dart_import_sync_file>();
 }
 
+class CResult_u32 extends ffi.Struct {
+  @ffi.Uint32()
+  external int value;
+
+  external ffi.Pointer<ffi.Int8> error;
+}
+
+class CResult_u8 extends ffi.Struct {
+  @ffi.Uint8()
+  external int value;
+
+  external ffi.Pointer<ffi.Int8> error;
+}
+
+class CResult_____c_char extends ffi.Struct {
+  external ffi.Pointer<ffi.Int8> value;
+
+  external ffi.Pointer<ffi.Int8> error;
+}
+
+class CResult_i64 extends ffi.Struct {
+  @ffi.Int64()
+  external int value;
+
+  external ffi.Pointer<ffi.Int8> error;
+}
+
+class CResult_u64 extends ffi.Struct {
+  @ffi.Uint64()
+  external int value;
+
+  external ffi.Pointer<ffi.Int8> error;
+}
+
 const int QR_DATA_SIZE = 256;
 
 const int N = 200000;
@@ -879,14 +895,6 @@ typedef _c_deallocate_str = ffi.Void Function(
 typedef _dart_deallocate_str = void Function(
   ffi.Pointer<ffi.Int8> s,
 );
-
-typedef _c_get_error = ffi.Int8 Function();
-
-typedef _dart_get_error = int Function();
-
-typedef _c_get_error_msg = ffi.Pointer<ffi.Int8> Function();
-
-typedef _dart_get_error_msg = ffi.Pointer<ffi.Int8> Function();
 
 typedef _c_init_wallet = ffi.Void Function(
   ffi.Pointer<ffi.Int8> db_path,
@@ -936,14 +944,14 @@ typedef _c_reset_app = ffi.Void Function();
 
 typedef _dart_reset_app = void Function();
 
-typedef _c_new_account = ffi.Uint32 Function(
+typedef _c_new_account = CResult_u32 Function(
   ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> data,
   ffi.Int32 index,
 );
 
-typedef _dart_new_account = int Function(
+typedef _dart_new_account = CResult_u32 Function(
   int coin,
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> data,
@@ -990,7 +998,7 @@ typedef _c_cancel_warp = ffi.Void Function();
 
 typedef _dart_cancel_warp = void Function();
 
-typedef _c_warp = ffi.Uint8 Function(
+typedef _c_warp = CResult_u8 Function(
   ffi.Uint8 coin,
   ffi.Int8 get_tx,
   ffi.Uint32 anchor_offset,
@@ -998,7 +1006,7 @@ typedef _c_warp = ffi.Uint8 Function(
   ffi.Int64 port,
 );
 
-typedef _dart_warp = int Function(
+typedef _dart_warp = CResult_u8 Function(
   int coin,
   int get_tx,
   int anchor_offset,
@@ -1026,22 +1034,22 @@ typedef _dart_valid_address = int Function(
   ffi.Pointer<ffi.Int8> address,
 );
 
-typedef _c_new_diversified_address = ffi.Pointer<ffi.Int8> Function();
+typedef _c_new_diversified_address = CResult_____c_char Function();
 
-typedef _dart_new_diversified_address = ffi.Pointer<ffi.Int8> Function();
+typedef _dart_new_diversified_address = CResult_____c_char Function();
 
-typedef _c_get_latest_height = ffi.Uint32 Function();
+typedef _c_get_latest_height = CResult_u32 Function();
 
-typedef _dart_get_latest_height = int Function();
+typedef _dart_get_latest_height = CResult_u32 Function();
 
-typedef _c_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
+typedef _c_send_multi_payment = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> recipients_json,
   ffi.Int8 use_transparent,
   ffi.Uint32 anchor_offset,
   ffi.Int64 port,
 );
 
-typedef _dart_send_multi_payment = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_send_multi_payment = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> recipients_json,
   int use_transparent,
   int anchor_offset,
@@ -1056,11 +1064,11 @@ typedef _dart_skip_to_last_height = void Function(
   int coin,
 );
 
-typedef _c_rewind_to = ffi.Uint32 Function(
+typedef _c_rewind_to = CResult_u32 Function(
   ffi.Uint32 height,
 );
 
-typedef _dart_rewind_to = int Function(
+typedef _dart_rewind_to = CResult_u32 Function(
   int height,
 );
 
@@ -1072,9 +1080,9 @@ typedef _dart_rescan_from = void Function(
   int height,
 );
 
-typedef _c_mempool_sync = ffi.Int64 Function();
+typedef _c_mempool_sync = CResult_i64 Function();
 
-typedef _dart_mempool_sync = int Function();
+typedef _dart_mempool_sync = CResult_i64 Function();
 
 typedef _c_mempool_reset = ffi.Void Function();
 
@@ -1084,19 +1092,19 @@ typedef _c_get_mempool_balance = ffi.Int64 Function();
 
 typedef _dart_get_mempool_balance = int Function();
 
-typedef _c_get_taddr_balance = ffi.Uint64 Function(
+typedef _c_get_taddr_balance = CResult_u64 Function(
   ffi.Uint8 coin,
   ffi.Uint32 id_account,
 );
 
-typedef _dart_get_taddr_balance = int Function(
+typedef _dart_get_taddr_balance = CResult_u64 Function(
   int coin,
   int id_account,
 );
 
-typedef _c_shield_taddr = ffi.Pointer<ffi.Int8> Function();
+typedef _c_shield_taddr = CResult_____c_char Function();
 
-typedef _dart_shield_taddr = ffi.Pointer<ffi.Int8> Function();
+typedef _dart_shield_taddr = CResult_____c_char Function();
 
 typedef _c_scan_transparent_accounts = ffi.Void Function(
   ffi.Uint32 gap_limit,
@@ -1106,55 +1114,55 @@ typedef _dart_scan_transparent_accounts = void Function(
   int gap_limit,
 );
 
-typedef _c_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
+typedef _c_prepare_multi_payment = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> recipients_json,
   ffi.Int8 use_transparent,
   ffi.Uint32 anchor_offset,
 );
 
-typedef _dart_prepare_multi_payment = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_prepare_multi_payment = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> recipients_json,
   int use_transparent,
   int anchor_offset,
 );
 
-typedef _c_sign = ffi.Pointer<ffi.Int8> Function(
+typedef _c_sign = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> tx,
   ffi.Int64 port,
 );
 
-typedef _dart_sign = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_sign = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> tx,
   int port,
 );
 
-typedef _c_broadcast_tx = ffi.Pointer<ffi.Int8> Function(
+typedef _c_broadcast_tx = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> tx_str,
 );
 
-typedef _dart_broadcast_tx = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_broadcast_tx = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> tx_str,
 );
 
-typedef _c_get_activation_date = ffi.Uint32 Function();
+typedef _c_get_activation_date = CResult_u32 Function();
 
-typedef _dart_get_activation_date = int Function();
+typedef _dart_get_activation_date = CResult_u32 Function();
 
-typedef _c_get_block_by_time = ffi.Uint32 Function(
+typedef _c_get_block_by_time = CResult_u32 Function(
   ffi.Uint32 time,
 );
 
-typedef _dart_get_block_by_time = int Function(
+typedef _dart_get_block_by_time = CResult_u32 Function(
   int time,
 );
 
-typedef _c_sync_historical_prices = ffi.Uint32 Function(
+typedef _c_sync_historical_prices = CResult_u32 Function(
   ffi.Int64 now,
   ffi.Uint32 days,
   ffi.Pointer<ffi.Int8> currency,
 );
 
-typedef _dart_sync_historical_prices = int Function(
+typedef _dart_sync_historical_prices = CResult_u32 Function(
   int now,
   int days,
   ffi.Pointer<ffi.Int8> currency,
@@ -1174,11 +1182,11 @@ typedef _dart_store_contact = void Function(
   int dirty,
 );
 
-typedef _c_commit_unsaved_contacts = ffi.Pointer<ffi.Int8> Function(
+typedef _c_commit_unsaved_contacts = CResult_____c_char Function(
   ffi.Uint32 anchor_offset,
 );
 
-typedef _dart_commit_unsaved_contacts = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_commit_unsaved_contacts = CResult_____c_char Function(
   int anchor_offset,
 );
 
@@ -1218,35 +1226,35 @@ typedef _dart_delete_account = void Function(
   int account,
 );
 
-typedef _c_make_payment_uri = ffi.Pointer<ffi.Int8> Function(
+typedef _c_make_payment_uri = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> address,
   ffi.Uint64 amount,
   ffi.Pointer<ffi.Int8> memo,
 );
 
-typedef _dart_make_payment_uri = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_make_payment_uri = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> address,
   int amount,
   ffi.Pointer<ffi.Int8> memo,
 );
 
-typedef _c_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
+typedef _c_parse_payment_uri = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> uri,
 );
 
-typedef _dart_parse_payment_uri = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_parse_payment_uri = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> uri,
 );
 
-typedef _c_generate_random_enc_key = ffi.Pointer<ffi.Int8> Function();
+typedef _c_generate_random_enc_key = CResult_____c_char Function();
 
-typedef _dart_generate_random_enc_key = ffi.Pointer<ffi.Int8> Function();
+typedef _dart_generate_random_enc_key = CResult_____c_char Function();
 
-typedef _c_get_full_backup = ffi.Pointer<ffi.Int8> Function(
+typedef _c_get_full_backup = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> key,
 );
 
-typedef _dart_get_full_backup = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_get_full_backup = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> key,
 );
 
@@ -1260,38 +1268,38 @@ typedef _dart_restore_full_backup = void Function(
   ffi.Pointer<ffi.Int8> backup,
 );
 
-typedef _c_split_data = ffi.Pointer<ffi.Int8> Function(
+typedef _c_split_data = CResult_____c_char Function(
   ffi.Uint32 id,
   ffi.Pointer<ffi.Int8> data,
 );
 
-typedef _dart_split_data = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_split_data = CResult_____c_char Function(
   int id,
   ffi.Pointer<ffi.Int8> data,
 );
 
-typedef _c_merge_data = ffi.Pointer<ffi.Int8> Function(
+typedef _c_merge_data = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> drop,
 );
 
-typedef _dart_merge_data = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_merge_data = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> drop,
 );
 
-typedef _c_get_tx_summary = ffi.Pointer<ffi.Int8> Function(
+typedef _c_get_tx_summary = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> tx,
 );
 
-typedef _dart_get_tx_summary = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_get_tx_summary = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> tx,
 );
 
-typedef _c_get_best_server = ffi.Pointer<ffi.Int8> Function(
+typedef _c_get_best_server = CResult_____c_char Function(
   ffi.Pointer<ffi.Pointer<ffi.Int8>> servers,
   ffi.Uint32 count,
 );
 
-typedef _dart_get_best_server = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_get_best_server = CResult_____c_char Function(
   ffi.Pointer<ffi.Pointer<ffi.Int8>> servers,
   int count,
 );
@@ -1308,7 +1316,7 @@ typedef _dart_import_from_zwl = void Function(
   ffi.Pointer<ffi.Int8> data,
 );
 
-typedef _c_derive_zip32 = ffi.Pointer<ffi.Int8> Function(
+typedef _c_derive_zip32 = CResult_____c_char Function(
   ffi.Uint8 coin,
   ffi.Uint32 id_account,
   ffi.Uint32 account,
@@ -1317,7 +1325,7 @@ typedef _c_derive_zip32 = ffi.Pointer<ffi.Int8> Function(
   ffi.Uint32 address,
 );
 
-typedef _dart_derive_zip32 = ffi.Pointer<ffi.Int8> Function(
+typedef _dart_derive_zip32 = CResult_____c_char Function(
   int coin,
   int id_account,
   int account,

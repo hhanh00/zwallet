@@ -231,8 +231,8 @@ class TxItem extends StatelessWidget {
             SizedBox(
               width: 100,
               child: Column(children: [
+                Text('${humanizeDateTime(tx.timestamp)}'),
                 Text('${tx.value}', style: theme.textTheme.titleLarge!.copyWith(color: color)),
-                Text('${humanizeDateTime(tx.timestamp)}')
             ])),
           ]
       ))

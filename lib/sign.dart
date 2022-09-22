@@ -47,23 +47,22 @@ class Sign extends StatelessWidget {
 
     if (txStr != null) {
       active.setBanner(paymentInProgressLabel);
-      final res = await WarpApi.signOnly(
-          active.coin, active.id, txStr, (progress) {
-        progressPort.sendPort.send(progress);
-      });
-      progressPort.sendPort.send(0);
-      active.setBanner("");
-      final isError = WarpApi.getError();
-      if (isError) {
-        showSnackBar(res);
-      }
-      else {
+      try {
+        final res = await WarpApi.signOnly(
+            active.coin, active.id, txStr, (progress) {
+          progressPort.sendPort.send(progress);
+        });
+        progressPort.sendPort.send(0);
+        active.setBanner("");
         if (settings.qrOffline) {
           navigatorKey.currentState?.pushReplacementNamed(
               '/showRawTx', arguments: res);
         } else {
           await saveFile(res, 'tx.raw', rawTransactionLabel);
         }
+      }
+      on String catch (error) {
+        showSnackBar(error);
       }
     }
   }
