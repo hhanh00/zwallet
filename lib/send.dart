@@ -488,37 +488,44 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
   final player = AudioPlayer();
   if (active.canPay) {
     Navigator.of(context).pop();
-    active.setBanner(s.paymentInProgress);
-    final res = await WarpApi.sendPayment(active.coin, active.id, recipients,
-        useTransparent, settings.anchorOffset, (progress) {
-          progressPort.sendPort.send(progress);
-        });
-    progressPort.sendPort.send(0);
-    active.setBanner("");
-    final isError = WarpApi.getError();
-    final msg = isError ? s.error(res) : s.txId(res);
-    await player.play(AssetSource(isError ? "fail.mp3" : "success.mp3"));
-    showSnackBar(msg);
+    try {
+      active.setBanner(s.paymentInProgress);
+      final res = await WarpApi.sendPayment(active.coin, active.id, recipients,
+          useTransparent, settings.anchorOffset, (progress) {
+            progressPort.sendPort.send(progress);
+          });
+      progressPort.sendPort.send(0);
+      await player.play(AssetSource("success.mp3"));
+    }
+    on String catch (message) {
+      await player.play(AssetSource("fail.mp3"));
+      showSnackBar(message);
+    }
+    finally {
+      active.setBanner("");
+    }
     await active.update();
   } else {
-    final txjson = WarpApi.prepareTx(recipients, useTransparent, settings.anchorOffset);
-    final isError = WarpApi.getError();
-    if (isError) {
-      showSnackBar(txjson);
+    try {
+      final txjson = WarpApi.prepareTx(
+          recipients, useTransparent, settings.anchorOffset);
+      active.setDraftRecipient(null);
+
+      if (settings.qrOffline) {
+        Navigator.pushReplacementNamed(context, '/qroffline', arguments: txjson);
+      }
+      else {
+        await saveFile(txjson, "tx.json", s.unsignedTransactionFile);
+
+        showSnackBar(s.fileSaved);
+        Navigator.of(context).pop();
+      }
+    }
+    on String catch (message) {
+      showSnackBar(message);
       await player.play(AssetSource("fail.mp3"));
       if (recipients.length == 1)
         active.setDraftRecipient(recipients[0]);
-      Navigator.of(context).pop();
-      return;
-    }
-    active.setDraftRecipient(null);
-    if (settings.qrOffline) {
-      Navigator.pushReplacementNamed(context, '/qroffline', arguments: txjson);
-    }
-    else {
-      await saveFile(txjson, "tx.json", s.unsignedTransactionFile);
-
-      showSnackBar(s.fileSaved);
       Navigator.of(context).pop();
     }
   }

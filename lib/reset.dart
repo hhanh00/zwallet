@@ -143,18 +143,17 @@ class _FullRestoreState extends State<FullRestorePage> {
       final file = File(filename);
       final backup = await file.readAsString();
       final key = controller.text;
-      if (key.isNotEmpty)
-        WarpApi.restoreFullBackup(key, backup);
-      else
-        WarpApi.importFromZWL(active.coin, "ZWL Imported Account", backup);
-
-      if (WarpApi.getError()) {
-        showSnackBar(WarpApi.getErrorMessage());
-      }
-      else {
+      try {
+        if (key.isNotEmpty)
+          WarpApi.restoreFullBackup(key, backup);
+        else
+          WarpApi.importFromZWL(active.coin, "ZWL Imported Account", backup);
         await accounts.refresh();
         syncStatus.setAccountRestored(true);
         Navigator.of(context).pop();
+      }
+      on String catch (message) {
+        showSnackBar(message);
       }
     }
   }

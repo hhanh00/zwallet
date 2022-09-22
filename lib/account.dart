@@ -262,16 +262,18 @@ class QRAddressState extends State<QRAddressWidget> {
           Navigator.of(context).pop(true);
         }))) ?? false;
     if (confirmed) {
-      if (pathController.text.isNotEmpty)
-        WarpApi.importTransparentPath(active.coin, active.id, pathController.text);
-      if (keyController.text.isNotEmpty)
-        WarpApi.importTransparentSecretKey(active.coin, active.id, keyController.text);
-      if (WarpApi.getError()) {
-        showSnackBar(WarpApi.getErrorMessage());
-      }
-      else {
+      try {
+        if (pathController.text.isNotEmpty)
+          WarpApi.importTransparentPath(
+              active.coin, active.id, pathController.text);
+        if (keyController.text.isNotEmpty)
+          WarpApi.importTransparentSecretKey(
+              active.coin, active.id, keyController.text);
         await active.refreshTAddr();
         active.updateTBalance();
+      }
+      on String catch (message) {
+        showSnackBar(message);
       }
     }
   }

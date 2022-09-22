@@ -96,14 +96,14 @@ class DevPageState extends State<DevPage> {
       path = result.files.single.path!;
     }
 
-    WarpApi.importSyncFile(active.coin, path);
-    if (WarpApi.getError()) {
-      final message = WarpApi.getErrorMessage();
-      await showMessageBox(context, 'Import failed', message, s.ok);
-    }
-    else {
+    try {
+      WarpApi.importSyncFile(active.coin, path);
       await active.refreshAccount();
-      await showMessageBox(context, "Synchronized", "Your account is synchronized", s.ok);
+      await showMessageBox(
+          context, "Synchronized", "Your account is synchronized", s.ok);
+    }
+    on String catch (message) {
+      await showMessageBox(context, 'Import failed', message, s.ok);
     }
   }
 

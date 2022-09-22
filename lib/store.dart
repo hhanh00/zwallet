@@ -40,7 +40,7 @@ abstract class _LWDServer with Store {
     customUrl = coinDef.lwd.first.url;
   }
 
-  Future<String> loadPrefs() async {
+  Future<String?> loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     final ticker = coinDef.ticker;
     final _choice = prefs.getString('$ticker.lwd_choice');
@@ -65,12 +65,18 @@ abstract class _LWDServer with Store {
   }
 
   @action
-  String getLWDUrl() {
-    final url;
+  String? getLWDUrl() {
+    String? url;
     if (choice == "auto") {
       var servers = coinDef.lwd.map((s) => s.url).toList();
       servers.add(customUrl);
-      url = WarpApi.getBestServer(servers);
+      try {
+        url = WarpApi.getBestServer(servers);
+      }
+      catch (e) {
+        print(e);
+        return null;
+      }
     }
     else if (choice == "custom")
       url = customUrl;
@@ -289,7 +295,8 @@ abstract class _Settings with Store {
   void updateLWD() async {
     for (var s in servers) {
       final url = await s.loadPrefs();
-      WarpApi.updateLWD(s.coin, url);
+      if (url != null)
+        WarpApi.updateLWD(s.coin, url);
     }
   }
 
@@ -692,7 +699,8 @@ abstract class _SyncStatus with Store {
     final server = WarpApi.getLWD(active.coin);
     if (server.isEmpty) {
       final server = settings.servers[active.coin].getLWDUrl();
-      WarpApi.updateLWD(active.coin, server);
+      if (server != null && server.isNotEmpty)
+        WarpApi.updateLWD(active.coin, server);
     }
     latestHeight = await WarpApi.getLatestHeight();
     final _syncedInfo = await getDbSyncedHeight();
