@@ -124,6 +124,7 @@ flatpak-builder --user --install --force-clean build-dir me.hanh.zwallet.Ywallet
 flatpak build-export ~/repo build-dir
 flatpak build-bundle ~/repo ywallet.flatpak me.hanh.zwallet.Ywallet
 
+rm -rf build-dir
 rm -rf ~/repo
 docker rm zwallet_linux
 ```

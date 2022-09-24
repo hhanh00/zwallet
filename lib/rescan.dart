@@ -8,40 +8,49 @@ import 'main.dart';
 final rescanKey = GlobalKey<RescanFormState>();
 
 Future<int?> rescanDialog(BuildContext context) async {
-  final approved = await showDialog<bool>(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => AlertDialog(
-              title: Text(S.of(context).rescanFrom),
-              content: RescanForm(key: rescanKey),
-              actions: confirmButtons(
-                  context, () => Navigator.of(context).pop(true),
-                  cancelValue: false))) ??
-      false;
-  if (approved) {
-    final date = rescanKey.currentState!.startDate;
-    final heightText = rescanKey.currentState!.heightController.text;
-    final approved = await confirmWifi(context);
+  try {
+    DateTime minDate = WarpApi.getActivationDate();
+    final approved = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) =>
+            AlertDialog(
+                title: Text(S
+                    .of(context)
+                    .rescanFrom),
+                content: RescanForm(minDate, key: rescanKey),
+                actions: confirmButtons(
+                    context, () => Navigator.of(context).pop(true),
+                    cancelValue: false))) ??
+        false;
     if (approved) {
-      showSnackBar(S.of(context).rescanning, autoClose: true);
-      final height = int.tryParse(heightText);
-      if (height != null) return height;
-      final height2 = await WarpApi.getBlockHeightByTime(date);
-      return height2;
+      final date = rescanKey.currentState!.startDate;
+      final heightText = rescanKey.currentState!.heightController.text;
+      final approved = await confirmWifi(context);
+      if (approved) {
+        showSnackBar(S
+            .of(context)
+            .rescanning, autoClose: true);
+        final height = int.tryParse(heightText);
+        if (height != null) return height;
+        final height2 = await WarpApi.getBlockHeightByTime(date);
+        return height2;
+      }
     }
   }
+  on String {}
   return null;
 }
 
 class RescanForm extends StatefulWidget {
-  RescanForm({Key? key}) : super(key: key);
+  final minDate;
+  RescanForm(this.minDate, {Key? key}) : super(key: key);
 
   @override
   RescanFormState createState() => RescanFormState();
 }
 
 class RescanFormState extends State<RescanForm> {
-  DateTime minDate = WarpApi.getActivationDate();
   DateTime maxDate = DateTime.now();
   late DateTime startDate;
   var heightController = TextEditingController();
@@ -49,7 +58,7 @@ class RescanFormState extends State<RescanForm> {
   @override
   void initState() {
     super.initState();
-    startDate = minDate;
+    startDate = widget.minDate;
   }
 
   @override
@@ -68,7 +77,7 @@ class RescanFormState extends State<RescanForm> {
   }
 
   _showDatePicker() async {
-    final date = await showDatePicker(context: context, firstDate: minDate, initialDate: startDate, lastDate: maxDate);
+    final date = await showDatePicker(context: context, firstDate: widget.minDate, initialDate: startDate, lastDate: maxDate);
     if (date != null) {
       setState(() {
         startDate = date;

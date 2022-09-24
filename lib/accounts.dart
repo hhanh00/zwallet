@@ -277,7 +277,10 @@ abstract class _ActiveAccount with Store {
 
   @action
   void updateTBalance() {
-    tbalance = WarpApi.getTBalance();
+    try {
+      tbalance = WarpApi.getTBalance();
+    }
+    on String {}
   }
 
   @action

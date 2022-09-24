@@ -607,14 +607,19 @@ abstract class _PriceStore with Store {
   }
 
   Future<void> updateChart() async {
-    final _lastChartUpdateTime = lastChartUpdateTime;
-    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    if (_lastChartUpdateTime == null || now > _lastChartUpdateTime + 5 * 60) {
-      await fetchCoinPrice(active.coin);
-      await WarpApi.syncHistoricalPrices(settings.currency);
-      await active.fetchChartData();
-      lastChartUpdateTime = _lastChartUpdateTime;
+    try {
+      final _lastChartUpdateTime = lastChartUpdateTime;
+      final now = DateTime
+          .now()
+          .millisecondsSinceEpoch ~/ 1000;
+      if (_lastChartUpdateTime == null || now > _lastChartUpdateTime + 5 * 60) {
+        await fetchCoinPrice(active.coin);
+        await WarpApi.syncHistoricalPrices(settings.currency);
+        await active.fetchChartData();
+        lastChartUpdateTime = _lastChartUpdateTime;
+      }
     }
+    on String {}
   }
 }
 
@@ -702,7 +707,10 @@ abstract class _SyncStatus with Store {
       if (server != null && server.isNotEmpty)
         WarpApi.updateLWD(active.coin, server);
     }
-    latestHeight = await WarpApi.getLatestHeight();
+    try {
+      latestHeight = await WarpApi.getLatestHeight();
+    }
+    on String {}
     final _syncedInfo = await getDbSyncedHeight();
     // if syncedHeight = 0, we just started sync therefore don't set it back to null
     if (syncedHeight != 0 && _syncedInfo != null) setSyncHeight(_syncedInfo.height, _syncedInfo.timestamp);
