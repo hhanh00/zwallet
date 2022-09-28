@@ -470,6 +470,7 @@ class BalanceRow extends StatelessWidget {
 }
 
 Future<void> send(BuildContext context, List<Recipient> recipients, bool useTransparent) async {
+
   final s = S.of(context);
 
   String address = "";
@@ -486,48 +487,46 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
       !await authenticate(context, s.pleaseAuthenticateToSend)) return;
 
   final player = AudioPlayer();
-  if (active.canPay) {
-    Navigator.of(context).pop();
-    try {
+
+  bool needClose = true;
+  active.setDraftRecipient(null);
+  try {
+    if (active.canPay) {
+      needClose = false;
+      Navigator.of(context).pop();
       active.setBanner(s.paymentInProgress);
-      final res = await WarpApi.sendPayment(active.coin, active.id, recipients,
+      final txId = await WarpApi.sendPayment(active.coin, active.id, recipients,
           useTransparent, settings.anchorOffset, (progress) {
             progressPort.sendPort.send(progress);
           });
       progressPort.sendPort.send(0);
       await player.play(AssetSource("success.mp3"));
-    }
-    on String catch (message) {
-      await player.play(AssetSource("fail.mp3"));
-      showSnackBar(message);
-    }
-    finally {
-      active.setBanner("");
-    }
-    await active.update();
-  } else {
-    try {
+      showSnackBar(s.txId(txId));
+      await active.update();
+    } else {
       final txjson = WarpApi.prepareTx(
           recipients, useTransparent, settings.anchorOffset);
-      active.setDraftRecipient(null);
 
       if (settings.qrOffline) {
+        needClose = false;
         Navigator.pushReplacementNamed(context, '/qroffline', arguments: txjson);
       }
       else {
         await saveFile(txjson, "tx.json", s.unsignedTransactionFile);
-
         showSnackBar(s.fileSaved);
-        Navigator.of(context).pop();
       }
     }
-    on String catch (message) {
-      showSnackBar(message);
-      await player.play(AssetSource("fail.mp3"));
-      if (recipients.length == 1)
-        active.setDraftRecipient(recipients[0]);
+  }
+  on String catch (message) {
+    showSnackBar(message);
+    await player.play(AssetSource("fail.mp3"));
+    if (recipients.length == 1)
+      active.setDraftRecipient(recipients[0]);
+  }
+  finally {
+    if (needClose)
       Navigator.of(context).pop();
-    }
+    active.setBanner("");
   }
 }
 
