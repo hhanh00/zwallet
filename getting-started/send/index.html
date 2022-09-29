@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>Send coins :: YWallet</title>
-<link href=/css/nucleus.css?1664449927 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1664449927 rel=stylesheet>
-<link href=/css/hybrid.css?1664449927 rel=stylesheet>
-<link href=/css/featherlight.min.css?1664449927 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1664449927 rel=stylesheet>
-<link href=/css/auto-complete.css?1664449927 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1664449927 rel=stylesheet>
-<link href=/css/theme.css?1664449927 rel=stylesheet>
-<link href=/css/tabs.css?1664449927 rel=stylesheet>
-<link href=/css/hugo-theme.css?1664449927 rel=stylesheet>
-<link href=/css/theme-blue.css?1664449927 rel=stylesheet>
-<link href=/common.css?1664449927 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1664449927></script>
+<link href=/css/nucleus.css?1664457416 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1664457416 rel=stylesheet>
+<link href=/css/hybrid.css?1664457416 rel=stylesheet>
+<link href=/css/featherlight.min.css?1664457416 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1664457416 rel=stylesheet>
+<link href=/css/auto-complete.css?1664457416 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1664457416 rel=stylesheet>
+<link href=/css/theme.css?1664457416 rel=stylesheet>
+<link href=/css/tabs.css?1664457416 rel=stylesheet>
+<link href=/css/hugo-theme.css?1664457416 rel=stylesheet>
+<link href=/css/theme-blue.css?1664457416 rel=stylesheet>
+<link href=/common.css?1664457416 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1664457416></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
@@ -35,10 +35,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1664449927></script>
-<script type=text/javascript src=/js/auto-complete.js?1664449927></script>
+<script type=text/javascript src=/js/lunr.min.js?1664457416></script>
+<script type=text/javascript src=/js/auto-complete.js?1664457416></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1664449927></script>
+<script type=text/javascript src=/js/search.js?1664457416></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -451,6 +451,8 @@ FAQ
 <div class=wrapper>
 <nav id=TableOfContents>
 <ul>
+<li><a href=#memo>Memo</a></li>
+<li><a href=#advanced-settings>Advanced Settings</a></li>
 <li><a href=#detailed-balances>Detailed balances</a></li>
 <li><a href=#remarks>Remarks</a></li>
 </ul>
@@ -466,13 +468,13 @@ FAQ
 Send coins
 </h1>
 <div class=p-img>
-<img class=img src=../img/IMG_0043.PNG>
+<img class=img src=../img/2022-09-29_20-48-36.png>
 </div>
 <ol>
 <li>Start from the account page by clicking on the &ldquo;Send&rdquo; button in the bottom right corner</li>
 </ol>
 <div class=p-img>
-<img class=img src=../img/IMG_0125.PNG>
+<img class=img src=../img/2022-09-29_20-50-14.png>
 </div>
 <ol>
 <li>Address to send coins to</li>
@@ -480,12 +482,25 @@ Send coins
 <li>Either enter the amount in mZEC or</li>
 <li>Enter the amount in Fiat currency. The other field updates automatically</li>
 <li>Tap to spend the entire balance</li>
-<li>Show/Collapse advanced options</li>
-<li>Tap to send.</li>
+</ol>
+<h2 id=memo>Memo</h2>
+<ol start=6>
+<li>Check to include your address in the memo. The recipient can directly reply to you if he is using Ywallet too.</li>
+<li>Memo Subject</li>
+<li>Memo Body</li>
+</ol>
+<div class="notices info"><p>Memo subject, body and reply-to are supported between
+YWallet sender/receiver. If not, they will appear
+in the text of the memo.</p>
+</div>
+<h2 id=advanced-settings>Advanced Settings</h2>
+<ol start=9>
+<li>These settings are detailed in the section
+<a href=/advanced/advanced-send/>Advanced Usage/Send Options</a>.</li>
 </ol>
 <h2 id=detailed-balances>Detailed balances</h2>
 <div class=p-img>
-<img class=img src=../img/IMG_0125_1.PNG>
+<img class=img src=../img/2022-09-29_20-50-15.png>
 </div>
 <ol>
 <li>Total balance available = transparent + shielded</li>
@@ -518,17 +533,17 @@ spending from it.</li>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1664449927></script>
-<script src=/js/perfect-scrollbar.min.js?1664449927></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1664449927></script>
-<script src=/js/jquery.sticky.js?1664449927></script>
-<script src=/js/featherlight.min.js?1664449927></script>
-<script src=/js/highlight.pack.js?1664449927></script>
+<script src=/js/clipboard.min.js?1664457416></script>
+<script src=/js/perfect-scrollbar.min.js?1664457416></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1664457416></script>
+<script src=/js/jquery.sticky.js?1664457416></script>
+<script src=/js/featherlight.min.js?1664457416></script>
+<script src=/js/highlight.pack.js?1664457416></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1664449927></script>
-<script src=/js/learn.js?1664449927></script>
-<script src=/js/hugo-learn.js?1664449927></script>
-<script src=/mermaid/mermaid.js?1664449927></script>
+<script src=/js/modernizr.custom-3.6.0.js?1664457416></script>
+<script src=/js/learn.js?1664457416></script>
+<script src=/js/hugo-learn.js?1664457416></script>
+<script src=/mermaid/mermaid.js?1664457416></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>

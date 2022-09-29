@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>Adding More Accounts :: YWallet</title>
-<link href=/css/nucleus.css?1664449926 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1664449926 rel=stylesheet>
-<link href=/css/hybrid.css?1664449926 rel=stylesheet>
-<link href=/css/featherlight.min.css?1664449926 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1664449926 rel=stylesheet>
-<link href=/css/auto-complete.css?1664449926 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1664449926 rel=stylesheet>
-<link href=/css/theme.css?1664449926 rel=stylesheet>
-<link href=/css/tabs.css?1664449926 rel=stylesheet>
-<link href=/css/hugo-theme.css?1664449926 rel=stylesheet>
-<link href=/css/theme-blue.css?1664449926 rel=stylesheet>
-<link href=/common.css?1664449926 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1664449926></script>
+<link href=/css/nucleus.css?1664457416 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1664457416 rel=stylesheet>
+<link href=/css/hybrid.css?1664457416 rel=stylesheet>
+<link href=/css/featherlight.min.css?1664457416 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1664457416 rel=stylesheet>
+<link href=/css/auto-complete.css?1664457416 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1664457416 rel=stylesheet>
+<link href=/css/theme.css?1664457416 rel=stylesheet>
+<link href=/css/tabs.css?1664457416 rel=stylesheet>
+<link href=/css/hugo-theme.css?1664457416 rel=stylesheet>
+<link href=/css/theme-blue.css?1664457416 rel=stylesheet>
+<link href=/common.css?1664457416 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1664457416></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
@@ -35,10 +35,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1664449926></script>
-<script type=text/javascript src=/js/auto-complete.js?1664449926></script>
+<script type=text/javascript src=/js/lunr.min.js?1664457416></script>
+<script type=text/javascript src=/js/auto-complete.js?1664457416></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1664449926></script>
+<script type=text/javascript src=/js/search.js?1664457416></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -449,7 +449,11 @@ FAQ
 </div>
 <div class=progress>
 <div class=wrapper>
-<nav id=TableOfContents></nav>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#restoring-an-account>Restoring an Account</a></li>
+</ul>
+</nav>
 </div>
 </div>
 </div>
@@ -461,23 +465,17 @@ FAQ
 Adding More Accounts
 </h1>
 <div class=p-img>
-<img class=img src=../img/IMG_0033.PNG>
+<img class=img src=../img/2022-09-29_20-09-53.png>
 </div>
 <ol>
-<li>Press the button + in the bottom right corner. It opens the account
-creation and restoration page.</li>
-</ol>
-<img class="img mb-4" src=../img/2022-04-04_1-01-22.png>
-<ol>
-<li>Choose the currency</li>
 <li>Give a name to your new account.</li>
-<li>But leave the field &ldquo;Seed/Secret Key/Viewing Key&rdquo;
-empty for a new account.</li>
-<li>Press the button &ldquo;NEW&mldr;&rdquo;. The app will show the account
-backup information.</li>
+<li>Choose the currency</li>
+<li>Check this box if you want to restore an existing account</li>
+<li>Enter the secret key/viewing key or seed phrase</li>
+<li>Click here to finish</li>
 </ol>
 <div class=p-img>
-<img class=img src=../img/IMG_0036.PNG>
+<img class=img src=../img/2022-09-29_20-12-50.png>
 </div>
 <ol>
 <li>Your backup is the 24 words in the top box. You must keep these words in a safe place. The
@@ -488,20 +486,13 @@ next to the box.</li>
 <p>Notes:</p>
 <ul>
 <li>The account name is required. It does not have to be unique.</li>
-<li>If the &ldquo;Seed/Secret Key or View key&rdquo; field is not blank but
-does not contain a valid value, the &ldquo;ADD&rdquo; button is disabled.</li>
-<li>If you want to restore a previous account, <a href=/account/restore/>go to this page</a></li>
 <li>Below the seed phrase, you will find your secret key and your viewing keys.
 You do not need to save them because they can be derived from your seed phrase. They are provided
 in case you need to use another app that does not support seed phrases.</li>
 </ul>
-<div class=p-img>
-<img class=img src=../img/IMG_0037.PNG>
-</div>
-<p>Once you close the Backup page, you will return to the Account Manager.</p>
-<ol>
-<li>Tap on the new account name</li>
-</ol>
+<h2 id=restoring-an-account>Restoring an Account</h2>
+<p>To restore an account, check the box (3) and enter your backup
+seed phrase (or secret key/viewing key).</p>
 <footer class=footline>
 </footer>
 </div>
@@ -514,17 +505,17 @@ in case you need to use another app that does not support seed phrases.</li>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1664449926></script>
-<script src=/js/perfect-scrollbar.min.js?1664449926></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1664449926></script>
-<script src=/js/jquery.sticky.js?1664449926></script>
-<script src=/js/featherlight.min.js?1664449926></script>
-<script src=/js/highlight.pack.js?1664449926></script>
+<script src=/js/clipboard.min.js?1664457416></script>
+<script src=/js/perfect-scrollbar.min.js?1664457416></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1664457416></script>
+<script src=/js/jquery.sticky.js?1664457416></script>
+<script src=/js/featherlight.min.js?1664457416></script>
+<script src=/js/highlight.pack.js?1664457416></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1664449926></script>
-<script src=/js/learn.js?1664449926></script>
-<script src=/js/hugo-learn.js?1664449926></script>
-<script src=/mermaid/mermaid.js?1664449926></script>
+<script src=/js/modernizr.custom-3.6.0.js?1664457416></script>
+<script src=/js/learn.js?1664457416></script>
+<script src=/js/hugo-learn.js?1664457416></script>
+<script src=/mermaid/mermaid.js?1664457416></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
