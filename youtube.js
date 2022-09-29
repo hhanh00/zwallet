@@ -19,7 +19,7 @@
       var div = document.createElement('div');
       div.setAttribute('data-id', videoId);
       var thumbNode = document.createElement('img');
-      thumbNode.src = '//i.ytimg.com/vi/ID/hqdefault.jpg'.replace('ID', videoId);
+      thumbNode.src = '//i.ytimg.com/vi/ID/maxresdefault.jpg'.replace('ID', videoId);
       div.appendChild(thumbNode);
       var playButton = document.createElement('div');
       playButton.setAttribute('class', 'play');
