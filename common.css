@@ -11,9 +11,11 @@
     height: 40px !important;
 }
 
-.img {  
-    width: auto;
-    height: auto;
+.p-img {
     max-width: 450px;
-    max-height: 800px;
+}
+
+.img {  
+    width: 100%;
+    height: auto;
 }
