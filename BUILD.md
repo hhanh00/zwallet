@@ -184,3 +184,41 @@ $ ./install-dev.sh
 
 Your `apk` is `build/app/outputs/flutter-apk/app-release.apk`
 
+## Vagrant
+
+[HashiCorp Vagrant](https://www.vagrantup.com/) provides the same, easy workflow regardless of your role as a developer, operator, or designer. 
+It leverages a declarative configuration file which describes all your software requirements, 
+packages, operating system configuration, users, and more.
+
+This is the easiest way to install and build an installable Android package. If you want to develop,
+you'd probably be better installing an IDE and the dependencies (Flutter & Rust) independently.  
+
+- Install the discsize plugin
+- Use the `Vagrantfile` from `misc`
+- vagrant up
+- SSH to the box
+- Add a partition to / that takes the remaining space (+30 GB)
+- Install git
+- Clone zwallet repo
+- Clone submodules
+- Install dependencies and build
+
+```
+$ vagrant plugin install vagrant-disksize
+$ wget https://raw.githubusercontent.com/hhanh00/zwallet/main/misc/Vagrantfile
+$ vagrant up
+$ vagrant ssh
+$ cat << EOF | sudo fdisk /dev/sda
+n
+3
+
+
+w
+EOF
+$ sudo btrfs device add -f /dev/sda3 /
+$ sudo pacman -S --noconfirm git
+$ git clone https://github.com/hhanh00/zwallet.git
+$ cd zwallet
+$ git submodule update --init
+$ ./install-dev.sh
+```
