@@ -73,3 +73,17 @@ class KeyPack {
 
   Map<String, dynamic> toJson() => _$KeyPackToJson(this);
 }
+
+@JsonSerializable()
+class Progress {
+  final int height;
+  final int trial_decryptions;
+  final int downloaded;
+
+  Progress(this.height, this.trial_decryptions, this.downloaded);
+
+  factory Progress.fromJson(Map<String, dynamic> json) =>
+      _$ProgressFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProgressToJson(this);
+}

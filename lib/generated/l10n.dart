@@ -2681,6 +2681,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Synchronization in Progress`
+  String get synchronizationInProgress {
+    return Intl.message(
+      'Synchronization in Progress',
+      name: 'synchronizationInProgress',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

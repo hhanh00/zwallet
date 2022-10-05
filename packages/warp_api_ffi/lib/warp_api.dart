@@ -364,14 +364,6 @@ class WarpApi {
     return kp;
   }
 
-  static int getDownloadedSize() {
-    return warp_api_lib.get_downloaded_size();
-  }
-
-  static int getTrialDecryptionCount() {
-    return warp_api_lib.get_trial_decryptions_count();
-  }
-
   static void disableWAL(String dbPath) {
     warp_api_lib.disable_wal(dbPath.toNativeUtf8().cast<Int8>());
   }

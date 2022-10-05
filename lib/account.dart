@@ -69,8 +69,13 @@ class SyncStatusState extends State<SyncStatusWidget> {
         final timestamp = syncStatus.timestamp?.timeAgo() ?? s.na;
         final latestHeight = syncStatus.latestHeight;
         final remaining = syncedHeight != null ? max(latestHeight-syncedHeight, 0) : 0;
-        final total = latestHeight - startHeight;
-        final percent = total > 0 ? 100 * (syncedHeight - startHeight) ~/ total : 0;
+        final int? percent;
+        if (startHeight != null) {
+          final total = latestHeight - startHeight;
+          percent = total > 0 ? 100 * (syncedHeight - startHeight) ~/
+              total : 0;
+        }
+        else percent = 0;
         final downloadedSize = NumberFormat.compact().format(syncStatus.downloadedSize);
         final trialDecryptionCount = NumberFormat.compact().format(syncStatus.trialDecryptionCount);
         final disconnected = latestHeight == 0;
@@ -298,8 +303,8 @@ class BalanceWidget extends StatelessWidget {
         final showTAddr = active.showTAddr;
         final balance = showTAddr ? active.tbalance : active.balances.balance;
         final balanceColor = !showTAddr
-            ? theme.colorScheme.primaryVariant
-            : theme.colorScheme.secondaryVariant;
+            ? theme.colorScheme.primary
+            : theme.colorScheme.secondary;
         final balanceHi = hide ? '-------' : _getBalanceHi(balance);
         final deviceWidth = getWidth(context);
         final digits = deviceWidth.index < DeviceWidth.sm.index ? 7 : 9;

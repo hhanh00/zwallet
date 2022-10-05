@@ -259,5 +259,6 @@
   "expert": "Expert",
   "blockReorgDetectedRewind": "Block reorg detected. Rewind to {rewindHeight}",
   "goToTransaction": "Ver Transacción",
-  "transactions": "Transacciónes"
+  "transactions": "Transacciónes",
+  "synchronizationInProgress": "Sincronización en progreso"
 }

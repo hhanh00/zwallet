@@ -752,27 +752,6 @@ class NativeLibrary {
   late final _dart_derive_zip32 _derive_zip32 =
       _derive_zip32_ptr.asFunction<_dart_derive_zip32>();
 
-  int get_downloaded_size() {
-    return _get_downloaded_size();
-  }
-
-  late final _get_downloaded_size_ptr =
-      _lookup<ffi.NativeFunction<_c_get_downloaded_size>>(
-          'get_downloaded_size');
-  late final _dart_get_downloaded_size _get_downloaded_size =
-      _get_downloaded_size_ptr.asFunction<_dart_get_downloaded_size>();
-
-  int get_trial_decryptions_count() {
-    return _get_trial_decryptions_count();
-  }
-
-  late final _get_trial_decryptions_count_ptr =
-      _lookup<ffi.NativeFunction<_c_get_trial_decryptions_count>>(
-          'get_trial_decryptions_count');
-  late final _dart_get_trial_decryptions_count _get_trial_decryptions_count =
-      _get_trial_decryptions_count_ptr
-          .asFunction<_dart_get_trial_decryptions_count>();
-
   void disable_wal(
     ffi.Pointer<ffi.Int8> db_path,
   ) {
@@ -1333,14 +1312,6 @@ typedef _dart_derive_zip32 = CResult_____c_char Function(
   int has_address,
   int address,
 );
-
-typedef _c_get_downloaded_size = ffi.Int64 Function();
-
-typedef _dart_get_downloaded_size = int Function();
-
-typedef _c_get_trial_decryptions_count = ffi.Int64 Function();
-
-typedef _dart_get_trial_decryptions_count = int Function();
 
 typedef _c_disable_wal = ffi.Void Function(
   ffi.Pointer<ffi.Int8> db_path,

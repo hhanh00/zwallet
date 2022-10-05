@@ -1,6 +1,7 @@
 import 'dart:isolate';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:flutter/material.dart';
@@ -627,7 +628,7 @@ class SyncStatus = _SyncStatus with _$SyncStatus;
 
 abstract class _SyncStatus with Store {
   @observable
-  int startSyncedHeight = 0;
+  int? startSyncedHeight = null;
 
   @observable
   bool isRescan = false;
@@ -663,6 +664,19 @@ abstract class _SyncStatus with Store {
   int get confirmHeight {
     final ch = latestHeight - settings.anchorOffset;
     return max(ch, 0);
+  }
+
+  int? get progress {
+    final _startHeight = startSyncedHeight;
+    final _syncedHeight = syncedHeight;
+    if (_startHeight != null && _syncedHeight != null) {
+      final total = latestHeight - _startHeight;
+      final percent = total > 0
+          ? 100 * (_syncedHeight - _startHeight) ~/ total
+          : 0;
+      return percent;
+    }
+    return null;
   }
 
   @action
@@ -719,35 +733,46 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<void> sync(bool _isRescan) async {
-    setDownloadedSize(WarpApi.getDownloadedSize());
-    setTrialDecryptionCount(WarpApi.getTrialDecryptionCount());
     if (paused) return;
     if (syncing) return;
     await syncStatus.update();
     if (syncedHeight == null) return;
-    syncing = true;
-    startSyncedHeight = syncedHeight!;
-    isRescan = _isRescan;
-    final currentSyncedHeight = syncedHeight;
-    if (!isSynced()) {
-      final params = SyncParams(
-          active.coin, settings.getTx, settings.anchorOffset,
-          settings.antispam ? 50 : 1000000,
-          syncPort.sendPort);
-      final res = await compute(WarpApi.warpSync, params);
-      if (res == 0) {
-        if (currentSyncedHeight != syncedHeight) {
-          await active.update();
-          await priceStore.updateChart();
-          await contacts.fetchContacts();
+    try {
+      syncing = true;
+      startSyncedHeight = syncedHeight!;
+      isRescan = _isRescan;
+      final currentSyncedHeight = syncedHeight;
+      if (!isSynced()) {
+        await FlutterForegroundTask.startService(
+          notificationTitle: S.current.synchronizationInProgress,
+          notificationText: '',
+        );
+        final params = SyncParams(
+            active.coin, settings.getTx, settings.anchorOffset,
+            settings.antispam ? 50 : 1000000,
+            syncPort.sendPort);
+        final res = await compute(WarpApi.warpSync, params);
+        if (res == 0) {
+          if (currentSyncedHeight != syncedHeight) {
+            await active.update();
+            await priceStore.updateChart();
+            await contacts.fetchContacts();
+          }
+        }
+        else if (res == 1) {
+          await reorg();
         }
       }
-      else if (res == 1) {
-        await reorg();
-      }
     }
-    syncing = false;
-    eta.reset();
+    on String catch (e) {
+      showSnackBar(e);
+      paused = true;
+    }
+    finally {
+      syncing = false;
+      eta.reset();
+      await FlutterForegroundTask.stopService();
+    }
   }
 
   @action
@@ -790,13 +815,10 @@ abstract class _SyncStatus with Store {
   }
 
   @action
-  void setDownloadedSize(int v) {
-    downloadedSize = v;
-  }
-
-  @action
-  void setTrialDecryptionCount(int v) {
-    trialDecryptionCount = v;
+  void setProgress(Progress progress) {
+    trialDecryptionCount = progress.trial_decryptions;
+    syncedHeight = progress.height;
+    downloadedSize = progress.downloaded;
   }
 }
 
