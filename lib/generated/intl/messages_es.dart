@@ -392,6 +392,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "subject": MessageLookupByLibrary.simpleMessage("Asunto"),
         "syncPaused": MessageLookupByLibrary.simpleMessage("Escaneo en pausa"),
         "synching": MessageLookupByLibrary.simpleMessage("Sincronizando"),
+        "synchronizationInProgress":
+            MessageLookupByLibrary.simpleMessage("Sincronización en progreso"),
         "table": MessageLookupByLibrary.simpleMessage("Lista"),
         "tapAnIconToShowTheQrCode": MessageLookupByLibrary.simpleMessage(
             "Tocar el icono para mostrar el código QR"),

@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:badges/badges.dart';
 
@@ -51,13 +54,24 @@ class HomeState extends State<HomePage> {
         await priceStore.updateChart();
       });
     });
-    _syncDispose = syncStream.listen((_) async {
+    _syncDispose = syncStream.listen((p) async {
+      if (p is String) {
+        final pjs = jsonDecode(p);
+        final progress = Progress.fromJson(pjs);
+        syncStatus.setProgress(progress);
+      }
+
       final syncedHeight = await syncStatus.getDbSyncedHeight();
       if (syncedHeight != null) {
         final h = syncedHeight.height;
         syncStatus.setSyncHeight(h, syncedHeight.timestamp);
         eta.checkpoint(h, DateTime.now());
         await active.update();
+        final progress = syncStatus.progress;
+        if (progress != null) {
+          FlutterForegroundTask.updateService(
+              notificationText: "${progress} %");
+        }
       } else {
         WarpApi.mempoolReset();
       }
@@ -92,6 +106,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   @override
   void initState() {
     super.initState();
+    _initForegroundTask();
     final tabController = TabController(length: settings.simpleMode ? 4 : 7, vsync: this);
     tabController.addListener(() {
       setState(() {
@@ -186,7 +201,8 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
 
       showAboutOnce(this.context);
 
-        return Scaffold(
+        return WithForegroundTask(child:
+          Scaffold(
           appBar: AppBar(
             centerTitle: true,
             title: GestureDetector(
@@ -220,7 +236,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             ],
           ),
           floatingActionButton: button,
-        );
+        ));
     });
   }
 
@@ -370,6 +386,33 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     if (contact != null) {
       contacts.add(contact);
     }
+  }
+
+  void _initForegroundTask() {
+    FlutterForegroundTask.init(
+      androidNotificationOptions: AndroidNotificationOptions(
+        channelId: 'notification_channel_id',
+        channelName: 'Foreground Notification',
+        channelDescription: 'YWallet Synchronization',
+        channelImportance: NotificationChannelImportance.LOW,
+        priority: NotificationPriority.LOW,
+        iconData: const NotificationIconData(
+          resType: ResourceType.mipmap,
+          resPrefix: ResourcePrefix.ic,
+          name: 'launcher',
+        ),
+      ),
+      iosNotificationOptions: const IOSNotificationOptions(
+        showNotification: true,
+        playSound: false,
+      ),
+      foregroundTaskOptions: const ForegroundTaskOptions(
+        isOnceEvent: true,
+        autoRunOnBoot: false,
+        allowWakeLock: true,
+        allowWifiLock: true,
+      ),
+    );
   }
 }
 
