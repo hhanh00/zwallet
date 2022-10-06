@@ -743,10 +743,12 @@ abstract class _SyncStatus with Store {
       isRescan = _isRescan;
       final currentSyncedHeight = syncedHeight;
       if (!isSynced()) {
-        await FlutterForegroundTask.startService(
-          notificationTitle: S.current.synchronizationInProgress,
-          notificationText: '',
-        );
+        if (isMobile()) {
+          await FlutterForegroundTask.startService(
+            notificationTitle: S.current.synchronizationInProgress,
+            notificationText: '',
+          );
+        }
         final params = SyncParams(
             active.coin, settings.getTx, settings.anchorOffset,
             settings.antispam ? 50 : 1000000,
@@ -771,7 +773,8 @@ abstract class _SyncStatus with Store {
     finally {
       syncing = false;
       eta.reset();
-      await FlutterForegroundTask.stopService();
+      if (isMobile())
+        await FlutterForegroundTask.stopService();
     }
   }
 
