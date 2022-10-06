@@ -68,7 +68,7 @@ class HomeState extends State<HomePage> {
         eta.checkpoint(h, DateTime.now());
         await active.update();
         final progress = syncStatus.progress;
-        if (progress != null) {
+        if (progress != null && isMobile()) {
           FlutterForegroundTask.updateService(
               notificationText: "${progress} %");
         }
@@ -106,7 +106,8 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   @override
   void initState() {
     super.initState();
-    _initForegroundTask();
+    if (isMobile())
+      _initForegroundTask();
     final tabController = TabController(length: settings.simpleMode ? 4 : 7, vsync: this);
     tabController.addListener(() {
       setState(() {
