@@ -255,7 +255,7 @@
   "useGpu": "Utiliser le GPU",
   "import": "Importer",
   "newLabel": "Nouveau",
-  "invalidQrCode": "QR code invalide",
+  "invalidQrCode": "QR code invalide: {message}",
   "expert": "Expert",
   "blockReorgDetectedRewind": "Réorganisation détectée. Retour à {rewindHeight}",
   "goToTransaction": "Voir la Transaction",

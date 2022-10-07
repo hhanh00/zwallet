@@ -312,8 +312,8 @@ class SendState extends State<SendPage> {
           amountInput?.setAmount(paymentURI.amount);
       });
     }
-    on String {
-      showSnackBar(S.of(context).invalidQrCode);
+    on String catch (e) {
+      showSnackBar(S.of(context).invalidQrCode(e));
     }
   }
 

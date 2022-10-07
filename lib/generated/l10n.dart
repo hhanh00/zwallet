@@ -2632,13 +2632,13 @@ class S {
     );
   }
 
-  /// `Invalid QR code`
-  String get invalidQrCode {
+  /// `Invalid QR code: {message}`
+  String invalidQrCode(Object message) {
     return Intl.message(
-      'Invalid QR code',
+      'Invalid QR code: $message',
       name: 'invalidQrCode',
       desc: '',
-      args: [],
+      args: [message],
     );
   }
 
