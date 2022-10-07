@@ -673,8 +673,8 @@ DecodedPaymentURI decodeAddress(BuildContext context, String? v) {
     final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
     return payment;
   }
-  on String {
-    throw s.invalidAddress;
+  on String catch (e) {
+    throw e;
   }
 }
 

@@ -257,7 +257,7 @@
   "useGpu": "Use GPU",
   "import": "Import",
   "newLabel": "New",
-  "invalidQrCode": "Invalid QR code",
+  "invalidQrCode": "Invalid QR code: {message}",
   "expert": "Expert",
   "blockReorgDetectedRewind": "Block reorg detected. Rewind to {rewindHeight}",
   "goToTransaction": "Show Transaction",
