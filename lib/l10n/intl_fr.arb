@@ -260,5 +260,9 @@
   "blockReorgDetectedRewind": "Réorganisation détectée. Retour à {rewindHeight}",
   "goToTransaction": "Voir la Transaction",
   "transactions": "Transactions",
-  "synchronizationInProgress": "Synchronization en Cours"
+  "synchronizationInProgress": "Synchronization en Cours",
+  "incomingFunds": "Payment Reçu",
+  "paymentMade": "Payment Envoyé",
+  "received": "Reçu {amount} {}",
+  "spent": "Envoyé {amount} {}"
 }

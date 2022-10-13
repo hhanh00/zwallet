@@ -129,7 +129,7 @@ abstract class _ActiveAccount with Store {
   Account account = emptyAccount;
   CoinBase coinDef = zcash;
   bool canPay = false;
-  @observable Balances balances = Balances.zero;
+  @observable Balances? balances = null;
   @observable String taddress = "";
   int tbalance = 0;
 
@@ -247,7 +247,7 @@ abstract class _ActiveAccount with Store {
     }
 
     showTAddr = false;
-    balances = Balances.zero;
+    balances = null;
     draftRecipient = null;
 
     await update();
@@ -286,13 +286,18 @@ abstract class _ActiveAccount with Store {
   @action
   Future<void> updateBalances() async {
     final dbr = DbReader(coin, id);
-    balances = await dbr.getBalance(syncStatus.confirmHeight);
+    final curBalances = await dbr.getBalance(syncStatus.confirmHeight);
+    final prevBalances = balances;
+    if (prevBalances != null) {
+      showBalanceNotification(prevBalances, curBalances);
+    }
+    balances = curBalances;
   }
 
   @action
   Future<void> updateUnconfirmedBalance() async {
     final unconfirmedBalance = await WarpApi.mempoolSync();
-    balances = balances.updateUnconfirmed(unconfirmedBalance);
+    balances = balances?.updateUnconfirmed(unconfirmedBalance);
   }
 
   @action
@@ -423,7 +428,7 @@ abstract class _ActiveAccount with Store {
     final dbr = DbReader(active.coin, active.id);
     pnls = await dbr.getPNL(active.id);
     spendings = await dbr.getSpending(active.id);
-    accountBalances = await dbr.getAccountBalanceTimeSeries(active.id, active.balances.balance);
+    accountBalances = await dbr.getAccountBalanceTimeSeries(active.id, active.balances?.balance ?? 0);
   }
 
   @action

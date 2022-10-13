@@ -2691,6 +2691,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Incoming funds`
+  String get incomingFunds {
+    return Intl.message(
+      'Incoming funds',
+      name: 'incomingFunds',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment made`
+  String get paymentMade {
+    return Intl.message(
+      'Payment made',
+      name: 'paymentMade',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Received {amount} {ticker}`
+  String received(Object amount, Object ticker) {
+    return Intl.message(
+      'Received $amount $ticker',
+      name: 'received',
+      desc: '',
+      args: [amount, ticker],
+    );
+  }
+
+  /// `Spent {amount} {ticker}`
+  String spent(Object amount, Object ticker) {
+    return Intl.message(
+      'Spent $amount $ticker',
+      name: 'spent',
+      desc: '',
+      args: [amount, ticker],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
