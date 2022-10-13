@@ -30,6 +30,8 @@ class HomePage extends StatefulWidget {
 
 class HomeState extends State<HomePage> {
   StreamSubscription? _syncDispose;
+  Timer? _syncTimer;
+  Timer? _priceTimer;
 
   @override
   void initState() {
@@ -43,14 +45,17 @@ class HomeState extends State<HomePage> {
       await syncStatus.sync(false);
       await contacts.fetchContacts();
 
-      Timer.periodic(Duration(seconds: 15), (Timer t) async {
+      _syncTimer?.cancel();
+      _syncTimer = Timer.periodic(Duration(seconds: 15), (Timer t) async {
         syncStatus.sync(false);
         if (active.id != 0) {
           await active.updateBalances();
           await active.updateUnconfirmedBalance();
         }
       });
-      Timer.periodic(Duration(minutes: 5), (Timer t) async {
+
+      _priceTimer?.cancel();
+      _priceTimer = Timer.periodic(Duration(minutes: 5), (Timer t) async {
         await priceStore.updateChart();
       });
     });
@@ -81,6 +86,8 @@ class HomeState extends State<HomePage> {
   @override
   void dispose() {
     _syncDispose?.cancel();
+    _syncTimer?.cancel();
+    _priceTimer?.cancel();
     super.dispose();
   }
 
@@ -106,7 +113,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   @override
   void initState() {
     super.initState();
-    if (isMobile())
+    if (Platform.isAndroid)
       _initForegroundTask();
     final tabController = TabController(length: settings.simpleMode ? 4 : 7, vsync: this);
     tabController.addListener(() {
@@ -392,15 +399,15 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   void _initForegroundTask() {
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
-        channelId: 'notification_channel_id',
-        channelName: 'Foreground Notification',
+        channelId: '${APP_NAME} Sync',
+        channelName: '${APP_NAME} Foreground Notification',
         channelDescription: 'YWallet Synchronization',
         channelImportance: NotificationChannelImportance.LOW,
-        priority: NotificationPriority.LOW,
+        priority: NotificationPriority.HIGH,
         iconData: const NotificationIconData(
-          resType: ResourceType.mipmap,
+          resType: ResourceType.drawable,
           resPrefix: ResourcePrefix.ic,
-          name: 'launcher',
+          name: 'notification',
         ),
       ),
       iosNotificationOptions: const IOSNotificationOptions(

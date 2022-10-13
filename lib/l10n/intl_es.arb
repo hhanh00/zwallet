@@ -260,5 +260,9 @@
   "blockReorgDetectedRewind": "Block reorg detected. Rewind to {rewindHeight}",
   "goToTransaction": "Ver Transacción",
   "transactions": "Transacciónes",
-  "synchronizationInProgress": "Sincronización en progreso"
+  "synchronizationInProgress": "Sincronización en progreso",
+  "incomingFunds": "Pago recibido",
+  "paymentMade": "Payment enviado",
+  "received": "Recibido {amount} {ticker}",
+  "spent": "Enviado {amount} {ticker}"
 }

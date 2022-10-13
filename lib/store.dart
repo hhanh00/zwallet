@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
@@ -743,7 +744,7 @@ abstract class _SyncStatus with Store {
       isRescan = _isRescan;
       final currentSyncedHeight = syncedHeight;
       if (!isSynced()) {
-        if (isMobile()) {
+        if (Platform.isAndroid) {
           await FlutterForegroundTask.startService(
             notificationTitle: S.current.synchronizationInProgress,
             notificationText: '',
@@ -773,7 +774,7 @@ abstract class _SyncStatus with Store {
     finally {
       syncing = false;
       eta.reset();
-      if (isMobile())
+      if (Platform.isAndroid)
         await FlutterForegroundTask.stopService();
     }
   }

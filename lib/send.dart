@@ -89,12 +89,14 @@ class SendState extends State<SendPage> {
 
     _newBlockAutorunDispose = autorun((_) async {
       final _ = active.dataEpoch;
-      final sBalance = active.balances.shieldedBalance;
+      final balances = active.balances;
+      if (balances == null) return;
+      final sBalance = balances.shieldedBalance;
       final tBalance = active.tbalance;
-      final excludedBalance = active.balances.excludedBalance;
-      final underConfirmedBalance = active.balances.underConfirmedBalance;
-      final unconfirmedSpentBalance = active.balances.unconfirmedBalance;
-      final unconfirmedBalance = active.balances.unconfirmedBalance;
+      final excludedBalance = balances.excludedBalance;
+      final underConfirmedBalance = balances.underConfirmedBalance;
+      final unconfirmedSpentBalance = balances.unconfirmedBalance;
+      final unconfirmedBalance = balances.unconfirmedBalance;
       setState(() {
         _sBalance = sBalance;
         _tBalance = tBalance;

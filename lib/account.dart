@@ -68,7 +68,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
         final startHeight = syncStatus.startSyncedHeight;
         final timestamp = syncStatus.timestamp?.timeAgo() ?? s.na;
         final latestHeight = syncStatus.latestHeight;
-        final remaining = syncedHeight != null ? max(latestHeight-syncedHeight, 0) : 0;
+        final remaining = max(latestHeight-syncedHeight, 0);
         final int? percent;
         if (startHeight != null) {
           final total = latestHeight - startHeight;
@@ -301,7 +301,7 @@ class BalanceWidget extends StatelessWidget {
         final flat = settings.flat;
         final hide = settings.autoHide && flat;
         final showTAddr = active.showTAddr;
-        final balance = showTAddr ? active.tbalance : active.balances.balance;
+        final balance = showTAddr ? active.tbalance : active.balances?.balance ?? 0;
         final balanceColor = !showTAddr
             ? theme.colorScheme.primary
             : theme.colorScheme.secondary;
@@ -345,7 +345,7 @@ class MemPoolWidget extends StatelessWidget {
   Widget build(BuildContext context) => Observer(builder: (context) {
     final b = active.balances;
     final theme = Theme.of(context);
-    final unconfirmedBalance = b.unconfirmedBalance;
+    final unconfirmedBalance = b?.unconfirmedBalance ?? 0;
     if (unconfirmedBalance == 0) return Container();
     final unconfirmedStyle = TextStyle(
         color: amountColor(context, unconfirmedBalance));

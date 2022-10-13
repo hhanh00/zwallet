@@ -5,7 +5,6 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:csv/csv.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:decimal/decimal.dart';
@@ -14,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:key_guardmanager/key_guardmanager.dart';
@@ -24,15 +24,16 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:sqlite3/open.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'accounts.dart';
 import 'animated_qr.dart';
 import 'coin/coins.dart';
+import 'db.dart';
 import 'devmode.dart';
 import 'generated/l10n.dart';
 
@@ -193,6 +194,19 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  AwesomeNotifications().initialize(
+    'resource://drawable/res_notification',
+    [
+      NotificationChannel(
+        channelKey: APP_NAME,
+        channelName: APP_NAME,
+        channelDescription: 'Notification channel for ${APP_NAME}',
+        defaultColor: Color(0xFFB3F0FF),
+        ledColor: Colors.white,
+      )
+    ],
+    debug: true
+  );
   final home = ZWalletApp();
 
   runApp(FutureBuilder(
@@ -286,6 +300,26 @@ class ZWalletAppState extends State<ZWalletApp> {
         if (mounted && rateMyApp.shouldOpenDialog) {
           rateMyApp.showRateDialog(this.context);
         }
+        final isAllowed = await AwesomeNotifications().isNotificationAllowed();
+        if (!isAllowed) {
+          AwesomeNotifications().requestPermissionToSendNotifications(
+            permissions: [
+              NotificationPermission.Sound,
+              NotificationPermission.Alert,
+              NotificationPermission.FullScreenIntent,
+              NotificationPermission.Badge,
+              NotificationPermission.Vibration,
+              NotificationPermission.Light,
+            ],
+          );
+        }
+        // Only after at least the action method is set, the notification events are delivered
+        AwesomeNotifications().setListeners(
+            onActionReceivedMethod:         NotificationController.onActionReceivedMethod,
+            onNotificationCreatedMethod:    NotificationController.onNotificationCreatedMethod,
+            onNotificationDisplayedMethod:  NotificationController.onNotificationDisplayedMethod,
+            onDismissActionReceivedMethod:  NotificationController.onDismissActionReceivedMethod
+        );
       });
     }
     else {
@@ -562,7 +596,8 @@ bool checkNumber(String s) {
   return true;
 }
 
-int precision(bool? mZEC) => (mZEC == null || mZEC) ? 3 : 8;
+const MAX_PRECISION = 8;
+int precision(bool? mZEC) => (mZEC == null || mZEC) ? 3 : MAX_PRECISION;
 
 Future<String?> scanCode(BuildContext context) async {
   final s = S.of(context);
@@ -611,6 +646,38 @@ void showSnackBar(String msg, { bool autoClose = false, bool quick = false }) {
   rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
 }
 
+void showBalanceNotification(Balances prevBalances, Balances curBalances) {
+  final s = S.current;
+  if (Platform.isAndroid &&
+      prevBalances.balance != curBalances.balance) {
+    final amount = (prevBalances.balance - curBalances.balance).abs();
+    final amountStr = amountToString(amount, MAX_PRECISION);
+    final ticker = active.coinDef.ticker;
+    final NotificationContent content;
+    if (curBalances.balance > prevBalances.balance) {
+      content = NotificationContent(
+        id: 1,
+        channelKey: APP_NAME,
+        title: s.incomingFunds,
+        body: s.received(amountStr, ticker),
+        actionType: ActionType.Default,
+      );
+    }
+    else {
+      content = NotificationContent(
+        id: 1,
+        channelKey: APP_NAME,
+        title: s.paymentMade,
+        body: s.spent(amountStr, ticker),
+        actionType: ActionType.Default,
+      );
+    }
+    AwesomeNotifications().createNotification(
+        content: content
+    );
+  }
+}
+
 enum DeviceWidth {
   xs,
   sm,
@@ -657,8 +724,6 @@ String humanizeDateTime(DateTime datetime) {
 String decimalFormat(double x, int decimalDigits, { String symbol = '' }) =>
     NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol).format(
         x).trimRight();
-
-const MAX_PRECISION = 8;
 
 String amountToString(int amount, int decimalDigits) => decimalFormat(amount / ZECUNIT, decimalDigits);
 
@@ -853,3 +918,27 @@ Future<String> getDbPath() async {
 }
 
 bool isMobile() => Platform.isAndroid || Platform.isIOS;
+
+class NotificationController {
+
+  /// Use this method to detect when a new notification or a schedule is created
+  @pragma("vm:entry-point")
+  static Future <void> onNotificationCreatedMethod(ReceivedNotification receivedNotification) async {
+  }
+
+  /// Use this method to detect every time that a new notification is displayed
+  @pragma("vm:entry-point")
+  static Future <void> onNotificationDisplayedMethod(ReceivedNotification receivedNotification) async {
+    FlutterRingtonePlayer.playNotification();
+  }
+
+  /// Use this method to detect if the user dismissed a notification
+  @pragma("vm:entry-point")
+  static Future <void> onDismissActionReceivedMethod(ReceivedAction receivedAction) async {
+  }
+
+  /// Use this method to detect when the user taps on a notification or action button
+  @pragma("vm:entry-point")
+  static Future <void> onActionReceivedMethod(ReceivedAction receivedAction) async {
+  }
+}
