@@ -198,6 +198,7 @@ you'd probably be better installing an IDE and the dependencies (Flutter & Rust)
 - vagrant up
 - SSH to the box
 - Add a partition to / that takes the remaining space (+30 GB)
+- Update OS
 - Install git
 - Clone zwallet repo
 - Clone submodules
@@ -216,6 +217,7 @@ n
 w
 EOF
 $ sudo btrfs device add -f /dev/sda3 /
+$ sudo pacman -Syu
 $ sudo pacman -S --noconfirm git
 $ git clone https://github.com/hhanh00/zwallet.git
 $ cd zwallet
