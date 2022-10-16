@@ -2,7 +2,11 @@ Vagrant.configure("2") do |config|
   config.vm.box = "archlinux/archlinux"
   config.disksize.size = "50GB"
   config.vm.provider "virtualbox" do |vb|
-    vb.memory = 6000
-    vb.cpus = 2
+    vb.memory = 8192
+    vb.cpus = 4
+  end
+  config.vm.provision "shell" do |s|
+    s.path = "vagrant-install.sh"
+    s.args = "dev"
   end
 end

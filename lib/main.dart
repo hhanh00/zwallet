@@ -648,6 +648,7 @@ void showSnackBar(String msg, { bool autoClose = false, bool quick = false }) {
 
 void showBalanceNotification(Balances prevBalances, Balances curBalances) {
   final s = S.current;
+  if (syncStatus.isRescan) return;
   if (Platform.isAndroid &&
       prevBalances.balance != curBalances.balance) {
     final amount = (prevBalances.balance - curBalances.balance).abs();

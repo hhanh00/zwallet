@@ -193,34 +193,16 @@ packages, operating system configuration, users, and more.
 This is the easiest way to install and build an installable Android package. If you want to develop,
 you'd probably be better installing an IDE and the dependencies (Flutter & Rust) independently.  
 
-- Install the discsize plugin
-- Use the `Vagrantfile` from `misc`
+- Install the discsize & scp plugins
+- Use the `Vagrantfile` & `vagrant-install.sh` from `misc`
+- Edit `Vagrantfile` if you want to change:
+  - # of CPU
+  - VM memory
+  - Zwallet branch
 - vagrant up
-- SSH to the box
-- Add a partition to / that takes the remaining space (+30 GB)
-- Update OS
-- Install git
-- Clone zwallet repo
-- Clone submodules
-- Install dependencies and build
 
 ```
-$ vagrant plugin install vagrant-disksize
+$ vagrant plugin install vagrant-disksize vagrant-scp
 $ wget https://raw.githubusercontent.com/hhanh00/zwallet/main/misc/Vagrantfile
+$ wget https://raw.githubusercontent.com/hhanh00/zwallet/main/misc/vagrant-install.sh
 $ vagrant up
-$ vagrant ssh
-$ cat << EOF | sudo fdisk /dev/sda
-n
-3
-
-
-w
-EOF
-$ sudo btrfs device add -f /dev/sda3 /
-$ sudo pacman -Syu
-$ sudo pacman -S --noconfirm git
-$ git clone https://github.com/hhanh00/zwallet.git
-$ cd zwallet
-$ git submodule update --init
-$ ./install-dev.sh
-```
