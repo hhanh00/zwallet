@@ -4,3 +4,6 @@
 [submodule "native/zcash-params"]
 	path = native/zcash-params
 	url = https://github.com/hhanh00/zcash-params.git
+[submodule "misc/flathub"]
+	path = misc/flathub
+	url = https://github.com/flathub/app.ywallet.Ywallet.git
