@@ -1,4 +1,4 @@
-# ZWallet
+# YWallet
 
 > The fastest, most advanced, shielded wallet for Zcash
 
@@ -71,6 +71,6 @@ I often want to quickly check the market price of ZEC vs fiat. The home page sho
 ## 3. Multi Account
 The wallet can hold several accounts with different seeds, secret keys, or viewing keys. This allows me to have an account per type of fund. For instance, one of the accounts is watch-only and has all the functionalities of a regular account except direct spending.
 ## 2. Cold Wallet
-Speaking of watch-only accounts, it is possible to spend from them using the companion tool. After confirming the transfer, the wallet creates an unsigned transaction file. I transfer it by USB OTG and sign it on my offline laptop. Finally, I bring it back to ZWallet for broadcasting.
+Speaking of watch-only accounts, it is possible to spend from them using the companion tool. After confirming the transfer, the wallet creates an unsigned transaction file. I transfer it by USB OTG and sign it on my offline laptop. Finally, I bring it back to YWallet for broadcasting.
 ## 1. Sync speed
 Finally, the wallet is currently the fastest by far and scales well to large accounts with thousands of notes and transactions. Also, it starts quickly and synchronizes in seconds. I don’t have to think about keeping it in sync.
