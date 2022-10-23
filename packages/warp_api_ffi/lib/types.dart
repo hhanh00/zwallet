@@ -87,3 +87,41 @@ class Progress {
 
   Map<String, dynamic> toJson() => _$ProgressToJson(this);
 }
+
+@JsonSerializable()
+class TxOutput {
+  final int id;
+  final String address;
+  final int amount;
+  final int pool;
+
+  TxOutput(this.id, this.address, this.amount, this.pool);
+
+  factory TxOutput.fromJson(Map<String, dynamic> json) =>
+      _$TxOutputFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TxOutputToJson(this);
+}
+
+@JsonSerializable()
+class TxReport {
+  final List<TxOutput> outputs;
+  final int transparent;
+  final int sapling;
+  final int orchard;
+  final int net_sapling;
+  final int net_orchard;
+  final int fee;
+  final int privacy_level;
+
+  TxReport(this.outputs, this.transparent, this.sapling,
+      this.orchard, this.net_sapling, this.net_orchard,
+      this.fee, this.privacy_level);
+
+  factory TxReport.fromJson(Map<String, dynamic> json) =>
+      _$TxReportFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TxReportToJson(this);
+}
+
+

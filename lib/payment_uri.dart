@@ -11,7 +11,7 @@ import 'settings.dart';
 class PaymentURIPage extends StatefulWidget {
   final String address;
 
-  PaymentURIPage(String? _address): address = _address ?? active.account.address;
+  PaymentURIPage(String? _address): address = _address ?? active.address;
 
   @override
   PaymentURIState createState() => PaymentURIState();

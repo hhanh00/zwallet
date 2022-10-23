@@ -33,7 +33,7 @@ class DbReader {
         "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent = 0",
         [id])) ?? 0;
     final underConfirmedBalance = Sqflite.firstIntValue(await db.rawQuery(
-        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND height > ?2",
+        "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND spent IS NULL AND height > ?2",
         [id, confirmHeight])) ?? 0;
     final excludedBalance = Sqflite.firstIntValue(await db.rawQuery(
         "SELECT SUM(value) FROM received_notes WHERE account = ?1 AND spent IS NULL "
@@ -198,7 +198,7 @@ class DbReader {
     return accountBalances;
   }
 
-  Future<List<ZMessage>> getMessages(String myAddress) async {
+  Future<List<ZMessage>> getMessages() async {
     final List<Map> res = await db.rawQuery(
         "SELECT m.id, m.id_tx, m.timestamp, m.sender, m.recipient, c.name as scontact, a.name as saccount, c2.name as rcontact, a2.name as raccount, "
         "subject, body, height, read FROM messages m "
@@ -221,7 +221,7 @@ class DbReader {
       final subject = row['subject'];
       final body = row['body'];
       final read = row['read'] == 1;
-      final incoming = recipient == myAddress;
+      final incoming = false; // TODO: How do we know the message direction when using UA?
       messages.add(ZMessage(id, txId, incoming, from, to, subject, body, timestamp, height, read));
     }
     return messages;

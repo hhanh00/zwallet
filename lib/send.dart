@@ -497,16 +497,12 @@ Future<void> send(BuildContext context, List<Recipient> recipients, bool useTran
       needClose = false;
       Navigator.of(context).pop();
       active.setBanner(s.paymentInProgress);
-      final txId = await WarpApi.sendPayment(active.coin, active.id, recipients,
-          useTransparent, settings.anchorOffset, (progress) {
-            progressPort.sendPort.send(progress);
-          });
-      progressPort.sendPort.send(0);
-      await player.play(AssetSource("success.mp3"));
-      showSnackBar(s.txId(txId));
+      final txPlan = await WarpApi.prepareTx(active.coin, active.id, recipients,
+          useTransparent, settings.anchorOffset);
+      Navigator.pushNamed(context, '/txplan', arguments: txPlan);
       await active.update();
     } else {
-      final txjson = WarpApi.prepareTx(
+      final txjson = WarpApi.prepareTx(active.coin, active.id,
           recipients, useTransparent, settings.anchorOffset);
 
       if (settings.qrOffline) {

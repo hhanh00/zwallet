@@ -43,6 +43,12 @@ class SettingsState extends State<SettingsPage>
     final simpleMode = settings.simpleMode;
     _memoController.text = settings.memoSignature ?? s.sendFrom(APP_NAME);
 
+    final uaType = settings.uaType;
+    List<String> uaList = [];
+    if (uaType & 1 != 0) uaList.add('T');
+    if (uaType & 2 != 0) uaList.add('S');
+    if (uaType & 4 != 0) uaList.add('O');
+
     return Scaffold(
         appBar: AppBar(title: Text(s.settings)),
         body: Padding(
@@ -78,14 +84,6 @@ class SettingsState extends State<SettingsPage>
                                       ServerSelect(0),
                                       ServerSelect(1)
                                     ])),
-                          // if (!simpleMode) FormBuilderRadioGroup(
-                          //     orientation: OptionsOrientation.vertical,
-                          //     name: 'servers',
-                          //     decoration: InputDecoration(
-                          //         labelText: s.server),
-                          //     initialValue: settings.ldUrlChoice,
-                          //     onSaved: _onChoice,
-                          //     options: options),
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
                               name: 'themes',
@@ -165,6 +163,7 @@ class SettingsState extends State<SettingsPage>
                             //           initialValue: settings.useUA,
                             //           onSaved: _onUseUA)),
                           ]),
+
                           if (!simpleMode)
                             FormBuilderTextField(
                                 decoration: InputDecoration(
@@ -191,6 +190,19 @@ class SettingsState extends State<SettingsPage>
                                       child: Text(s.M6), value: '6M'),
                                   FormBuilderFieldOption(
                                       child: Text(s.Y1), value: '1Y'),
+                                ]),
+                          if (!simpleMode) // TODO: Only Enable for UA accounts
+                            FormBuilderCheckboxGroup<String>(
+                                orientation: OptionsOrientation.horizontal,
+                                name: 'ua',
+                                decoration: InputDecoration(labelText: 'Main Address Type'),
+                                initialValue: uaList,
+                                onSaved: _onUAType,
+                                validator: _checkUA,
+                                options: [
+                                  FormBuilderFieldOption(value: 'T'),
+                                  FormBuilderFieldOption(value: 'S'),
+                                  FormBuilderFieldOption(value: 'O'),
                                 ]),
                           if (!simpleMode)
                             FormBuilderCheckbox(
@@ -343,9 +355,32 @@ class SettingsState extends State<SettingsPage>
     settings.setAutoShieldThreshold(v);
   }
 
-  _onUseUA(v) {
-    settings.setUseUA(v);
+  _onUAType(List<String>? vs) {
+    if (vs == null) return;
+    final type = _unpackUAType(vs);
+    settings.setUAType(type);
   }
+
+  String? _checkUA(List<String>? vs) {
+    if (vs == null) return null;
+    final type = _unpackUAType(vs);
+    if (type < 2) return "Invalid Address Type";
+    return null;
+  }
+
+  int _unpackUAType(List<String> vs) {
+    int r = 0;
+    for (var v in vs) {
+      switch (v) {
+        case 'T': r |= 1; break;
+        case 'S': r |= 2; break;
+        case 'O': r |= 4; break;
+      }
+    }
+    return r;
+  }
+
+
 
   _onAutoHide(v) {
     settings.setAutoHide(v);

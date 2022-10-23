@@ -29,6 +29,7 @@ class DevPageState extends State<DevPage> {
         children: [
           ListTile(title: Text('Import Database'), trailing: Icon(Icons.chevron_right), onTap: _importDb),
           ListTile(title: Text('Export Database'), trailing: Icon(Icons.chevron_right), onTap: _exportDb),
+          ListTile(title: Text('Sync Stats'), trailing: Icon(Icons.chevron_right), onTap: _syncStats),
           ListTile(title: Text('Import Sync Data'), trailing: Icon(Icons.chevron_right), onTap: _importSyncData),
           ListTile(title: Text('Reset Scan State'), trailing: Icon(Icons.chevron_right), onTap: _resetScan),
           ListTile(title: Text('Reset App'), trailing: Icon(Icons.chevron_right), onTap: _resetApp),
@@ -72,6 +73,10 @@ class DevPageState extends State<DevPage> {
         await showMessageBox(
             context, 'Db Import Failed', 'Please check the database file', s.ok);
     }
+  }
+
+  void _syncStats() {
+    Navigator.of(context).pushNamed('/syncstats');
   }
 
   Future<void> _importSyncData() async {

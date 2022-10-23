@@ -207,6 +207,9 @@ abstract class _Settings with Store {
   bool instantSync = false;
 
   @observable
+  int uaType = 7;
+
+  @observable
   int developerMode = 10;
 
   @action
@@ -249,6 +252,8 @@ abstract class _Settings with Store {
 
     final _developerMode = prefs.getBool('developer_mode') ?? false;
     developerMode = _developerMode ? 0 : 10;
+
+    uaType = prefs.getInt('ua_type') ?? 7;
 
     for (var s in servers) {
       await s.loadPrefs();
@@ -549,6 +554,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     memoSignature = v;
     prefs.setString('memo_signature', v);
+  }
+
+  @action
+  Future<void> setUAType(int v) async {
+    final prefs = await SharedPreferences.getInstance();
+    uaType = v;
+    prefs.setInt('ua_type', v);
   }
 
   @action
@@ -933,6 +945,23 @@ abstract class _ContactStore with Store {
   }
 }
 
+class SyncStatsStore = _SyncStatsStore with _$SyncStatsStore;
+
+abstract class _SyncStatsStore with Store {
+  @observable
+  ObservableList<SyncDatum> syncData = ObservableList<SyncDatum>.of([]);
+
+  @action
+  void reset() {
+    syncData = ObservableList<SyncDatum>.of([]);
+  }
+
+  @action
+  void add(DateTime now, int height) {
+    syncData.add(SyncDatum(now, height));
+  }
+}
+
 class ETACheckpoint {
   int height;
   DateTime timestamp;
@@ -1154,4 +1183,11 @@ class BlockInfo {
   final int height;
   final DateTime timestamp;
   BlockInfo(this.height, this.timestamp);
+}
+
+class SyncDatum {
+  final DateTime timestamp; // elapsed time in secs
+  final int height; // block time stamp
+
+  SyncDatum(this.timestamp, this.height);
 }
