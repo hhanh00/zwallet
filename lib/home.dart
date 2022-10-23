@@ -77,6 +77,7 @@ class HomeState extends State<HomePage> {
           FlutterForegroundTask.updateService(
               notificationText: "${progress} %");
         }
+        syncStats.add(DateTime.now(), syncedHeight.height);
       } else {
         WarpApi.mempoolReset();
       }
@@ -181,6 +182,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       final menu = PopupMenuButton<String>(
         itemBuilder: (context) {
           return [
+            PopupMenuItem(child: Text('TxPlan'), value: "TxPlan"),
             PopupMenuItem(child: Text(s.accounts), value: "Accounts"),
             PopupMenuItem(child: Text(s.backup), value: "Backup"),
             PopupMenuItem(child: Text(rescanMsg), value: "Rescan"),
@@ -254,6 +256,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
 
   _onMenu(String choice) {
     switch (choice) {
+      case "TxPlan":
+        Navigator.of(context).pushNamed('/txplan', arguments: "");
+        break;
       case "Accounts":
         Navigator.of(context).pushNamed('/accounts');
         break;

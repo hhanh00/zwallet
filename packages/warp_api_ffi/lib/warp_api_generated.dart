@@ -167,6 +167,23 @@ class NativeLibrary {
   late final _dart_new_sub_account _new_sub_account =
       _new_sub_account_ptr.asFunction<_dart_new_sub_account>();
 
+  CResult_____c_char get_address(
+    int coin,
+    int id_account,
+    int ua_type,
+  ) {
+    return _get_address(
+      coin,
+      id_account,
+      ua_type,
+    );
+  }
+
+  late final _get_address_ptr =
+      _lookup<ffi.NativeFunction<_c_get_address>>('get_address');
+  late final _dart_get_address _get_address =
+      _get_address_ptr.asFunction<_dart_get_address>();
+
   void import_transparent_key(
     int coin,
     int id_account,
@@ -282,14 +299,16 @@ class NativeLibrary {
       _get_latest_height_ptr.asFunction<_dart_get_latest_height>();
 
   CResult_____c_char send_multi_payment(
+    int coin,
+    int account,
     ffi.Pointer<ffi.Int8> recipients_json,
-    int use_transparent,
     int anchor_offset,
     int port,
   ) {
     return _send_multi_payment(
+      coin,
+      account,
       recipients_json,
-      use_transparent,
       anchor_offset,
       port,
     );
@@ -383,8 +402,14 @@ class NativeLibrary {
   late final _dart_get_taddr_balance _get_taddr_balance =
       _get_taddr_balance_ptr.asFunction<_dart_get_taddr_balance>();
 
-  CResult_____c_char shield_taddr() {
-    return _shield_taddr();
+  CResult_____c_char shield_taddr(
+    int coin,
+    int account,
+  ) {
+    return _shield_taddr(
+      coin,
+      account,
+    );
   }
 
   late final _shield_taddr_ptr =
@@ -408,13 +433,15 @@ class NativeLibrary {
           .asFunction<_dart_scan_transparent_accounts>();
 
   CResult_____c_char prepare_multi_payment(
+    int coin,
+    int account,
     ffi.Pointer<ffi.Int8> recipients_json,
-    int use_transparent,
     int anchor_offset,
   ) {
     return _prepare_multi_payment(
+      coin,
+      account,
       recipients_json,
-      use_transparent,
       anchor_offset,
     );
   }
@@ -425,11 +452,30 @@ class NativeLibrary {
   late final _dart_prepare_multi_payment _prepare_multi_payment =
       _prepare_multi_payment_ptr.asFunction<_dart_prepare_multi_payment>();
 
+  CResult_____c_char transaction_report(
+    int coin,
+    ffi.Pointer<ffi.Int8> plan,
+  ) {
+    return _transaction_report(
+      coin,
+      plan,
+    );
+  }
+
+  late final _transaction_report_ptr =
+      _lookup<ffi.NativeFunction<_c_transaction_report>>('transaction_report');
+  late final _dart_transaction_report _transaction_report =
+      _transaction_report_ptr.asFunction<_dart_transaction_report>();
+
   CResult_____c_char sign(
+    int coin,
+    int account,
     ffi.Pointer<ffi.Int8> tx,
     int port,
   ) {
     return _sign(
+      coin,
+      account,
       tx,
       port,
     );
@@ -437,6 +483,23 @@ class NativeLibrary {
 
   late final _sign_ptr = _lookup<ffi.NativeFunction<_c_sign>>('sign');
   late final _dart_sign _sign = _sign_ptr.asFunction<_dart_sign>();
+
+  CResult_____c_char sign_and_broadcast(
+    int coin,
+    int account,
+    ffi.Pointer<ffi.Int8> tx_plan,
+  ) {
+    return _sign_and_broadcast(
+      coin,
+      account,
+      tx_plan,
+    );
+  }
+
+  late final _sign_and_broadcast_ptr =
+      _lookup<ffi.NativeFunction<_c_sign_and_broadcast>>('sign_and_broadcast');
+  late final _dart_sign_and_broadcast _sign_and_broadcast =
+      _sign_and_broadcast_ptr.asFunction<_dart_sign_and_broadcast>();
 
   CResult_____c_char broadcast_tx(
     ffi.Pointer<ffi.Int8> tx_str,
@@ -824,15 +887,15 @@ class CResult_u32 extends ffi.Struct {
   external ffi.Pointer<ffi.Int8> error;
 }
 
-class CResult_u8 extends ffi.Struct {
-  @ffi.Uint8()
-  external int value;
+class CResult_____c_char extends ffi.Struct {
+  external ffi.Pointer<ffi.Int8> value;
 
   external ffi.Pointer<ffi.Int8> error;
 }
 
-class CResult_____c_char extends ffi.Struct {
-  external ffi.Pointer<ffi.Int8> value;
+class CResult_u8 extends ffi.Struct {
+  @ffi.Uint8()
+  external int value;
 
   external ffi.Pointer<ffi.Int8> error;
 }
@@ -949,6 +1012,18 @@ typedef _dart_new_sub_account = void Function(
   int count,
 );
 
+typedef _c_get_address = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id_account,
+  ffi.Uint8 ua_type,
+);
+
+typedef _dart_get_address = CResult_____c_char Function(
+  int coin,
+  int id_account,
+  int ua_type,
+);
+
 typedef _c_import_transparent_key = ffi.Void Function(
   ffi.Uint8 coin,
   ffi.Uint32 id_account,
@@ -1022,15 +1097,17 @@ typedef _c_get_latest_height = CResult_u32 Function();
 typedef _dart_get_latest_height = CResult_u32 Function();
 
 typedef _c_send_multi_payment = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> recipients_json,
-  ffi.Int8 use_transparent,
   ffi.Uint32 anchor_offset,
   ffi.Int64 port,
 );
 
 typedef _dart_send_multi_payment = CResult_____c_char Function(
+  int coin,
+  int account,
   ffi.Pointer<ffi.Int8> recipients_json,
-  int use_transparent,
   int anchor_offset,
   int port,
 );
@@ -1081,9 +1158,15 @@ typedef _dart_get_taddr_balance = CResult_u64 Function(
   int id_account,
 );
 
-typedef _c_shield_taddr = CResult_____c_char Function();
+typedef _c_shield_taddr = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+);
 
-typedef _dart_shield_taddr = CResult_____c_char Function();
+typedef _dart_shield_taddr = CResult_____c_char Function(
+  int coin,
+  int account,
+);
 
 typedef _c_scan_transparent_accounts = ffi.Void Function(
   ffi.Uint32 gap_limit,
@@ -1094,25 +1177,53 @@ typedef _dart_scan_transparent_accounts = void Function(
 );
 
 typedef _c_prepare_multi_payment = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> recipients_json,
-  ffi.Int8 use_transparent,
   ffi.Uint32 anchor_offset,
 );
 
 typedef _dart_prepare_multi_payment = CResult_____c_char Function(
+  int coin,
+  int account,
   ffi.Pointer<ffi.Int8> recipients_json,
-  int use_transparent,
   int anchor_offset,
 );
 
+typedef _c_transaction_report = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> plan,
+);
+
+typedef _dart_transaction_report = CResult_____c_char Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> plan,
+);
+
 typedef _c_sign = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> tx,
   ffi.Int64 port,
 );
 
 typedef _dart_sign = CResult_____c_char Function(
+  int coin,
+  int account,
   ffi.Pointer<ffi.Int8> tx,
   int port,
+);
+
+typedef _c_sign_and_broadcast = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+  ffi.Pointer<ffi.Int8> tx_plan,
+);
+
+typedef _dart_sign_and_broadcast = CResult_____c_char Function(
+  int coin,
+  int account,
+  ffi.Pointer<ffi.Int8> tx_plan,
 );
 
 typedef _c_broadcast_tx = CResult_____c_char Function(

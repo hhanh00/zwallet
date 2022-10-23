@@ -17,15 +17,18 @@ class Account {
   final int coin;
   final int id;
   final String name;
-  final String address;
   final int balance;
   int tbalance = 0;
   final ShareInfo? share;
 
-  Account(this.coin, this.id, this.name, this.address, this.balance, this.tbalance, this.share);
+  Account(this.coin, this.id, this.name, this.balance, this.tbalance, this.share);
+
+  String get address {
+    return WarpApi.getAddress(this.coin, this.id, settings.uaType);
+  }
 }
 
-final Account emptyAccount = Account(0, 0, "", "", 0, 0, null);
+final Account emptyAccount = Account(0, 0, "", 0, 0, null);
 
 class AccountManager2 = _AccountManager2 with _$AccountManager2;
 
@@ -94,21 +97,16 @@ abstract class _AccountManager2 with Store {
     List<Account> accounts = [];
 
     final List<Map> res = await db.rawQuery(
-        "WITH notes AS (SELECT a.id_account, a.name, a.address, CASE WHEN r.spent IS NULL THEN r.value ELSE 0 END AS nv FROM accounts a LEFT JOIN received_notes r ON a.id_account = r.account),"
-            "accounts2 AS (SELECT id_account, name, address, COALESCE(sum(nv), 0) AS balance FROM notes GROUP by id_account) "
-            "SELECT a.id_account, a.name, a.address, a.balance FROM accounts2 a",
+        "WITH notes AS (SELECT a.id_account, a.name, CASE WHEN r.spent IS NULL THEN r.value ELSE 0 END AS nv FROM accounts a LEFT JOIN received_notes r ON a.id_account = r.account),"
+            "accounts2 AS (SELECT id_account, name, COALESCE(sum(nv), 0) AS balance FROM notes GROUP by id_account) "
+            "SELECT a.id_account, a.name, a.balance FROM accounts2 a",
         []);
     for (var r in res) {
       final int id = r['id_account'];
-      // final shareInfo = r['secret'] != null
-      //     ? ShareInfo(
-      //     r['idx'], r['threshold'], r['participants'], r['secret'])
-      //     : null; // TODO: Multisig
       final account = Account(
           coin,
           id,
           r['name'],
-          r['address'],
           r['balance'],
           0,
           null);
@@ -316,7 +314,7 @@ abstract class _ActiveAccount with Store {
     final dbr = DbReader(coin, id);
     notes = await dbr.getNotes();
     txs = await dbr.getTxs();
-    messages = ObservableList.of(await dbr.getMessages(account.address));
+    messages = ObservableList.of(await dbr.getMessages());
     unread = messages.where((m) => !m.read).length;
     dataEpoch += 1;
   }
@@ -473,6 +471,10 @@ abstract class _ActiveAccount with Store {
   @action
   void setBanner(String msg) {
     banner = msg;
+  }
+
+  String get address { // TODO
+    return account.address;
   }
 }
 

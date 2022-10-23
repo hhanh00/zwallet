@@ -288,7 +288,7 @@ class QRAddressState extends State<QRAddressWidget> {
         ? active.taddress
         : _useSnapAddress
             ? _snapAddress
-            : active.account.address;
+            : active.address;
     return address;
   }
 }

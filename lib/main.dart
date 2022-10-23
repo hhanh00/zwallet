@@ -55,6 +55,8 @@ import 'sign.dart';
 import 'store.dart';
 import 'theme_editor.dart';
 import 'transaction.dart';
+import 'sync_chart.dart';
+import 'txplan.dart';
 import 'welcome.dart';
 
 const ZECUNIT = 100000000.0;
@@ -76,6 +78,7 @@ var settings = Settings();
 var multipayData = MultiPayStore();
 var eta = ETAStore();
 var contacts = ContactStore();
+var syncStats = SyncStatsStore();
 var accounts = AccountManager2();
 var active = ActiveAccount();
 final messageKey = GlobalKey<MessageTableState>();
@@ -268,6 +271,8 @@ void main() {
                 '/sign': (context) => Sign.init(routeSettings.arguments as String),
                 '/keytool': (context) => KeyToolPage(),
                 '/dev': (context) => DevPage(),
+                '/txplan': (context) => TxPlanPage.fromPlan(routeSettings.arguments as String),
+                '/syncstats': (context) => SyncChartPage(),
               };
               return MaterialPageRoute(builder: routes[routeSettings.name]!);
             },
@@ -788,7 +793,7 @@ Future<void> shieldTAddr(BuildContext context) async {
               final s = S.of(context);
               Navigator.of(context).pop();
               showSnackBar(s.shieldingInProgress, autoClose: true);
-              final txid = await WarpApi.shieldTAddr();
+              final txid = await WarpApi.shieldTAddr(active.coin, active.id);
               showSnackBar(s.txId(txid));
             })),
   );

@@ -86,6 +86,11 @@ class WarpApi {
         name.toNativeUtf8().cast<Int8>(), index, count);
   }
 
+  static String getAddress(int coin, int id, int uaType) {
+    final address = warp_api_lib.get_address(coin, id, uaType);
+    return unwrapResultString(address);
+  }
+
   static void importTransparentPath(int coin, int id, String path) {
     warp_api_lib.import_transparent_key(
         coin, id, path.toNativeUtf8().cast<Int8>());
@@ -176,7 +181,7 @@ class WarpApi {
 
     return await compute(
         sendPaymentIsolateFn,
-        PaymentParams(
+        PaymentParams(coin, account,
             recipientJson, useTransparent, anchorOffset, receivePort.sendPort));
   }
 
@@ -191,8 +196,8 @@ class WarpApi {
     return balance;
   }
 
-  static Future<String> shieldTAddr() async {
-    final txId = await compute(shieldTAddrIsolateFn, null);
+  static Future<String> shieldTAddr(int coin, int account) async {
+    final txId = await compute(shieldTAddrIsolateFn, ShieldTAddrParams(coin, account));
     return txId;
   }
 
@@ -202,15 +207,25 @@ class WarpApi {
         ScanTransparentAccountsParams(gapLimit));
   }
 
-  static String prepareTx(
+  static String prepareTx(int coin, int account,
       List<Recipient> recipients, bool useTransparent, int anchorOffset) {
     final recipientsJson = jsonEncode(recipients);
     final res = warp_api_lib.prepare_multi_payment(
+        coin, account,
         recipientsJson.toNativeUtf8().cast<Int8>(),
-        useTransparent ? 1 : 0,
         anchorOffset);
     final json = unwrapResultString(res);
     return json;
+  }
+
+  static String transactionReport(int coin, String plan) {
+    final report = warp_api_lib.transaction_report(coin, plan.toNativeUtf8().cast<Int8>());
+    return unwrapResultString(report);
+  }
+
+  static String signAndBroadcast (int coin, int account, String plan) {
+    final txid = warp_api_lib.sign_and_broadcast(coin, account, plan.toNativeUtf8().cast<Int8>());
+    return unwrapResultString(txid);
   }
 
   static Future<String> signOnly(
@@ -221,7 +236,7 @@ class WarpApi {
     });
 
     return await compute(
-        signOnlyIsolateFn, SignOnlyParams(tx, receivePort.sendPort));
+        signOnlyIsolateFn, SignOnlyParams(coin, account, tx, receivePort.sendPort));
   }
 
   static String broadcast(String txStr) {
@@ -453,15 +468,16 @@ class WarpApi {
 
 String sendPaymentIsolateFn(PaymentParams params) {
   final txId = warp_api_lib.send_multi_payment(
+      params.coin, params.account,
       params.recipientsJson.toNativeUtf8().cast<Int8>(),
       params.anchorOffset,
-      params.useTransparent ? 1 : 0,
       params.port.nativePort);
   return unwrapResultString(txId);
 }
 
 String signOnlyIsolateFn(SignOnlyParams params) {
   final txIdRes = warp_api_lib.sign(
+      params.coin, params.account,
       params.tx.toNativeUtf8().cast<Int8>(), params.port.nativePort);
   if (txIdRes.error != nullptr) throw convertCString(txIdRes.error);
   return convertCString(txIdRes.value);
@@ -475,8 +491,8 @@ int mempoolSyncIsolateFn(Null n) {
   return unwrapResultI64(warp_api_lib.mempool_sync());
 }
 
-String shieldTAddrIsolateFn(Null n) {
-  final txId = warp_api_lib.shield_taddr();
+String shieldTAddrIsolateFn(ShieldTAddrParams params) {
+  final txId = warp_api_lib.shield_taddr(params.coin, params.account);
   return unwrapResultString(txId);
 }
 
@@ -518,20 +534,24 @@ class SyncParams {
 }
 
 class PaymentParams {
+  final int coin;
+  final int account;
   final String recipientsJson;
   final bool useTransparent;
   final int anchorOffset;
   final SendPort port;
 
   PaymentParams(
-      this.recipientsJson, this.useTransparent, this.anchorOffset, this.port);
+      this.coin, this.account, this.recipientsJson, this.useTransparent, this.anchorOffset, this.port);
 }
 
 class SignOnlyParams {
+  final int coin;
+  final int account;
   final String tx;
   final SendPort port;
 
-  SignOnlyParams(this.tx, this.port);
+  SignOnlyParams(this.coin, this.account, this.tx, this.port);
 }
 
 class ShieldTAddrParams {
