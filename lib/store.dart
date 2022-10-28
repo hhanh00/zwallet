@@ -783,7 +783,8 @@ abstract class _SyncStatus with Store {
   Future<void> reorg() async {
     final _syncedHeight = await getDbSyncedHeight();
     if (_syncedHeight != null) {
-      final rewindHeight = max(_syncedHeight.height - settings.anchorOffset, 0);
+      final offset = max(settings.anchorOffset, 1);
+      final rewindHeight = max(_syncedHeight.height - offset, 0);
       final height = WarpApi.rewindTo(rewindHeight);
       showSnackBar(S.current.blockReorgDetectedRewind(height));
       syncStatus.reset();
