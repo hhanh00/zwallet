@@ -421,6 +421,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         allowWifiLock: true,
       ),
     );
+    FlutterForegroundTask.setOnLockScreenVisibility(false);
   }
 }
 
