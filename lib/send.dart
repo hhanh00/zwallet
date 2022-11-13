@@ -50,7 +50,6 @@ class SendState extends State<SendPage> {
   final _maxAmountController = TextEditingController(text: zero);
   var _isExpanded = false;
   var _useMillis = true;
-  var _useTransparent = settings.shieldBalance || active.showTAddr;
   ReactionDisposer? _newBlockAutorunDispose;
   final _fee = DEFAULT_FEE;
   var _usedBalance = 0;
@@ -175,7 +174,7 @@ class SendState extends State<SendPage> {
                           initialValue: _initialAmount,
                           useMillis: _useMillis,
                           spendable: spendable),
-                      if (!simpleMode) BalanceTable(_sBalance, _tBalance, _useTransparent,
+                      if (!simpleMode) BalanceTable(_sBalance, _tBalance,
                           _excludedBalance, _underConfirmedBalance, change, _usedBalance, _fee),
                       Container(child: InputDecorator(
                         decoration: InputDecoration(labelText: s.memo),
@@ -218,12 +217,6 @@ class SendState extends State<SendPage> {
                                     title: Text(s.roundToMillis),
                                     value: _useMillis,
                                     onChanged: _setUseMillis),
-                                if (active.canPay && !widget.isMulti)
-                                  CheckboxListTile(
-                                    title: Text(s.useTransparentBalance),
-                                    value: _useTransparent,
-                                    onChanged: _onChangedUseTransparent,
-                                  ),
                                 ListTile(
                                     title: TextFormField(
                                   decoration: InputDecoration(
@@ -277,13 +270,6 @@ class SendState extends State<SendPage> {
     setState(() {
       _useMillis = false;
       amountInput?.setAmount(spendable);
-    });
-  }
-
-  void _onChangedUseTransparent(bool? v) {
-    if (v == null) return;
-    setState(() {
-      _useTransparent = v;
     });
   }
 
@@ -341,42 +327,26 @@ class SendState extends State<SendPage> {
     if (form.validate()) {
       form.save();
       final amount = amountInput?.amount ?? 0;
-      final aZEC = amountToString(amount, MAX_PRECISION);
-      final approved = widget.isMulti ||
-          await showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) => AlertDialog(
-                  title: Text(s.pleaseConfirm),
-                  content: SingleChildScrollView(
-                      child: Text(s.sendingAzecCointickerToAddress(
-                          aZEC, active.coinDef.ticker, _address))),
-                  actions: confirmButtons(
-                      context, () => Navigator.of(context).pop(true),
-                      okLabel: s.approve, cancelValue: false)));
-      if (approved) {
-        int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toBigInt().toInt();
-        final memo = _memoController.text;
-        final subject = _subjectController.text;
-        final recipient = Recipient(
-          _address,
-          amount,
-          _replyTo,
-          subject,
-          memo,
-          maxAmountPerNote,
-        );
-        active.setDraftRecipient(recipient);
+      int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toBigInt().toInt();
+      final memo = _memoController.text;
+      final subject = _subjectController.text;
+      final recipient = Recipient(
+        _address,
+        amount,
+        _replyTo,
+        subject,
+        memo,
+        maxAmountPerNote,
+      );
+      active.setDraftRecipient(recipient);
 
-        if (!widget.isMulti)
-          // send closes the page
-          await send(context, [recipient], _useTransparent);
-        else
-          Navigator.of(context).pop(recipient);
-      }
+      if (!widget.isMulti)
+        // send closes the page
+        await send(context, [recipient]);
+      else
+        Navigator.of(context).pop(recipient);
     }
   }
-
 
   int amountInZAT(Decimal v) => (v * ZECUNIT_DECIMAL).toBigInt().toInt();
 
@@ -384,12 +354,12 @@ class SendState extends State<SendPage> {
       (Decimal.fromInt(v) / ZECUNIT_DECIMAL).toString();
 
   get spendable => math.max(
-      (_useTransparent ? _tBalance : 0) +
-          _sBalance -
-          _excludedBalance -
-          _underConfirmedBalance -
-          _usedBalance -
-          _fee,
+      _tBalance +
+      _sBalance -
+      _excludedBalance -
+      _underConfirmedBalance -
+      _usedBalance -
+      _fee,
       0);
 
   get change => _unconfirmedSpentBalance + _unconfirmedBalance;
@@ -400,14 +370,13 @@ class SendState extends State<SendPage> {
 class BalanceTable extends StatelessWidget {
   final int sBalance;
   final int tBalance;
-  final bool useTBalance;
   final int excludedBalance;
   final int underConfirmedBalance;
   final int change;
   final int used;
   final int fee;
 
-  BalanceTable(this.sBalance, this.tBalance, this.useTBalance,
+  BalanceTable(this.sBalance, this.tBalance,
       this.excludedBalance, this.underConfirmedBalance, this.change, this.used, this.fee);
 
   @override
@@ -433,7 +402,6 @@ class BalanceTable extends StatelessWidget {
           BalanceRow(Text(S.of(context).totalBalance), totalBalance),
           BalanceRow(Text(S.of(context).underConfirmed), -underConfirmed),
           BalanceRow(Text(S.of(context).excludedNotes), -excludedBalance),
-          if (!useTBalance) BalanceRow(tBalanceLabel, -tBalance),
           BalanceRow(Text(S.of(context).spendableBalance), spendable,
               style: TextStyle(color: Theme.of(context).primaryColor)),
         ]));
@@ -445,7 +413,7 @@ class BalanceTable extends StatelessWidget {
 
   get spendable => math.max(
       sBalance +
-          (useTBalance ? tBalance : 0) -
+          tBalance -
           excludedBalance -
           underConfirmedBalance -
           used -
@@ -471,61 +439,19 @@ class BalanceRow extends StatelessWidget {
   }
 }
 
-Future<void> send(BuildContext context, List<Recipient> recipients, bool useTransparent) async {
-
+Future<void> send(BuildContext context, List<Recipient> recipients) async {
   final s = S.of(context);
-
-  String address = "";
-  for (var r in recipients) {
-    if (address.isEmpty)
-      address = r.address;
-    else
-      address = '*';
-  }
 
   showSnackBar(s.preparingTransaction, autoClose: true);
 
   if (settings.protectSend &&
       !await authenticate(context, s.pleaseAuthenticateToSend)) return;
 
-  final player = AudioPlayer();
-
-  bool needClose = true;
-  active.setDraftRecipient(null);
-  try {
-    if (active.canPay) {
-      needClose = false;
-      Navigator.of(context).pop();
-      active.setBanner(s.paymentInProgress);
-      final txPlan = await WarpApi.prepareTx(active.coin, active.id, recipients,
-          useTransparent, settings.anchorOffset);
-      Navigator.pushNamed(context, '/txplan', arguments: txPlan);
-      await active.update();
-    } else {
-      final txjson = WarpApi.prepareTx(active.coin, active.id,
-          recipients, useTransparent, settings.anchorOffset);
-
-      if (settings.qrOffline) {
-        needClose = false;
-        Navigator.pushReplacementNamed(context, '/qroffline', arguments: txjson);
-      }
-      else {
-        await saveFile(txjson, "tx.json", s.unsignedTransactionFile);
-        showSnackBar(s.fileSaved);
-      }
-    }
-  }
-  on String catch (message) {
-    showSnackBar(message);
-    await player.play(AssetSource("fail.mp3"));
-    if (recipients.length == 1)
-      active.setDraftRecipient(recipients[0]);
-  }
-  finally {
-    if (needClose)
-      Navigator.of(context).pop();
-    active.setBanner("");
-  }
+  if (recipients.length == 1)
+    active.setDraftRecipient(recipients[0]);
+  final txPlan = await WarpApi.prepareTx(active.coin, active.id, recipients,
+      settings.anchorOffset);
+  Navigator.pushReplacementNamed(context, '/txplan', arguments: txPlan);
 }
 
 abstract class Suggestion {

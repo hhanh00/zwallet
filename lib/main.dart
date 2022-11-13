@@ -33,7 +33,6 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'accounts.dart';
 import 'animated_qr.dart';
 import 'coin/coins.dart';
-import 'db.dart';
 import 'devmode.dart';
 import 'generated/l10n.dart';
 
@@ -51,7 +50,6 @@ import 'scantaddr.dart';
 import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
-import 'sign.dart';
 import 'store.dart';
 import 'theme_editor.dart';
 import 'transaction.dart';
@@ -268,10 +266,10 @@ void main() {
                 '/scantaddr': (context) => ScanTAddrPage(),
                 '/qroffline': (context) => QrOffline(routeSettings.arguments as String),
                 '/showRawTx': (context) => ShowRawTx(routeSettings.arguments as String),
-                '/sign': (context) => Sign.init(routeSettings.arguments as String),
                 '/keytool': (context) => KeyToolPage(),
                 '/dev': (context) => DevPage(),
-                '/txplan': (context) => TxPlanPage.fromPlan(routeSettings.arguments as String),
+                '/txplan': (context) => TxPlanPage.fromPlan(routeSettings.arguments as String, false),
+                '/sign': (context) => TxPlanPage.fromPlan(routeSettings.arguments as String, true),
                 '/syncstats': (context) => SyncChartPage(),
               };
               return MaterialPageRoute(builder: routes[routeSettings.name]!);
@@ -359,20 +357,21 @@ class ZWalletAppState extends State<ZWalletApp> {
             await coin.importFromTemp();
           }
         }
+        print("db path $dbPath");
+        WarpApi.migrateWallet(dbPath);
         _setProgress(0.1, 'Initializing Ycash');
         await ycash.open();
         _setProgress(0.2, 'Initializing Zcash');
         await zcash.open();
         _setProgress(0.3, 'Initializing Wallet');
+        WarpApi.initWallet(dbPath);
 
         if (resetRecover) {
-          for (var coin in coins)
+          for (var coin in coins) {
             await coin.delete();
+            await coin.open();
+          }
         }
-
-        WarpApi.initWallet(dbPath);
-        for (var coin in coins)
-          await coin.open();
 
         if (resetRecover) {
           final f = await getRecoveryFile();
@@ -464,7 +463,7 @@ List<ElevatedButton> confirmButtons(BuildContext context,
           cancelValue != null ? navigator.pop(cancelValue) : navigator.pop();
         },
         style: ElevatedButton.styleFrom(
-            primary: Theme
+            backgroundColor: Theme
                 .of(context)
                 .buttonTheme
                 .colorScheme!
@@ -651,16 +650,16 @@ void showSnackBar(String msg, { bool autoClose = false, bool quick = false }) {
   rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
 }
 
-void showBalanceNotification(Balances prevBalances, Balances curBalances) {
+void showBalanceNotification(int prevBalances, int curBalances) {
   final s = S.current;
   if (syncStatus.isRescan) return;
   if (Platform.isAndroid &&
-      prevBalances.balance != curBalances.balance) {
-    final amount = (prevBalances.balance - curBalances.balance).abs();
+      prevBalances != curBalances) {
+    final amount = (prevBalances - curBalances).abs();
     final amountStr = amountToString(amount, MAX_PRECISION);
     final ticker = active.coinDef.ticker;
     final NotificationContent content;
-    if (curBalances.balance > prevBalances.balance) {
+    if (curBalances > prevBalances) {
       content = NotificationContent(
         id: 1,
         channelKey: APP_NAME,
@@ -793,7 +792,7 @@ Future<void> shieldTAddr(BuildContext context) async {
               final s = S.of(context);
               Navigator.of(context).pop();
               showSnackBar(s.shieldingInProgress, autoClose: true);
-              final txid = await WarpApi.shieldTAddr(active.coin, active.id);
+              final txid = await WarpApi.shieldTAddr(active.coin, active.id, settings.anchorOffset);
               showSnackBar(s.txId(txid));
             })),
   );
@@ -880,7 +879,7 @@ Future<bool> showConfirmDialog(BuildContext context, String title, String body) 
         content: Text(body),
         actions: confirmButtons(context, () {
           Navigator.of(context).pop(true);
-        }, okLabel: S.of(context).ok, cancelValue: false)),
+        }, okLabel: s.ok, cancelValue: false)),
   ) ?? false;
   return confirmation;
 }

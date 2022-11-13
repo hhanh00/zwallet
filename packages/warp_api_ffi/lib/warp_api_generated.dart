@@ -66,6 +66,19 @@ class NativeLibrary {
   late final _dart_init_wallet _init_wallet =
       _init_wallet_ptr.asFunction<_dart_init_wallet>();
 
+  void migrate_db(
+    ffi.Pointer<ffi.Int8> db_path,
+  ) {
+    return _migrate_db(
+      db_path,
+    );
+  }
+
+  late final _migrate_db_ptr =
+      _lookup<ffi.NativeFunction<_c_migrate_db>>('migrate_db');
+  late final _dart_migrate_db _migrate_db =
+      _migrate_db_ptr.asFunction<_dart_migrate_db>();
+
   void set_active(
     int active,
   ) {
@@ -298,27 +311,6 @@ class NativeLibrary {
   late final _dart_get_latest_height _get_latest_height =
       _get_latest_height_ptr.asFunction<_dart_get_latest_height>();
 
-  CResult_____c_char send_multi_payment(
-    int coin,
-    int account,
-    ffi.Pointer<ffi.Int8> recipients_json,
-    int anchor_offset,
-    int port,
-  ) {
-    return _send_multi_payment(
-      coin,
-      account,
-      recipients_json,
-      anchor_offset,
-      port,
-    );
-  }
-
-  late final _send_multi_payment_ptr =
-      _lookup<ffi.NativeFunction<_c_send_multi_payment>>('send_multi_payment');
-  late final _dart_send_multi_payment _send_multi_payment =
-      _send_multi_payment_ptr.asFunction<_dart_send_multi_payment>();
-
   void skip_to_last_height(
     int coin,
   ) {
@@ -405,10 +397,12 @@ class NativeLibrary {
   CResult_____c_char shield_taddr(
     int coin,
     int account,
+    int confirmations,
   ) {
     return _shield_taddr(
       coin,
       account,
+      confirmations,
     );
   }
 
@@ -916,6 +910,8 @@ class CResult_u64 extends ffi.Struct {
 
 const int QR_DATA_SIZE = 256;
 
+const int MAX_ATTEMPTS = 10;
+
 const int N = 200000;
 
 typedef _c_dummy_export = ffi.Void Function();
@@ -943,6 +939,14 @@ typedef _c_init_wallet = ffi.Void Function(
 );
 
 typedef _dart_init_wallet = void Function(
+  ffi.Pointer<ffi.Int8> db_path,
+);
+
+typedef _c_migrate_db = ffi.Void Function(
+  ffi.Pointer<ffi.Int8> db_path,
+);
+
+typedef _dart_migrate_db = void Function(
   ffi.Pointer<ffi.Int8> db_path,
 );
 
@@ -1096,22 +1100,6 @@ typedef _c_get_latest_height = CResult_u32 Function();
 
 typedef _dart_get_latest_height = CResult_u32 Function();
 
-typedef _c_send_multi_payment = CResult_____c_char Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 account,
-  ffi.Pointer<ffi.Int8> recipients_json,
-  ffi.Uint32 anchor_offset,
-  ffi.Int64 port,
-);
-
-typedef _dart_send_multi_payment = CResult_____c_char Function(
-  int coin,
-  int account,
-  ffi.Pointer<ffi.Int8> recipients_json,
-  int anchor_offset,
-  int port,
-);
-
 typedef _c_skip_to_last_height = ffi.Void Function(
   ffi.Uint8 coin,
 );
@@ -1161,11 +1149,13 @@ typedef _dart_get_taddr_balance = CResult_u64 Function(
 typedef _c_shield_taddr = CResult_____c_char Function(
   ffi.Uint8 coin,
   ffi.Uint32 account,
+  ffi.Uint32 confirmations,
 );
 
 typedef _dart_shield_taddr = CResult_____c_char Function(
   int coin,
   int account,
+  int confirmations,
 );
 
 typedef _c_scan_transparent_accounts = ffi.Void Function(

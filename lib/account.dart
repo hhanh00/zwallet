@@ -160,6 +160,7 @@ class QRAddressState extends State<QRAddressWidget> {
     return Observer(builder: (context) {
       final s = S.of(context);
       final theme = Theme.of(context);
+      final hasUA = active.coinDef.supportsUA;
       final _ = active.taddress;
       final simpleMode = settings.simpleMode;
       final address = _address();
@@ -201,7 +202,7 @@ class QRAddressState extends State<QRAddressWidget> {
                   child: Icon(MdiIcons.qrcodeScan), onTap: _onReceive)),
         ])),
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-        if (!simpleMode && !showTAddr)
+        if (!simpleMode && !showTAddr && !hasUA)
           OutlinedButton(
               child: Text(s.newSnapAddress),
               style: OutlinedButton.styleFrom(

@@ -15,7 +15,7 @@ class ZcashCoin extends CoinBase {
     LWInstance("Lightwalletd", "https://mainnet.lightwalletd.com:9067"),
     LWInstance("Zecwallet", "https://lwdv3.zecwallet.co"),
   ];
-  bool supportsUA = false;
+  bool supportsUA = true;
   bool supportsMultisig = false;
   List<double> weights = [0.05, 0.25, 2.50];
 }

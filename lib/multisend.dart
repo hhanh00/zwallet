@@ -65,32 +65,10 @@ class MultiPayState extends State<MultiPayPage> {
   }
 
   _send() async {
-    final amount = multipayData.recipients
-            .map((r) => r.amount)
-            .fold<double>(0.0, (a, b) => a + b) /
-        ZECUNIT;
-    final count = multipayData.recipients.length;
+    await send(context, multipayData.recipients);
 
-    final approved = await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => AlertDialog(
-            title: Text(S.of(context).pleaseConfirm),
-            content: SingleChildScrollView(
-                child: Text(S
-                    .of(context)
-                    .sendingATotalOfAmountCointickerToCountRecipients(
-                        amount, activeCoin().ticker, count))),
-            actions: confirmButtons(
-                context, () => Navigator.of(context).pop(true),
-                cancelValue: false)));
-
-    if (approved) {
-      await send(context, multipayData.recipients, false);
-
-      multipayData.clear();
-      await active.update();
-    }
+    multipayData.clear();
+    await active.update();
   }
 }
 
