@@ -7,3 +7,6 @@
 [submodule "misc/flathub"]
 	path = misc/flathub
 	url = https://github.com/flathub/app.ywallet.Ywallet.git
+[submodule "librustzcash"]
+	path = librustzcash
+	url = git@github.com:hhanh00/librustzcash.git
