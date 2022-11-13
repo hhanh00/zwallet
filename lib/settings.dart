@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:warp_api/warp_api.dart';
-import 'coin/coins.dart';
 
 import 'coin/coin.dart';
 import 'main.dart';
@@ -43,6 +42,7 @@ class SettingsState extends State<SettingsPage>
     final simpleMode = settings.simpleMode;
     _memoController.text = settings.memoSignature ?? s.sendFrom(APP_NAME);
 
+    final hasUA = active.coinDef.supportsUA;
     final uaType = settings.uaType;
     List<String> uaList = [];
     if (uaType & 1 != 0) uaList.add('T');
@@ -191,7 +191,7 @@ class SettingsState extends State<SettingsPage>
                                   FormBuilderFieldOption(
                                       child: Text(s.Y1), value: '1Y'),
                                 ]),
-                          if (!simpleMode) // TODO: Only Enable for UA accounts
+                          if (!simpleMode && hasUA)
                             FormBuilderCheckboxGroup<String>(
                                 orientation: OptionsOrientation.horizontal,
                                 name: 'ua',
@@ -276,12 +276,6 @@ class SettingsState extends State<SettingsPage>
                                 validator: _checkAmount),
                           if (!simpleMode)
                             FormBuilderCheckbox(
-                                name: 'use_trp',
-                                title: Text(s.useTransparentBalance),
-                                initialValue: settings.shieldBalance,
-                                onSaved: _shieldBalance),
-                          if (!simpleMode)
-                            FormBuilderCheckbox(
                                 name: 'use_cold_qr',
                                 title: Text(s.useQrForOfflineSigning),
                                 initialValue: settings.qrOffline,
@@ -342,10 +336,6 @@ class SettingsState extends State<SettingsPage>
     settings.setChartRange(v);
   }
 
-  _shieldBalance(v) {
-    settings.setShieldBalance(v);
-  }
-
   _qrOffline(v) {
     settings.setQrOffline(v);
   }
@@ -388,18 +378,6 @@ class SettingsState extends State<SettingsPage>
 
   _onIncludeReplyTo(v) {
     settings.setIncludeReplyTo(v);
-  }
-
-  _onMessageTable(v) {
-    settings.setMessageView(v);
-  }
-
-  _onNoteTable(v) {
-    settings.setNoteView(v);
-  }
-
-  _onTxTable(v) {
-    settings.setTxView(v);
   }
 
   _onProtectSend(v) {

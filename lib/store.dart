@@ -147,9 +147,6 @@ abstract class _Settings with Store {
   String chartRange = '1Y';
 
   @observable
-  bool shieldBalance = false;
-
-  @observable
   double autoShieldThreshold = 0.0;
 
   @observable
@@ -225,7 +222,6 @@ abstract class _Settings with Store {
     showConfirmations = prefs.getBool('show_confirmations') ?? false;
     currency = prefs.getString('currency') ?? "USD";
     chartRange = prefs.getString('chart_range') ?? "1Y";
-    shieldBalance = prefs.getBool('shield_balance') ?? false;
     autoShieldThreshold = prefs.getDouble('autoshield_threshold') ?? 0.0;
     useUA = prefs.getBool('use_ua') ?? false;
     autoHide = prefs.getBool('auto_hide') ?? true;
@@ -470,13 +466,6 @@ abstract class _Settings with Store {
       }
     }
     catch (_) {}
-  }
-
-  @action
-  Future<void> setShieldBalance(bool v) async {
-    final prefs = await SharedPreferences.getInstance();
-    shieldBalance = v;
-    prefs.setBool('shield_balance', shieldBalance);
   }
 
   @action
@@ -984,14 +973,15 @@ class Note extends HasHeight {
   int height;
   DateTime timestamp;
   double value;
+  bool orchard;
   bool excluded;
   bool spent;
 
-  Note(this.id, this.height, this.timestamp, this.value, this.excluded,
+  Note(this.id, this.height, this.timestamp, this.value, this.orchard, this.excluded,
       this.spent);
 
   Note get invertExcluded =>
-      Note(id, height, timestamp, value, !excluded, spent);
+      Note(id, height, timestamp, value, orchard, !excluded, spent);
 }
 
 class Tx extends HasHeight {

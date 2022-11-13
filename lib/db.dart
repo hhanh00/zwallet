@@ -3,10 +3,10 @@ import 'dart:typed_data';
 
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
+import 'accounts.dart';
 import 'store.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:convert/convert.dart';
-import 'coin/coins.dart';
 import 'main.dart';
 
 final DateFormat noteDateFormat = DateFormat("yy-MM-dd HH:mm");
@@ -22,7 +22,7 @@ class DbReader {
   DbReader(int coin, int id): this.init(coin, id, settings.coins[coin].def.db);
   DbReader.init(this.coin, this.id, this.db);
 
-  Future<Balances> getBalance(int confirmHeight) async {
+  Future<void> updateBalances(int confirmHeight, Balances balances) async {
     final balance = Sqflite.firstIntValue(await db.rawQuery(
         "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND (spent IS NULL OR spent = 0)",
         [id])) ?? 0;
@@ -40,12 +40,12 @@ class DbReader {
             "AND height <= ?2 AND excluded",
         [id, confirmHeight])) ?? 0;
 
-    return Balances(balance, shieldedBalance, unconfirmedSpentBalance, underConfirmedBalance, excludedBalance, 0);
+    balances.update(balance, shieldedBalance, unconfirmedSpentBalance, underConfirmedBalance, excludedBalance);
   }
 
   Future<List<Note>> getNotes() async {
     final List<Map> res = await db.rawQuery(
-        "SELECT n.id_note, n.height, n.value, t.timestamp, n.excluded, n.spent FROM received_notes n, transactions t "
+        "SELECT n.id_note, n.height, n.value, t.timestamp, n.orchard, n.excluded, n.spent FROM received_notes n, transactions t "
             "WHERE n.account = ?1 AND (n.spent IS NULL OR n.spent = 0) "
             "AND n.tx = t.id_tx ORDER BY n.height DESC",
         [id]);
@@ -53,10 +53,11 @@ class DbReader {
       final id = row['id_note'];
       final height = row['height'];
       final timestamp = DateTime.fromMillisecondsSinceEpoch(row['timestamp'] * 1000);
+      final orchard = row['orchard'] != 0;
       final excluded = (row['excluded'] ?? 0) != 0;
       final spent = row['spent'] == 0;
       return Note(
-          id, height, timestamp, row['value'] / ZECUNIT, excluded, spent);
+          id, height, timestamp, row['value'] / ZECUNIT, orchard, excluded, spent);
     }).toList();
     print("NOTES ${notes.length}");
     return notes;
@@ -200,7 +201,7 @@ class DbReader {
 
   Future<List<ZMessage>> getMessages() async {
     final List<Map> res = await db.rawQuery(
-        "SELECT m.id, m.id_tx, m.timestamp, m.sender, m.recipient, c.name as scontact, a.name as saccount, c2.name as rcontact, a2.name as raccount, "
+        "SELECT m.id, m.id_tx, m.timestamp, m.sender, m.recipient, m.incoming, c.name as scontact, a.name as saccount, c2.name as rcontact, a2.name as raccount, "
         "subject, body, height, read FROM messages m "
         "LEFT JOIN contacts c ON m.sender = c.address "
         "LEFT JOIN accounts a ON m.sender = a.address "
@@ -221,7 +222,7 @@ class DbReader {
       final subject = row['subject'];
       final body = row['body'];
       final read = row['read'] == 1;
-      final incoming = false; // TODO: How do we know the message direction when using UA?
+      final incoming = row['incoming'] == 1;
       messages.add(ZMessage(id, txId, incoming, from, to, subject, body, timestamp, height, read));
     }
     return messages;
@@ -275,22 +276,6 @@ class DbReader {
     }
     return 365;
   }
-}
-
-class Balances {
-  final int balance;
-  final int shieldedBalance;
-  final int unconfirmedSpentBalance;
-  final int underConfirmedBalance;
-  final int excludedBalance;
-  int unconfirmedBalance;
-
-  Balances(this.balance, this.shieldedBalance, this.unconfirmedSpentBalance, this.underConfirmedBalance, this.excludedBalance, this.unconfirmedBalance);
-  Balances updateUnconfirmed(int v) {
-    return Balances(this.balance, this.shieldedBalance, this.unconfirmedBalance, this.underConfirmedBalance, this.excludedBalance, v);
-  }
-
-  static Balances zero = Balances(0, 0, 0, 0, 0, 0);
 }
 
 class ZMessage {

@@ -127,7 +127,7 @@ abstract class _ActiveAccount with Store {
   Account account = emptyAccount;
   CoinBase coinDef = zcash;
   bool canPay = false;
-  @observable Balances? balances = null;
+  Balances balances = Balances();
   @observable String taddress = "";
   int tbalance = 0;
 
@@ -245,7 +245,7 @@ abstract class _ActiveAccount with Store {
     }
 
     showTAddr = false;
-    balances = null;
+    balances.initialized = false;
     draftRecipient = null;
 
     await update();
@@ -284,18 +284,18 @@ abstract class _ActiveAccount with Store {
   @action
   Future<void> updateBalances() async {
     final dbr = DbReader(coin, id);
-    final curBalances = await dbr.getBalance(syncStatus.confirmHeight);
-    final prevBalances = balances;
-    if (prevBalances != null) {
-      showBalanceNotification(prevBalances, curBalances);
+    final initialized = balances.initialized;
+    final prevBalance = balances.balance;
+    await dbr.updateBalances(syncStatus.confirmHeight, balances);
+    if (initialized && prevBalance != balances.balance) {
+      showBalanceNotification(prevBalance, balances.balance);
     }
-    balances = curBalances;
   }
 
   @action
   Future<void> updateUnconfirmedBalance() async {
     final unconfirmedBalance = await WarpApi.mempoolSync();
-    balances = balances?.updateUnconfirmed(unconfirmedBalance);
+    balances.updateUnconfirmed(unconfirmedBalance);
   }
 
   @action
@@ -473,7 +473,7 @@ abstract class _ActiveAccount with Store {
     banner = msg;
   }
 
-  String get address { // TODO
+  String get address {
     return account.address;
   }
 }
@@ -484,8 +484,10 @@ Future<Backup> getBackup(AccountId account) async {
   final List<Map> res = await db.rawQuery(
       "SELECT name, seed, aindex, sk, ivk FROM accounts WHERE id_account = ?1",
       [account.id]);
-  if (res.isEmpty) throw Exception("Account N/A");
-  // final share = await getShareInfo(account); // Multisig
+  if (res.isEmpty) {
+    print("NO ACCOUNT ${account.id} ${db.path}");
+    throw Exception("Account N/A");
+  }
   final row = res[0];
   final name = row['name'];
   final seed = row['seed'];
@@ -500,3 +502,31 @@ Future<Backup> getBackup(AccountId account) async {
   else if (ivk != null) type = 2;
   return Backup(type, name, seed, index, sk, ivk, null);
 }
+
+class Balances = _Balances with _$Balances;
+
+abstract class _Balances with Store {
+  bool initialized = false;
+  @observable int balance = 0;
+  @observable int shieldedBalance = 0;
+  @observable int unconfirmedSpentBalance = 0;
+  @observable int underConfirmedBalance = 0;
+  @observable int excludedBalance = 0;
+  @observable int unconfirmedBalance = 0;
+
+  @action
+  void update(int balance, int shieldedBalance, int unconfirmedSpentBalance, int underConfirmedBalance, int excludedBalance) {
+    this.balance = balance;
+    this.shieldedBalance = shieldedBalance;
+    this.unconfirmedSpentBalance = unconfirmedSpentBalance;
+    this.underConfirmedBalance = underConfirmedBalance;
+    this.excludedBalance = excludedBalance;
+    this.initialized = true;
+  }
+
+  @action
+  void updateUnconfirmed(int unconfirmedBalance) {
+    this.unconfirmedBalance = unconfirmedBalance;
+  }
+}
+

@@ -120,6 +120,8 @@ class NotesDataSource extends DataTableSource {
 
     if (note.spent)
       style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
+    if (note.orchard)
+      style = style.merge(TextStyle(color: theme.primaryColor));
 
     final amountStyle = weightFromAmount(style, note.value);
 
@@ -222,6 +224,8 @@ class NoteItemState extends State<NoteItem> {
       style = style.merge(TextStyle(color: style.color!.withOpacity(0.5)));
     if (note.spent)
       style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
+    if (note.orchard)
+      style = style.merge(TextStyle(color: theme.primaryColor));
 
     final amountStyle = weightFromAmount(style, note.value);
 
