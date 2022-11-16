@@ -328,6 +328,10 @@ abstract class _ActiveAccount with Store {
     return WarpApi.newDiversifiedAddress();
   }
 
+  String getAddress(bool t, bool s, bool o) {
+    return WarpApi.getAddress(coin, id, (t ? 1 : 0) | (s ? 2 : 0) | (o ? 4 : 0));
+  }
+
   @computed
   List<Note> get sortedNotes {
     final _1 = syncStatus.syncedHeight;

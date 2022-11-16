@@ -231,7 +231,7 @@ class QRAddressState extends State<QRAddressWidget> {
   }
 
   _onReceive() async {
-    Navigator.of(context).pushNamed('/receive', arguments: _address());
+    Navigator.of(context).pushNamed('/receive');
   }
 
   _onSnapAddress() {
