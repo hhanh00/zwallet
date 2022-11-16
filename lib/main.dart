@@ -243,7 +243,7 @@ void main() {
                 '/send': (context) =>
                     SendPage(routeSettings.arguments as SendPageArgs?),
                 '/receive': (context) =>
-                    PaymentURIPage(routeSettings.arguments as String?),
+                    PaymentURIPage(),
                 '/accounts': (context) => AccountManagerPage(),
                 '/settings': (context) => SettingsPage(),
                 '/tx': (context) =>

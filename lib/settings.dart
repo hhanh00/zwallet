@@ -255,16 +255,6 @@ class SettingsState extends State<SettingsPage>
                                   settings.setTxView(_txView);
                                 })),
                           ]),
-                          // if (!simpleMode) FormBuilderCheckbox(
-                          //     name: 'note_table',
-                          //     title: Text(s.showNotesAsTable),
-                          //     initialValue: settings.noteTable,
-                          //     onSaved: _onNoteTable),
-                          // if (!simpleMode) FormBuilderCheckbox(
-                          //     name: 'tx_table',
-                          //     title: Text(s.showTransactionsAsTable),
-                          //     initialValue: settings.txTable,
-                          //     onSaved: _onTxTable),
                           if (!simpleMode)
                             TextFormField(
                                 decoration: InputDecoration(
