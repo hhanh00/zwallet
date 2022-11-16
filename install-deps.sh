@@ -1,7 +1,7 @@
 #!/bin/sh
 set -x
 
-FLUTTER_VERSION=3.3.4
+FLUTTER_VERSION=3.3.7
 
 ROOT_DIR=$1
 if [ "$ROOT_DIR" == "" ]; then
