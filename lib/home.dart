@@ -385,8 +385,8 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     // }
   }
 
-  _convertToWatchOnly() async {
-    await active.convertToWatchOnly();
+  _convertToWatchOnly() {
+    WarpApi.convertToWatchOnly(active.coin, active.id);
     Navigator.of(context).pop();
   }
 

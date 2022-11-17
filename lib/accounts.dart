@@ -434,14 +434,6 @@ abstract class _ActiveAccount with Store {
   }
 
   @action
-  Future<void> convertToWatchOnly() async {
-    await coinDef.db.rawUpdate(
-        "UPDATE accounts SET seed = NULL, sk = NULL WHERE id_account = ?1",
-        [active.id]);
-    canPay = false;
-  }
-
-  @action
   void markMessageAsRead(int index) {
     if (!messages[index].read) {
       WarpApi.markMessageAsRead(messages[index].id, true);
@@ -482,31 +474,6 @@ abstract class _ActiveAccount with Store {
   }
 }
 
-Future<Backup> getBackup(AccountId account) async {
-  final c = settings.coins[account.coin].def;
-  final db = c.db;
-  final List<Map> res = await db.rawQuery(
-      "SELECT name, seed, aindex, sk, ivk FROM accounts WHERE id_account = ?1",
-      [account.id]);
-  if (res.isEmpty) {
-    print("NO ACCOUNT ${account.id} ${db.path}");
-    throw Exception("Account N/A");
-  }
-  final row = res[0];
-  final name = row['name'];
-  final seed = row['seed'];
-  final index = row['aindex'];
-  final sk = row['sk'];
-  final ivk = row['ivk'];
-  int type = 0;
-  if (seed != null)
-    type = 0;
-  else if (sk != null)
-    type = 1;
-  else if (ivk != null) type = 2;
-  return Backup(type, name, seed, index, sk, ivk, null);
-}
-
 class Balances = _Balances with _$Balances;
 
 abstract class _Balances with Store {
@@ -534,3 +501,8 @@ abstract class _Balances with Store {
   }
 }
 
+class AccountId {
+  final int coin;
+  final int id;
+  AccountId(this.coin, this.id);
+}
