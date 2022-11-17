@@ -1,25 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:warp_api/types.dart';
+import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
-import 'store.dart';
 import 'generated/l10n.dart';
-import 'accounts.dart' show getBackup;
-
-class AccountId {
-  final int coin;
-  final int id;
-  AccountId(this.coin, this.id);
-
-  bool operator ==(covariant AccountId other) {
-    return coin == other.coin && id == other.id;
-  }
-}
 
 class BackupPage extends StatefulWidget {
-  final AccountId? accountId;
+  final int coin;
+  final int id;
 
-  BackupPage(this.accountId);
+  BackupPage(this.coin, this.id);
 
   @override
   State<StatefulWidget> createState() => BackupState();
@@ -30,38 +20,26 @@ class BackupState extends State<BackupPage> {
   final _backupController = TextEditingController();
   final _skController = TextEditingController();
   final _ivkController = TextEditingController();
-  final _shareController = TextEditingController();
 
-  Future<bool> _init() async {
-    backup =
-    await getBackup(widget.accountId ?? AccountId(active.coin, active.id));
+  @override
+  void initState() {
+    super.initState();
+    backup = WarpApi.getBackup(widget.coin, widget.id);
     _backupController.text = backupData;
     _skController.text = backup.sk ?? "";
     _ivkController.text = backup.ivk;
-    final share = backup.share;
-    _shareController.text = share?.value ?? "";
-    return true;
   }
 
   String get backupData => backup.value() + (backup.index != 0 ? " [${backup.index}]" : "");
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text(S.of(context).backup)),
-        body: FutureBuilder(
-          future: _init(),
-          builder: _build,
-        ));
-  }
-
-  Widget _build(BuildContext context, AsyncSnapshot<void> snapshot) {
-    if (!snapshot.hasData) return LinearProgressIndicator();
     final s = S.of(context);
     final name = backup.name;
-    final share = backup.share;
     final type = backup.type;
     final theme = Theme.of(context);
-    return SingleChildScrollView(child: Card(
+    return Scaffold(appBar: AppBar(title: Text(s.backup)),
+    body: SingleChildScrollView(child: Card(
       child: Column(
         children: [
           TextField(
@@ -92,18 +70,6 @@ class BackupState extends State<BackupPage> {
             readOnly: true,
             style: theme.textTheme.caption
           ),
-          if (share != null) TextField(
-              decoration: InputDecoration(
-                  labelText: s.secretShare,
-                  prefixIcon: IconButton(
-                      icon: Icon(Icons.share),
-                      onPressed: () => _showQR(share.value,
-                          "$name - ms ${share.index}/${share.participants}"))),
-              controller: _shareController,
-              minLines: 3,
-              maxLines: 10,
-              readOnly: true,
-              style: theme.textTheme.caption),
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
         Text(s.tapAnIconToShowTheQrCode),
         Container(
@@ -128,7 +94,7 @@ class BackupState extends State<BackupPage> {
           ),
           Padding(padding: EdgeInsets.symmetric(vertical: 4)),
       ]),
-    ));
+    )));
   }
 
   _showQR(String text, String title) => showQR(context, text, title);

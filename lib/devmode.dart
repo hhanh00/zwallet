@@ -30,7 +30,6 @@ class DevPageState extends State<DevPage> {
           ListTile(title: Text('Import Database'), trailing: Icon(Icons.chevron_right), onTap: _importDb),
           ListTile(title: Text('Export Database'), trailing: Icon(Icons.chevron_right), onTap: _exportDb),
           ListTile(title: Text('Sync Stats'), trailing: Icon(Icons.chevron_right), onTap: _syncStats),
-          ListTile(title: Text('Import Sync Data'), trailing: Icon(Icons.chevron_right), onTap: _importSyncData),
           ListTile(title: Text('Reset Scan State'), trailing: Icon(Icons.chevron_right), onTap: _resetScan),
           ListTile(title: Text('Reset App'), trailing: Icon(Icons.chevron_right), onTap: _resetApp),
           ListTile(title: Text('Trigger Reorg'), trailing: Icon(Icons.chevron_right), onTap: _reorg),
@@ -77,39 +76,6 @@ class DevPageState extends State<DevPage> {
 
   void _syncStats() {
     Navigator.of(context).pushNamed('/syncstats');
-  }
-
-  Future<void> _importSyncData() async {
-    final s = S.of(context);
-
-    final String path;
-    if (kExperimental && settings.instantSync) {
-      final confirm = await showConfirmDialog(context, "Do you want to use Instant-Sync?", "Your viewing key will be sent to a remote server for processing.");
-      if (!confirm) return;
-      final backup = await getBackup(active.toId());
-      final response = await http.post(Uri(scheme: "https", host: instantSyncHost, path: "/api/scan_fvk", queryParameters: {
-        "fvk": backup.ivk,
-      }));
-      final tempDir = await getTemporaryDirectory();
-      final file = File("${tempDir.path}/syncdata.json");
-      await file.writeAsString(response.body);
-      path = file.path;
-    }
-    else {
-      final result = await FilePicker.platform.pickFiles();
-      if (result == null) return;
-      path = result.files.single.path!;
-    }
-
-    try {
-      WarpApi.importSyncFile(active.coin, path);
-      await active.refreshAccount();
-      await showMessageBox(
-          context, "Synchronized", "Your account is synchronized", s.ok);
-    }
-    on String catch (message) {
-      await showMessageBox(context, 'Import failed', message, s.ok);
-    }
   }
 
   _resetScan() {

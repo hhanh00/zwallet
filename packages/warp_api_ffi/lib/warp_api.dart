@@ -90,6 +90,16 @@ class WarpApi {
         name.toNativeUtf8().cast<Int8>(), index, count);
   }
 
+  static void convertToWatchOnly(int coin, int id) {
+    warp_api_lib.convert_to_watchonly(coin, id);
+  }
+
+  static Backup getBackup(int coin, int id) {
+    final backupStr = unwrapResultString(warp_api_lib.get_backup(coin, id));
+    final backupJson = jsonDecode(backupStr);
+    return Backup.fromJson(backupJson);
+  }
+
   static String getAddress(int coin, int id, int uaType) {
     final address = warp_api_lib.get_address(coin, id, uaType);
     return unwrapResultString(address);

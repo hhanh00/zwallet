@@ -180,6 +180,37 @@ class NativeLibrary {
   late final _dart_new_sub_account _new_sub_account =
       _new_sub_account_ptr.asFunction<_dart_new_sub_account>();
 
+  CResult convert_to_watchonly(
+    int coin,
+    int id_account,
+  ) {
+    return _convert_to_watchonly(
+      coin,
+      id_account,
+    );
+  }
+
+  late final _convert_to_watchonly_ptr =
+      _lookup<ffi.NativeFunction<_c_convert_to_watchonly>>(
+          'convert_to_watchonly');
+  late final _dart_convert_to_watchonly _convert_to_watchonly =
+      _convert_to_watchonly_ptr.asFunction<_dart_convert_to_watchonly>();
+
+  CResult_____c_char get_backup(
+    int coin,
+    int id_account,
+  ) {
+    return _get_backup(
+      coin,
+      id_account,
+    );
+  }
+
+  late final _get_backup_ptr =
+      _lookup<ffi.NativeFunction<_c_get_backup>>('get_backup');
+  late final _dart_get_backup _get_backup =
+      _get_backup_ptr.asFunction<_dart_get_backup>();
+
   CResult_____c_char get_address(
     int coin,
     int id_account,
@@ -465,13 +496,13 @@ class NativeLibrary {
     int coin,
     int account,
     ffi.Pointer<ffi.Int8> tx,
-    int port,
+    int _port,
   ) {
     return _sign(
       coin,
       account,
       tx,
-      port,
+      _port,
     );
   }
 
@@ -908,6 +939,13 @@ class CResult_u64 extends ffi.Struct {
   external ffi.Pointer<ffi.Int8> error;
 }
 
+class CResult extends ffi.Struct {
+  @ffi.Int8()
+  external int value;
+
+  external ffi.Pointer<ffi.Int8> error;
+}
+
 const int QR_DATA_SIZE = 256;
 
 const int MAX_ATTEMPTS = 10;
@@ -1014,6 +1052,26 @@ typedef _dart_new_sub_account = void Function(
   ffi.Pointer<ffi.Int8> name,
   int index,
   int count,
+);
+
+typedef _c_convert_to_watchonly = CResult Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id_account,
+);
+
+typedef _dart_convert_to_watchonly = CResult Function(
+  int coin,
+  int id_account,
+);
+
+typedef _c_get_backup = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id_account,
+);
+
+typedef _dart_get_backup = CResult_____c_char Function(
+  int coin,
+  int id_account,
 );
 
 typedef _c_get_address = CResult_____c_char Function(
@@ -1194,14 +1252,14 @@ typedef _c_sign = CResult_____c_char Function(
   ffi.Uint8 coin,
   ffi.Uint32 account,
   ffi.Pointer<ffi.Int8> tx,
-  ffi.Int64 port,
+  ffi.Int64 _port,
 );
 
 typedef _dart_sign = CResult_____c_char Function(
   int coin,
   int account,
   ffi.Pointer<ffi.Int8> tx,
-  int port,
+  int _port,
 );
 
 typedef _c_sign_and_broadcast = CResult_____c_char Function(

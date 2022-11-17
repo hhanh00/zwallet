@@ -124,4 +124,38 @@ class TxReport {
   Map<String, dynamic> toJson() => _$TxReportToJson(this);
 }
 
+@JsonSerializable()
+class Backup {
+  final String name;
+  final String? seed;
+  final int index;
+  final String? sk;
+  final String ivk;
 
+  Backup(this.name, this.seed, this.index, this.sk, this.ivk);
+
+  String value() {
+    switch (type) {
+      case 0:
+        return seed!;
+      case 1:
+        return sk!;
+      case 2:
+        return ivk;
+    }
+    return "";
+  }
+
+  int get type {
+    if (seed != null)
+      return 0;
+    else if (sk != null)
+      return 1;
+    return 2;
+  }
+
+  factory Backup.fromJson(Map<String, dynamic> json) =>
+      _$BackupFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BackupToJson(this);
+}

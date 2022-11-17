@@ -202,7 +202,7 @@ class QRAddressState extends State<QRAddressWidget> {
                   child: Icon(MdiIcons.qrcodeScan), onTap: _onReceive)),
         ])),
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-        if (!simpleMode && !showTAddr && !hasUA)
+        if (!simpleMode && !showTAddr)
           OutlinedButton(
               child: Text(s.newSnapAddress),
               style: OutlinedButton.styleFrom(

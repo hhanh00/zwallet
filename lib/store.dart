@@ -1014,30 +1014,6 @@ class AccountBalance {
   AccountBalance(this.time, this.balance);
 }
 
-class Backup {
-  final int type;
-  final String name;
-  final String? seed;
-  final int index;
-  final String? sk;
-  final String ivk;
-  final ShareInfo? share;
-
-  Backup(this.type, this.name, this.seed, this.index, this.sk, this.ivk, this.share);
-
-  String value() {
-    switch (type) {
-      case 0:
-        return seed!;
-      case 1:
-        return sk!;
-      case 2:
-        return ivk;
-    }
-    return "";
-  }
-}
-
 class Contact {
   final int id;
   final String name;

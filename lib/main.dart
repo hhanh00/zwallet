@@ -250,8 +250,11 @@ void main() {
                     TransactionPage(routeSettings.arguments as int),
                 '/message': (context) =>
                     MessagePage(routeSettings.arguments as int),
-                '/backup': (context) =>
-                    BackupPage(routeSettings.arguments as AccountId?),
+                '/backup': (context) {
+                  final accountId = routeSettings.arguments as AccountId?;
+                  final accountId2 = accountId ?? active.toId();
+                  return BackupPage(accountId2.coin, accountId2.id);
+                },
                 '/multipay': (context) => MultiPayPage(),
                 // '/multisig': (context) => MultisigPage(),
                 // '/multisign': (context) => MultisigAggregatorPage(
