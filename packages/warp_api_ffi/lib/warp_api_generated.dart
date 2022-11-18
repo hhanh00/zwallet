@@ -53,7 +53,7 @@ class NativeLibrary {
   late final _dart_deallocate_str _deallocate_str =
       _deallocate_str_ptr.asFunction<_dart_deallocate_str>();
 
-  CResult init_wallet(
+  CResult_u8 init_wallet(
     int coin,
     ffi.Pointer<ffi.Int8> db_path,
   ) {
@@ -68,7 +68,7 @@ class NativeLibrary {
   late final _dart_init_wallet _init_wallet =
       _init_wallet_ptr.asFunction<_dart_init_wallet>();
 
-  CResult migrate_db(
+  CResult_u8 migrate_db(
     int coin,
     ffi.Pointer<ffi.Int8> db_path,
   ) {
@@ -83,7 +83,7 @@ class NativeLibrary {
   late final _dart_migrate_db _migrate_db =
       _migrate_db_ptr.asFunction<_dart_migrate_db>();
 
-  CResult migrate_data_db(
+  CResult_u8 migrate_data_db(
     int coin,
   ) {
     return _migrate_data_db(
@@ -225,7 +225,7 @@ class NativeLibrary {
   late final _dart_new_sub_account _new_sub_account =
       _new_sub_account_ptr.asFunction<_dart_new_sub_account>();
 
-  CResult convert_to_watchonly(
+  CResult_u8 convert_to_watchonly(
     int coin,
     int id_account,
   ) {
@@ -920,8 +920,8 @@ class NativeLibrary {
       _import_sync_file_ptr.asFunction<_dart_import_sync_file>();
 }
 
-class CResult extends ffi.Struct {
-  @ffi.Int8()
+class CResult_u8 extends ffi.Struct {
+  @ffi.Uint8()
   external int value;
 
   external ffi.Pointer<ffi.Int8> error;
@@ -936,13 +936,6 @@ class CResult_u32 extends ffi.Struct {
 
 class CResult_____c_char extends ffi.Struct {
   external ffi.Pointer<ffi.Int8> value;
-
-  external ffi.Pointer<ffi.Int8> error;
-}
-
-class CResult_u8 extends ffi.Struct {
-  @ffi.Uint8()
-  external int value;
 
   external ffi.Pointer<ffi.Int8> error;
 }
@@ -980,31 +973,31 @@ typedef _dart_deallocate_str = void Function(
   ffi.Pointer<ffi.Int8> s,
 );
 
-typedef _c_init_wallet = CResult Function(
+typedef _c_init_wallet = CResult_u8 Function(
   ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> db_path,
 );
 
-typedef _dart_init_wallet = CResult Function(
+typedef _dart_init_wallet = CResult_u8 Function(
   int coin,
   ffi.Pointer<ffi.Int8> db_path,
 );
 
-typedef _c_migrate_db = CResult Function(
+typedef _c_migrate_db = CResult_u8 Function(
   ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> db_path,
 );
 
-typedef _dart_migrate_db = CResult Function(
+typedef _dart_migrate_db = CResult_u8 Function(
   int coin,
   ffi.Pointer<ffi.Int8> db_path,
 );
 
-typedef _c_migrate_data_db = CResult Function(
+typedef _c_migrate_data_db = CResult_u8 Function(
   ffi.Uint8 coin,
 );
 
-typedef _dart_migrate_data_db = CResult Function(
+typedef _dart_migrate_data_db = CResult_u8 Function(
   int coin,
 );
 
@@ -1092,12 +1085,12 @@ typedef _dart_new_sub_account = void Function(
   int count,
 );
 
-typedef _c_convert_to_watchonly = CResult Function(
+typedef _c_convert_to_watchonly = CResult_u8 Function(
   ffi.Uint8 coin,
   ffi.Uint32 id_account,
 );
 
-typedef _dart_convert_to_watchonly = CResult Function(
+typedef _dart_convert_to_watchonly = CResult_u8 Function(
   int coin,
   int id_account,
 );
