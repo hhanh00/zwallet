@@ -144,6 +144,34 @@ class NativeLibrary {
   late final _dart_reset_app _reset_app =
       _reset_app_ptr.asFunction<_dart_reset_app>();
 
+  void mempool_run(
+    int port,
+  ) {
+    return _mempool_run(
+      port,
+    );
+  }
+
+  late final _mempool_run_ptr =
+      _lookup<ffi.NativeFunction<_c_mempool_run>>('mempool_run');
+  late final _dart_mempool_run _mempool_run =
+      _mempool_run_ptr.asFunction<_dart_mempool_run>();
+
+  void mempool_set_active(
+    int coin,
+    int id_account,
+  ) {
+    return _mempool_set_active(
+      coin,
+      id_account,
+    );
+  }
+
+  late final _mempool_set_active_ptr =
+      _lookup<ffi.NativeFunction<_c_mempool_set_active>>('mempool_set_active');
+  late final _dart_mempool_set_active _mempool_set_active =
+      _mempool_set_active_ptr.asFunction<_dart_mempool_set_active>();
+
   CResult_u32 new_account(
     int coin,
     ffi.Pointer<ffi.Int8> name,
@@ -381,34 +409,6 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_rescan_from>>('rescan_from');
   late final _dart_rescan_from _rescan_from =
       _rescan_from_ptr.asFunction<_dart_rescan_from>();
-
-  CResult_i64 mempool_sync() {
-    return _mempool_sync();
-  }
-
-  late final _mempool_sync_ptr =
-      _lookup<ffi.NativeFunction<_c_mempool_sync>>('mempool_sync');
-  late final _dart_mempool_sync _mempool_sync =
-      _mempool_sync_ptr.asFunction<_dart_mempool_sync>();
-
-  void mempool_reset() {
-    return _mempool_reset();
-  }
-
-  late final _mempool_reset_ptr =
-      _lookup<ffi.NativeFunction<_c_mempool_reset>>('mempool_reset');
-  late final _dart_mempool_reset _mempool_reset =
-      _mempool_reset_ptr.asFunction<_dart_mempool_reset>();
-
-  int get_mempool_balance() {
-    return _get_mempool_balance();
-  }
-
-  late final _get_mempool_balance_ptr =
-      _lookup<ffi.NativeFunction<_c_get_mempool_balance>>(
-          'get_mempool_balance');
-  late final _dart_get_mempool_balance _get_mempool_balance =
-      _get_mempool_balance_ptr.asFunction<_dart_get_mempool_balance>();
 
   CResult_u64 get_taddr_balance(
     int coin,
@@ -905,6 +905,13 @@ class NativeLibrary {
       _import_sync_file_ptr.asFunction<_dart_import_sync_file>();
 }
 
+class CResult extends ffi.Struct {
+  @ffi.Int8()
+  external int value;
+
+  external ffi.Pointer<ffi.Int8> error;
+}
+
 class CResult_u32 extends ffi.Struct {
   @ffi.Uint32()
   external int value;
@@ -925,22 +932,8 @@ class CResult_u8 extends ffi.Struct {
   external ffi.Pointer<ffi.Int8> error;
 }
 
-class CResult_i64 extends ffi.Struct {
-  @ffi.Int64()
-  external int value;
-
-  external ffi.Pointer<ffi.Int8> error;
-}
-
 class CResult_u64 extends ffi.Struct {
   @ffi.Uint64()
-  external int value;
-
-  external ffi.Pointer<ffi.Int8> error;
-}
-
-class CResult extends ffi.Struct {
-  @ffi.Int8()
   external int value;
 
   external ffi.Pointer<ffi.Int8> error;
@@ -1027,6 +1020,24 @@ typedef _dart_get_lwd_url = ffi.Pointer<ffi.Int8> Function(
 typedef _c_reset_app = ffi.Void Function();
 
 typedef _dart_reset_app = void Function();
+
+typedef _c_mempool_run = ffi.Void Function(
+  ffi.Int64 port,
+);
+
+typedef _dart_mempool_run = void Function(
+  int port,
+);
+
+typedef _c_mempool_set_active = ffi.Void Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id_account,
+);
+
+typedef _dart_mempool_set_active = void Function(
+  int coin,
+  int id_account,
+);
 
 typedef _c_new_account = CResult_u32 Function(
   ffi.Uint8 coin,
@@ -1181,18 +1192,6 @@ typedef _c_rescan_from = ffi.Void Function(
 typedef _dart_rescan_from = void Function(
   int height,
 );
-
-typedef _c_mempool_sync = CResult_i64 Function();
-
-typedef _dart_mempool_sync = CResult_i64 Function();
-
-typedef _c_mempool_reset = ffi.Void Function();
-
-typedef _dart_mempool_reset = void Function();
-
-typedef _c_get_mempool_balance = ffi.Int64 Function();
-
-typedef _dart_get_mempool_balance = int Function();
 
 typedef _c_get_taddr_balance = CResult_u64 Function(
   ffi.Uint8 coin,

@@ -344,13 +344,11 @@ class BalanceWidget extends StatelessWidget {
 class MemPoolWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Observer(builder: (context) {
-    final b = active.balances;
     final theme = Theme.of(context);
-    final unconfirmedBalance = b?.unconfirmedBalance ?? 0;
-    if (unconfirmedBalance == 0) return Container();
+    int unconfirmedBalance = unconfirmedBalanceStream.value ?? 0;
     final unconfirmedStyle = TextStyle(
-        color: amountColor(context, unconfirmedBalance));
-
+        color: amountColor(context, unconfirmedBalance ?? 0));
+    if (unconfirmedBalance == 0) return Container();
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -364,7 +362,7 @@ class MemPoolWidget extends StatelessWidget {
               '${_getBalanceLo(unconfirmedBalance)}',
               style: unconfirmedStyle),
         ]);
-  });
+    });
 }
 
 class ProgressWidget extends StatefulWidget {
