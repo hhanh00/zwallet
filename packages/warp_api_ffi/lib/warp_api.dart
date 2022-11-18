@@ -51,7 +51,7 @@ class WarpApi {
     return version;
   }
 
-  static open() {
+  static DynamicLibrary open() {
     if (Platform.isAndroid) return DynamicLibrary.open('libwarp_api_ffi.so');
     if (Platform.isIOS) return DynamicLibrary.executable();
     if (Platform.isWindows) return DynamicLibrary.open('warp_api_ffi.dll');
@@ -60,12 +60,16 @@ class WarpApi {
     throw UnsupportedError('This platform is not supported.');
   }
 
-  static migrateWallet(String dbPath) {
-    warp_api_lib.migrate_db(dbPath.toNativeUtf8().cast<Int8>());
+  static void migrateWallet(int coin, String dbPath) {
+    warp_api_lib.migrate_db(coin, dbPath.toNativeUtf8().cast<Int8>());
   }
 
-  static initWallet(String dbPath) {
-    warp_api_lib.init_wallet(dbPath.toNativeUtf8().cast<Int8>());
+  static void migrateData(int coin) {
+    warp_api_lib.migrate_data_db(coin);
+  }
+
+  static void initWallet(int coin, String dbPath) {
+    warp_api_lib.init_wallet(coin, dbPath.toNativeUtf8().cast<Int8>());
   }
 
   static void resetApp() {

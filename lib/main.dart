@@ -362,13 +362,12 @@ class ZWalletAppState extends State<ZWalletApp> {
         }
         print("db path $dbPath");
         WarpApi.mempoolRun(unconfirmedBalancePort.sendPort.nativePort);
-        WarpApi.migrateWallet(dbPath);
-        _setProgress(0.1, 'Initializing Ycash');
-        await ycash.open();
-        _setProgress(0.2, 'Initializing Zcash');
-        await zcash.open();
-        _setProgress(0.3, 'Initializing Wallet');
-        WarpApi.initWallet(dbPath);
+        for (var coin in coins) {
+          _setProgress(0.1 * (coin.coin+1), 'Initializing ${coin.ticker}');
+          WarpApi.migrateWallet(coin.coin, coin.dbFullPath);
+          await coin.open();
+          WarpApi.initWallet(coin.coin, coin.dbFullPath);
+        }
 
         if (resetRecover) {
           for (var coin in coins) {
@@ -388,8 +387,10 @@ class ZWalletAppState extends State<ZWalletApp> {
 
         for (var s in settings.servers) {
           final server = s.getLWDUrl();
-          if (server != null && server.isNotEmpty)
+          if (server != null && server.isNotEmpty) {
             WarpApi.updateLWD(s.coin, server);
+            WarpApi.migrateData(s.coin);
+          }
         }
         _setProgress(0.6, 'Loading Account Data');
         await accounts.refresh();

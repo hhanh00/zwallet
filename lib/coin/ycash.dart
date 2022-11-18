@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import "coin.dart";
 
 class YcashCoin extends CoinBase {
+  int coin = 1;
   String app = "YWallet";
   String symbol = "\u24E8";
   String currency = "ycash";
