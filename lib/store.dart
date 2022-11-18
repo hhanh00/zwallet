@@ -964,6 +964,9 @@ var progressStream = progressPort.asBroadcastStream();
 var syncPort = ReceivePort();
 var syncStream = syncPort.asBroadcastStream();
 
+var unconfirmedBalancePort = ReceivePort();
+var unconfirmedBalanceStream = unconfirmedBalancePort.asObservable();
+
 abstract class HasHeight {
   int height = 0;
 }

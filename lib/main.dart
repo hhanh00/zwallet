@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi' show DynamicLibrary;
+import 'dart:ffi' show DynamicLibrary, NativePort;
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
@@ -361,6 +361,7 @@ class ZWalletAppState extends State<ZWalletApp> {
           }
         }
         print("db path $dbPath");
+        WarpApi.mempoolRun(unconfirmedBalancePort.sendPort.nativePort);
         WarpApi.migrateWallet(dbPath);
         _setProgress(0.1, 'Initializing Ycash');
         await ycash.open();
@@ -419,6 +420,7 @@ class ZWalletAppState extends State<ZWalletApp> {
           });
         }
       }
+
       _setProgress(1.0, 'Ready');
       progressKey.currentState?.cancelResetTimer();
       if (settings.protectOpen) {

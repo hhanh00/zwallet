@@ -38,11 +38,6 @@ int unwrapResultU64(CResult_u64 r) {
   return r.value;
 }
 
-int unwrapResultI64(CResult_i64 r) {
-  if (r.error != nullptr) throw convertCString(r.error);
-  return r.value;
-}
-
 String unwrapResultString(CResult_____c_char r) {
   if (r.error != nullptr) throw convertCString(r.error);
   return convertCString(r.value);
@@ -75,6 +70,10 @@ class WarpApi {
 
   static void resetApp() {
     warp_api_lib.reset_app();
+  }
+
+  static void mempoolRun(int port) {
+    compute(mempoolRunIsolateFn, port);
   }
 
   static int newAccount(int coin, String name, String key, int index) {
@@ -143,14 +142,6 @@ class WarpApi {
     warp_api_lib.cancel_warp();
   }
 
-  static void mempoolReset() {
-    warp_api_lib.mempool_reset();
-  }
-
-  static Future<int> mempoolSync() async {
-    return compute(mempoolSyncIsolateFn, null);
-  }
-
   static Future<int> getLatestHeight() async {
     return await compute(getLatestHeightIsolateFn, null);
   }
@@ -173,10 +164,7 @@ class WarpApi {
   static void setActiveAccount(int coin, int account) {
     warp_api_lib.set_active(coin);
     warp_api_lib.set_active_account(coin, account);
-  }
-
-  static int getUnconfirmedBalance() {
-    return warp_api_lib.get_mempool_balance();
+    warp_api_lib.mempool_set_active(coin, account);
   }
 
   // static Future<String> sendPayment(
@@ -430,10 +418,6 @@ int getLatestHeightIsolateFn(Null n) {
   return unwrapResultU32(warp_api_lib.get_latest_height());
 }
 
-int mempoolSyncIsolateFn(Null n) {
-  return unwrapResultI64(warp_api_lib.mempool_sync());
-}
-
 String shieldTAddrIsolateFn(ShieldTAddrParams params) {
   final txId = warp_api_lib.shield_taddr(params.coin, params.account, params.anchorOffset);
   return unwrapResultString(txId);
@@ -540,4 +524,8 @@ String convertCString(Pointer<Int8> s) {
   final str = s.cast<Utf8>().toDartString();
   warp_api_lib.deallocate_str(s);
   return str;
+}
+
+void mempoolRunIsolateFn(int port) {
+  warp_api_lib.mempool_run(port);
 }

@@ -50,7 +50,6 @@ class HomeState extends State<HomePage> {
         syncStatus.sync(false);
         if (active.id != 0) {
           await active.updateBalances();
-          await active.updateUnconfirmedBalance();
         }
       });
 
@@ -78,8 +77,6 @@ class HomeState extends State<HomePage> {
               notificationText: "${progress} %");
         }
         syncStats.add(DateTime.now(), syncedHeight.height);
-      } else {
-        WarpApi.mempoolReset();
       }
     });
   }

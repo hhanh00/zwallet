@@ -94,15 +94,13 @@ class SendState extends State<SendPage> {
       final tBalance = active.tbalance;
       final excludedBalance = balances.excludedBalance;
       final underConfirmedBalance = balances.underConfirmedBalance;
-      final unconfirmedSpentBalance = balances.unconfirmedBalance;
-      final unconfirmedBalance = balances.unconfirmedBalance;
+      int? unconfirmedBalance = unconfirmedBalanceStream.value;
       setState(() {
         _sBalance = sBalance;
         _tBalance = tBalance;
         _excludedBalance = excludedBalance;
         _underConfirmedBalance = underConfirmedBalance;
-        _unconfirmedSpentBalance = unconfirmedSpentBalance;
-        _unconfirmedBalance = unconfirmedBalance;
+        _unconfirmedBalance = unconfirmedBalance ?? 0;
       });
     });
   }

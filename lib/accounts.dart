@@ -293,12 +293,6 @@ abstract class _ActiveAccount with Store {
   }
 
   @action
-  Future<void> updateUnconfirmedBalance() async {
-    final unconfirmedBalance = await WarpApi.mempoolSync();
-    balances.updateUnconfirmed(unconfirmedBalance);
-  }
-
-  @action
   void clear() {
     messages.clear();
     notes.clear();
@@ -483,7 +477,6 @@ abstract class _Balances with Store {
   @observable int unconfirmedSpentBalance = 0;
   @observable int underConfirmedBalance = 0;
   @observable int excludedBalance = 0;
-  @observable int unconfirmedBalance = 0;
 
   @action
   void update(int balance, int shieldedBalance, int unconfirmedSpentBalance, int underConfirmedBalance, int excludedBalance) {
@@ -493,11 +486,6 @@ abstract class _Balances with Store {
     this.underConfirmedBalance = underConfirmedBalance;
     this.excludedBalance = excludedBalance;
     this.initialized = true;
-  }
-
-  @action
-  void updateUnconfirmed(int unconfirmedBalance) {
-    this.unconfirmedBalance = unconfirmedBalance;
   }
 }
 
