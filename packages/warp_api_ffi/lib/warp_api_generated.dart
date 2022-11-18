@@ -53,10 +53,12 @@ class NativeLibrary {
   late final _dart_deallocate_str _deallocate_str =
       _deallocate_str_ptr.asFunction<_dart_deallocate_str>();
 
-  void init_wallet(
+  CResult init_wallet(
+    int coin,
     ffi.Pointer<ffi.Int8> db_path,
   ) {
     return _init_wallet(
+      coin,
       db_path,
     );
   }
@@ -66,10 +68,12 @@ class NativeLibrary {
   late final _dart_init_wallet _init_wallet =
       _init_wallet_ptr.asFunction<_dart_init_wallet>();
 
-  void migrate_db(
+  CResult migrate_db(
+    int coin,
     ffi.Pointer<ffi.Int8> db_path,
   ) {
     return _migrate_db(
+      coin,
       db_path,
     );
   }
@@ -78,6 +82,19 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_migrate_db>>('migrate_db');
   late final _dart_migrate_db _migrate_db =
       _migrate_db_ptr.asFunction<_dart_migrate_db>();
+
+  CResult migrate_data_db(
+    int coin,
+  ) {
+    return _migrate_data_db(
+      coin,
+    );
+  }
+
+  late final _migrate_data_db_ptr =
+      _lookup<ffi.NativeFunction<_c_migrate_data_db>>('migrate_data_db');
+  late final _dart_migrate_data_db _migrate_data_db =
+      _migrate_data_db_ptr.asFunction<_dart_migrate_data_db>();
 
   void set_active(
     int active,
@@ -965,20 +982,32 @@ typedef _dart_deallocate_str = void Function(
   ffi.Pointer<ffi.Int8> s,
 );
 
-typedef _c_init_wallet = ffi.Void Function(
+typedef _c_init_wallet = CResult Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> db_path,
 );
 
-typedef _dart_init_wallet = void Function(
+typedef _dart_init_wallet = CResult Function(
+  int coin,
   ffi.Pointer<ffi.Int8> db_path,
 );
 
-typedef _c_migrate_db = ffi.Void Function(
+typedef _c_migrate_db = CResult Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> db_path,
 );
 
-typedef _dart_migrate_db = void Function(
+typedef _dart_migrate_db = CResult Function(
+  int coin,
   ffi.Pointer<ffi.Int8> db_path,
+);
+
+typedef _c_migrate_data_db = CResult Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_migrate_data_db = CResult Function(
+  int coin,
 );
 
 typedef _c_set_active = ffi.Void Function(

@@ -75,13 +75,15 @@ class TxPlanPage extends StatelessWidget {
             final txid = await compute(_signAndBroadcast, SignBroadcastParams(active.coin, active.id, plan));
             showSnackBar(S.current.txId(txid));
             await player.play(AssetSource("success.mp3"));
-            active.setBanner("");
             active.setDraftRecipient(null);
             await active.update();
           }
           on String catch (message) {
             showSnackBar(message);
             await player.play(AssetSource("fail.mp3"));
+          }
+          finally {
+            active.setBanner("");
           }
         });
         navigatorKey.currentState?.pop();

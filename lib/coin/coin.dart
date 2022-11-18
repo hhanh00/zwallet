@@ -18,6 +18,7 @@ class LWInstance {
 }
 
 abstract class CoinBase {
+  int get coin;
   String get app;
   String get symbol;
   String get currency;
@@ -40,6 +41,7 @@ abstract class CoinBase {
   }
 
   Future<void> open() async {
+    print("Opening DB ${dbFullPath}");
     // schema handled in backend
     db = await openDatabase(dbFullPath/*, onCreate: createSchema, version: 1*/);
   }
