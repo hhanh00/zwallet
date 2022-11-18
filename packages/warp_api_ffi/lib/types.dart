@@ -159,3 +159,14 @@ class Backup {
 
   Map<String, dynamic> toJson() => _$BackupToJson(this);
 }
+
+@JsonSerializable()
+class Servers {
+  final List<String> urls;
+  Servers(this.urls);
+
+  factory Servers.fromJson(Map<String, dynamic> json) =>
+      _$ServersFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServersToJson(this);
+}

@@ -803,12 +803,10 @@ class NativeLibrary {
       _get_tx_summary_ptr.asFunction<_dart_get_tx_summary>();
 
   CResult_____c_char get_best_server(
-    ffi.Pointer<ffi.Pointer<ffi.Int8>> servers,
-    int count,
+    ffi.Pointer<ffi.Int8> servers,
   ) {
     return _get_best_server(
       servers,
-      count,
     );
   }
 
@@ -1461,13 +1459,11 @@ typedef _dart_get_tx_summary = CResult_____c_char Function(
 );
 
 typedef _c_get_best_server = CResult_____c_char Function(
-  ffi.Pointer<ffi.Pointer<ffi.Int8>> servers,
-  ffi.Uint32 count,
+  ffi.Pointer<ffi.Int8> servers,
 );
 
 typedef _dart_get_best_server = CResult_____c_char Function(
-  ffi.Pointer<ffi.Pointer<ffi.Int8>> servers,
-  int count,
+  ffi.Pointer<ffi.Int8> servers,
 );
 
 typedef _c_import_from_zwl = ffi.Void Function(
