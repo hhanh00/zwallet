@@ -18,6 +18,7 @@ class LWInstance {
 }
 
 abstract class CoinBase {
+  String get name;
   int get coin;
   String get app;
   String get symbol;
