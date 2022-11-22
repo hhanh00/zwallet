@@ -64,6 +64,7 @@ const DEFAULT_FEE = 1000;
 const MAXMONEY = 21000000;
 const DOC_URL = "https://hhanh00.github.io/zwallet/";
 const APP_NAME = "YWallet";
+const BACKUP_NAME = "${APP_NAME}.age";
 
 const RECOVERY_FILE = "recover.bin";
 
@@ -347,8 +348,10 @@ class ZWalletAppState extends State<ZWalletApp> {
       if (!initialized || recover || exportDb) {
         initialized = true;
         final dbPath = await getDbPath();
-        for (var coin in coins)
+        for (var coin in coins) {
           coin.init(dbPath);
+          WarpApi.createDb(coin.dbFullPath);
+        }
 
         if (exportDb) {
           await ycash.export(context, dbPath);
@@ -365,8 +368,8 @@ class ZWalletAppState extends State<ZWalletApp> {
         for (var coin in coins) {
           _setProgress(0.1 * (coin.coin+1), 'Initializing ${coin.ticker}');
           WarpApi.migrateWallet(coin.coin, coin.dbFullPath);
-          await coin.open();
           WarpApi.initWallet(coin.coin, coin.dbFullPath);
+          await coin.open();
         }
 
         if (resetRecover) {

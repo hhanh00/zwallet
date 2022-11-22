@@ -23,6 +23,10 @@ NativeLibrary init() {
   return lib;
 }
 
+Pointer<Int8> toNative(String s) {
+  return s.toNativeUtf8().cast<Int8>();
+}
+
 int unwrapResultU8(CResult_u8 r) {
   if (r.error != nullptr) throw convertCString(r.error);
   return r.value;
@@ -58,6 +62,10 @@ class WarpApi {
     if (Platform.isLinux) return DynamicLibrary.open('libwarp_api_ffi.so');
     if (Platform.isMacOS) return DynamicLibrary.open('libwarp_api_ffi.dylib');
     throw UnsupportedError('This platform is not supported.');
+  }
+
+  static void createDb(String dbPath) {
+    warp_api_lib.create_db(dbPath.toNativeUtf8().cast<Int8>());
   }
 
   static void migrateWallet(int coin, String dbPath) {
@@ -336,6 +344,20 @@ class WarpApi {
   static void restoreFullBackup(String key, String backup) {
     warp_api_lib.restore_full_backup(
         key.toNativeUtf8().cast<Int8>(), backup.toNativeUtf8().cast<Int8>());
+  }
+
+  static String generateKey() {
+    final key = warp_api_lib.generate_key();
+    return unwrapResultString(key);
+  }
+
+  static void zipBackup(String key, String tmpDir) {
+    final r = warp_api_lib.zip_backup(toNative(key), toNative(tmpDir));
+    unwrapResultU8(r);
+  }
+
+  static void unzipBackup(String key, String path, String tmpDir) {
+    warp_api_lib.unzip_backup(toNative(key), toNative(path), toNative(tmpDir));
   }
 
   static List<String> splitData(int id, String data) {

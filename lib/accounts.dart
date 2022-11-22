@@ -24,7 +24,7 @@ class Account {
   Account(this.coin, this.id, this.name, this.balance, this.tbalance, this.share);
 
   String get address {
-    return WarpApi.getAddress(this.coin, this.id, settings.uaType);
+    return id != 0 ? WarpApi.getAddress(this.coin, this.id, settings.uaType) : "";
   }
 }
 
