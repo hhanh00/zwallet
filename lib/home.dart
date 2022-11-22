@@ -384,6 +384,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
 
   _convertToWatchOnly() {
     WarpApi.convertToWatchOnly(active.coin, active.id);
+    active.canPay = false;
     Navigator.of(context).pop();
   }
 

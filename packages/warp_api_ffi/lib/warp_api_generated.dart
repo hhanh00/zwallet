@@ -68,6 +68,19 @@ class NativeLibrary {
   late final _dart_init_wallet _init_wallet =
       _init_wallet_ptr.asFunction<_dart_init_wallet>();
 
+  CResult_u8 create_db(
+    ffi.Pointer<ffi.Int8> db_path,
+  ) {
+    return _create_db(
+      db_path,
+    );
+  }
+
+  late final _create_db_ptr =
+      _lookup<ffi.NativeFunction<_c_create_db>>('create_db');
+  late final _dart_create_db _create_db =
+      _create_db_ptr.asFunction<_dart_create_db>();
+
   CResult_u8 migrate_db(
     int coin,
     ffi.Pointer<ffi.Int8> db_path,
@@ -761,6 +774,47 @@ class NativeLibrary {
   late final _dart_restore_full_backup _restore_full_backup =
       _restore_full_backup_ptr.asFunction<_dart_restore_full_backup>();
 
+  CResult_____c_char generate_key() {
+    return _generate_key();
+  }
+
+  late final _generate_key_ptr =
+      _lookup<ffi.NativeFunction<_c_generate_key>>('generate_key');
+  late final _dart_generate_key _generate_key =
+      _generate_key_ptr.asFunction<_dart_generate_key>();
+
+  CResult_u8 zip_backup(
+    ffi.Pointer<ffi.Int8> key,
+    ffi.Pointer<ffi.Int8> dst_dir,
+  ) {
+    return _zip_backup(
+      key,
+      dst_dir,
+    );
+  }
+
+  late final _zip_backup_ptr =
+      _lookup<ffi.NativeFunction<_c_zip_backup>>('zip_backup');
+  late final _dart_zip_backup _zip_backup =
+      _zip_backup_ptr.asFunction<_dart_zip_backup>();
+
+  void unzip_backup(
+    ffi.Pointer<ffi.Int8> key,
+    ffi.Pointer<ffi.Int8> data_path,
+    ffi.Pointer<ffi.Int8> dst_dir,
+  ) {
+    return _unzip_backup(
+      key,
+      data_path,
+      dst_dir,
+    );
+  }
+
+  late final _unzip_backup_ptr =
+      _lookup<ffi.NativeFunction<_c_unzip_backup>>('unzip_backup');
+  late final _dart_unzip_backup _unzip_backup =
+      _unzip_backup_ptr.asFunction<_dart_unzip_backup>();
+
   CResult_____c_char split_data(
     int id,
     ffi.Pointer<ffi.Int8> data,
@@ -980,6 +1034,14 @@ typedef _c_init_wallet = CResult_u8 Function(
 
 typedef _dart_init_wallet = CResult_u8 Function(
   int coin,
+  ffi.Pointer<ffi.Int8> db_path,
+);
+
+typedef _c_create_db = CResult_u8 Function(
+  ffi.Pointer<ffi.Int8> db_path,
+);
+
+typedef _dart_create_db = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> db_path,
 );
 
@@ -1423,6 +1485,32 @@ typedef _c_restore_full_backup = ffi.Void Function(
 typedef _dart_restore_full_backup = void Function(
   ffi.Pointer<ffi.Int8> key,
   ffi.Pointer<ffi.Int8> backup,
+);
+
+typedef _c_generate_key = CResult_____c_char Function();
+
+typedef _dart_generate_key = CResult_____c_char Function();
+
+typedef _c_zip_backup = CResult_u8 Function(
+  ffi.Pointer<ffi.Int8> key,
+  ffi.Pointer<ffi.Int8> dst_dir,
+);
+
+typedef _dart_zip_backup = CResult_u8 Function(
+  ffi.Pointer<ffi.Int8> key,
+  ffi.Pointer<ffi.Int8> dst_dir,
+);
+
+typedef _c_unzip_backup = ffi.Void Function(
+  ffi.Pointer<ffi.Int8> key,
+  ffi.Pointer<ffi.Int8> data_path,
+  ffi.Pointer<ffi.Int8> dst_dir,
+);
+
+typedef _dart_unzip_backup = void Function(
+  ffi.Pointer<ffi.Int8> key,
+  ffi.Pointer<ffi.Int8> data_path,
+  ffi.Pointer<ffi.Int8> dst_dir,
 );
 
 typedef _c_split_data = CResult_____c_char Function(

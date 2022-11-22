@@ -8,6 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'coin/coins.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:warp_api/types.dart';
@@ -202,6 +203,7 @@ abstract class _Settings with Store {
   bool useGPU = false;
 
   bool instantSync = false;
+  String tempDir = "";
 
   @observable
   int uaType = 7;
@@ -211,6 +213,8 @@ abstract class _Settings with Store {
 
   @action
   Future<bool> restore() async {
+    final tempDirectory = await getTemporaryDirectory();
+    tempDir = tempDirectory.path;
     final prefs = await SharedPreferences.getInstance();
     version = prefs.getString('version') ?? "1.0.0";
     simpleMode = prefs.getBool('simple_mode') ?? true;
