@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:path/path.dart' as p;
 import 'package:csv/csv.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:decimal/decimal.dart';
@@ -817,8 +818,8 @@ Future<void> saveFile(String data, String filename, String title) async {
   if (isMobile()) {
     final context = navigatorKey.currentContext!;
     Size size = MediaQuery.of(context).size;
-    Directory tempDir = await getTemporaryDirectory();
-    String fn = "${tempDir.path}/$filename";
+    final tempDir = settings.tempDir;
+    String fn = p.join(tempDir, filename);
     final file = File(fn);
     await file.writeAsString(data);
     return Share.shareFiles([fn], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
@@ -850,8 +851,7 @@ Future<void> exportFile(BuildContext context, String path, String title) async {
 }
 
 Future<File> getRecoveryFile() async {
-  Directory tempDir = await getTemporaryDirectory();
-  String fn = "${tempDir.path}/$RECOVERY_FILE";
+  String fn = p.join(settings.tempDir, RECOVERY_FILE);
   final f = File(fn);
   return f;
 }
@@ -921,13 +921,29 @@ DynamicLibrary _openOnLinux() {
   }
 }
 
-Future<String> getDbPath() async {
-  if (isMobile()) return await getDatabasesPath();
+Future<String> getDataPath() async {
   String? home;
   if (Platform.isWindows) home = Platform.environment['LOCALAPPDATA'];
   if (Platform.isLinux) home = Platform.environment['XDG_DATA_HOME'];
   if (Platform.isMacOS) home = Platform.environment['HOME'];
   final h = home ?? "";
+  return h;
+}
+
+Future<String> getTempPath() async {
+  if (isMobile()) {
+    final d = await getTemporaryDirectory();
+    return d.path;
+  }
+  final dataPath = await getDataPath();
+  final tempPath = p.join(dataPath, "tmp");
+  Directory(tempPath).createSync(recursive: true);
+  return tempPath;
+}
+
+Future<String> getDbPath() async {
+  if (isMobile()) return await getDatabasesPath();
+  final h = await getDataPath();
   return "$h/databases";
 }
 

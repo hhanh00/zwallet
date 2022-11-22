@@ -19,4 +19,7 @@ RUN cargo install cargo-make
 RUN curl -o flutter.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.3.8-stable.tar.xz
 RUN tar xvf flutter.tar.xz
 RUN rm -f flutter.tar.xz
+RUN mkdir /root/.zcash-params
+RUN curl -o /root/.zcash-params/sapling-spend.params https://download.z.cash/downloads/sapling-spend.params
+RUN curl -o /root/.zcash-params/sapling-output.params https://download.z.cash/downloads/sapling-output.params
 
