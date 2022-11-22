@@ -213,8 +213,7 @@ abstract class _Settings with Store {
 
   @action
   Future<bool> restore() async {
-    final tempDirectory = await getTemporaryDirectory();
-    tempDir = tempDirectory.path;
+    tempDir = await getTempPath();
     final prefs = await SharedPreferences.getInstance();
     version = prefs.getString('version') ?? "1.0.0";
     simpleMode = prefs.getBool('simple_mode') ?? true;

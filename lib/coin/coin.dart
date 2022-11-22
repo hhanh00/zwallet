@@ -49,8 +49,7 @@ abstract class CoinBase {
 
   Future<bool> tryImport(PlatformFile file) async {
     if (file.name == dbName) {
-      Directory tempDir = await getTemporaryDirectory();
-      final dest = p.join(tempDir.path, dbName);
+      final dest = p.join(settings.tempDir, dbName);
       await File(file.path!).copy(dest); // save to temporary directory
       return true;
     }
@@ -58,8 +57,7 @@ abstract class CoinBase {
   }
 
   Future<void> importFromTemp() async {
-    Directory tempDir = await getTemporaryDirectory();
-    final src = File(p.join(tempDir.path, dbName));
+    final src = File(p.join(settings.tempDir, dbName));
     print("Import from ${src.path}");
     if (await src.exists()) {
       print("copied to ${dbFullPath}");
