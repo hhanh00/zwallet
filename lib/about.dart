@@ -37,7 +37,7 @@ Future<void> showAbout(BuildContext context) async {
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                       if (versionString != null)
                         GestureDetector(
-                          onLongPress: () => resetApp(context),
+                          onLongPress: () => resetApp(),
                           child: Text("$versionString"))
                   ],
                 ))),

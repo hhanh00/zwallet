@@ -31,7 +31,7 @@ class DevPageState extends State<DevPage> {
           ListTile(title: Text('Export Database'), trailing: Icon(Icons.chevron_right), onTap: _exportDb),
           ListTile(title: Text('Sync Stats'), trailing: Icon(Icons.chevron_right), onTap: _syncStats),
           ListTile(title: Text('Reset Scan State'), trailing: Icon(Icons.chevron_right), onTap: _resetScan),
-          ListTile(title: Text('Reset App'), trailing: Icon(Icons.chevron_right), onTap: _resetApp),
+          ListTile(title: Text('Reset App'), trailing: Icon(Icons.chevron_right), onTap: resetApp),
           ListTile(title: Text('Trigger Reorg'), trailing: Icon(Icons.chevron_right), onTap: _reorg),
           ListTile(title: Text('Rewind Height'), trailing: Icon(Icons.chevron_right), onTap: _rewindHeight),
           ListTile(title: Text('Mark as Synced'), trailing: Icon(Icons.chevron_right), onTap: _markAsSynced),
@@ -110,10 +110,6 @@ class DevPageState extends State<DevPage> {
     }
   }
 
-  _resetApp() {
-    resetApp(context);
-  }
-
   _reorg() async {
     await syncStatus.reorg();
   }
@@ -123,6 +119,7 @@ class DevPageState extends State<DevPage> {
   }
 
   _resetDevMode() {
+    showSnackBar('App reset');
     settings.resetDevMode();
   }
 }

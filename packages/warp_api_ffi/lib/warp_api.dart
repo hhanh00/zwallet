@@ -331,21 +331,6 @@ class WarpApi {
     return unwrapResultString(json);
   }
 
-  static String generateEncKey() {
-    return unwrapResultString(warp_api_lib.generate_random_enc_key());
-  }
-
-  static String getFullBackup(String key) {
-    final backup =
-        warp_api_lib.get_full_backup(key.toNativeUtf8().cast<Int8>());
-    return unwrapResultString(backup);
-  }
-
-  static void restoreFullBackup(String key, String backup) {
-    warp_api_lib.restore_full_backup(
-        key.toNativeUtf8().cast<Int8>(), backup.toNativeUtf8().cast<Int8>());
-  }
-
   static AGEKeys generateKey() {
     final key = warp_api_lib.generate_key();
     final json = unwrapResultString(key);
@@ -421,10 +406,6 @@ class WarpApi {
 
   static void useGPU(bool v) {
     warp_api_lib.use_gpu(v ? 1 : 0);
-  }
-
-  static void importSyncFile(int coin, String path) {
-    warp_api_lib.import_sync_file(coin, path.toNativeUtf8().cast<Int8>());
   }
 }
 
