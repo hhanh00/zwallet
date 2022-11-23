@@ -149,7 +149,7 @@ class LoadProgressState extends State<LoadProgress> {
   void initState() {
     super.initState();
     _reset = Timer(Duration(minutes: 3), () {
-      if (!_disposed) resetApp(context);
+      if (!_disposed) resetApp();
     });
   }
 
@@ -341,10 +341,8 @@ class ZWalletAppState extends State<ZWalletApp> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final recover = prefs.getBool('recover') ?? false;
-      final resetRecover = prefs.getBool('reset_recover') ?? false;
       final exportDb = prefs.getBool('export_db') ?? false;
       prefs.setBool('recover', false);
-      prefs.setBool('reset_recover', false);
 
       if (!initialized || recover || exportDb) {
         initialized = true;
@@ -371,22 +369,6 @@ class ZWalletAppState extends State<ZWalletApp> {
           WarpApi.migrateWallet(coin.coin, coin.dbFullPath);
           WarpApi.initWallet(coin.coin, coin.dbFullPath);
           await coin.open();
-        }
-
-        if (resetRecover) {
-          for (var coin in coins) {
-            await coin.delete();
-            await coin.open();
-          }
-        }
-
-        if (resetRecover) {
-          final f = await getRecoveryFile();
-          if (f.existsSync()) {
-            final backup = await f.readAsString();
-            WarpApi.restoreFullBackup("", backup);
-            f.delete();
-          }
         }
 
         for (var s in settings.servers) {
@@ -856,28 +838,6 @@ Future<File> getRecoveryFile() async {
   return f;
 }
 
-Future<void> resetApp(BuildContext context) async {
-  final s = S.of(context);
-  final confirmation = await showDialog<bool>(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => AlertDialog(
-        title: Text(S.of(context).applicationReset),
-        content: Text(S.of(context).confirmResetApp),
-        actions: confirmButtons(context, () {
-          Navigator.of(context).pop(true);
-        }, okLabel: S.of(context).reset, cancelValue: false)),
-  ) ?? false;
-  if (confirmation) {
-    final backup = WarpApi.getFullBackup("");
-    final f = await getRecoveryFile();
-    f.writeAsString(backup);
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('reset_recover', true);
-    await showMessageBox(context, s.closeApplication, s.pleaseRestartNow, s.ok);
-  }
-}
-
 Future<bool> showConfirmDialog(BuildContext context, String title, String body) async {
   final s = S.of(context);
   final confirmation = await showDialog<bool>(
@@ -971,4 +931,8 @@ class NotificationController {
   @pragma("vm:entry-point")
   static Future <void> onActionReceivedMethod(ReceivedAction receivedAction) async {
   }
+}
+
+void resetApp() {
+  WarpApi.truncateData();
 }

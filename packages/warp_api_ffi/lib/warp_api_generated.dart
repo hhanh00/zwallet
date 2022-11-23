@@ -735,45 +735,6 @@ class NativeLibrary {
   late final _dart_parse_payment_uri _parse_payment_uri =
       _parse_payment_uri_ptr.asFunction<_dart_parse_payment_uri>();
 
-  CResult_____c_char generate_random_enc_key() {
-    return _generate_random_enc_key();
-  }
-
-  late final _generate_random_enc_key_ptr =
-      _lookup<ffi.NativeFunction<_c_generate_random_enc_key>>(
-          'generate_random_enc_key');
-  late final _dart_generate_random_enc_key _generate_random_enc_key =
-      _generate_random_enc_key_ptr.asFunction<_dart_generate_random_enc_key>();
-
-  CResult_____c_char get_full_backup(
-    ffi.Pointer<ffi.Int8> key,
-  ) {
-    return _get_full_backup(
-      key,
-    );
-  }
-
-  late final _get_full_backup_ptr =
-      _lookup<ffi.NativeFunction<_c_get_full_backup>>('get_full_backup');
-  late final _dart_get_full_backup _get_full_backup =
-      _get_full_backup_ptr.asFunction<_dart_get_full_backup>();
-
-  void restore_full_backup(
-    ffi.Pointer<ffi.Int8> key,
-    ffi.Pointer<ffi.Int8> backup,
-  ) {
-    return _restore_full_backup(
-      key,
-      backup,
-    );
-  }
-
-  late final _restore_full_backup_ptr =
-      _lookup<ffi.NativeFunction<_c_restore_full_backup>>(
-          'restore_full_backup');
-  late final _dart_restore_full_backup _restore_full_backup =
-      _restore_full_backup_ptr.asFunction<_dart_restore_full_backup>();
-
   CResult_____c_char generate_key() {
     return _generate_key();
   }
@@ -957,21 +918,6 @@ class NativeLibrary {
 
   late final _use_gpu_ptr = _lookup<ffi.NativeFunction<_c_use_gpu>>('use_gpu');
   late final _dart_use_gpu _use_gpu = _use_gpu_ptr.asFunction<_dart_use_gpu>();
-
-  void import_sync_file(
-    int coin,
-    ffi.Pointer<ffi.Int8> path,
-  ) {
-    return _import_sync_file(
-      coin,
-      path,
-    );
-  }
-
-  late final _import_sync_file_ptr =
-      _lookup<ffi.NativeFunction<_c_import_sync_file>>('import_sync_file');
-  late final _dart_import_sync_file _import_sync_file =
-      _import_sync_file_ptr.asFunction<_dart_import_sync_file>();
 }
 
 class CResult_u8 extends ffi.Struct {
@@ -1465,28 +1411,6 @@ typedef _dart_parse_payment_uri = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> uri,
 );
 
-typedef _c_generate_random_enc_key = CResult_____c_char Function();
-
-typedef _dart_generate_random_enc_key = CResult_____c_char Function();
-
-typedef _c_get_full_backup = CResult_____c_char Function(
-  ffi.Pointer<ffi.Int8> key,
-);
-
-typedef _dart_get_full_backup = CResult_____c_char Function(
-  ffi.Pointer<ffi.Int8> key,
-);
-
-typedef _c_restore_full_backup = ffi.Void Function(
-  ffi.Pointer<ffi.Int8> key,
-  ffi.Pointer<ffi.Int8> backup,
-);
-
-typedef _dart_restore_full_backup = void Function(
-  ffi.Pointer<ffi.Int8> key,
-  ffi.Pointer<ffi.Int8> backup,
-);
-
 typedef _c_generate_key = CResult_____c_char Function();
 
 typedef _dart_generate_key = CResult_____c_char Function();
@@ -1603,14 +1527,4 @@ typedef _c_use_gpu = ffi.Void Function(
 
 typedef _dart_use_gpu = void Function(
   int v,
-);
-
-typedef _c_import_sync_file = ffi.Void Function(
-  ffi.Uint8 coin,
-  ffi.Pointer<ffi.Int8> path,
-);
-
-typedef _dart_import_sync_file = void Function(
-  int coin,
-  ffi.Pointer<ffi.Int8> path,
 );

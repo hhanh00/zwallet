@@ -105,9 +105,13 @@ class FullBackupState extends State<FullBackupPage> {
   }
 
   _onSave(BuildContext context) async {
-    WarpApi.zipBackup(key.text, settings.tempDir);
-    final backupPath = p.join(settings.tempDir, BACKUP_NAME);
-    await exportFile(context, backupPath, BACKUP_NAME);
+    if (key.text.isNotEmpty) {
+      settings.setBackupEncKey(key.text);
+      WarpApi.zipBackup(key.text, settings.tempDir);
+      final backupPath = p.join(settings.tempDir, BACKUP_NAME);
+      await exportFile(context, backupPath, BACKUP_NAME);
+      Navigator.of(context).pop();
+    }
   }
 
   _onGenerate() async {
