@@ -170,3 +170,15 @@ class Servers {
 
   Map<String, dynamic> toJson() => _$ServersToJson(this);
 }
+
+@JsonSerializable()
+class AGEKeys {
+  final String sk;
+  final String pk;
+  AGEKeys(this.sk, this.pk);
+
+  factory AGEKeys.fromJson(Map<String, dynamic> json) =>
+      _$AGEKeysFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AGEKeysToJson(this);
+}

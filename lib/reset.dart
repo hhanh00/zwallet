@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:share_plus/share_plus.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
 import 'package:path/path.dart' as p;
@@ -44,11 +44,11 @@ class _ResetState extends State<ResetPage> {
           context: context,
           barrierDismissible: false,
           builder: (context) => AlertDialog(
-              title: Text(S.of(context).applicationReset),
-              content: Text(S.of(context).confirmResetApp),
+              title: Text(s.applicationReset),
+              content: Text(s.confirmResetApp),
               actions: confirmButtons(context, () {
                 Navigator.of(context).pop(true);
-              }, okLabel: S.of(context).reset, cancelValue: false)),
+              }, okLabel: s.reset, cancelValue: false)),
         ) ??
         false;
     if (confirmation) {
@@ -80,7 +80,9 @@ class FullBackupState extends State<FullBackupPage> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    return Scaffold(
+    return Observer(builder: (context) {
+      key.text = settings.backupEncKey;
+      return Scaffold(
         appBar: AppBar(title: Text(s.fullBackup)),
         body: Card(
             child: Column(children: [
@@ -99,6 +101,7 @@ class FullBackupState extends State<FullBackupPage> {
               label: Text(s.saveBackup))
           ])
         ])));
+    });
   }
 
   _onSave(BuildContext context) async {
@@ -107,8 +110,58 @@ class FullBackupState extends State<FullBackupPage> {
     await exportFile(context, backupPath, BACKUP_NAME);
   }
 
-  _onGenerate() {
-    key.text = WarpApi.generateKey();
+  _onGenerate() async {
+    final keys = WarpApi.generateKey();
+    final navigator = Navigator.of(context);
+    final state = GlobalKey<AGEKeysState>();
+    final assign = await showDialog<bool?>(
+        context: context,
+        builder: (context) => AlertDialog(
+          contentPadding: EdgeInsets.all(16),
+          title: Text('Backup Keys'),
+          content: AGEKeysForm(keys, key: state),
+          actions: [
+            ElevatedButton.icon(
+              icon: Icon(Icons.cancel),
+              label: Text(S.current.cancel),
+              onPressed: () { navigator.pop(null); }
+              ),
+            ElevatedButton.icon(
+              icon: Icon(Icons.check),
+              label: Text(S.current.set),
+              onPressed: () { navigator.pop(true); }
+              )]
+        )) ?? false;
+    if (assign)
+      settings.setBackupEncKey(state.currentState!.pk.text);
+  }
+}
+
+class AGEKeysForm extends StatefulWidget {
+  final AGEKeys keys;
+  AGEKeysForm(this.keys, {Key? key}): super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => AGEKeysState();
+}
+
+class AGEKeysState extends State<AGEKeysForm> {
+  final pk = TextEditingController();
+  final sk = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    pk.text = widget.keys.pk;
+    sk.text = widget.keys.sk;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(child: SingleChildScrollView(child: Column(children: [
+      TextFormField(decoration: InputDecoration(labelText: S.current.encryptionKey), controller: pk, readOnly: true),
+      TextFormField(decoration: InputDecoration(labelText: S.current.secretKey), controller: sk, readOnly: true),
+    ])));
   }
 }
 
@@ -127,7 +180,7 @@ class _FullRestoreState extends State<FullRestorePage> {
         appBar: AppBar(title: Text(s.fullRestore)),
         body: Card(child: Column(children: [
           TextField(
-            decoration: InputDecoration(labelText: s.backupEncryptionKey),
+            decoration: InputDecoration(labelText: s.privateKey, hintText: 'AGE-SECRET-KEY-'),
             minLines: 1,
             maxLines: 5,
             controller: controller,
@@ -141,6 +194,7 @@ class _FullRestoreState extends State<FullRestorePage> {
   }
 
   _onLoad() async {
+    final s = S.current;
     final result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
@@ -149,8 +203,8 @@ class _FullRestoreState extends State<FullRestorePage> {
       try {
         if (key.isNotEmpty) {
           WarpApi.unzipBackup(key, filename, settings.tempDir);
-          await showMessageBox(context, 'Db Import Successful',
-              'Database updated. Please restart the app.', S.current.ok);
+          await showMessageBox(context, s.dbImportSuccessful,
+              s.databaseUpdatedPleaseRestartTheApp, s.ok);
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('recover', true);
         }

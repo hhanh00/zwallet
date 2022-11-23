@@ -2731,6 +2731,46 @@ class S {
       args: [amount, ticker],
     );
   }
+
+  /// `Set`
+  String get set {
+    return Intl.message(
+      'Set',
+      name: 'set',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Encryption Key`
+  String get encryptionKey {
+    return Intl.message(
+      'Encryption Key',
+      name: 'encryptionKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Db Import Successful`
+  String get dbImportSuccessful {
+    return Intl.message(
+      'Db Import Successful',
+      name: 'dbImportSuccessful',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database updated. Please restart the app.`
+  String get databaseUpdatedPleaseRestartTheApp {
+    return Intl.message(
+      'Database updated. Please restart the app.',
+      name: 'databaseUpdatedPleaseRestartTheApp',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
