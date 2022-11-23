@@ -185,8 +185,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "currency": MessageLookupByLibrary.simpleMessage("Currency"),
         "custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "dark": MessageLookupByLibrary.simpleMessage("Dark"),
+        "databaseUpdatedPleaseRestartTheApp":
+            MessageLookupByLibrary.simpleMessage(
+                "Database updated. Please restart the app."),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "datetime": MessageLookupByLibrary.simpleMessage("Date/Time"),
+        "dbImportSuccessful":
+            MessageLookupByLibrary.simpleMessage("Db Import Successful"),
         "defaultMemo": MessageLookupByLibrary.simpleMessage("Default Memo"),
         "delete": MessageLookupByLibrary.simpleMessage("DELETE"),
         "deleteAccount": MessageLookupByLibrary.simpleMessage("Delete Account"),
@@ -206,6 +211,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Another contact has this address"),
         "editContact": MessageLookupByLibrary.simpleMessage("Edit Contact"),
         "encryptedBackup": m6,
+        "encryptionKey": MessageLookupByLibrary.simpleMessage("Encryption Key"),
         "enterSecretShareIfAccountIsMultisignature":
             MessageLookupByLibrary.simpleMessage(
                 "Enter secret share if account is multi-signature"),
@@ -369,6 +375,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sendingATotalOfAmountCointickerToCountRecipients": m16,
         "sendingAzecCointickerToAddress": m17,
         "server": MessageLookupByLibrary.simpleMessage("Server"),
+        "set": MessageLookupByLibrary.simpleMessage("Set"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "shieldTranspBalance":
             MessageLookupByLibrary.simpleMessage("Shield Transp. Balance"),

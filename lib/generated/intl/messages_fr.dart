@@ -187,8 +187,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "currency": MessageLookupByLibrary.simpleMessage("Devise"),
         "custom": MessageLookupByLibrary.simpleMessage("Personnaliser"),
         "dark": MessageLookupByLibrary.simpleMessage("Sombre"),
+        "databaseUpdatedPleaseRestartTheApp":
+            MessageLookupByLibrary.simpleMessage(
+                "BD changée. Redémarrer l\'app SVP"),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "datetime": MessageLookupByLibrary.simpleMessage("Jour/Heure"),
+        "dbImportSuccessful":
+            MessageLookupByLibrary.simpleMessage("Sauvegarde importée"),
         "defaultMemo": MessageLookupByLibrary.simpleMessage("Memo"),
         "delete": MessageLookupByLibrary.simpleMessage("SUPPRIMER"),
         "deleteAccount":
@@ -209,6 +214,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "editContact":
             MessageLookupByLibrary.simpleMessage("Changer le Contact"),
         "encryptedBackup": m6,
+        "encryptionKey": MessageLookupByLibrary.simpleMessage("Clé Publique"),
         "enterSecretShareIfAccountIsMultisignature":
             MessageLookupByLibrary.simpleMessage(
                 "Enter secret share if account is multi-signature"),
@@ -378,6 +384,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sendingATotalOfAmountCointickerToCountRecipients": m16,
         "sendingAzecCointickerToAddress": m17,
         "server": MessageLookupByLibrary.simpleMessage("Serveur"),
+        "set": MessageLookupByLibrary.simpleMessage("Utiliser"),
         "settings": MessageLookupByLibrary.simpleMessage("Paramètres"),
         "shieldTranspBalance": MessageLookupByLibrary.simpleMessage(
             "Masquer le Solde Transparent"),

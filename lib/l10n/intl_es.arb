@@ -264,5 +264,9 @@
   "incomingFunds": "Pago recibido",
   "paymentMade": "Payment enviado",
   "received": "Recibido {amount} {ticker}",
-  "spent": "Enviado {amount} {ticker}"
+  "spent": "Enviado {amount} {ticker}",
+  "set": "Set",
+  "encryptionKey": "Encryption Key",
+  "dbImportSuccessful": "Db Import Successful",
+  "databaseUpdatedPleaseRestartTheApp": "Database updated. Please restart the app."
 }

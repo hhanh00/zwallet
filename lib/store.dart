@@ -209,6 +209,9 @@ abstract class _Settings with Store {
   int uaType = 7;
 
   @observable
+  String backupEncKey = "";
+
+  @observable
   int developerMode = 10;
 
   @action
@@ -248,6 +251,8 @@ abstract class _Settings with Store {
     antispam = prefs.getBool('antispam') ?? true;
     useGPU = prefs.getBool('gpu') ?? false;
     WarpApi.useGPU(useGPU);
+
+    backupEncKey = prefs.getString('backup_key') ?? "";
 
     final _developerMode = prefs.getBool('developer_mode') ?? false;
     developerMode = _developerMode ? 0 : 10;
@@ -553,6 +558,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     uaType = v;
     prefs.setInt('ua_type', v);
+  }
+
+  @action
+  Future<void> setBackupEncKey(String v) async {
+    final prefs = await SharedPreferences.getInstance();
+    backupEncKey = v;
+    prefs.setString('backup_key', v);
   }
 
   @action

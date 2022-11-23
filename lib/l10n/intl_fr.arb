@@ -264,5 +264,9 @@
   "incomingFunds": "Payment Reçu",
   "paymentMade": "Payment Envoyé",
   "received": "Reçu {amount} {}",
-  "spent": "Envoyé {amount} {}"
+  "spent": "Envoyé {amount} {}",
+  "set": "Utiliser",
+  "encryptionKey": "Clé Publique",
+  "dbImportSuccessful": "Sauvegarde importée",
+  "databaseUpdatedPleaseRestartTheApp": "BD changée. Redémarrer l'app SVP"
 }

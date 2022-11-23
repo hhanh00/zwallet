@@ -346,9 +346,11 @@ class WarpApi {
         key.toNativeUtf8().cast<Int8>(), backup.toNativeUtf8().cast<Int8>());
   }
 
-  static String generateKey() {
+  static AGEKeys generateKey() {
     final key = warp_api_lib.generate_key();
-    return unwrapResultString(key);
+    final json = unwrapResultString(key);
+    final ageKeys = AGEKeys.fromJson(jsonDecode(json));
+    return ageKeys;
   }
 
   static void zipBackup(String key, String tmpDir) {

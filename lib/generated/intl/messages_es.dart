@@ -188,8 +188,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "currency": MessageLookupByLibrary.simpleMessage("Moneda"),
         "custom": MessageLookupByLibrary.simpleMessage("Personalizado"),
         "dark": MessageLookupByLibrary.simpleMessage("Noche"),
+        "databaseUpdatedPleaseRestartTheApp":
+            MessageLookupByLibrary.simpleMessage(
+                "Database updated. Please restart the app."),
         "date": MessageLookupByLibrary.simpleMessage("Fecha"),
         "datetime": MessageLookupByLibrary.simpleMessage("Fecha/Hora"),
+        "dbImportSuccessful":
+            MessageLookupByLibrary.simpleMessage("Db Import Successful"),
         "defaultMemo": MessageLookupByLibrary.simpleMessage("Nota"),
         "delete": MessageLookupByLibrary.simpleMessage("ELIMINAR"),
         "deleteAccount": MessageLookupByLibrary.simpleMessage("Borrar Cuenta"),
@@ -208,6 +213,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cuenta duplicada"),
         "editContact": MessageLookupByLibrary.simpleMessage("Editar contacto"),
         "encryptedBackup": m6,
+        "encryptionKey": MessageLookupByLibrary.simpleMessage("Encryption Key"),
         "enterSecretShareIfAccountIsMultisignature":
             MessageLookupByLibrary.simpleMessage(
                 "Introduzca la clave secreta si la cuenta es multi-firma"),
@@ -376,6 +382,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sendingATotalOfAmountCointickerToCountRecipients": m16,
         "sendingAzecCointickerToAddress": m17,
         "server": MessageLookupByLibrary.simpleMessage("Servidor"),
+        "set": MessageLookupByLibrary.simpleMessage("Set"),
         "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
         "shieldTranspBalance":
             MessageLookupByLibrary.simpleMessage("Blindar Saldo transp."),
