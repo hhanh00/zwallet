@@ -8,7 +8,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path_provider/path_provider.dart';
 import 'coin/coins.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:warp_api/types.dart';
