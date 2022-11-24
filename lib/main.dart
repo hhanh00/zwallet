@@ -31,6 +31,7 @@ import 'package:uni_links/uni_links.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:sqlite3/open.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'accounts.dart';
 import 'animated_qr.dart';
 import 'coin/coins.dart';
@@ -168,6 +169,8 @@ class LoadProgressState extends State<LoadProgress> {
 
   @override
   Widget build(BuildContext context) {
+    final typography = Typography.material2014();
+    final textTheme = typography.englishLike;
     return Container(
         alignment: Alignment.center,
         child: SizedBox(height: 240, width: 200, child:
@@ -175,11 +178,11 @@ class LoadProgressState extends State<LoadProgress> {
             children: [
               Image.asset('assets/icon.png', height: 64),
               Padding(padding: EdgeInsets.all(16)),
-              Text(S.of(context).loading, style: Theme.of(context).textTheme.headline4),
+              Text(S.of(context).loading, style: textTheme.headlineMedium),
               Padding(padding: EdgeInsets.all(16)),
               LinearProgressIndicator(value: _value),
               Padding(padding: EdgeInsets.all(8)),
-              Text(_message, style: Theme.of(context).textTheme.caption),
+              Text(_message, style: textTheme.labelMedium),
             ]
         )
         ));
