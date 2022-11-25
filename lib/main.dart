@@ -31,7 +31,6 @@ import 'package:uni_links/uni_links.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:sqlite3/open.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'accounts.dart';
 import 'animated_qr.dart';
 import 'coin/coins.dart';
@@ -169,9 +168,9 @@ class LoadProgressState extends State<LoadProgress> {
 
   @override
   Widget build(BuildContext context) {
-    final typography = Typography.material2014();
-    final textTheme = typography.englishLike;
-    return Container(
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    return Scaffold(body: Container(
         alignment: Alignment.center,
         child: SizedBox(height: 240, width: 200, child:
         Column(
@@ -185,7 +184,7 @@ class LoadProgressState extends State<LoadProgress> {
               Text(_message, style: textTheme.labelMedium),
             ]
         )
-        ));
+        )));
   }
 
   void setValue(double v, String message) {
@@ -261,11 +260,6 @@ void main() {
                   return BackupPage(accountId2.coin, accountId2.id);
                 },
                 '/multipay': (context) => MultiPayPage(),
-                // '/multisig': (context) => MultisigPage(),
-                // '/multisign': (context) => MultisigAggregatorPage(
-                //     routeSettings.arguments as TxSummary),
-                // '/multisig_shares': (context) =>
-                //     MultisigSharesPage(routeSettings.arguments as String),
                 '/edit_theme': (context) =>
                     ThemeEditorPage(onSaved: settings.updateCustomThemeColors),
                 '/reset': (context) => ResetPage(),
