@@ -207,42 +207,42 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
 
       showAboutOnce(this.context);
 
-        return WithForegroundTask(child:
-          Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: GestureDetector(
-              onTap: () => settings.tapDeveloperMode(context),
-              child: Text("${active.account.name}")),
-            bottom: TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              tabs: [
-                Tab(text: s.account),
-                messageTab,
-                if (!simpleMode) Tab(text: s.notes),
-                Tab(text: s.history),
-                if (!simpleMode) Tab(text: s.budget),
-                if (!simpleMode) Tab(text: s.tradingPl),
-                Tab(text: s.contacts),
-              ],
-            ),
-            actions: [menu],
-          ),
-          body: TabBarView(
+      return WithForegroundTask(child:
+        Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: GestureDetector(
+            onTap: () => settings.tapDeveloperMode(context),
+            child: Text("${active.account.name}")),
+          bottom: TabBar(
             controller: _tabController,
-            children: [
-              AccountPage(),
-              MessageWidget(messageKey),
-              if (!simpleMode) NoteWidget(),
-              HistoryWidget(),
-              if (!simpleMode) BudgetWidget(),
-              if (!simpleMode) PnLWidget(),
-              ContactsTab(key: contactKey),
+            isScrollable: true,
+            tabs: [
+              Tab(text: s.account),
+              messageTab,
+              if (!simpleMode) Tab(text: s.notes),
+              Tab(text: s.history),
+              if (!simpleMode) Tab(text: s.budget),
+              if (!simpleMode) Tab(text: s.tradingPl),
+              Tab(text: s.contacts),
             ],
           ),
-          floatingActionButton: button,
-        ));
+          actions: [menu],
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            AccountPage(),
+            MessageWidget(messageKey),
+            if (!simpleMode) NoteWidget(),
+            HistoryWidget(),
+            if (!simpleMode) BudgetWidget(),
+            if (!simpleMode) PnLWidget(),
+            ContactsTab(key: contactKey),
+          ],
+        ),
+        floatingActionButton: button,
+      ));
     });
   }
 
