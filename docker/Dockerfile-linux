@@ -1,11 +1,10 @@
 #syntax=docker/dockerfile:1.2
-FROM zwallet_builder_linux AS builder
+FROM hhanh00/zwallet_builder_linux AS builder
 
 ENV PATH $PATH:/flutter/bin:/root/.cargo/bin
 
 COPY . /zwallet
 
-RUN cd /zwallet/native/zcash-sync && cargo build --release --features=dart_ffi
 RUN cd /zwallet && ./build-linux.sh
 RUN cd /zwallet/build/linux/x64/release/bundle && tar cvzf /zwallet.tgz *
 

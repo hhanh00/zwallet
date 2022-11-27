@@ -1,0 +1,21 @@
+#syntax=docker/dockerfile:1.2
+FROM hhanh00/zwallet_builder_linux AS builder
+
+ENV PATH $PATH:/flutter/bin:/root/.cargo/bin
+
+COPY . /zwallet
+
+RUN cd /zwallet && ./build-linux.sh
+RUN cd /zwallet/build/linux/x64/release/bundle && tar cvzf /zwallet.tgz *
+
+FROM hhanh00/zwallet_builder_flatpak
+
+COPY . /root
+RUN mkdir /root/misc/root
+COPY --from=builder /zwallet.tgz /root/misc/root/
+COPY --from=builder /zwallet/target/release/libwarp_api_ffi.so /root/misc/root/
+
+RUN mkdir /root/repo
+
+WORKDIR /root/misc
+ENTRYPOINT ["/root/build-flatpak2.sh"]

@@ -1,4 +1,6 @@
 build/**
 **/target/**
-misc/
-
+misc/build-dir
+misc/.flatpak-builder
+misc/root
+**/.git/**
