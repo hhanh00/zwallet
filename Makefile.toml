@@ -287,3 +287,19 @@ script = [
     assert ${result}
     """,
 ]
+
+[tasks.desktop-build-release]
+private = true
+command = "cargo"
+args = [
+    "build",
+    "--release",
+    "--features=dart_ffi"
+]
+
+[tasks.flatpak]
+dependencies = [
+    "setup-crate-type-android",
+    "desktop-build-release",
+    "restore-crate-type"
+]
