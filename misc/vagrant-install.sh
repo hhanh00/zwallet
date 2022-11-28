@@ -6,7 +6,7 @@ n
 w
 EOF
 btrfs device add -f /dev/sda3 /
-pacman -Syu
+pacman -Syu --noconfirm
 pacman -S --noconfirm git
 git clone https://github.com/hhanh00/zwallet.git
 (cd zwallet; git checkout $1; git submodule update --init; ./install-dev.sh)
