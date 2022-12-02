@@ -1,0 +1,52 @@
+name: Build and Release MacOS
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build_mac:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          ref: ua
+
+      - name: params
+        run: |
+          mkdir $HOME/.zcash-params
+          curl https://download.z.cash/downloads/sapling-output.params --output $HOME/.zcash-params/sapling-output.params
+          curl https://download.z.cash/downloads/sapling-spend.params --output $HOME/.zcash-params/sapling-spend.params
+
+      - name: Build dylib
+        run: |
+          cargo install cargo-make
+          cargo make flatpak
+
+      - name: wget flutter
+        run: |
+          curl https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_3.3.9-stable.zip --output flutter.zip
+          unzip flutter.zip
+          echo $PWD/flutter/bin >> $GITHUB_PATH
+
+      - name: Build flutter
+        run: |
+          flutter pub get
+          flutter pub run build_runner build
+          (cd packages/warp_api_ffi;flutter pub get;flutter pub run build_runner build)
+          flutter build macos
+
+      - name: Build DMG
+        run: |
+          npm install -g appdmg
+          (cd misc;appdmg app.json ../ywallet.dmg)
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: |
+            ./ywallet.dmg
