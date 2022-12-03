@@ -1,0 +1,46 @@
+name: Build and Release Windows
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build_win:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          ref: ua
+
+      - name: wget
+        run: | 
+          mkdir /d/.zcash-params
+          curl https://download.z.cash/downloads/sapling-output.params --output /d/.zcash-params/sapling-output.params
+          curl https://download.z.cash/downloads/sapling-spend.params --output /d/.zcash-params/sapling-spend.params
+        shell: bash
+
+      - name: ls
+        run: dir d:\.zcash-params
+
+      - name: Build dll
+        run: powershell -file build-win.ps1
+        env:
+          HOME: "D:\\"
+
+      - name: Flutter app
+        run: docker build -f docker/Dockerfile-win -t app_image .
+
+      - name: Copy zip
+        run: |
+          docker create --name app_container app_image
+          docker cp app_container:/zwallet/ywallet.zip .
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: |
+            ./ywallet.zip

@@ -1,0 +1,28 @@
+#syntax=docker/dockerfile:1.2
+FROM mcr.microsoft.com/windows/server:ltsc2022
+
+SHELL ["cmd", "/S", "/C"]
+
+ADD https://aka.ms/vs/16/release/vs_buildtools.exe /vs_buildtools.exe
+ADD https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.3.9-stable.zip /flutter.zip
+
+RUN mkdir .zcash-params
+ADD https://download.z.cash/downloads/sapling-output.params /.zcash-params/sapling-output.params
+ADD https://download.z.cash/downloads/sapling-spend.params /.zcash-params/sapling-spend.params
+
+RUN vs_buildtools.exe --quiet --wait --norestart --nocache \
+    --installPath C:\BuildTools \
+    --add Microsoft.Component.MSBuild \
+    --add Microsoft.VisualStudio.Component.Windows10SDK.18362 \
+    --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64	\
+ || IF "%ERRORLEVEL%"=="3010" EXIT 0
+
+RUN curl -fSLo rustup-init.exe https://win.rustup.rs/x86_64
+RUN start /w rustup-init.exe -y -v && echo "Error level is %ERRORLEVEL%"
+RUN del rustup-init.exe
+
+RUN setx /M PATH "C:\Users\ContainerAdministrator\.cargo\bin;\flutter\bin:%PATH%"
+
+RUN powershell -command "Expand-Archive -Path flutter.zip -DestinationPath ."
+RUN del flutter.zip
+RUN del vs_buildtools.exe
