@@ -455,6 +455,29 @@ class NativeLibrary {
   late final _dart_get_taddr_balance _get_taddr_balance =
       _get_taddr_balance_ptr.asFunction<_dart_get_taddr_balance>();
 
+  CResult_____c_char transfer_pools(
+    int coin,
+    int account,
+    int from_pool,
+    int to_pool,
+    int amount,
+    int confirmations,
+  ) {
+    return _transfer_pools(
+      coin,
+      account,
+      from_pool,
+      to_pool,
+      amount,
+      confirmations,
+    );
+  }
+
+  late final _transfer_pools_ptr =
+      _lookup<ffi.NativeFunction<_c_transfer_pools>>('transfer_pools');
+  late final _dart_transfer_pools _transfer_pools =
+      _transfer_pools_ptr.asFunction<_dart_transfer_pools>();
+
   CResult_____c_char shield_taddr(
     int coin,
     int account,
@@ -525,13 +548,13 @@ class NativeLibrary {
   CResult_____c_char sign(
     int coin,
     int account,
-    ffi.Pointer<ffi.Int8> tx,
+    ffi.Pointer<ffi.Int8> tx_plan,
     int _port,
   ) {
     return _sign(
       coin,
       account,
-      tx,
+      tx_plan,
       _port,
     );
   }
@@ -1231,6 +1254,24 @@ typedef _dart_get_taddr_balance = CResult_u64 Function(
   int id_account,
 );
 
+typedef _c_transfer_pools = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+  ffi.Uint8 from_pool,
+  ffi.Uint8 to_pool,
+  ffi.Uint64 amount,
+  ffi.Uint32 confirmations,
+);
+
+typedef _dart_transfer_pools = CResult_____c_char Function(
+  int coin,
+  int account,
+  int from_pool,
+  int to_pool,
+  int amount,
+  int confirmations,
+);
+
 typedef _c_shield_taddr = CResult_____c_char Function(
   ffi.Uint8 coin,
   ffi.Uint32 account,
@@ -1278,14 +1319,14 @@ typedef _dart_transaction_report = CResult_____c_char Function(
 typedef _c_sign = CResult_____c_char Function(
   ffi.Uint8 coin,
   ffi.Uint32 account,
-  ffi.Pointer<ffi.Int8> tx,
+  ffi.Pointer<ffi.Int8> tx_plan,
   ffi.Int64 _port,
 );
 
 typedef _dart_sign = CResult_____c_char Function(
   int coin,
   int account,
-  ffi.Pointer<ffi.Int8> tx,
+  ffi.Pointer<ffi.Int8> tx_plan,
   int _port,
 );
 

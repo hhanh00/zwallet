@@ -43,6 +43,16 @@ class DbReader {
     balances.update(balance, shieldedBalance, unconfirmedSpentBalance, underConfirmedBalance, excludedBalance);
   }
 
+  Future<int> getSaplingBalance() async {
+    return Sqflite.firstIntValue(await db.rawQuery("SELECT SUM(value) FROM received_notes WHERE account = ?1 AND spent IS NULL AND orchard = 0",
+      [id])) ?? 0;
+  }
+
+  Future<int> getOrchardBalance() async {
+    return Sqflite.firstIntValue(await db.rawQuery("SELECT SUM(value) FROM received_notes WHERE account = ?1 AND spent IS NULL AND orchard = 1",
+      [id])) ?? 0;
+  }
+
   Future<List<Note>> getNotes() async {
     final List<Map> res = await db.rawQuery(
         "SELECT n.id_note, n.height, n.value, t.timestamp, n.orchard, n.excluded, n.spent FROM received_notes n, transactions t "

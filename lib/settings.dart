@@ -165,6 +165,12 @@ class SettingsState extends State<SettingsPage>
                           ]),
 
                           if (!simpleMode)
+                            FormBuilderCheckbox(
+                                name: 'use_millis',
+                                title: Text(s.roundToMillis),
+                                initialValue: settings.useMillis,
+                                onSaved: _onUseMillis),
+                          if (!simpleMode)
                             FormBuilderTextField(
                                 decoration: InputDecoration(
                                     labelText: s
@@ -408,6 +414,10 @@ class SettingsState extends State<SettingsPage>
 
   _onGetTx(v) {
     settings.updateGetTx(v);
+  }
+
+  _onUseMillis(v) {
+    settings.setUseMillis(v);
   }
 
   _onMemo(v) {

@@ -130,6 +130,7 @@ abstract class _ActiveAccount with Store {
   Balances balances = Balances();
   @observable String taddress = "";
   int tbalance = 0;
+  PoolBalances poolBalances = PoolBalances();
 
   @observable List<Note> notes = [];
   @observable List<Tx> txs = [];
@@ -305,6 +306,8 @@ abstract class _ActiveAccount with Store {
   Future<void> update() async {
     await updateBalances();
     updateTBalance();
+    await poolBalances.update();
+
     final dbr = DbReader(coin, id);
     notes = await dbr.getNotes();
     txs = await dbr.getTxs();
@@ -493,4 +496,26 @@ class AccountId {
   final int coin;
   final int id;
   AccountId(this.coin, this.id);
+}
+
+class PoolBalances = _PoolBalances with _$PoolBalances;
+
+abstract class _PoolBalances with Store {
+  @observable int transparent = 0;
+  @observable int sapling = 0;
+  @observable int orchard = 0;
+
+  Future<void> update() async {
+    final dbr = DbReader(active.coin, active.id);
+    final saplingBalance = await dbr.getSaplingBalance();
+    final orchardBalance = await dbr.getOrchardBalance();
+    _update(active.tbalance, saplingBalance, orchardBalance);
+  }
+
+  @action
+  _update(int t, int s, int o) {
+    transparent = t;
+    sapling = s;
+    orchard = o;
+  }
 }

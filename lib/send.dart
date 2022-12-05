@@ -48,8 +48,7 @@ class SendState extends State<SendPage> {
   final _subjectController = TextEditingController();
   var _memoInitialized = false;
   final _maxAmountController = TextEditingController(text: zero);
-  var _isExpanded = false;
-  var _useMillis = true;
+  bool _max = false;
   ReactionDisposer? _newBlockAutorunDispose;
   final _fee = DEFAULT_FEE;
   var _usedBalance = 0;
@@ -170,7 +169,7 @@ class SendState extends State<SendPage> {
                           child:
                               TextButton(child: Text(s.max), onPressed: _onMax),
                           initialValue: _initialAmount,
-                          useMillis: _useMillis,
+                          useMillis: settings.useMillis && !_max,
                           spendable: spendable),
                       if (!simpleMode) BalanceTable(_sBalance, _tBalance,
                           _excludedBalance, _underConfirmedBalance, change, _usedBalance, _fee),
@@ -200,37 +199,6 @@ class SendState extends State<SendPage> {
                         keyboardType: TextInputType.multiline,
                         controller: _memoController,
                       )]))),
-                      if (!simpleMode) ExpansionPanelList(
-                          expansionCallback: (_, isExpanded) {
-                            setState(() {
-                              _isExpanded = !isExpanded;
-                            });
-                          },
-                          children: [
-                            ExpansionPanel(
-                              headerBuilder: (_, __) =>
-                                  ListTile(title: Text(s.advancedOptions)),
-                              body: Column(children: [
-                                CheckboxListTile(
-                                    title: Text(s.roundToMillis),
-                                    value: _useMillis,
-                                    onChanged: _setUseMillis),
-                                ListTile(
-                                    title: TextFormField(
-                                  decoration: InputDecoration(
-                                      labelText: s.maxAmountPerNote),
-                                  keyboardType: TextInputType.number,
-                                  controller: _maxAmountController,
-                                  inputFormatters: [
-                                    makeInputFormatter(amountInput?.useMillis)
-                                  ],
-                                  validator: _checkMaxAmountPerNote,
-                                  onSaved: _onSavedMaxAmountPerNote,
-                                )),
-                              ]),
-                              isExpanded: _isExpanded,
-                            )
-                          ]),
                       Padding(padding: EdgeInsets.all(8)),
                       ButtonBar(
                           children: confirmButtons(context, _onSend,
@@ -266,7 +234,7 @@ class SendState extends State<SendPage> {
 
   void _onMax() {
     setState(() {
-      _useMillis = false;
+      _max = true;
       amountInput?.setAmount(spendable);
     });
   }
@@ -276,14 +244,6 @@ class SendState extends State<SendPage> {
     if (code != null) {
       _setPaymentURI(code);
     }
-  }
-
-  void _setUseMillis(bool? vv) {
-    final v = vv ?? false;
-    amountInput?.setMillis(v);
-    setState(() {
-      _useMillis = v;
-    });
   }
 
   void _setPaymentURI(String uriOrAddress) {

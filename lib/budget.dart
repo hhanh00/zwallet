@@ -229,33 +229,9 @@ class BudgetChartState extends State<BudgetChart> {
         builder: (context) => Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              BudgetBar(active.spendings),
+              HorizontalBarChart(active.spendings.map((s) => s.amount).toList()),
               BudgetTable(active.spendings)
             ])));
-  }
-}
-
-class BudgetBar extends StatelessWidget {
-  final List<Spending> spendings;
-
-  BudgetBar(this.spendings);
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = ColorPalette.adjacent(Theme.of(context).primaryColor,
-        numberOfColors: max(spendings.length, 1));
-
-    final sum = spendings.fold<double>(0, ((acc, s) => acc + s.amount));
-    final stacks = spendings.asMap().entries.map((e) {
-      final i = e.key;
-      final color = palette[i];
-      final weight = (spendings[i].amount / sum * 100.0).ceil();
-      return Expanded(child: Container(color: color, height: 10), flex: weight);
-    }).toList();
-
-    return IntrinsicHeight(
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch, children: stacks));
   }
 }
 
