@@ -182,7 +182,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             PopupMenuItem(child: Text(s.accounts), value: "Accounts"),
             PopupMenuItem(child: Text(s.backup), value: "Backup"),
             PopupMenuItem(child: Text(rescanMsg), value: "Rescan"),
-            PopupMenuItem(child: Text(s.pools), value: "Pools"),
+            if (!simpleMode) PopupMenuItem(child: Text(s.pools), value: "Pools"),
             if (!simpleMode)
               PopupMenuItem(child:
               PopupMenuButton(

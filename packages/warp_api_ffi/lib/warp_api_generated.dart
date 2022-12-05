@@ -461,6 +461,7 @@ class NativeLibrary {
     int from_pool,
     int to_pool,
     int amount,
+    ffi.Pointer<ffi.Int8> memo,
     int confirmations,
   ) {
     return _transfer_pools(
@@ -469,6 +470,7 @@ class NativeLibrary {
       from_pool,
       to_pool,
       amount,
+      memo,
       confirmations,
     );
   }
@@ -1260,6 +1262,7 @@ typedef _c_transfer_pools = CResult_____c_char Function(
   ffi.Uint8 from_pool,
   ffi.Uint8 to_pool,
   ffi.Uint64 amount,
+  ffi.Pointer<ffi.Int8> memo,
   ffi.Uint32 confirmations,
 );
 
@@ -1269,6 +1272,7 @@ typedef _dart_transfer_pools = CResult_____c_char Function(
   int from_pool,
   int to_pool,
   int amount,
+  ffi.Pointer<ffi.Int8> memo,
   int confirmations,
 );
 
