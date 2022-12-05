@@ -17,6 +17,8 @@ class PoolsState extends State<PoolsPage> {
   int _toPool = 1;
   final _amountKey = GlobalKey<DualMoneyInputState>();
   var _maxAmountController = TextEditingController(text: amountToString(0, precision(settings.useMillis)));
+  var _memoController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
@@ -66,6 +68,14 @@ class PoolsState extends State<PoolsPage> {
             Text(s.maxSpendableAmount(amountToString(_spendable, MAX_PRECISION), active.coinDef.ticker)),
             Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
             TextFormField(
+                decoration:
+                InputDecoration(labelText: s.memo),
+                minLines: 4,
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                controller: _memoController),
+            Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
+            TextFormField(
               decoration: InputDecoration(
               labelText: s.maxAmountPerNote),
               keyboardType: TextInputType.number,
@@ -101,7 +111,8 @@ class PoolsState extends State<PoolsPage> {
           amount, MAX_PRECISION)}");
       final splitAmount = parseNumber(_maxAmountController.text);
       print("Split: $splitAmount");
-      final txPlan = await WarpApi.transferPools(active.coin, active.id, 1 << _fromPool, 1 << _toPool, amount, settings.anchorOffset);
+      final txPlan = await WarpApi.transferPools(active.coin, active.id, 1 << _fromPool, 1 << _toPool, amount,
+          _memoController.text, settings.anchorOffset);
       Navigator.of(context).pushReplacementNamed('/txplan', arguments: txPlan);
     }
   }

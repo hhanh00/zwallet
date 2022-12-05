@@ -1,10 +1,7 @@
-import 'dart:convert';
 import 'dart:ui';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'accounts.dart';
@@ -36,7 +33,6 @@ class SendState extends State<SendPage> {
   final _amountKey = GlobalKey<DualMoneyInputState>();
   var _initialAmount = 0;
   var _address = "";
-  var _maxAmountPerNote = Decimal.zero;
   var _sBalance = 0;
   var _tBalance = 0;
   var _excludedBalance = 0;
@@ -47,7 +43,6 @@ class SendState extends State<SendPage> {
   final _memoController = TextEditingController();
   final _subjectController = TextEditingController();
   var _memoInitialized = false;
-  final _maxAmountController = TextEditingController(text: zero);
   bool _max = false;
   ReactionDisposer? _newBlockAutorunDispose;
   final _fee = DEFAULT_FEE;
@@ -62,7 +57,6 @@ class SendState extends State<SendPage> {
     if (draftRecipient != null) {
       _addressController.text = draftRecipient.address;
       _initialAmount = draftRecipient.amount;
-      _maxAmountController.text = NumberFormat.currency().format(draftRecipient.max_amount_per_note);
       _memoController.text = draftRecipient.memo;
       _replyTo = draftRecipient.reply_to;
       _subjectController.text = draftRecipient.subject;
@@ -88,7 +82,6 @@ class SendState extends State<SendPage> {
     _newBlockAutorunDispose = autorun((_) async {
       final _ = active.dataEpoch;
       final balances = active.balances;
-      if (balances == null) return;
       final sBalance = balances.shieldedBalance;
       final tBalance = active.tbalance;
       final excludedBalance = balances.excludedBalance;
@@ -212,6 +205,7 @@ class SendState extends State<SendPage> {
     if (c.isNotEmpty) return ContactSuggestion(c.first);
     final a = accounts.list.where((a) => a.name == v);
     if (a.isNotEmpty) return AccountSuggestion(a.first);
+    return null;
   }
 
   String? _checkAddress(String? v) {
@@ -220,15 +214,6 @@ class SendState extends State<SendPage> {
     final suggestion = getSuggestion(v);
     if (suggestion != null) return null;
     if (!WarpApi.validAddress(active.coin, v)) return s.invalidAddress;
-    return null;
-  }
-
-  String? _checkMaxAmountPerNote(String? vs) {
-    final s = S.of(context);
-    if (vs == null) return s.amountMustBeANumber;
-    if (!checkNumber(vs)) return s.amountMustBeANumber;
-    final v = parseNumber(vs);
-    if (v < 0.0) return s.amountMustBePositive;
     return null;
   }
 
@@ -272,20 +257,13 @@ class SendState extends State<SendPage> {
     }
   }
 
-  void _onSavedMaxAmountPerNote(vs) {
-    final v = parseNumber(vs);
-    _maxAmountPerNote = Decimal.parse(v.toString());
-  }
-
   void _onSend() async {
-    final s = S.of(context);
     final form = _formKey.currentState;
     if (form == null) return;
 
     if (form.validate()) {
       form.save();
       final amount = amountInput?.amount ?? 0;
-      int maxAmountPerNote = (_maxAmountPerNote * ZECUNIT_DECIMAL).toBigInt().toInt();
       final memo = _memoController.text;
       final subject = _subjectController.text;
       final recipient = Recipient(
@@ -294,7 +272,7 @@ class SendState extends State<SendPage> {
         _replyTo,
         subject,
         memo,
-        maxAmountPerNote,
+        0,
       );
       active.setDraftRecipient(recipient);
 
@@ -340,18 +318,6 @@ class BalanceTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tBalanceLabel = Text.rich(TextSpan(children: [
-      TextSpan(text: S.of(context).unshieldedBalance + ' '),
-      WidgetSpan(
-        child: GestureDetector(
-          child: Icon(Icons.shield_outlined),
-          onTap: () {
-            shieldTAddr(context);
-          },
-        ),
-      )
-    ]));
-
     return Container(
         decoration: BoxDecoration(
             border: Border.all(color: theme.dividerColor, width: 1),
