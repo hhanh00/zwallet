@@ -2771,6 +2771,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Pool Transfer`
+  String get pools {
+    return Intl.message(
+      'Pool Transfer',
+      name: 'pools',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `From Pool`
+  String get fromPool {
+    return Intl.message(
+      'From Pool',
+      name: 'fromPool',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To Pool`
+  String get toPool {
+    return Intl.message(
+      'To Pool',
+      name: 'toPool',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Max spendable: {amount} {ticker}`
+  String maxSpendableAmount(Object amount, Object ticker) {
+    return Intl.message(
+      'Max spendable: $amount $ticker',
+      name: 'maxSpendableAmount',
+      desc: '',
+      args: [amount, ticker],
+    );
+  }
+
+  /// `Split Notes`
+  String get splitNotes {
+    return Intl.message(
+      'Split Notes',
+      name: 'splitNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transfer`
+  String get transfer {
+    return Intl.message(
+      'Transfer',
+      name: 'transfer',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

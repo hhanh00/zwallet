@@ -45,6 +45,7 @@ import 'message.dart';
 import 'multisend.dart';
 // import 'multisign.dart';
 import 'payment_uri.dart';
+import 'pools.dart';
 import 'rescan.dart';
 import 'reset.dart';
 import 'scantaddr.dart';
@@ -259,6 +260,7 @@ void main() {
                   final accountId2 = accountId ?? active.toId();
                   return BackupPage(accountId2.coin, accountId2.id);
                 },
+                '/pools': (context) => PoolsPage(),
                 '/multipay': (context) => MultiPayPage(),
                 '/edit_theme': (context) =>
                     ThemeEditorPage(onSaved: settings.updateCustomThemeColors),

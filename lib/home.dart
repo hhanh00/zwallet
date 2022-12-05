@@ -182,6 +182,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             PopupMenuItem(child: Text(s.accounts), value: "Accounts"),
             PopupMenuItem(child: Text(s.backup), value: "Backup"),
             PopupMenuItem(child: Text(rescanMsg), value: "Rescan"),
+            PopupMenuItem(child: Text(s.pools), value: "Pools"),
             if (!simpleMode)
               PopupMenuItem(child:
               PopupMenuButton(
@@ -260,6 +261,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         break;
       case "Rescan":
         _rescan();
+        break;
+      case "Pools":
+        Navigator.of(context).pushNamed('/pools');
         break;
       case "Cold":
         _cold();

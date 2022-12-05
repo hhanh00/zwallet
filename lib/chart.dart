@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_palette/flutter_palette.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:k_chart/k_chart_widget.dart';
 import 'package:k_chart/flutter_k_chart.dart';
@@ -25,5 +28,30 @@ class LineChartTimeSeries extends StatelessWidget {
       secondaryState: SecondaryState.NONE,
       )
     );
+  }
+}
+
+class HorizontalBarChart extends StatelessWidget {
+  final List<double> values;
+  final double height;
+
+  HorizontalBarChart(this.values, { this.height: 10 });
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = ColorPalette.adjacent(Theme.of(context).primaryColor,
+        numberOfColors: max(values.length, 1));
+
+    final sum = values.fold<double>(0, ((acc, v) => acc + v));
+    final stacks = values.asMap().entries.map((e) {
+      final i = e.key;
+      final color = palette[i];
+      final weight = (values[i] / sum * 100.0).ceil();
+      return Expanded(child: Container(color: color, height: height), flex: weight);
+    }).toList();
+
+    return IntrinsicHeight(
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch, children: stacks));
   }
 }

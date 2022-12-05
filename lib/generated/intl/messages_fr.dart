@@ -43,35 +43,37 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m8(message) => "QR code invalide: ${message}";
 
-  static String m10(ticker) => "Recevoir ${ticker}";
+  static String m9(amount, ticker) => "Max spendable: ${amount} ${ticker}";
 
-  static String m11(amount, ticker) => "Reçu ${amount} {}";
+  static String m11(ticker) => "Recevoir ${ticker}";
 
-  static String m12(height) => "Parcours demandé à partir de ${height}...";
+  static String m12(amount, ticker) => "Reçu ${amount} {}";
 
-  static String m13(ticker) => "Envoyer ${ticker}";
+  static String m13(height) => "Parcours demandé à partir de ${height}...";
 
-  static String m14(ticker) => "Envoyer ${ticker} à...";
+  static String m14(ticker) => "Envoyer ${ticker}";
 
-  static String m15(app) => "Envoyé via ${app}";
+  static String m15(ticker) => "Envoyer ${ticker} à...";
 
-  static String m16(amount, ticker, count) =>
+  static String m16(app) => "Envoyé via ${app}";
+
+  static String m17(amount, ticker, count) =>
       "Envoi d\'un total de ${amount} ${ticker} à ${count} destinataires";
 
-  static String m17(aZEC, ticker, address) =>
+  static String m18(aZEC, ticker, address) =>
       "Envoi de ${aZEC} ${ticker} à ${address}";
 
-  static String m18(amount, ticker) => "Envoyé ${amount} {}";
+  static String m19(amount, ticker) => "Envoyé ${amount} {}";
 
-  static String m19(index, name) => "Sous Compte ${index} de ${name}";
+  static String m20(index, name) => "Sous Compte ${index} de ${name}";
 
-  static String m20(name) => "Sous Compte de ${name}";
+  static String m21(name) => "Sous Compte de ${name}";
 
-  static String m21(text) => "${text} copié au presse-papier";
+  static String m22(text) => "${text} copié au presse-papier";
 
-  static String m22(txid) => "ID de tx: ${txid}";
+  static String m23(txid) => "ID de tx: ${txid}";
 
-  static String m23(currency) => "Utiliser ${currency}";
+  static String m24(currency) => "Utiliser ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -224,6 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "excludedNotes": MessageLookupByLibrary.simpleMessage("Billets exclus"),
         "expert": MessageLookupByLibrary.simpleMessage("Expert"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("File saved"),
+        "fromPool": MessageLookupByLibrary.simpleMessage("From Pool"),
         "fromto": MessageLookupByLibrary.simpleMessage("Env/Dest."),
         "fullBackup":
             MessageLookupByLibrary.simpleMessage("Sauvegarde complète"),
@@ -266,6 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Montant maximum par note"),
+        "maxSpendableAmount": m9,
         "memo": MessageLookupByLibrary.simpleMessage("Mémo"),
         "message": MessageLookupByLibrary.simpleMessage("Message"),
         "messages": MessageLookupByLibrary.simpleMessage("Messages"),
@@ -324,6 +328,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pnl": MessageLookupByLibrary.simpleMessage("P/P"),
         "pnlHistory":
             MessageLookupByLibrary.simpleMessage("Historique des P/P"),
+        "pools": MessageLookupByLibrary.simpleMessage("Pools"),
         "preparingTransaction": MessageLookupByLibrary.simpleMessage(
             "Préparation de la transaction..."),
         "price": MessageLookupByLibrary.simpleMessage("Prix"),
@@ -339,17 +344,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "rawTransaction":
             MessageLookupByLibrary.simpleMessage("Transaction Signée"),
         "realized": MessageLookupByLibrary.simpleMessage("Réalisé"),
-        "receive": m10,
+        "receive": m11,
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Recevoir un payment"),
-        "received": m11,
+        "received": m12,
         "recipient": MessageLookupByLibrary.simpleMessage("Destinataire"),
         "reply": MessageLookupByLibrary.simpleMessage("Répondre"),
         "rescan": MessageLookupByLibrary.simpleMessage("Parcourir à nouveau"),
         "rescanFrom":
             MessageLookupByLibrary.simpleMessage("Reparcourir à partir de...?"),
         "rescanNeeded": MessageLookupByLibrary.simpleMessage("Scan nécessaire"),
-        "rescanRequested": m12,
+        "rescanRequested": m13,
         "rescanning":
             MessageLookupByLibrary.simpleMessage("Rescannage en cours..."),
         "reset": MessageLookupByLibrary.simpleMessage("RESET"),
@@ -377,12 +382,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Sélectionnez les billets à EXCLURE des paiements"),
         "send": MessageLookupByLibrary.simpleMessage("Envoyer"),
-        "sendCointicker": m13,
-        "sendCointickerTo": m14,
-        "sendFrom": m15,
+        "sendCointicker": m14,
+        "sendCointickerTo": m15,
+        "sendFrom": m16,
         "sender": MessageLookupByLibrary.simpleMessage("Envoyeur"),
-        "sendingATotalOfAmountCointickerToCountRecipients": m16,
-        "sendingAzecCointickerToAddress": m17,
+        "sendingATotalOfAmountCointickerToCountRecipients": m17,
+        "sendingAzecCointickerToAddress": m18,
         "server": MessageLookupByLibrary.simpleMessage("Serveur"),
         "set": MessageLookupByLibrary.simpleMessage("Utiliser"),
         "settings": MessageLookupByLibrary.simpleMessage("Paramètres"),
@@ -404,10 +409,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "spendable": MessageLookupByLibrary.simpleMessage("Dépensable"),
         "spendableBalance":
             MessageLookupByLibrary.simpleMessage("Montant dépensable"),
-        "spent": m18,
+        "spent": m19,
         "splitAccount": MessageLookupByLibrary.simpleMessage("Split Account"),
-        "subAccountIndexOf": m19,
-        "subAccountOf": m20,
+        "splitNotes": MessageLookupByLibrary.simpleMessage("Split Notes"),
+        "subAccountIndexOf": m20,
+        "subAccountOf": m21,
         "subject": MessageLookupByLibrary.simpleMessage("Sujet"),
         "syncPaused": MessageLookupByLibrary.simpleMessage("Sync en Pause"),
         "synching":
@@ -426,7 +432,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Appuyez sur le code QR pour l\'adresse transparente"),
         "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
             "Presser sur une Transaction pour plus de details"),
-        "textCopiedToClipboard": m21,
+        "textCopiedToClipboard": m22,
         "thePrivateWalletMessenger": MessageLookupByLibrary.simpleMessage(
             "Le Portefeuille et Messagerie Privé"),
         "theme": MessageLookupByLibrary.simpleMessage("Thème"),
@@ -440,6 +446,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "toMakeAContactSendThemAMemoWithContact":
             MessageLookupByLibrary.simpleMessage(
                 "Pour établir un contact, envoyez-lui un mémo avec Contact:"),
+        "toPool": MessageLookupByLibrary.simpleMessage("To Pool"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
         "totalBalance": MessageLookupByLibrary.simpleMessage("Solde Total"),
         "tradingChartRange": MessageLookupByLibrary.simpleMessage(
@@ -450,7 +457,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "transactionHistory":
             MessageLookupByLibrary.simpleMessage("Historique des Transactions"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
-        "txId": m22,
+        "transfer": MessageLookupByLibrary.simpleMessage("Transfer"),
+        "txId": m23,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Pas assez de confs"),
         "unshielded": MessageLookupByLibrary.simpleMessage("Transparent"),
@@ -463,7 +471,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "useGpu": MessageLookupByLibrary.simpleMessage("Utiliser le GPU"),
         "useQrForOfflineSigning": MessageLookupByLibrary.simpleMessage(
             "Utiliser des QR pour signer sans connexion"),
-        "useSettingscurrency": m23,
+        "useSettingscurrency": m24,
         "useTransparentBalance": MessageLookupByLibrary.simpleMessage(
             "Utiliser le Solde Transparent"),
         "useUa": MessageLookupByLibrary.simpleMessage("Utiliser UA"),

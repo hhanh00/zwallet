@@ -268,5 +268,11 @@
   "set": "Set",
   "encryptionKey": "Encryption Key",
   "dbImportSuccessful": "Db Import Successful",
-  "databaseUpdatedPleaseRestartTheApp": "Database updated. Please restart the app."
+  "databaseUpdatedPleaseRestartTheApp": "Database updated. Please restart the app.",
+  "pools": "Pools",
+  "fromPool": "From Pool",
+  "toPool": "To Pool",
+  "maxSpendableAmount": "Max spendable: {amount} {ticker}",
+  "splitNotes": "Split Notes",
+  "transfer": "Transfer"
 }

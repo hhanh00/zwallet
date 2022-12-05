@@ -268,5 +268,11 @@
   "set": "Utiliser",
   "encryptionKey": "Clé Publique",
   "dbImportSuccessful": "Sauvegarde importée",
-  "databaseUpdatedPleaseRestartTheApp": "BD changée. Redémarrer l'app SVP"
+  "databaseUpdatedPleaseRestartTheApp": "BD changée. Redémarrer l'app SVP",
+  "pools": "Pools",
+  "fromPool": "From Pool",
+  "toPool": "To Pool",
+  "maxSpendableAmount": "Max spendable: {amount} {ticker}",
+  "splitNotes": "Split Notes",
+  "transfer": "Transfer"
 }

@@ -210,6 +210,12 @@ class WarpApi {
     return balance;
   }
 
+  static Future<String> transferPools(int coin, int account, int fromPool, int toPool,
+      int amount, int anchorOffset) async {
+    final txId = await compute(transferPoolsIsolateFn, TransferPoolsParams(coin, account, fromPool, toPool, amount, anchorOffset));
+    return txId;
+  }
+
   static Future<String> shieldTAddr(int coin, int account, int anchorOffset) async {
     final txId = await compute(shieldTAddrIsolateFn, ShieldTAddrParams(coin, account, anchorOffset));
     return txId;
@@ -421,6 +427,12 @@ int getLatestHeightIsolateFn(Null n) {
   return unwrapResultU32(warp_api_lib.get_latest_height());
 }
 
+String transferPoolsIsolateFn(TransferPoolsParams params) {
+  final txId = warp_api_lib.transfer_pools(params.coin, params.account, params.fromPool, params.toPool,
+      params.amount, params.anchorOffset);
+  return unwrapResultString(txId);
+}
+
 String shieldTAddrIsolateFn(ShieldTAddrParams params) {
   final txId = warp_api_lib.shield_taddr(params.coin, params.account, params.anchorOffset);
   return unwrapResultString(txId);
@@ -482,6 +494,17 @@ class SignOnlyParams {
   final SendPort port;
 
   SignOnlyParams(this.coin, this.account, this.tx, this.port);
+}
+
+class TransferPoolsParams {
+  final int coin;
+  final int account;
+  final int fromPool;
+  final int toPool;
+  final int amount;
+  final int anchorOffset;
+
+  TransferPoolsParams(this.coin, this.account, this.fromPool, this.toPool, this.amount, this.anchorOffset);
 }
 
 class ShieldTAddrParams {
