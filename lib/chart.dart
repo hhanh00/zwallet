@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_palette/flutter_palette.dart';
+import 'package:intl/intl.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:k_chart/k_chart_widget.dart';
 import 'package:k_chart/flutter_k_chart.dart';
@@ -35,30 +36,32 @@ class HorizontalBarChart extends StatelessWidget {
   final List<double> values;
   final double height;
 
-  HorizontalBarChart(this.values, { this.height: 10 });
+  HorizontalBarChart(this.values, { this.height: 32 });
 
   @override
   Widget build(BuildContext context) {
-    final palette = ColorPalette.polyad(
-      Theme.of(context).primaryColor,
-      numberOfColors: max(values.length, 1),
-      hueVariability: 15,
-      saturationVariability: 10,
-      brightnessVariability: 10,
-    );
+    final palette = getPalette(Theme.of(context).primaryColor, values.length);
 
     final sum = max(values.fold<double>(0, ((acc, v) => acc + v)), 1);
     final stacks = values.asMap().entries.map((e) {
       final i = e.key;
       final color = palette[i];
-      final v = values[i].toStringAsPrecision(3);
+      final v = NumberFormat.compact().format(values[i]);
       return Flexible(child: Container(child:
         Center(child: Text(v, textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
         color: color, height: height), flex: min((values[i] / sum * 100).round(), 1));
     }).toList();
 
     return IntrinsicHeight(
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch, children: stacks));
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch, children: stacks));
   }
 }
+
+ColorPalette getPalette(Color color, int n) => ColorPalette.polyad(
+  color,
+  numberOfColors: max(n, 1),
+  hueVariability: 15,
+  saturationVariability: 10,
+  brightnessVariability: 10,
+);
