@@ -243,8 +243,7 @@ class BudgetTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final palette = ColorPalette.adjacent(Theme.of(context).primaryColor,
-        numberOfColors: max(spendings.length, 1));
+    final palette = getPalette(Theme.of(context).primaryColor, spendings.length);
     final rows = spendings.asMap().entries.map((e) {
       final style = TextStyle(color: palette[e.key], fontFeatures: [FontFeature.tabularFigures()]);
       final address = e.value.address;
@@ -253,10 +252,9 @@ class BudgetTable extends StatelessWidget {
       return DataRow(cells: [
         DataCell(
           GestureDetector(onTap: () async {
-        await Clipboard.setData(ClipboardData(text: address));
-        showSnackBar(S.of(context).addressCopiedToClipboard);
-      }, child:
-            Text(addressOrContact, style: style))),
+            await Clipboard.setData(ClipboardData(text: address));
+            showSnackBar(S.of(context).addressCopiedToClipboard);
+            }, child: Text(addressOrContact, style: style))),
         DataCell(Text(decimalFormat(e.value.amount, 8), style: style)),
       ]);
     }).toList();
