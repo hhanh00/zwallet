@@ -58,7 +58,7 @@ class TxPlanPage extends StatelessWidget {
                   ListTile(title: Text('Net Orchard Change'), trailing: Text(
                       amountToString(report.net_orchard, MAX_PRECISION))),
                   ListTile(title: Text('Fee'), trailing: Text(amountToString(report.fee, MAX_PRECISION))),
-                  privacyToString(report.privacy_level, theme.textTheme.titleMedium!)!,
+                  privacyToString(report.privacy_level)!,
                   ButtonBar(children: confirmButtons(context, _onSend, okLabel: 'Send')),
                 ]))));
   }
@@ -144,11 +144,19 @@ String poolToString(int pool) {
   return "Orchard";
 }
 
-Widget? privacyToString(int privacyLevel, TextStyle baseStyle) {
+Widget? privacyToString(int privacyLevel) {
   switch (privacyLevel) {
-    case 0: return Text("PRIVACY: VERY LOW", style: baseStyle.copyWith(color: Colors.red));
-    case 1: return Text("PRIVACY: LOW", style: baseStyle.copyWith(color: Colors.orange));
-    case 2: return Text("PRIVACY: MEDIUM", style: baseStyle.copyWith(color: Colors.yellow));
-    case 3: return Text("PRIVACY: HIGH", style: baseStyle.copyWith(color: Colors.green));
+    case 0: return getColoredButton("PRIVACY: VERY LOW", Colors.red);
+    case 1: return getColoredButton("PRIVACY: LOW", Colors.orange);
+    case 2: return getColoredButton("PRIVACY: MEDIUM", Colors.yellow);
+    case 3: return getColoredButton("PRIVACY: HIGH", Colors.green);
   }
+}
+
+ElevatedButton getColoredButton(String text, Color color) {
+  var foregroundColor = color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+
+  return ElevatedButton(onPressed: null, child: Text(text), style:
+  ElevatedButton.styleFrom(
+      disabledBackgroundColor: color, disabledForegroundColor: foregroundColor));
 }
