@@ -22,12 +22,14 @@ class PoolsState extends State<PoolsPage> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    var pools = ['Transparent', 'Sapling'];
-    if (active.coinDef.supportsUA)
-      pools.add('Orchard');
+    var pools = ['Transparent', 'Sapling', 'Orchard'];
 
     final b = active.poolBalances;
     final balances = [b.transparent, b.sapling, b.orchard].map((v) => v / ZECUNIT).toList();
+    if (!active.coinDef.supportsUA) {
+      pools.removeAt(2);
+      balances.removeAt(2);
+    }
     return Scaffold(
       appBar: AppBar(title: Text(s.pools)),
       body: SingleChildScrollView(
@@ -111,9 +113,14 @@ class PoolsState extends State<PoolsPage> {
           amount, MAX_PRECISION)}");
       final splitAmount = parseNumber(_maxAmountController.text);
       print("Split: $splitAmount");
-      final txPlan = await WarpApi.transferPools(active.coin, active.id, 1 << _fromPool, 1 << _toPool, amount,
-          _memoController.text, settings.anchorOffset);
-      Navigator.of(context).pushReplacementNamed('/txplan', arguments: txPlan);
+      try {
+        final txPlan = await WarpApi.transferPools(active.coin, active.id, 1 << _fromPool, 1 << _toPool, amount,
+            _memoController.text, settings.anchorOffset);
+        Navigator.of(context).pushReplacementNamed('/txplan', arguments: txPlan);
+      }
+      on String catch (message) {
+        showSnackBar(message);
+      }
     }
   }
 }
