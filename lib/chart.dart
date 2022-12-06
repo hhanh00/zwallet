@@ -39,15 +39,22 @@ class HorizontalBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = ColorPalette.adjacent(Theme.of(context).primaryColor,
-        numberOfColors: max(values.length, 1));
+    final palette = ColorPalette.polyad(
+      Theme.of(context).primaryColor,
+      numberOfColors: max(values.length, 1),
+      hueVariability: 15,
+      saturationVariability: 10,
+      brightnessVariability: 10,
+    );
 
-    final sum = values.fold<double>(0, ((acc, v) => acc + v));
+    final sum = max(values.fold<double>(0, ((acc, v) => acc + v)), 1);
     final stacks = values.asMap().entries.map((e) {
       final i = e.key;
       final color = palette[i];
-      final weight = (values[i] / sum * 100.0).ceil();
-      return Expanded(child: Container(color: color, height: height), flex: weight);
+      final v = values[i].toStringAsPrecision(3);
+      return Flexible(child: Container(child:
+        Center(child: Text(v, textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
+        color: color, height: height), flex: min((values[i] / sum * 100).round(), 1));
     }).toList();
 
     return IntrinsicHeight(
