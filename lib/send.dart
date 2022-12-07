@@ -43,7 +43,6 @@ class SendState extends State<SendPage> {
   final _memoController = TextEditingController();
   final _subjectController = TextEditingController();
   var _memoInitialized = false;
-  bool _max = false;
   ReactionDisposer? _newBlockAutorunDispose;
   final _fee = DEFAULT_FEE;
   var _usedBalance = 0;
@@ -159,10 +158,8 @@ class SendState extends State<SendPage> {
                       ]),
                       DualMoneyInputWidget(
                           key: _amountKey,
-                          child:
-                              TextButton(child: Text(s.max), onPressed: _onMax),
+                          max: true,
                           initialValue: _initialAmount,
-                          useMillis: settings.useMillis && !_max,
                           spendable: spendable),
                       if (!simpleMode) BalanceTable(_sBalance, _tBalance,
                           _excludedBalance, _underConfirmedBalance, change, _usedBalance, _fee),
@@ -215,13 +212,6 @@ class SendState extends State<SendPage> {
     if (suggestion != null) return null;
     if (!WarpApi.validAddress(active.coin, v)) return s.invalidAddress;
     return null;
-  }
-
-  void _onMax() {
-    setState(() {
-      _max = true;
-      amountInput?.setAmount(spendable);
-    });
   }
 
   void _onScan() async {
@@ -318,20 +308,21 @@ class BalanceTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final s = S.of(context);
     return Container(
         decoration: BoxDecoration(
             border: Border.all(color: theme.dividerColor, width: 1),
             borderRadius: BorderRadius.circular(8)),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          BalanceRow(Text(S.of(context).totalBalance), totalBalance),
-          BalanceRow(Text(S.of(context).underConfirmed), -underConfirmed),
-          BalanceRow(Text(S.of(context).excludedNotes), -excludedBalance),
-          BalanceRow(Text(S.of(context).spendableBalance), spendable,
-              style: TextStyle(color: Theme.of(context).primaryColor)),
+          BalanceRow(Text(s.totalBalance), totalBalance),
+          BalanceRow(Text(s.underConfirmed), -underConfirmed),
+          BalanceRow(Text(s.excludedNotes), -excludedBalance),
+          BalanceRow(Text(s.spendableBalance), spendable,
+              style: TextStyle(color: theme.primaryColor)),
         ]));
   }
 
-  get totalBalance => sBalance + tBalance + change - used - fee;
+  get totalBalance => sBalance + tBalance + change - used;
 
   get underConfirmed => -underConfirmedBalance - change;
 

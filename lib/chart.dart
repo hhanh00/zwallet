@@ -42,14 +42,15 @@ class HorizontalBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = getPalette(Theme.of(context).primaryColor, values.length);
 
-    final sum = max(values.fold<double>(0, ((acc, v) => acc + v)), 1);
+    final sum = values.fold<double>(0, ((acc, v) => acc + v));
     final stacks = values.asMap().entries.map((e) {
       final i = e.key;
       final color = palette[i];
       final v = NumberFormat.compact().format(values[i]);
+      final flex = max((values[i] / sum * 100).round(), 1);
       return Flexible(child: Container(child:
         Center(child: Text(v, textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
-        color: color, height: height), flex: min((values[i] / sum * 100).round(), 1));
+        color: color, height: height), flex: flex);
     }).toList();
 
     return IntrinsicHeight(

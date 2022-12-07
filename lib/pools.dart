@@ -66,7 +66,7 @@ class PoolsState extends State<PoolsPage> {
                   });
                 }
             ),
-            DualMoneyInputWidget(key: _amountKey, initialValue: 0, spendable: _spendable, useMillis: settings.useMillis),
+            DualMoneyInputWidget(key: _amountKey, initialValue: 0, spendable: _spendable, max: true),
             Text(s.maxSpendableAmount(amountToString(_spendable, MAX_PRECISION), active.coinDef.ticker)),
             Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
             TextFormField(
@@ -95,9 +95,9 @@ class PoolsState extends State<PoolsPage> {
   int get _spendable {
     final b = active.poolBalances;
     switch (_fromPool) {
-      case 0: return b.transparent;
-      case 1: return b.sapling;
-      case 2: return b.orchard;
+      case 0: return b.transparent - DEFAULT_FEE;
+      case 1: return b.sapling - DEFAULT_FEE;
+      case 2: return b.orchard - DEFAULT_FEE;
     }
     return 0;
   }
