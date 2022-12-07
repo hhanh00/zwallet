@@ -5,12 +5,12 @@ import 'generated/l10n.dart';
 import 'main.dart';
 
 class DualMoneyInputWidget extends StatefulWidget {
-  final Widget? child;
   final int? spendable;
   final int? initialValue;
-  final bool useMillis;
+  final bool max;
 
-  DualMoneyInputWidget({Key? key, this.child, this.initialValue, this.spendable, this.useMillis = true}): super(key: key);
+  DualMoneyInputWidget({Key? key, this.initialValue, this.spendable,
+    this.max = false}): super(key: key);
 
   @override
   DualMoneyInputState createState() => DualMoneyInputState();
@@ -18,19 +18,20 @@ class DualMoneyInputWidget extends StatefulWidget {
 
 class DualMoneyInputState extends State<DualMoneyInputWidget> {
   static final zero = decimalFormat(0, 3);
-  var useMillis = true;
   var inputInCoin = true;
   var coinAmountController = TextEditingController(text: zero);
   var fiatAmountController = TextEditingController(text: zero);
   var amount = 0;
+  var useMax = false;
 
   ReactionDisposer? priceAutorunDispose;
+
+  bool get useMillis => settings.useMillis && !useMax;
 
   @override
   void initState() {
     super.initState();
     final initialValue = widget.initialValue ?? 0;
-    useMillis = widget.useMillis;
     final amount = amountToString(initialValue, precision(useMillis));
     coinAmountController.text = amount;
     _updateFiatAmount();
@@ -49,7 +50,6 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final child = widget.child;
     return Column(children: <Widget>[
         Row(children: [
           Expanded(
@@ -70,7 +70,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
                 onChanged: (_) => _updateFiatAmount(),
                 onSaved: _onAmount,
               )),
-          if (child != null) child,
+          if (widget.max) TextButton(child: Text(s.max), onPressed: _onMax),
         ]),
         Row(children: [
           Expanded(
@@ -95,23 +95,26 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
 
   void clear() {
     setState(() {
-      useMillis = true;
+      useMax = false;
       coinAmountController.text = zero;
       fiatAmountController.text = zero;
     });
   }
 
-  void setMillis(bool useMillis) {
+  void setAmount(int amount) {
     setState(() {
-      this.useMillis = useMillis;
+      coinAmountController.text = amountToString(amount, MAX_PRECISION);
+      _updateFiatAmount();
     });
   }
 
-  void setAmount(int amount) {
+  void _onMax() {
     setState(() {
-      useMillis = false;
-      coinAmountController.text = amountToString(amount, MAX_PRECISION);
-      _updateFiatAmount();
+      final s = widget.spendable;
+      if (s != null) {
+        useMax = true;
+        setAmount(s);
+      }
     });
   }
 
