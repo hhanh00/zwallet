@@ -211,8 +211,9 @@ class WarpApi {
   }
 
   static Future<String> transferPools(int coin, int account, int fromPool, int toPool,
-      int amount, String memo, int anchorOffset) async {
-    final txId = await compute(transferPoolsIsolateFn, TransferPoolsParams(coin, account, fromPool, toPool, amount, memo, anchorOffset));
+      int amount, String memo, int splitAmount, int anchorOffset) async {
+    final txId = await compute(transferPoolsIsolateFn, TransferPoolsParams(coin, account, fromPool, toPool, amount, memo,
+        splitAmount, anchorOffset));
     return txId;
   }
 
@@ -429,7 +430,7 @@ int getLatestHeightIsolateFn(Null n) {
 
 String transferPoolsIsolateFn(TransferPoolsParams params) {
   final txId = warp_api_lib.transfer_pools(params.coin, params.account, params.fromPool, params.toPool,
-      params.amount, toNative(params.memo), params.anchorOffset);
+      params.amount, toNative(params.memo), params.splitAmount, params.anchorOffset);
   return unwrapResultString(txId);
 }
 
@@ -503,9 +504,11 @@ class TransferPoolsParams {
   final int toPool;
   final int amount;
   final String memo;
+  final int splitAmount;
   final int anchorOffset;
 
-  TransferPoolsParams(this.coin, this.account, this.fromPool, this.toPool, this.amount, this.memo, this.anchorOffset);
+  TransferPoolsParams(this.coin, this.account, this.fromPool, this.toPool, this.amount, this.memo,
+      this.splitAmount, this.anchorOffset);
 }
 
 class ShieldTAddrParams {

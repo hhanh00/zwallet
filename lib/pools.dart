@@ -109,13 +109,9 @@ class PoolsState extends State<PoolsPage> {
     if (form.validate()) {
       form.save();
       final amount = _amountKey.currentState?.amount ?? 0;
-      print("Transfer from $_fromPool to $_toPool, ${amountToString(
-          amount, MAX_PRECISION)}");
-      final splitAmount = parseNumber(_maxAmountController.text);
-      print("Split: $splitAmount");
       try {
         final txPlan = await WarpApi.transferPools(active.coin, active.id, 1 << _fromPool, 1 << _toPool, amount,
-            _memoController.text, settings.anchorOffset);
+            _memoController.text, stringToAmount(_maxAmountController.text), settings.anchorOffset);
         Navigator.of(context).pushReplacementNamed('/txplan', arguments: txPlan);
       }
       on String catch (message) {
