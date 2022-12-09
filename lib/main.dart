@@ -504,25 +504,28 @@ void showQR(BuildContext context, String text, String title) {
   showDialog(
       context: context,
       barrierColor: Colors.black,
-      builder: (context) =>
-          AlertDialog(
-              content: Container(
-                  width: double.maxFinite,
-                  child: SingleChildScrollView(child: Column(children: [
-                    QrImage(data: text, backgroundColor: Colors.white),
-                    Padding(padding: EdgeInsets.all(8)),
-                    Text(title, style: Theme
-                        .of(context)
-                        .textTheme
-                        .subtitle1),
-                    Padding(padding: EdgeInsets.all(4)),
-                    ElevatedButton.icon(onPressed: () {
-                      Clipboard.setData(ClipboardData(text: text));
-                      showSnackBar(s.textCopiedToClipboard(title));
-                      Navigator.of(context).pop();
-                    }, icon: Icon(Icons.copy), label: Text(s.copy))
-                  ])))
-          ));
+      builder: (context) {
+        return AlertDialog(
+            content: Container(
+                width: double.maxFinite,
+                child: SingleChildScrollView(child: Column(children: [
+                  LayoutBuilder(builder: (context, constraints) {
+                    final size = getScreenSize(context) * 0.5;
+                    return QrImage(data: text, backgroundColor: Colors.white, size: size);
+                  }),
+                  Padding(padding: EdgeInsets.all(8)),
+                  Text(title, style: Theme
+                      .of(context)
+                      .textTheme
+                      .subtitle1),
+                  Padding(padding: EdgeInsets.all(4)),
+                  ElevatedButton.icon(onPressed: () {
+                    Clipboard.setData(ClipboardData(text: text));
+                    showSnackBar(s.textCopiedToClipboard(title));
+                    Navigator.of(context).pop();
+                  }, icon: Icon(Icons.copy), label: Text(s.copy))
+                ])))
+        ); });
 }
 
 Future<bool> showMessageBox(BuildContext context, String title, String content,
