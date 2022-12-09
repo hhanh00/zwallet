@@ -22,6 +22,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   var coinAmountController = TextEditingController(text: zero);
   var fiatAmountController = TextEditingController(text: zero);
   var amount = 0;
+  double sliderValue = 0;
   var useMax = false;
 
   ReactionDisposer? priceAutorunDispose;
@@ -67,7 +68,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
                   inputInCoin = true;
                 }),
                 validator: _checkAmount,
-                onChanged: (_) => _updateFiatAmount(),
+                onChanged: (_) { _updateFiatAmount(); _updateSlider(); },
                 onSaved: _onAmount,
               )),
           if (widget.max) TextButton(child: Text(s.max), onPressed: _onMax),
@@ -88,8 +89,11 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
                   onTap: () => setState(() {
                     inputInCoin = false;
                   }),
-                  onChanged: (_) => _updateAmount()))
+                  onChanged: (_) { _updateAmount(); _updateSlider(); }))
         ]),
+        if (widget.spendable != null)
+          Slider(value: sliderValue, onChanged: _onSliderChanged, min: 0, max: 100, divisions: 20,
+              label: "${sliderValue.toInt()} %")
       ]);
   }
 
@@ -104,6 +108,15 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   void setAmount(int amount) {
     setState(() {
       coinAmountController.text = amountToString(amount, MAX_PRECISION);
+      _updateFiatAmount();
+    });
+  }
+
+  _onSliderChanged(double v) {
+    setState(() {
+      sliderValue = v;
+      final a = (widget.spendable! * v / 100).round();
+      coinAmountController.text = amountToString(a, precision(settings.useMillis));
       _updateFiatAmount();
     });
   }
@@ -148,6 +161,15 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
     final otherAmount = decimalFormat(amount * rate, precision(useMillis));
     setState(() {
       fiatAmountController.text = otherAmount;
+    });
+  }
+
+  void _updateSlider() {
+    final spendable = widget.spendable;
+    setState(() {
+      final amount = stringToAmount(coinAmountController.text);
+      if (spendable != null)
+        sliderValue = (amount / spendable * 100).clamp(0, 100);
     });
   }
 
