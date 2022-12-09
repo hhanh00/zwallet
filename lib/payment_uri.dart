@@ -40,6 +40,7 @@ class PaymentURIState extends State<PaymentURIPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = Theme.of(context);
     final qrSize = getScreenSize(context) / 1.5;
 
     return Form(
@@ -58,7 +59,8 @@ class PaymentURIState extends State<PaymentURIPage> {
                             data: qrText,
                             size: qrSize,
                             backgroundColor: Colors.white)),
-                          Padding(padding: EdgeInsets.all(8)),
+                          Text(qrText, style: t.textTheme.labelSmall),
+                          Padding(padding: EdgeInsets.all(4)),
                           Row(mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                             Expanded(child: FormBuilderCheckboxGroup<String>(
