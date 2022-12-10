@@ -59,6 +59,7 @@ class PaymentURIState extends State<PaymentURIPage> {
                             data: qrText,
                             size: qrSize,
                             backgroundColor: Colors.white)),
+                          Padding(padding: EdgeInsets.all(4)),
                           Text(qrText, style: t.textTheme.labelSmall),
                           Padding(padding: EdgeInsets.all(4)),
                           Row(mainAxisAlignment: MainAxisAlignment.center,
