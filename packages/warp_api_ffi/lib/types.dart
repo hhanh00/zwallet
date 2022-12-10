@@ -7,6 +7,7 @@ class Recipient {
   // ignore: non_constant_identifier_names
   final String address;
   final int amount;
+  final bool fee_included;
   // ignore: non_constant_identifier_names
   final bool reply_to;
   final String subject;
@@ -14,7 +15,7 @@ class Recipient {
   // ignore: non_constant_identifier_names
   final int max_amount_per_note;
 
-  Recipient(this.address, this.amount, this.reply_to, this.subject, this.memo, this.max_amount_per_note);
+  Recipient(this.address, this.amount, this.fee_included, this.reply_to, this.subject, this.memo, this.max_amount_per_note);
 
   factory Recipient.fromJson(Map<String, dynamic> json) =>
       _$RecipientFromJson(json);

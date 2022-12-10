@@ -786,7 +786,7 @@ Future<void> shieldTAddr(BuildContext context) async {
               final s = S.of(context);
               Navigator.of(context).pop();
               showSnackBar(s.shieldingInProgress, autoClose: true);
-              final txid = await WarpApi.shieldTAddr(active.coin, active.id, settings.anchorOffset);
+              final txid = await WarpApi.shieldTAddr(active.coin, active.id, active.tbalance, settings.anchorOffset);
               showSnackBar(s.txId(txid));
             })),
   );

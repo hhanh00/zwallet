@@ -461,6 +461,7 @@ class NativeLibrary {
     int from_pool,
     int to_pool,
     int amount,
+    int fee_included,
     ffi.Pointer<ffi.Int8> memo,
     int split_amount,
     int confirmations,
@@ -471,6 +472,7 @@ class NativeLibrary {
       from_pool,
       to_pool,
       amount,
+      fee_included,
       memo,
       split_amount,
       confirmations,
@@ -485,11 +487,13 @@ class NativeLibrary {
   CResult_____c_char shield_taddr(
     int coin,
     int account,
+    int amount,
     int confirmations,
   ) {
     return _shield_taddr(
       coin,
       account,
+      amount,
       confirmations,
     );
   }
@@ -1264,6 +1268,7 @@ typedef _c_transfer_pools = CResult_____c_char Function(
   ffi.Uint8 from_pool,
   ffi.Uint8 to_pool,
   ffi.Uint64 amount,
+  ffi.Int8 fee_included,
   ffi.Pointer<ffi.Int8> memo,
   ffi.Uint64 split_amount,
   ffi.Uint32 confirmations,
@@ -1275,6 +1280,7 @@ typedef _dart_transfer_pools = CResult_____c_char Function(
   int from_pool,
   int to_pool,
   int amount,
+  int fee_included,
   ffi.Pointer<ffi.Int8> memo,
   int split_amount,
   int confirmations,
@@ -1283,12 +1289,14 @@ typedef _dart_transfer_pools = CResult_____c_char Function(
 typedef _c_shield_taddr = CResult_____c_char Function(
   ffi.Uint8 coin,
   ffi.Uint32 account,
+  ffi.Uint64 amount,
   ffi.Uint32 confirmations,
 );
 
 typedef _dart_shield_taddr = CResult_____c_char Function(
   int coin,
   int account,
+  int amount,
   int confirmations,
 );
 

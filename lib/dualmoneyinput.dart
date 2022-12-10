@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobx/mobx.dart';
 
 import 'generated/l10n.dart';
@@ -24,6 +25,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   var amount = 0;
   double sliderValue = 0;
   var useMax = false;
+  var feeIncluded = false;
 
   ReactionDisposer? priceAutorunDispose;
 
@@ -68,7 +70,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
                   inputInCoin = true;
                 }),
                 validator: _checkAmount,
-                onChanged: (_) { _updateFiatAmount(); _updateSlider(); },
+                onChanged: (_) { _updateFiatAmount(); _updateSlider(); _resetUseMax(); },
                 onSaved: _onAmount,
               )),
           if (widget.max) TextButton(child: Text(s.max), onPressed: _onMax),
@@ -89,17 +91,28 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
                   onTap: () => setState(() {
                     inputInCoin = false;
                   }),
-                  onChanged: (_) { _updateAmount(); _updateSlider(); }))
+                  onChanged: (_) { _updateAmount(); _updateSlider(); _resetUseMax(); }))
         ]),
         if (widget.spendable != null)
           Slider(value: sliderValue, onChanged: _onSliderChanged, min: 0, max: 100, divisions: 20,
-              label: "${sliderValue.toInt()} %")
-      ]);
+              label: "${sliderValue.toInt()} %"),
+        if (widget.spendable != null) FormBuilderCheckbox(
+          key: UniqueKey(),
+          name: 'fee',
+          title: Text(s.includeFeeInAmount),
+          initialValue: feeIncluded || useMax,
+          onChanged: (v) {
+            setState(() {
+              feeIncluded = v ?? false;
+            });
+          }),
+    ]);
   }
 
   void clear() {
     setState(() {
       useMax = false;
+      feeIncluded = false;
       coinAmountController.text = zero;
       fiatAmountController.text = zero;
     });
@@ -114,6 +127,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
 
   _onSliderChanged(double v) {
     setState(() {
+      useMax = false;
       sliderValue = v;
       final a = (widget.spendable! * v / 100).round();
       coinAmountController.text = amountToString(a, precision(settings.useMillis));
@@ -126,8 +140,15 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
       final s = widget.spendable;
       if (s != null) {
         useMax = true;
+        sliderValue = 100;
         setAmount(s);
       }
+    });
+  }
+
+  void _resetUseMax() {
+    setState(() {
+      useMax = false;
     });
   }
 
