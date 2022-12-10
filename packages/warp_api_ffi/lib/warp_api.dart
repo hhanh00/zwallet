@@ -212,13 +212,13 @@ class WarpApi {
 
   static Future<String> transferPools(int coin, int account, int fromPool, int toPool,
       int amount, String memo, int splitAmount, int anchorOffset) async {
-    final txId = await compute(transferPoolsIsolateFn, TransferPoolsParams(coin, account, fromPool, toPool, amount, memo,
-        splitAmount, anchorOffset));
+    final txId = await compute(transferPoolsIsolateFn, TransferPoolsParams(coin, account, fromPool, toPool, amount,
+        false, memo, splitAmount, anchorOffset));
     return txId;
   }
 
-  static Future<String> shieldTAddr(int coin, int account, int anchorOffset) async {
-    final txId = await compute(shieldTAddrIsolateFn, ShieldTAddrParams(coin, account, anchorOffset));
+  static Future<String> shieldTAddr(int coin, int account, int amount, int anchorOffset) async {
+    final txId = await compute(shieldTAddrIsolateFn, ShieldTAddrParams(coin, account, amount, anchorOffset));
     return txId;
   }
 
@@ -430,12 +430,12 @@ int getLatestHeightIsolateFn(Null n) {
 
 String transferPoolsIsolateFn(TransferPoolsParams params) {
   final txId = warp_api_lib.transfer_pools(params.coin, params.account, params.fromPool, params.toPool,
-      params.amount, toNative(params.memo), params.splitAmount, params.anchorOffset);
+      params.amount, params.takeFee ? 1 : 0, toNative(params.memo), params.splitAmount, params.anchorOffset);
   return unwrapResultString(txId);
 }
 
 String shieldTAddrIsolateFn(ShieldTAddrParams params) {
-  final txId = warp_api_lib.shield_taddr(params.coin, params.account, params.anchorOffset);
+  final txId = warp_api_lib.shield_taddr(params.coin, params.account, params.amount, params.anchorOffset);
   return unwrapResultString(txId);
 }
 
@@ -503,20 +503,22 @@ class TransferPoolsParams {
   final int fromPool;
   final int toPool;
   final int amount;
+  final bool takeFee;
   final String memo;
   final int splitAmount;
   final int anchorOffset;
 
-  TransferPoolsParams(this.coin, this.account, this.fromPool, this.toPool, this.amount, this.memo,
+  TransferPoolsParams(this.coin, this.account, this.fromPool, this.toPool, this.amount, this.takeFee, this.memo,
       this.splitAmount, this.anchorOffset);
 }
 
 class ShieldTAddrParams {
   final int coin;
   final int account;
+  final int amount;
   final int anchorOffset;
 
-  ShieldTAddrParams(this.coin, this.account, this.anchorOffset);
+  ShieldTAddrParams(this.coin, this.account, this.amount, this.anchorOffset);
 }
 
 class CommitContactsParams {

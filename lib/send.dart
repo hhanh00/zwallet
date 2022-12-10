@@ -170,9 +170,9 @@ class SendState extends State<SendPage> {
                         name: 'reply-to',
                         title: Text(s.includeReplyTo),
                         initialValue: _replyTo,
-                        onChanged: (_) {
+                        onChanged: (v) {
                           setState(() {
-                            _replyTo = true;
+                            _replyTo = v ?? false;
                           });
                         },
                       ),
@@ -254,11 +254,13 @@ class SendState extends State<SendPage> {
     if (form.validate()) {
       form.save();
       final amount = amountInput?.amount ?? 0;
+      final feeIncluded = amountInput?.feeIncluded ?? false;
       final memo = _memoController.text;
       final subject = _subjectController.text;
       final recipient = Recipient(
         _address,
         amount,
+        feeIncluded,
         _replyTo,
         subject,
         memo,
@@ -284,8 +286,7 @@ class SendState extends State<SendPage> {
       _sBalance -
       _excludedBalance -
       _underConfirmedBalance -
-      _usedBalance -
-      _fee,
+      _usedBalance,
       0);
 
   get change => _unconfirmedSpentBalance + _unconfirmedBalance;
@@ -331,8 +332,7 @@ class BalanceTable extends StatelessWidget {
           tBalance -
           excludedBalance -
           underConfirmedBalance -
-          used -
-          fee,
+          used,
       0);
 }
 
