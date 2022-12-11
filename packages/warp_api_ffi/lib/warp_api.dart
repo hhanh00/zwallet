@@ -211,9 +211,9 @@ class WarpApi {
   }
 
   static Future<String> transferPools(int coin, int account, int fromPool, int toPool,
-      int amount, String memo, int splitAmount, int anchorOffset) async {
+      int amount, bool includeFee, String memo, int splitAmount, int anchorOffset) async {
     final txId = await compute(transferPoolsIsolateFn, TransferPoolsParams(coin, account, fromPool, toPool, amount,
-        false, memo, splitAmount, anchorOffset));
+        includeFee, memo, splitAmount, anchorOffset));
     return txId;
   }
 
