@@ -109,9 +109,10 @@ class PoolsState extends State<PoolsPage> {
     if (form.validate()) {
       form.save();
       final amount = _amountKey.currentState?.amount ?? 0;
+      final includeFee = _amountKey.currentState?.feeIncluded ?? false;
       try {
         final txPlan = await WarpApi.transferPools(active.coin, active.id, 1 << _fromPool, 1 << _toPool, amount,
-            _memoController.text, stringToAmount(_maxAmountController.text), settings.anchorOffset);
+            includeFee, _memoController.text, stringToAmount(_maxAmountController.text), settings.anchorOffset);
         Navigator.of(context).pushReplacementNamed('/txplan', arguments: txPlan);
       }
       on String catch (message) {
