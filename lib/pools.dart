@@ -95,9 +95,9 @@ class PoolsState extends State<PoolsPage> {
   int get _spendable {
     final b = active.poolBalances;
     switch (_fromPool) {
-      case 0: return b.transparent - DEFAULT_FEE;
-      case 1: return b.sapling - DEFAULT_FEE;
-      case 2: return b.orchard - DEFAULT_FEE;
+      case 0: return b.transparent;
+      case 1: return b.sapling;
+      case 2: return b.orchard;
     }
     return 0;
   }
