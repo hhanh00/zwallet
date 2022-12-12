@@ -116,6 +116,7 @@ class SendState extends State<SendPage> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final t = Theme.of(context);
     final simpleMode = settings.simpleMode;
     if (!_memoInitialized) {
       _memoController.text = settings.memoSignature ?? s.sendFrom(APP_NAME);
@@ -204,11 +205,10 @@ class SendState extends State<SendPage> {
                       Padding(padding: EdgeInsets.all(8)),
                       ButtonBar(
                           children: [
-                            ElevatedButton.icon(onPressed: clear, icon: Icon(Icons.clear), label: Text(s.reset)),
-                            ...confirmButtons(context, _onSend,
-                              okLabel: widget.isMulti ? s.add : s.send,
-                              okIcon: Icon(MdiIcons.send))])
-                    ])))));
+                            ElevatedButton.icon(onPressed: clear, icon: Icon(Icons.clear), label: Text(s.reset), style: ElevatedButton.styleFrom(backgroundColor: t.colorScheme.secondary)),
+                            ElevatedButton.icon(onPressed: _onSend, icon: Icon(MdiIcons.send), label: Text(widget.isMulti ? s.add : s.send))
+                    ])
+        ])))));
   }
 
   Suggestion? getSuggestion(String v) {
