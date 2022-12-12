@@ -443,27 +443,20 @@ GlobalKey<ScaffoldMessengerState>();
 List<ElevatedButton> confirmButtons(BuildContext context,
     VoidCallback? onPressed,
     {String? okLabel, Icon? okIcon, cancelValue}) {
+  final s = S.of(context);
   final navigator = Navigator.of(context);
   return <ElevatedButton>[
     ElevatedButton.icon(
         icon: Icon(Icons.cancel),
-        label: Text(S
-            .of(context)
-            .cancel),
+        label: Text(s.cancel),
         onPressed: () {
           cancelValue != null ? navigator.pop(cancelValue) : navigator.pop();
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: Theme
-                .of(context)
-                .buttonTheme
-                .colorScheme!
-                .secondary)),
+            backgroundColor: Theme.of(context).colorScheme.secondary)),
     ElevatedButton.icon(
       icon: okIcon ?? Icon(Icons.done),
-      label: Text(okLabel ?? S
-          .of(context)
-          .ok),
+      label: Text(okLabel ?? s.ok),
       onPressed: onPressed,
     )
   ];
