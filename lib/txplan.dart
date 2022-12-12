@@ -18,7 +18,6 @@ class TxPlanPage extends StatelessWidget {
 
   factory TxPlanPage.fromPlan(String plan, bool signOnly) {
     final reportStr = WarpApi.transactionReport(active.coin, plan);
-    print(reportStr);
     final json = jsonDecode(reportStr);
     final report = TxReport.fromJson(json);
     return TxPlanPage(plan, report, signOnly);
@@ -26,6 +25,7 @@ class TxPlanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final supportsUA = active.coinDef.supportsUA;
     final theme = Theme.of(context);
     final rows = report.outputs
         .map((e) => DataRow(cells: [
@@ -51,11 +51,11 @@ class TxPlanPage extends StatelessWidget {
                   ListTile(title: Text('Transparent Input'), trailing: Text(amountToString(report.transparent, MAX_PRECISION))),
                   ListTile(title: Text('Sapling Input'), trailing: Text(
                       amountToString(report.sapling, MAX_PRECISION))),
-                  ListTile(title: Text('Orchard Input'), trailing: Text(
+                  if (supportsUA) ListTile(title: Text('Orchard Input'), trailing: Text(
                       amountToString(report.orchard, MAX_PRECISION))),
                   ListTile(title: Text('Net Sapling Change'), trailing: Text(
                       amountToString(report.net_sapling, MAX_PRECISION))),
-                  ListTile(title: Text('Net Orchard Change'), trailing: Text(
+                  if (supportsUA) ListTile(title: Text('Net Orchard Change'), trailing: Text(
                       amountToString(report.net_orchard, MAX_PRECISION))),
                   ListTile(title: Text('Fee'), trailing: Text(amountToString(report.fee, MAX_PRECISION))),
                   privacyToString(report.privacy_level)!,
