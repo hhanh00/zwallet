@@ -43,7 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m8(message) => "QR code invalide: ${message}";
 
-  static String m9(amount, ticker) => "Max spendable: ${amount} ${ticker}";
+  static String m9(amount, ticker) => "Max dépensable: ${amount} ${ticker}";
 
   static String m11(ticker) => "Recevoir ${ticker}";
 
@@ -190,8 +190,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "custom": MessageLookupByLibrary.simpleMessage("Personnaliser"),
         "dark": MessageLookupByLibrary.simpleMessage("Sombre"),
         "databaseUpdatedPleaseRestartTheApp":
-            MessageLookupByLibrary.simpleMessage(
-                "BD changée. Redémarrer l\'app SVP"),
+            MessageLookupByLibrary.simpleMessage("Redémarrer l\'app SVP"),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "datetime": MessageLookupByLibrary.simpleMessage("Jour/Heure"),
         "dbImportSuccessful":
@@ -226,7 +225,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "excludedNotes": MessageLookupByLibrary.simpleMessage("Billets exclus"),
         "expert": MessageLookupByLibrary.simpleMessage("Expert"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("File saved"),
-        "fromPool": MessageLookupByLibrary.simpleMessage("From Pool"),
+        "fromPool": MessageLookupByLibrary.simpleMessage("A partir du Fond"),
         "fromto": MessageLookupByLibrary.simpleMessage("Env/Dest."),
         "fullBackup":
             MessageLookupByLibrary.simpleMessage("Sauvegarde complète"),
@@ -328,7 +327,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pnl": MessageLookupByLibrary.simpleMessage("P/P"),
         "pnlHistory":
             MessageLookupByLibrary.simpleMessage("Historique des P/P"),
-        "pools": MessageLookupByLibrary.simpleMessage("Pools"),
+        "pools": MessageLookupByLibrary.simpleMessage("Echanger entre Fonds"),
         "preparingTransaction": MessageLookupByLibrary.simpleMessage(
             "Préparation de la transaction..."),
         "price": MessageLookupByLibrary.simpleMessage("Prix"),
@@ -411,7 +410,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Montant dépensable"),
         "spent": m19,
         "splitAccount": MessageLookupByLibrary.simpleMessage("Split Account"),
-        "splitNotes": MessageLookupByLibrary.simpleMessage("Split Notes"),
+        "splitNotes": MessageLookupByLibrary.simpleMessage("Diviser Billets"),
         "subAccountIndexOf": m20,
         "subAccountOf": m21,
         "subject": MessageLookupByLibrary.simpleMessage("Sujet"),
@@ -446,7 +445,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "toMakeAContactSendThemAMemoWithContact":
             MessageLookupByLibrary.simpleMessage(
                 "Pour établir un contact, envoyez-lui un mémo avec Contact:"),
-        "toPool": MessageLookupByLibrary.simpleMessage("To Pool"),
+        "toPool": MessageLookupByLibrary.simpleMessage("Vers le Fond"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
         "totalBalance": MessageLookupByLibrary.simpleMessage("Solde Total"),
         "tradingChartRange": MessageLookupByLibrary.simpleMessage(
@@ -457,7 +456,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "transactionHistory":
             MessageLookupByLibrary.simpleMessage("Historique des Transactions"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
-        "transfer": MessageLookupByLibrary.simpleMessage("Transfer"),
+        "transfer": MessageLookupByLibrary.simpleMessage("Transferer"),
         "txId": m23,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Pas assez de confs"),

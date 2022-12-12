@@ -43,7 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m8(message) => "QR inválido: ${message}";
 
-  static String m9(amount, ticker) => "Max spendable: ${amount} ${ticker}";
+  static String m9(amount, ticker) => "Max Gastable: ${amount} ${ticker}";
 
   static String m11(ticker) => "Recibir ${ticker}";
 
@@ -192,11 +192,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "dark": MessageLookupByLibrary.simpleMessage("Noche"),
         "databaseUpdatedPleaseRestartTheApp":
             MessageLookupByLibrary.simpleMessage(
-                "Database updated. Please restart the app."),
+                "Por favor reinicie la aplicación"),
         "date": MessageLookupByLibrary.simpleMessage("Fecha"),
         "datetime": MessageLookupByLibrary.simpleMessage("Fecha/Hora"),
         "dbImportSuccessful":
-            MessageLookupByLibrary.simpleMessage("Db Import Successful"),
+            MessageLookupByLibrary.simpleMessage("Importación exitosa"),
         "defaultMemo": MessageLookupByLibrary.simpleMessage("Nota"),
         "delete": MessageLookupByLibrary.simpleMessage("ELIMINAR"),
         "deleteAccount": MessageLookupByLibrary.simpleMessage("Borrar Cuenta"),
@@ -215,7 +215,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cuenta duplicada"),
         "editContact": MessageLookupByLibrary.simpleMessage("Editar contacto"),
         "encryptedBackup": m6,
-        "encryptionKey": MessageLookupByLibrary.simpleMessage("Encryption Key"),
+        "encryptionKey":
+            MessageLookupByLibrary.simpleMessage("Clave de encriptación"),
         "enterSecretShareIfAccountIsMultisignature":
             MessageLookupByLibrary.simpleMessage(
                 "Introduzca la clave secreta si la cuenta es multi-firma"),
@@ -226,7 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Notas excluidas"),
         "expert": MessageLookupByLibrary.simpleMessage("Expert"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("Archivo guardado"),
-        "fromPool": MessageLookupByLibrary.simpleMessage("From Pool"),
+        "fromPool": MessageLookupByLibrary.simpleMessage("Del Suministro"),
         "fromto": MessageLookupByLibrary.simpleMessage("Rem/Dest."),
         "fullBackup": MessageLookupByLibrary.simpleMessage("Copia completa"),
         "fullRestore": MessageLookupByLibrary.simpleMessage(
@@ -326,7 +327,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reiniciar ahora"),
         "pnl": MessageLookupByLibrary.simpleMessage("G&P"),
         "pnlHistory": MessageLookupByLibrary.simpleMessage("Historia de G&P"),
-        "pools": MessageLookupByLibrary.simpleMessage("Pools"),
+        "pools": MessageLookupByLibrary.simpleMessage("Transferir Suministros"),
         "preparingTransaction":
             MessageLookupByLibrary.simpleMessage("Preparando la transacción…"),
         "price": MessageLookupByLibrary.simpleMessage("Precio"),
@@ -387,7 +388,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sendingATotalOfAmountCointickerToCountRecipients": m17,
         "sendingAzecCointickerToAddress": m18,
         "server": MessageLookupByLibrary.simpleMessage("Servidor"),
-        "set": MessageLookupByLibrary.simpleMessage("Set"),
+        "set": MessageLookupByLibrary.simpleMessage("Utilisar"),
         "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
         "shieldTranspBalance":
             MessageLookupByLibrary.simpleMessage("Blindar Saldo transp."),
@@ -409,7 +410,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Saldo disponible"),
         "spent": m19,
         "splitAccount": MessageLookupByLibrary.simpleMessage("Cuenta dividida"),
-        "splitNotes": MessageLookupByLibrary.simpleMessage("Split Notes"),
+        "splitNotes": MessageLookupByLibrary.simpleMessage("Dividar Billetes"),
         "subAccountIndexOf": m20,
         "subAccountOf": m21,
         "subject": MessageLookupByLibrary.simpleMessage("Asunto"),
@@ -443,7 +444,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "toMakeAContactSendThemAMemoWithContact":
             MessageLookupByLibrary.simpleMessage(
                 "Para contactar, enviar un memo con \'Contact:\'"),
-        "toPool": MessageLookupByLibrary.simpleMessage("To Pool"),
+        "toPool": MessageLookupByLibrary.simpleMessage("Para Suministro"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
         "totalBalance": MessageLookupByLibrary.simpleMessage("Saldo Total"),
         "tradingChartRange":
@@ -454,7 +455,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "transactionHistory":
             MessageLookupByLibrary.simpleMessage("Historial de transacciones"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transacciónes"),
-        "transfer": MessageLookupByLibrary.simpleMessage("Transfer"),
+        "transfer": MessageLookupByLibrary.simpleMessage("Transferir"),
         "txId": m23,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Confirmaciones insuficiente"),

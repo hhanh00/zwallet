@@ -268,11 +268,11 @@
   "set": "Utiliser",
   "encryptionKey": "Clé Publique",
   "dbImportSuccessful": "Sauvegarde importée",
-  "databaseUpdatedPleaseRestartTheApp": "BD changée. Redémarrer l'app SVP",
-  "pools": "Pools",
-  "fromPool": "From Pool",
-  "toPool": "To Pool",
-  "maxSpendableAmount": "Max spendable: {amount} {ticker}",
-  "splitNotes": "Split Notes",
-  "transfer": "Transfer"
+  "databaseUpdatedPleaseRestartTheApp": "Redémarrer l'app SVP",
+  "pools": "Echanger entre Fonds",
+  "fromPool": "A partir du Fond",
+  "toPool": "Vers le Fond",
+  "maxSpendableAmount": "Max dépensable: {amount} {ticker}",
+  "splitNotes": "Diviser Billets",
+  "transfer": "Transferer"
 }
