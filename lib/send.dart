@@ -48,6 +48,17 @@ class SendState extends State<SendPage> {
   var _usedBalance = 0;
   var _replyTo = settings.includeReplyTo;
 
+  void clear() {
+    final s = S.of(context);
+    setState(() {
+      _memoController.text = settings.memoSignature ?? s.sendFrom(APP_NAME);
+      _addressController.clear();
+      _replyTo = false;
+      _subjectController.clear();
+      _amountKey.currentState?.clear();
+    });
+  }
+
   @override
   initState() {
     super.initState();
@@ -167,6 +178,7 @@ class SendState extends State<SendPage> {
                         decoration: InputDecoration(labelText: s.memo),
                         child: Column(children: [
                       FormBuilderCheckbox(
+                        key: UniqueKey(),
                         name: 'reply-to',
                         title: Text(s.includeReplyTo),
                         initialValue: _replyTo,
@@ -191,9 +203,11 @@ class SendState extends State<SendPage> {
                       )]))),
                       Padding(padding: EdgeInsets.all(8)),
                       ButtonBar(
-                          children: confirmButtons(context, _onSend,
+                          children: [
+                            ElevatedButton.icon(onPressed: clear, icon: Icon(Icons.clear), label: Text(s.reset)),
+                            ...confirmButtons(context, _onSend,
                               okLabel: widget.isMulti ? s.add : s.send,
-                              okIcon: Icon(MdiIcons.send)))
+                              okIcon: Icon(MdiIcons.send))])
                     ])))));
   }
 

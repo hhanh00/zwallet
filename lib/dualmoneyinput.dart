@@ -19,10 +19,10 @@ class DualMoneyInputWidget extends StatefulWidget {
 }
 
 class DualMoneyInputState extends State<DualMoneyInputWidget> {
-  static final zero = decimalFormat(0, 3);
+  var zero = "";
   var inputInCoin = true;
-  var coinAmountController = TextEditingController(text: zero);
-  var fiatAmountController = TextEditingController(text: zero);
+  var coinAmountController = TextEditingController();
+  var fiatAmountController = TextEditingController();
   var amount = 0;
   double sliderValue = 0;
   var _feeIncluded = false;
@@ -38,6 +38,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   @override
   void initState() {
     super.initState();
+    zero = amountToString(0, precision(useMillis));
     final initialValue = widget.initialValue ?? 0;
     final amount = amountToString(initialValue, precision(useMillis));
     coinAmountController.text = amount;
@@ -128,6 +129,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
       _feeIncluded = false;
       coinAmountController.text = zero;
       fiatAmountController.text = zero;
+      sliderValue = 0;
     });
   }
 
