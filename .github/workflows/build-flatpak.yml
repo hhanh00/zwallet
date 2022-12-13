@@ -13,7 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ua
           submodules: recursive
 
       - name: Set up Docker Buildx
