@@ -36,6 +36,7 @@ jobs:
         run: |
           docker create --name app_container app_image
           docker cp app_container:/zwallet/ywallet.zip .
+          docker cp app_container:/zwallet/Ywallet.msix .
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -43,3 +44,4 @@ jobs:
         with:
           files: |
             ./ywallet.zip
+            ./YWallet.msix
