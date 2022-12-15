@@ -47,7 +47,7 @@ class HorizontalBarChart extends StatelessWidget {
       final i = e.key;
       final color = palette[i];
       final v = NumberFormat.compact().format(values[i]);
-      final flex = max((values[i] / sum * 100).round(), 1);
+      final flex = sum != 0 ? max((values[i] / sum * 100).round(), 1) : 1;
       return Flexible(child: Container(child:
         Center(child: Text(v, textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
         color: color, height: height), flex: flex);
