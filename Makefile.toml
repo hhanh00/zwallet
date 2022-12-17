@@ -297,9 +297,54 @@ args = [
     "--features=dart_ffi"
 ]
 
+[tasks.mac-build-release]
+private = true
+command = "cargo"
+args = [
+    "build",
+    "--target=x86_64-apple-darwin",
+    "--release",
+    "--features=dart_ffi"
+]
+
+[tasks.m1-build-release]
+private = true
+command = "cargo"
+args = [
+    "build",
+    "--target=aarch64-apple-darwin",
+    "--release",
+    "--features=dart_ffi"
+]
+
 [tasks.flatpak]
 dependencies = [
     "setup-crate-type-android",
     "desktop-build-release",
     "restore-crate-type"
+]
+
+[tasks.macos]
+dependencies = [
+    "setup-crate-type-android",
+    "mac-build-release",
+    "m1-build-release",
+    "restore-crate-type",
+    "post-macos"
+]
+
+[tasks.post-macos]
+script_runner = "@duckscript"
+condition = { platforms = ["mac"] }
+script = [
+    "mkdir ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/target/universal/release",
+    """
+    exec /usr/bin/lipo ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/target/x86_64-apple-darwin/release/libwarp_api_ffi.dylib \
+    ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/target/aarch64-apple-darwin/release/libwarp_api_ffi.dylib \
+    -output ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/target/universal/release/libwarp_api_ffi.dylib -create
+    """,
+    """
+    cp ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/native/${CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER}/binding.h \
+    ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/warp_api_ffi/ios/Classes/binding.h
+    """,
 ]

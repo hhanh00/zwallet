@@ -1,4 +1,4 @@
-name: Build and Release MacOS
+name: Build and Release MacOS Universal
 
 on:
   workflow_dispatch:
@@ -20,10 +20,14 @@ jobs:
           curl https://download.z.cash/downloads/sapling-output.params --output $HOME/.zcash-params/sapling-output.params
           curl https://download.z.cash/downloads/sapling-spend.params --output $HOME/.zcash-params/sapling-spend.params
 
-      - name: Build dylib
-        run: |
-          cargo install cargo-make
-          cargo make flatpak
+      - name: rustup
+        run: rustup target add aarch64-apple-darwin
+
+      - name: install make
+        run: cargo install cargo-make
+
+      - name: build lib
+        run: cargo make macos
 
       - name: wget flutter
         run: |
@@ -41,11 +45,11 @@ jobs:
       - name: Build DMG
         run: |
           npm install -g appdmg
-          (cd misc;appdmg app.json ../ywallet.dmg)
+          (cd misc;appdmg app.json ../ywallet-universal.dmg)
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           files: |
-            ./ywallet.dmg
+            ./ywallet-universal.dmg
