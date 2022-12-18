@@ -158,10 +158,12 @@ packages:
   build_version:
     dependency: "direct dev"
     description:
-      name: build_version
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.1"
+      path: "."
+      ref: HEAD
+      resolved-ref: "1dc89c5fe87c4acf0f09bd35eacb651d3b60d3ed"
+      url: "https://github.com/hhanh00/build_version_git.git"
+    source: git
+    version: "2.1.3"
   built_collection:
     dependency: transitive
     description:
@@ -571,6 +573,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.2.0"
+  git:
+    dependency: transitive
+    description:
+      name: git
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
   glob:
     dependency: transitive
     description:
@@ -1482,5 +1491,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.17.0 <3.0.0"
+  dart: ">=2.18.0 <3.0.0"
   flutter: ">=2.10.0"
