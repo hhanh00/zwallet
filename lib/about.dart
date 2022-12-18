@@ -15,7 +15,8 @@ Future<void> showAbout(BuildContext context) async {
   final template = Template(contentTemplate);
   var content = template.renderString({'APP': APP_NAME});
   String? versionString;
-  versionString = "${s.version}: $packageVersion";
+  final id = commitId.substring(0, 8);
+  versionString = "${s.version}: $packageVersion/$id";
   if (WarpApi.hasCuda())
     versionString += "-CUDA";
   if (WarpApi.hasMetal())

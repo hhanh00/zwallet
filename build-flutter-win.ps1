@@ -13,6 +13,7 @@ copy runtime\* build\windows\runner\Release
 copy warp_api_ffi.dll build\windows\runner\Release
 flutter pub run msix:create
 
+copy runtime\* build\windows\runner\Release
 pushd build\windows\runner
 move-item Release\YWallet.msix .
 rename-item Release ywallet
