@@ -58,3 +58,4 @@ Icon-App-*.png
 Cargo.lock
 .flatpak-builder/
 build-dir/
+lib/src/version.dart
