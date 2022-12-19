@@ -65,19 +65,19 @@ class WarpApi {
   }
 
   static void createDb(String dbPath) {
-    warp_api_lib.create_db(dbPath.toNativeUtf8().cast<Int8>());
+    unwrapResultU8(warp_api_lib.create_db(toNative(dbPath)));
   }
 
   static void migrateWallet(int coin, String dbPath) {
-    warp_api_lib.migrate_db(coin, dbPath.toNativeUtf8().cast<Int8>());
+    unwrapResultU8(warp_api_lib.migrate_db(coin, toNative(dbPath)));
   }
 
   static void migrateData(int coin) {
-    warp_api_lib.migrate_data_db(coin);
+    unwrapResultU8(warp_api_lib.migrate_data_db(coin));
   }
 
   static void initWallet(int coin, String dbPath) {
-    warp_api_lib.init_wallet(coin, dbPath.toNativeUtf8().cast<Int8>());
+    unwrapResultU8(warp_api_lib.init_wallet(coin, toNative(dbPath)));
   }
 
   static void resetApp() {
