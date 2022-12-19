@@ -1,0 +1,63 @@
+name: Build and Release AppImage / Linux
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build_appimage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: appimage tool
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
+          sudo wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool
+          sudo chmod +x /usr/local/bin/appimagetool
+          sudo pip3 install appimage-builder
+
+      - name: params
+        run: |
+          mkdir $HOME/.zcash-params
+          curl https://download.z.cash/downloads/sapling-output.params --output $HOME/.zcash-params/sapling-output.params
+          curl https://download.z.cash/downloads/sapling-spend.params --output $HOME/.zcash-params/sapling-spend.params
+
+      - name: Build dylib
+        run: |
+          cargo install cargo-make
+          cargo make flatpak
+
+      - name: wget flutter
+        run: |
+          curl https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.3.10-stable.tar.xz --output flutter.tar.xz
+          tar xf flutter.tar.xz
+          echo $PWD/flutter/bin >> $GITHUB_PATH
+
+      - name: install deps
+        run: |
+          sudo apt-get install -y libunwind-dev
+          sudo apt-get install -y clang cmake ninja-build libgtk-3-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+
+      - name: Build flutter
+        run: |
+          flutter pub get
+          flutter pub run build_runner build
+          (cd packages/warp_api_ffi;flutter pub get;flutter pub run build_runner build)
+          flutter build linux
+
+      - name: appimage
+        run: |
+          (cd misc;appimage-builder --recipe AppImageBuilder.yml;ls)
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: |
+            ./misc/Ywallet-latest-x86_64.AppImage
