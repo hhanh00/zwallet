@@ -64,10 +64,6 @@ class WarpApi {
     throw UnsupportedError('This platform is not supported.');
   }
 
-  static void createDb(String dbPath) {
-    unwrapResultU8(warp_api_lib.create_db(toNative(dbPath)));
-  }
-
   static void migrateWallet(int coin, String dbPath) {
     unwrapResultU8(warp_api_lib.migrate_db(coin, toNative(dbPath)));
   }
@@ -168,8 +164,8 @@ class WarpApi {
         0;
   }
 
-  static String newDiversifiedAddress() {
-    final address = warp_api_lib.new_diversified_address();
+  static String newDiversifiedAddress(int uaType) {
+    final address = warp_api_lib.new_diversified_address(uaType);
     return unwrapResultString(address);
   }
 
@@ -393,10 +389,6 @@ class WarpApi {
     final jsonMap = jsonDecode(res);
     final kp = KeyPack.fromJson(jsonMap);
     return kp;
-  }
-
-  static void disableWAL(String dbPath) {
-    warp_api_lib.disable_wal(dbPath.toNativeUtf8().cast<Int8>());
   }
 
   static bool hasCuda() {

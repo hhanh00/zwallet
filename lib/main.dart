@@ -348,7 +348,8 @@ class ZWalletAppState extends State<ZWalletApp> {
         final dbPath = await getDbPath();
         for (var coin in coins) {
           coin.init(dbPath);
-          WarpApi.createDb(coin.dbFullPath);
+          await coin.open(false);
+          await coin.close();
         }
 
         if (exportDb) {
@@ -367,7 +368,6 @@ class ZWalletAppState extends State<ZWalletApp> {
           _setProgress(0.1 * (coin.coin+1), 'Initializing ${coin.ticker}');
           WarpApi.migrateWallet(coin.coin, coin.dbFullPath);
           WarpApi.initWallet(coin.coin, coin.dbFullPath);
-          await coin.open();
         }
 
         for (var s in settings.servers) {
@@ -377,6 +377,11 @@ class ZWalletAppState extends State<ZWalletApp> {
             WarpApi.migrateData(s.coin);
           }
         }
+
+        for (var coin in coins) {
+          await coin.open(true);
+        }
+
         _setProgress(0.6, 'Loading Account Data');
         await accounts.refresh();
         _setProgress(0.7, 'Restoring Active Account');

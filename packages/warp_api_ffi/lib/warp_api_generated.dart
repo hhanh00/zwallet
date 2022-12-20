@@ -68,19 +68,6 @@ class NativeLibrary {
   late final _dart_init_wallet _init_wallet =
       _init_wallet_ptr.asFunction<_dart_init_wallet>();
 
-  CResult_u8 create_db(
-    ffi.Pointer<ffi.Int8> db_path,
-  ) {
-    return _create_db(
-      db_path,
-    );
-  }
-
-  late final _create_db_ptr =
-      _lookup<ffi.NativeFunction<_c_create_db>>('create_db');
-  late final _dart_create_db _create_db =
-      _create_db_ptr.asFunction<_dart_create_db>();
-
   CResult_u8 migrate_db(
     int coin,
     ffi.Pointer<ffi.Int8> db_path,
@@ -381,8 +368,12 @@ class NativeLibrary {
   late final _dart_valid_address _valid_address =
       _valid_address_ptr.asFunction<_dart_valid_address>();
 
-  CResult_____c_char new_diversified_address() {
-    return _new_diversified_address();
+  CResult_____c_char new_diversified_address(
+    int ua_type,
+  ) {
+    return _new_diversified_address(
+      ua_type,
+    );
   }
 
   late final _new_diversified_address_ptr =
@@ -901,19 +892,6 @@ class NativeLibrary {
   late final _dart_derive_zip32 _derive_zip32 =
       _derive_zip32_ptr.asFunction<_dart_derive_zip32>();
 
-  void disable_wal(
-    ffi.Pointer<ffi.Int8> db_path,
-  ) {
-    return _disable_wal(
-      db_path,
-    );
-  }
-
-  late final _disable_wal_ptr =
-      _lookup<ffi.NativeFunction<_c_disable_wal>>('disable_wal');
-  late final _dart_disable_wal _disable_wal =
-      _disable_wal_ptr.asFunction<_dart_disable_wal>();
-
   int has_cuda() {
     return _has_cuda();
   }
@@ -1011,14 +989,6 @@ typedef _c_init_wallet = CResult_u8 Function(
 
 typedef _dart_init_wallet = CResult_u8 Function(
   int coin,
-  ffi.Pointer<ffi.Int8> db_path,
-);
-
-typedef _c_create_db = CResult_u8 Function(
-  ffi.Pointer<ffi.Int8> db_path,
-);
-
-typedef _dart_create_db = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> db_path,
 );
 
@@ -1220,9 +1190,13 @@ typedef _dart_valid_address = int Function(
   ffi.Pointer<ffi.Int8> address,
 );
 
-typedef _c_new_diversified_address = CResult_____c_char Function();
+typedef _c_new_diversified_address = CResult_____c_char Function(
+  ffi.Uint8 ua_type,
+);
 
-typedef _dart_new_diversified_address = CResult_____c_char Function();
+typedef _dart_new_diversified_address = CResult_____c_char Function(
+  int ua_type,
+);
 
 typedef _c_get_latest_height = CResult_u32 Function();
 
@@ -1556,14 +1530,6 @@ typedef _dart_derive_zip32 = CResult_____c_char Function(
   int external_1,
   int has_address,
   int address,
-);
-
-typedef _c_disable_wal = ffi.Void Function(
-  ffi.Pointer<ffi.Int8> db_path,
-);
-
-typedef _dart_disable_wal = void Function(
-  ffi.Pointer<ffi.Int8> db_path,
 );
 
 typedef _c_has_cuda = ffi.Int8 Function();

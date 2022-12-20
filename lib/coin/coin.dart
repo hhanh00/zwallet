@@ -41,10 +41,17 @@ abstract class CoinBase {
     dbFullPath = _getFullPath(dbDir);
   }
 
-  Future<void> open() async {
+  Future<void> open(bool wal) async {
     print("Opening DB ${dbFullPath}");
     // schema handled in backend
-    db = await openDatabase(dbFullPath/*, onCreate: createSchema, version: 1*/);
+    db = await openDatabase(dbFullPath, onConfigure: (db) async {
+      if (wal)
+        await db.rawQuery("PRAGMA journal_mode=WAL");
+    });
+  }
+
+  Future<void> close() async {
+    await db.close();
   }
 
   Future<bool> tryImport(PlatformFile file) async {
@@ -69,8 +76,9 @@ abstract class CoinBase {
 
   Future<void> export(BuildContext context, String dbPath) async {
     final path = _getFullPath(dbPath);
-    WarpApi.disableWAL(path);
-    db = await openDatabase(path);
+    db = await openDatabase(path, onConfigure: (db) async {
+      await db.rawQuery("PRAGMA journal_mode=off");
+    });
     await db.close();
     await exportFile(context, path, dbName);
   }

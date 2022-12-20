@@ -13,7 +13,6 @@ if [ "$DL_DIR" == "" ]; then
   DL_DIR="/tmp"
 fi
 
-
 sudo pacman -Sy --noconfirm unzip jdk8-openjdk wget
 
 wget -qP $DL_DIR -N https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
