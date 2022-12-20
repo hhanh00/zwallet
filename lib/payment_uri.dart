@@ -107,7 +107,6 @@ class PaymentURIState extends State<PaymentURIPage> {
     final amount = amountKey.currentState!.amount;
     final memo = _memoController.text;
 
-    final String _qrText;
     if (amount > 0) {
       return WarpApi.makePaymentURI(address, amount, memo);
     }
@@ -123,7 +122,7 @@ class PaymentURIState extends State<PaymentURIPage> {
     if (types == null) { return; }
     setState(() {
       if (types.isEmpty) {
-        address = active.getAddress(true, true, true);
+        address = active.getAddress(7);
       }
       else
         address = _decodeCheckboxes(types);
@@ -132,13 +131,11 @@ class PaymentURIState extends State<PaymentURIPage> {
   }
 
   String _decodeCheckboxes(List<String> types) {
-    var t = false;
-    var s = false;
-    var o = false;
-    if (types.contains("T")) t = true;
-    if (types.contains("S")) s = true;
-    if (types.contains("O")) o = true;
-    return active.getAddress(t, s, o);
+    var uaType = 0;
+    if (types.contains("T")) uaType |= 1;
+    if (types.contains("S")) uaType |= 2;
+    if (types.contains("O")) uaType |= 4;
+    return active.getAddress(uaType);
   }
 
   void _reset() {

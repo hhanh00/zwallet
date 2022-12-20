@@ -322,11 +322,11 @@ abstract class _ActiveAccount with Store {
   }
 
   String newAddress() {
-    return WarpApi.newDiversifiedAddress();
+    return WarpApi.newDiversifiedAddress(settings.uaType);
   }
 
-  String getAddress(bool t, bool s, bool o) {
-    return WarpApi.getAddress(coin, id, (t ? 1 : 0) | (s ? 2 : 0) | (o ? 4 : 0));
+  String getAddress(int uaType) {
+    return WarpApi.getAddress(coin, id, uaType);
   }
 
   @computed

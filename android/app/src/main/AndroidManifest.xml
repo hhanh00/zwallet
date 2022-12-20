@@ -47,6 +47,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+            android:name="com.tekartik.sqflite.wal_enabled"
+            android:value="true" />
         <service android:name="com.pravera.flutter_foreground_task.service.ForegroundService" />
     </application>
     <queries>
