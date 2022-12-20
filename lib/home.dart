@@ -192,7 +192,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
                     PopupMenuItem(child: Text(s.signOffline), enabled: active.canPay, value: "Sign"),
                     PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
                     PopupMenuItem(child: Text(s.multipay), value: "MultiPay"),
-                    PopupMenuItem(child: Text(s.keyTool), value: "KeyTool"),
+                    PopupMenuItem(child: Text(s.keyTool), enabled: active.canPay, value: "KeyTool"),
                   ], onSelected: _onMenu)),
             // if (!simpleMode && !isMobile())
             //   PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
