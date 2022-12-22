@@ -41,6 +41,8 @@ abstract class CoinBase {
     dbFullPath = _getFullPath(dbDir);
   }
 
+  bool exists() => File(dbFullPath).existsSync();
+
   Future<void> open(bool wal) async {
     print("Opening DB ${dbFullPath}");
     // schema handled in backend
