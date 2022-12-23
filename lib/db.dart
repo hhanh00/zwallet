@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:warp_api/types.dart';
 import 'accounts.dart';
 import 'store.dart';
 import 'package:warp_api/warp_api.dart';
@@ -273,6 +274,39 @@ class DbReader {
     final start = today.add(Duration(days: -_chartRangeDays()));
     final cutoff = start.millisecondsSinceEpoch;
     return TimeRange(cutoff, today.millisecondsSinceEpoch);
+  }
+
+  Future<List<SendTemplateId>> loadTemplates() async {
+    final List<Map> res = await db.rawQuery(
+        "SELECT id_send_template, title FROM send_templates", []);
+    List<SendTemplateId> templateIds = [];
+    for (var row in res) {
+      final id = row['id_send_template'];
+      final title = row['title'];
+      final templateId = SendTemplateId(id, title);
+      templateIds.add(templateId);
+    }
+    return templateIds;
+  }
+
+  Future<SendTemplate?> loadTemplate(int id) async {
+    final List<Map> res = await db.rawQuery(
+        "SELECT title, address, amount, fiat_amount, fee_included, fiat, include_reply_to, subject, body "
+        "FROM send_templates WHERE id_send_template = ?1", [id]);
+    for (var row in res) {
+      final title = row['title'];
+      final address = row['address'];
+      final amount = row['amount'];
+      final num fiat_amount = row['fiat_amount'];
+      final fee_included = row['fee_included'] != 0;
+      final fiat = row['fiat'];
+      final include_reply_to = row['include_reply_to'] != 0;
+      final subject = row['subject'];
+      final body = row['body'];
+      final memo = Memo(include_reply_to, subject, body);
+      final template = SendTemplate(id, title, address, amount, fiat_amount.toDouble(), fee_included, fiat, memo);
+      return template;
+    }
   }
 
   int _chartRangeDays() {

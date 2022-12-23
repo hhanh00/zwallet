@@ -274,5 +274,10 @@
   "toPool": "Vers le Fond",
   "maxSpendableAmount": "Max dépensable: {amount} {ticker}",
   "splitNotes": "Diviser Billets",
-  "transfer": "Transferer"
+  "transfer": "Transferer",
+  "template": "Template",
+  "newTemplate": "New Template",
+  "name": "Name",
+  "deleteTemplate": "Delete Template?",
+  "areYouSureYouWantToDeleteThisSendTemplate": "Are you sure you want to delete this send template?"
 }

@@ -781,7 +781,7 @@ class NativeLibrary {
   late final _dart_zip_backup _zip_backup =
       _zip_backup_ptr.asFunction<_dart_zip_backup>();
 
-  void unzip_backup(
+  CResult_u8 unzip_backup(
     ffi.Pointer<ffi.Int8> key,
     ffi.Pointer<ffi.Int8> data_path,
     ffi.Pointer<ffi.Int8> dst_dir,
@@ -891,6 +891,37 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_derive_zip32>>('derive_zip32');
   late final _dart_derive_zip32 _derive_zip32 =
       _derive_zip32_ptr.asFunction<_dart_derive_zip32>();
+
+  CResult_u32 save_send_template(
+    int coin,
+    ffi.Pointer<ffi.Int8> template_,
+  ) {
+    return _save_send_template(
+      coin,
+      template_,
+    );
+  }
+
+  late final _save_send_template_ptr =
+      _lookup<ffi.NativeFunction<_c_save_send_template>>('save_send_template');
+  late final _dart_save_send_template _save_send_template =
+      _save_send_template_ptr.asFunction<_dart_save_send_template>();
+
+  CResult_u8 delete_send_template(
+    int coin,
+    int id,
+  ) {
+    return _delete_send_template(
+      coin,
+      id,
+    );
+  }
+
+  late final _delete_send_template_ptr =
+      _lookup<ffi.NativeFunction<_c_delete_send_template>>(
+          'delete_send_template');
+  late final _dart_delete_send_template _delete_send_template =
+      _delete_send_template_ptr.asFunction<_dart_delete_send_template>();
 
   int has_cuda() {
     return _has_cuda();
@@ -1456,13 +1487,13 @@ typedef _dart_zip_backup = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> dst_dir,
 );
 
-typedef _c_unzip_backup = ffi.Void Function(
+typedef _c_unzip_backup = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> key,
   ffi.Pointer<ffi.Int8> data_path,
   ffi.Pointer<ffi.Int8> dst_dir,
 );
 
-typedef _dart_unzip_backup = void Function(
+typedef _dart_unzip_backup = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> key,
   ffi.Pointer<ffi.Int8> data_path,
   ffi.Pointer<ffi.Int8> dst_dir,
@@ -1530,6 +1561,26 @@ typedef _dart_derive_zip32 = CResult_____c_char Function(
   int external_1,
   int has_address,
   int address,
+);
+
+typedef _c_save_send_template = CResult_u32 Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> template_,
+);
+
+typedef _dart_save_send_template = CResult_u32 Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> template_,
+);
+
+typedef _c_delete_send_template = CResult_u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+);
+
+typedef _dart_delete_send_template = CResult_u8 Function(
+  int coin,
+  int id,
 );
 
 typedef _c_has_cuda = ffi.Int8 Function();

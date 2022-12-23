@@ -1,3 +1,4 @@
+import 'package:YWallet/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobx/mobx.dart';
@@ -6,13 +7,16 @@ import 'generated/l10n.dart';
 import 'main.dart';
 
 class DualMoneyInputWidget extends StatefulWidget {
+  late final String fiat;
   final int? spendable;
   final int? initialValue;
   final bool max;
 
   DualMoneyInputWidget(
-      {Key? key, this.initialValue, this.spendable, this.max = false})
-      : super(key: key);
+      {Key? key, this.initialValue, this.spendable, String? fiat, this.max = false})
+      : super(key: key) {
+    this.fiat = fiat ?? settings.currency;
+  }
 
   @override
   DualMoneyInputState createState() => DualMoneyInputState();
@@ -23,6 +27,8 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   var inputInCoin = true;
   var coinAmountController = TextEditingController();
   var fiatAmountController = TextEditingController();
+  late String _fiat;
+  var _fxRate = 0.0;
   var amount = 0;
   double sliderValue = 0;
   var _feeIncluded = false;
@@ -38,16 +44,27 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   @override
   void initState() {
     super.initState();
+    _fiat = widget.fiat;
     zero = amountToString(0, precision(useMillis));
     final initialValue = widget.initialValue ?? 0;
     final amount = amountToString(initialValue, precision(useMillis));
     coinAmountController.text = amount;
-    _updateFiatAmount();
+    _updateFxRate();
+  }
 
-    priceAutorunDispose = autorun((_) {
-      _updateFiatAmount();
+  void _updateFxRate() {
+    Future.microtask(() async {
+      final rate = await getFxRate(active.coinDef.currency, _fiat) ?? 0.0;
+      setState(() {
+        _fxRate = rate;
+        if (inputInCoin)
+          _updateFiatAmount();
+        else
+          _updateAmount();
+      });
     });
   }
+
 
   @override
   void dispose() {
@@ -89,7 +106,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
                     ? TextStyle(fontWeight: FontWeight.w200)
                     : TextStyle(),
                 decoration: InputDecoration(
-                    labelText: s.amountInSettingscurrency(settings.currency)),
+                    labelText: s.amountInSettingscurrency(_fiat)),
                 controller: fiatAmountController,
                 keyboardType: TextInputType.number,
                 inputFormatters: [makeInputFormatter(useMillis)],
@@ -126,6 +143,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
 
   void clear() {
     setState(() {
+      _fiat = settings.currency;
       _feeIncluded = false;
       coinAmountController.text = zero;
       fiatAmountController.text = zero;
@@ -180,7 +198,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   }
 
   void _updateAmount() {
-    final rate = 1.0 / priceStore.coinPrice;
+    final rate = 1.0 / _fxRate;
     final amount = parseNumber(fiatAmountController.text);
     final otherAmount = decimalFormat(amount * rate, precision(useMillis));
     setState(() {
@@ -188,10 +206,9 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
     });
   }
 
-  void _updateFiatAmount() {
-    final rate = priceStore.coinPrice;
+  void _updateFiatAmount(){
     final amount = parseNumber(coinAmountController.text);
-    final otherAmount = decimalFormat(amount * rate, precision(useMillis));
+    final otherAmount = decimalFormat(amount * _fxRate, precision(useMillis));
     setState(() {
       fiatAmountController.text = otherAmount;
     });
@@ -201,12 +218,33 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
     final spendable = widget.spendable;
     setState(() {
       final amount = stringToAmount(coinAmountController.text);
-      if (spendable != null)
+      if (spendable != null) {
         sliderValue = (amount / spendable * 100).clamp(0, 100);
+      }
     });
   }
 
   void _onAmount(String? vs) {
     amount = stringToAmount(vs);
+  }
+
+  Future<void> restore(int amount, double amountInFiat, bool feeIncluded, String? fiat) async {
+    final rate = await getFxRate(active.coinDef.currency, fiat ?? settings.currency) ?? 0.0;
+    setState(() {
+      _fxRate = rate;
+      if (fiat != null) {
+        _fiat = fiat;
+        fiatAmountController.text = decimalFormat(amountInFiat, precision(settings.useMillis));
+        inputInCoin = false;
+        _updateAmount();
+      }
+      else {
+        coinAmountController.text = amountToString(amount, precision(settings.useMillis));
+        inputInCoin = true;
+        _updateFiatAmount();
+      }
+      _feeIncluded = feeIncluded;
+      _updateSlider();
+    });
   }
 }

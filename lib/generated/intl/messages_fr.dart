@@ -125,6 +125,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "areYouSureYouWantToDeleteThisContact":
             MessageLookupByLibrary.simpleMessage(
                 "Voulez vous effacer ce contact?"),
+        "areYouSureYouWantToDeleteThisSendTemplate":
+            MessageLookupByLibrary.simpleMessage(
+                "Are you sure you want to delete this send template?"),
         "areYouSureYouWantToSaveYourContactsIt": m1,
         "auto": MessageLookupByLibrary.simpleMessage("Auto"),
         "autoHideBalance": MessageLookupByLibrary.simpleMessage(
@@ -201,6 +204,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Effacer un compte"),
         "deleteContact":
             MessageLookupByLibrary.simpleMessage("Effacer un contact"),
+        "deleteTemplate":
+            MessageLookupByLibrary.simpleMessage("Delete Template?"),
         "derivationPath":
             MessageLookupByLibrary.simpleMessage("Chemin de Dérivation"),
         "disconnected": MessageLookupByLibrary.simpleMessage("Déconnecté"),
@@ -284,6 +289,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "multisigShares":
             MessageLookupByLibrary.simpleMessage("Multisig Shares"),
         "na": MessageLookupByLibrary.simpleMessage("N/D"),
+        "name": MessageLookupByLibrary.simpleMessage("Name"),
         "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Le nom est vide"),
         "newAccount": MessageLookupByLibrary.simpleMessage("Nouveau Compte"),
         "newLabel": MessageLookupByLibrary.simpleMessage("Nouveau"),
@@ -291,6 +297,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Nouvelle adresse instantanée"),
         "newSubAccount":
             MessageLookupByLibrary.simpleMessage("Nouveau Sous Compte"),
+        "newTemplate": MessageLookupByLibrary.simpleMessage("New Template"),
         "noAccount": MessageLookupByLibrary.simpleMessage("Pas de compte"),
         "noActiveAccount":
             MessageLookupByLibrary.simpleMessage("Aucun Compte sélectionné"),
@@ -431,6 +438,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Appuyez sur le code QR pour l\'adresse transparente"),
         "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
             "Presser sur une Transaction pour plus de details"),
+        "template": MessageLookupByLibrary.simpleMessage("Template"),
         "textCopiedToClipboard": m22,
         "thePrivateWalletMessenger": MessageLookupByLibrary.simpleMessage(
             "Le Portefeuille et Messagerie Privé"),

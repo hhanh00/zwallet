@@ -42,17 +42,21 @@ class SendState extends State<SendPage> {
   final _addressController = TextEditingController();
   final _memoController = TextEditingController();
   final _subjectController = TextEditingController();
+  var _fiat = settings.currency;
   var _memoInitialized = false;
   ReactionDisposer? _newBlockAutorunDispose;
   final _fee = DEFAULT_FEE;
   var _usedBalance = 0;
   var _replyTo = settings.includeReplyTo;
+  List<SendTemplateId> _templates = [];
+  SendTemplateId? _template;
 
   void clear() {
     final s = S.of(context);
     setState(() {
       _memoController.text = settings.memoSignature ?? s.sendFrom(APP_NAME);
       _addressController.clear();
+      _fiat = settings.currency;
       _replyTo = false;
       _subjectController.clear();
       _amountKey.currentState?.clear();
@@ -105,6 +109,8 @@ class SendState extends State<SendPage> {
         _unconfirmedBalance = unconfirmedBalance ?? 0;
       });
     });
+
+    Future(_loadTemplates);
   }
 
   @override
@@ -123,8 +129,12 @@ class SendState extends State<SendPage> {
       _memoInitialized = true;
     }
 
+    var templates = _templates.map((t) => DropdownMenuItem(child: Text(t.title), value: t)).toList();
+
+    final addReset = _template != null ? IconButton(onPressed: _resetTemplate, icon: Icon(Icons.close)) : IconButton(onPressed: _addTemplate, icon: Icon(Icons.add));
+
     return Scaffold(
-        appBar: AppBar(title: Text(s.sendCointicker(active.coinDef.ticker))),
+      appBar: AppBar(title: Text(s.sendCointicker(active.coinDef.ticker))),
         body: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
@@ -203,12 +213,112 @@ class SendState extends State<SendPage> {
                         controller: _memoController,
                       )]))),
                       Padding(padding: EdgeInsets.all(8)),
-                      ButtonBar(
-                          children: [
-                            ElevatedButton.icon(onPressed: clear, icon: Icon(Icons.clear), label: Text(s.reset), style: ElevatedButton.styleFrom(backgroundColor: t.colorScheme.secondary)),
-                            ElevatedButton.icon(onPressed: _onSend, icon: Icon(MdiIcons.send), label: Text(widget.isMulti ? s.add : s.send))
+                      Row(children: [
+                        Expanded(child:
+                          DropdownButtonFormField<SendTemplateId>(
+                            hint: Text(s.template),
+                            items: templates, value: _template, onChanged: (v) {
+                              setState(() {
+                                _template = v;
+                              });
+                            })),
+                        addReset,
+                        IconButton(onPressed: _template != null ? _openTemplate : null, icon: Icon(Icons.open_in_new)),
+                        IconButton(onPressed: _template != null ? () { _saveTemplate(_template!.id, _template!.title, true); } : null, icon: Icon(Icons.save)),
+                        IconButton(onPressed: _template != null ? _deleteTemplate : null, icon: Icon(Icons.delete)),
+                      ]),
+                      Padding(padding: EdgeInsets.all(8)),
+                      ButtonBar(children: [
+                        ElevatedButton.icon(onPressed: clear, icon: Icon(Icons.clear), label: Text(s.reset), style: ElevatedButton.styleFrom(backgroundColor: t.colorScheme.secondary)),
+                        ElevatedButton.icon(onPressed: _onSend, icon: Icon(MdiIcons.send), label: Text(widget.isMulti ? s.add : s.send))
                     ])
         ])))));
+  }
+
+  void _resetTemplate() {
+    setState(() {
+      _template = null;
+    });
+  }
+
+  Future<void> _addTemplate() async {
+    final s = S.of(context);
+    final form = _formKey.currentState!;
+    if (form.validate()) {
+      form.save();
+      final titleController = TextEditingController();
+      final confirmed = await showDialog<bool>(
+          context: context, builder: (context) =>
+          AlertDialog(
+              title: Text(s.newTemplate),
+              content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                        decoration: InputDecoration(label: Text(s.name)),
+                        controller: titleController)
+                  ]),
+              actions: confirmButtons(context, () {
+                Navigator.of(context).pop(true);
+              }))) ?? false;
+      if (!confirmed) return;
+      final title = titleController.text;
+      final id = _saveTemplate(0, title, false);
+      if (id != null) {
+        _template = SendTemplateId(id, title);
+        Future.microtask(_loadTemplates);
+      }
+    }
+  }
+
+  int? _saveTemplate(int id, String title, bool validate) {
+    final form = _formKey.currentState!;
+    if (validate && !form.validate()) return null;
+    form.save();
+    final memo = Memo(
+        _replyTo, _subjectController.text, _memoController.text);
+    final dualAmountController = amountInput;
+    if (dualAmountController == null) return null;
+    final template = SendTemplate(
+        id,
+        title,
+        _address,
+        stringToAmount(dualAmountController.coinAmountController.text),
+        parseNumber(dualAmountController.fiatAmountController.text),
+        dualAmountController.feeIncluded,
+        dualAmountController.inputInCoin ? null : _fiat,
+        memo);
+    return WarpApi.saveSendTemplate(active.coin, template);
+  }
+
+  Future<void> _deleteTemplate() async {
+    final s = S.of(context);
+    final confirmed = await showConfirmDialog(context, s.deleteTemplate, s.areYouSureYouWantToDeleteThisSendTemplate);
+    if (!confirmed) return;
+    WarpApi.deleteSendTemplate(active.coin, _template!.id);
+    _resetTemplate();
+    Future.microtask(_loadTemplates);
+  }
+
+  Future<void> _openTemplate() async {
+    final tid = _template;
+    if (tid == null) return;
+    final template = await active.dbReader.loadTemplate(tid.id);
+    if (template == null) return;
+    amountInput?.restore(template.amount, template.fiat_amount, template.fee_included, template.fiat);
+    setState(() {
+      _addressController.text = template.address;
+      _replyTo = template.memo.include_reply_to;
+      _subjectController.text = template.memo.subject;
+      _memoController.text = template.memo.body;
+    });
+  }
+
+  Future<void> _loadTemplates() async {
+    final templateIds = await active.dbReader.loadTemplates();
+    setState(() {
+      _templates = templateIds;
+    });
   }
 
   Suggestion? getSuggestion(String v) {

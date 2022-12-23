@@ -261,6 +261,14 @@ class WarpApi {
     return unwrapResultString(res);
   }
 
+  static int saveSendTemplate(int coin, SendTemplate template) {
+    final templateAsJson = jsonEncode(template);
+    return unwrapResultU32(warp_api_lib.save_send_template(coin, toNative(templateAsJson)));
+  }
+
+  static void deleteSendTemplate(int coin, int id) {
+    warp_api_lib.delete_send_template(coin, id);
+  }
   // static String ledgerSign(int coin, String txFilename) {
   //   final res = warp_api_lib.ledger_sign(coin, txFilename.toNativeUtf8().cast<Int8>());
   //   return res.cast<Utf8>().toDartString();
@@ -347,7 +355,7 @@ class WarpApi {
   }
 
   static void unzipBackup(String key, String path, String tmpDir) {
-    warp_api_lib.unzip_backup(toNative(key), toNative(path), toNative(tmpDir));
+    unwrapResultU8(warp_api_lib.unzip_backup(toNative(key), toNative(path), toNative(tmpDir)));
   }
 
   static List<String> splitData(int id, String data) {

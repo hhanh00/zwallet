@@ -274,5 +274,10 @@
   "toPool": "Para Suministro",
   "maxSpendableAmount": "Max Gastable: {amount} {ticker}",
   "splitNotes": "Dividar Billetes",
-  "transfer": "Transferir"
+  "transfer": "Transferir",
+  "template": "Template",
+  "newTemplate": "New Template",
+  "name": "Name",
+  "deleteTemplate": "Delete Template?",
+  "areYouSureYouWantToDeleteThisSendTemplate": "Are you sure you want to delete this send template?"
 }

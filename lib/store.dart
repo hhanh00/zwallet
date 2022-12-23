@@ -606,6 +606,22 @@ abstract class _Settings with Store {
   bool get isDeveloper => developerMode == 0;
 }
 
+Future<double?> getFxRate(String coin, String fiat) async {
+  final base = "api.coingecko.com";
+  final uri = Uri.https(base, '/api/v3/simple/price',
+      {'ids': coin, 'vs_currencies': fiat});
+  try {
+    final rep = await http.get(uri);
+    if (rep.statusCode == 200) {
+      final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
+      final p = json[coin][fiat.toLowerCase()];
+      return (p is double) ? p : (p as int).toDouble();
+    }
+  }
+  catch (_) {}
+  return null;
+}
+
 class PriceStore = _PriceStore with _$PriceStore;
 
 abstract class _PriceStore with Store {
@@ -617,19 +633,7 @@ abstract class _PriceStore with Store {
   @action
   Future<void> fetchCoinPrice(int coin) async {
     final c = settings.coins[coin].def;
-    final base = "api.coingecko.com";
-    final uri = Uri.https(base, '/api/v3/simple/price',
-        {'ids': c.currency, 'vs_currencies': settings.currency});
-    try {
-      final rep = await http.get(uri);
-      if (rep.statusCode == 200) {
-        final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
-        final p = json[c.currency][settings.currency.toLowerCase()];
-        coinPrice = (p is double) ? p : (p as int).toDouble();
-      } else
-        coinPrice = 0.0;
-    }
-    catch (_) {}
+    coinPrice = await getFxRate(c.currency, settings.currency) ?? 0.0;
   }
 
   Future<void> updateChart() async {
