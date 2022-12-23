@@ -5,11 +5,9 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:warp_api/warp_api.dart';
 import 'main.dart';
 import 'rescan.dart';
-import 'store.dart';
 import 'generated/l10n.dart';
 import 'about.dart';
 import 'accounts.dart';
-import 'welcome.dart';
 
 class AccountManagerPage extends StatefulWidget {
   @override

@@ -469,6 +469,8 @@ abstract class _ActiveAccount with Store {
   String get address {
     return account.address;
   }
+
+  DbReader get dbReader => DbReader(coin, id);
 }
 
 class Balances = _Balances with _$Balances;

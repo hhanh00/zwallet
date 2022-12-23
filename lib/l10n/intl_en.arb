@@ -276,5 +276,10 @@
   "toPool": "To Pool",
   "maxSpendableAmount": "Max spendable: {amount} {ticker}",
   "splitNotes": "Split Notes",
-  "transfer": "Transfer"
+  "transfer": "Transfer",
+  "template": "Template",
+  "newTemplate": "New Template",
+  "name": "Name",
+  "deleteTemplate": "Delete Template?",
+  "areYouSureYouWantToDeleteThisSendTemplate": "Are you sure you want to delete this send template?"
 }

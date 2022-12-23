@@ -2831,6 +2831,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Template`
+  String get template {
+    return Intl.message(
+      'Template',
+      name: 'template',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Template`
+  String get newTemplate {
+    return Intl.message(
+      'New Template',
+      name: 'newTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get name {
+    return Intl.message(
+      'Name',
+      name: 'name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Template?`
+  String get deleteTemplate {
+    return Intl.message(
+      'Delete Template?',
+      name: 'deleteTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete this send template?`
+  String get areYouSureYouWantToDeleteThisSendTemplate {
+    return Intl.message(
+      'Are you sure you want to delete this send template?',
+      name: 'areYouSureYouWantToDeleteThisSendTemplate',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
