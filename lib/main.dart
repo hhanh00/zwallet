@@ -348,10 +348,8 @@ class ZWalletAppState extends State<ZWalletApp> {
         final dbPath = await getDbPath();
         for (var coin in coins) {
           coin.init(dbPath);
-          if (!coin.exists()) {
-            await coin.open(false);
-            await coin.close();
-          }
+          await coin.open(true);
+          await coin.close();
         }
 
         if (exportDb) {
@@ -362,7 +360,7 @@ class ZWalletAppState extends State<ZWalletApp> {
         if (recover) {
           for (var coin in coins) {
             await coin.importFromTemp();
-            await coin.open(false);
+            await coin.open(true);
             await coin.close();
           }
         }
@@ -383,7 +381,7 @@ class ZWalletAppState extends State<ZWalletApp> {
         }
 
         for (var coin in coins) {
-          await coin.open(true);
+          await coin.open(false);
         }
 
         _setProgress(0.6, 'Loading Account Data');
