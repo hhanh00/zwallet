@@ -43,12 +43,12 @@ abstract class CoinBase {
 
   bool exists() => File(dbFullPath).existsSync();
 
-  Future<void> open(bool wal) async {
-    print("Opening DB ${dbFullPath}");
+  Future<void> open(bool delete_wal) async {
+    print("Opening DB ${dbFullPath}, delete_wal = ${delete_wal}");
     // schema handled in backend
     db = await openDatabase(dbFullPath, onConfigure: (db) async {
-      if (wal)
-        await db.rawQuery("PRAGMA journal_mode=WAL");
+      if (delete_wal)
+        await db.rawQuery("PRAGMA journal_mode=DELETE");
     });
   }
 
