@@ -213,9 +213,9 @@ class WarpApi {
     return txId;
   }
 
-  static Future<String> shieldTAddr(int coin, int account, int amount, int anchorOffset) async {
-    final txId = await compute(shieldTAddrIsolateFn, ShieldTAddrParams(coin, account, amount, anchorOffset));
-    return txId;
+  static String shieldTAddr(int coin, int account, int amount, int anchorOffset) {
+    final txPlan = warp_api_lib.shield_taddr(coin, account, amount, anchorOffset);
+    return unwrapResultString(txPlan);
   }
 
   static Future<void> scanTransparentAccounts(
@@ -303,9 +303,8 @@ class WarpApi {
         address.toNativeUtf8().cast<Int8>(), dirty ? 1 : 0);
   }
 
-  static Future<String> commitUnsavedContacts(int anchorOffset) async {
-    return compute(
-        commitUnsavedContactsIsolateFn, CommitContactsParams(anchorOffset));
+  static String commitUnsavedContacts(int anchorOffset) {
+    return unwrapResultString(warp_api_lib.commit_unsaved_contacts(anchorOffset));
   }
 
   static void markMessageAsRead(int messageId, bool read) {
@@ -434,11 +433,6 @@ String transferPoolsIsolateFn(TransferPoolsParams params) {
   return unwrapResultString(txId);
 }
 
-String shieldTAddrIsolateFn(ShieldTAddrParams params) {
-  final txId = warp_api_lib.shield_taddr(params.coin, params.account, params.amount, params.anchorOffset);
-  return unwrapResultString(txId);
-}
-
 int syncHistoricalPricesIsolateFn(SyncHistoricalPricesParams params) {
   final now = DateTime.now();
   final today = DateTime.utc(now.year, now.month, now.day);
@@ -446,11 +440,6 @@ int syncHistoricalPricesIsolateFn(SyncHistoricalPricesParams params) {
       today.millisecondsSinceEpoch ~/ 1000,
       365,
       params.currency.toNativeUtf8().cast<Int8>()));
-}
-
-String commitUnsavedContactsIsolateFn(CommitContactsParams params) {
-  final txId = warp_api_lib.commit_unsaved_contacts(params.anchorOffset);
-  return unwrapResultString(txId);
 }
 
 int getTBalanceIsolateFn(GetTBalanceParams params) {
@@ -510,21 +499,6 @@ class TransferPoolsParams {
 
   TransferPoolsParams(this.coin, this.account, this.fromPool, this.toPool, this.amount, this.takeFee, this.memo,
       this.splitAmount, this.anchorOffset);
-}
-
-class ShieldTAddrParams {
-  final int coin;
-  final int account;
-  final int amount;
-  final int anchorOffset;
-
-  ShieldTAddrParams(this.coin, this.account, this.amount, this.anchorOffset);
-}
-
-class CommitContactsParams {
-  final int anchorOffset;
-
-  CommitContactsParams(this.anchorOffset);
 }
 
 class SyncHistoricalPricesParams {

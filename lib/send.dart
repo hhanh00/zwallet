@@ -60,6 +60,7 @@ class SendState extends State<SendPage> {
       _replyTo = false;
       _subjectController.clear();
       _amountKey.currentState?.clear();
+      active.setDraftRecipient(null);
     });
   }
 
@@ -75,7 +76,6 @@ class SendState extends State<SendPage> {
       _replyTo = draftRecipient.reply_to;
       _subjectController.text = draftRecipient.subject;
       _memoInitialized = true;
-      active.setDraftRecipient(null);
     }
 
     if (widget.args?.contact != null)
@@ -111,6 +111,17 @@ class SendState extends State<SendPage> {
     });
 
     Future(_loadTemplates);
+  }
+
+  @override
+  void deactivate() {
+    final form = _formKey.currentState;
+    if (form != null) {
+      form.save();
+      final recipient = _getRecipient();
+      active.setDraftRecipient(recipient);
+    }
+    super.deactivate();
   }
 
   @override
@@ -371,26 +382,30 @@ class SendState extends State<SendPage> {
     }
   }
 
+  Recipient _getRecipient() {
+    final amount = amountInput?.amount ?? 0;
+    final feeIncluded = amountInput?.feeIncluded ?? false;
+    final memo = _memoController.text;
+    final subject = _subjectController.text;
+    final recipient = Recipient(
+      _address,
+      amount,
+      feeIncluded,
+      _replyTo,
+      subject,
+      memo,
+      0,
+    );
+    return recipient;
+  }
+
   void _onSend() async {
     final form = _formKey.currentState;
     if (form == null) return;
 
     if (form.validate()) {
       form.save();
-      final amount = amountInput?.amount ?? 0;
-      final feeIncluded = amountInput?.feeIncluded ?? false;
-      final memo = _memoController.text;
-      final subject = _subjectController.text;
-      final recipient = Recipient(
-        _address,
-        amount,
-        feeIncluded,
-        _replyTo,
-        subject,
-        memo,
-        0,
-      );
-      active.setDraftRecipient(recipient);
+      final recipient = _getRecipient();
 
       if (!widget.isMulti)
         // send closes the page

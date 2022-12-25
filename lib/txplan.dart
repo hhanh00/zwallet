@@ -105,9 +105,11 @@ class TxPlanPage extends StatelessWidget {
       final res = await WarpApi.signOnly(
           active.coin, active.id, plan, (progress) {
         // TODO progressPort.sendPort.send(progress);
+        // Orchard builder does not support progress reporting yet
       });
       // TODO progressPort.sendPort.send(0);
       active.setBanner("");
+      active.setDraftRecipient(null);
       if (settings.qrOffline) {
         navigatorKey.currentState?.pushReplacementNamed(
             '/showRawTx', arguments: res);

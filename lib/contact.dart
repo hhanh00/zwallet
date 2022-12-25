@@ -90,13 +90,12 @@ class ContactsState extends State<ContactsTab> {
   }
 
   _onCommit() async {
-    final approve = await showMessageBox(context, S.of(context).saveToBlockchain, 
-        S.of(context).areYouSureYouWantToSaveYourContactsIt(activeCoin().ticker),
-        S.of(context).ok);
-    if (approve) {
-      final tx = await WarpApi.commitUnsavedContacts(settings.anchorOffset);
-      showSnackBar(S.of(context).txId(tx));
-      contacts.markContactsSaved(active.coin, true);
+    try {
+      final txPlan = WarpApi.commitUnsavedContacts(settings.anchorOffset);
+      Navigator.of(context).pushNamed('/txplan', arguments: txPlan);
+    }
+    on String catch (msg) {
+      showSnackBar(msg);
     }
   }
 }
