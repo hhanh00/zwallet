@@ -770,26 +770,14 @@ Future<bool> authenticate(BuildContext context, String reason) async {
 }
 
 Future<void> shieldTAddr(BuildContext context) async {
-  await showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) =>
-        AlertDialog(
-            title: Text(S
-                .of(context)
-                .shieldTransparentBalance),
-            content: Text(S
-                .of(context)
-                .doYouWantToTransferYourEntireTransparentBalanceTo(
-                activeCoin().ticker)),
-            actions: confirmButtons(context, () async {
-              final s = S.of(context);
-              Navigator.of(context).pop();
-              showSnackBar(s.shieldingInProgress, autoClose: true);
-              final txid = await WarpApi.shieldTAddr(active.coin, active.id, active.tbalance, settings.anchorOffset);
-              showSnackBar(s.txId(txid));
-            })),
-  );
+  try {
+    final txPlan = WarpApi.shieldTAddr(
+        active.coin, active.id, active.tbalance, settings.anchorOffset);
+    Navigator.of(context).pushNamed('/txplan', arguments: txPlan);
+  }
+  on String catch (msg) {
+    showSnackBar(msg);
+  }
 }
 
 Future<void> shareCsv(List<List> data, String filename, String title) async {

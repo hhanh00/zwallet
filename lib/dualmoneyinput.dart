@@ -50,6 +50,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
     final amount = amountToString(initialValue, precision(useMillis));
     coinAmountController.text = amount;
     _updateFxRate();
+    _updateSlider();
   }
 
   void _updateFxRate() {
