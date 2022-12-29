@@ -223,14 +223,14 @@ class MessagePageState extends State<MessagePage> {
   _prevInThread() async {
     final id = await active.prevInThread(index);
     setState(() {
-      if (id != null) index = active.messages.indexWhere((m) => m.id == id);
+      if (id != 0) index = active.messages.indexWhere((m) => m.id == id);
     });
   }
 
   _nextInThread() async {
     final id = await active.nextInThread(index);
     setState(() {
-      if (id != null) index = active.messages.indexWhere((m) => m.id == id);
+      if (id != 0) index = active.messages.indexWhere((m) => m.id == id);
     });
   }
 

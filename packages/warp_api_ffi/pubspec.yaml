@@ -14,6 +14,7 @@ dependencies:
   convert: ^3.0.1
   protobuf: ^2.0.0
   json_annotation: ^4.1.0
+  flat_buffers: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -28,8 +29,8 @@ ffigen:
     entry-points:
       - '../../native/zcash-sync/binding.h'
 # On MacOS
-#  llvm-path:
-#    - '/opt/homebrew/Cellar/llvm/15.0.6'
+  llvm-path:
+    - '/opt/homebrew/Cellar/llvm/15.0.6'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

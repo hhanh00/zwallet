@@ -71,19 +71,7 @@ class SettingsState extends State<SettingsPage>
                                 FormBuilderFieldOption(
                                     child: Text(s.advanced), value: 'advanced'),
                               ]),
-                          if (!simpleMode)
-                            TabBar(
-                                controller: _tabController,
-                                tabs: [Tab(text: "Zcash"), Tab(text: "Ycash")]),
-                          if (!simpleMode)
-                            SizedBox(
-                                height: 270,
-                                child: TabBarView(
-                                    controller: _tabController,
-                                    children: [
-                                      ServerSelect(0),
-                                      ServerSelect(1)
-                                    ])),
+                          ServerSelect(active.coin),
                           FormBuilderRadioGroup(
                               orientation: OptionsOrientation.horizontal,
                               name: 'themes',

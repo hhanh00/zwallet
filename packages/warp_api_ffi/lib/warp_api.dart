@@ -7,7 +7,8 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:ffi/ffi.dart';
-import './warp_api_generated.dart';
+import 'warp_api_generated.dart';
+import 'data_fb_generated.dart';
 import 'types.dart';
 
 typedef report_callback = Void Function(Int32);
@@ -25,6 +26,16 @@ NativeLibrary init() {
 
 Pointer<Int8> toNative(String s) {
   return s.toNativeUtf8().cast<Int8>();
+}
+
+Pointer<Uint8> toNativeBytes(Uint8List bytes) {
+  final len = bytes.length;
+  final ptr = malloc.allocate<Uint8>(bytes.length);
+  final list = ptr.asTypedList(bytes.length);
+  for (var i = 0; i < len; i++) {
+    list[i] = bytes[i];
+  }
+  return ptr;
 }
 
 int unwrapResultU8(CResult_u8 r) {
@@ -45,6 +56,11 @@ int unwrapResultU64(CResult_u64 r) {
 String unwrapResultString(CResult_____c_char r) {
   if (r.error != nullptr) throw convertCString(r.error);
   return convertCString(r.value);
+}
+
+List<int> unwrapResultBytes(CResult______u8 r) {
+  if (r.error != nullptr) throw convertCString(r.error);
+  return convertBytes(r.value, r.len);
 }
 
 class WarpApi {
@@ -218,9 +234,9 @@ class WarpApi {
     return unwrapResultString(txPlan);
   }
 
-  static Future<void> scanTransparentAccounts(
+  static Future<List<AddressBalance>> scanTransparentAccounts(
       int coin, int account, int gapLimit) async {
-    await compute(scanTransparentAccountsParamsIsolateFn,
+    return await compute(scanTransparentAccountsParamsIsolateFn,
         ScanTransparentAccountsParams(gapLimit));
   }
 
@@ -261,14 +277,6 @@ class WarpApi {
     return unwrapResultString(res);
   }
 
-  static int saveSendTemplate(int coin, SendTemplate template) {
-    final templateAsJson = jsonEncode(template);
-    return unwrapResultU32(warp_api_lib.save_send_template(coin, toNative(templateAsJson)));
-  }
-
-  static void deleteSendTemplate(int coin, int id) {
-    warp_api_lib.delete_send_template(coin, id);
-  }
   // static String ledgerSign(int coin, String txFilename) {
   //   final res = warp_api_lib.ledger_sign(coin, txFilename.toNativeUtf8().cast<Int8>());
   //   return res.cast<Utf8>().toDartString();
@@ -373,7 +381,6 @@ class WarpApi {
   static String getTxSummary(String tx) {
     return unwrapResultString(
         warp_api_lib.get_tx_summary(tx.toNativeUtf8().cast<Int8>()));
-    // TODO: Free
   }
 
   static String getBestServer(List<String> urls) {
@@ -413,6 +420,124 @@ class WarpApi {
   static void useGPU(bool v) {
     warp_api_lib.use_gpu(v ? 1 : 0);
   }
+
+  static List<Account> getAccountList(int coin) {
+    final r = unwrapResultBytes(warp_api_lib.get_account_list(coin));
+    return AccountVec(r).accounts!;
+  }
+
+  static int getAvailableAccountId(int coin, int id) {
+    return unwrapResultU32(warp_api_lib.get_available_account_id(coin, id));
+  }
+
+  static String getTAddr(int coin, int id) {
+    return unwrapResultString(warp_api_lib.get_t_addr(coin, id));
+  }
+
+  static String getSK(int coin, int id) {
+    return unwrapResultString(warp_api_lib.get_sk(coin, id));
+  }
+
+  static void updateAccountName(int coin, int id, String name) {
+    warp_api_lib.update_account_name(coin, id, toNative(name));
+  }
+
+  static Balance getBalance(int coin, int id, int confirmedHeight) {
+    final r = unwrapResultBytes(warp_api_lib.get_balances(coin, id, confirmedHeight));
+    final b = Balance(r);
+    return b;
+  }
+
+  static Height? getDbHeight(int coin) {
+    final r = unwrapResultBytes(warp_api_lib.get_db_height(coin));
+    if (r.isEmpty) return null;
+    final h = Height(r);
+    return h;
+  }
+
+  static List<ShieldedNote> getNotes(int coin, int id) {
+    final r = unwrapResultBytes(warp_api_lib.get_notes(coin, id));
+    final ns = ShieldedNoteVec(r);
+    return ns.notes!;
+  }
+
+  static List<ShieldedTx> getTxs(int coin, int id) {
+    final r = unwrapResultBytes(warp_api_lib.get_txs(coin, id));
+    final txs = ShieldedTxVec(r);
+    return txs.txs!;
+  }
+
+  static List<Message> getMessages(int coin, int id) {
+    final r = unwrapResultBytes(warp_api_lib.get_messages(coin, id));
+    final msgs = MessageVec(r);
+    return msgs.messages!;
+  }
+
+  static PrevNext getPrevNextMessage(int coin, int id, String subject, int height) {
+    final r = unwrapResultBytes(warp_api_lib.get_prev_next_message(coin, id, toNative(subject), height));
+    final pn = PrevNext(r);
+    return pn;
+  }
+
+  static List<SendTemplateT> getSendTemplates(int coin) {
+    final r = unwrapResultBytes(warp_api_lib.get_templates(coin));
+    final templates = SendTemplateVec(r).unpack();
+    return templates.templates!;
+  }
+
+  static int saveSendTemplate(int coin, SendTemplateT t) {
+    final template = SendTemplateObjectBuilder(
+      title: t.title,
+      address: t.address,
+      amount: t.amount,
+      feeIncluded: t.feeIncluded,
+      fiatAmount: t.fiatAmount,
+      fiat: t.fiat,
+      includeReplyTo: t.includeReplyTo,
+      subject: t.subject,
+      body: t.body,
+    ).toBytes();
+    print("templ $t");
+    final data = toNativeBytes(template);
+
+    return unwrapResultU32(warp_api_lib.save_send_template(coin, data, template.length));
+  }
+
+  static void deleteSendTemplate(int coin, int id) {
+    warp_api_lib.delete_send_template(coin, id);
+  }
+
+  static List<ContactT> getContacts(int coin) {
+    final r = unwrapResultBytes(warp_api_lib.get_contacts(coin));
+    final contacts = ContactVec(r).unpack();
+    return contacts.contacts!;
+  }
+
+  static List<TxTimeValue> getPnLTxs(int coin, int id, int timestamp) {
+    final r = unwrapResultBytes(warp_api_lib.get_pnl_txs(coin, id, timestamp));
+    final txs = TxTimeValueVec(r);
+    return txs.values!;
+  }
+
+  static List<Quote> getQuotes(int coin, int timestamp, String currency) {
+    final r = unwrapResultBytes(warp_api_lib.get_historical_prices(coin, timestamp, toNative(currency)));
+    final quotes = QuoteVec(r);
+    return quotes.values!;
+  }
+
+  static List<Spending> getSpendings(int coin, int id, int timestamp) {
+    final r = unwrapResultBytes(warp_api_lib.get_spendings(coin, id, timestamp));
+    final quotes = SpendingVec(r);
+    return quotes.values!;
+  }
+
+  static void updateExcluded(int coin, int id, bool excluded) {
+    unwrapResultU8(warp_api_lib.update_excluded(coin, id, excluded ? 1 : 0));
+  }
+
+  static void invertExcluded(int coin, int id) {
+    unwrapResultU8(warp_api_lib.invert_excluded(coin, id));
+  }
 }
 
 String signOnlyIsolateFn(SignOnlyParams params) {
@@ -450,9 +575,11 @@ int getBlockHeightByTimeIsolateFn(BlockHeightByTimeParams params) {
   return unwrapResultU32(warp_api_lib.get_block_by_time(params.time));
 }
 
-void scanTransparentAccountsParamsIsolateFn(
+List<AddressBalance> scanTransparentAccountsParamsIsolateFn(
     ScanTransparentAccountsParams params) {
-  return warp_api_lib.scan_transparent_accounts(params.gapLimit);
+  final r = unwrapResultBytes(warp_api_lib.scan_transparent_accounts(params.gapLimit));
+  final v = AddressBalanceVec(r);
+  return v.values!;
 }
 
 class SyncParams {
@@ -530,6 +657,12 @@ String convertCString(Pointer<Int8> s) {
   final str = s.cast<Utf8>().toDartString();
   warp_api_lib.deallocate_str(s);
   return str;
+}
+
+List<int> convertBytes(Pointer<Uint8> s, int len) {
+    final bytes = [...s.asTypedList(len)];
+    warp_api_lib.deallocate_bytes(s, len);
+    return bytes;
 }
 
 void mempoolRunIsolateFn(int port) {

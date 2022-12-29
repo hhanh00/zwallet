@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi' show DynamicLibrary, NativePort;
+import 'dart:ffi' show NativePort;
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
@@ -23,13 +23,10 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:quick_actions/quick_actions.dart';
-import 'package:sqlite3/open.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'accounts.dart';
 import 'animated_qr.dart';
@@ -328,9 +325,6 @@ class ZWalletAppState extends State<ZWalletApp> {
         );
       });
     }
-    else {
-      databaseFactory = createDatabaseFactoryFfi(ffiInit: sqlFfiInit);;
-    }
   }
 
   Future<bool> _init() async {
@@ -345,8 +339,6 @@ class ZWalletAppState extends State<ZWalletApp> {
         final dbPath = await getDbPath();
         for (var coin in coins) {
           coin.init(dbPath);
-          await coin.open(true);
-          await coin.close();
         }
 
         if (exportDb) {
@@ -357,8 +349,6 @@ class ZWalletAppState extends State<ZWalletApp> {
         if (recover) {
           for (var coin in coins) {
             await coin.importFromTemp();
-            await coin.open(true);
-            await coin.close();
           }
         }
         print("db path $dbPath");
@@ -375,10 +365,6 @@ class ZWalletAppState extends State<ZWalletApp> {
             WarpApi.updateLWD(s.coin, server);
             WarpApi.migrateData(s.coin);
           }
-        }
-
-        for (var coin in coins) {
-          await coin.open(false);
         }
 
         _setProgress(0.7, 'Restoring Active Account');
@@ -435,6 +421,7 @@ class ZWalletAppState extends State<ZWalletApp> {
   }
 
   void _setProgress(double v, String message) {
+    print(message);
     progressKey.currentState?.setValue(v, message);
   }
 }
@@ -851,23 +838,9 @@ void cancelScan(BuildContext context) {
   WarpApi.cancelSync();
 }
 
-void sqlFfiInit() {
-  open.overrideFor(OperatingSystem.linux, _openOnLinux);
-}
-
-DynamicLibrary _openOnLinux() {
-  try {
-    final library = DynamicLibrary.open('libsqlite3.so.0');
-    return library;
-  }
-  catch (e) {
-    print("Failed to load SQLite3: $e");
-    rethrow;
-  }
-}
-
 Future<String> getDataPath() async {
   String? home;
+  if (Platform.isAndroid) home = (await getApplicationDocumentsDirectory()).parent.path;
   if (Platform.isWindows) home = Platform.environment['LOCALAPPDATA'];
   if (Platform.isLinux) home = Platform.environment['XDG_DATA_HOME'];
   if (Platform.isMacOS) home = Platform.environment['HOME'];
@@ -887,7 +860,7 @@ Future<String> getTempPath() async {
 }
 
 Future<String> getDbPath() async {
-  if (isMobile()) return await getDatabasesPath();
+  if (Platform.isIOS) return (await getApplicationDocumentsDirectory()).path;
   final h = await getDataPath();
   return "$h/databases";
 }

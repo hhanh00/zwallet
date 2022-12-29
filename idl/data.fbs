@@ -1,0 +1,142 @@
+namespace fb;
+
+table Account {
+    id:uint32;
+    name:string;
+    balance:uint64;
+}
+
+table AccountVec {
+    accounts:[Account];
+}
+
+table Balance {
+    shielded:uint64;
+    unconfirmed_spent:uint64;
+    balance:uint64;
+    under_confirmed:uint64;
+    excluded:uint64;
+    sapling:uint64;
+    orchard:uint64;
+}
+
+table Height {
+    height:uint32;
+    timestamp:uint32;
+}
+
+table ShieldedNote {
+    id:uint32;
+    height:uint32;
+    value:uint64;
+    timestamp:uint32;
+    orchard:bool;
+    excluded:bool;
+    spent:bool;
+}
+
+table ShieldedNoteVec {
+    notes:[ShieldedNote];
+}
+
+table ShieldedTx {
+    id:uint32;
+    tx_id:string;
+    height:uint32;
+    short_tx_id:string;
+    timestamp:uint32;
+    name:string;
+    value:uint64;
+    address:string;
+    memo:string;
+}
+
+table ShieldedTxVec {
+    txs:[ShieldedTx];
+}
+
+table Message {
+    id_msg:uint32;
+    id_tx:uint32;
+    height:uint32;
+    timestamp:uint32;
+    from:string;
+    to:string;
+    subject:string;
+    body:string;
+    read:bool;
+    incoming:bool;
+}
+
+table MessageVec {
+    messages:[Message];
+}
+
+table PrevNext {
+    prev:uint32;
+    next:uint32;
+}
+
+table SendTemplate {
+  id:uint32;
+  title:string;
+  address:string;
+  amount:uint64;
+  fiat_amount:double;
+  fee_included:bool;
+  fiat:string;
+  include_reply_to:bool;
+  subject:string;
+  body:string;
+}
+
+table SendTemplateVec {
+  templates:[SendTemplate];
+}
+
+table Contact {
+    id:uint32;
+    name:string;
+    address:string;
+}
+
+table ContactVec {
+  contacts:[Contact];
+}
+
+table TxTimeValue {
+    timestamp:uint32;
+    value:uint64;
+}
+
+table TxTimeValueVec {
+    values:[TxTimeValue];
+}
+
+table Quote {
+    timestamp:uint32;
+    price:double;
+}
+
+table QuoteVec {
+    values:[Quote];
+}
+
+table Spending {
+    recipient:string;
+    amount:uint64;
+}
+
+table SpendingVec {
+    values:[Spending];
+}
+
+table AddressBalance {
+    index:uint32;
+    address:string;
+    balance:uint64;
+}
+
+table AddressBalanceVec {
+    values:[AddressBalance];
+}
