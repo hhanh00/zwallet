@@ -160,7 +160,6 @@ class QRAddressState extends State<QRAddressWidget> {
     return Observer(builder: (context) {
       final s = S.of(context);
       final theme = Theme.of(context);
-      final hasUA = active.coinDef.supportsUA;
       final _ = active.taddress;
       final simpleMode = settings.simpleMode;
       final address = _address();
@@ -302,7 +301,7 @@ class BalanceWidget extends StatelessWidget {
         final flat = settings.flat;
         final hide = settings.autoHide && flat;
         final showTAddr = active.showTAddr;
-        final balance = showTAddr ? active.tbalance : active.balances?.balance ?? 0;
+        final balance = showTAddr ? active.tbalance : active.balances.balance;
         final balanceColor = !showTAddr
             ? theme.colorScheme.primary
             : theme.colorScheme.secondary;
@@ -347,7 +346,7 @@ class MemPoolWidget extends StatelessWidget {
     final theme = Theme.of(context);
     int unconfirmedBalance = unconfirmedBalanceStream.value ?? 0;
     final unconfirmedStyle = TextStyle(
-        color: amountColor(context, unconfirmedBalance ?? 0));
+        color: amountColor(context, unconfirmedBalance));
     if (unconfirmedBalance == 0) return Container();
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,

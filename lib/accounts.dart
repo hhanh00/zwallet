@@ -30,44 +30,35 @@ class Account {
 
 final Account emptyAccount = Account(0, 0, "", 0, 0, null);
 
-class AccountManager2 = _AccountManager2 with _$AccountManager2;
-
-abstract class _AccountManager2 with Store {
-  @observable int epoch = 0;
+class AccountList {
   List<Account> list = [];
 
-  @action
   Future<void> refresh() async {
     List<Account> _list = [];
-    _list.addAll(await _getList(0));
-    _list.addAll(await _getList(1));
+    for (var coin in coins) {
+      final dbr = DbReader(coin.coin, 0);
+      _list.addAll(await dbr.getAccountList());
+    }
     list = _list;
-    epoch += 1;
   }
 
   bool get isEmpty { return list.isEmpty; }
 
-  @action
   Future<void> updateTBalance() async {
     for (var a in list) {
       final tbalance = await WarpApi.getTBalanceAsync(a.coin, a.id);
       a.tbalance = tbalance;
     }
-    epoch += 1;
   }
 
-  @action
   Future<void> delete(int coin, int id) async {
     WarpApi.deleteAccount(coin, id);
     await active.checkAndUpdate();
   }
 
-  @action
   Future<void> changeAccountName(int coin, int id, String name) async {
-    final c = settings.coins[coin].def; // TODO: Do in backend would be cleaner
-    final db = c.db;
-    await db.execute("UPDATE accounts SET name = ?2 WHERE id_account = ?1",
-        [id, name]);
+    final dbr = DbReader(coin, id);
+    await dbr.changeAccountName(name);
     await refresh();
   }
 
@@ -81,39 +72,6 @@ abstract class _AccountManager2 with Store {
   }
 
   Account get(int coin, int id) => list.firstWhere((e) => e.coin == coin && e.id == id, orElse: () => emptyAccount);
-
-  Future<bool> hasAccount(int coin) async {
-    final c = settings.coins[coin].def;
-    final db = c.db;
-    final List<Map> res = await db.rawQuery(
-        "SELECT 1 FROM accounts",
-        []);
-    return res.isNotEmpty;
-  }
-
-  static Future<List<Account>> _getList(int coin) async {
-    final c = settings.coins[coin].def;
-    final db = c.db;
-    List<Account> accounts = [];
-
-    final List<Map> res = await db.rawQuery(
-        "WITH notes AS (SELECT a.id_account, a.name, CASE WHEN r.spent IS NULL THEN r.value ELSE 0 END AS nv FROM accounts a LEFT JOIN received_notes r ON a.id_account = r.account),"
-            "accounts2 AS (SELECT id_account, name, COALESCE(sum(nv), 0) AS balance FROM notes GROUP by id_account) "
-            "SELECT a.id_account, a.name, a.balance FROM accounts2 a",
-        []);
-    for (var r in res) {
-      final int id = r['id_account'];
-      final account = Account(
-          coin,
-          id,
-          r['name'],
-          r['balance'],
-          0,
-          null);
-      accounts.add(account);
-    }
-    return accounts;
-  }
 }
 
 class ActiveAccount = _ActiveAccount with _$ActiveAccount;
@@ -201,26 +159,14 @@ abstract class _ActiveAccount with Store {
   // if not, pick any account
   // if there are none, return 0
   Future<AccountId?> getAvailableIdForCoin(int coin, int id) async {
-    coinDef = settings.coins[coin].def;
-    final db = coinDef.db;
-    final List<Map> res1 = await db.rawQuery(
-        "SELECT 1 FROM accounts WHERE id_account = ?1", [id]);
-    if (res1.isNotEmpty)
-      return AccountId(coin, id);
-    final List<Map> res2 = await db.rawQuery(
-        "SELECT id_account FROM accounts", []);
-    if (res2.isNotEmpty) {
-      final id = res2[0]['id_account'];
-      return AccountId(coin, id);
-    }
-    return null;
+    final dbr = DbReader(coin, id);
+    return dbr.getAvailableAccountId();
   }
 
   @action
   Future<void> setActiveAccount(int _coin, int _id) async {
     coin = _coin;
     id = _id;
-    accounts.saveActive(coin, id);
 
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('coin', coin);
@@ -230,19 +176,17 @@ abstract class _ActiveAccount with Store {
 
   @action
   Future<void> refreshAccount() async {
+    final dbr = DbReader(coin, id);
     coinDef = settings.coins[coin].def;
     final db = coinDef.db;
 
+    final accounts = AccountList();
+    await accounts.refresh();
     account = accounts.get(coin, id);
 
     if (id > 0) {
-      final List<Map> res1 = await db.rawQuery(
-          "SELECT address FROM taddrs WHERE account = ?1", [id]);
-      taddress = res1.isNotEmpty ? res1[0]['address'] : "";
-
-      final List<Map> res2 = await db.rawQuery(
-          "SELECT sk FROM accounts WHERE id_account = ?1", [id]);
-      canPay = res2.isNotEmpty && res2[0]['sk'] != null;
+      taddress = await dbr.getTAddr();
+      canPay = await dbr.getSK() != null;
     }
 
     showTAddr = false;
@@ -255,18 +199,8 @@ abstract class _ActiveAccount with Store {
 
   @action
   Future<void> refreshTAddr() async {
-    coinDef = settings.coins[coin].def;
-    final db = coinDef.db;
-    final List<Map> res1 = await db.rawQuery(
-        "SELECT address FROM taddrs WHERE account = ?1", [active.id]);
-    taddress = res1.isNotEmpty ? res1[0]['address'] : "";
-  }
-
-  @action
-  Future<void> updateAccount() async {
-    final a = accounts.get(coin, id);
-    if (a.id != active.id)
-      await setActiveAccount(a.coin, a.id);
+    final dbr = DbReader(coin, id);
+    taddress = await dbr.getTAddr();
   }
 
   @action

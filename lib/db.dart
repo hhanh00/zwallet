@@ -23,6 +23,84 @@ class DbReader {
   DbReader(int coin, int id): this.init(coin, id, settings.coins[coin].def.db);
   DbReader.init(this.coin, this.id, this.db);
 
+  Future<bool> hasAccount() async {
+    final List<Map> res = await db.rawQuery(
+        "SELECT 1 FROM accounts",
+        []);
+    return res.isNotEmpty;
+  }
+
+  Future<List<Account>> getAccountList() async {
+    List<Account> accounts = [];
+
+    final List<Map> res = await db.rawQuery(
+        "WITH notes AS (SELECT a.id_account, a.name, CASE WHEN r.spent IS NULL THEN r.value ELSE 0 END AS nv FROM accounts a LEFT JOIN received_notes r ON a.id_account = r.account),"
+            "accounts2 AS (SELECT id_account, name, COALESCE(sum(nv), 0) AS balance FROM notes GROUP by id_account) "
+            "SELECT a.id_account, a.name, a.balance FROM accounts2 a",
+        []);
+    for (var r in res) {
+      final int id = r['id_account'];
+      final account = Account(
+          coin,
+          id,
+          r['name'],
+          r['balance'],
+          0,
+          null);
+      accounts.add(account);
+    }
+    return accounts;
+  }
+
+  // check that the account still exists
+  // if not, pick any account
+  // if there are none, return 0
+  Future<AccountId?> getAvailableAccountId() async {
+    final List<Map> res1 = await db.rawQuery(
+        "SELECT 1 FROM accounts WHERE id_account = ?1", [id]);
+    if (res1.isNotEmpty)
+      return AccountId(coin, id);
+    final List<Map> res2 = await db.rawQuery(
+        "SELECT id_account FROM accounts", []);
+    if (res2.isNotEmpty) {
+      final id = res2[0]['id_account'];
+      return AccountId(coin, id);
+    }
+    return null;
+  }
+
+  Future<String> getTAddr() async {
+    final List<Map> res1 = await db.rawQuery(
+        "SELECT address FROM taddrs WHERE account = ?1", [id]);
+    final taddress = res1.isNotEmpty ? res1[0]['address'] : "";
+    return taddress;
+  }
+
+  Future<String?> getSK() async {
+    final List<Map> res1 = await db.rawQuery(
+        "SELECT sk FROM accounts WHERE id_account = ?1", [id]);
+    final sk = res1.isNotEmpty ? res1[0]['address'] : null;
+    return sk;
+  }
+
+  Future<void> changeAccountName(String name) async {
+    await db.execute("UPDATE accounts SET name = ?2 WHERE id_account = ?1",
+        [id, name]);
+  }
+
+  Future<BlockInfo?> getDbSyncedHeight() async {
+    final rows = await db.rawQuery("SELECT height, timestamp FROM blocks WHERE height = (SELECT MAX(height) FROM blocks)");
+    if (rows.isNotEmpty) {
+      final row = rows.first;
+      final height = row['height'] as int;
+      final timestampEpoch = row['timestamp'] as int;
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(timestampEpoch * 1000);
+      final blockInfo = BlockInfo(height, timestamp);
+      return blockInfo;
+    }
+    return null;
+  }
+
   Future<void> updateBalances(int confirmHeight, Balances balances) async {
     final balance = Sqflite.firstIntValue(await db.rawQuery(
         "SELECT SUM(value) AS value FROM received_notes WHERE account = ?1 AND (spent IS NULL OR spent = 0)",
@@ -307,6 +385,17 @@ class DbReader {
       final template = SendTemplate(id, title, address, amount, fiat_amount.toDouble(), fee_included, fiat, memo);
       return template;
     }
+  }
+
+  Future<List<Contact>> getContacts() async {
+    List<Contact> contacts = [];
+    List<Map> res = await db.rawQuery(
+        "SELECT id, name, address FROM contacts WHERE address <> '' ORDER BY name");
+    for (var c in res) {
+      final contact = Contact(c['id'], c['name'], c['address']);
+      contacts.add(contact);
+    }
+    return contacts;
   }
 
   int _chartRangeDays() {

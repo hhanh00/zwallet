@@ -50,6 +50,7 @@ class SendState extends State<SendPage> {
   var _replyTo = settings.includeReplyTo;
   List<SendTemplateId> _templates = [];
   SendTemplateId? _template;
+  var _accounts = AccountList();
 
   void clear() {
     final s = S.of(context);
@@ -110,7 +111,10 @@ class SendState extends State<SendPage> {
       });
     });
 
-    Future(_loadTemplates);
+    Future.microtask(() async {
+      await _accounts.refresh();
+      await _loadTemplates();
+    });
   }
 
   @override
@@ -175,7 +179,7 @@ class SendState extends State<SendPage> {
                             final matchingContacts = contacts.contacts.where((c) => c.name
                                 .toLowerCase()
                                 .contains(pattern.toLowerCase())).map((c) => ContactSuggestion(c));
-                            final matchingAccounts = accounts.list
+                            final matchingAccounts = _accounts.list
                                 .where((a) => a.coin == active.coin && a.name
                                 .toLowerCase()
                                 .contains(pattern.toLowerCase())).map((a) => AccountSuggestion(a));
@@ -335,7 +339,7 @@ class SendState extends State<SendPage> {
   Suggestion? getSuggestion(String v) {
     final c = contacts.contacts.where((c) => c.name == v);
     if (c.isNotEmpty) return ContactSuggestion(c.first);
-    final a = accounts.list.where((a) => a.name == v);
+    final a = _accounts.list.where((a) => a.name == v);
     if (a.isNotEmpty) return AccountSuggestion(a.first);
     return null;
   }

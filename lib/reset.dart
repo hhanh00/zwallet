@@ -217,7 +217,6 @@ class _FullRestoreState extends State<FullRestorePage> {
           final backup = await file.readAsString();
           WarpApi.importFromZWL(active.coin, "ZWL Imported Account", backup);
         }
-        await accounts.refresh();
         syncStatus.setAccountRestored(true);
         Navigator.of(context).pop();
       }

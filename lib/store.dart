@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
+import 'package:YWallet/db.dart';
 import 'package:YWallet/src/version.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -729,17 +730,8 @@ abstract class _SyncStatus with Store {
   }
 
   Future<BlockInfo?> getDbSyncedHeight() async {
-    final db = active.coinDef.db;
-    final rows = await db.rawQuery("SELECT height, timestamp FROM blocks WHERE height = (SELECT MAX(height) FROM blocks)");
-    if (rows.isNotEmpty) {
-      final row = rows.first;
-      final height = row['height'] as int;
-      final timestampEpoch = row['timestamp'] as int;
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(timestampEpoch * 1000);
-      final blockInfo = BlockInfo(height, timestamp);
-      return blockInfo;
-    }
-    return null;
+    final dbr = active.dbReader;
+    return await dbr.getDbSyncedHeight();
   }
 
   @action
@@ -926,14 +918,9 @@ abstract class _ContactStore with Store {
 
   @action
   Future<void> fetchContacts() async {
-    final db = active.coinDef.db;
-    List<Map> res = await db.rawQuery(
-        "SELECT id, name, address FROM contacts WHERE address <> '' ORDER BY name");
+    final dbr = active.dbReader;
     contacts.clear();
-    for (var c in res) {
-      final contact = Contact(c['id'], c['name'], c['address']);
-      contacts.add(contact);
-    }
+    contacts.addAll(await dbr.getContacts());
   }
 
   @action
