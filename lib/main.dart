@@ -80,7 +80,6 @@ var multipayData = MultiPayStore();
 var eta = ETAStore();
 var contacts = ContactStore();
 var syncStats = SyncStatsStore();
-var accounts = AccountManager2();
 var active = ActiveAccount();
 final messageKey = GlobalKey<MessageTableState>();
 
@@ -334,8 +333,6 @@ class ZWalletAppState extends State<ZWalletApp> {
     }
   }
 
-  final coins = [ycash, zcash];
-
   Future<bool> _init() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -384,8 +381,6 @@ class ZWalletAppState extends State<ZWalletApp> {
           await coin.open(false);
         }
 
-        _setProgress(0.6, 'Loading Account Data');
-        await accounts.refresh();
         _setProgress(0.7, 'Restoring Active Account');
         await active.restore();
 

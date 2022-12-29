@@ -187,7 +187,6 @@ class _AddAccountPageState extends State<AddAccountPage> {
                           icon: Icon(Icons.done))
                     ]));
       } else {
-        await accounts.refresh();
         await active.setActiveAccount(_coin, account);
         await active.refreshAccount();
         final nav = Navigator.of(context);

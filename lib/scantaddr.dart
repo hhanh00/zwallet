@@ -52,8 +52,6 @@ class ScanTAddrPageState extends State<ScanTAddrPage> {
       final name = s.subAccountIndexOf(account.aindex, active.account.name);
       WarpApi.newSubAccount(name, account.aindex, 1);
     }
-    await accounts.refresh();
-    await accounts.updateTBalance();
     Navigator.of(context).pop();
   }
 }

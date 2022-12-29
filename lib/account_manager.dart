@@ -17,20 +17,17 @@ class AccountManagerPage extends StatefulWidget {
 class AccountManagerState extends State<AccountManagerPage> {
   var _accountNameController = TextEditingController();
   var _countController = TextEditingController(text: '1');
+  var _accounts = AccountList();
 
   @override
   initState() {
     super.initState();
     Future.microtask(() async {
-      await accounts.refresh();
-      await accounts.updateTBalance();
+      await _accounts.refresh();
+      setState(() {});
+      await _accounts.updateTBalance();
+      setState(() {});
     });
-  }
-
-  @override
-  void dispose() {
-    active.updateAccount();
-    super.dispose();
   }
 
   @override
@@ -60,13 +57,10 @@ class AccountManagerState extends State<AccountManagerPage> {
                   ],
               onSelected: _onMenu)
         ]),
-        body: Padding(padding: EdgeInsets.all(8), child: Observer(
-            builder: (context) {
-              final _1 = accounts.epoch;
-              return ListView.builder(
-                      itemCount: accounts.list.length,
+        body: Padding(padding: EdgeInsets.all(8), child: ListView.builder(
+                      itemCount: _accounts.list.length,
                       itemBuilder: (BuildContext context, int index) {
-                      final a = accounts.list[index];
+                      final a = _accounts.list[index];
                       final weight = settings.coins[a.coin].active == a.id ? FontWeight.bold : FontWeight.normal;
                       final zbal = a.balance / ZECUNIT;
                       final tbal = a.tbalance / ZECUNIT;
@@ -94,8 +88,8 @@ class AccountManagerState extends State<AccountManagerPage> {
                         onDismissed: (d) =>
                             _onDismissed(index, a),
                       ));
-                    });},
-                )),
+                    }),
+                ),
         floatingActionButton: SpeedDial(
           icon: Icons.add,
           onPress: _onAddAccount,
@@ -165,8 +159,8 @@ class AccountManagerState extends State<AccountManagerPage> {
   }
 
   void _onDismissed(int index, Account account) async {
-    await accounts.delete(account.coin, account.id);
-    await accounts.refresh();
+    await _accounts.delete(account.coin, account.id);
+    await _accounts.refresh();
     await active.checkAndUpdate();
   }
 
@@ -196,8 +190,9 @@ class AccountManagerState extends State<AccountManagerPage> {
   }
 
   _changeAccountName(Account account) {
-    accounts.changeAccountName(account.coin, account.id, _accountNameController.text);
+    _accounts.changeAccountName(account.coin, account.id, _accountNameController.text);
     Navigator.of(context).pop();
+    setState(() {});
   }
 
   _onAddAccount() {
@@ -247,8 +242,13 @@ class AccountManagerState extends State<AccountManagerPage> {
     if (confirmed == true) {
       WarpApi.newSubAccount(_accountNameController.text, -1,
           int.parse(_countController.text));
-      await accounts.refresh();
     }
+    await _refresh();
+  }
+
+  _refresh() async {
+    await _accounts.refresh();
+    setState(() {});
   }
   
   _onFullBackup() {
