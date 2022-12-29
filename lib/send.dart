@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:warp_api/data_fb_generated.dart' hide Account;
 import 'accounts.dart';
 import 'dualmoneyinput.dart';
 import 'package:warp_api/types.dart';
@@ -48,8 +49,8 @@ class SendState extends State<SendPage> {
   final _fee = DEFAULT_FEE;
   var _usedBalance = 0;
   var _replyTo = settings.includeReplyTo;
-  List<SendTemplateId> _templates = [];
-  SendTemplateId? _template;
+  List<SendTemplateT> _templates = [];
+  SendTemplateT? _template;
   var _accounts = AccountList();
 
   void clear() {
@@ -80,7 +81,7 @@ class SendState extends State<SendPage> {
     }
 
     if (widget.args?.contact != null)
-      _addressController.text = widget.args!.contact!.address;
+      _addressController.text = widget.args!.contact!.address!;
     if (widget.args?.address != null)
       _addressController.text = widget.args!.address!;
     if (widget.args?.subject != null)
@@ -94,27 +95,21 @@ class SendState extends State<SendPage> {
         _setPaymentURI(uri);
       });
 
-    _newBlockAutorunDispose = autorun((_) async {
-      final _ = active.dataEpoch;
-      final balances = active.balances;
-      final sBalance = balances.shieldedBalance;
-      final tBalance = active.tbalance;
-      final excludedBalance = balances.excludedBalance;
-      final underConfirmedBalance = balances.underConfirmedBalance;
-      int? unconfirmedBalance = unconfirmedBalanceStream.value;
-      setState(() {
-        _sBalance = sBalance;
-        _tBalance = tBalance;
-        _excludedBalance = excludedBalance;
-        _underConfirmedBalance = underConfirmedBalance;
-        _unconfirmedBalance = unconfirmedBalance ?? 0;
-      });
-    });
+    active.updateBalances();
+    final balances = active.balances;
+    final sBalance = balances.shieldedBalance;
+    final tBalance = active.tbalance;
+    final excludedBalance = balances.excludedBalance;
+    final underConfirmedBalance = balances.underConfirmedBalance;
+    int? unconfirmedBalance = unconfirmedBalanceStream.value;
+    _sBalance = sBalance;
+    _tBalance = tBalance;
+    _excludedBalance = excludedBalance;
+    _underConfirmedBalance = underConfirmedBalance;
+    _unconfirmedBalance = unconfirmedBalance ?? 0;
 
-    Future.microtask(() async {
-      await _accounts.refresh();
-      await _loadTemplates();
-    });
+    final templateIds = active.dbReader.loadTemplates();
+    _templates = templateIds;
   }
 
   @override
@@ -144,7 +139,7 @@ class SendState extends State<SendPage> {
       _memoInitialized = true;
     }
 
-    var templates = _templates.map((t) => DropdownMenuItem(child: Text(t.title), value: t)).toList();
+    var templates = _templates.map((t) => DropdownMenuItem(child: Text(t.title!), value: t)).toList();
 
     final addReset = _template != null ? IconButton(onPressed: _resetTemplate, icon: Icon(Icons.close)) : IconButton(onPressed: _addTemplate, icon: Icon(Icons.add));
 
@@ -176,7 +171,7 @@ class SendState extends State<SendPage> {
                             _addressController.text = suggestion.name;
                           },
                           suggestionsCallback: (String pattern) {
-                            final matchingContacts = contacts.contacts.where((c) => c.name
+                            final matchingContacts = contacts.contacts.where((c) => c.name!
                                 .toLowerCase()
                                 .contains(pattern.toLowerCase())).map((c) => ContactSuggestion(c));
                             final matchingAccounts = _accounts.list
@@ -230,7 +225,7 @@ class SendState extends State<SendPage> {
                       Padding(padding: EdgeInsets.all(8)),
                       Row(children: [
                         Expanded(child:
-                          DropdownButtonFormField<SendTemplateId>(
+                          DropdownButtonFormField<SendTemplateT>(
                             hint: Text(s.template),
                             items: templates, value: _template, onChanged: (v) {
                               setState(() {
@@ -239,7 +234,7 @@ class SendState extends State<SendPage> {
                             })),
                         addReset,
                         IconButton(onPressed: _template != null ? _openTemplate : null, icon: Icon(Icons.open_in_new)),
-                        IconButton(onPressed: _template != null ? () { _saveTemplate(_template!.id, _template!.title, true); } : null, icon: Icon(Icons.save)),
+                        IconButton(onPressed: _template != null ? () { _saveTemplate(_template!.id, _template!.title!, true); } : null, icon: Icon(Icons.save)),
                         IconButton(onPressed: _template != null ? _deleteTemplate : null, icon: Icon(Icons.delete)),
                       ]),
                       Padding(padding: EdgeInsets.all(8)),
@@ -278,32 +273,35 @@ class SendState extends State<SendPage> {
               }))) ?? false;
       if (!confirmed) return;
       final title = titleController.text;
-      final id = _saveTemplate(0, title, false);
-      if (id != null) {
-        _template = SendTemplateId(id, title);
-        Future.microtask(_loadTemplates);
+      final template = _saveTemplate(0, title, false);
+      if (template != null) {
+        _template = template;
+        _templates.add(template);
+        setState(() {});
       }
     }
   }
 
-  int? _saveTemplate(int id, String title, bool validate) {
+  SendTemplateT? _saveTemplate(int id, String title, bool validate) {
     final form = _formKey.currentState!;
     if (validate && !form.validate()) return null;
     form.save();
-    final memo = Memo(
-        _replyTo, _subjectController.text, _memoController.text);
     final dualAmountController = amountInput;
     if (dualAmountController == null) return null;
-    final template = SendTemplate(
-        id,
-        title,
-        _address,
-        stringToAmount(dualAmountController.coinAmountController.text),
-        parseNumber(dualAmountController.fiatAmountController.text),
-        dualAmountController.feeIncluded,
-        dualAmountController.inputInCoin ? null : _fiat,
-        memo);
-    return WarpApi.saveSendTemplate(active.coin, template);
+    var template = SendTemplateT(
+        id: id,
+        title: title,
+        address: _address,
+        amount: stringToAmount(dualAmountController.coinAmountController.text),
+        fiatAmount: parseNumber(dualAmountController.fiatAmountController.text),
+        feeIncluded: dualAmountController.feeIncluded,
+        fiat: dualAmountController.inputInCoin ? null : _fiat,
+        includeReplyTo: _replyTo,
+        subject: _subjectController.text,
+        body: _subjectController.text);
+    final id2 = WarpApi.saveSendTemplate(active.coin, template);
+    template.id = id2;
+    return template;
   }
 
   Future<void> _deleteTemplate() async {
@@ -318,19 +316,19 @@ class SendState extends State<SendPage> {
   Future<void> _openTemplate() async {
     final tid = _template;
     if (tid == null) return;
-    final template = await active.dbReader.loadTemplate(tid.id);
+    final template = _template;;
     if (template == null) return;
-    amountInput?.restore(template.amount, template.fiat_amount, template.fee_included, template.fiat);
+    amountInput?.restore(template.amount, template.fiatAmount, template.feeIncluded, template.fiat);
     setState(() {
-      _addressController.text = template.address;
-      _replyTo = template.memo.include_reply_to;
-      _subjectController.text = template.memo.subject;
-      _memoController.text = template.memo.body;
+      _addressController.text = template.address!;
+      _replyTo = template.includeReplyTo;
+      _subjectController.text = template.subject!;
+      _memoController.text = template.body!;
     });
   }
 
-  Future<void> _loadTemplates() async {
-    final templateIds = await active.dbReader.loadTemplates();
+  void _loadTemplates() {
+    final templateIds = active.dbReader.loadTemplates();
     setState(() {
       _templates = templateIds;
     });
@@ -523,12 +521,12 @@ abstract class Suggestion {
 }
 
 class ContactSuggestion extends Suggestion {
-  final Contact contact;
+  final ContactT contact;
 
   ContactSuggestion(this.contact);
 
-  String get name => contact.name;
-  String get address => contact.address;
+  String get name => contact.name!;
+  String get address => contact.address!;
 }
 
 class AccountSuggestion extends Suggestion {

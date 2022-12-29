@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:badges/badges.dart';
@@ -36,20 +37,20 @@ class HomeState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    contacts.fetchContacts();
     Future.microtask(() async {
       await syncStatus.update();
-      await active.updateBalances();
+      active.updateBalances();
       await priceStore.updateChart();
 
       await Future.delayed(Duration(seconds: 3));
       await syncStatus.sync(false);
-      await contacts.fetchContacts();
 
       _syncTimer?.cancel();
       _syncTimer = Timer.periodic(Duration(seconds: 15), (Timer t) async {
         syncStatus.sync(false);
         if (active.id != 0) {
-          await active.updateBalances();
+          active.updateBalances();
         }
       });
 
@@ -398,7 +399,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
 
   _onAddContact() async {
     final contact = await contactKey.currentState
-        ?.showContactForm(context, Contact.empty(), false);
+        ?.showContactForm(context, ContactT(), false);
     if (contact != null) {
       contacts.add(contact);
     }

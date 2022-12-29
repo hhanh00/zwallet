@@ -7,6 +7,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:intl/intl.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'chart.dart';
@@ -229,7 +230,7 @@ class BudgetChartState extends State<BudgetChart> {
         builder: (context) => Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              HorizontalBarChart(active.spendings.map((s) => s.amount).toList()),
+              HorizontalBarChart(active.spendings.map((s) => s.amount / ZECUNIT).toList()),
               BudgetTable(active.spendings)
             ])));
   }
@@ -246,16 +247,10 @@ class BudgetTable extends StatelessWidget {
     final palette = getPalette(Theme.of(context).primaryColor, spendings.length);
     final rows = spendings.asMap().entries.map((e) {
       final style = TextStyle(color: palette[e.key], fontFeatures: [FontFeature.tabularFigures()]);
-      final address = e.value.address;
-      final shortAddress = centerTrim(address);
-      final addressOrContact = e.value.contact ?? shortAddress;
+      final recipient = e.value.recipient!;
       return DataRow(cells: [
-        DataCell(
-          GestureDetector(onTap: () async {
-            await Clipboard.setData(ClipboardData(text: address));
-            showSnackBar(S.of(context).addressCopiedToClipboard);
-            }, child: Text(addressOrContact, style: style))),
-        DataCell(Text(decimalFormat(e.value.amount, 8), style: style)),
+        DataCell(Text(recipient, style: style)),
+        DataCell(Text(decimalFormat(e.value.amount / ZECUNIT, 8), style: style)),
       ]);
     }).toList();
     return DataTable(

@@ -53,6 +53,21 @@ class NativeLibrary {
   late final _dart_deallocate_str _deallocate_str =
       _deallocate_str_ptr.asFunction<_dart_deallocate_str>();
 
+  void deallocate_bytes(
+    ffi.Pointer<ffi.Uint8> ptr,
+    int len,
+  ) {
+    return _deallocate_bytes(
+      ptr,
+      len,
+    );
+  }
+
+  late final _deallocate_bytes_ptr =
+      _lookup<ffi.NativeFunction<_c_deallocate_bytes>>('deallocate_bytes');
+  late final _dart_deallocate_bytes _deallocate_bytes =
+      _deallocate_bytes_ptr.asFunction<_dart_deallocate_bytes>();
+
   CResult_u8 init_wallet(
     int coin,
     ffi.Pointer<ffi.Int8> db_path,
@@ -494,7 +509,7 @@ class NativeLibrary {
   late final _dart_shield_taddr _shield_taddr =
       _shield_taddr_ptr.asFunction<_dart_shield_taddr>();
 
-  void scan_transparent_accounts(
+  CResult______u8 scan_transparent_accounts(
     int gap_limit,
   ) {
     return _scan_transparent_accounts(
@@ -892,13 +907,197 @@ class NativeLibrary {
   late final _dart_derive_zip32 _derive_zip32 =
       _derive_zip32_ptr.asFunction<_dart_derive_zip32>();
 
+  CResult______u8 get_account_list(
+    int coin,
+  ) {
+    return _get_account_list(
+      coin,
+    );
+  }
+
+  late final _get_account_list_ptr =
+      _lookup<ffi.NativeFunction<_c_get_account_list>>('get_account_list');
+  late final _dart_get_account_list _get_account_list =
+      _get_account_list_ptr.asFunction<_dart_get_account_list>();
+
+  CResult_u32 get_available_account_id(
+    int coin,
+    int id,
+  ) {
+    return _get_available_account_id(
+      coin,
+      id,
+    );
+  }
+
+  late final _get_available_account_id_ptr =
+      _lookup<ffi.NativeFunction<_c_get_available_account_id>>(
+          'get_available_account_id');
+  late final _dart_get_available_account_id _get_available_account_id =
+      _get_available_account_id_ptr
+          .asFunction<_dart_get_available_account_id>();
+
+  CResult_____c_char get_t_addr(
+    int coin,
+    int id,
+  ) {
+    return _get_t_addr(
+      coin,
+      id,
+    );
+  }
+
+  late final _get_t_addr_ptr =
+      _lookup<ffi.NativeFunction<_c_get_t_addr>>('get_t_addr');
+  late final _dart_get_t_addr _get_t_addr =
+      _get_t_addr_ptr.asFunction<_dart_get_t_addr>();
+
+  CResult_____c_char get_sk(
+    int coin,
+    int id,
+  ) {
+    return _get_sk(
+      coin,
+      id,
+    );
+  }
+
+  late final _get_sk_ptr = _lookup<ffi.NativeFunction<_c_get_sk>>('get_sk');
+  late final _dart_get_sk _get_sk = _get_sk_ptr.asFunction<_dart_get_sk>();
+
+  CResult_u8 update_account_name(
+    int coin,
+    int id,
+    ffi.Pointer<ffi.Int8> name,
+  ) {
+    return _update_account_name(
+      coin,
+      id,
+      name,
+    );
+  }
+
+  late final _update_account_name_ptr =
+      _lookup<ffi.NativeFunction<_c_update_account_name>>(
+          'update_account_name');
+  late final _dart_update_account_name _update_account_name =
+      _update_account_name_ptr.asFunction<_dart_update_account_name>();
+
+  CResult______u8 get_balances(
+    int coin,
+    int id,
+    int confirmed_height,
+  ) {
+    return _get_balances(
+      coin,
+      id,
+      confirmed_height,
+    );
+  }
+
+  late final _get_balances_ptr =
+      _lookup<ffi.NativeFunction<_c_get_balances>>('get_balances');
+  late final _dart_get_balances _get_balances =
+      _get_balances_ptr.asFunction<_dart_get_balances>();
+
+  CResult______u8 get_db_height(
+    int coin,
+  ) {
+    return _get_db_height(
+      coin,
+    );
+  }
+
+  late final _get_db_height_ptr =
+      _lookup<ffi.NativeFunction<_c_get_db_height>>('get_db_height');
+  late final _dart_get_db_height _get_db_height =
+      _get_db_height_ptr.asFunction<_dart_get_db_height>();
+
+  CResult______u8 get_notes(
+    int coin,
+    int id,
+  ) {
+    return _get_notes(
+      coin,
+      id,
+    );
+  }
+
+  late final _get_notes_ptr =
+      _lookup<ffi.NativeFunction<_c_get_notes>>('get_notes');
+  late final _dart_get_notes _get_notes =
+      _get_notes_ptr.asFunction<_dart_get_notes>();
+
+  CResult______u8 get_txs(
+    int coin,
+    int id,
+  ) {
+    return _get_txs(
+      coin,
+      id,
+    );
+  }
+
+  late final _get_txs_ptr = _lookup<ffi.NativeFunction<_c_get_txs>>('get_txs');
+  late final _dart_get_txs _get_txs = _get_txs_ptr.asFunction<_dart_get_txs>();
+
+  CResult______u8 get_messages(
+    int coin,
+    int id,
+  ) {
+    return _get_messages(
+      coin,
+      id,
+    );
+  }
+
+  late final _get_messages_ptr =
+      _lookup<ffi.NativeFunction<_c_get_messages>>('get_messages');
+  late final _dart_get_messages _get_messages =
+      _get_messages_ptr.asFunction<_dart_get_messages>();
+
+  CResult______u8 get_prev_next_message(
+    int coin,
+    int id,
+    ffi.Pointer<ffi.Int8> subject,
+    int height,
+  ) {
+    return _get_prev_next_message(
+      coin,
+      id,
+      subject,
+      height,
+    );
+  }
+
+  late final _get_prev_next_message_ptr =
+      _lookup<ffi.NativeFunction<_c_get_prev_next_message>>(
+          'get_prev_next_message');
+  late final _dart_get_prev_next_message _get_prev_next_message =
+      _get_prev_next_message_ptr.asFunction<_dart_get_prev_next_message>();
+
+  CResult______u8 get_templates(
+    int coin,
+  ) {
+    return _get_templates(
+      coin,
+    );
+  }
+
+  late final _get_templates_ptr =
+      _lookup<ffi.NativeFunction<_c_get_templates>>('get_templates');
+  late final _dart_get_templates _get_templates =
+      _get_templates_ptr.asFunction<_dart_get_templates>();
+
   CResult_u32 save_send_template(
     int coin,
-    ffi.Pointer<ffi.Int8> template_,
+    ffi.Pointer<ffi.Uint8> template_,
+    int len,
   ) {
     return _save_send_template(
       coin,
       template_,
+      len,
     );
   }
 
@@ -922,6 +1121,103 @@ class NativeLibrary {
           'delete_send_template');
   late final _dart_delete_send_template _delete_send_template =
       _delete_send_template_ptr.asFunction<_dart_delete_send_template>();
+
+  CResult______u8 get_contacts(
+    int coin,
+  ) {
+    return _get_contacts(
+      coin,
+    );
+  }
+
+  late final _get_contacts_ptr =
+      _lookup<ffi.NativeFunction<_c_get_contacts>>('get_contacts');
+  late final _dart_get_contacts _get_contacts =
+      _get_contacts_ptr.asFunction<_dart_get_contacts>();
+
+  CResult______u8 get_pnl_txs(
+    int coin,
+    int id,
+    int timestamp,
+  ) {
+    return _get_pnl_txs(
+      coin,
+      id,
+      timestamp,
+    );
+  }
+
+  late final _get_pnl_txs_ptr =
+      _lookup<ffi.NativeFunction<_c_get_pnl_txs>>('get_pnl_txs');
+  late final _dart_get_pnl_txs _get_pnl_txs =
+      _get_pnl_txs_ptr.asFunction<_dart_get_pnl_txs>();
+
+  CResult______u8 get_historical_prices(
+    int coin,
+    int timestamp,
+    ffi.Pointer<ffi.Int8> currency,
+  ) {
+    return _get_historical_prices(
+      coin,
+      timestamp,
+      currency,
+    );
+  }
+
+  late final _get_historical_prices_ptr =
+      _lookup<ffi.NativeFunction<_c_get_historical_prices>>(
+          'get_historical_prices');
+  late final _dart_get_historical_prices _get_historical_prices =
+      _get_historical_prices_ptr.asFunction<_dart_get_historical_prices>();
+
+  CResult______u8 get_spendings(
+    int coin,
+    int id,
+    int timestamp,
+  ) {
+    return _get_spendings(
+      coin,
+      id,
+      timestamp,
+    );
+  }
+
+  late final _get_spendings_ptr =
+      _lookup<ffi.NativeFunction<_c_get_spendings>>('get_spendings');
+  late final _dart_get_spendings _get_spendings =
+      _get_spendings_ptr.asFunction<_dart_get_spendings>();
+
+  CResult_u8 update_excluded(
+    int coin,
+    int id,
+    int excluded,
+  ) {
+    return _update_excluded(
+      coin,
+      id,
+      excluded,
+    );
+  }
+
+  late final _update_excluded_ptr =
+      _lookup<ffi.NativeFunction<_c_update_excluded>>('update_excluded');
+  late final _dart_update_excluded _update_excluded =
+      _update_excluded_ptr.asFunction<_dart_update_excluded>();
+
+  CResult_u8 invert_excluded(
+    int coin,
+    int id,
+  ) {
+    return _invert_excluded(
+      coin,
+      id,
+    );
+  }
+
+  late final _invert_excluded_ptr =
+      _lookup<ffi.NativeFunction<_c_invert_excluded>>('invert_excluded');
+  late final _dart_invert_excluded _invert_excluded =
+      _invert_excluded_ptr.asFunction<_dart_invert_excluded>();
 
   int has_cuda() {
     return _has_cuda();
@@ -965,6 +1261,9 @@ class CResult_u8 extends ffi.Struct {
   external int value;
 
   external ffi.Pointer<ffi.Int8> error;
+
+  @ffi.Uint32()
+  external int len;
 }
 
 class CResult_u32 extends ffi.Struct {
@@ -972,12 +1271,18 @@ class CResult_u32 extends ffi.Struct {
   external int value;
 
   external ffi.Pointer<ffi.Int8> error;
+
+  @ffi.Uint32()
+  external int len;
 }
 
 class CResult_____c_char extends ffi.Struct {
   external ffi.Pointer<ffi.Int8> value;
 
   external ffi.Pointer<ffi.Int8> error;
+
+  @ffi.Uint32()
+  external int len;
 }
 
 class CResult_u64 extends ffi.Struct {
@@ -985,6 +1290,18 @@ class CResult_u64 extends ffi.Struct {
   external int value;
 
   external ffi.Pointer<ffi.Int8> error;
+
+  @ffi.Uint32()
+  external int len;
+}
+
+class CResult______u8 extends ffi.Struct {
+  external ffi.Pointer<ffi.Uint8> value;
+
+  external ffi.Pointer<ffi.Int8> error;
+
+  @ffi.Uint32()
+  external int len;
 }
 
 const int QR_DATA_SIZE = 256;
@@ -992,6 +1309,92 @@ const int QR_DATA_SIZE = 256;
 const int MAX_ATTEMPTS = 10;
 
 const int N = 200000;
+
+const int Account_VT_ID = 4;
+
+const int Account_VT_NAME = 6;
+
+const int Account_VT_BALANCE = 8;
+
+const int AccountVec_VT_ACCOUNTS = 4;
+
+const int Balance_VT_SHIELDED = 4;
+
+const int Balance_VT_UNCONFIRMED_SPENT = 6;
+
+const int Balance_VT_UNDER_CONFIRMED = 10;
+
+const int Balance_VT_EXCLUDED = 12;
+
+const int Balance_VT_SAPLING = 14;
+
+const int Balance_VT_ORCHARD = 16;
+
+const int Height_VT_HEIGHT = 4;
+
+const int Height_VT_TIMESTAMP = 6;
+
+const int ShieldedNote_VT_VALUE = 8;
+
+const int ShieldedNote_VT_SPENT = 16;
+
+const int ShieldedNoteVec_VT_NOTES = 4;
+
+const int ShieldedTx_VT_TX_ID = 6;
+
+const int ShieldedTx_VT_SHORT_TX_ID = 10;
+
+const int ShieldedTx_VT_ADDRESS = 18;
+
+const int ShieldedTx_VT_MEMO = 20;
+
+const int ShieldedTxVec_VT_TXS = 4;
+
+const int Message_VT_ID_MSG = 4;
+
+const int Message_VT_ID_TX = 6;
+
+const int Message_VT_FROM = 12;
+
+const int Message_VT_TO = 14;
+
+const int Message_VT_SUBJECT = 16;
+
+const int Message_VT_BODY = 18;
+
+const int Message_VT_READ = 20;
+
+const int Message_VT_INCOMING = 22;
+
+const int MessageVec_VT_MESSAGES = 4;
+
+const int PrevNext_VT_PREV = 4;
+
+const int PrevNext_VT_NEXT = 6;
+
+const int SendTemplate_VT_TITLE = 6;
+
+const int SendTemplate_VT_AMOUNT = 10;
+
+const int SendTemplate_VT_FIAT_AMOUNT = 12;
+
+const int SendTemplate_VT_FEE_INCLUDED = 14;
+
+const int SendTemplate_VT_FIAT = 16;
+
+const int SendTemplate_VT_INCLUDE_REPLY_TO = 18;
+
+const int SendTemplateVec_VT_TEMPLATES = 4;
+
+const int ContactVec_VT_CONTACTS = 4;
+
+const int TxTimeValueVec_VT_VALUES = 4;
+
+const int Quote_VT_PRICE = 6;
+
+const int Spending_VT_RECIPIENT = 4;
+
+const int AddressBalance_VT_INDEX = 4;
 
 typedef _c_dummy_export = ffi.Void Function();
 
@@ -1011,6 +1414,16 @@ typedef _c_deallocate_str = ffi.Void Function(
 
 typedef _dart_deallocate_str = void Function(
   ffi.Pointer<ffi.Int8> s,
+);
+
+typedef _c_deallocate_bytes = ffi.Void Function(
+  ffi.Pointer<ffi.Uint8> ptr,
+  ffi.Uint32 len,
+);
+
+typedef _dart_deallocate_bytes = void Function(
+  ffi.Pointer<ffi.Uint8> ptr,
+  int len,
 );
 
 typedef _c_init_wallet = CResult_u8 Function(
@@ -1305,11 +1718,11 @@ typedef _dart_shield_taddr = CResult_____c_char Function(
   int confirmations,
 );
 
-typedef _c_scan_transparent_accounts = ffi.Void Function(
+typedef _c_scan_transparent_accounts = CResult______u8 Function(
   ffi.Uint32 gap_limit,
 );
 
-typedef _dart_scan_transparent_accounts = void Function(
+typedef _dart_scan_transparent_accounts = CResult______u8 Function(
   int gap_limit,
 );
 
@@ -1563,14 +1976,138 @@ typedef _dart_derive_zip32 = CResult_____c_char Function(
   int address,
 );
 
+typedef _c_get_account_list = CResult______u8 Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_get_account_list = CResult______u8 Function(
+  int coin,
+);
+
+typedef _c_get_available_account_id = CResult_u32 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+);
+
+typedef _dart_get_available_account_id = CResult_u32 Function(
+  int coin,
+  int id,
+);
+
+typedef _c_get_t_addr = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+);
+
+typedef _dart_get_t_addr = CResult_____c_char Function(
+  int coin,
+  int id,
+);
+
+typedef _c_get_sk = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+);
+
+typedef _dart_get_sk = CResult_____c_char Function(
+  int coin,
+  int id,
+);
+
+typedef _c_update_account_name = CResult_u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+  ffi.Pointer<ffi.Int8> name,
+);
+
+typedef _dart_update_account_name = CResult_u8 Function(
+  int coin,
+  int id,
+  ffi.Pointer<ffi.Int8> name,
+);
+
+typedef _c_get_balances = CResult______u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+  ffi.Uint32 confirmed_height,
+);
+
+typedef _dart_get_balances = CResult______u8 Function(
+  int coin,
+  int id,
+  int confirmed_height,
+);
+
+typedef _c_get_db_height = CResult______u8 Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_get_db_height = CResult______u8 Function(
+  int coin,
+);
+
+typedef _c_get_notes = CResult______u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+);
+
+typedef _dart_get_notes = CResult______u8 Function(
+  int coin,
+  int id,
+);
+
+typedef _c_get_txs = CResult______u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+);
+
+typedef _dart_get_txs = CResult______u8 Function(
+  int coin,
+  int id,
+);
+
+typedef _c_get_messages = CResult______u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+);
+
+typedef _dart_get_messages = CResult______u8 Function(
+  int coin,
+  int id,
+);
+
+typedef _c_get_prev_next_message = CResult______u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+  ffi.Pointer<ffi.Int8> subject,
+  ffi.Uint32 height,
+);
+
+typedef _dart_get_prev_next_message = CResult______u8 Function(
+  int coin,
+  int id,
+  ffi.Pointer<ffi.Int8> subject,
+  int height,
+);
+
+typedef _c_get_templates = CResult______u8 Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_get_templates = CResult______u8 Function(
+  int coin,
+);
+
 typedef _c_save_send_template = CResult_u32 Function(
   ffi.Uint8 coin,
-  ffi.Pointer<ffi.Int8> template_,
+  ffi.Pointer<ffi.Uint8> template_,
+  ffi.Uint64 len,
 );
 
 typedef _dart_save_send_template = CResult_u32 Function(
   int coin,
-  ffi.Pointer<ffi.Int8> template_,
+  ffi.Pointer<ffi.Uint8> template_,
+  int len,
 );
 
 typedef _c_delete_send_template = CResult_u8 Function(
@@ -1579,6 +2116,72 @@ typedef _c_delete_send_template = CResult_u8 Function(
 );
 
 typedef _dart_delete_send_template = CResult_u8 Function(
+  int coin,
+  int id,
+);
+
+typedef _c_get_contacts = CResult______u8 Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_get_contacts = CResult______u8 Function(
+  int coin,
+);
+
+typedef _c_get_pnl_txs = CResult______u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+  ffi.Uint32 timestamp,
+);
+
+typedef _dart_get_pnl_txs = CResult______u8 Function(
+  int coin,
+  int id,
+  int timestamp,
+);
+
+typedef _c_get_historical_prices = CResult______u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 timestamp,
+  ffi.Pointer<ffi.Int8> currency,
+);
+
+typedef _dart_get_historical_prices = CResult______u8 Function(
+  int coin,
+  int timestamp,
+  ffi.Pointer<ffi.Int8> currency,
+);
+
+typedef _c_get_spendings = CResult______u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+  ffi.Uint32 timestamp,
+);
+
+typedef _dart_get_spendings = CResult______u8 Function(
+  int coin,
+  int id,
+  int timestamp,
+);
+
+typedef _c_update_excluded = CResult_u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+  ffi.Int8 excluded,
+);
+
+typedef _dart_update_excluded = CResult_u8 Function(
+  int coin,
+  int id,
+  int excluded,
+);
+
+typedef _c_invert_excluded = CResult_u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+);
+
+typedef _dart_invert_excluded = CResult_u8 Function(
   int coin,
   int id,
 );

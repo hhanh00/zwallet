@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
-import 'package:YWallet/db.dart';
 import 'package:YWallet/src/version.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -9,6 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'coin/coins.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:warp_api/types.dart';
@@ -466,7 +466,7 @@ abstract class _Settings with Store {
     currency = newCurrency;
     prefs.setString('currency', currency);
     await priceStore.fetchCoinPrice(active.coin);
-    await active.fetchChartData();
+    active.fetchChartData();
   }
 
   @action
@@ -646,7 +646,7 @@ abstract class _PriceStore with Store {
       if (_lastChartUpdateTime == null || now > _lastChartUpdateTime + 5 * 60) {
         await fetchCoinPrice(active.coin);
         await WarpApi.syncHistoricalPrices(settings.currency);
-        await active.fetchChartData();
+        active.fetchChartData();
         lastChartUpdateTime = _lastChartUpdateTime;
       }
     }
@@ -729,9 +729,12 @@ abstract class _SyncStatus with Store {
     WarpApi.skipToLastHeight(coin);
   }
 
-  Future<BlockInfo?> getDbSyncedHeight() async {
-    final dbr = active.dbReader;
-    return await dbr.getDbSyncedHeight();
+  BlockInfo? getDbSyncedHeight() {
+    final h = WarpApi.getDbHeight(active.coin);
+    if (h == null) return null;
+    final timestamp = DateTime.fromMillisecondsSinceEpoch(h.timestamp * 1000);
+    final blockInfo = BlockInfo(h.height, timestamp);
+    return blockInfo;
   }
 
   @action
@@ -779,7 +782,7 @@ abstract class _SyncStatus with Store {
           if (currentSyncedHeight != syncedHeight) {
             await active.update();
             await priceStore.updateChart();
-            await contacts.fetchContacts();
+            contacts.fetchContacts();
           }
         }
         else if (res == 1) {
@@ -914,28 +917,27 @@ class ContactStore = _ContactStore with _$ContactStore;
 
 abstract class _ContactStore with Store {
   @observable
-  ObservableList<Contact> contacts = ObservableList<Contact>.of([]);
+  ObservableList<ContactT> contacts = ObservableList<ContactT>.of([]);
 
   @action
-  Future<void> fetchContacts() async {
-    final dbr = active.dbReader;
+  void fetchContacts() {
     contacts.clear();
-    contacts.addAll(await dbr.getContacts());
+    contacts.addAll(WarpApi.getContacts(active.coin));
   }
 
   @action
-  Future<void> add(Contact c) async {
-    WarpApi.storeContact(c.id, c.name, c.address, true);
+  void add(ContactT c) {
+    WarpApi.storeContact(c.id, c.name!, c.address!, true);
     markContactsSaved(active.coin, false);
-    await fetchContacts();
+    fetchContacts();
   }
 
   @action
-  Future<void> remove(Contact c) async {
+  void remove(ContactT c) {
     contacts.removeWhere((contact) => contact.id == c.id);
-    WarpApi.storeContact(c.id, c.name, "", true);
+    WarpApi.storeContact(c.id, c.name!, "", true);
     markContactsSaved(active.coin, false);
-    await fetchContacts();
+    fetchContacts();
   }
 
   markContactsSaved(int coin, bool v) {
@@ -1016,29 +1018,11 @@ class Tx extends HasHeight {
       this.address, this.contact, this.memo);
 }
 
-class Spending {
-  final String address;
-  final double amount;
-  final String? contact;
-
-  Spending(this.address, this.amount, this.contact);
-}
-
 class AccountBalance {
   final DateTime time;
   final double balance;
 
   AccountBalance(this.time, this.balance);
-}
-
-class Contact {
-  final int id;
-  final String name;
-  final String address;
-
-  Contact(this.id, this.name, this.address);
-
-  factory Contact.empty() => Contact(0, "", "");
 }
 
 enum SortOrder {
@@ -1136,7 +1120,7 @@ class DecodedPaymentURI {
 
 class SendPageArgs {
   final bool isMulti;
-  final Contact? contact;
+  final ContactT? contact;
   final String? address;
   final String? subject;
   final String? uri;

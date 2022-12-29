@@ -23,10 +23,9 @@ class AccountManagerState extends State<AccountManagerPage> {
   initState() {
     super.initState();
     Future.microtask(() async {
-      await _accounts.refresh();
-      setState(() {});
       await _accounts.updateTBalance();
-      setState(() {});
+      if (mounted)
+        setState(() {});
     });
   }
 
@@ -160,7 +159,7 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   void _onDismissed(int index, Account account) async {
     await _accounts.delete(account.coin, account.id);
-    await _accounts.refresh();
+    _accounts.refresh();
     await active.checkAndUpdate();
   }
 
@@ -247,7 +246,7 @@ class AccountManagerState extends State<AccountManagerPage> {
   }
 
   _refresh() async {
-    await _accounts.refresh();
+    _accounts.refresh();
     setState(() {});
   }
   

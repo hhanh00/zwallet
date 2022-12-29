@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
@@ -33,9 +34,9 @@ class ContactsState extends State<ContactsTab> {
                       child: Dismissible(
                           key: Key("${c.id}"),
                           child: ListTile(
-                            title: Text(c.name,
+                            title: Text(c.name!,
                                 style: Theme.of(context).textTheme.headline5),
-                            subtitle: Text(c.address),
+                            subtitle: Text(c.address!),
                             trailing: Icon(Icons.chevron_right),
                             onTap: () { _onContact(c); },
                             onLongPress: () { _editContact(c); },
@@ -51,32 +52,32 @@ class ContactsState extends State<ContactsTab> {
     );
   }
 
-  _onContact(Contact c) {
+  _onContact(ContactT c) {
     Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(contact: c));
   }
 
-  _editContact(Contact c) async {
+  _editContact(ContactT c) async {
     final contact = await showContactForm(context, c, true);
     if (contact != null) {
       contacts.add(contact);
     }
   }
 
-  Future<bool> _onConfirmDelContact(Contact c) async {
+  Future<bool> _onConfirmDelContact(ContactT c) async {
     final confirm = await showMessageBox(context, S.of(context).deleteContact,
         S.of(context).areYouSureYouWantToDeleteThisContact,
         S.of(context).delete);
     return confirm;
   }
 
-  _delContact(Contact c) async {
-    await contacts.remove(c);
+  _delContact(ContactT c) {
+    contacts.remove(c);
   }
 
-  Future<Contact?> showContactForm(BuildContext context, Contact c, bool edit) async {
+  Future<ContactT?> showContactForm(BuildContext context, ContactT c, bool edit) async {
     final key = GlobalKey<ContactState>();
 
-    final contact = await showDialog<Contact>(
+    final contact = await showDialog<ContactT>(
         context: context,
         builder: (context) => AlertDialog(
               contentPadding: EdgeInsets.all(16),
@@ -118,7 +119,7 @@ class NoContact extends StatelessWidget {
 }
 
 class ContactForm extends StatefulWidget {
-  final Contact contact;
+  final ContactT contact;
 
   ContactForm(this.contact, {Key? key}) : super(key: key);
 
@@ -134,8 +135,8 @@ class ContactState extends State<ContactForm> {
   @override
   void initState() {
     super.initState();
-    nameController.text = widget.contact.name;
-    address = widget.contact.address;
+    nameController.text = widget.contact.name ?? "";
+    address = widget.contact.address ?? "";
   }
 
   @override
@@ -159,7 +160,7 @@ class ContactState extends State<ContactForm> {
     final state = formKey.currentState!;
     if (state.validate()) {
       state.save();
-      final contact = Contact(widget.contact.id, nameController.text, address);
+      final contact = ContactT(id: widget.contact.id, name: nameController.text, address: address);
       Navigator.of(context).pop(contact);
       active.update();
     }

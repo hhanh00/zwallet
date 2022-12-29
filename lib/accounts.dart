@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:warp_api/data_fb_generated.dart' ;
 import 'package:warp_api/types.dart';
 import 'coin/coins.dart';
 import 'package:mobx/mobx.dart';
@@ -19,25 +20,29 @@ class Account {
   final String name;
   final int balance;
   int tbalance = 0;
-  final ShareInfo? share;
 
-  Account(this.coin, this.id, this.name, this.balance, this.tbalance, this.share);
+  Account(this.coin, this.id, this.name, this.balance, this.tbalance);
 
   String get address {
     return id != 0 ? WarpApi.getAddress(this.coin, this.id, settings.uaType) : "";
   }
 }
 
-final Account emptyAccount = Account(0, 0, "", 0, 0, null);
+final Account emptyAccount = Account(0, 0, "", 0, 0);
 
 class AccountList {
   List<Account> list = [];
 
-  Future<void> refresh() async {
+  AccountList() {
+    refresh();
+  }
+
+  void refresh() {
     List<Account> _list = [];
     for (var coin in coins) {
-      final dbr = DbReader(coin.coin, 0);
-      _list.addAll(await dbr.getAccountList());
+      _list.addAll(WarpApi.getAccountList(coin.coin).map((a) => Account(
+        coin.coin, a.id, a.name!, a.balance, 0)
+      ));
     }
     list = _list;
   }
@@ -57,9 +62,8 @@ class AccountList {
   }
 
   Future<void> changeAccountName(int coin, int id, String name) async {
-    final dbr = DbReader(coin, id);
-    await dbr.changeAccountName(name);
-    await refresh();
+    WarpApi.updateAccountName(coin, id, name);
+    refresh();
   }
 
   void saveActive(int coin, int id) {
@@ -141,13 +145,13 @@ abstract class _ActiveAccount with Store {
   }
 
   Future<AccountId?> getAvailableId(AccountId aid) async {
-    final nid = await getAvailableIdForCoin(aid.coin, aid.id);
-    if (nid != null) return nid;
+    final nid = getAvailableIdForCoin(aid.coin, aid.id);
+    if (nid.id != 0) return nid;
     for (var coin_data in settings.coins) {
       // look for an account in any other coin
       if (coin_data.coin != coin) {
-        final nid = await getAvailableIdForCoin(coin_data.coin, coin_data.active);
-        if (nid != null)
+        final nid = getAvailableIdForCoin(coin_data.coin, coin_data.active);
+        if (nid.id != 0)
           return nid;
       }
     }
@@ -158,9 +162,9 @@ abstract class _ActiveAccount with Store {
   // check that the account still exists
   // if not, pick any account
   // if there are none, return 0
-  Future<AccountId?> getAvailableIdForCoin(int coin, int id) async {
-    final dbr = DbReader(coin, id);
-    return dbr.getAvailableAccountId();
+  AccountId getAvailableIdForCoin(int coin, int id) {
+    final newId = WarpApi.getAvailableAccountId(coin, id);
+    return AccountId(coin, newId);
   }
 
   @action
@@ -178,15 +182,14 @@ abstract class _ActiveAccount with Store {
   Future<void> refreshAccount() async {
     final dbr = DbReader(coin, id);
     coinDef = settings.coins[coin].def;
-    final db = coinDef.db;
 
     final accounts = AccountList();
-    await accounts.refresh();
+    accounts.refresh();
     account = accounts.get(coin, id);
 
     if (id > 0) {
-      taddress = await dbr.getTAddr();
-      canPay = await dbr.getSK() != null;
+      taddress = WarpApi.getTAddr(coin, id);
+      canPay = WarpApi.getSK(coin, id).isNotEmpty;
     }
 
     showTAddr = false;
@@ -199,8 +202,7 @@ abstract class _ActiveAccount with Store {
 
   @action
   Future<void> refreshTAddr() async {
-    final dbr = DbReader(coin, id);
-    taddress = await dbr.getTAddr();
+    taddress = WarpApi.getTAddr(coin, id);
   }
 
   @action
@@ -217,11 +219,12 @@ abstract class _ActiveAccount with Store {
   }
 
   @action
-  Future<void> updateBalances() async {
+  void updateBalances() {
     final dbr = DbReader(coin, id);
     final initialized = balances.initialized;
     final prevBalance = balances.balance;
-    await dbr.updateBalances(syncStatus.confirmHeight, balances);
+    final b = WarpApi.getBalance(coin, id, syncStatus.confirmHeight);
+    balances.update(b.balance, b.shielded, b.unconfirmedSpent, b.underConfirmed, b.excluded);
     if (initialized && prevBalance != balances.balance) {
       showBalanceNotification(prevBalance, balances.balance);
     }
@@ -238,13 +241,13 @@ abstract class _ActiveAccount with Store {
 
   @action
   Future<void> update() async {
-    await updateBalances();
+    updateBalances();
     updateTBalance();
-    await poolBalances.update();
+    poolBalances.update();
 
     final dbr = DbReader(coin, id);
-    notes = await dbr.getNotes();
-    txs = await dbr.getTxs();
+    notes = dbr.getNotes();
+    txs = dbr.getTxs();
     messages = ObservableList.of(await dbr.getMessages());
     unread = messages.where((m) => !m.read).length;
     dataEpoch += 1;
@@ -342,26 +345,22 @@ abstract class _ActiveAccount with Store {
   }
 
   @action
-  Future<void> excludeNote(Note note) async {
-    await coinDef.db.execute(
-        "UPDATE received_notes SET excluded = ?2 WHERE id_note = ?1",
-        [note.id, note.excluded]);
+  void excludeNote(Note note) {
+    WarpApi.updateExcluded(coin, note.id, note.excluded);
   }
 
   @action
-  Future<void> invertExcludedNotes() async {
-    await coinDef.db.execute(
-        "UPDATE received_notes SET excluded = NOT(COALESCE(excluded, 0)) WHERE account = ?1",
-        [active.id]);
+  void invertExcludedNotes() {
+    WarpApi.invertExcluded(coin, id);
     notes = notes.map((n) => n.invertExcluded).toList();
   }
 
   @action
-  Future<void> fetchChartData() async {
-    final dbr = DbReader(active.coin, active.id);
-    pnls = await dbr.getPNL(active.id);
-    spendings = await dbr.getSpending(active.id);
-    accountBalances = await dbr.getAccountBalanceTimeSeries(active.id, active.balances?.balance ?? 0);
+  void fetchChartData() {
+    final dbr = active.dbReader;
+    pnls = dbr.getPNL(active.id);
+    spendings = dbr.getSpending(active.id);
+    accountBalances = dbr.getAccountBalanceTimeSeries(active.id, active.balances?.balance ?? 0);
   }
 
   @action
@@ -370,7 +369,6 @@ abstract class _ActiveAccount with Store {
       WarpApi.markMessageAsRead(messages[index].id, true);
       messages[index] = messages[index].withRead(true);
       unread = unread - 1;
-      print("UNREAD $unread");
     }
   }
 
@@ -383,16 +381,16 @@ abstract class _ActiveAccount with Store {
     unread = 0;
   }
 
-  Future<int?> prevInThread(int index) async {
+  int prevInThread(int index) {
     final message = messages[index];
-    final dbr = DbReader(active.coin, active.id);
-    return await dbr.getPrevMessage(message.subject, message.height, id);
+    final pn = WarpApi.getPrevNextMessage(coin, id, message.subject, message.height);
+    return pn.prev;
   }
 
-  Future<int?> nextInThread(int index) async {
+  int nextInThread(int index) {
     final message = messages[index];
-    final dbr = DbReader(active.coin, active.id);
-    return await dbr.getNextMessage(message.subject, message.height, id);
+    final pn = WarpApi.getPrevNextMessage(coin, id, message.subject, message.height);
+    return pn.next;
   }
 
   @action
@@ -441,11 +439,9 @@ abstract class _PoolBalances with Store {
   @observable int sapling = 0;
   @observable int orchard = 0;
 
-  Future<void> update() async {
-    final dbr = DbReader(active.coin, active.id);
-    final saplingBalance = await dbr.getSaplingBalance();
-    final orchardBalance = await dbr.getOrchardBalance();
-    _update(active.tbalance, saplingBalance, orchardBalance);
+  void update() {
+    final b = WarpApi.getBalance(active.coin, active.id, syncStatus.confirmHeight);
+    _update(active.tbalance, b.sapling, b.orchard);
   }
 
   @action
