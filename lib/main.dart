@@ -359,6 +359,7 @@ class ZWalletAppState extends State<ZWalletApp> {
           WarpApi.initWallet(coin.coin, coin.dbFullPath);
         }
 
+        _setProgress(0.6, 'Migrate Data');
         for (var s in settings.servers) {
           final server = s.getLWDUrl();
           if (server != null && server.isNotEmpty) {
