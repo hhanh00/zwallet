@@ -187,8 +187,8 @@ class _AddAccountPageState extends State<AddAccountPage> {
                           icon: Icon(Icons.done))
                     ]));
       } else {
-        await active.setActiveAccount(_coin, account);
-        await active.refreshAccount();
+        active.setActiveAccount(_coin, account);
+        active.refreshAccount();
         final nav = Navigator.of(context);
         if (_keyController.text != "") {
           syncStatus.setAccountRestored(true);

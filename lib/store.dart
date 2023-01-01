@@ -749,7 +749,7 @@ abstract class _SyncStatus with Store {
       latestHeight = await WarpApi.getLatestHeight();
     }
     on String {}
-    final _syncedInfo = await getDbSyncedHeight();
+    final _syncedInfo = getDbSyncedHeight();
     // if syncedHeight = 0, we just started sync therefore don't set it back to null
     if (syncedHeight != 0 && _syncedInfo != null) setSyncHeight(_syncedInfo.height, _syncedInfo.timestamp);
     return latestHeight > 0 && syncedHeight == latestHeight;
@@ -780,7 +780,7 @@ abstract class _SyncStatus with Store {
         final res = await compute(WarpApi.warpSync, params);
         if (res == 0) {
           if (currentSyncedHeight != syncedHeight) {
-            await active.update();
+            active.update();
             await priceStore.updateChart();
             contacts.fetchContacts();
           }
