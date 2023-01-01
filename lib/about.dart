@@ -3,10 +3,12 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mustache_template/mustache.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
 import 'generated/l10n.dart';
+import 'settings.dart';
 import 'src/version.dart';
 
 Future<void> showAbout(BuildContext context) async {
@@ -34,9 +36,7 @@ Future<void> showAbout(BuildContext context) async {
                     MarkdownBody(data: content),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                       if (versionString != null)
-                        GestureDetector(
-                          onLongPress: () => resetApp(),
-                          child: Text("$versionString"))
+                        TextButton(child: Text(versionString), onPressed: _onVersion),
                   ],
                 ))),
               actions: [
@@ -47,6 +47,10 @@ Future<void> showAbout(BuildContext context) async {
                     label: Text(S.of(context).ok),
                     icon: Icon(Icons.done))
               ]));
+}
+
+_onVersion() {
+  launchUrl(Uri.parse("https://github.com/hhanh00/zwallet/commit/$commitId"));
 }
 
 Future<void> showAboutOnce(BuildContext context) async {

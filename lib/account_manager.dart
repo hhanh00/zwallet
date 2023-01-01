@@ -164,8 +164,8 @@ class AccountManagerState extends State<AccountManagerPage> {
   }
 
   _selectAccount(Account account) async {
-    await active.setActiveAccount(account.coin, account.id);
-    await active.refreshAccount();
+    active.setActiveAccount(account.coin, account.id);
+    active.refreshAccount();
     if (syncStatus.accountRestored) {
       syncStatus.setAccountRestored(false);
       final height = await rescanDialog(context);

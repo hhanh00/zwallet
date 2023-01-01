@@ -115,17 +115,15 @@ void handleQuickAction(BuildContext context, String type) {
   final a = settings.coins[coin].active;
 
   if (a != 0) {
-    Future.microtask(() async {
-      await active.setActiveAccount(coin, a);
-      switch (shortcut) {
-        case 'receive':
-          Navigator.of(context).pushNamed('/receive');
-          break;
-        case 'send':
-          Navigator.of(context).pushNamed('/send');
-          break;
-      }
-    });
+    active.setActiveAccount(coin, a);
+    switch (shortcut) {
+      case 'receive':
+        Navigator.of(context).pushNamed('/receive');
+        break;
+      case 'send':
+        Navigator.of(context).pushNamed('/send');
+        break;
+    }
   }
 }
 
@@ -401,8 +399,6 @@ class ZWalletAppState extends State<ZWalletApp> {
       if (settings.protectOpen) {
         while (!await authenticate(this.context, 'Protect Launch')) {}
       }
-
-      await active.restore();
 
       return true;
     } catch (e) {

@@ -128,23 +128,22 @@ abstract class _ActiveAccount with Store {
     final prefs = await SharedPreferences.getInstance();
     final coin = prefs.getInt('coin') ?? 0;
     var id = prefs.getInt('account') ?? 0;
-    await setActiveAccount(coin, id);
+    setActiveAccount(coin, id);
     await checkAndUpdate();
-    await refreshAccount();
   }
 
   Future<void> checkAndUpdate() async {
     final aid = await getAvailableId(active.toId());
     if (aid == null) {
-      await setActiveAccount(0, 0);
+      setActiveAccount(0, 0);
     }
     else if (aid != active.toId()) {
-      await setActiveAccount(aid.coin, aid.id);
-      await refreshAccount();
+      setActiveAccount(aid.coin, aid.id);
+      refreshAccount();
     }
   }
 
-  Future<AccountId?> getAvailableId(AccountId aid) async {
+  AccountId? getAvailableId(AccountId aid) {
     final nid = getAvailableIdForCoin(aid.coin, aid.id);
     if (nid.id != 0) return nid;
     for (var coin_data in settings.coins) {
@@ -168,18 +167,20 @@ abstract class _ActiveAccount with Store {
   }
 
   @action
-  Future<void> setActiveAccount(int _coin, int _id) async {
+  void setActiveAccount(int _coin, int _id) {
     coin = _coin;
     id = _id;
 
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('coin', coin);
-    prefs.setInt('account', id);
+    Future.microtask(() async {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setInt('coin', coin);
+      prefs.setInt('account', id);
+    });
     WarpApi.setActiveAccount(coin, id);
   }
 
   @action
-  Future<void> refreshAccount() async {
+  void refreshAccount() {
     final dbr = DbReader(coin, id);
     coinDef = settings.coins[coin].def;
 
@@ -196,7 +197,7 @@ abstract class _ActiveAccount with Store {
     balances.initialized = false;
     draftRecipient = null;
 
-    await update();
+    update();
     Future.microtask(priceStore.updateChart);
   }
 
@@ -240,7 +241,7 @@ abstract class _ActiveAccount with Store {
   }
 
   @action
-  Future<void> update() async {
+  void update() {
     updateBalances();
     updateTBalance();
     poolBalances.update();
@@ -248,7 +249,7 @@ abstract class _ActiveAccount with Store {
     final dbr = DbReader(coin, id);
     notes = dbr.getNotes();
     txs = dbr.getTxs();
-    messages = ObservableList.of(await dbr.getMessages());
+    messages = ObservableList.of(dbr.getMessages());
     unread = messages.where((m) => !m.read).length;
     dataEpoch += 1;
   }

@@ -71,7 +71,7 @@ class HomeState extends State<HomePage> {
         final h = syncedHeight.height;
         syncStatus.setSyncHeight(h, syncedHeight.timestamp);
         eta.checkpoint(h, DateTime.now());
-        await active.update();
+        active.update();
         final progress = syncStatus.progress;
         if (progress != null && isMobile()) {
           FlutterForegroundTask.updateService(

@@ -56,7 +56,7 @@ class TransactionState extends State<TransactionPage> {
   }
 
   _onOpen() {
-    launch("${activeCoin().explorerUrl}${tx.fullTxId}");
+    launchUrl(Uri.parse("${activeCoin().explorerUrl}${tx.fullTxId}"));
   }
 
   _prev() {

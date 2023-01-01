@@ -76,7 +76,7 @@ class TxPlanPage extends StatelessWidget {
             showSnackBar(S.current.txId(txid));
             await player.play(AssetSource("success.mp3"));
             active.setDraftRecipient(null);
-            await active.update();
+            active.update();
           }
           on String catch (message) {
             showSnackBar(message);
