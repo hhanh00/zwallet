@@ -275,9 +275,9 @@
   "maxSpendableAmount": "Max Gastable: {amount} {ticker}",
   "splitNotes": "Dividar Billetes",
   "transfer": "Transferir",
-  "template": "Template",
-  "newTemplate": "New Template",
-  "name": "Name",
-  "deleteTemplate": "Delete Template?",
-  "areYouSureYouWantToDeleteThisSendTemplate": "Are you sure you want to delete this send template?"
+  "template": "Plantilla",
+  "newTemplate": "Nueva plantilla",
+  "name": "Nombre",
+  "deleteTemplate": "Eliminar plantilla?",
+  "areYouSureYouWantToDeleteThisSendTemplate": "¿Está seguro de que desea eliminar esta plantilla de envío?"
 }
