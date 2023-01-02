@@ -487,6 +487,7 @@ class WarpApi {
 
   static int saveSendTemplate(int coin, SendTemplateT t) {
     final template = SendTemplateObjectBuilder(
+      id: t.id,
       title: t.title,
       address: t.address,
       amount: t.amount,
