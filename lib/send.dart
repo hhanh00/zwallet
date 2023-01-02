@@ -273,16 +273,11 @@ class SendState extends State<SendPage> {
               }))) ?? false;
       if (!confirmed) return;
       final title = titleController.text;
-      final template = _saveTemplate(0, title, false);
-      if (template != null) {
-        _template = template;
-        _templates.add(template);
-        setState(() {});
-      }
+      _saveTemplate(0, title, false);
     }
   }
 
-  SendTemplateT? _saveTemplate(int id, String title, bool validate) {
+  void _saveTemplate(int id, String title, bool validate) {
     final form = _formKey.currentState!;
     if (validate && !form.validate()) return null;
     form.save();
@@ -298,10 +293,9 @@ class SendState extends State<SendPage> {
         fiat: dualAmountController.inputInCoin ? null : _fiat,
         includeReplyTo: _replyTo,
         subject: _subjectController.text,
-        body: _subjectController.text);
+        body: _memoController.text);
     final id2 = WarpApi.saveSendTemplate(active.coin, template);
-    template.id = id2;
-    return template;
+    _loadTemplates(id2);
   }
 
   Future<void> _deleteTemplate() async {
@@ -310,10 +304,10 @@ class SendState extends State<SendPage> {
     if (!confirmed) return;
     WarpApi.deleteSendTemplate(active.coin, _template!.id);
     _resetTemplate();
-    Future.microtask(_loadTemplates);
+    _loadTemplates(0);
   }
 
-  Future<void> _openTemplate() async {
+  void _openTemplate() {
     final tid = _template;
     if (tid == null) return;
     final template = _template;;
@@ -327,11 +321,12 @@ class SendState extends State<SendPage> {
     });
   }
 
-  void _loadTemplates() {
-    final templateIds = active.dbReader.loadTemplates();
-    setState(() {
-      _templates = templateIds;
-    });
+  void _loadTemplates(int id) {
+    final templates = active.dbReader.loadTemplates();
+    _templates = templates;
+    if (id != 0)
+      _template = _templates.firstWhere((t) => t.id == id);
+    setState(() {});
   }
 
   Suggestion? getSuggestion(String v) {

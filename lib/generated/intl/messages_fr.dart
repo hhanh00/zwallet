@@ -127,7 +127,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Voulez vous effacer ce contact?"),
         "areYouSureYouWantToDeleteThisSendTemplate":
             MessageLookupByLibrary.simpleMessage(
-                "Are you sure you want to delete this send template?"),
+                "Voulez-vous vraiment supprimer ce modèle?"),
         "areYouSureYouWantToSaveYourContactsIt": m1,
         "auto": MessageLookupByLibrary.simpleMessage("Auto"),
         "autoHideBalance": MessageLookupByLibrary.simpleMessage(
@@ -162,7 +162,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Changer le mode prendra effet au prochain démarrage"),
         "checkTransaction":
-            MessageLookupByLibrary.simpleMessage("Verifier la Transaction"),
+            MessageLookupByLibrary.simpleMessage("Vérifier la Transaction"),
         "close": MessageLookupByLibrary.simpleMessage("Fermer"),
         "closeApplication":
             MessageLookupByLibrary.simpleMessage("Close Application"),
@@ -193,7 +193,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "custom": MessageLookupByLibrary.simpleMessage("Personnaliser"),
         "dark": MessageLookupByLibrary.simpleMessage("Sombre"),
         "databaseUpdatedPleaseRestartTheApp":
-            MessageLookupByLibrary.simpleMessage("Redémarrer l\'app SVP"),
+            MessageLookupByLibrary.simpleMessage("Redémarrer l\'appli SVP"),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "datetime": MessageLookupByLibrary.simpleMessage("Jour/Heure"),
         "dbImportSuccessful":
@@ -205,7 +205,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "deleteContact":
             MessageLookupByLibrary.simpleMessage("Effacer un contact"),
         "deleteTemplate":
-            MessageLookupByLibrary.simpleMessage("Delete Template?"),
+            MessageLookupByLibrary.simpleMessage("Effacer ce modèle?"),
         "derivationPath":
             MessageLookupByLibrary.simpleMessage("Chemin de Dérivation"),
         "disconnected": MessageLookupByLibrary.simpleMessage("Déconnecté"),
@@ -289,7 +289,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "multisigShares":
             MessageLookupByLibrary.simpleMessage("Multisig Shares"),
         "na": MessageLookupByLibrary.simpleMessage("N/D"),
-        "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "name": MessageLookupByLibrary.simpleMessage("Nom"),
         "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Le nom est vide"),
         "newAccount": MessageLookupByLibrary.simpleMessage("Nouveau Compte"),
         "newLabel": MessageLookupByLibrary.simpleMessage("Nouveau"),
@@ -297,7 +297,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Nouvelle adresse instantanée"),
         "newSubAccount":
             MessageLookupByLibrary.simpleMessage("Nouveau Sous Compte"),
-        "newTemplate": MessageLookupByLibrary.simpleMessage("New Template"),
+        "newTemplate": MessageLookupByLibrary.simpleMessage("Nouveau modèle"),
         "noAccount": MessageLookupByLibrary.simpleMessage("Pas de compte"),
         "noActiveAccount":
             MessageLookupByLibrary.simpleMessage("Aucun Compte sélectionné"),
@@ -438,7 +438,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Appuyez sur le code QR pour l\'adresse transparente"),
         "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
             "Presser sur une Transaction pour plus de details"),
-        "template": MessageLookupByLibrary.simpleMessage("Template"),
+        "template": MessageLookupByLibrary.simpleMessage("Modèle"),
         "textCopiedToClipboard": m22,
         "thePrivateWalletMessenger": MessageLookupByLibrary.simpleMessage(
             "Le Portefeuille et Messagerie Privé"),
@@ -464,7 +464,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "transactionHistory":
             MessageLookupByLibrary.simpleMessage("Historique des Transactions"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
-        "transfer": MessageLookupByLibrary.simpleMessage("Transferer"),
+        "transfer": MessageLookupByLibrary.simpleMessage("Transférer"),
         "txId": m23,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Pas assez de confs"),
