@@ -19,8 +19,6 @@ class SettingsState extends State<SettingsPage>
     with SingleTickerProviderStateMixin {
   var _anchorController =
       TextEditingController(text: "${settings.anchorOffset}");
-  var _thresholdController = TextEditingController(
-      text: decimalFormat(settings.autoShieldThreshold, 3));
   var _memoController = TextEditingController();
   var _gapLimitController = TextEditingController(text: "${settings.gapLimit}");
   var _currency = settings.currency;
@@ -28,13 +26,6 @@ class SettingsState extends State<SettingsPage>
   var _messageView = settings.messageView;
   var _noteView = settings.noteView;
   var _txView = settings.txView;
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -250,15 +241,6 @@ class SettingsState extends State<SettingsPage>
                                 })),
                           ]),
                           if (!simpleMode)
-                            TextFormField(
-                                decoration: InputDecoration(
-                                    labelText: 'Auto Shield Threshold'),
-                                keyboardType: TextInputType.number,
-                                controller: _thresholdController,
-                                inputFormatters: [makeInputFormatter(true)],
-                                onSaved: _onAutoShieldThreshold,
-                                validator: _checkAmount),
-                          if (!simpleMode)
                             FormBuilderCheckbox(
                                 name: 'use_cold_qr',
                                 title: Text(s.useQrForOfflineSigning),
@@ -290,18 +272,9 @@ class SettingsState extends State<SettingsPage>
                                 name: 'gap_limit',
                                 keyboardType: TextInputType.number,
                                 controller: _gapLimitController,
-                                onSaved: _ongapLimit),
+                                onSaved: _onGapLimit),
                           ButtonBar(children: confirmButtons(context, _onSave))
                         ]))))));
-  }
-
-  String? _checkAmount(String? vs) {
-    final s = S.of(context);
-    if (vs == null) return s.amountMustBeANumber;
-    if (!checkNumber(vs)) return s.amountMustBeANumber;
-    final v = parseNumber(vs);
-    if (v < 0.0) return s.amountMustBePositive;
-    return null;
   }
 
   _onMode(v) {
@@ -322,11 +295,6 @@ class SettingsState extends State<SettingsPage>
 
   _qrOffline(v) {
     settings.setQrOffline(v);
-  }
-
-  _onAutoShieldThreshold(_) {
-    final v = parseNumber(_thresholdController.text);
-    settings.setAutoShieldThreshold(v);
   }
 
   _onUAType(List<String>? vs) {
@@ -396,7 +364,7 @@ class SettingsState extends State<SettingsPage>
     settings.setAnchorOffset(int.parse(v));
   }
 
-  _ongapLimit(v) {
+  _onGapLimit(v) {
     settings.setGapLimit(int.parse(v));
   }
 
