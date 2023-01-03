@@ -194,8 +194,10 @@ class AccountManagerState extends State<AccountManagerPage> {
     setState(() {});
   }
 
-  _onAddAccount() {
-    Navigator.of(context).pushNamed('/add_account');
+  _onAddAccount() async {
+    await Navigator.of(context).pushNamed('/add_account');
+    _accounts.refresh();
+    setState(() {});
   }
 
   _onMenu(String choice) {
