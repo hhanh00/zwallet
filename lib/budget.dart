@@ -248,20 +248,13 @@ class BudgetTable extends StatelessWidget {
     final rows = spendings.asMap().entries.map((e) {
       final style = TextStyle(color: palette[e.key], fontFeatures: [FontFeature.tabularFigures()]);
       final recipient = e.value.recipient!;
-      return DataRow(cells: [
-        DataCell(Text(recipient, style: style)),
-        DataCell(Text(decimalFormat(e.value.amount / ZECUNIT, 8), style: style)),
+      return TableRow(children: [
+        Text(recipient, style: style, maxLines: 1, overflow: TextOverflow.ellipsis,),
+        Text(decimalFormat(e.value.amount / ZECUNIT, 8), style: style)
       ]);
     }).toList();
-    return DataTable(
-        columnSpacing: 8,
-        dataRowHeight: 32,
-        headingRowHeight: 40,
-        horizontalMargin: 8,
-        columns: [
-          DataColumn(label: Text(s.address)),
-          DataColumn(label: Text(s.amount), numeric: true),
-        ],
-        rows: rows);
+    return Table(
+      columnWidths: { 0: FlexColumnWidth(), 1: IntrinsicColumnWidth() },
+      children: rows);
   }
 }
