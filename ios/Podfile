@@ -30,7 +30,8 @@ flutter_ios_podfile_setup
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
-
+  pod 'DKImagePickerController/PhotoGallery', :git =>
+    'https://github.com/zhangao0086/DKImagePickerController.git'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
