@@ -89,24 +89,17 @@ class SendState extends State<SendPage> {
     final recipients = widget.args?.recipients ?? [];
     _usedBalance = recipients.fold(0, (acc, r) => acc + r.amount);
 
+    _newBlockAutorunDispose = autorun((_) {
+      syncStatus.latestHeight;
+      setState(() {});
+    });
+    Future.microtask(syncStatus.update);
+
     final uri = widget.args?.uri;
     if (uri != null)
       Future.microtask(() {
         _setPaymentURI(uri);
       });
-
-    active.updateBalances();
-    final balances = active.balances;
-    final sBalance = balances.shieldedBalance;
-    final tBalance = active.tbalance;
-    final excludedBalance = balances.excludedBalance;
-    final underConfirmedBalance = balances.underConfirmedBalance;
-    int? unconfirmedBalance = unconfirmedBalanceStream.value;
-    _sBalance = sBalance;
-    _tBalance = tBalance;
-    _excludedBalance = excludedBalance;
-    _underConfirmedBalance = underConfirmedBalance;
-    _unconfirmedBalance = unconfirmedBalance ?? 0;
 
     final templateIds = active.dbReader.loadTemplates();
     _templates = templateIds;
@@ -139,8 +132,20 @@ class SendState extends State<SendPage> {
       _memoInitialized = true;
     }
 
-    var templates = _templates.map((t) => DropdownMenuItem(child: Text(t.title!), value: t)).toList();
+    active.updateBalances();
+    final balances = active.balances;
+    final sBalance = balances.shieldedBalance;
+    final tBalance = active.tbalance;
+    final excludedBalance = balances.excludedBalance;
+    final underConfirmedBalance = balances.underConfirmedBalance;
+    int? unconfirmedBalance = unconfirmedBalanceStream.value;
+    _sBalance = sBalance;
+    _tBalance = tBalance;
+    _excludedBalance = excludedBalance;
+    _underConfirmedBalance = underConfirmedBalance;
+    _unconfirmedBalance = unconfirmedBalance ?? 0;
 
+    var templates = _templates.map((t) => DropdownMenuItem(child: Text(t.title!), value: t)).toList();
     final addReset = _template != null ? IconButton(onPressed: _resetTemplate, icon: Icon(Icons.close)) : IconButton(onPressed: _addTemplate, icon: Icon(Icons.add));
 
     return Scaffold(

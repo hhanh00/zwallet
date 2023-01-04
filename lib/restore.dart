@@ -188,7 +188,6 @@ class _AddAccountPageState extends State<AddAccountPage> {
                     ]));
       } else {
         active.setActiveAccount(_coin, account);
-        active.refreshAccount();
         final nav = Navigator.of(context);
         if (_keyController.text != "") {
           syncStatus.setAccountRestored(true);

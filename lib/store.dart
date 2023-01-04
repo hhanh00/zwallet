@@ -97,7 +97,6 @@ class CoinData = _CoinData with _$CoinData;
 
 abstract class _CoinData with Store {
   final int coin;
-  int active = 0;
   int syncedHeight = 0;
   final CoinBase def;
   @observable bool contactsSaved = true;
@@ -269,7 +268,6 @@ abstract class _Settings with Store {
 
     for (var c in coins) {
       final ticker = c.def.ticker;
-      c.active = prefs.getInt("$ticker.active") ?? 0;
       c.contactsSaved = prefs.getBool("$ticker.contacts_saved") ?? true;
     }
 
@@ -1119,12 +1117,15 @@ class DecodedPaymentURI {
 }
 
 class SendPageArgs {
-  final bool isMulti;
-  final ContactT? contact;
-  final String? address;
-  final String? subject;
-  final String? uri;
-  final List<Recipient> recipients;
+  final bool isMulti; // use multi ...
+  final List<Recipient> recipients; // recipients
+
+  final ContactT? contact; // send to contact
+
+  final String? address; // reply to ...
+  final String? subject; // message
+
+  final String? uri; // send to payment URI
 
   SendPageArgs({this.isMulti = false, this.contact, this.address, this.subject, this.uri, this.recipients = const[]});
 }

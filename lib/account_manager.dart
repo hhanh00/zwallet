@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:warp_api/warp_api.dart';
@@ -60,7 +59,7 @@ class AccountManagerState extends State<AccountManagerPage> {
                       itemCount: _accounts.list.length,
                       itemBuilder: (BuildContext context, int index) {
                       final a = _accounts.list[index];
-                      final weight = settings.coins[a.coin].active == a.id ? FontWeight.bold : FontWeight.normal;
+                      final weight = a.active ? FontWeight.bold : FontWeight.normal;
                       final zbal = a.balance / ZECUNIT;
                       final tbal = a.tbalance / ZECUNIT;
                       final balance = zbal + tbal;
@@ -165,7 +164,6 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   _selectAccount(Account account) async {
     active.setActiveAccount(account.coin, account.id);
-    active.refreshAccount();
     if (syncStatus.accountRestored) {
       syncStatus.setAccountRestored(false);
       final height = await rescanDialog(context);

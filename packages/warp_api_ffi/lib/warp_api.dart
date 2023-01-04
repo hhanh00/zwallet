@@ -426,8 +426,12 @@ class WarpApi {
     return AccountVec(r).accounts!;
   }
 
-  static int getAvailableAccountId(int coin, int id) {
-    return unwrapResultU32(warp_api_lib.get_available_account_id(coin, id));
+  static int getActiveAccountId(int coin) {
+    return unwrapResultU32(warp_api_lib.get_active_account(coin));
+  }
+
+  static void setActiveAccountId(int coin, int id) {
+    unwrapResultU8(warp_api_lib.set_active_account(coin, id));
   }
 
   static String getTAddr(int coin, int id) {

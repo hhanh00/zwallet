@@ -6,9 +6,7 @@ import 'package:mobx/mobx.dart';
 import 'db.dart';
 import 'package:warp_api/warp_api.dart';
 
-import 'backup.dart';
 import 'coin/coin.dart';
-import 'coin/zcash.dart';
 import 'main.dart';
 import 'store.dart';
 
@@ -19,6 +17,7 @@ class Account {
   final int id;
   final String name;
   final int balance;
+  bool active = false;
   int tbalance = 0;
 
   Account(this.coin, this.id, this.name, this.balance, this.tbalance);
@@ -40,9 +39,14 @@ class AccountList {
   void refresh() {
     List<Account> _list = [];
     for (var coin in coins) {
-      _list.addAll(WarpApi.getAccountList(coin.coin).map((a) => Account(
-        coin.coin, a.id, a.name!, a.balance, 0)
-      ));
+      var accounts = WarpApi.getAccountList(coin.coin).map((a) => Account(
+          coin.coin, a.id, a.name!, a.balance, 0)
+      ).toList();
+      final id = WarpApi.getActiveAccountId(coin.coin);
+      if (id != 0) {
+        accounts.firstWhere((a) => a.id == id).active = true;
+      }
+      _list.addAll(accounts);
     }
     list = _list;
   }
@@ -64,15 +68,6 @@ class AccountList {
   Future<void> changeAccountName(int coin, int id, String name) async {
     WarpApi.updateAccountName(coin, id, name);
     refresh();
-  }
-
-  void saveActive(int coin, int id) {
-    settings.coins[coin].active = id;
-    Future.microtask(() async {
-      final prefs = await SharedPreferences.getInstance();
-      final def = settings.coins[coin].def;
-      prefs.setInt("${def.ticker}.active", id);
-    });
   }
 
   Account get(int coin, int id) => list.firstWhere((e) => e.coin == coin && e.id == id, orElse: () => emptyAccount);
@@ -139,17 +134,16 @@ abstract class _ActiveAccount with Store {
     }
     else if (aid != active.toId()) {
       setActiveAccount(aid.coin, aid.id);
-      refreshAccount();
     }
   }
 
   AccountId? getAvailableId(AccountId aid) {
-    final nid = getAvailableIdForCoin(aid.coin, aid.id);
+    final nid = getActiveAccountId(aid.coin);
     if (nid.id != 0) return nid;
     for (var coin_data in settings.coins) {
       // look for an account in any other coin
       if (coin_data.coin != coin) {
-        final nid = getAvailableIdForCoin(coin_data.coin, coin_data.active);
+        final nid = getActiveAccountId(coin_data.coin);
         if (nid.id != 0)
           return nid;
       }
@@ -158,30 +152,27 @@ abstract class _ActiveAccount with Store {
     return null;
   }
 
-  // check that the account still exists
-  // if not, pick any account
-  // if there are none, return 0
-  AccountId getAvailableIdForCoin(int coin, int id) {
-    final newId = WarpApi.getAvailableAccountId(coin, id);
-    return AccountId(coin, newId);
+  AccountId getActiveAccountId(int coin) {
+    final id = WarpApi.getActiveAccountId(coin);
+    return AccountId(coin, id);
   }
 
   @action
-  void setActiveAccount(int _coin, int _id) {
-    coin = _coin;
-    id = _id;
-
+  void setActiveAccount(int coin, int id) {
+    WarpApi.setActiveAccount(coin, id);
     Future.microtask(() async {
       final prefs = await SharedPreferences.getInstance();
       prefs.setInt('coin', coin);
       prefs.setInt('account', id);
     });
-    WarpApi.setActiveAccount(coin, id);
+    if (coin != this.coin || id != this.id) {
+      this.coin = coin;
+      this.id = id;
+      _refreshAccount();
+    }
   }
 
-  @action
-  void refreshAccount() {
-    final dbr = DbReader(coin, id);
+  void _refreshAccount() {
     coinDef = settings.coins[coin].def;
 
     final accounts = AccountList();
@@ -221,7 +212,6 @@ abstract class _ActiveAccount with Store {
 
   @action
   void updateBalances() {
-    final dbr = DbReader(coin, id);
     final initialized = balances.initialized;
     final prevBalance = balances.balance;
     final b = WarpApi.getBalance(coin, id, syncStatus.confirmHeight);

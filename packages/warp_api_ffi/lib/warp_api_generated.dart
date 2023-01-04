@@ -124,21 +124,6 @@ class NativeLibrary {
   late final _dart_set_active _set_active =
       _set_active_ptr.asFunction<_dart_set_active>();
 
-  void set_active_account(
-    int coin,
-    int id,
-  ) {
-    return _set_active_account(
-      coin,
-      id,
-    );
-  }
-
-  late final _set_active_account_ptr =
-      _lookup<ffi.NativeFunction<_c_set_active_account>>('set_active_account');
-  late final _dart_set_active_account _set_active_account =
-      _set_active_account_ptr.asFunction<_dart_set_active_account>();
-
   void set_coin_lwd_url(
     int coin,
     ffi.Pointer<ffi.Int8> lwd_url,
@@ -920,22 +905,33 @@ class NativeLibrary {
   late final _dart_get_account_list _get_account_list =
       _get_account_list_ptr.asFunction<_dart_get_account_list>();
 
-  CResult_u32 get_available_account_id(
+  CResult_u32 get_active_account(
+    int coin,
+  ) {
+    return _get_active_account(
+      coin,
+    );
+  }
+
+  late final _get_active_account_ptr =
+      _lookup<ffi.NativeFunction<_c_get_active_account>>('get_active_account');
+  late final _dart_get_active_account _get_active_account =
+      _get_active_account_ptr.asFunction<_dart_get_active_account>();
+
+  CResult_u8 set_active_account(
     int coin,
     int id,
   ) {
-    return _get_available_account_id(
+    return _set_active_account(
       coin,
       id,
     );
   }
 
-  late final _get_available_account_id_ptr =
-      _lookup<ffi.NativeFunction<_c_get_available_account_id>>(
-          'get_available_account_id');
-  late final _dart_get_available_account_id _get_available_account_id =
-      _get_available_account_id_ptr
-          .asFunction<_dart_get_available_account_id>();
+  late final _set_active_account_ptr =
+      _lookup<ffi.NativeFunction<_c_set_active_account>>('set_active_account');
+  late final _dart_set_active_account _set_active_account =
+      _set_active_account_ptr.asFunction<_dart_set_active_account>();
 
   CResult_____c_char get_t_addr(
     int coin,
@@ -1462,16 +1458,6 @@ typedef _dart_set_active = void Function(
   int active,
 );
 
-typedef _c_set_active_account = ffi.Void Function(
-  ffi.Uint8 coin,
-  ffi.Uint32 id,
-);
-
-typedef _dart_set_active_account = void Function(
-  int coin,
-  int id,
-);
-
 typedef _c_set_coin_lwd_url = ffi.Void Function(
   ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> lwd_url,
@@ -1984,12 +1970,20 @@ typedef _dart_get_account_list = CResult______u8 Function(
   int coin,
 );
 
-typedef _c_get_available_account_id = CResult_u32 Function(
+typedef _c_get_active_account = CResult_u32 Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_get_active_account = CResult_u32 Function(
+  int coin,
+);
+
+typedef _c_set_active_account = CResult_u8 Function(
   ffi.Uint8 coin,
   ffi.Uint32 id,
 );
 
-typedef _dart_get_available_account_id = CResult_u32 Function(
+typedef _dart_set_active_account = CResult_u8 Function(
   int coin,
   int id,
 );

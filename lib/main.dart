@@ -85,12 +85,11 @@ StreamSubscription? subUniLinks;
 void handleUri(BuildContext context, Uri uri) {
   final scheme = uri.scheme;
   final coinDef = settings.coins.firstWhere((c) => c.def.currency == scheme);
-  final id = settings.coins[coinDef.coin].active;
-  if (id != 0) {
-    active.setActiveAccount(coinDef.coin, id);
-    Navigator.of(context).pushNamed(
-        '/send', arguments: SendPageArgs(uri: uri.toString()));
-  }
+  final coin = coinDef.coin;
+  final id = WarpApi.getActiveAccountId(coin);
+  active.setActiveAccount(coin, id);
+  Navigator.of(context).pushNamed(
+      '/send', arguments: SendPageArgs(uri: uri.toString()));
 }
 
 Future<void> initUniLinks(BuildContext context) async {
@@ -112,18 +111,15 @@ void handleQuickAction(BuildContext context, String type) {
   final t = type.split(".");
   final coin = int.parse(t[0]);
   final shortcut = t[1];
-  final a = settings.coins[coin].active;
-
-  if (a != 0) {
-    active.setActiveAccount(coin, a);
-    switch (shortcut) {
-      case 'receive':
-        Navigator.of(context).pushNamed('/receive');
-        break;
-      case 'send':
-        Navigator.of(context).pushNamed('/send');
-        break;
-    }
+  final id = WarpApi.getActiveAccountId(coin);
+  active.setActiveAccount(coin, id);
+  switch (shortcut) {
+    case 'receive':
+      Navigator.of(context).pushNamed('/receive');
+      break;
+    case 'send':
+      Navigator.of(context).pushNamed('/send');
+      break;
   }
 }
 
