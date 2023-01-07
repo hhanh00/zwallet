@@ -140,3 +140,12 @@ table AddressBalance {
 table AddressBalanceVec {
     values:[AddressBalance];
 }
+
+table Checkpoint {
+    height:uint32;
+    timestamp:uint32;
+}
+
+table CheckpointVec {
+    values:[Checkpoint];
+}

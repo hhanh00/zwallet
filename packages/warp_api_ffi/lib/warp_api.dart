@@ -543,6 +543,12 @@ class WarpApi {
   static void invertExcluded(int coin, int id) {
     unwrapResultU8(warp_api_lib.invert_excluded(coin, id));
   }
+
+  static List<Checkpoint> getCheckpoints(int coin) {
+    final r = unwrapResultBytes(warp_api_lib.get_checkpoints(coin));
+    final quotes = CheckpointVec(r);
+    return quotes.values!;
+  }
 }
 
 String signOnlyIsolateFn(SignOnlyParams params) {

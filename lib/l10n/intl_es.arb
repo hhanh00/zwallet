@@ -257,7 +257,7 @@
   "newLabel": "Nueva",
   "invalidQrCode": "QR inválido: {message}",
   "expert": "Expert",
-  "blockReorgDetectedRewind": "Block reorg detected. Rewind to {rewindHeight}",
+  "blockReorgDetectedRewind": "Se ha detectado una reorganización de la blockchain. Rebobinar hasta {rewindHeight}",
   "goToTransaction": "Ver Transacción",
   "transactions": "Transacciónes",
   "synchronizationInProgress": "Sincronización en progreso",
@@ -279,5 +279,7 @@
   "newTemplate": "Nueva plantilla",
   "name": "Nombre",
   "deleteTemplate": "Eliminar plantilla?",
-  "areYouSureYouWantToDeleteThisSendTemplate": "¿Está seguro de que desea eliminar esta plantilla de envío?"
+  "areYouSureYouWantToDeleteThisSendTemplate": "¿Está seguro de que desea eliminar esta plantilla de envío?",
+  "rewindToCheckpoint": "Rebobinar",
+  "selectCheckpoint": "Seleccionar Fetcha/Altura"
 }

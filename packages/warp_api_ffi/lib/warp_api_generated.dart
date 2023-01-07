@@ -1215,6 +1215,19 @@ class NativeLibrary {
   late final _dart_invert_excluded _invert_excluded =
       _invert_excluded_ptr.asFunction<_dart_invert_excluded>();
 
+  CResult______u8 get_checkpoints(
+    int coin,
+  ) {
+    return _get_checkpoints(
+      coin,
+    );
+  }
+
+  late final _get_checkpoints_ptr =
+      _lookup<ffi.NativeFunction<_c_get_checkpoints>>('get_checkpoints');
+  late final _dart_get_checkpoints _get_checkpoints =
+      _get_checkpoints_ptr.asFunction<_dart_get_checkpoints>();
+
   int has_cuda() {
     return _has_cuda();
   }
@@ -2178,6 +2191,14 @@ typedef _c_invert_excluded = CResult_u8 Function(
 typedef _dart_invert_excluded = CResult_u8 Function(
   int coin,
   int id,
+);
+
+typedef _c_get_checkpoints = CResult______u8 Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_get_checkpoints = CResult______u8 Function(
+  int coin,
 );
 
 typedef _c_has_cuda = ffi.Int8 Function();

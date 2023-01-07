@@ -2881,6 +2881,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Rewind to Checkpoint`
+  String get rewindToCheckpoint {
+    return Intl.message(
+      'Rewind to Checkpoint',
+      name: 'rewindToCheckpoint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Checkpoint`
+  String get selectCheckpoint {
+    return Intl.message(
+      'Select Checkpoint',
+      name: 'selectCheckpoint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
