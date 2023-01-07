@@ -370,6 +370,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "resumeScan": MessageLookupByLibrary.simpleMessage("Continuer Sync"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
             "Récupérer les détails de la transaction"),
+        "rewindToCheckpoint":
+            MessageLookupByLibrary.simpleMessage("Revenir au Bloc"),
         "roundToMillis":
             MessageLookupByLibrary.simpleMessage("Arrondir au millième"),
         "saveBackup":
@@ -384,6 +386,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "seed": MessageLookupByLibrary.simpleMessage("Graine"),
         "selectAccount":
             MessageLookupByLibrary.simpleMessage("Choisissez un compte"),
+        "selectCheckpoint": MessageLookupByLibrary.simpleMessage(
+            "Selectionner la date du bloc"),
         "selectNotesToExcludeFromPayments":
             MessageLookupByLibrary.simpleMessage(
                 "Sélectionnez les billets à EXCLURE des paiements"),

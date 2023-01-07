@@ -17,6 +17,7 @@ import 'account.dart';
 import 'animated_qr.dart';
 import 'budget.dart';
 import 'contact.dart';
+import 'db.dart';
 import 'history.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
@@ -189,6 +190,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
               PopupMenuButton(
                   child: Text(s.advanced),
                   itemBuilder: (_) => [
+                    PopupMenuItem(child: Text(s.rewindToCheckpoint), value: "Rewind"),
                     PopupMenuItem(child: Text(s.convertToWatchonly), enabled: active.canPay, value: "Cold"),
                     PopupMenuItem(child: Text(s.signOffline), enabled: active.canPay, value: "Sign"),
                     PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
@@ -266,6 +268,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       case "Pools":
         Navigator.of(context).pushNamed('/pools');
         break;
+      case "Rewind":
+        _rewind();
+        break;
       case "Cold":
         _cold();
         break;
@@ -310,6 +315,33 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     final didAuthenticate = await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
     if (didAuthenticate) {
       Navigator.of(context).pushNamed('/keytool');
+    }
+  }
+  
+  _rewind() async {
+    final s = S.of(context);
+    int? height = null;
+    final checkpoints = WarpApi.getCheckpoints(active.coin);
+    final items = checkpoints.map((c) => DropdownMenuItem<int>(value: c.height,
+      child: Text('${noteDateFormat.format(DateTime.fromMillisecondsSinceEpoch(c.timestamp * 1000))} - ${c.height}')
+    )).toList();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text(s.rewindToCheckpoint),
+        content: SingleChildScrollView(child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DropdownButtonFormField<int>(items: items, hint: Text(s.selectCheckpoint), onChanged: (v) { height = v; })]
+        )),
+        actions: confirmButtons(context, () => Navigator.of(context).pop(true))
+      )
+    ) ?? false;
+    final h = height;
+    if (confirmed && h != null) {
+      showSnackBar(s.blockReorgDetectedRewind(h));
+      WarpApi.rewindTo(h);
     }
   }
 

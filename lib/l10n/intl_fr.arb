@@ -279,5 +279,7 @@
   "newTemplate": "Nouveau modèle",
   "name": "Nom",
   "deleteTemplate": "Effacer ce modèle?",
-  "areYouSureYouWantToDeleteThisSendTemplate": "Voulez-vous vraiment supprimer ce modèle?"
+  "areYouSureYouWantToDeleteThisSendTemplate": "Voulez-vous vraiment supprimer ce modèle?",
+  "rewindToCheckpoint": "Revenir au Bloc",
+  "selectCheckpoint": "Selectionner la date du bloc"
 }

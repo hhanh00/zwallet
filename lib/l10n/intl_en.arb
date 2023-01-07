@@ -281,5 +281,7 @@
   "newTemplate": "New Template",
   "name": "Name",
   "deleteTemplate": "Delete Template?",
-  "areYouSureYouWantToDeleteThisSendTemplate": "Are you sure you want to delete this send template?"
+  "areYouSureYouWantToDeleteThisSendTemplate": "Are you sure you want to delete this send template?",
+  "rewindToCheckpoint": "Rewind to Checkpoint",
+  "selectCheckpoint": "Select Checkpoint"
 }

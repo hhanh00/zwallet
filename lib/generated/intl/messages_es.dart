@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Copia de seguridad - ${name} - Requerida para restaurar";
 
   static String m3(rewindHeight) =>
-      "Block reorg detected. Rewind to ${rewindHeight}";
+      "Se ha detectado una reorganización de la blockchain. Rebobinar hasta ${rewindHeight}";
 
   static String m4(address, amount) =>
       "Desea firmar una transacción a ${address} por ${amount}";
@@ -370,6 +370,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "resumeScan": MessageLookupByLibrary.simpleMessage("Reanudar Escaneo"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
             "Obtener detalles de la transacción"),
+        "rewindToCheckpoint": MessageLookupByLibrary.simpleMessage("Rebobinar"),
         "roundToMillis":
             MessageLookupByLibrary.simpleMessage("Redondear a milésimas"),
         "saveBackup":
@@ -384,6 +385,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "seed": MessageLookupByLibrary.simpleMessage("Semilla"),
         "selectAccount":
             MessageLookupByLibrary.simpleMessage("Seleccionar cuenta"),
+        "selectCheckpoint":
+            MessageLookupByLibrary.simpleMessage("Seleccionar Fetcha/Altura"),
         "selectNotesToExcludeFromPayments":
             MessageLookupByLibrary.simpleMessage(
                 "Seleccionar Notas a EXCLUIR de los pagos"),

@@ -364,6 +364,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "resumeScan": MessageLookupByLibrary.simpleMessage("Resume Scan"),
         "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
             "Retrieve Transaction Details"),
+        "rewindToCheckpoint":
+            MessageLookupByLibrary.simpleMessage("Rewind to Checkpoint"),
         "roundToMillis":
             MessageLookupByLibrary.simpleMessage("Round to millis"),
         "saveBackup": MessageLookupByLibrary.simpleMessage("Save Backup"),
@@ -376,6 +378,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "secretShare": MessageLookupByLibrary.simpleMessage("Secret Share"),
         "seed": MessageLookupByLibrary.simpleMessage("Seed"),
         "selectAccount": MessageLookupByLibrary.simpleMessage("Select Account"),
+        "selectCheckpoint":
+            MessageLookupByLibrary.simpleMessage("Select Checkpoint"),
         "selectNotesToExcludeFromPayments":
             MessageLookupByLibrary.simpleMessage(
                 "Select notes to EXCLUDE from payments"),
