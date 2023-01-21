@@ -73,6 +73,25 @@ class AccountList {
   Account get(int coin, int id) => list.firstWhere((e) => e.coin == coin && e.id == id, orElse: () => emptyAccount);
 }
 
+AccountId? getAvailableId(int coin) {
+  final nid = getActiveAccountId(coin);
+  if (nid.id != 0) return nid;
+  for (var coin_data in settings.coins) {
+  // look for an account in any other coin
+    if (coin_data.coin != coin) {
+      final nid = getActiveAccountId(coin_data.coin);
+      if (nid.id != 0) return nid;
+    }
+  }
+  // We have no accounts
+  return null;
+}
+
+AccountId getActiveAccountId(int coin) {
+  final id = WarpApi.getActiveAccountId(coin);
+  return AccountId(coin, id);
+}
+
 class ActiveAccount = _ActiveAccount with _$ActiveAccount;
 
 abstract class _ActiveAccount with Store {
@@ -128,33 +147,13 @@ abstract class _ActiveAccount with Store {
   }
 
   Future<void> checkAndUpdate() async {
-    final aid = await getAvailableId(active.toId());
+    final aid = await getAvailableId(active.coin);
     if (aid == null) {
       setActiveAccount(0, 0);
     }
     else if (aid != active.toId()) {
       setActiveAccount(aid.coin, aid.id);
     }
-  }
-
-  AccountId? getAvailableId(AccountId aid) {
-    final nid = getActiveAccountId(aid.coin);
-    if (nid.id != 0) return nid;
-    for (var coin_data in settings.coins) {
-      // look for an account in any other coin
-      if (coin_data.coin != coin) {
-        final nid = getActiveAccountId(coin_data.coin);
-        if (nid.id != 0)
-          return nid;
-      }
-    }
-    // We have no accounts
-    return null;
-  }
-
-  AccountId getActiveAccountId(int coin) {
-    final id = WarpApi.getActiveAccountId(coin);
-    return AccountId(coin, id);
   }
 
   @action
@@ -351,7 +350,7 @@ abstract class _ActiveAccount with Store {
     final dbr = active.dbReader;
     pnls = dbr.getPNL(active.id);
     spendings = dbr.getSpending(active.id);
-    accountBalances = dbr.getAccountBalanceTimeSeries(active.id, active.balances?.balance ?? 0);
+    accountBalances = dbr.getAccountBalanceTimeSeries(active.id, active.balances.balance);
   }
 
   @action

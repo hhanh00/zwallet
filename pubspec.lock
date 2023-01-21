@@ -178,6 +178,41 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "8.3.0"
+  camera:
+    dependency: transitive
+    description:
+      name: camera
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.10.2+1"
+  camera_android:
+    dependency: transitive
+    description:
+      name: camera_android
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.10.2+3"
+  camera_avfoundation:
+    dependency: transitive
+    description:
+      name: camera_avfoundation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.10+2"
+  camera_platform_interface:
+    dependency: transitive
+    description:
+      name: camera_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.4"
+  camera_web:
+    dependency: transitive
+    description:
+      name: camera_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.1+1"
   change_app_package_name:
     dependency: "direct dev"
     description:
@@ -297,6 +332,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  cross_file:
+    dependency: transitive
+    description:
+      name: cross_file
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.3+2"
   crypto:
     dependency: transitive
     description:
@@ -421,15 +463,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1"
-  flutter_barcode_scanner:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: c2c79def4f7fa8c17e9432ca43d307ba0b4a75a3
-      resolved-ref: c2c79def4f7fa8c17e9432ca43d307ba0b4a75a3
-      url: "https://github.com/hhanh00/flutter_barcode_scanner.git"
-    source: git
-    version: "2.0.0"
   flutter_color_models:
     dependency: transitive
     description:
@@ -526,13 +559,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.6"
-  flutter_rating_bar:
-    dependency: transitive
-    description:
-      name: flutter_rating_bar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.0.0"
   flutter_ringtone_player:
     dependency: "direct main"
     description:
@@ -566,6 +592,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_zxing:
+    dependency: "direct main"
+    description:
+      path: flutter_zxing
+      relative: true
+    source: path
+    version: "1.0.0-beta.8"
   frontend_server_client:
     dependency: transitive
     description:
@@ -1058,13 +1091,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
-  rate_my_app:
-    dependency: "direct main"
+  quiver:
+    dependency: transitive
     description:
-      name: rate_my_app
+      name: quiver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.2"
+    version: "3.2.1"
   rational:
     dependency: transitive
     description:
@@ -1099,7 +1132,7 @@ packages:
       name: share_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.4"
+    version: "4.5.3"
   share_plus_linux:
     dependency: transitive
     description:
@@ -1113,28 +1146,28 @@ packages:
       name: share_plus_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   share_plus_platform_interface:
     dependency: transitive
     description:
       name: share_plus_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.2"
+    version: "3.1.2"
   share_plus_web:
     dependency: transitive
     description:
       name: share_plus_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.1.0"
   share_plus_windows:
     dependency: transitive
     description:
       name: share_plus_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -1457,4 +1490,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.18.0 <3.0.0"
-  flutter: ">=2.11.0"
+  flutter: ">=3.3.0"

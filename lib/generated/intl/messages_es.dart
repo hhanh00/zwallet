@@ -377,6 +377,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Guardar copia de seguridad"),
         "saveToBlockchain":
             MessageLookupByLibrary.simpleMessage("Guardar en la blockchain?"),
+        "scanQrCode": MessageLookupByLibrary.simpleMessage("Scan QR Code"),
         "scanStartingMomentarily": MessageLookupByLibrary.simpleMessage(
             "Escaneo iniciado momentáneamente"),
         "secondary": MessageLookupByLibrary.simpleMessage("Secundario"),

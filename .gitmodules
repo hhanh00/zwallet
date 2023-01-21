@@ -10,3 +10,6 @@
 [submodule "librustzcash"]
 	path = librustzcash
 	url = https://github.com/hhanh00/librustzcash.git
+[submodule "flutter_zxing"]
+	path = flutter_zxing
+	url = https://github.com/hhanh00/flutter_zxing.git

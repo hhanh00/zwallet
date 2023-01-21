@@ -5,6 +5,8 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:camera/camera.dart';
+import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:path/path.dart' as p;
 import 'package:csv/csv.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
@@ -12,7 +14,6 @@ import 'package:decimal/decimal.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:intl/intl.dart';
@@ -20,7 +21,6 @@ import 'package:local_auth/local_auth.dart';
 import 'package:key_guardmanager/key_guardmanager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:rate_my_app/rate_my_app.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
@@ -43,6 +43,7 @@ import 'multisend.dart';
 // import 'multisign.dart';
 import 'payment_uri.dart';
 import 'pools.dart';
+import 'qrscanner.dart';
 import 'rescan.dart';
 import 'reset.dart';
 import 'scantaddr.dart';
@@ -265,6 +266,10 @@ void main() {
                 '/txplan': (context) => TxPlanPage.fromPlan(routeSettings.arguments as String, false),
                 '/sign': (context) => TxPlanPage.fromPlan(routeSettings.arguments as String, true),
                 '/syncstats': (context) => SyncChartPage(),
+                '/scanner': (context) {
+                  final args = routeSettings.arguments as Map<String, dynamic>;
+                  return QRScanner(args['onScan'], completed: args['completed']);
+                },
               };
               return MaterialPageRoute(builder: routes[routeSettings.name]!);
             },
@@ -282,21 +287,11 @@ class ZWalletAppState extends State<ZWalletApp> {
   bool initialized = false;
   final progressKey = GlobalKey<LoadProgressState>();
 
-  RateMyApp rateMyApp = RateMyApp(
-    preferencesPrefix: 'rateMyApp_',
-    minDays: 0,
-    minLaunches: 20,
-  );
-
   @override
   void initState() {
     super.initState();
     if (isMobile()) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await rateMyApp.init();
-        if (mounted && rateMyApp.shouldOpenDialog) {
-          rateMyApp.showRateDialog(this.context);
-        }
         final isAllowed = await AwesomeNotifications().isNotificationAllowed();
         if (!isAllowed) {
           AwesomeNotifications().requestPermissionToSendNotifications(
@@ -363,7 +358,12 @@ class ZWalletAppState extends State<ZWalletApp> {
         }
 
         _setProgress(0.7, 'Restoring Active Account');
-        await active.restore();
+        if (recover) {
+          final aid = getAvailableId(coins[0].coin);
+          if (aid != null)
+            active.setActiveAccount(aid.coin, aid.id);
+        }
+        else await active.restore();
 
         if (isMobile()) {
           _setProgress(0.9, 'Setting Dashboard Shortcuts');
@@ -592,11 +592,14 @@ Future<String?> scanCode(BuildContext context) async {
     return code;
   }
   else {
-    final code = await FlutterBarcodeScanner.scanBarcode('#FF0000', S
-        .of(context)
-        .cancel, true, ScanMode.QR);
-    if (code == "-1") return null;
-    return code;
+    final f = Completer();
+    Navigator.of(context).pushNamed('/scanner', arguments: {
+      'onScan': (Code code) {
+        f.complete(code.text);
+      },
+      'completed': () => f.isCompleted,
+    });
+    return await f.future;
   }
 }
 
@@ -766,10 +769,11 @@ Future<void> saveFile(String data, String filename, String title) async {
     final context = navigatorKey.currentContext!;
     Size size = MediaQuery.of(context).size;
     final tempDir = settings.tempDir;
-    String fn = p.join(tempDir, filename);
-    final file = File(fn);
+    final path = p.join(tempDir, filename);
+    final xfile = XFile(path);
+    final file = File(path);
     await file.writeAsString(data);
-    return Share.shareFiles([fn], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
+    await Share.shareXFiles([xfile], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
   }
   else {
     final fn = await FilePicker.platform.saveFile();
@@ -786,7 +790,8 @@ Future<void> exportFile(BuildContext context, String path, String title) async {
   if (isMobile()) {
     final context = navigatorKey.currentContext!;
     Size size = MediaQuery.of(context).size;
-    await Share.shareFilesWithResult([path], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
+    final xfile = XFile(path);
+    await Share.shareXFiles([xfile], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
   }
   else {
     final fn = await FilePicker.platform.saveFile();
