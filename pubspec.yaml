@@ -50,18 +50,15 @@ dependencies:
       ref: 821f81681f8ee819cd721498f7b28d290f4ebe38
   grouped_list: ^4.1.0
   json_annotation: ^4.1.0
-  share_plus: ^4.0.1
+  share_plus: ^4.5.3
   path_provider: ^2.0.3
   file_picker: ^4.5.0
   mustache_template: ^2.0.0
-  rate_my_app: ^1.1.1
   flutter_palette: ^1.1.0+1
   flutter_svg: ^1.0.3
   flutter_typeahead: ^3.2.0
-  flutter_barcode_scanner:
-    git:
-      url: https://github.com/hhanh00/flutter_barcode_scanner.git
-      ref: c2c79def4f7fa8c17e9432ca43d307ba0b4a75a3
+  flutter_zxing:
+    path: flutter_zxing
   flutter_speed_dial: ^5.0.0
   currency_text_input_formatter: ^2.1.2
   sensors_plus: ^2.0.0

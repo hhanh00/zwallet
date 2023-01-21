@@ -283,5 +283,6 @@
   "deleteTemplate": "Delete Template?",
   "areYouSureYouWantToDeleteThisSendTemplate": "Are you sure you want to delete this send template?",
   "rewindToCheckpoint": "Rewind to Checkpoint",
-  "selectCheckpoint": "Select Checkpoint"
+  "selectCheckpoint": "Select Checkpoint",
+  "scanQrCode": "Scan QR Code"
 }

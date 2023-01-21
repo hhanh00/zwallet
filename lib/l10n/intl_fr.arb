@@ -281,5 +281,6 @@
   "deleteTemplate": "Effacer ce modèle?",
   "areYouSureYouWantToDeleteThisSendTemplate": "Voulez-vous vraiment supprimer ce modèle?",
   "rewindToCheckpoint": "Revenir au Bloc",
-  "selectCheckpoint": "Selectionner la date du bloc"
+  "selectCheckpoint": "Selectionner la date du bloc",
+  "scanQrCode": "Scan QR Code"
 }

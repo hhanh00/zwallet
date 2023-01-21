@@ -281,5 +281,6 @@
   "deleteTemplate": "Eliminar plantilla?",
   "areYouSureYouWantToDeleteThisSendTemplate": "¿Está seguro de que desea eliminar esta plantilla de envío?",
   "rewindToCheckpoint": "Rebobinar",
-  "selectCheckpoint": "Seleccionar Fetcha/Altura"
+  "selectCheckpoint": "Seleccionar Fetcha/Altura",
+  "scanQrCode": "Scan QR Code"
 }
