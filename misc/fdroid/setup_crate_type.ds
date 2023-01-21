@@ -1,0 +1,7 @@
+root = get_env PROJECT_ROOT
+cargo = set ${root}/native/zcash-sync/Cargo.toml
+toml = readfile ${cargo}
+crate_type = set "cdylib"
+val = replace ${toml} "rlib" ${crate_type}
+result = writefile ${cargo} ${val}
+assert ${result}

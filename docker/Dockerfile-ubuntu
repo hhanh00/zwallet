@@ -1,0 +1,13 @@
+##syntax=docker/dockerfile:1.2
+FROM ubuntu:jammy-20221101 as builder
+
+COPY . /root/zwallet
+
+WORKDIR /root
+RUN apt-get update
+RUN apt-get install -y sudo curl git
+RUN bash zwallet/misc/vagrant/build-ubuntu.sh /root/zwallet
+
+FROM alpine:latest
+WORKDIR /root
+COPY --from=builder /root/zwallet/build/app/outputs/flutter-apk/app-release.apk ./

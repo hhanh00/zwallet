@@ -1,0 +1,62 @@
+Categories:
+  - Money
+License: MIT
+WebSite: https://ywallet.app
+SourceCode: https://github.com/hhanh00/zwallet
+
+AutoName: YWallet
+Description: Crypto Wallet and Private Messenger for Ycash and Zcash
+
+RepoType: git
+Repo: https://github.com/hhanh00/zwallet.git
+
+Builds:
+  - versionName: 1.2.17
+    versionCode: 347
+    commit: fdroid
+    submodules: true
+    sudo:
+      - apt-get update || apt-get update
+      - apt-get install cmake build-essential
+    init:
+      - mkdir -p $HOME/.zcash-params
+      - curl https://download.z.cash/downloads/sapling-output.params --output $HOME/.zcash-params/sapling-output.params
+      - curl https://download.z.cash/downloads/sapling-spend.params --output $HOME/.zcash-params/sapling-spend.params
+    output: build/app/outputs/flutter-apk/app-release.apk
+    srclibs:
+      - rustup@1.25.1
+    prebuild:
+      - $$rustup$$/rustup-init.sh -y
+      - source $HOME/.cargo/env
+      - rustup target add aarch64-linux-android armv7-linux-androideabi
+      - cargo install --force cargo-ndk
+      - curl https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.3.10-stable.tar.xz
+        --output $HOME/flutter.tar.xz
+      - tar x -C $HOME -f $HOME/flutter.tar.xz
+      - rm $HOME/flutter.tar.xz
+      - export PATH=$PATH:$HOME/flutter/bin
+      - ./configure.sh
+      - sed -e 's/rlib/cdylib/' < native/zcash-sync/Cargo.toml >/tmp/out.toml
+      - mv /tmp/out.toml native/zcash-sync/Cargo.toml
+      - rm -rf flutter_zxing/src/zxing/test
+    build:
+      - source $HOME/.cargo/env
+      - export PATH=$PATH:$HOME/flutter/bin
+      - export JKS_PASSWORD=dummy
+      - cargo ndk --target arm64-v8a build --release --features=dart_ffi
+      - mkdir -p ./packages/warp_api_ffi/android/src/main/jniLibs/arm64-v8a
+      - cp ./target/aarch64-linux-android/release/libwarp_api_ffi.so ./packages/warp_api_ffi/android/src/main/jniLibs/arm64-v8a/
+      - rm -rf target/aarch64-linux-android
+      - cargo ndk --target armeabi-v7a build --release --features=dart_ffi
+      - mkdir -p ./packages/warp_api_ffi/android/src/main/jniLibs/armeabi-v7a
+      - cp ./target/armv7-linux-androideabi/release/libwarp_api_ffi.so ./packages/warp_api_ffi/android/src/main/jniLibs/armeabi-v7a/
+      - rm -rf target/armv7-linux-androideabi
+      - rm -rf $HOME/.cargo
+      - rm -rf $HOME/.rustup
+      - rm -rf $ANDROID_HOME/emulator
+      - rm -rf target/
+      - flutter build apk
+    ndk: r25b
+
+AutoUpdateMode: None
+UpdateCheckMode: None
