@@ -282,5 +282,12 @@
   "areYouSureYouWantToDeleteThisSendTemplate": "Voulez-vous vraiment supprimer ce modèle?",
   "rewindToCheckpoint": "Revenir au Bloc",
   "selectCheckpoint": "Selectionner la date du bloc",
-  "scanQrCode": "Scan QR Code"
+  "scanQrCode": "Scanner le QR Code",
+  "minPrivacy": "Niveau de Secret Minimum",
+  "privacyLevelTooLow": "Transaction pas assez secrète",
+  "veryLow": "Très bas",
+  "low": "Bas",
+  "medium": "Moyen",
+  "high": "Haut",
+  "privacy": "SECRET: {level}"
 }

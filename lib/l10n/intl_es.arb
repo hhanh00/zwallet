@@ -282,5 +282,12 @@
   "areYouSureYouWantToDeleteThisSendTemplate": "¿Está seguro de que desea eliminar esta plantilla de envío?",
   "rewindToCheckpoint": "Rebobinar",
   "selectCheckpoint": "Seleccionar Fetcha/Altura",
-  "scanQrCode": "Scan QR Code"
+  "scanQrCode": "Scan QR Code",
+  "minPrivacy": "Min Privacy",
+  "privacyLevelTooLow": "Privacy Level Too LOW",
+  "veryLow": "Very Low",
+  "low": "Low",
+  "medium": "Medium",
+  "high": "High",
+  "privacy": "PRIVACY: {level}"
 }

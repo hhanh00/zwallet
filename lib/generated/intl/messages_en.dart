@@ -46,35 +46,37 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m10(num) => "${num} more signers needed";
 
-  static String m11(ticker) => "Receive ${ticker}";
+  static String m11(level) => "PRIVACY: ${level}";
 
-  static String m12(amount, ticker) => "Received ${amount} ${ticker}";
+  static String m12(ticker) => "Receive ${ticker}";
 
-  static String m13(height) => "Rescan Requested from ${height}...";
+  static String m13(amount, ticker) => "Received ${amount} ${ticker}";
 
-  static String m14(ticker) => "Send ${ticker}";
+  static String m14(height) => "Rescan Requested from ${height}...";
 
-  static String m15(ticker) => "Send ${ticker} to...";
+  static String m15(ticker) => "Send ${ticker}";
 
-  static String m16(app) => "Sent from ${app}";
+  static String m16(ticker) => "Send ${ticker} to...";
 
-  static String m17(amount, ticker, count) =>
+  static String m17(app) => "Sent from ${app}";
+
+  static String m18(amount, ticker, count) =>
       "Sending a total of ${amount} ${ticker} to ${count} recipients";
 
-  static String m18(aZEC, ticker, address) =>
+  static String m19(aZEC, ticker, address) =>
       "Sending ${aZEC} ${ticker} to ${address}";
 
-  static String m19(amount, ticker) => "Spent ${amount} ${ticker}";
+  static String m20(amount, ticker) => "Spent ${amount} ${ticker}";
 
-  static String m20(index, name) => "Sub Account ${index} of ${name}";
+  static String m21(index, name) => "Sub Account ${index} of ${name}";
 
-  static String m21(name) => "Sub Account of ${name}";
+  static String m22(name) => "Sub Account of ${name}";
 
-  static String m22(text) => "${text} copied to clipboard";
+  static String m23(text) => "${text} copied to clipboard";
 
-  static String m23(txid) => "TX ID: ${txid}";
+  static String m24(txid) => "TX ID: ${txid}";
 
-  static String m24(currency) => "Use ${currency}";
+  static String m25(currency) => "Use ${currency}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -238,6 +240,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "height": MessageLookupByLibrary.simpleMessage("Height"),
         "help": MessageLookupByLibrary.simpleMessage("Help"),
+        "high": MessageLookupByLibrary.simpleMessage("High"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
         "iHaveMadeABackup":
             MessageLookupByLibrary.simpleMessage("I have made a backup"),
@@ -264,15 +267,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "light": MessageLookupByLibrary.simpleMessage("Light"),
         "loadBackup": MessageLookupByLibrary.simpleMessage("Load Backup"),
         "loading": MessageLookupByLibrary.simpleMessage("Loading..."),
+        "low": MessageLookupByLibrary.simpleMessage("Low"),
         "markAllAsRead":
             MessageLookupByLibrary.simpleMessage("Mark All as Read"),
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Max Amount per Note"),
         "maxSpendableAmount": m9,
+        "medium": MessageLookupByLibrary.simpleMessage("Medium"),
         "memo": MessageLookupByLibrary.simpleMessage("Memo"),
         "message": MessageLookupByLibrary.simpleMessage("Message"),
         "messages": MessageLookupByLibrary.simpleMessage("Messages"),
+        "minPrivacy": MessageLookupByLibrary.simpleMessage("Min Privacy"),
         "mm": MessageLookupByLibrary.simpleMessage("M/M"),
         "mobileCharges": MessageLookupByLibrary.simpleMessage(
             "On Mobile Data, scanning may incur additional charges. Do you want to proceed?"),
@@ -336,6 +342,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Preparing transaction..."),
         "price": MessageLookupByLibrary.simpleMessage("Price"),
         "primary": MessageLookupByLibrary.simpleMessage("Primary"),
+        "privacy": m11,
+        "privacyLevelTooLow": MessageLookupByLibrary.simpleMessage(
+            "Privacy Too LOW - Long press to override"),
         "privateKey": MessageLookupByLibrary.simpleMessage("Private Key"),
         "protectOpen": MessageLookupByLibrary.simpleMessage("Protect Open"),
         "protectSend": MessageLookupByLibrary.simpleMessage("Protect Send"),
@@ -346,16 +355,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "rawTransaction":
             MessageLookupByLibrary.simpleMessage("Raw Transaction"),
         "realized": MessageLookupByLibrary.simpleMessage("Realized"),
-        "receive": m11,
+        "receive": m12,
         "receivePayment":
             MessageLookupByLibrary.simpleMessage("Receive Payment"),
-        "received": m12,
+        "received": m13,
         "recipient": MessageLookupByLibrary.simpleMessage("Recipient"),
         "reply": MessageLookupByLibrary.simpleMessage("Reply"),
         "rescan": MessageLookupByLibrary.simpleMessage("Rescan"),
         "rescanFrom": MessageLookupByLibrary.simpleMessage("Rescan from..."),
         "rescanNeeded": MessageLookupByLibrary.simpleMessage("Rescan Needed"),
-        "rescanRequested": m13,
+        "rescanRequested": m14,
         "rescanning": MessageLookupByLibrary.simpleMessage("Rescanning..."),
         "reset": MessageLookupByLibrary.simpleMessage("RESET"),
         "restart": MessageLookupByLibrary.simpleMessage("Restart"),
@@ -385,12 +394,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Select notes to EXCLUDE from payments"),
         "send": MessageLookupByLibrary.simpleMessage("Send"),
-        "sendCointicker": m14,
-        "sendCointickerTo": m15,
-        "sendFrom": m16,
+        "sendCointicker": m15,
+        "sendCointickerTo": m16,
+        "sendFrom": m17,
         "sender": MessageLookupByLibrary.simpleMessage("Sender"),
-        "sendingATotalOfAmountCointickerToCountRecipients": m17,
-        "sendingAzecCointickerToAddress": m18,
+        "sendingATotalOfAmountCointickerToCountRecipients": m18,
+        "sendingAzecCointickerToAddress": m19,
         "server": MessageLookupByLibrary.simpleMessage("Server"),
         "set": MessageLookupByLibrary.simpleMessage("Set"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
@@ -415,11 +424,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "spendable": MessageLookupByLibrary.simpleMessage("Spendable"),
         "spendableBalance":
             MessageLookupByLibrary.simpleMessage("Spendable Balance"),
-        "spent": m19,
+        "spent": m20,
         "splitAccount": MessageLookupByLibrary.simpleMessage("Split Account"),
         "splitNotes": MessageLookupByLibrary.simpleMessage("Split Notes"),
-        "subAccountIndexOf": m20,
-        "subAccountOf": m21,
+        "subAccountIndexOf": m21,
+        "subAccountOf": m22,
         "subject": MessageLookupByLibrary.simpleMessage("Subject"),
         "syncPaused": MessageLookupByLibrary.simpleMessage("Sync Paused"),
         "synching": MessageLookupByLibrary.simpleMessage("Synching"),
@@ -438,7 +447,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tapTransactionForDetails":
             MessageLookupByLibrary.simpleMessage("Tap Transaction for Details"),
         "template": MessageLookupByLibrary.simpleMessage("Template"),
-        "textCopiedToClipboard": m22,
+        "textCopiedToClipboard": m23,
         "thePrivateWalletMessenger": MessageLookupByLibrary.simpleMessage(
             "The private wallet & messenger"),
         "theme": MessageLookupByLibrary.simpleMessage("Theme"),
@@ -464,7 +473,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Transaction History"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
         "transfer": MessageLookupByLibrary.simpleMessage("Transfer"),
-        "txId": m23,
+        "txId": m24,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Under Confirmed"),
         "unshielded": MessageLookupByLibrary.simpleMessage("Unshielded"),
@@ -477,11 +486,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "useGpu": MessageLookupByLibrary.simpleMessage("Use GPU"),
         "useQrForOfflineSigning":
             MessageLookupByLibrary.simpleMessage("Use QR for offline signing"),
-        "useSettingscurrency": m24,
+        "useSettingscurrency": m25,
         "useTransparentBalance":
             MessageLookupByLibrary.simpleMessage("Use Transparent Balance"),
         "useUa": MessageLookupByLibrary.simpleMessage("Use UA"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
+        "veryLow": MessageLookupByLibrary.simpleMessage("Very Low"),
         "viewingKey": MessageLookupByLibrary.simpleMessage("Viewing Key"),
         "welcomeToYwallet":
             MessageLookupByLibrary.simpleMessage("Welcome to YWallet")
