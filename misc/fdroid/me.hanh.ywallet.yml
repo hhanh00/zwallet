@@ -12,7 +12,7 @@ Repo: https://github.com/hhanh00/zwallet.git
 
 Builds:
   - versionName: 1.2.17
-    versionCode: 347
+    versionCode: 349
     commit: fdroid
     submodules: true
     sudo:

@@ -1,4 +1,4 @@
-name: Build and Release Android
+name: Build and Release Android/FDroid
 
 on:
   workflow_dispatch:
@@ -47,10 +47,12 @@ jobs:
           image: '${{ secrets.DOCKER_HUB_USERNAME }}/zwallet:latest'
           path: '/root/.'
 
+      - name: rename
+        run: mv ${{ steps.extract.outputs.destination }}/app-release.apk ${{ steps.extract.outputs.destination }}/app-fdroid.apk
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           files: |
-            ${{ steps.extract.outputs.destination }}/app-release.apk
-
+            ${{ steps.extract.outputs.destination }}/app-fdroid.apk
