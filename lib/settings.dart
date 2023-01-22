@@ -8,6 +8,22 @@ import 'coin/coin.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 
+List<DropdownMenuItem<int>> getPrivacyOptions(BuildContext context) {
+  final s = S.of(context);
+  final privacyLevels = [s.veryLow, s.low, s.medium, s.high];
+  return privacyLevels
+      .asMap()
+      .entries
+      .map((kv) => DropdownMenuItem(child: Text(kv.value), value: kv.key))
+      .toList();
+}
+
+String getPrivacyLevel(BuildContext context, int level) {
+  final s = S.of(context);
+  final privacyLevels = [s.veryLow, s.low, s.medium, s.high];
+  return privacyLevels[level];
+}
+
 class SettingsPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => SettingsState();
@@ -26,12 +42,14 @@ class SettingsState extends State<SettingsPage>
   var _messageView = settings.messageView;
   var _noteView = settings.noteView;
   var _txView = settings.txView;
+  var _minPrivacy = settings.minPrivacyLevel;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     final simpleMode = settings.simpleMode;
     _memoController.text = settings.memoSignature ?? s.sendFrom(APP_NAME);
+
 
     final hasUA = active.coinDef.supportsUA;
     final uaType = settings.uaType;
@@ -200,6 +218,19 @@ class SettingsState extends State<SettingsPage>
                               title: Text(s.autoHideBalance),
                               initialValue: settings.autoHide,
                               onSaved: _onAutoHide),
+                          DropdownButtonFormField<int>(
+                              decoration:
+                              InputDecoration(labelText: s.minPrivacy),
+                              value: _minPrivacy,
+                              items: getPrivacyOptions(context),
+                              onChanged: (v) {
+                                setState(() {
+                                  _minPrivacy = v!;
+                                });
+                              },
+                              onSaved: (_) {
+                                settings.setMinPrivacy(_minPrivacy);
+                              }),
                           FormBuilderCheckbox(
                               name: 'include_reply_to',
                               title: Text(s.includeReplyTo),

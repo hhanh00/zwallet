@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:YWallet/main.dart';
+import 'package:YWallet/settings.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,8 @@ class TxPlanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+    final t = Theme.of(context);
     final supportsUA = active.coinDef.supportsUA;
     final theme = Theme.of(context);
     final rows = report.outputs
@@ -34,6 +37,7 @@ class TxPlanPage extends StatelessWidget {
               DataCell(Text('${amountToString(e.amount, 3)}')),
             ]))
         .toList();
+    final invalidPrivacy = report.privacy_level < settings.minPrivacyLevel;
 
     return Scaffold(
         appBar: AppBar(title: Text('Transaction Plan')),
@@ -58,9 +62,22 @@ class TxPlanPage extends StatelessWidget {
                   if (supportsUA) ListTile(title: Text('Net Orchard Change'), trailing: Text(
                       amountToString(report.net_orchard, MAX_PRECISION))),
                   ListTile(title: Text('Fee'), trailing: Text(amountToString(report.fee, MAX_PRECISION))),
-                  privacyToString(report.privacy_level)!,
-                  ButtonBar(children: confirmButtons(context, _onSend, okLabel: 'Send')),
-                ]))));
+                  privacyToString(context, report.privacy_level)!,
+                  if (invalidPrivacy) Padding(padding: EdgeInsets.only(top: 8), child: Text(s.privacyLevelTooLow, style: t.textTheme.bodyLarge)),
+                  ButtonBar(children:
+                    <ElevatedButton>[
+                      ElevatedButton.icon(
+                      icon: Icon(Icons.cancel),
+                      label: Text(s.cancel),
+                      onPressed: () { Navigator.of(context).pop(); },
+                      style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary)),
+                      ElevatedButton.icon(
+                      icon: Icon(Icons.done),
+                      label: Text(s.send),
+                      onPressed: invalidPrivacy ? null: _onSend,
+                      onLongPress: _onSend,
+                    )],
+            )]))));
   }
 
   _onSend() async {
@@ -146,12 +163,13 @@ String poolToString(int pool) {
   return "Orchard";
 }
 
-Widget? privacyToString(int privacyLevel) {
+Widget? privacyToString(BuildContext context, int privacyLevel) {
+  final m = S.of(context).privacy(getPrivacyLevel(context, privacyLevel).toUpperCase());
   switch (privacyLevel) {
-    case 0: return getColoredButton("PRIVACY: VERY LOW", Colors.red);
-    case 1: return getColoredButton("PRIVACY: LOW", Colors.orange);
-    case 2: return getColoredButton("PRIVACY: MEDIUM", Colors.yellow);
-    case 3: return getColoredButton("PRIVACY: HIGH", Colors.green);
+    case 0: return getColoredButton(m, Colors.red);
+    case 1: return getColoredButton(m, Colors.orange);
+    case 2: return getColoredButton(m, Colors.yellow);
+    case 3: return getColoredButton(m, Colors.green);
   }
 }
 

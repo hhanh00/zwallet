@@ -216,6 +216,9 @@ abstract class _Settings with Store {
   @observable
   int developerMode = 10;
 
+  @observable
+  int minPrivacyLevel = 0;
+
   @action
   Future<bool> restore() async {
     tempDir = await getTempPath();
@@ -261,6 +264,7 @@ abstract class _Settings with Store {
     developerMode = _developerMode ? 0 : 10;
 
     uaType = prefs.getInt('ua_type') ?? 7;
+    minPrivacyLevel = prefs.getInt('min_privacy') ?? 0;
 
     for (var s in servers) {
       await s.loadPrefs();
@@ -600,6 +604,13 @@ abstract class _Settings with Store {
     developerMode = 10;
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('developer_mode', false);
+  }
+
+  @action
+  Future<void> setMinPrivacy(int v) async {
+    final prefs = await SharedPreferences.getInstance();
+    minPrivacyLevel = v;
+    prefs.setInt('min_privacy', v);
   }
 
   bool get isDeveloper => developerMode == 0;

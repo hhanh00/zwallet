@@ -284,5 +284,12 @@
   "areYouSureYouWantToDeleteThisSendTemplate": "Are you sure you want to delete this send template?",
   "rewindToCheckpoint": "Rewind to Checkpoint",
   "selectCheckpoint": "Select Checkpoint",
-  "scanQrCode": "Scan QR Code"
+  "scanQrCode": "Scan QR Code",
+  "minPrivacy": "Min Privacy",
+  "privacyLevelTooLow": "Privacy Too LOW - Long press to override",
+  "veryLow": "Very Low",
+  "low": "Low",
+  "medium": "Medium",
+  "high": "High",
+  "privacy": "PRIVACY: {level}"
 }

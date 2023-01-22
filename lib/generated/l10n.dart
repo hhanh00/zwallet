@@ -2911,6 +2911,76 @@ class S {
       args: [],
     );
   }
+
+  /// `Min Privacy`
+  String get minPrivacy {
+    return Intl.message(
+      'Min Privacy',
+      name: 'minPrivacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy Too LOW - Long press to override`
+  String get privacyLevelTooLow {
+    return Intl.message(
+      'Privacy Too LOW - Long press to override',
+      name: 'privacyLevelTooLow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Very Low`
+  String get veryLow {
+    return Intl.message(
+      'Very Low',
+      name: 'veryLow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Low`
+  String get low {
+    return Intl.message(
+      'Low',
+      name: 'low',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medium`
+  String get medium {
+    return Intl.message(
+      'Medium',
+      name: 'medium',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `High`
+  String get high {
+    return Intl.message(
+      'High',
+      name: 'high',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PRIVACY: {level}`
+  String privacy(Object level) {
+    return Intl.message(
+      'PRIVACY: $level',
+      name: 'privacy',
+      desc: '',
+      args: [level],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
