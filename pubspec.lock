@@ -186,12 +186,14 @@ packages:
     source: hosted
     version: "0.10.2+1"
   camera_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: camera_android
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.10.2+3"
+      path: "packages/camera/camera_android"
+      ref: "5172b44088a4082ff0899594614c5380457d341b"
+      resolved-ref: "5172b44088a4082ff0899594614c5380457d341b"
+      url: "https://github.com/elmar001/plugins.git"
+    source: git
+    version: "0.10.0+1"
   camera_avfoundation:
     dependency: transitive
     description:
