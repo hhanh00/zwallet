@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.2.17+349
+version: 1.2.17+351
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -79,6 +79,13 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.3
+
+dependency_overrides:
+  camera_android:
+    git:
+      url: https://github.com/elmar001/plugins.git
+      path: packages/camera/camera_android
+      ref: 5172b44088a4082ff0899594614c5380457d341b
 
 dev_dependencies:
   build_runner: ^2.1.2

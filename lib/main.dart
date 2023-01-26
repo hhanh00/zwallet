@@ -6,6 +6,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:path/path.dart' as p;
 import 'package:csv/csv.dart';
@@ -30,6 +31,7 @@ import 'package:quick_actions/quick_actions.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'accounts.dart';
 import 'animated_qr.dart';
+import 'coin/coin.dart';
 import 'coin/coins.dart';
 import 'devmode.dart';
 import 'generated/l10n.dart';
@@ -328,11 +330,15 @@ class ZWalletAppState extends State<ZWalletApp> {
         final dbPath = await getDbPath();
         for (var coin in coins) {
           coin.init(dbPath);
+          final server = settings.servers.firstWhere((s) => s.coin == coin.coin);
+          final url = server.getLWDUrl();
+          if (url != null)
+            WarpApi.updateLWD(coin.coin, url);
         }
 
         if (exportDb) {
-          await ycash.export(context, dbPath);
-          await zcash.export(context, dbPath);
+          for (var coin in coins)
+            await coin.export(context, dbPath);
           prefs.setBool('export_db', false);
         }
         if (recover) {
@@ -340,21 +346,12 @@ class ZWalletAppState extends State<ZWalletApp> {
             await coin.importFromTemp();
           }
         }
+        _setProgress(0, 'Mempool');
         print("db path $dbPath");
         WarpApi.mempoolRun(unconfirmedBalancePort.sendPort.nativePort);
-        for (var coin in coins) {
-          _setProgress(0.1 * (coin.coin+1), 'Initializing ${coin.ticker}');
-          WarpApi.migrateWallet(coin.coin, coin.dbFullPath);
-          WarpApi.initWallet(coin.coin, coin.dbFullPath);
-        }
-
-        _setProgress(0.6, 'Migrate Data');
-        for (var s in settings.servers) {
-          final server = s.getLWDUrl();
-          if (server != null && server.isNotEmpty) {
-            WarpApi.updateLWD(s.coin, server);
-            WarpApi.migrateData(s.coin);
-          }
+        for (var c in coins) {
+          _setProgress(0.2 * (c.coin+1), 'Initializing ${c.ticker}');
+          await compute(_initWallet, c);
         }
 
         _setProgress(0.7, 'Restoring Active Account');
@@ -401,6 +398,12 @@ class ZWalletAppState extends State<ZWalletApp> {
       print("Init error: $e");
     }
     return false;
+  }
+
+  static void _initWallet(CoinBase c) {
+    WarpApi.migrateWallet(c.coin, c.dbFullPath);
+    WarpApi.initWallet(c.coin, c.dbFullPath);
+    WarpApi.migrateData(c.coin);
   }
 
   @override
