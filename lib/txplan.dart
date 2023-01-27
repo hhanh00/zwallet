@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:YWallet/main.dart';
 import 'package:YWallet/settings.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
@@ -89,7 +88,7 @@ class TxPlanPage extends StatelessWidget {
           active.setBanner(S.current.paymentInProgress);
           final player = AudioPlayer();
           try {
-            final txid = await compute(_signAndBroadcast, SignBroadcastParams(active.coin, active.id, plan));
+            final txid = await WarpApi.signAndBroadcast(active.coin, active.id, plan);
             showSnackBar(S.current.txId(txid));
             await player.play(AssetSource("success.mp3"));
             active.setDraftRecipient(null);
@@ -140,19 +139,6 @@ class TxPlanPage extends StatelessWidget {
   }
 }
 
-String _signAndBroadcast(SignBroadcastParams params) {
-  final txid = WarpApi.signAndBroadcast(
-      params.coin, params.id, params.plan);
-  return txid;
-}
-
-class SignBroadcastParams {
-  final int coin;
-  final int id;
-  final String plan;
-  SignBroadcastParams(this.coin, this.id, this.plan);
-}
-
 String poolToString(int pool) {
   switch (pool) {
     case 0:
@@ -171,6 +157,7 @@ Widget? privacyToString(BuildContext context, int privacyLevel) {
     case 2: return getColoredButton(m, Colors.yellow);
     case 3: return getColoredButton(m, Colors.green);
   }
+  return null;
 }
 
 ElevatedButton getColoredButton(String text, Color color) {

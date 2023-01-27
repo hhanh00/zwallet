@@ -240,15 +240,17 @@ class WarpApi {
         ScanTransparentAccountsParams(gapLimit));
   }
 
-  static String prepareTx(int coin, int account,
-      List<Recipient> recipients, int anchorOffset) {
+  static Future<String> prepareTx(int coin, int account,
+      List<Recipient> recipients, int anchorOffset) async {
     final recipientsJson = jsonEncode(recipients);
-    final res = warp_api_lib.prepare_multi_payment(
-        coin, account,
-        recipientsJson.toNativeUtf8().cast<Int8>(),
-        anchorOffset);
-    final json = unwrapResultString(res);
-    return json;
+    return await compute((_) {
+      final res = warp_api_lib.prepare_multi_payment(
+          coin, account,
+          recipientsJson.toNativeUtf8().cast<Int8>(),
+          anchorOffset);
+      final json = unwrapResultString(res);
+      return json;
+    }, null);
   }
 
   static String transactionReport(int coin, String plan) {
@@ -256,9 +258,11 @@ class WarpApi {
     return unwrapResultString(report);
   }
 
-  static String signAndBroadcast (int coin, int account, String plan) {
-    final txid = warp_api_lib.sign_and_broadcast(coin, account, plan.toNativeUtf8().cast<Int8>());
-    return unwrapResultString(txid);
+  static Future<String> signAndBroadcast (int coin, int account, String plan) async {
+    return await compute((_) {
+      final txid = warp_api_lib.sign_and_broadcast(coin, account, plan.toNativeUtf8().cast<Int8>());
+      return unwrapResultString(txid);
+    }, null);
   }
 
   static Future<String> signOnly(
