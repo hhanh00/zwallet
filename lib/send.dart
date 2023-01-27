@@ -315,7 +315,7 @@ class SendState extends State<SendPage> {
   void _openTemplate() {
     final tid = _template;
     if (tid == null) return;
-    final template = _template;;
+    final template = _template;
     if (template == null) return;
     amountInput?.restore(template.amount, template.fiatAmount, template.feeIncluded, template.fiat);
     setState(() {
