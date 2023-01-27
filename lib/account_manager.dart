@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -34,12 +35,10 @@ class AccountManagerState extends State<AccountManagerPage> {
     final nav = Navigator.of(context);
 
     if (active.id == 0) {
+      compute(_markAsSynced, null);
       Future.microtask(() async {
         nav.pushNamedAndRemoveUntil('/welcome', (route) => false);
-        await syncStatus.update();
-        for (var c in settings.coins) {
-          syncStatus.markAsSynced(c.coin);
-        }
+
       });
       return SizedBox();
     }
@@ -206,6 +205,13 @@ class AccountManagerState extends State<AccountManagerPage> {
       case "About":
         showAbout(this.context);
         break;
+    }
+  }
+
+  static Future<void> _markAsSynced(Null n) async {
+    await syncStatus.update();
+    for (var c in settings.coins) {
+      syncStatus.markAsSynced(c.coin); // this can take a few secs
     }
   }
 
