@@ -291,5 +291,6 @@
   "low": "Low",
   "medium": "Medium",
   "high": "High",
-  "privacy": "PRIVACY: {level}"
+  "privacy": "PRIVACY: {level}",
+  "save": "Save"
 }

@@ -377,6 +377,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rewind to Checkpoint"),
         "roundToMillis":
             MessageLookupByLibrary.simpleMessage("Round to millis"),
+        "save": MessageLookupByLibrary.simpleMessage("Save"),
         "saveBackup": MessageLookupByLibrary.simpleMessage("Save Backup"),
         "saveToBlockchain":
             MessageLookupByLibrary.simpleMessage("Save to Blockchain"),

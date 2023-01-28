@@ -51,6 +51,7 @@ class DevPageState extends State<DevPage> {
     final confirmation = await showConfirmDialog(context, 'DB', S.of(context).doYouWantToRestore);
     if (!confirmation) return;
     final s = S.of(context);
+    await FilePicker.platform.clearTemporaryFiles();
     final result = await FilePicker.platform.pickFiles();
 
     if (result != null) {

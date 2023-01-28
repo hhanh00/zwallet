@@ -2,11 +2,13 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:cross_file/cross_file.dart';
+import 'package:image/image.dart' as img;
+import 'package:zxing2/qrcode.dart';
 
 import 'generated/l10n.dart';
 
 class QRScanner extends StatefulWidget {
-  final dynamic Function(Code) onScan;
+  final dynamic Function(String) onScan;
   final bool Function()? completed;
   QRScanner(this.onScan, { this.completed });
 
@@ -26,20 +28,38 @@ class QRScannerState extends State<QRScanner> {
   }
 
   _onScan(Code code) {
-    widget.onScan(code);
+    final text = code.text;
+    if (text != null)
+      widget.onScan(text);
     final completed = widget.completed?.call() ?? true;
     if (completed)
       Navigator.of(context).pop();
   }
 
   _onPickImage() async {
-    final res = await FilePicker.platform.pickFiles();
-    if (res != null && res.isSinglePick) {
-      final file = res.files.first;
-      final xfile = XFile(file.path!);
-      final Code? result = await zx.readBarcodeImagePath(xfile);
-      if (result != null && result.isValid)
-        _onScan(result);
+    final code = await pickDecodeQRImage();
+    if (code != null) {
+      widget.onScan(code);
+      Navigator.of(context).pop();
     }
   }
+}
+
+Future<String?> pickDecodeQRImage() async {
+  await FilePicker.platform.clearTemporaryFiles();
+  final res = await FilePicker.platform.pickFiles();
+  if (res != null && res.isSinglePick) {
+    final file = res.files.first;
+    final xfile = XFile(file.path!);
+    final data = await xfile.readAsBytes();
+    final image = img.decodeImage(data);
+    if (image == null) return null;
+    LuminanceSource source = RGBLuminanceSource(image.width, image.height,
+        image.getBytes(format: img.Format.abgr).buffer.asInt32List());
+    var bitmap = BinaryBitmap(HybridBinarizer(source));
+    final reader = QRCodeReader();
+    final result = reader.decode(bitmap);
+    return result.text;
+  }
+  return null;
 }

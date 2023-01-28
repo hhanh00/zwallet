@@ -199,6 +199,7 @@ class _FullRestoreState extends State<FullRestorePage> {
 
   _onLoad() async {
     final s = S.current;
+    await FilePicker.platform.clearTemporaryFiles();
     final result = await FilePicker.platform.pickFiles();
 
     if (result != null) {

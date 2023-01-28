@@ -105,10 +105,8 @@ Future<String?> scanMultiCode(BuildContext context) async {
     final f = Completer<String>();
     var completed = false;
     Navigator.of(context).pushNamed('/scanner', arguments: {
-      'onScan': (Code code) {
-        final data = code.text;
-        if (data == null) return;
-        final res = WarpApi.mergeData(data);
+      'onScan': (String code) {
+        final res = WarpApi.mergeData(code);
         completed = res.isNotEmpty;
         if (completed) {
           final decoded = utf8.decode(ZLibCodec().decode(base64Decode(res)));

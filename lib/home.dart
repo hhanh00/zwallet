@@ -375,6 +375,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     if (settings.qrOffline) {
       tx = await scanMultiCode(context);
     } else {
+      await FilePicker.platform.clearTemporaryFiles();
       final res = await FilePicker.platform.pickFiles();
       if (res == null) return;
       final path = res.files.single.path!;
@@ -390,6 +391,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     if (settings.qrOffline) {
       rawTx = await scanMultiCode(context);
     } else {
+      await FilePicker.platform.clearTemporaryFiles();
       final result = await FilePicker.platform.pickFiles();
       if (result != null) {
         String path = result.files.single.path!;
