@@ -7,6 +7,7 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:path/path.dart' as p;
 import 'package:csv/csv.dart';
@@ -497,13 +498,34 @@ void showQR(BuildContext context, String text, String title) {
                       .textTheme
                       .subtitle1),
                   Padding(padding: EdgeInsets.all(4)),
+                  ButtonBar(children: [
                   ElevatedButton.icon(onPressed: () {
                     Clipboard.setData(ClipboardData(text: text));
                     showSnackBar(s.textCopiedToClipboard(title));
                     Navigator.of(context).pop();
-                  }, icon: Icon(Icons.copy), label: Text(s.copy))
+                  }, icon: Icon(Icons.copy), label: Text(s.copy)),
+                  ElevatedButton.icon(onPressed: () => saveQRImage(text, title),
+                    icon: Icon(Icons.save), label: Text(s.save))
+                  ])
                 ])))
         ); });
+}
+
+Future<void> saveQRImage(String data, String title) async {
+  final code = QrCode.fromData(data: data, errorCorrectLevel: QrErrorCorrectLevel.L);
+  code.make();
+  final painter = QrPainter.withQr(qr: code, emptyColor: Colors.white, gapless: true);
+  final recorder = PictureRecorder();
+  final canvas = Canvas(recorder);
+  final size = code.moduleCount * 32;
+  final whitePaint = Paint()..color = Colors.white..style = PaintingStyle.fill;
+  canvas.drawRect(Rect.fromLTWH(0, 0, size + 256, size + 256), whitePaint);
+  canvas.translate(128, 128);
+  painter.paint(canvas, Size(size.toDouble(), size.toDouble()));
+  final image = await recorder.endRecording().toImage(size + 256, size + 256);
+  final ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
+  final Uint8List pngBytes = byteData!.buffer.asUint8List();
+  await saveFileBinary(pngBytes, 'qr.png', title);
 }
 
 Future<bool> showMessageBox(BuildContext context, String title, String content,
@@ -578,27 +600,14 @@ int precision(bool? mZEC) => (mZEC == null || mZEC) ? 3 : MAX_PRECISION;
 Future<String?> scanCode(BuildContext context) async {
   final s = S.of(context);
   if (!isMobile()) {
-    final codeController = TextEditingController();
-    final code = await showDialog<String?>(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-            title: Text(s.inputBarcodeValue),
-            content: TextFormField(
-              decoration: InputDecoration(
-                  labelText: s.barcode),
-              controller: codeController,
-            ),
-            actions: confirmButtons(
-                context, () => Navigator.of(context).pop(codeController.text),
-                cancelValue: null)));
+    final code = await pickDecodeQRImage();
     return code;
   }
   else {
     final f = Completer();
     Navigator.of(context).pushNamed('/scanner', arguments: {
-      'onScan': (Code code) {
-        f.complete(code.text);
+      'onScan': (String code) {
+        f.complete(code);
       },
       'completed': () => f.isCompleted,
     });
@@ -768,6 +777,10 @@ Future<void> shareCsv(List<List> data, String filename, String title) async {
 }
 
 Future<void> saveFile(String data, String filename, String title) async {
+  await saveFileBinary(utf8.encode(data), filename, title);
+}
+
+Future<void> saveFileBinary(List<int> data, String filename, String title) async {
   if (isMobile()) {
     final context = navigatorKey.currentContext!;
     Size size = MediaQuery.of(context).size;
@@ -775,14 +788,14 @@ Future<void> saveFile(String data, String filename, String title) async {
     final path = p.join(tempDir, filename);
     final xfile = XFile(path);
     final file = File(path);
-    await file.writeAsString(data);
+    await file.writeAsBytes(data);
     await Share.shareXFiles([xfile], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
   }
   else {
-    final fn = await FilePicker.platform.saveFile();
+    final fn = await FilePicker.platform.saveFile(dialogTitle: title, fileName: filename);
     if (fn != null) {
       final file = File(fn);
-      await file.writeAsString(data);
+      await file.writeAsBytes(data);
     }
   }
 }

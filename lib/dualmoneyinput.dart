@@ -11,9 +11,10 @@ class DualMoneyInputWidget extends StatefulWidget {
   final int? spendable;
   final int? initialValue;
   final bool max;
+  final Function(int)? onChange;
 
   DualMoneyInputWidget(
-      {Key? key, this.initialValue, this.spendable, String? fiat, this.max = false})
+      {Key? key, this.initialValue, this.spendable, String? fiat, this.max = false, this.onChange})
       : super(key: key) {
     this.fiat = fiat ?? settings.currency;
   }
@@ -95,6 +96,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
                 onChanged: (_) {
                   _updateFiatAmount();
                   _updateSlider();
+                  _onChanged();
                 },
                 onSaved: _onAmount,
         )),
@@ -149,6 +151,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
       coinAmountController.text = zero;
       fiatAmountController.text = zero;
       sliderValue = 0;
+      _onChanged();
     });
   }
 
@@ -156,6 +159,8 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
     setState(() {
       coinAmountController.text = amountToString(amount, MAX_PRECISION);
       _updateFiatAmount();
+      _updateSlider();
+      _onChanged();
     });
   }
 
@@ -169,6 +174,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
         coinAmountController.text =
             amountToString(a, precision(settings.useMillis));
         _updateFiatAmount();
+        _onChanged();
       }
     });
   }
@@ -204,6 +210,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
     final otherAmount = decimalFormat(amount * rate, precision(useMillis));
     setState(() {
       coinAmountController.text = otherAmount;
+      _onChanged();
     });
   }
 
@@ -243,9 +250,18 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
         coinAmountController.text = amountToString(amount, precision(settings.useMillis));
         inputInCoin = true;
         _updateFiatAmount();
+        _onChanged();
       }
       _feeIncluded = feeIncluded;
       _updateSlider();
     });
+  }
+
+  _onChanged() {
+    final onChange = widget.onChange;
+    if (onChange != null) {
+      amount = stringToAmount(coinAmountController.text);
+      onChange(amount);
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -55,14 +56,14 @@ class PaymentURIState extends State<PaymentURIPage> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          GestureDetector(onTap: _ok, child: QrImage(
+                          GestureDetector(onTap: _showQR, child: QrImage(
                             data: qrText,
                             size: qrSize,
                             backgroundColor: Colors.white)),
                           Padding(padding: EdgeInsets.all(4)),
                           Text(qrText, style: t.textTheme.labelSmall),
                           Padding(padding: EdgeInsets.all(4)),
-                          Row(mainAxisAlignment: MainAxisAlignment.center,
+                          if (active.coinDef.supportsUA) Row(mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                             Expanded(child: FormBuilderCheckboxGroup<String>(
                                 orientation: OptionsOrientation.horizontal,
@@ -78,7 +79,7 @@ class PaymentURIState extends State<PaymentURIPage> {
                             ElevatedButton.icon(onPressed: _onAddressCopy, icon: Icon(Icons.content_copy), label: Text(S.current.copy))
                           ]),
                           Padding(padding: EdgeInsets.all(8)),
-                          DualMoneyInputWidget(key: amountKey),
+                          DualMoneyInputWidget(key: amountKey, onChange: (_) => updateQR()),
                           TextFormField(
                             decoration:
                                 InputDecoration(labelText: S.of(context).memo),
@@ -86,21 +87,15 @@ class PaymentURIState extends State<PaymentURIPage> {
                             maxLines: null,
                             keyboardType: TextInputType.multiline,
                             controller: _memoController,
+                            onChanged: (_) => updateQR()
                           ),
                           Padding(padding: EdgeInsets.all(8)),
-                          ButtonBar(children: [
-                            ElevatedButton.icon(
-                              icon: Icon(Icons.clear),
-                              label: Text('RESET'),
-                              onPressed: _reset,
-                            ),
-                            ElevatedButton.icon(
-                              icon: Icon(Icons.build),
-                              label: Text('MAKE QR'),
-                              onPressed: _ok,
-                            ),
-                          ]),
-                        ]))))));
+                          ElevatedButton.icon(
+                            icon: Icon(Icons.clear),
+                            label: Text('RESET'),
+                            onPressed: _reset,
+                          )]),
+                )))));
   }
 
   String _getQR() {
@@ -121,13 +116,21 @@ class PaymentURIState extends State<PaymentURIPage> {
   void _onUAType(List<String>? types) {
     if (types == null) { return; }
     setState(() {
-      if (types.isEmpty) {
+      if (types.isEmpty)
         address = active.getAddress(7);
-      }
       else
         address = _decodeCheckboxes(types);
-      qrText = _getQR();
+      updateQR();
     });
+  }
+
+  void updateQR() {
+    EasyDebounce.debounce(
+        'payment_uri',
+        Duration(milliseconds: 500),
+        () => setState(() {
+            qrText = _getQR();
+        }));
   }
 
   String _decodeCheckboxes(List<String> types) {
@@ -146,14 +149,7 @@ class PaymentURIState extends State<PaymentURIPage> {
     });
   }
 
-  void _ok() {
-    final form = _formKey.currentState!;
-    if (form.validate()) {
-      form.save();
-      setState(() {
-        qrText = _getQR();
-      });
-      FocusScope.of(context).unfocus();
-    }
+  void _showQR() {
+    showQR(context, qrText, qrText);
   }
 }

@@ -289,5 +289,6 @@
   "low": "Bas",
   "medium": "Moyen",
   "high": "Haut",
-  "privacy": "SECRET: {level}"
+  "privacy": "SECRET: {level}",
+  "save": "Sauver"
 }

@@ -384,6 +384,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Revenir au Bloc"),
         "roundToMillis":
             MessageLookupByLibrary.simpleMessage("Arrondir au millième"),
+        "save": MessageLookupByLibrary.simpleMessage("Sauver"),
         "saveBackup":
             MessageLookupByLibrary.simpleMessage("Sauvegarder les comptes"),
         "saveToBlockchain": MessageLookupByLibrary.simpleMessage(
