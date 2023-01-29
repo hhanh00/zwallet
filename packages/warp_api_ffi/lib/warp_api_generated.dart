@@ -728,11 +728,13 @@ class NativeLibrary {
       _delete_account_ptr.asFunction<_dart_delete_account>();
 
   CResult_____c_char make_payment_uri(
+    int coin,
     ffi.Pointer<ffi.Int8> address,
     int amount,
     ffi.Pointer<ffi.Int8> memo,
   ) {
     return _make_payment_uri(
+      coin,
       address,
       amount,
       memo,
@@ -1866,12 +1868,14 @@ typedef _dart_delete_account = void Function(
 );
 
 typedef _c_make_payment_uri = CResult_____c_char Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> address,
   ffi.Uint64 amount,
   ffi.Pointer<ffi.Int8> memo,
 );
 
 typedef _dart_make_payment_uri = CResult_____c_char Function(
+  int coin,
   ffi.Pointer<ffi.Int8> address,
   int amount,
   ffi.Pointer<ffi.Int8> memo,

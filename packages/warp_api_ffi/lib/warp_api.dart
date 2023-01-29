@@ -176,7 +176,7 @@ class WarpApi {
 
   static bool validAddress(int coin, String address) {
     return warp_api_lib.valid_address(
-            coin, address.toNativeUtf8().cast<Int8>()) !=
+            coin, toNative(address)) !=
         0;
   }
 
@@ -339,9 +339,10 @@ class WarpApi {
     warp_api_lib.delete_account(coin, account);
   }
 
-  static String makePaymentURI(String address, int amount, String memo) {
+  static String makePaymentURI(int coin, String address, int amount, String memo) {
     final uri = warp_api_lib.make_payment_uri(
-        address.toNativeUtf8().cast<Int8>(),
+        coin,
+        toNative(address),
         amount,
         memo.toNativeUtf8().cast<Int8>());
     return unwrapResultString(uri);

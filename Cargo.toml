@@ -8,7 +8,7 @@ debug = false
 
 #[patch."https://github.com/hhanh00/zcash-params.git"]
 #zcash_params = { path = "native/zcash-params" }
-#
+
 #[patch."https://github.com/hhanh00/librustzcash.git"]
 #zcash_client_backend = { path = "librustzcash/zcash_client_backend" }
 #zcash_primitives = { path = "librustzcash/zcash_primitives" }
@@ -16,7 +16,8 @@ debug = false
 #zcash_address = { path = "librustzcash/components/zcash_address" }
 #zcash_encoding = { path = "librustzcash/components/zcash_encoding" }
 #zcash_note_encryption = { path = "librustzcash/components/zcash_note_encryption" }
-#
+
 [patch.crates-io]
-zcash_note_encryption = { git = "https://github.com/hhanh00/librustzcash.git", rev = "2cb26889d9384c7f43f1bd8417a5c088ae380323" }
+#zcash_note_encryption = { path = "librustzcash/components/zcash_note_encryption" }
+zcash_note_encryption = { git = "https://github.com/hhanh00/librustzcash.git", rev = "ad4a1c61fdaf04ac4fb884976ad175196e695264" }
 jubjub = { git = "https://github.com/hhanh00/jubjub.git", rev = "4a3edf3d242f368b5aa418ec659d01f191127cf3" }
