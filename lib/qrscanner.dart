@@ -6,6 +6,7 @@ import 'package:image/image.dart' as img;
 import 'package:zxing2/qrcode.dart';
 
 import 'generated/l10n.dart';
+import 'main.dart';
 
 class QRScanner extends StatefulWidget {
   final dynamic Function(String) onScan;
@@ -46,8 +47,7 @@ class QRScannerState extends State<QRScanner> {
 }
 
 Future<String?> pickDecodeQRImage() async {
-  await FilePicker.platform.clearTemporaryFiles();
-  final res = await FilePicker.platform.pickFiles();
+  final res = await pickFile();
   if (res != null && res.isSinglePick) {
     final file = res.files.first;
     final xfile = XFile(file.path!);

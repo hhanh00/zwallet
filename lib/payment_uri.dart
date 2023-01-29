@@ -103,7 +103,7 @@ class PaymentURIState extends State<PaymentURIPage> {
     final memo = _memoController.text;
 
     if (amount > 0) {
-      return WarpApi.makePaymentURI(address, amount, memo);
+      return WarpApi.makePaymentURI(active.coin, address, amount, memo);
     }
     return address;
   }

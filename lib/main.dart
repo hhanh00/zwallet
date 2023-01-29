@@ -770,6 +770,14 @@ Future<void> shieldTAddr(BuildContext context) async {
   }
 }
 
+Future<FilePickerResult?> pickFile() async {
+  if (isMobile()) {
+    await FilePicker.platform.clearTemporaryFiles();
+  }
+  final result = await FilePicker.platform.pickFiles();
+  return result;
+}
+
 Future<void> shareCsv(List<List> data, String filename, String title) async {
   final csvConverter = ListToCsvConverter();
   final csv = csvConverter.convert(data);
