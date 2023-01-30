@@ -11,10 +11,11 @@ class ScanTAddrPage extends StatefulWidget {
 }
 
 class ScanTAddrPageState extends State<ScanTAddrPage> {
-  List<AddressBalance>? addresses = null;
+  List<AddressBalance>? addresses;
 
   @override
   void initState() {
+    super.initState();
     Future(() async {
       final _addresses = await WarpApi.scanTransparentAccounts(active.coin, active.id, settings.gapLimit);
       final dbr = DbReader(active.coin, active.id);
