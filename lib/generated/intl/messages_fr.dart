@@ -102,7 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Ajoutez un receveur et il sera ici"),
         "addContact":
             MessageLookupByLibrary.simpleMessage("Ajouter un contact"),
-        "addnew": MessageLookupByLibrary.simpleMessage("AJOUTER"),
+        "addnew": MessageLookupByLibrary.simpleMessage("Ajouter"),
         "address": MessageLookupByLibrary.simpleMessage("adresse"),
         "addressCopiedToClipboard": MessageLookupByLibrary.simpleMessage(
             "Adresse copiée dans le presse-papier"),
@@ -373,7 +373,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescanRequested": m14,
         "rescanning":
             MessageLookupByLibrary.simpleMessage("Rescannage en cours..."),
-        "reset": MessageLookupByLibrary.simpleMessage("RESET"),
+        "reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "restart": MessageLookupByLibrary.simpleMessage("Redémarrage"),
         "restoreAnAccount":
             MessageLookupByLibrary.simpleMessage("Récuperation d\'un Compte?"),

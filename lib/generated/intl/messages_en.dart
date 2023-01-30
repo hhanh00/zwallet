@@ -97,11 +97,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "accountNameIsRequired":
             MessageLookupByLibrary.simpleMessage("Account name is required"),
         "accounts": MessageLookupByLibrary.simpleMessage("Accounts"),
-        "add": MessageLookupByLibrary.simpleMessage("ADD"),
+        "add": MessageLookupByLibrary.simpleMessage("Add"),
         "addARecipientAndItWillShowHere": MessageLookupByLibrary.simpleMessage(
             "Add a recipient and it will show here"),
         "addContact": MessageLookupByLibrary.simpleMessage("Add Contact"),
-        "addnew": MessageLookupByLibrary.simpleMessage("NEW/RESTORE"),
+        "addnew": MessageLookupByLibrary.simpleMessage("New/Restore"),
         "address": MessageLookupByLibrary.simpleMessage("Address"),
         "addressCopiedToClipboard":
             MessageLookupByLibrary.simpleMessage("Address copied to clipboard"),
@@ -366,7 +366,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescanNeeded": MessageLookupByLibrary.simpleMessage("Rescan Needed"),
         "rescanRequested": m14,
         "rescanning": MessageLookupByLibrary.simpleMessage("Rescanning..."),
-        "reset": MessageLookupByLibrary.simpleMessage("RESET"),
+        "reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "restart": MessageLookupByLibrary.simpleMessage("Restart"),
         "restoreAnAccount":
             MessageLookupByLibrary.simpleMessage("Restore an account?"),

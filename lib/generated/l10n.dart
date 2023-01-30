@@ -1112,10 +1112,10 @@ class S {
     );
   }
 
-  /// `ADD`
+  /// `Add`
   String get add {
     return Intl.message(
-      'ADD',
+      'Add',
       name: 'add',
       desc: '',
       args: [],
@@ -1792,10 +1792,10 @@ class S {
     );
   }
 
-  /// `NEW/RESTORE`
+  /// `New/Restore`
   String get addnew {
     return Intl.message(
-      'NEW/RESTORE',
+      'New/Restore',
       name: 'addnew',
       desc: '',
       args: [],
@@ -1822,10 +1822,10 @@ class S {
     );
   }
 
-  /// `RESET`
+  /// `Reset`
   String get reset {
     return Intl.message(
-      'RESET',
+      'Reset',
       name: 'reset',
       desc: '',
       args: [],

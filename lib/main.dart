@@ -439,9 +439,7 @@ List<ElevatedButton> confirmButtons(BuildContext context,
         label: Text(s.cancel),
         onPressed: () {
           cancelValue != null ? navigator.pop(cancelValue) : navigator.pop();
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.secondary)),
+        }),
     ElevatedButton.icon(
       icon: okIcon ?? Icon(Icons.done),
       label: Text(okLabel ?? s.ok),
