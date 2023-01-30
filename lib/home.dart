@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -10,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as Badges;
 
 import 'about.dart';
 import 'account.dart';
@@ -166,7 +165,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
 
       final unread = active.unread;
       final messageTab = unread != 0 ?
-        Tab(child: Badge(
+        Tab(child: Badges.Badge(
             child: Text(s.messages),
             badgeContent: Text('$unread'))) :
         Tab(text: s.messages);
