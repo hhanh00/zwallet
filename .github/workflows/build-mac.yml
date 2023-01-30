@@ -31,7 +31,7 @@ jobs:
 
       - name: wget flutter
         run: |
-          curl https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_3.3.10-stable.zip --output flutter.zip
+          curl https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_3.7.0-stable.zip --output flutter.zip
           unzip flutter.zip
           echo $PWD/flutter/bin >> $GITHUB_PATH
 
