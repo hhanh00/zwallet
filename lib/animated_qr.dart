@@ -55,7 +55,7 @@ class AnimatedQRState extends State<AnimatedQR> {
       body: Padding(padding: EdgeInsets.all(16), child: Center(child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          QrImage(key: ValueKey(idx), data: widget.chunks[idx], size: qrSize, foregroundColor: Colors.white, backgroundColor: Colors.black),
+          QrImage(key: ValueKey(idx), data: widget.chunks[idx], size: qrSize, backgroundColor: Colors.white),
           Padding(padding: EdgeInsets.symmetric(vertical: 4)),
           Text(widget.caption, style: theme.textTheme.subtitle1),
           Padding(padding: EdgeInsets.symmetric(vertical: 4)),
@@ -106,14 +106,17 @@ Future<String?> scanMultiCode(BuildContext context) async {
     var completed = false;
     Navigator.of(context).pushNamed('/scanner', arguments: {
       'onScan': (String code) {
+        Future(() => player.play(ding));
         final res = WarpApi.mergeData(code);
+        print(res);
         completed = res.isNotEmpty;
         if (completed) {
           final decoded = utf8.decode(ZLibCodec().decode(base64Decode(res)));
           f.complete(decoded);
         }
       },
-      'completed': () => completed
+      'completed': () => completed,
+      'multi': true
     });
     return f.future;
   }

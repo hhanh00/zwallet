@@ -271,7 +271,7 @@ void main() {
                 '/syncstats': (context) => SyncChartPage(),
                 '/scanner': (context) {
                   final args = routeSettings.arguments as Map<String, dynamic>;
-                  return QRScanner(args['onScan'], completed: args['completed']);
+                  return QRScanner(args['onScan'], completed: args['completed'], multi: args['multi']);
                 },
               };
               return MaterialPageRoute(builder: routes[routeSettings.name]!);
@@ -610,6 +610,7 @@ Future<String?> scanCode(BuildContext context) async {
         f.complete(code);
       },
       'completed': () => f.isCompleted,
+      'multi': false,
     });
     return await f.future;
   }

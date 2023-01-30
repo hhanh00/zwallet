@@ -11,7 +11,8 @@ import 'main.dart';
 class QRScanner extends StatefulWidget {
   final dynamic Function(String) onScan;
   final bool Function()? completed;
-  QRScanner(this.onScan, { this.completed });
+  final bool multi;
+  QRScanner(this.onScan, { this.completed, this.multi = false });
 
   @override
   State<StatefulWidget> createState() => QRScannerState();
@@ -22,7 +23,7 @@ class QRScannerState extends State<QRScanner> {
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(title: Text(S.of(context).scanQrCode)),
     body: ReaderWidget(onScan: _onScan),
-    floatingActionButton: (widget.completed != null) ? FloatingActionButton(
+    floatingActionButton: (!widget.multi) ? FloatingActionButton(
       onPressed: _onPickImage,
       child: const Icon(Icons.image)
     ) : null);
