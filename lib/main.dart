@@ -388,6 +388,7 @@ class ZWalletAppState extends State<ZWalletApp> {
         }
       }
 
+      await active.restore();
       _setProgress(1.0, 'Ready');
       progressKey.currentState?.cancelResetTimer();
       if (settings.protectOpen) {
