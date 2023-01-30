@@ -216,9 +216,10 @@ void main() {
             ? MaterialApp(home: Container()) :
         Observer(builder: (context) {
           final theme = settings.themeData.copyWith(
-              dataTableTheme: DataTableThemeData(
-                  headingRowColor: MaterialStateColor.resolveWith(
-                          (_) => settings.themeData.highlightColor)));
+            useMaterial3: true,
+            dataTableTheme: DataTableThemeData(
+                headingRowColor: MaterialStateColor.resolveWith(
+                        (_) => settings.themeData.highlightColor)));
           return MaterialApp(
             title: APP_NAME,
             debugShowCheckedModeBanner: false,
