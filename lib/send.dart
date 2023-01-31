@@ -244,7 +244,7 @@ class SendState extends State<SendPage> {
                       ]),
                       Padding(padding: EdgeInsets.all(8)),
                       ButtonBar(children: [
-                        ElevatedButton.icon(onPressed: clear, icon: Icon(Icons.clear), label: Text(s.reset), style: ElevatedButton.styleFrom(backgroundColor: t.colorScheme.secondary)),
+                        ElevatedButton.icon(onPressed: clear, icon: Icon(Icons.clear), label: Text(s.reset)),
                         ElevatedButton.icon(onPressed: _onSend, icon: Icon(MdiIcons.send), label: Text(widget.isMulti ? s.add : s.send))
                     ])
         ])))));

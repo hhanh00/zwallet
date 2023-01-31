@@ -137,10 +137,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                 label: Text(s.cancel),
                                 onPressed: () {
                                   Navigator.of(context).pop();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    primary:
-                                        t.buttonTheme.colorScheme!.secondary)),
+                                }),
                             ElevatedButton.icon(
                               icon: Icon(Icons.add),
                               label: Text(_restore ? s.import : s.newLabel),

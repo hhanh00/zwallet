@@ -496,7 +496,7 @@ void showQR(BuildContext context, String text, String title) {
                   Text(title, style: Theme
                       .of(context)
                       .textTheme
-                      .subtitle1),
+                      .titleSmall),
                   Padding(padding: EdgeInsets.all(4)),
                   ButtonBar(children: [
                   ElevatedButton.icon(onPressed: () {
