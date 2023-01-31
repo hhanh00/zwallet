@@ -41,13 +41,14 @@ class PaymentURIState extends State<PaymentURIPage> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final t = Theme.of(context);
     final qrSize = getScreenSize(context) / 1.5;
 
     return Form(
         key: _formKey,
         child: Scaffold(
-          appBar: AppBar(title: Text(S.of(context).receive(activeCoin().ticker))),
+          appBar: AppBar(title: Text(s.receive(activeCoin().ticker))),
           body: SingleChildScrollView(
             child: GestureDetector(
                 onTap: () { FocusScope.of(context).unfocus(); },
@@ -76,13 +77,13 @@ class PaymentURIState extends State<PaymentURIPage> {
                                   FormBuilderFieldOption(value: 'S'),
                                   FormBuilderFieldOption(value: 'O'),
                                 ])),
-                            ElevatedButton.icon(onPressed: _onAddressCopy, icon: Icon(Icons.content_copy), label: Text(S.current.copy))
+                            ElevatedButton.icon(onPressed: _onAddressCopy, icon: Icon(Icons.content_copy), label: Text(s.copy))
                           ]),
                           Padding(padding: EdgeInsets.all(8)),
                           DualMoneyInputWidget(key: amountKey, onChange: (_) => updateQR()),
                           TextFormField(
                             decoration:
-                                InputDecoration(labelText: S.of(context).memo),
+                                InputDecoration(labelText: s.memo),
                             minLines: 4,
                             maxLines: null,
                             keyboardType: TextInputType.multiline,
@@ -92,7 +93,7 @@ class PaymentURIState extends State<PaymentURIPage> {
                           Padding(padding: EdgeInsets.all(8)),
                           ElevatedButton.icon(
                             icon: Icon(Icons.clear),
-                            label: Text('RESET'),
+                            label: Text(s.reset),
                             onPressed: _reset,
                           )]),
                 )))));

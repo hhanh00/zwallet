@@ -207,8 +207,18 @@ class _FullRestoreState extends State<FullRestorePage> {
       try {
         if (key.isNotEmpty) {
           WarpApi.unzipBackup(key, filename, settings.tempDir);
-          await showMessageBox(context, s.dbImportSuccessful,
-              s.databaseUpdatedPleaseRestartTheApp, s.ok);
+          await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) =>
+                AlertDialog(
+                    title: Text(s.dbImportSuccessful),
+                    content: Text(s.databaseUpdatedPleaseRestartTheApp),
+                    actions: [
+                      ElevatedButton.icon(onPressed: () => Navigator.of(context).pop(), icon: Icon(Icons.check),
+                        label: Text(s.ok))
+                    ]
+          ));
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('recover', true);
         }

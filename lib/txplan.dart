@@ -68,8 +68,7 @@ class TxPlanPage extends StatelessWidget {
                       ElevatedButton.icon(
                       icon: Icon(Icons.cancel),
                       label: Text(s.cancel),
-                      onPressed: () { Navigator.of(context).pop(); },
-                      style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary)),
+                      onPressed: () { Navigator.of(context).pop(); }),
                       ElevatedButton.icon(
                       icon: Icon(Icons.done),
                       label: Text(s.send),
