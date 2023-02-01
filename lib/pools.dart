@@ -20,6 +20,12 @@ class PoolsState extends State<PoolsPage> {
   var _memoController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    active.poolBalances.update();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     var pools = ['Transparent', 'Sapling', 'Orchard'];

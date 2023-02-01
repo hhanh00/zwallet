@@ -33,7 +33,7 @@ class AnimatedQRState extends State<AnimatedQR> {
 
   @override
   void initState() {
-    _timer = new Timer.periodic(Duration(seconds: 2), (Timer timer) {
+    _timer = new Timer.periodic(Duration(seconds: 3), (Timer timer) {
       setState(() {
         index += 1;
       });
@@ -104,15 +104,18 @@ Future<String?> scanMultiCode(BuildContext context) async {
     final ding = AssetSource("ding.mp3");
     final f = Completer<String>();
     var completed = false;
+    final Set<String> codes = Set();
     Navigator.of(context).pushNamed('/scanner', arguments: {
       'onScan': (String code) {
         Future(() => player.play(ding));
-        final res = WarpApi.mergeData(code);
-        print(res);
-        completed = res.isNotEmpty;
-        if (completed) {
-          final decoded = utf8.decode(ZLibCodec().decode(base64Decode(res)));
-          f.complete(decoded);
+        if (!codes.contains(code)) {
+          codes.add(code);
+          final res = WarpApi.mergeData(code);
+          completed = res.isNotEmpty;
+          if (completed) {
+            final decoded = utf8.decode(ZLibCodec().decode(base64Decode(res)));
+            f.complete(decoded);
+          }
         }
       },
       'completed': () => completed,
