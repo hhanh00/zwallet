@@ -201,7 +201,7 @@ class MessagePageState extends State<MessagePage> {
         ListTile(
           title: Text(s.body), subtitle: SelectableText('${message.body}')),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
-            ElevatedButton.icon(onPressed: _hasReplyTo() ? _reply : null, icon: Icon(Icons.reply), label: Text(s.reply)),
+            ElevatedButton.icon(onPressed: _reply, icon: Icon(Icons.reply), label: Text(s.reply)),
             ElevatedButton.icon(onPressed: message.txId != 0 ? _goTx : null, icon: Icon(Icons.chevron_right), label: Text(s.goToTransaction)),
           ]),
         ],
@@ -232,11 +232,6 @@ class MessagePageState extends State<MessagePage> {
     setState(() {
       if (id != 0) index = active.messages.indexWhere((m) => m.id == id);
     });
-  }
-
-  _hasReplyTo() {
-    final message = active.messages[index];
-    return message.sender != null;
   }
 
   _reply() {

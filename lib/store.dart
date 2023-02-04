@@ -652,11 +652,11 @@ abstract class _PriceStore with Store {
       final now = DateTime
           .now()
           .millisecondsSinceEpoch ~/ 1000;
+      await fetchCoinPrice(active.coin);
       if (_lastChartUpdateTime == null || now > _lastChartUpdateTime + 5 * 60) {
-        await fetchCoinPrice(active.coin);
         await WarpApi.syncHistoricalPrices(settings.currency);
         active.fetchChartData();
-        lastChartUpdateTime = _lastChartUpdateTime;
+        lastChartUpdateTime = now;
       }
     }
     on String {}
