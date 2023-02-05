@@ -35,6 +35,8 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/zwallet:latest
           secrets: "pwd=${{ secrets.JKS_PASSWD }}"
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
