@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
+import 'dart:ui';
 import 'package:YWallet/src/version.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -8,6 +9,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences_android/shared_preferences_android.dart';
+import 'package:shared_preferences_ios/shared_preferences_ios.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'coin/coins.dart';
 import 'package:warp_api/warp_api.dart';
@@ -221,6 +224,8 @@ abstract class _Settings with Store {
 
   @action
   Future<bool> restore() async {
+    if (Platform.isIOS) SharedPreferencesIOS.registerWith();
+    if (Platform.isAndroid) SharedPreferencesAndroid.registerWith();
     tempDir = await getTempPath();
     final prefs = await SharedPreferences.getInstance();
     version = prefs.getString('version') ?? "1.0.0";
