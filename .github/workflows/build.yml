@@ -35,8 +35,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/zwallet:latest
           secrets: "pwd=${{ secrets.JKS_PASSWD }}"
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -48,7 +46,9 @@ jobs:
           path: '/root/.'
 
       - name: rename
-        run: mv ${{ steps.extract.outputs.destination }}/app-release.apk ${{ steps.extract.outputs.destination }}/app-fdroid.apk
+        run: |
+          mv ${{ steps.extract.outputs.destination }}/app-release.apk ${{ steps.extract.outputs.destination }}/app-fdroid.apk
+          mv ${{ steps.extract.outputs.destination }}/app-release.aab ${{ steps.extract.outputs.destination }}/app-fdroid.aab
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -56,3 +56,4 @@ jobs:
         with:
           files: |
             ${{ steps.extract.outputs.destination }}/app-fdroid.apk
+            ${{ steps.extract.outputs.destination }}/app-fdroid.aab
