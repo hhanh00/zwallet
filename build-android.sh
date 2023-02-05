@@ -7,3 +7,4 @@ cargo ndk --target armeabi-v7a build --release --features=dart_ffi
 mkdir -p ./packages/warp_api_ffi/android/src/main/jniLibs/armeabi-v7a
 cp ./target/armv7-linux-androideabi/release/libwarp_api_ffi.so ./packages/warp_api_ffi/android/src/main/jniLibs/armeabi-v7a/
 flutter build apk
+flutter build appbundle
