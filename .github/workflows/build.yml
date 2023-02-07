@@ -59,3 +59,12 @@ jobs:
           files: |
             ${{ steps.extract.outputs.destination }}/app-fdroid.apk
             ${{ steps.extract.outputs.destination }}/app-fdroid.aab
+
+      - name: publish
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: me.hanh.ywallet
+          releaseFiles: ${{ steps.extract.outputs.destination }}/app-fdroid.aab
+          track: internal
+          status: completed
