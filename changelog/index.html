@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>Changelog :: YWallet</title>
-<link href=/css/nucleus.css?1666235237 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1666235237 rel=stylesheet>
-<link href=/css/hybrid.css?1666235237 rel=stylesheet>
-<link href=/css/featherlight.min.css?1666235237 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1666235237 rel=stylesheet>
-<link href=/css/auto-complete.css?1666235237 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1666235237 rel=stylesheet>
-<link href=/css/theme.css?1666235237 rel=stylesheet>
-<link href=/css/tabs.css?1666235237 rel=stylesheet>
-<link href=/css/hugo-theme.css?1666235237 rel=stylesheet>
-<link href=/css/theme-blue.css?1666235237 rel=stylesheet>
-<link href=/common.css?1666235237 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1666235237></script>
+<link href=/css/nucleus.css?1675774121 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1675774121 rel=stylesheet>
+<link href=/css/hybrid.css?1675774121 rel=stylesheet>
+<link href=/css/featherlight.min.css?1675774121 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1675774121 rel=stylesheet>
+<link href=/css/auto-complete.css?1675774121 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1675774121 rel=stylesheet>
+<link href=/css/theme.css?1675774121 rel=stylesheet>
+<link href=/css/tabs.css?1675774121 rel=stylesheet>
+<link href=/css/hugo-theme.css?1675774121 rel=stylesheet>
+<link href=/css/theme-blue.css?1675774121 rel=stylesheet>
+<link href=/common.css?1675774121 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1675774121></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <meta property="og:title" content="Changelog">
 <meta property="og:description" content>
@@ -39,10 +39,10 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1666235237></script>
-<script type=text/javascript src=/js/auto-complete.js?1666235237></script>
+<script type=text/javascript src=/js/lunr.min.js?1675774121></script>
+<script type=text/javascript src=/js/auto-complete.js?1675774121></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1666235237></script>
+<script type=text/javascript src=/js/search.js?1675774121></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -456,25 +456,11 @@ FAQ
 <div class=wrapper>
 <nav id=TableOfContents>
 <ul>
-<li>
-<ul>
-<li><a href=#1215>1.2.15</a></li>
-<li><a href=#1214>1.2.14</a></li>
-<li><a href=#1213>1.2.13</a></li>
-<li><a href=#1212>1.2.12</a></li>
-<li><a href=#1211>1.2.11</a></li>
-<li><a href=#1210>1.2.10</a></li>
-<li><a href=#129>1.2.9</a></li>
-<li><a href=#128>1.2.8</a></li>
-<li><a href=#127>1.2.7</a></li>
-<li><a href=#126>1.2.6</a></li>
-<li><a href=#125>1.2.5</a></li>
-<li><a href=#123-124>1.2.3-1.2.4</a></li>
-<li><a href=#122>1.2.2</a></li>
-<li><a href=#121>1.2.1</a></li>
-</ul>
-</li>
-<li><a href=#120>1.2.0</a></li>
+<li><a href=#nu-5--orchard>NU-5 / Orchard</a></li>
+<li><a href=#ua>UA</a></li>
+<li><a href=#ui>UI</a></li>
+<li><a href=#ui-framework>UI Framework</a></li>
+<li><a href=#distribution>Distribution</a></li>
 </ul>
 </nav>
 </div>
@@ -487,95 +473,50 @@ FAQ
 <h1>
 Changelog
 </h1>
-<h3 id=1215>1.2.15</h3>
+<h1 id=1217>1.2.17</h1>
+<h2 id=nu-5--orchard>NU-5 / Orchard</h2>
 <ul>
-<li><a href=/getting-started/synchronization/#background-sync>Background Synchronization</a></li>
-<li>Background Tx Building</li>
-<li><a href=/getting-started/synchronization/#local-notifications>Local Notifications</a></li>
+<li><strong>Warp Sync support for Orchard</strong></li>
+<li>Seamless account migration from previous versions</li>
+<li>Sapling & Orchard Transaction Builder</li>
+<li><strong>Privacy-oriented Transaction Optimizer</strong></li>
+<li>Minimum Privacy Blocker</li>
+<li>Offline Signer (recommended for high value usage scenarios)</li>
 </ul>
-<h3 id=1214>1.2.14</h3>
+<h2 id=ua>UA</h2>
 <ul>
-<li><a href=/views/>Table/List views for Messages, Notes and Transaction History</a></li>
-<li>Synchronization updates account balance, notes and transaction progressively</li>
+<li>Multi receiver UA</li>
+<li>UA Receiver Selection</li>
+<li>Sapling/Orchard merged accounts</li>
+<li>Unified Viewing Key</li>
+<li>Unified Diversified Addresses</li>
+<li>Unified Payment URI</li>
+<li>Contacts with UA</li>
 </ul>
-<h3 id=1213>1.2.13</h3>
+<h2 id=ui>UI</h2>
 <ul>
-<li>Use lightwalletd spam filter when available</li>
-<li>Bug fix: Reorg sometimes loses sapling witnesses</li>
-<li>UX improvements
+<li>Pre-flight Transaction Report</li>
+<li>Import QR code from image</li>
+<li>Export QR code to PNG</li>
+</ul>
+<h2 id=ui-framework>UI Framework</h2>
 <ul>
-<li>Spending is allowed during synchronization</li>
-<li>Unconfirmed balance (if supported by the server)</li>
+<li>Upgrade to Flutter 3.7.x</li>
+<li>UI Revamp: Material UI 3</li>
+<li>Per coin settings</li>
+</ul>
+<h2 id=distribution>Distribution</h2>
+<ul>
+<li>Universal DMG for MacOS (Intel & Apple chips)</li>
+<li>Android build without Google Play and Google Services.
+<ul>
+<li>Runs on FDroid, GrapheneOS, LineageOS, etc.</li>
+<li>Recommended versigon for a hardware signer</li>
 </ul>
 </li>
-</ul>
-<img class=img src=img/Screenshot_20220912-214736.jpg>
-<h3 id=1212>1.2.12</h3>
-<ul>
-<li><a href=/getting-started/synchronization/#pauseresume>Pause/Resume Sync</a></li>
-<li><a href=/advanced/custom_path/#private-key>Import Transparent Private Keys</a></li>
-<li><a href=/advanced/keytool/>Key Derivation Tool</a></li>
-<li><a href=/getting-started/synchronization/#statistics>More synchronization statistics</a></li>
-<li><a href=/settings/misc/>Spam Filter</a></li>
-</ul>
-<h3 id=1211>1.2.11</h3>
-<ul>
-<li><a href=/advanced/custom_path/>Custom Derivation Path for taddrs</a></li>
-<li><a href=/advanced/zwl/>Import from ZWL</a></li>
-<li><a href=/getting-started/synchronization/>Accessibility Improvements</a></li>
-</ul>
-<h3 id=1210>1.2.10</h3>
-<ul>
-<li><a href=/settings/server/>Autoconnect to best server</a></li>
-<li><a href=/advanced/sub-account/#sub-accounts>Create multiple subaccounts at once</a></li>
-</ul>
-<h3 id=129>1.2.9</h3>
-<ul>
-<li><a href=/getting-started/first-account/>New Welcome Page</a></li>
-<li>Variable Length Block Chunks</li>
-<li>Resumable WarpSync</li>
-</ul>
-<h3 id=128>1.2.8</h3>
-<ul>
-<li>New <a href=https://github.com/hhanh00/zcash-sync.git>WarpSync backend</a></li>
-<li>Payment and Sync animations and sounds</li>
-<li>Cold Signing through RaptorQ animated QR codes</li>
-</ul>
-<h3 id=127>1.2.7</h3>
-<ul>
-<li>Automatic Scan of transparent accounts in order
-to recover funds from legacy wallets</li>
-</ul>
-<h3 id=126>1.2.6</h3>
-<ul>
-<li>Option to protect the app launch with a pin code / fingerprint</li>
-</ul>
-<h3 id=125>1.2.5</h3>
-<ul>
-<li>Support for the NU-5 transaction format</li>
-<li>Update to Flutter 3.0</li>
-</ul>
-<h3 id=123-124>1.2.3-1.2.4</h3>
-<ul>
-<li>Message Center</li>
-<li>Offline signing</li>
-<li>MSIX installer</li>
-</ul>
-<h3 id=122>1.2.2</h3>
-<ul>
-<li>Autocreate first account</li>
-<li>Update dependencies</li>
-</ul>
-<h3 id=121>1.2.1</h3>
-<ul>
-<li>Desktop Versions</li>
-<li>Sub-Accounts ZIP 32</li>
-<li>Optimize Data Refresh</li>
-<li>Rescan from Height</li>
-</ul>
-<h2 id=120>1.2.0</h2>
-<ul>
-<li>Unification Ycash/Zcash</li>
+<li>AppImage added</li>
+<li>Github Auto-builder for all platforms (except iOS)</li>
+<li>CI Auto publish to Google Play</li>
 </ul>
 <footer class=footline>
 </footer>
@@ -589,17 +530,17 @@ to recover funds from legacy wallets</li>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1666235237></script>
-<script src=/js/perfect-scrollbar.min.js?1666235237></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1666235237></script>
-<script src=/js/jquery.sticky.js?1666235237></script>
-<script src=/js/featherlight.min.js?1666235237></script>
-<script src=/js/highlight.pack.js?1666235237></script>
+<script src=/js/clipboard.min.js?1675774121></script>
+<script src=/js/perfect-scrollbar.min.js?1675774121></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1675774121></script>
+<script src=/js/jquery.sticky.js?1675774121></script>
+<script src=/js/featherlight.min.js?1675774121></script>
+<script src=/js/highlight.pack.js?1675774121></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1666235237></script>
-<script src=/js/learn.js?1666235237></script>
-<script src=/js/hugo-learn.js?1666235237></script>
-<script src=/mermaid/mermaid.js?1666235237></script>
+<script src=/js/modernizr.custom-3.6.0.js?1675774121></script>
+<script src=/js/learn.js?1675774121></script>
+<script src=/js/hugo-learn.js?1675774121></script>
+<script src=/mermaid/mermaid.js?1675774121></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
