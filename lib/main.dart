@@ -5,10 +5,10 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:app_links/app_links.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:path/path.dart' as p;
 import 'package:csv/csv.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
@@ -25,9 +25,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_protocol/url_protocol.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:uni_links/uni_links.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'accounts.dart';
@@ -96,17 +96,16 @@ void handleUri(BuildContext context, Uri uri) {
       '/send', arguments: SendPageArgs(uri: uri.toString()));
 }
 
-Future<void> initUniLinks(BuildContext context) async {
-  try {
-    final uri = await getInitialUri();
-    if (uri != null) {
-      handleUri(context, uri);
-    }
-  } on PlatformException {}
+Future<void> registerURLHandler(BuildContext context) async {
+  final _appLinks = AppLinks();
 
-  subUniLinks = linkStream.listen((String? uriString) {
-    if (uriString == null) return;
-    final uri = Uri.parse(uriString);
+  final uri = await _appLinks.getInitialAppLink();
+  if (uri != null) {
+    handleUri(context, uri);
+  }
+
+  subUniLinks = _appLinks.uriLinkStream.listen((uri) {
+    print(uri.toString());
     handleUri(context, uri);
   });
 }
@@ -364,9 +363,17 @@ class ZWalletAppState extends State<ZWalletApp> {
         }
         else await active.restore();
 
+        _setProgress(0.8, 'Register URL Protocol Handlers');
+        await registerURLHandler(this.context);
+
+        if (Platform.isWindows) {
+          for (var c in coins) {
+            registerProtocolHandler(c.currency, arguments: ['%s']);
+          }
+        }
+
         if (isMobile()) {
           _setProgress(0.9, 'Setting Dashboard Shortcuts');
-          await initUniLinks(this.context);
           final quickActions = QuickActions();
           quickActions.initialize((type) {
             handleQuickAction(this.context, type);
