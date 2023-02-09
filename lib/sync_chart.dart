@@ -1,7 +1,6 @@
 import 'package:YWallet/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:k_chart/k_chart_widget.dart';
 import 'package:k_chart/flutter_k_chart.dart';
 
 class SyncChartPage extends StatefulWidget {

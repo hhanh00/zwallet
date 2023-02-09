@@ -1,11 +1,8 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_palette/flutter_palette.dart';
 import 'package:intl/intl.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
@@ -37,7 +34,7 @@ class BudgetState extends State<BudgetWidget>
               Card(
                   child: Column(children: [
                     Text(S.of(context).largestSpendingsByAddress,
-                        style: Theme.of(context).textTheme.headline6),
+                        style: Theme.of(context).textTheme.titleLarge),
                     Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                     BudgetChart(),
                   ])),
@@ -45,7 +42,7 @@ class BudgetState extends State<BudgetWidget>
                   child: Card(
                       child: Column(children: [
                         Text(S.of(context).accountBalanceHistory,
-                            style: Theme.of(context).textTheme.headline6),
+                            style: Theme.of(context).textTheme.titleLarge),
                         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                         Expanded(child: Padding(padding: EdgeInsets.only(right: 20),
                             child: LineChartTimeSeries.fromTimeSeries(active.accountBalances)))
@@ -67,6 +64,7 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return IconTheme.merge(
         data: IconThemeData(opacity: 0.54),
         child:
@@ -243,7 +241,6 @@ class BudgetTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     final palette = getPalette(Theme.of(context).primaryColor, spendings.length);
     final rows = spendings.asMap().entries.map((e) {
       final style = TextStyle(color: palette[e.key], fontFeatures: [FontFeature.tabularFigures()]);

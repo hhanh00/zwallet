@@ -1,18 +1,9 @@
-import 'dart:convert';
-
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'coin/coins.dart';
-import 'settings.dart';
 import 'store.dart';
-import 'package:warp_api/warp_api.dart';
 import 'package:warp_api/types.dart';
 
-import 'dualmoneyinput.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 import 'send.dart';
@@ -83,10 +74,10 @@ class NoRecipient extends StatelessWidget {
       SizedBox(child: contact, height: 150, width: 150),
       Padding(padding: EdgeInsets.symmetric(vertical: 16)),
       Text(S.of(context).noRecipient,
-          style: Theme.of(context).textTheme.headline5),
+          style: Theme.of(context).textTheme.headlineSmall),
       Padding(padding: EdgeInsets.symmetric(vertical: 8)),
       Text(S.of(context).addARecipientAndItWillShowHere,
-          style: Theme.of(context).textTheme.bodyText1),
+          style: Theme.of(context).textTheme.bodyLarge),
     ]));
   }
 }

@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
-import 'generated/l10n.dart';
 import 'main.dart';
 import 'db.dart';
 
@@ -54,7 +51,7 @@ class MessageItem extends StatelessWidget {
                 children: [
                   Container(width: width,
                     child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Text(message.fromto(), style: unreadStyle(textTheme.caption)),
+                      Text(message.fromto(), style: unreadStyle(textTheme.bodySmall)),
                       Text(dateString)
                   ])),
                   SizedBox(

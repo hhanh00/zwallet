@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
-import 'dart:ui';
 import 'package:YWallet/src/version.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -588,7 +587,7 @@ abstract class _Settings with Store {
     developerMode -= 1;
     if (developerMode > 5) return;
     if (developerMode > 0) {
-      showSnackBar("You are ${developerMode} steps away from being a developer",
+      showSnackBar("You are $developerMode steps away from being a developer",
           autoClose: true, quick: true);
       return;
     }
@@ -672,7 +671,7 @@ class SyncStatus = _SyncStatus with _$SyncStatus;
 
 abstract class _SyncStatus with Store {
   @observable
-  int? startSyncedHeight = null;
+  int? startSyncedHeight;
 
   @observable
   bool isRescan = false;
@@ -684,7 +683,7 @@ abstract class _SyncStatus with Store {
   int latestHeight = 0;
 
   @observable
-  DateTime? timestamp = null;
+  DateTime? timestamp;
 
   bool accountRestored = false;
 
@@ -818,7 +817,7 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<void> reorg() async {
-    final _syncedHeight = await getDbSyncedHeight();
+    final _syncedHeight = getDbSyncedHeight();
     if (_syncedHeight != null) {
       final offset = max(settings.anchorOffset, 1);
       final rewindHeight = max(_syncedHeight.height - offset, 0);

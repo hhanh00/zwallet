@@ -53,7 +53,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
     final s = S.of(context);
     final theme = Theme.of(context);
     final simpleMode = settings.simpleMode;
-    final syncStyle = theme.textTheme.caption!.apply(color: theme.primaryColor);
+    final syncStyle = theme.textTheme.bodySmall!.apply(color: theme.primaryColor);
 
     dynamic createText(String text, bool animated) {
       return animated ? WavyAnimatedText(text, textStyle: syncStyle) : Text(text, style: syncStyle);
@@ -123,7 +123,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
         else if (neverSynced)
           text = Text(s.rescanNeeded);
         else if (synced)
-          text = Text('$syncedHeight', style: theme.textTheme.caption);
+          text = Text('$syncedHeight', style: theme.textTheme.bodySmall);
         else
           text = createSyncStatus();
 
@@ -190,7 +190,7 @@ class QRAddressState extends State<QRAddressWidget> {
         Padding(padding: EdgeInsets.symmetric(vertical: 8)),
         RichText(
             text: TextSpan(children: [
-          TextSpan(text: '$shortAddress ', style: theme.textTheme.bodyText2),
+          TextSpan(text: '$shortAddress ', style: theme.textTheme.bodyMedium),
           WidgetSpan(
               child: GestureDetector(
                   child: Icon(Icons.content_copy), onTap: _onAddressCopy)),
@@ -258,7 +258,7 @@ class QRAddressState extends State<QRAddressWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-                decoration: InputDecoration(label: Text(s.derivationPath), hintText: "m/44'/${coinIndex}'/0'/0/0"),
+                decoration: InputDecoration(label: Text(s.derivationPath), hintText: "m/44'/$coinIndex'/0'/0/0"),
                 controller: pathController),
             TextField(
                 decoration: InputDecoration(label: Text(s.privateKey)),
@@ -309,8 +309,8 @@ class BalanceWidget extends StatelessWidget {
         final deviceWidth = getWidth(context);
         final digits = deviceWidth.index < DeviceWidth.sm.index ? 7 : 9;
         final balanceStyle = (balanceHi.length > digits
-                ? theme.textTheme.headline4
-                : theme.textTheme.headline2)!
+                ? theme.textTheme.headlineMedium
+                : theme.textTheme.displayMedium)!
             .copyWith(color: balanceColor);
 
         final fx = priceStore.coinPrice;
@@ -324,14 +324,14 @@ class BalanceWidget extends StatelessWidget {
               textBaseline: TextBaseline.ideographic,
               children: <Widget>[
                 if (!hide)
-                  Text('${coinDef.symbol}', style: theme.textTheme.headline5),
+                  Text('${coinDef.symbol}', style: theme.textTheme.headlineSmall),
                 Text(' $balanceHi', style: balanceStyle),
                 if (!hide) Text('${_getBalanceLo(balance)}'),
               ]),
           if (hide) Text(s.tiltYourDeviceUpToRevealYourBalance),
           if (!hide && fx != 0.0)
             Text("${decimalFormat(balanceFX, 2, symbol: settings.currency)}",
-                style: theme.textTheme.headline6),
+                style: theme.textTheme.titleLarge),
           if (!hide && fx != 0.0)
             Text(
                 "1 ${coinDef.ticker} = ${decimalFormat(
@@ -355,7 +355,7 @@ class MemPoolWidget extends StatelessWidget {
         children: <Widget>[
           Text(
               '${_sign(unconfirmedBalance)} ${_getBalanceHi(unconfirmedBalance)}',
-              style: theme.textTheme.headline4
+              style: theme.textTheme.headlineMedium
                   ?.merge(unconfirmedStyle)),
           Text(
               '${_getBalanceLo(unconfirmedBalance)}',

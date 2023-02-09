@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
-import 'db.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
 
@@ -18,7 +17,6 @@ class ScanTAddrPageState extends State<ScanTAddrPage> {
     super.initState();
     Future(() async {
       final _addresses = await WarpApi.scanTransparentAccounts(active.coin, active.id, settings.gapLimit);
-      final dbr = DbReader(active.coin, active.id);
       setState(() {
         addresses = _addresses;
       });

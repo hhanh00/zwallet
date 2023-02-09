@@ -8,7 +8,6 @@ import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
 import 'generated/l10n.dart';
-import 'settings.dart';
 import 'src/version.dart';
 
 Future<void> showAbout(BuildContext context) async {

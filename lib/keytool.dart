@@ -14,7 +14,6 @@ class KeyToolState extends State<KeyToolPage> {
   var _accountController = TextEditingController(text: '0');
   var _externalController = TextEditingController(text: '0');
   var _addressController = TextEditingController(text: '0');
-  var _data = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +90,7 @@ class KeyToolState extends State<KeyToolPage> {
   }
 
   _onUpdate() {
-    setState(() {
-      _data += 1;
-    });
+    setState(() {});
   }
 
   _onClose() {

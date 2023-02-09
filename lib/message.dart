@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:warp_api/types.dart';
-import 'package:warp_api/warp_api.dart';
 
 import 'db.dart';
 import 'generated/l10n.dart';
@@ -53,7 +51,7 @@ class MessageTableState extends State<MessageTable> with AutomaticKeepAliveClien
         final _ = active.messages;
         return PaginatedDataTable(
           header: Text(s.markAllAsRead,
-              style: Theme.of(context).textTheme.bodyText2),
+              style: Theme.of(context).textTheme.bodyMedium),
           actions: [
             IconButton(onPressed: _onMarkRead, icon: Icon(Icons.check))
           ],
@@ -101,7 +99,7 @@ class MessagesDataSource extends DataTableSource {
   @override
   DataRow? getRow(int index) {
     final message = active.messages[index];
-    var style = Theme.of(context).textTheme.bodyText2!;
+    var style = Theme.of(context).textTheme.bodyMedium!;
     if (!message.read)
       style = style.copyWith(fontWeight: FontWeight.bold);
     final addressStyle = message.incoming ?
@@ -220,15 +218,15 @@ class MessagePageState extends State<MessagePage> {
     });
   }
 
-  _prevInThread() async {
-    final id = await active.prevInThread(index);
+  _prevInThread() {
+    final id = active.prevInThread(index);
     setState(() {
       if (id != 0) index = active.messages.indexWhere((m) => m.id == id);
     });
   }
 
-  _nextInThread() async {
-    final id = await active.nextInThread(index);
+  _nextInThread() {
+    final id = active.nextInThread(index);
     setState(() {
       if (id != 0) index = active.messages.indexWhere((m) => m.id == id);
     });

@@ -37,7 +37,7 @@ class ThemeEditorState extends State<ThemeEditorPage> {
         appBar: AppBar(title: Text(s.themeEditor)),
         body: Padding(padding: EdgeInsets.all(8), child: Form(
           child: Column(children: [
-            Text(s.primary, style: theme.textTheme.headline6),
+            Text(s.primary, style: theme.textTheme.titleLarge),
             Padding(padding: EdgeInsets.all(4)),
             Card(
               shape: RoundedRectangleBorder(
@@ -48,7 +48,7 @@ class ThemeEditorState extends State<ThemeEditorPage> {
                 ListTile(title: Text(s.accentColor), trailing: ColorSwatch(_primaryVariant, (c) => setState(() { _primaryVariant = c; }))),
             ])),
             Padding(padding: EdgeInsets.all(8)),
-            Text(s.secondary, style: theme.textTheme.headline6),
+            Text(s.secondary, style: theme.textTheme.titleLarge),
             Padding(padding: EdgeInsets.all(4)),
             Card(
                 child: Column(children: [
@@ -86,7 +86,7 @@ class ColorSwatch extends StatelessWidget {
         content: SingleChildScrollView(
           child: ColorPicker(
             pickerColor: color,
-            onColorChanged: onColorChanged, showLabel: true),
+            onColorChanged: onColorChanged),
       ))
     );
   }

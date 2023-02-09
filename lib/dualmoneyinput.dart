@@ -189,7 +189,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
     });
   }
 
-  String? _checkAmount(String? vs, {bool isFiat: false}) {
+  String? _checkAmount(String? vs, {bool isFiat = false}) {
     final s = S.of(context);
     if (vs == null) return s.amountMustBeANumber;
     if (!checkNumber(vs)) return s.amountMustBeANumber;

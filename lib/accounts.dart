@@ -60,9 +60,9 @@ class AccountList {
     }
   }
 
-  Future<void> delete(int coin, int id) async {
+  void delete(int coin, int id) {
     WarpApi.deleteAccount(coin, id);
-    await active.checkAndUpdate();
+    active.checkAndUpdate();
   }
 
   Future<void> changeAccountName(int coin, int id, String name) async {
@@ -76,10 +76,10 @@ class AccountList {
 AccountId? getAvailableId(int coin) {
   final nid = getActiveAccountId(coin);
   if (nid.id != 0) return nid;
-  for (var coin_data in settings.coins) {
+  for (var coinData in settings.coins) {
   // look for an account in any other coin
-    if (coin_data.coin != coin) {
-      final nid = getActiveAccountId(coin_data.coin);
+    if (coinData.coin != coin) {
+      final nid = getActiveAccountId(coinData.coin);
       if (nid.id != 0) return nid;
     }
   }
@@ -133,7 +133,7 @@ abstract class _ActiveAccount with Store {
   bool pnlDesc = false;
 
   @observable
-  Recipient? draftRecipient = null;
+  Recipient? draftRecipient;
 
   AccountId toId() { return AccountId(coin, id); }
 
@@ -143,11 +143,11 @@ abstract class _ActiveAccount with Store {
     final coin = prefs.getInt('coin') ?? 0;
     var id = prefs.getInt('account') ?? 0;
     setActiveAccount(coin, id);
-    await checkAndUpdate();
+    checkAndUpdate();
   }
 
-  Future<void> checkAndUpdate() async {
-    final aid = await getAvailableId(active.coin);
+  void checkAndUpdate() {
+    final aid = getAvailableId(active.coin);
     if (aid == null) {
       setActiveAccount(0, 0);
     }
@@ -258,7 +258,8 @@ abstract class _ActiveAccount with Store {
 
   @computed
   List<Note> get sortedNotes {
-    final _1 = syncStatus.syncedHeight;
+    // ignore: unused_local_variable
+    final _unused = syncStatus.syncedHeight;
     var notes2 = [...notes];
     switch (noteSortConfig.field) {
       case "time":
@@ -271,7 +272,8 @@ abstract class _ActiveAccount with Store {
 
   @computed
   List<Tx> get sortedTxs {
-    final _1 = syncStatus.syncedHeight;
+    // ignore: unused_local_variable
+    final _unused = syncStatus.syncedHeight;
     var txs2 = [...txs];
     switch (txSortConfig.field) {
       case "time":

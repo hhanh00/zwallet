@@ -1,7 +1,6 @@
 import 'package:YWallet/chart.dart';
 import 'package:YWallet/dualmoneyinput.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:warp_api/warp_api.dart';
 import 'generated/l10n.dart';
 import 'main.dart';

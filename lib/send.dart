@@ -125,7 +125,6 @@ class SendState extends State<SendPage> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final t = Theme.of(context);
     final simpleMode = settings.simpleMode;
     if (!_memoInitialized) {
       _memoController.text = settings.memoSignature ?? s.sendFrom(APP_NAME);

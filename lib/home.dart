@@ -59,14 +59,14 @@ class HomeState extends State<HomePage> {
         await priceStore.updateChart();
       });
     });
-    _syncDispose = syncStream.listen((p) async {
+    _syncDispose = syncStream.listen((p) {
       if (p is String) {
         final pjs = jsonDecode(p);
         final progress = Progress.fromJson(pjs);
         syncStatus.setProgress(progress);
       }
 
-      final syncedHeight = await syncStatus.getDbSyncedHeight();
+      final syncedHeight = syncStatus.getDbSyncedHeight();
       if (syncedHeight != null) {
         final h = syncedHeight.height;
         syncStatus.setSyncHeight(h, syncedHeight.timestamp);
@@ -75,7 +75,7 @@ class HomeState extends State<HomePage> {
         final progress = syncStatus.progress;
         if (progress != null && isMobile()) {
           FlutterForegroundTask.updateService(
-              notificationText: "${progress} %");
+              notificationText: "$progress %");
         }
         syncStats.add(DateTime.now(), syncedHeight.height);
       }
@@ -92,6 +92,7 @@ class HomeState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) => Observer(builder: (context) {
+        // ignore: unused_local_variable
         final _simpleMode = settings.simpleMode;
         return HomeInnerPage(key: UniqueKey());
       });
@@ -151,9 +152,12 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       );
 
     return Observer(builder: (context) {
-      final _1 = active.dataEpoch;
-      final _2 = syncStatus.paused;
-      final _3 = syncStatus.syncing;
+      // ignore: unused_local_variable
+      final _unused1 = active.dataEpoch;
+      // ignore: unused_local_variable
+      final _unused2 = syncStatus.paused;
+      // ignore: unused_local_variable
+      final _unused3 = syncStatus.syncing;
 
       final rescanMsg;
       if (syncStatus.paused)
@@ -319,7 +323,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   
   _rewind() async {
     final s = S.of(context);
-    int? height = null;
+    int? height;
     final checkpoints = WarpApi.getCheckpoints(active.coin);
     final items = checkpoints.map((c) => DropdownMenuItem<int>(value: c.height,
       child: Text('${noteDateFormat.format(DateTime.fromMillisecondsSinceEpoch(c.timestamp * 1000))} - ${c.height}')
@@ -439,8 +443,8 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   void _initForegroundTask() {
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
-        channelId: '${APP_NAME} Sync',
-        channelName: '${APP_NAME} Foreground Notification',
+        channelId: '$APP_NAME Sync',
+        channelName: '$APP_NAME Foreground Notification',
         channelDescription: 'YWallet Synchronization',
         channelImportance: NotificationChannelImportance.LOW,
         priority: NotificationPriority.HIGH,
