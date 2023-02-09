@@ -8,7 +8,6 @@ import 'dart:ui';
 import 'package:app_links/app_links.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/rendering.dart';
 import 'package:path/path.dart' as p;
 import 'package:csv/csv.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
@@ -61,13 +60,14 @@ import 'txplan.dart';
 import 'welcome.dart';
 
 const ZECUNIT = 100000000.0;
+// ignore: non_constant_identifier_names
 var ZECUNIT_DECIMAL = Decimal.parse('100000000');
 const mZECUNIT = 100000;
 const DEFAULT_FEE = 1000;
 const MAXMONEY = 21000000;
 const DOC_URL = "https://hhanh00.github.io/zwallet/";
 const APP_NAME = "YWallet";
-const BACKUP_NAME = "${APP_NAME}.age";
+const BACKUP_NAME = "$APP_NAME.age";
 
 const RECOVERY_FILE = "recover.bin";
 
@@ -199,7 +199,7 @@ void main() {
       NotificationChannel(
         channelKey: APP_NAME,
         channelName: APP_NAME,
-        channelDescription: 'Notification channel for ${APP_NAME}',
+        channelDescription: 'Notification channel for $APP_NAME',
         defaultColor: Color(0xFFB3F0FF),
         ledColor: Colors.white,
       )
@@ -562,7 +562,7 @@ Color amountColor(BuildContext context, num a) {
   final theme = Theme.of(context);
   if (a < 0) return Colors.red;
   if (a > 0) return Colors.green;
-  return theme.textTheme.bodyText1!.color!;
+  return theme.textTheme.bodyLarge!.color!;
 }
 
 TextStyle weightFromAmount(TextStyle style, num v) {
@@ -605,7 +605,6 @@ const MAX_PRECISION = 8;
 int precision(bool? mZEC) => (mZEC == null || mZEC) ? 3 : MAX_PRECISION;
 
 Future<String?> scanCode(BuildContext context) async {
-  final s = S.of(context);
   if (!isMobile()) {
     final code = await pickDecodeQRImage();
     return code;
@@ -817,7 +816,7 @@ Future<void> saveFileBinary(List<int> data, String filename, String title) async
 }
 
 Future<void> exportFile(BuildContext context, String path, String title) async {
-  final confirmed = await showMessageBox(context, title, "Exporting ${path}", S.of(context).ok);
+  final confirmed = await showMessageBox(context, title, "Exporting $path", S.of(context).ok);
   if (!confirmed) return;
   if (isMobile()) {
     final context = navigatorKey.currentContext!;

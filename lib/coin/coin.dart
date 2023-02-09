@@ -49,7 +49,7 @@ abstract class CoinBase {
     final src = File(p.join(settings.tempDir, dbName));
     print("Import from ${src.path}");
     if (await src.exists()) {
-      print("copied to ${dbFullPath}");
+      print("copied to $dbFullPath");
       await delete();
       await src.copy(dbFullPath);
       await src.delete();
@@ -68,8 +68,8 @@ abstract class CoinBase {
   Future<void> delete() async {
     try {
       await File(p.join(dbDir, dbName)).delete();
-      await File(p.join(dbDir, "${dbName}-shm")).delete();
-      await File(p.join(dbDir, "${dbName}-wal")).delete();
+      await File(p.join(dbDir, "$dbName-shm")).delete();
+      await File(p.join(dbDir, "$dbName-wal")).delete();
     }
     catch (e) {} // ignore failure
   }

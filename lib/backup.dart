@@ -59,7 +59,7 @@ class BackupState extends State<BackupPage> {
             minLines: 3,
             maxLines: 10,
             readOnly: true,
-            style: theme.textTheme.caption
+            style: theme.textTheme.bodySmall
           ),
           if (type != 2) TextField(
             decoration: InputDecoration(labelText: s.viewingKey, prefixIcon: IconButton(icon: Icon(Icons.visibility),
@@ -68,7 +68,7 @@ class BackupState extends State<BackupPage> {
             minLines: 3,
             maxLines: 10,
             readOnly: true,
-            style: theme.textTheme.caption
+            style: theme.textTheme.bodySmall
           ),
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
         Text(s.tapAnIconToShowTheQrCode),
@@ -79,7 +79,7 @@ class BackupState extends State<BackupPage> {
                 border: Border.all(width: 2, color: theme.primaryColor),
                 borderRadius: BorderRadius.circular(4)),
             child: Text(s.backupWarning,
-                style: theme.textTheme.subtitle1!
+                style: theme.textTheme.titleMedium!
                     .copyWith(color: theme.primaryColor))),
           ElevatedButton.icon(
             icon: Icon(Icons.check),

@@ -45,9 +45,10 @@ class HistoryState extends State<HistoryTable>
         padding: EdgeInsets.all(4),
         scrollDirection: Axis.vertical,
         child: Observer(builder: (context) {
-          final _1 = active.sortedTxs;
+          // ignore: unused_local_variable
+          final _unused = active.sortedTxs;
           return PaginatedDataTable(
-              header: Text(S.of(context).tapTransactionForDetails, style: Theme.of(context).textTheme.bodyText2),
+              header: Text(S.of(context).tapTransactionForDetails, style: Theme.of(context).textTheme.bodyMedium),
               actions: [
                 IconButton(onPressed: _onExport, icon: Icon(Icons.save))
               ],
@@ -140,7 +141,7 @@ class HistoryDataSource extends DataTableSource {
         ? syncStatus.latestHeight - tx.height + 1
         : tx.height;
     final color = amountColor(context, tx.value);
-    var style = Theme.of(context).textTheme.bodyText2!.copyWith(color: color);
+    var style = Theme.of(context).textTheme.bodyMedium!.copyWith(color: color);
     style = weightFromAmount(style, tx.value);
     final a = tx.contact ?? centerTrim(tx.address);
     final m = tx.memo.substring(0, min(tx.memo.length, 32));
@@ -178,6 +179,7 @@ class HistoryList extends StatefulWidget {
 class HistoryListState extends State<HistoryList> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Observer(builder: (context) {
       final txs = active.sortedTxs;
       return ListView.builder(
@@ -208,7 +210,6 @@ class TxItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     final theme = Theme.of(context);
     final contact = tx.contact.isEmptyOrNull ? '?' : tx.contact!;
     final initial = contact[0];

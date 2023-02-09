@@ -68,7 +68,7 @@ class AccountManagerState extends State<AccountManagerPage> {
                         child: ListTile(
                           leading: CircleAvatar(backgroundImage: settings.coins[a.coin].def.image),
                           title: Text(a.name,
-                              style: theme.textTheme.headline5
+                              style: theme.textTheme.headlineSmall
                                 ?.merge(TextStyle(fontWeight: weight))
                                 .apply(color: a.coin == 0 ? theme.colorScheme.primary : theme.colorScheme.secondary,
                               )),
@@ -155,10 +155,10 @@ class AccountManagerState extends State<AccountManagerPage> {
     return true;
   }
 
-  void _onDismissed(int index, Account account) async {
-    await _accounts.delete(account.coin, account.id);
+  void _onDismissed(int index, Account account) {
+    _accounts.delete(account.coin, account.id);
     _accounts.refresh();
-    await active.checkAndUpdate();
+    active.checkAndUpdate();
   }
 
   _selectAccount(Account account) async {
@@ -279,10 +279,10 @@ class NoAccount extends StatelessWidget {
       SizedBox(child: wallet, height: 150, width: 150),
       Padding(padding: EdgeInsets.symmetric(vertical: 16)),
       Text(S.of(context).noAccount,
-          style: Theme.of(context).textTheme.headline5),
+          style: Theme.of(context).textTheme.headlineSmall),
       Padding(padding: EdgeInsets.symmetric(vertical: 8)),
       Text(S.of(context).createANewAccount,
-          style: Theme.of(context).textTheme.bodyText1),
+          style: Theme.of(context).textTheme.bodyLarge),
     ]);
   }
 }

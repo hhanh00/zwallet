@@ -4,8 +4,6 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 import 'generated/l10n.dart';
@@ -33,6 +31,7 @@ class AnimatedQRState extends State<AnimatedQR> {
 
   @override
   void initState() {
+    super.initState();
     _timer = new Timer.periodic(Duration(seconds: 3), (Timer timer) {
       setState(() {
         index += 1;
@@ -57,7 +56,7 @@ class AnimatedQRState extends State<AnimatedQR> {
         children: [
           QrImage(key: ValueKey(idx), data: widget.chunks[idx], size: qrSize, backgroundColor: Colors.white),
           Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-          Text(widget.caption, style: theme.textTheme.subtitle1),
+          Text(widget.caption, style: theme.textTheme.titleMedium),
           Padding(padding: EdgeInsets.symmetric(vertical: 4)),
           ElevatedButton.icon(
             icon: Icon(Icons.close),

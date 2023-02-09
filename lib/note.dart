@@ -41,7 +41,8 @@ class _NoteTableState extends State<NoteTable> with AutomaticKeepAliveClientMixi
         padding: EdgeInsets.all(8),
         scrollDirection: Axis.vertical,
         child: Observer(builder: (context) {
-          final _1 = active.sortedNotes;
+          // ignore: unused_local_variable
+          final _unused = active.sortedNotes;
           return PaginatedDataTable(
             columns: [
               DataColumn(
@@ -74,7 +75,7 @@ class _NoteTableState extends State<NoteTable> with AutomaticKeepAliveClientMixi
               ),
             ],
             header: Text(S.of(context).selectNotesToExcludeFromPayments,
-                style: Theme.of(context).textTheme.bodyText2),
+                style: Theme.of(context).textTheme.bodyMedium),
             actions: [
               IconButton(onPressed: _selectInverse, icon: Icon(MdiIcons.selectInverse)),
             ],
@@ -114,7 +115,7 @@ class NotesDataSource extends DataTableSource {
         ? syncStatus.latestHeight - note.height + 1
         : note.height;
 
-    var style = theme.textTheme.bodyText2!;
+    var style = theme.textTheme.bodyMedium!;
     if (!confirmed(note.height))
       style = style.copyWith(color: style.color!.withOpacity(0.5));
 
@@ -131,7 +132,7 @@ class NotesDataSource extends DataTableSource {
       color: MaterialStateColor.resolveWith((states) =>
           states.contains(MaterialState.selected)
               ? theme.primaryColor.withOpacity(0.5)
-              : theme.backgroundColor),
+              : theme.colorScheme.background),
       cells: [
         DataCell(Text("$confsOrHeight", style: style)),
         DataCell(Text("${noteDateFormat.format(note.timestamp)}", style: style)),
@@ -230,14 +231,14 @@ class NoteItemState extends State<NoteItem> {
     final amountStyle = weightFromAmount(style, note.value);
 
     return GestureDetector(onTap: _onSelected, behavior: HitTestBehavior.opaque, child:
-      ColoredBox(color: excluded ? theme.primaryColor.withOpacity(0.5) : theme.backgroundColor, child:
+      ColoredBox(color: excluded ? theme.primaryColor.withOpacity(0.5) : theme.colorScheme.background, child:
         Padding(padding: EdgeInsets.all(8), child:
           Row(children: [
             Column(children: [Text("${note.height}", style: theme.textTheme.bodySmall),
-              Text("${confirmations}", style: theme.textTheme.bodyMedium),
+              Text("$confirmations", style: theme.textTheme.bodyMedium),
             ]),
             Expanded(child: Center(child: Text("${note.value}", style: amountStyle))),
-            Text("${timestamp}"),
+            Text("$timestamp"),
       ]))));
   }
 

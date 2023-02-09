@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'accounts.dart';
-import 'backup.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 import 'rescan.dart';
@@ -38,7 +36,6 @@ class _AddAccountPageState extends State<AddAccountPage> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final t = Theme.of(context);
     return Scaffold(
         appBar: AppBar(
           title: Text(s.newAccount),

@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:intl/intl.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:k_chart/k_chart_widget.dart';
 import 'package:k_chart/flutter_k_chart.dart';
 
 import 'store.dart';
 
 class LineChartTimeSeries extends StatelessWidget {
-  List<KLineEntity> datas;
+  final List<KLineEntity> datas;
 
   LineChartTimeSeries(this.datas);
   factory LineChartTimeSeries.fromTimeSeries(List<TimeSeriesPoint<double>> quotes) =>
@@ -36,7 +35,7 @@ class HorizontalBarChart extends StatelessWidget {
   final List<double> values;
   final double height;
 
-  HorizontalBarChart(this.values, { this.height: 32 });
+  HorizontalBarChart(this.values, { this.height = 32 });
 
   @override
   Widget build(BuildContext context) {

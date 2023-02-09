@@ -7,11 +7,10 @@ import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
 import 'generated/l10n.dart';
-import 'settings.dart';
 import 'store.dart';
 
 class ContactsTab extends StatefulWidget {
-  ContactsTab({key: Key}): super(key: key);
+  ContactsTab({key = Key}): super(key: key);
   @override
   State<StatefulWidget> createState() => ContactsState();
 }
@@ -35,7 +34,7 @@ class ContactsState extends State<ContactsTab> {
                           key: Key("${c.id}"),
                           child: ListTile(
                             title: Text(c.name!,
-                                style: Theme.of(context).textTheme.headline5),
+                                style: Theme.of(context).textTheme.headlineSmall),
                             subtitle: Text(c.address!),
                             trailing: Icon(Icons.chevron_right),
                             onTap: () { _onContact(c); },
@@ -110,10 +109,10 @@ class NoContact extends StatelessWidget {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       SizedBox(child: contact, height: 150, width: 150),
       Padding(padding: EdgeInsets.symmetric(vertical: 16)),
-      Text(S.of(context).noContacts, style: Theme.of(context).textTheme.headline5),
+      Text(S.of(context).noContacts, style: Theme.of(context).textTheme.headlineSmall),
       Padding(padding: EdgeInsets.symmetric(vertical: 8)),
       Text(S.of(context).createANewContactAndItWillShowUpHere,
-          style: Theme.of(context).textTheme.bodyText1),
+          style: Theme.of(context).textTheme.bodyLarge),
     ]);
   }
 }
