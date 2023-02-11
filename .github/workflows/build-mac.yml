@@ -14,6 +14,16 @@ jobs:
         with:
           submodules: recursive
 
+      - name: env
+        run: |
+          cat build.env >> $GITHUB_ENV
+          echo $PWD/flutter/bin >> $GITHUB_PATH
+
+      - name: wget flutter
+        run: |
+          git clone -b "${{ env.FLUTTER_VERSION }}" --depth 1 https://github.com/flutter/flutter.git flutter
+          flutter doctor -v
+
       - name: params
         run: |
           mkdir $HOME/.zcash-params
@@ -28,12 +38,6 @@ jobs:
 
       - name: build lib
         run: cargo make macos
-
-      - name: wget flutter
-        run: |
-          curl https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_3.7.0-stable.zip --output flutter.zip
-          unzip flutter.zip
-          echo $PWD/flutter/bin >> $GITHUB_PATH
 
       - name: Build flutter
         run: |

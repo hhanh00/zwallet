@@ -14,6 +14,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: env
+        run: |
+          cat build.env >> $GITHUB_ENV
+          echo $PWD/flutter/bin >> $GITHUB_PATH
+
       - name: appimage tool
         run: |
           sudo apt-get update
@@ -28,16 +33,16 @@ jobs:
           curl https://download.z.cash/downloads/sapling-output.params --output $HOME/.zcash-params/sapling-output.params
           curl https://download.z.cash/downloads/sapling-spend.params --output $HOME/.zcash-params/sapling-spend.params
 
+      - name: wget flutter
+        run: |
+          git clone -b "${{ env.FLUTTER_VERSION }}" --depth 1 https://github.com/flutter/flutter.git flutter
+          echo $PATH
+          flutter doctor -v
+
       - name: Build dylib
         run: |
           cargo install cargo-make
           cargo make flatpak
-
-      - name: wget flutter
-        run: |
-          curl https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.7.0-stable.tar.xz --output flutter.tar.xz
-          tar xf flutter.tar.xz
-          echo $PWD/flutter/bin >> $GITHUB_PATH
 
       - name: install deps
         run: |
