@@ -1,6 +1,0 @@
-#syntax=docker/dockerfile:1.2
-FROM openpriv/flutter-desktop:windows-sdk30-fstable-3.3.8
-
-COPY . /zwallet
-WORKDIR /zwallet
-RUN powershell -file build-flutter-win.ps1

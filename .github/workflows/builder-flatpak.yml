@@ -1,4 +1,4 @@
-name: Builder
+name: Builder for Linux Flatpak
 
 on:
   workflow_dispatch:
