@@ -19,37 +19,8 @@ jobs:
           cat build.env >> $GITHUB_ENV
           echo $PWD/flutter/bin >> $GITHUB_PATH
 
-      - name: wget flutter
-        run: |
-          git clone -b "${{ env.FLUTTER_VERSION }}" --depth 1 https://github.com/flutter/flutter.git flutter
-          flutter doctor -v
-
-      - name: params
-        run: |
-          mkdir $HOME/.zcash-params
-          curl https://download.z.cash/downloads/sapling-output.params --output $HOME/.zcash-params/sapling-output.params
-          curl https://download.z.cash/downloads/sapling-spend.params --output $HOME/.zcash-params/sapling-spend.params
-
-      - name: rustup
-        run: rustup target add aarch64-apple-darwin
-
-      - name: install make
-        run: cargo install cargo-make
-
-      - name: build lib
-        run: cargo make macos
-
-      - name: Build flutter
-        run: |
-          flutter pub get
-          flutter pub run build_runner build
-          (cd packages/warp_api_ffi;flutter pub get;flutter pub run build_runner build)
-          flutter build macos
-
-      - name: Build DMG
-        run: |
-          npm install -g appdmg
-          (cd misc;appdmg app.json ../ywallet-universal.dmg)
+      - name: build
+        run: ./build-scripts/build-mac.sh "${{ env.FLUTTER_VERSION }}"
 
       - name: Release
         uses: softprops/action-gh-release@v1
