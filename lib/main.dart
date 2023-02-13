@@ -29,6 +29,7 @@ import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:window_manager/window_manager.dart';
 import 'accounts.dart';
 import 'animated_qr.dart';
 import 'coin/coin.dart';
@@ -191,8 +192,36 @@ class LoadProgressState extends State<LoadProgress> {
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
-void main() {
+class OnWindow extends WindowListener {
+  @override
+  void onWindowResized() async {
+    final s = await windowManager.getSize();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setDouble('width', s.width);
+    prefs.setDouble('height', s.height);
+  }
+}
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  final prefs = await SharedPreferences.getInstance();
+  final width = prefs.getDouble('width');
+  final height = prefs.getDouble('height');
+  final size = width != null && height != null ? Size(width, height) : null;
+  WindowOptions windowOptions = WindowOptions(
+    center: true,
+    size: size,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.hidden,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+  windowManager.addListener(OnWindow());
   AwesomeNotifications().initialize(
     'resource://drawable/res_notification',
     [
