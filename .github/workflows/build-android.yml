@@ -5,8 +5,6 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - dev
 
 env:
   JKS_PASSWORD: ${{ secrets.JKS_PASSWD }}
