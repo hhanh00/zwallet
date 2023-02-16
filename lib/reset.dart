@@ -9,6 +9,8 @@ import 'generated/l10n.dart';
 import 'main.dart';
 import 'package:path/path.dart' as p;
 
+import 'qrscanner.dart';
+
 class ResetPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ResetState();
@@ -85,12 +87,7 @@ class FullBackupState extends State<FullBackupPage> {
         appBar: AppBar(title: Text(s.fullBackup)),
         body: Card(
             child: Column(children: [
-            TextField(
-              decoration: InputDecoration(labelText: s.backupEncryptionKey),
-              minLines: 1,
-              maxLines: 5,
-              controller: key,
-            ),
+          QRInput(s.backupEncryptionKey, key, hint: 'age'),
           Padding(padding: EdgeInsets.symmetric(vertical: 8)),
           ButtonBar(children: [
           ElevatedButton.icon(onPressed: _onGenerate, icon: Icon(Icons.key), label: Text('Generate')),
@@ -161,9 +158,10 @@ class AGEKeysState extends State<AGEKeysForm> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Form(child: SingleChildScrollView(child: Column(children: [
-      TextFormField(decoration: InputDecoration(labelText: S.current.encryptionKey), controller: pk, readOnly: true),
-      TextFormField(decoration: InputDecoration(labelText: S.current.secretKey), controller: sk, readOnly: true),
+      QRDisplay(s.encryptionKey, widget.keys.pk),
+      QRDisplay(s.secretKey, widget.keys.sk)
     ])));
   }
 }
@@ -182,12 +180,7 @@ class _FullRestoreState extends State<FullRestorePage> {
     return Scaffold(
         appBar: AppBar(title: Text(s.fullRestore)),
         body: Card(child: Column(children: [
-          TextField(
-            decoration: InputDecoration(labelText: s.privateKey, hintText: 'AGE-SECRET-KEY-'),
-            minLines: 1,
-            maxLines: 5,
-            controller: controller,
-          ),
+          QRInput(s.secretKey, controller, hint: 'AGE-SECRET-KEY-'),
           Padding(padding: EdgeInsets.symmetric(vertical: 8)),
           ElevatedButton.icon(
               onPressed: _onLoad,
