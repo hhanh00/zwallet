@@ -63,3 +63,52 @@ Future<String?> pickDecodeQRImage() async {
   }
   return null;
 }
+
+class QRDisplay extends StatelessWidget {
+  final String label;
+  final String value;
+  QRDisplay(this.label, this.value);
+
+  @override
+  Widget build(BuildContext context) {
+    final c = TextEditingController(text: value);
+    return Row(children: [
+      Expanded(child: TextFormField(decoration: InputDecoration(labelText: label), controller: c, readOnly: true)),
+      IconButton(onPressed: () => _showQR(context), icon: Icon(Icons.qr_code))
+    ]);
+  }
+
+  _showQR(BuildContext context) {
+    showQR(context, value, label);
+  }
+}
+
+class QRInput extends StatefulWidget {
+  final String label;
+  final String? hint;
+  final TextEditingController controller;
+  QRInput(this.label, this.controller, { this.hint });
+
+  @override
+  State<StatefulWidget> createState() => QRInputState();
+}
+
+class QRInputState extends State<QRInput> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      Expanded(child: TextFormField(decoration: InputDecoration(labelText: widget.label, hintText: widget.hint),
+          minLines: 1,
+          maxLines: 5,
+          controller: widget.controller)),
+      IconButton(onPressed: _scanQR, icon: Icon(Icons.qr_code))
+    ]);
+  }
+
+  _scanQR() async {
+    final code = await scanCode(context);
+    if (code != null) {
+      widget.controller.text = code;
+    }
+  }
+}
