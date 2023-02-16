@@ -204,24 +204,26 @@ class OnWindow extends WindowListener {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
+  if (!isMobile()) {
+    await windowManager.ensureInitialized();
 
-  final prefs = await SharedPreferences.getInstance();
-  final width = prefs.getDouble('width');
-  final height = prefs.getDouble('height');
-  final size = width != null && height != null ? Size(width, height) : null;
-  WindowOptions windowOptions = WindowOptions(
-    center: true,
-    size: size,
-    backgroundColor: Colors.transparent,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.hidden,
-  );
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.show();
-    await windowManager.focus();
-  });
-  windowManager.addListener(OnWindow());
+    final prefs = await SharedPreferences.getInstance();
+    final width = prefs.getDouble('width');
+    final height = prefs.getDouble('height');
+    final size = width != null && height != null ? Size(width, height) : null;
+    WindowOptions windowOptions = WindowOptions(
+      center: true,
+      size: size,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.hidden,
+    );
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+    windowManager.addListener(OnWindow());
+  }
   AwesomeNotifications().initialize(
     'resource://drawable/res_notification',
     [
