@@ -33,12 +33,11 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   var amount = 0;
   double sliderValue = 0;
   var _feeIncluded = false;
+  bool _useMillis = settings.useMillis;
 
   ReactionDisposer? priceAutorunDispose;
 
   bool get isMax => sliderValue == 100.0;
-
-  bool get useMillis => settings.useMillis && !isMax;
 
   bool get feeIncluded => _feeIncluded || isMax;
 
@@ -46,9 +45,9 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   void initState() {
     super.initState();
     _fiat = widget.fiat;
-    zero = amountToString(0, precision(useMillis));
+    zero = amountToString(0, precision(_useMillis));
     final initialValue = widget.initialValue ?? 0;
-    final amount = amountToString(initialValue, precision(useMillis));
+    final amount = amountToString(initialValue, precision(_useMillis));
     coinAmountController.text = amount;
     _updateFxRate();
     _updateSlider();
@@ -88,7 +87,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
                     labelText: s.amountInSettingscurrency(active.coinDef.ticker)),
                 controller: coinAmountController,
                 keyboardType: TextInputType.number,
-                inputFormatters: [makeInputFormatter(useMillis)],
+                inputFormatters: [makeInputFormatter(_useMillis)],
                 onTap: () => setState(() {
                   inputInCoin = true;
                 }),
@@ -112,7 +111,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
                     labelText: s.amountInSettingscurrency(_fiat)),
                 controller: fiatAmountController,
                 keyboardType: TextInputType.number,
-                inputFormatters: [makeInputFormatter(useMillis)],
+                inputFormatters: [makeInputFormatter(_useMillis)],
                 validator: (v) => _checkAmount(v, isFiat: true),
                 onTap: () => setState(() {
                       inputInCoin = false;
@@ -151,6 +150,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
       coinAmountController.text = zero;
       fiatAmountController.text = zero;
       sliderValue = 0;
+      _useMillis = settings.useMillis;
       _onChanged();
     });
   }
@@ -172,7 +172,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
       } else {
         final a = (widget.spendable! * v / 100).round();
         coinAmountController.text =
-            amountToString(a, precision(settings.useMillis));
+            amountToString(a, precision(_useMillis));
         _updateFiatAmount();
         _onChanged();
       }
@@ -207,7 +207,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
   void _updateAmount() {
     final rate = 1.0 / _fxRate;
     final amount = parseNumber(fiatAmountController.text);
-    final otherAmount = decimalFormat(amount * rate, precision(useMillis));
+    final otherAmount = decimalFormat(amount * rate, precision(_useMillis));
     setState(() {
       coinAmountController.text = otherAmount;
       _onChanged();
@@ -216,7 +216,7 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
 
   void _updateFiatAmount(){
     final amount = parseNumber(coinAmountController.text);
-    final otherAmount = decimalFormat(amount * _fxRate, precision(useMillis));
+    final otherAmount = decimalFormat(amount * _fxRate, precision(_useMillis));
     setState(() {
       fiatAmountController.text = otherAmount;
     });
@@ -228,6 +228,8 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
       final amount = stringToAmount(coinAmountController.text);
       if (spendable != null) {
         sliderValue = (amount / spendable * 100).clamp(0, 100);
+        if (isMax) _useMillis = false;
+        print(_useMillis);
       }
     });
   }
@@ -242,12 +244,12 @@ class DualMoneyInputState extends State<DualMoneyInputWidget> {
       _fxRate = rate;
       if (fiat != null) {
         _fiat = fiat;
-        fiatAmountController.text = decimalFormat(amountInFiat, precision(settings.useMillis));
+        fiatAmountController.text = decimalFormat(amountInFiat, precision(_useMillis));
         inputInCoin = false;
         _updateAmount();
       }
       else {
-        coinAmountController.text = amountToString(amount, precision(settings.useMillis));
+        coinAmountController.text = amountToString(amount, precision(_useMillis));
         inputInCoin = true;
         _updateFiatAmount();
         _onChanged();
