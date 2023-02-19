@@ -117,6 +117,7 @@ class TxPlanPage extends StatelessWidget {
 
   _sign() async {
     try {
+      showSnackBar(S.current.signingPleaseWait);
       final res = await WarpApi.signOnly(
           active.coin, active.id, plan, (progress) {
         // TODO progressPort.sendPort.send(progress);

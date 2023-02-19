@@ -2991,6 +2991,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Signing, please wait...`
+  String get signingPleaseWait {
+    return Intl.message(
+      'Signing, please wait...',
+      name: 'signingPleaseWait',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
