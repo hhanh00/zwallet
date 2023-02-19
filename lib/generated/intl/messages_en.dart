@@ -420,6 +420,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "signOnYourOfflineDevice":
             MessageLookupByLibrary.simpleMessage("Sign on your offline device"),
         "signedTx": MessageLookupByLibrary.simpleMessage("Signed Tx"),
+        "signingPleaseWait":
+            MessageLookupByLibrary.simpleMessage("Signing, please wait..."),
         "simple": MessageLookupByLibrary.simpleMessage("Simple"),
         "simpleMode": MessageLookupByLibrary.simpleMessage("Simple Mode"),
         "spendable": MessageLookupByLibrary.simpleMessage("Spendable"),

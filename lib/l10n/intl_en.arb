@@ -292,5 +292,6 @@
   "medium": "Medium",
   "high": "High",
   "privacy": "PRIVACY: {level}",
-  "save": "Save"
+  "save": "Save",
+  "signingPleaseWait": "Signing, please wait..."
 }

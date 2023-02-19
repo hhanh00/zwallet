@@ -290,5 +290,6 @@
   "medium": "Medium",
   "high": "High",
   "privacy": "PRIVACY: {level}",
-  "save": "Guardar"
+  "save": "Guardar",
+  "signingPleaseWait": "Firmando"
 }
