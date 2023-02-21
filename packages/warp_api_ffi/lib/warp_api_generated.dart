@@ -591,6 +591,38 @@ class NativeLibrary {
   late final _dart_broadcast_tx _broadcast_tx =
       _broadcast_tx_ptr.asFunction<_dart_broadcast_tx>();
 
+  int is_valid_tkey(
+    ffi.Pointer<ffi.Int8> sk,
+  ) {
+    return _is_valid_tkey(
+      sk,
+    );
+  }
+
+  late final _is_valid_tkey_ptr =
+      _lookup<ffi.NativeFunction<_c_is_valid_tkey>>('is_valid_tkey');
+  late final _dart_is_valid_tkey _is_valid_tkey =
+      _is_valid_tkey_ptr.asFunction<_dart_is_valid_tkey>();
+
+  CResult_____c_char sweep_tkey(
+    int last_height,
+    ffi.Pointer<ffi.Int8> sk,
+    int pool,
+    int confirmations,
+  ) {
+    return _sweep_tkey(
+      last_height,
+      sk,
+      pool,
+      confirmations,
+    );
+  }
+
+  late final _sweep_tkey_ptr =
+      _lookup<ffi.NativeFunction<_c_sweep_tkey>>('sweep_tkey');
+  late final _dart_sweep_tkey _sweep_tkey =
+      _sweep_tkey_ptr.asFunction<_dart_sweep_tkey>();
+
   CResult_u32 get_activation_date() {
     return _get_activation_date();
   }
@@ -1315,6 +1347,8 @@ class CResult______u8 extends ffi.Struct {
   external int len;
 }
 
+const int EXPIRY_HEIGHT_OFFSET = 50;
+
 const int QR_DATA_SIZE = 256;
 
 const int MAX_ATTEMPTS = 10;
@@ -1783,6 +1817,28 @@ typedef _c_broadcast_tx = CResult_____c_char Function(
 
 typedef _dart_broadcast_tx = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> tx_str,
+);
+
+typedef _c_is_valid_tkey = ffi.Int8 Function(
+  ffi.Pointer<ffi.Int8> sk,
+);
+
+typedef _dart_is_valid_tkey = int Function(
+  ffi.Pointer<ffi.Int8> sk,
+);
+
+typedef _c_sweep_tkey = CResult_____c_char Function(
+  ffi.Uint32 last_height,
+  ffi.Pointer<ffi.Int8> sk,
+  ffi.Uint8 pool,
+  ffi.Uint32 confirmations,
+);
+
+typedef _dart_sweep_tkey = CResult_____c_char Function(
+  int last_height,
+  ffi.Pointer<ffi.Int8> sk,
+  int pool,
+  int confirmations,
 );
 
 typedef _c_get_activation_date = CResult_u32 Function();

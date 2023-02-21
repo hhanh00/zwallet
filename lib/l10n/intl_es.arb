@@ -291,5 +291,7 @@
   "high": "High",
   "privacy": "PRIVACY: {level}",
   "save": "Guardar",
-  "signingPleaseWait": "Firmando"
+  "signingPleaseWait": "Firmando",
+  "sweep": "Barrer",
+  "transparentKey": "Transparente Clavo"
 }

@@ -436,6 +436,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "subAccountIndexOf": m21,
         "subAccountOf": m22,
         "subject": MessageLookupByLibrary.simpleMessage("Asunto"),
+        "sweep": MessageLookupByLibrary.simpleMessage("Barrer"),
         "syncPaused": MessageLookupByLibrary.simpleMessage("Escaneo en pausa"),
         "synching": MessageLookupByLibrary.simpleMessage("Sincronizando"),
         "synchronizationInProgress":
@@ -479,6 +480,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Historial de transacciones"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transacciónes"),
         "transfer": MessageLookupByLibrary.simpleMessage("Transferir"),
+        "transparentKey":
+            MessageLookupByLibrary.simpleMessage("Transparente Clavo"),
         "txId": m24,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Confirmaciones insuficiente"),

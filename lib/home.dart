@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -199,6 +200,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
                     PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
                     PopupMenuItem(child: Text(s.multipay), value: "MultiPay"),
                     PopupMenuItem(child: Text(s.keyTool), enabled: active.canPay, value: "KeyTool"),
+                    PopupMenuItem(child: Text(s.sweep), enabled: active.canPay, value: "Sweep"),
                   ], onSelected: _onMenu)),
             // if (!simpleMode && !isMobile())
             //   PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
@@ -289,6 +291,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       case "KeyTool":
         _keyTool();
         break;
+      case "Sweep":
+        _sweep();
+        break;
       case "Expert":
         Navigator.of(context).pushNamed('/dev');
         break;
@@ -318,6 +323,53 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     final didAuthenticate = await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
     if (didAuthenticate) {
       Navigator.of(context).pushNamed('/keytool');
+    }
+  }
+
+  _sweep() async {
+    final s = S.of(context);
+    final keyController = TextEditingController();
+    int pool = 0;
+    final checkKey = (String? key) {
+      final k = key ?? '';
+      if (!WarpApi.isValidTransparentKey(k)) return s.invalidKey;
+      return null;
+    };
+    final confirmed = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+            title: Text(s.sweep),
+            content: SingleChildScrollView(child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(labelText: s.transparentKey),
+                    controller: keyController,
+                    validator: checkKey,
+                ),
+                  FormBuilderRadioGroup<int>(
+                    orientation: OptionsOrientation.horizontal,
+                    decoration: InputDecoration(labelText: s.toPool),
+                    name: 'pool',
+                    initialValue: 0,
+                    onChanged: (v) { pool = v ?? 0; },
+                    options: [
+                      FormBuilderFieldOption(
+                          child: Text('T'), value: 0),
+                      FormBuilderFieldOption(
+                          child: Text('S'), value: 1),
+                      if (active.coinDef.supportsUA) FormBuilderFieldOption(
+                          child: Text('O'), value: 2),
+                  ]),
+                ],
+            )),
+            actions: confirmButtons(context, () => Navigator.of(context).pop(true))
+        )
+    ) ?? false;
+    if (confirmed) {
+      final txid = await WarpApi.sweepTransparent(syncStatus.latestHeight, keyController.text, pool, settings.anchorOffset);
+      showSnackBar(s.txId(txid));
     }
   }
   
