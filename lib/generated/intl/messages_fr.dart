@@ -440,6 +440,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "subAccountIndexOf": m21,
         "subAccountOf": m22,
         "subject": MessageLookupByLibrary.simpleMessage("Sujet"),
+        "sweep": MessageLookupByLibrary.simpleMessage("Balayer"),
         "syncPaused": MessageLookupByLibrary.simpleMessage("Sync en Pause"),
         "synching":
             MessageLookupByLibrary.simpleMessage("Synchronisation en cours"),
@@ -484,6 +485,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Historique des Transactions"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
         "transfer": MessageLookupByLibrary.simpleMessage("Transférer"),
+        "transparentKey":
+            MessageLookupByLibrary.simpleMessage("Clé Transparente"),
         "txId": m24,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Pas assez de confs"),

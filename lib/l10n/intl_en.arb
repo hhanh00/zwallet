@@ -293,5 +293,7 @@
   "high": "High",
   "privacy": "PRIVACY: {level}",
   "save": "Save",
-  "signingPleaseWait": "Signing, please wait..."
+  "signingPleaseWait": "Signing, please wait...",
+  "sweep": "Sweep",
+  "transparentKey": "Transparent Key"
 }

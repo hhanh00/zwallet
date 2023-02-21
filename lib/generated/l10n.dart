@@ -3001,6 +3001,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Sweep`
+  String get sweep {
+    return Intl.message(
+      'Sweep',
+      name: 'sweep',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transparent Key`
+  String get transparentKey {
+    return Intl.message(
+      'Transparent Key',
+      name: 'transparentKey',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

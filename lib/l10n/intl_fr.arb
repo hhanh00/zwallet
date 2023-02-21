@@ -291,5 +291,7 @@
   "high": "Haut",
   "privacy": "SECRET: {level}",
   "save": "Sauver",
-  "signingPleaseWait": "Signature en cours..."
+  "signingPleaseWait": "Signature en cours...",
+  "sweep": "Balayer",
+  "transparentKey": "Clé Transparente"
 }

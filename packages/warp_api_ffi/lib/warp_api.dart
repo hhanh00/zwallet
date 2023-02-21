@@ -281,6 +281,17 @@ class WarpApi {
     return unwrapResultString(res);
   }
 
+  static bool isValidTransparentKey(String key) {
+    return warp_api_lib.is_valid_tkey(toNative(key)) != 0;
+  }
+
+  static Future<String> sweepTransparent(int latestHeight, String sk, int pool, int confirmations) async {
+    return await compute((_) {
+      final txid = warp_api_lib.sweep_tkey(latestHeight, toNative(sk), pool, confirmations);
+      return unwrapResultString(txid);
+    }, null);
+  }
+
   // static String ledgerSign(int coin, String txFilename) {
   //   final res = warp_api_lib.ledger_sign(coin, txFilename.toNativeUtf8().cast<Int8>());
   //   return res.cast<Utf8>().toDartString();
