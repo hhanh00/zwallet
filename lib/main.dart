@@ -216,7 +216,7 @@ void main() async {
       size: size,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.hidden,
+      titleBarStyle: Platform.isMacOS ? TitleBarStyle.hidden : TitleBarStyle.normal,
     );
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
