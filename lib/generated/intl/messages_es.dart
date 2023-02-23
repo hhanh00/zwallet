@@ -45,7 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(amount, ticker) => "Max Gastable: ${amount} ${ticker}";
 
-  static String m11(level) => "PRIVACY: ${level}";
+  static String m11(level) => "PRIVACIDAD: ${level}";
 
   static String m12(ticker) => "Recibir ${ticker}";
 
@@ -216,7 +216,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "¿Quiere BORRAR la clave secreta y convertir esta cuenta a solo lectura? Ya no podrá gastar desde este dispositivo. Esta operación NO es reversible."),
         "doYouWantToRestore": MessageLookupByLibrary.simpleMessage(
-            "Do you want to restore your database? THIS WILL ERASE YOUR CURRENT DATA"),
+            "¿Desea restaurar la base de datos? ¡ESTO BORRARÁ SUS DATOS ACTUALES!"),
         "doYouWantToTransferYourEntireTransparentBalanceTo": m5,
         "duplicateAccount":
             MessageLookupByLibrary.simpleMessage("Cuenta duplicada"),
@@ -232,7 +232,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error": m7,
         "excludedNotes":
             MessageLookupByLibrary.simpleMessage("Notas excluidas"),
-        "expert": MessageLookupByLibrary.simpleMessage("Expert"),
+        "expert": MessageLookupByLibrary.simpleMessage("Modo Experto"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("Archivo guardado"),
         "fromPool": MessageLookupByLibrary.simpleMessage("Del Suministro"),
         "fromto": MessageLookupByLibrary.simpleMessage("Rem/Dest."),
@@ -245,7 +245,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "height": MessageLookupByLibrary.simpleMessage("Altura"),
         "help": MessageLookupByLibrary.simpleMessage("Ayuda"),
-        "high": MessageLookupByLibrary.simpleMessage("High"),
+        "high": MessageLookupByLibrary.simpleMessage("Alto"),
         "history": MessageLookupByLibrary.simpleMessage("Historial"),
         "iHaveMadeABackup": MessageLookupByLibrary.simpleMessage(
             "He hecho una copia de seguridad"),
@@ -272,18 +272,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "loadBackup": MessageLookupByLibrary.simpleMessage(
             "Respaldar copia de seguridad"),
         "loading": MessageLookupByLibrary.simpleMessage("Cargando..."),
-        "low": MessageLookupByLibrary.simpleMessage("Low"),
+        "low": MessageLookupByLibrary.simpleMessage("Bajo"),
         "markAllAsRead":
             MessageLookupByLibrary.simpleMessage("Marcar todo como leído"),
         "max": MessageLookupByLibrary.simpleMessage("MAX"),
         "maxAmountPerNote":
             MessageLookupByLibrary.simpleMessage("Monto máximo por nota"),
         "maxSpendableAmount": m9,
-        "medium": MessageLookupByLibrary.simpleMessage("Medium"),
+        "medium": MessageLookupByLibrary.simpleMessage("Medio"),
         "memo": MessageLookupByLibrary.simpleMessage("Nota"),
         "message": MessageLookupByLibrary.simpleMessage("Mensaje"),
         "messages": MessageLookupByLibrary.simpleMessage("Mensajes"),
-        "minPrivacy": MessageLookupByLibrary.simpleMessage("Min Privacy"),
+        "minPrivacy": MessageLookupByLibrary.simpleMessage("Privacidad Mínima"),
         "mm": MessageLookupByLibrary.simpleMessage("M/M"),
         "mobileCharges": MessageLookupByLibrary.simpleMessage(
             "Con datos móviles, el escaneo puede incurrir en cargos adicionales. ¿Quieres proceder?"),
@@ -326,7 +326,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Abrir en el Explorador"),
         "paymentInProgress":
             MessageLookupByLibrary.simpleMessage("Pago en curso..."),
-        "paymentMade": MessageLookupByLibrary.simpleMessage("Payment enviado"),
+        "paymentMade": MessageLookupByLibrary.simpleMessage("Pago enviado"),
         "pink": MessageLookupByLibrary.simpleMessage("Rosado"),
         "pl": MessageLookupByLibrary.simpleMessage("G/P"),
         "pleaseAuthenticateToSend": MessageLookupByLibrary.simpleMessage(
@@ -346,8 +346,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "price": MessageLookupByLibrary.simpleMessage("Precio"),
         "primary": MessageLookupByLibrary.simpleMessage("Primario"),
         "privacy": m11,
-        "privacyLevelTooLow":
-            MessageLookupByLibrary.simpleMessage("Privacy Level Too LOW"),
+        "privacyLevelTooLow": MessageLookupByLibrary.simpleMessage(
+            "Nivel de Privacidad muy BAJO"),
         "privateKey": MessageLookupByLibrary.simpleMessage("Clave Privada"),
         "protectOpen": MessageLookupByLibrary.simpleMessage("Bloquer al abrir"),
         "protectSend":
@@ -387,7 +387,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Guardar copia de seguridad"),
         "saveToBlockchain":
             MessageLookupByLibrary.simpleMessage("Guardar en la blockchain?"),
-        "scanQrCode": MessageLookupByLibrary.simpleMessage("Scan QR Code"),
+        "scanQrCode":
+            MessageLookupByLibrary.simpleMessage("Escanear Código QR"),
         "scanStartingMomentarily": MessageLookupByLibrary.simpleMessage(
             "Escaneo iniciado momentáneamente"),
         "secondary": MessageLookupByLibrary.simpleMessage("Secundario"),
@@ -409,7 +410,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sendingATotalOfAmountCointickerToCountRecipients": m18,
         "sendingAzecCointickerToAddress": m19,
         "server": MessageLookupByLibrary.simpleMessage("Servidor"),
-        "set": MessageLookupByLibrary.simpleMessage("Utilisar"),
+        "set": MessageLookupByLibrary.simpleMessage("Utilizar"),
         "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
         "shieldTranspBalance":
             MessageLookupByLibrary.simpleMessage("Blindar Saldo transp."),
@@ -419,7 +420,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Blindaje en progreso…"),
         "showMessagesAsTable":
             MessageLookupByLibrary.simpleMessage("Mostrar mensajes como tabla"),
-        "sign": MessageLookupByLibrary.simpleMessage("Firma"),
+        "sign": MessageLookupByLibrary.simpleMessage("Firmar"),
         "signOffline": MessageLookupByLibrary.simpleMessage("Firmar"),
         "signOnYourOfflineDevice": MessageLookupByLibrary.simpleMessage(
             "Firmar con tu dispositivo fuera de línea"),
@@ -500,7 +501,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Usar saldo transp."),
         "useUa": MessageLookupByLibrary.simpleMessage("Usar DU"),
         "version": MessageLookupByLibrary.simpleMessage("Versión"),
-        "veryLow": MessageLookupByLibrary.simpleMessage("Very Low"),
+        "veryLow": MessageLookupByLibrary.simpleMessage("Muy Bajo"),
         "viewingKey":
             MessageLookupByLibrary.simpleMessage("Clave de visualización"),
         "welcomeToYwallet":
