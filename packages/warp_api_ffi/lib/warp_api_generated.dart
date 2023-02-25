@@ -368,19 +368,21 @@ class NativeLibrary {
   late final _dart_valid_address _valid_address =
       _valid_address_ptr.asFunction<_dart_valid_address>();
 
-  CResult_____c_char new_diversified_address(
+  CResult_____c_char get_diversified_address(
     int ua_type,
+    int time,
   ) {
-    return _new_diversified_address(
+    return _get_diversified_address(
       ua_type,
+      time,
     );
   }
 
-  late final _new_diversified_address_ptr =
-      _lookup<ffi.NativeFunction<_c_new_diversified_address>>(
-          'new_diversified_address');
-  late final _dart_new_diversified_address _new_diversified_address =
-      _new_diversified_address_ptr.asFunction<_dart_new_diversified_address>();
+  late final _get_diversified_address_ptr =
+      _lookup<ffi.NativeFunction<_c_get_diversified_address>>(
+          'get_diversified_address');
+  late final _dart_get_diversified_address _get_diversified_address =
+      _get_diversified_address_ptr.asFunction<_dart_get_diversified_address>();
 
   CResult_u32 get_latest_height() {
     return _get_latest_height();
@@ -1669,12 +1671,14 @@ typedef _dart_valid_address = int Function(
   ffi.Pointer<ffi.Int8> address,
 );
 
-typedef _c_new_diversified_address = CResult_____c_char Function(
+typedef _c_get_diversified_address = CResult_____c_char Function(
   ffi.Uint8 ua_type,
+  ffi.Uint32 time,
 );
 
-typedef _dart_new_diversified_address = CResult_____c_char Function(
+typedef _dart_get_diversified_address = CResult_____c_char Function(
   int ua_type,
+  int time,
 );
 
 typedef _c_get_latest_height = CResult_u32 Function();

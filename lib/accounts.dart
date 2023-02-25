@@ -248,8 +248,8 @@ abstract class _ActiveAccount with Store {
     draftRecipient = v;
   }
 
-  String newAddress() {
-    return WarpApi.newDiversifiedAddress(settings.uaType);
+  String getDiversifiedAddress(int time) {
+    return WarpApi.getDiversifiedAddress(settings.uaType, time);
   }
 
   String getAddress(int uaType) {
