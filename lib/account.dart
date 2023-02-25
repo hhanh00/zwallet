@@ -202,11 +202,12 @@ class QRAddressState extends State<QRAddressWidget> {
         ])),
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
         if (!simpleMode && !showTAddr)
-          OutlinedButton(
+          SizedBox(height: 30, child:
+          (_snapTimer == null) ? OutlinedButton(
               child: Text(s.newSnapAddress),
               style: OutlinedButton.styleFrom(
                   side: BorderSide(width: 1, color: theme.primaryColor)),
-              onPressed: _onSnapAddress),
+              onPressed: _onSnapAddress) : LinearProgressIndicator(value: _snapAddressProgress / SNAPADDRESS_LIFETIME)),
         if (!simpleMode && showTAddr)
           OutlinedButton(
             child: Text(s.shieldTranspBalance),
@@ -233,15 +234,28 @@ class QRAddressState extends State<QRAddressWidget> {
     Navigator.of(context).pushNamed('/receive');
   }
 
+  static const SNAPADDRESS_LIFETIME = 15;
+  Timer? _snapTimer;
+  int _snapAddressProgress = 0;
+
   _onSnapAddress() {
-    final address = active.newAddress();
+    if (_snapTimer != null) return;
+    final address = active.getDiversifiedAddress(DateTime.now().millisecondsSinceEpoch ~/ 1000);
     setState(() {
       _useSnapAddress = true;
       _snapAddress = address;
     });
-    Timer(Duration(seconds: 15), () {
+    _snapAddressProgress = SNAPADDRESS_LIFETIME;
+    final countdown = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
+        _snapAddressProgress -= 1;
+      });
+    });
+    _snapTimer = Timer(Duration(seconds: SNAPADDRESS_LIFETIME), () {
+      setState(() {
+        countdown.cancel();
         _useSnapAddress = false;
+        _snapTimer = null;
       });
     });
   }

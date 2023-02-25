@@ -180,8 +180,8 @@ class WarpApi {
         0;
   }
 
-  static String newDiversifiedAddress(int uaType) {
-    final address = warp_api_lib.new_diversified_address(uaType);
+  static String getDiversifiedAddress(int uaType, int time) {
+    final address = warp_api_lib.get_diversified_address(uaType, time);
     return unwrapResultString(address);
   }
 
