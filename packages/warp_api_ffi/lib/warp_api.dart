@@ -565,6 +565,10 @@ class WarpApi {
     final quotes = CheckpointVec(r);
     return quotes.values!;
   }
+
+  static void clearTxDetails(int coin, int account) {
+    warp_api_lib.clear_tx_details(coin, account);
+  }
 }
 
 String signOnlyIsolateFn(SignOnlyParams params) {

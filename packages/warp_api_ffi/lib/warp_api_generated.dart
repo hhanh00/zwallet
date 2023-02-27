@@ -928,6 +928,21 @@ class NativeLibrary {
   late final _dart_derive_zip32 _derive_zip32 =
       _derive_zip32_ptr.asFunction<_dart_derive_zip32>();
 
+  CResult_u8 clear_tx_details(
+    int coin,
+    int account,
+  ) {
+    return _clear_tx_details(
+      coin,
+      account,
+    );
+  }
+
+  late final _clear_tx_details_ptr =
+      _lookup<ffi.NativeFunction<_c_clear_tx_details>>('clear_tx_details');
+  late final _dart_clear_tx_details _clear_tx_details =
+      _clear_tx_details_ptr.asFunction<_dart_clear_tx_details>();
+
   CResult______u8 get_account_list(
     int coin,
   ) {
@@ -2037,6 +2052,16 @@ typedef _dart_derive_zip32 = CResult_____c_char Function(
   int external_1,
   int has_address,
   int address,
+);
+
+typedef _c_clear_tx_details = CResult_u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+);
+
+typedef _dart_clear_tx_details = CResult_u8 Function(
+  int coin,
+  int account,
 );
 
 typedef _c_get_account_list = CResult______u8 Function(
