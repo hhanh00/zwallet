@@ -41,7 +41,7 @@ class DbReader {
           tx.txId!,
           tx.value / ZECUNIT,
           tx.address!,
-          tx.name!,
+          tx.name!.isNotEmpty ? tx.name! : null,
           tx.memo!);
     }).toList();
     print("TXS ${transactions.length}");
