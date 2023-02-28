@@ -118,9 +118,9 @@ class WarpApi {
   }
 
   static Backup getBackup(int coin, int id) {
-    final backupStr = unwrapResultString(warp_api_lib.get_backup(coin, id));
-    final backupJson = jsonDecode(backupStr);
-    return Backup.fromJson(backupJson);
+    final r = unwrapResultBytes(warp_api_lib.get_backup(coin, id));
+    final backup = Backup(r);
+    return backup;
   }
 
   static String getAddress(int coin, int id, int uaType) {

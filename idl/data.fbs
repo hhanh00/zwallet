@@ -149,3 +149,12 @@ table Checkpoint {
 table CheckpointVec {
     values:[Checkpoint];
 }
+
+table Backup {
+  name:string;
+  seed:string;
+  index:uint32;
+  sk:string;
+  fvk:string;
+  uvk:string;
+}

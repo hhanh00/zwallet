@@ -3227,3 +3227,186 @@ class CheckpointVecObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+class Backup {
+  Backup._(this._bc, this._bcOffset);
+  factory Backup(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<Backup> reader = _BackupReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  String? get name => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
+  String? get seed => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 6);
+  int get index => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 8, 0);
+  String? get sk => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 10);
+  String? get fvk => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 12);
+  String? get uvk => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 14);
+
+  @override
+  String toString() {
+    return 'Backup{name: ${name}, seed: ${seed}, index: ${index}, sk: ${sk}, fvk: ${fvk}, uvk: ${uvk}}';
+  }
+
+  BackupT unpack() => BackupT(
+      name: name,
+      seed: seed,
+      index: index,
+      sk: sk,
+      fvk: fvk,
+      uvk: uvk);
+
+  static int pack(fb.Builder fbBuilder, BackupT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class BackupT implements fb.Packable {
+  String? name;
+  String? seed;
+  int index;
+  String? sk;
+  String? fvk;
+  String? uvk;
+
+  BackupT({
+      this.name,
+      this.seed,
+      this.index = 0,
+      this.sk,
+      this.fvk,
+      this.uvk});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? nameOffset = name == null ? null
+        : fbBuilder.writeString(name!);
+    final int? seedOffset = seed == null ? null
+        : fbBuilder.writeString(seed!);
+    final int? skOffset = sk == null ? null
+        : fbBuilder.writeString(sk!);
+    final int? fvkOffset = fvk == null ? null
+        : fbBuilder.writeString(fvk!);
+    final int? uvkOffset = uvk == null ? null
+        : fbBuilder.writeString(uvk!);
+    fbBuilder.startTable(6);
+    fbBuilder.addOffset(0, nameOffset);
+    fbBuilder.addOffset(1, seedOffset);
+    fbBuilder.addUint32(2, index);
+    fbBuilder.addOffset(3, skOffset);
+    fbBuilder.addOffset(4, fvkOffset);
+    fbBuilder.addOffset(5, uvkOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'BackupT{name: ${name}, seed: ${seed}, index: ${index}, sk: ${sk}, fvk: ${fvk}, uvk: ${uvk}}';
+  }
+}
+
+class _BackupReader extends fb.TableReader<Backup> {
+  const _BackupReader();
+
+  @override
+  Backup createObject(fb.BufferContext bc, int offset) => 
+    Backup._(bc, offset);
+}
+
+class BackupBuilder {
+  BackupBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(6);
+  }
+
+  int addNameOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+  int addSeedOffset(int? offset) {
+    fbBuilder.addOffset(1, offset);
+    return fbBuilder.offset;
+  }
+  int addIndex(int? index) {
+    fbBuilder.addUint32(2, index);
+    return fbBuilder.offset;
+  }
+  int addSkOffset(int? offset) {
+    fbBuilder.addOffset(3, offset);
+    return fbBuilder.offset;
+  }
+  int addFvkOffset(int? offset) {
+    fbBuilder.addOffset(4, offset);
+    return fbBuilder.offset;
+  }
+  int addUvkOffset(int? offset) {
+    fbBuilder.addOffset(5, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class BackupObjectBuilder extends fb.ObjectBuilder {
+  final String? _name;
+  final String? _seed;
+  final int? _index;
+  final String? _sk;
+  final String? _fvk;
+  final String? _uvk;
+
+  BackupObjectBuilder({
+    String? name,
+    String? seed,
+    int? index,
+    String? sk,
+    String? fvk,
+    String? uvk,
+  })
+      : _name = name,
+        _seed = seed,
+        _index = index,
+        _sk = sk,
+        _fvk = fvk,
+        _uvk = uvk;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? nameOffset = _name == null ? null
+        : fbBuilder.writeString(_name!);
+    final int? seedOffset = _seed == null ? null
+        : fbBuilder.writeString(_seed!);
+    final int? skOffset = _sk == null ? null
+        : fbBuilder.writeString(_sk!);
+    final int? fvkOffset = _fvk == null ? null
+        : fbBuilder.writeString(_fvk!);
+    final int? uvkOffset = _uvk == null ? null
+        : fbBuilder.writeString(_uvk!);
+    fbBuilder.startTable(6);
+    fbBuilder.addOffset(0, nameOffset);
+    fbBuilder.addOffset(1, seedOffset);
+    fbBuilder.addUint32(2, _index);
+    fbBuilder.addOffset(3, skOffset);
+    fbBuilder.addOffset(4, fvkOffset);
+    fbBuilder.addOffset(5, uvkOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}

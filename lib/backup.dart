@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -19,7 +20,8 @@ class BackupState extends State<BackupPage> {
   late Backup backup;
   final _backupController = TextEditingController();
   final _skController = TextEditingController();
-  final _ivkController = TextEditingController();
+  final _fvkController = TextEditingController();
+  final _uvkController = TextEditingController();
 
   @override
   void initState() {
@@ -27,16 +29,23 @@ class BackupState extends State<BackupPage> {
     backup = WarpApi.getBackup(widget.coin, widget.id);
     _backupController.text = backupData;
     _skController.text = backup.sk ?? "";
-    _ivkController.text = backup.ivk;
+    _fvkController.text = backup.fvk ?? "";
+    _uvkController.text = backup.uvk ?? "";
   }
 
-  String get backupData => backup.value() + (backup.index != 0 ? " [${backup.index}]" : "");
+  String get backupData => (value ?? "") + (backup.index != 0 ? " [${backup.index}]" : "");
+  String? get value {
+    if (backup.seed != null) return backup.seed;
+    if (backup.sk != null) return backup.sk;
+    if (backup.uvk != null) return backup.uvk;
+    if (backup.fvk != null) return backup.fvk;
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final name = backup.name;
-    final type = backup.type;
+    final name = backup.name!;
     final theme = Theme.of(context);
     return Scaffold(appBar: AppBar(title: Text(s.backup)),
     body: SingleChildScrollView(child: Card(
@@ -52,7 +61,7 @@ class BackupState extends State<BackupPage> {
             readOnly: true,
             style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold),
           ),
-          if (type == 0) TextField(
+          if (backup.sk != null) TextField(
             decoration: InputDecoration(labelText: s.secretKey, prefixIcon: IconButton(icon: Icon(Icons.vpn_key),
               onPressed: () => _showQR(backup.sk!, "$name - sk"))),
             controller: _skController,
@@ -61,14 +70,23 @@ class BackupState extends State<BackupPage> {
             readOnly: true,
             style: theme.textTheme.bodySmall
           ),
-          if (type != 2) TextField(
+          if (backup.fvk != null) TextField(
             decoration: InputDecoration(labelText: s.viewingKey, prefixIcon: IconButton(icon: Icon(Icons.visibility),
-              onPressed: () => _showQR(backup.ivk, "$name - vk"))),
-            controller: _ivkController,
+              onPressed: () => _showQR(backup.fvk!, "$name - vk"))),
+            controller: _fvkController,
             minLines: 3,
             maxLines: 10,
             readOnly: true,
             style: theme.textTheme.bodySmall
+          ),
+          if (backup.uvk != null) TextField(
+              decoration: InputDecoration(labelText: s.unifiedViewingKey, prefixIcon: IconButton(icon: Icon(Icons.visibility),
+                  onPressed: () => _showQR(backup.uvk!, "$name - uvk"))),
+              controller: _uvkController,
+              minLines: 3,
+              maxLines: 10,
+              readOnly: true,
+              style: theme.textTheme.bodySmall
           ),
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
         Text(s.tapAnIconToShowTheQrCode),

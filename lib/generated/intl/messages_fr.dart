@@ -490,6 +490,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "txId": m24,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Pas assez de confs"),
+        "unifiedViewingKey":
+            MessageLookupByLibrary.simpleMessage("Clé publique unifiée"),
         "unshielded": MessageLookupByLibrary.simpleMessage("Transparent"),
         "unshieldedBalance":
             MessageLookupByLibrary.simpleMessage("Solde Transparent"),
@@ -506,8 +508,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "useUa": MessageLookupByLibrary.simpleMessage("Utiliser UA"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
         "veryLow": MessageLookupByLibrary.simpleMessage("Très bas"),
-        "viewingKey":
-            MessageLookupByLibrary.simpleMessage("Affichage de la clé"),
+        "viewingKey": MessageLookupByLibrary.simpleMessage("Clé publique"),
         "welcomeToYwallet":
             MessageLookupByLibrary.simpleMessage("Bienvenue à YWallet")
       };

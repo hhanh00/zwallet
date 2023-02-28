@@ -295,5 +295,6 @@
   "save": "Save",
   "signingPleaseWait": "Signing, please wait...",
   "sweep": "Sweep",
-  "transparentKey": "Transparent Key"
+  "transparentKey": "Transparent Key",
+  "unifiedViewingKey": "Unified Viewing Key"
 }

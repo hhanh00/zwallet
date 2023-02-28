@@ -482,6 +482,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "txId": m24,
         "underConfirmed":
             MessageLookupByLibrary.simpleMessage("Under Confirmed"),
+        "unifiedViewingKey":
+            MessageLookupByLibrary.simpleMessage("Unified Viewing Key"),
         "unshielded": MessageLookupByLibrary.simpleMessage("Unshielded"),
         "unshieldedBalance":
             MessageLookupByLibrary.simpleMessage("Unshielded Balance"),
