@@ -106,7 +106,6 @@ Future<void> registerURLHandler(BuildContext context) async {
   }
 
   subUniLinks = _appLinks.uriLinkStream.listen((uri) {
-    print(uri.toString());
     handleUri(context, uri);
   });
 }
