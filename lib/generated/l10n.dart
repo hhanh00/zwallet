@@ -3021,6 +3021,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Unified Viewing Key`
+  String get unifiedViewingKey {
+    return Intl.message(
+      'Unified Viewing Key',
+      name: 'unifiedViewingKey',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

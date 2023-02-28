@@ -241,7 +241,7 @@ class NativeLibrary {
   late final _dart_convert_to_watchonly _convert_to_watchonly =
       _convert_to_watchonly_ptr.asFunction<_dart_convert_to_watchonly>();
 
-  CResult_____c_char get_backup(
+  CResult______u8 get_backup(
     int coin,
     int id_account,
   ) {
@@ -1336,6 +1336,15 @@ class CResult_u32 extends ffi.Struct {
   external int len;
 }
 
+class CResult______u8 extends ffi.Struct {
+  external ffi.Pointer<ffi.Uint8> value;
+
+  external ffi.Pointer<ffi.Int8> error;
+
+  @ffi.Uint32()
+  external int len;
+}
+
 class CResult_____c_char extends ffi.Struct {
   external ffi.Pointer<ffi.Int8> value;
 
@@ -1348,15 +1357,6 @@ class CResult_____c_char extends ffi.Struct {
 class CResult_u64 extends ffi.Struct {
   @ffi.Uint64()
   external int value;
-
-  external ffi.Pointer<ffi.Int8> error;
-
-  @ffi.Uint32()
-  external int len;
-}
-
-class CResult______u8 extends ffi.Struct {
-  external ffi.Pointer<ffi.Uint8> value;
 
   external ffi.Pointer<ffi.Int8> error;
 
@@ -1457,6 +1457,14 @@ const int Quote_VT_PRICE = 6;
 const int Spending_VT_RECIPIENT = 4;
 
 const int AddressBalance_VT_INDEX = 4;
+
+const int Backup_VT_SEED = 6;
+
+const int Backup_VT_SK = 10;
+
+const int Backup_VT_FVK = 12;
+
+const int Backup_VT_UVK = 14;
 
 typedef _c_dummy_export = ffi.Void Function();
 
@@ -1600,12 +1608,12 @@ typedef _dart_convert_to_watchonly = CResult_u8 Function(
   int id_account,
 );
 
-typedef _c_get_backup = CResult_____c_char Function(
+typedef _c_get_backup = CResult______u8 Function(
   ffi.Uint8 coin,
   ffi.Uint32 id_account,
 );
 
-typedef _dart_get_backup = CResult_____c_char Function(
+typedef _dart_get_backup = CResult______u8 Function(
   int coin,
   int id_account,
 );

@@ -61,7 +61,7 @@
   "changeAccountName": "Modifier le nom du compte",
   "backupDataRequiredForRestore": "Données de sauvegarde - {name} - requises pour la restauration",
   "secretKey": "Clé secrète",
-  "viewingKey": "Affichage de la clé",
+  "viewingKey": "Clé publique",
   "tapAnIconToShowTheQrCode": "Appuyez sur une icône pour afficher le code QR",
   "multiPay": "Envoyer à plusieurs",
   "pleaseConfirm": "Veuillez confirmer",
@@ -293,5 +293,6 @@
   "save": "Sauver",
   "signingPleaseWait": "Signature en cours...",
   "sweep": "Balayer",
-  "transparentKey": "Clé Transparente"
+  "transparentKey": "Clé Transparente",
+  "unifiedViewingKey": "Clé publique unifiée"
 }

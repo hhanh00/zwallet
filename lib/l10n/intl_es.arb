@@ -293,5 +293,6 @@
   "save": "Guardar",
   "signingPleaseWait": "Firmando",
   "sweep": "Barrer",
-  "transparentKey": "Transparente Clavo"
+  "transparentKey": "Transparente Clavo",
+  "unifiedViewingKey": "Clave de visualización Unidad"
 }
