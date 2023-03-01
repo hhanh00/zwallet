@@ -1253,10 +1253,11 @@ packages:
   qr_flutter:
     dependency: "direct main"
     description:
-      name: qr_flutter
-      sha256: c5c121c54cb6dd837b9b9d57eb7bc7ec6df4aee741032060c8833a678c80b87e
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "4bdb1126e553b474b80c8c91e9f9e43baf1e9c4e"
+      resolved-ref: "4bdb1126e553b474b80c8c91e9f9e43baf1e9c4e"
+      url: "https://github.com/hhanh00/qr.flutter.git"
+    source: git
     version: "4.0.0"
   quick_actions:
     dependency: "direct main"

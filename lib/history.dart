@@ -143,8 +143,8 @@ class HistoryDataSource extends DataTableSource {
     final color = amountColor(context, tx.value);
     var style = Theme.of(context).textTheme.bodyMedium!.copyWith(color: color);
     style = weightFromAmount(style, tx.value);
-    final a = tx.contact ?? centerTrim(tx.address);
-    final m = tx.memo.substring(0, min(tx.memo.length, 32));
+    final a = tx.contact ?? centerTrim(tx.address ?? '');
+    final m = tx.memo?.substring(0, min(tx.memo!.length, 32)) ?? '';
 
     return DataRow(
         cells: [
@@ -228,7 +228,7 @@ class TxItem extends StatelessWidget {
               Text('${tx.txid}', style: theme.textTheme.labelSmall),
             ]),
             Padding(padding: EdgeInsets.symmetric(horizontal: 4)),
-            Expanded(child: MessageContentWidget(tx.contact ?? tx.address, message, tx.memo)),
+            Expanded(child: MessageContentWidget(tx.contact ?? tx.address ?? '', message, tx.memo ?? '')),
             SizedBox(
               width: 100,
               child: Column(children: [

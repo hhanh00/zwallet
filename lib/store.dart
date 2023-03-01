@@ -1023,9 +1023,9 @@ class Tx extends HasHeight {
   String txid;
   String fullTxId;
   double value;
-  String address;
+  String? address;
   String? contact;
-  String memo;
+  String? memo;
 
   Tx(this.id, this.height, this.timestamp, this.txid, this.fullTxId, this.value,
       this.address, this.contact, this.memo);

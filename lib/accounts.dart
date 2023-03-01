@@ -284,9 +284,9 @@ abstract class _ActiveAccount with Store {
         return _sort(txs2, (Tx tx) => tx.txid, txSortConfig.order);
       case "address":
         return _sort(
-            txs2, (Tx tx) => tx.contact ?? tx.address, txSortConfig.order);
+            txs2, (Tx tx) => tx.contact ?? tx.address ?? '', txSortConfig.order);
       case "memo":
-        return _sort(txs2, (Tx tx) => tx.memo, txSortConfig.order);
+        return _sort(txs2, (Tx tx) => tx.memo ?? '', txSortConfig.order);
     }
     return txs2;
   }
