@@ -443,7 +443,10 @@ class ZWalletAppState extends State<ZWalletApp> {
   static void _initWallet(CoinBase c) {
     WarpApi.migrateWallet(c.coin, c.dbFullPath);
     WarpApi.initWallet(c.coin, c.dbFullPath);
-    WarpApi.migrateData(c.coin);
+    try {
+      WarpApi.migrateData(c.coin);
+    }
+    catch (e) {} // do not fail on network exception
   }
 
   @override
