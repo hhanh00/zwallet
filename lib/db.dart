@@ -40,9 +40,9 @@ class DbReader {
           tx.shortTxId!,
           tx.txId!,
           tx.value / ZECUNIT,
-          tx.address!,
-          tx.name!.isNotEmpty ? tx.name! : null,
-          tx.memo!);
+          tx.address,
+          tx.name,
+          tx.memo);
     }).toList();
     print("TXS ${transactions.length}");
     return transactions;
