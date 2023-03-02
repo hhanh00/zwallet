@@ -199,6 +199,11 @@ class OnWindow extends WindowListener {
     prefs.setDouble('width', s.width);
     prefs.setDouble('height', s.height);
   }
+
+  @override
+  void onWindowClose() async {
+    WarpApi.cancelSync();
+  }
 }
 
 void main() async {
