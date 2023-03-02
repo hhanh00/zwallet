@@ -953,6 +953,7 @@ abstract class _ContactStore with Store {
     fetchContacts();
   }
 
+  @action
   markContactsSaved(int coin, bool v) {
     settings.coins[coin].contactsSaved = v;
     Future.microtask(() async {

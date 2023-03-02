@@ -6,6 +6,7 @@ import 'package:mobx/mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/data_fb_generated.dart' hide Account;
 import 'accounts.dart';
+import 'contact.dart';
 import 'dualmoneyinput.dart';
 import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
@@ -190,7 +191,10 @@ class SendState extends State<SendPage> {
                         )),
                         IconButton(
                             icon: new Icon(MdiIcons.qrcodeScan),
-                            onPressed: _onScan)
+                            onPressed: _onScan),
+                        IconButton(
+                            icon: new Icon(MdiIcons.contacts),
+                            onPressed: _onAddContact),
                       ]),
                       DualMoneyInputWidget(
                           key: _amountKey,
@@ -355,6 +359,10 @@ class SendState extends State<SendPage> {
     if (code != null) {
       _setPaymentURI(code);
     }
+  }
+
+  Future<void> _onAddContact() async {
+    await addContact(context, ContactT(address: _addressController.text));
   }
 
   void _setPaymentURI(String uriOrAddress) {
