@@ -5,6 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import 'home.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 import 'store.dart';
@@ -18,13 +19,15 @@ class ContactsTab extends StatefulWidget {
 class ContactsState extends State<ContactsTab> {
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
     return Observer(builder: (context) =>
       Padding(padding: EdgeInsets.all(8), child: contacts.contacts.isEmpty
           ? NoContact()
           : Column(children: [
-            if (!settings.coins[active.coin].contactsSaved) OutlinedButton(onPressed: active.canPay ? _onCommit : null, child: Text(S.of(context).saveToBlockchain), style: OutlinedButton.styleFrom(
+            if (!settings.coins[active.coin].contactsSaved) OutlinedButton(onPressed: _onCommit, child: Text(s.saveToBlockchain), style: OutlinedButton.styleFrom(
               side: BorderSide(
-                width: 1, color: Theme.of(context).primaryColor))),
+                width: 1, color: theme.primaryColor))),
             Expanded(child: ListView.builder(
                 itemCount: contacts.contacts.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -34,7 +37,7 @@ class ContactsState extends State<ContactsTab> {
                           key: Key("${c.id}"),
                           child: ListTile(
                             title: Text(c.name!,
-                                style: Theme.of(context).textTheme.headlineSmall),
+                                style: theme.textTheme.headlineSmall),
                             subtitle: Text(c.address!),
                             trailing: Icon(Icons.chevron_right),
                             onTap: () { _onContact(c); },
@@ -56,10 +59,7 @@ class ContactsState extends State<ContactsTab> {
   }
 
   _editContact(ContactT c) async {
-    final contact = await showContactForm(context, c, true);
-    if (contact != null) {
-      contacts.add(contact);
-    }
+    await addContact(context, c);
   }
 
   Future<bool> _onConfirmDelContact(ContactT c) async {
@@ -71,22 +71,6 @@ class ContactsState extends State<ContactsTab> {
 
   _delContact(ContactT c) {
     contacts.remove(c);
-  }
-
-  Future<ContactT?> showContactForm(BuildContext context, ContactT c, bool edit) async {
-    final key = GlobalKey<ContactState>();
-
-    final contact = await showDialog<ContactT>(
-        context: context,
-        builder: (context) => AlertDialog(
-              contentPadding: EdgeInsets.all(16),
-              title: Text(edit ? S.of(context).editContact : S.of(context).addContact),
-              content: ContactForm(c, key: key),
-              actions: confirmButtons(context, () {
-                key.currentState!.onOK();
-              }),
-            ));
-    return contact;
   }
 
   _onCommit() async {
@@ -224,5 +208,23 @@ class AddressState extends State<AddressInput> {
         final paymentURI = decodeAddress(context, address);
         _addressController.text = paymentURI.address;
       });
+  }
+}
+
+Future<void> addContact(BuildContext context, ContactT? c) async {
+  final s = S.of(context);
+  final key = GlobalKey<ContactState>();
+  final contact = await showDialog<ContactT>(
+      context: context,
+      builder: (context) => AlertDialog(
+        contentPadding: EdgeInsets.all(16),
+        title: Text(c?.name != null ? s.editContact : s.addContact),
+        content: ContactForm(c ?? ContactT(), key: key),
+        actions: confirmButtons(context, () {
+          key.currentState!.onOK();
+        }),
+      ));
+  if (contact != null) {
+    contacts.add(contact);
   }
 }

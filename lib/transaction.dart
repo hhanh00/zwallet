@@ -1,5 +1,7 @@
+import 'package:YWallet/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:warp_api/data_fb_generated.dart';
 
 import 'main.dart';
 import 'settings.dart';
@@ -43,7 +45,8 @@ class TransactionState extends State<TransactionPage> {
               subtitle: Text('${tx.timestamp}')),
           ListTile(title: Text(S.of(context).amount), subtitle: SelectableText(decimalFormat(tx.value, 8))),
           ListTile(
-              title: Text(S.of(context).address), subtitle: SelectableText('${tx.address}')),
+              title: Text(S.of(context).address), subtitle: SelectableText('${tx.address}'),
+            trailing: IconButton(icon: Icon(Icons.contacts), onPressed: _addContact)),
           ListTile(
               title: Text(S.of(context).contactName), subtitle: SelectableText('${tx.contact ?? "N/A"}')),
           ListTile(title: Text(S.of(context).memo), subtitle: SelectableText('${tx.memo}')),
@@ -69,5 +72,9 @@ class TransactionState extends State<TransactionPage> {
     setState(() {
       txIndex += 1;
     });
+  }
+
+  _addContact() async {
+    await addContact(context, ContactT(address: tx.address));
   }
 }
