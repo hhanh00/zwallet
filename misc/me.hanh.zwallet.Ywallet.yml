@@ -9,7 +9,6 @@ finish-args:
   - --socket=fallback-x11
   - --socket=wayland
   - --device=dri
-  - --filesystem=xdg-data/databases:create
 modules:
   - name: zwallet_build
     sources:
@@ -33,7 +32,7 @@ modules:
       - type: file
         path: ywallet.metainfo.xml
       - type: file
-        path: ../assets/icon.png
+        path: icon.png
     buildsystem: simple
     build-commands:
       - install -Dp -m 644 icon.png /app/share/icons/hicolor/256x256/apps/me.hanh.zwallet.Ywallet.png

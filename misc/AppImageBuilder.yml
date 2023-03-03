@@ -4,7 +4,7 @@ script:
   - rm -rf AppDir
   - mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
   - cp ../assets/icon.png AppDir/usr/share/icons/hicolor/256x256/apps/ywallet.png
-  - cp -r ../build/linux/x64/release/bundle/* AppDir
+  - tar xf ../zwallet.tgz -C AppDir
   - cp ../target/release/libwarp_api_ffi.so AppDir/lib
 AppDir:
   path: AppDir
@@ -23,7 +23,6 @@ AppDir:
     include:
       - libgtk-3-0
       - libgstreamer1.0 libgstreamer-plugins-base1.0
-      - libjsoncpp25 libsecret-1-0
     exclude:
       - humanity-icon-theme
       - hicolor-icon-theme
