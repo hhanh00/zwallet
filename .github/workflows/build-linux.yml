@@ -1,0 +1,24 @@
+name: Build only Linux
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build_flatpak:
+    name: Build flatpak
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: env
+        run: |
+          cat build.env >> $GITHUB_ENV
+
+      - name: Build
+        run: |
+          ./build-scripts/build-linux2.sh "${{ env.FLUTTER_VERSION }}" "/root"
