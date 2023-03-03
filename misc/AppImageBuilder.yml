@@ -23,6 +23,7 @@ AppDir:
     include:
       - libgtk-3-0
       - libgstreamer1.0 libgstreamer-plugins-base1.0
+      - libjsoncpp25 libsecret-1-0
     exclude:
       - humanity-icon-theme
       - hicolor-icon-theme

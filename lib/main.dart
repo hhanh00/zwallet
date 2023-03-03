@@ -8,6 +8,7 @@ import 'dart:ui';
 import 'package:app_links/app_links.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart' as p;
 import 'package:csv/csv.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
@@ -210,6 +211,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (!isMobile()) {
     await windowManager.ensureInitialized();
+
+    final secureStorage = FlutterSecureStorage();
+    await secureStorage.write(key: 'TEST_KEY', value: '1000');
+    final v = await secureStorage.read(key: 'TEST_KEY');
+    print(v);
 
     final prefs = await SharedPreferences.getInstance();
     final width = prefs.getDouble('width');

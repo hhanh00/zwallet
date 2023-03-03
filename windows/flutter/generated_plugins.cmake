@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   awesome_notifications
   connectivity_plus_windows
+  flutter_secure_storage_windows
   local_auth_windows
   network_info_plus_windows
   screen_retriever
