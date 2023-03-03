@@ -1,38 +1,15 @@
 #syntax=docker/dockerfile:1.2
-FROM ubuntu:focal AS builder
-ARG FLUTTER_VERSION
-ENV PATH $PATH:/flutter/bin:/root/.cargo/bin
-ENV HOME /root
-
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
-RUN apt-get install -y git curl unzip
-RUN apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libgdk-pixbuf2.0-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libsecret-1-dev libjsoncpp-dev
-
-RUN mkdir -p /root/.zcash-params
-RUN curl https://download.z.cash/downloads/sapling-output.params --output /root/.zcash-params/sapling-output.params
-RUN curl https://download.z.cash/downloads/sapling-spend.params --output /root/.zcash-params/sapling-spend.params
-
-RUN curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | sh -s -- -y
-RUN rustup install stable
-RUN cargo install cargo-make
-
-RUN git clone -b $FLUTTER_VERSION --depth 1 https://github.com/flutter/flutter.git /flutter
-RUN flutter doctor -v
-
-COPY . /zwallet
-
-RUN cd /zwallet && ./build-scripts/build-linux.sh
-RUN cd /zwallet/build/linux/x64/release/bundle && tar cvzf /zwallet.tgz *
-
 FROM hhanh00/zwallet_builder_flatpak
 
-COPY . /root
-RUN mkdir /root/misc/root
-COPY --from=builder /zwallet.tgz /root/misc/root/
-COPY --from=builder /zwallet/target/release/libwarp_api_ffi.so /root/misc/root/
+RUN mkdir -p /root/misc
+COPY misc /root/misc
+COPY build-scripts/build-flatpak.sh /root/misc
+COPY assets/icon.png /root/misc
+
+COPY zwallet.tgz /root/misc/root/
+COPY libwarp_api_ffi.so /root/misc/root/
 
 RUN mkdir /root/repo
 
 WORKDIR /root/misc
-ENTRYPOINT ["/root/build-scripts/build-flatpak2.sh"]
+ENTRYPOINT ["/root/misc/build-flatpak.sh"]

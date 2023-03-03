@@ -1,4 +1,4 @@
-name: Build only Linux
+name: Build and Release Linux AppImage/Flatpak
 
 on:
   workflow_dispatch:
@@ -7,8 +7,8 @@ on:
       - "v*"
 
 jobs:
-  build_flatpak:
-    name: Build flatpak
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,7 +18,26 @@ jobs:
       - name: env
         run: |
           cat build.env >> $GITHUB_ENV
+          echo $PWD/flutter/bin >> $GITHUB_PATH
 
       - name: Build
+        run: ./build-scripts/build-linux.sh "${{ env.FLUTTER_VERSION }}"
+
+      - name: appimage
+        run: ./build-scripts/build-appimage.sh
+
+      - name: Flatpak
         run: |
-          ./build-scripts/build-linux2.sh "${{ env.FLUTTER_VERSION }}" "/root"
+          docker build -f docker/Dockerfile-flatpak -t zwallet_flatpak_sh .
+          docker run --privileged --name zwallet_flatpak_bin zwallet_flatpak_sh
+          docker cp zwallet_flatpak_bin:/root/misc/ywallet.flatpak .
+          
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: |
+            ./misc/Ywallet-latest-x86_64.AppImage
+            ./ywallet.flatpak
+            ./zwallet.tgz
+            ./libwarp_api_ffi.so
