@@ -152,6 +152,21 @@ class NativeLibrary {
   late final _dart_get_lwd_url _get_lwd_url =
       _get_lwd_url_ptr.asFunction<_dart_get_lwd_url>();
 
+  void set_coin_passwd(
+    int coin,
+    ffi.Pointer<ffi.Int8> passwd,
+  ) {
+    return _set_coin_passwd(
+      coin,
+      passwd,
+    );
+  }
+
+  late final _set_coin_passwd_ptr =
+      _lookup<ffi.NativeFunction<_c_set_coin_passwd>>('set_coin_passwd');
+  late final _dart_set_coin_passwd _set_coin_passwd =
+      _set_coin_passwd_ptr.asFunction<_dart_set_coin_passwd>();
+
   void reset_app() {
     return _reset_app();
   }
@@ -1279,6 +1294,39 @@ class NativeLibrary {
   late final _dart_get_checkpoints _get_checkpoints =
       _get_checkpoints_ptr.asFunction<_dart_get_checkpoints>();
 
+  CResult_bool decrypt_db(
+    ffi.Pointer<ffi.Int8> db_path,
+    ffi.Pointer<ffi.Int8> passwd,
+  ) {
+    return _decrypt_db(
+      db_path,
+      passwd,
+    );
+  }
+
+  late final _decrypt_db_ptr =
+      _lookup<ffi.NativeFunction<_c_decrypt_db>>('decrypt_db');
+  late final _dart_decrypt_db _decrypt_db =
+      _decrypt_db_ptr.asFunction<_dart_decrypt_db>();
+
+  CResult_u8 clone_db_with_passwd(
+    int coin,
+    ffi.Pointer<ffi.Int8> temp_path,
+    ffi.Pointer<ffi.Int8> passwd,
+  ) {
+    return _clone_db_with_passwd(
+      coin,
+      temp_path,
+      passwd,
+    );
+  }
+
+  late final _clone_db_with_passwd_ptr =
+      _lookup<ffi.NativeFunction<_c_clone_db_with_passwd>>(
+          'clone_db_with_passwd');
+  late final _dart_clone_db_with_passwd _clone_db_with_passwd =
+      _clone_db_with_passwd_ptr.asFunction<_dart_clone_db_with_passwd>();
+
   int has_cuda() {
     return _has_cuda();
   }
@@ -1356,6 +1404,16 @@ class CResult_____c_char extends ffi.Struct {
 
 class CResult_u64 extends ffi.Struct {
   @ffi.Uint64()
+  external int value;
+
+  external ffi.Pointer<ffi.Int8> error;
+
+  @ffi.Uint32()
+  external int len;
+}
+
+class CResult_bool extends ffi.Struct {
+  @ffi.Int8()
   external int value;
 
   external ffi.Pointer<ffi.Int8> error;
@@ -1548,6 +1606,16 @@ typedef _c_get_lwd_url = ffi.Pointer<ffi.Int8> Function(
 
 typedef _dart_get_lwd_url = ffi.Pointer<ffi.Int8> Function(
   int coin,
+);
+
+typedef _c_set_coin_passwd = ffi.Void Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> passwd,
+);
+
+typedef _dart_set_coin_passwd = void Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> passwd,
 );
 
 typedef _c_reset_app = ffi.Void Function();
@@ -2296,6 +2364,28 @@ typedef _c_get_checkpoints = CResult______u8 Function(
 
 typedef _dart_get_checkpoints = CResult______u8 Function(
   int coin,
+);
+
+typedef _c_decrypt_db = CResult_bool Function(
+  ffi.Pointer<ffi.Int8> db_path,
+  ffi.Pointer<ffi.Int8> passwd,
+);
+
+typedef _dart_decrypt_db = CResult_bool Function(
+  ffi.Pointer<ffi.Int8> db_path,
+  ffi.Pointer<ffi.Int8> passwd,
+);
+
+typedef _c_clone_db_with_passwd = CResult_u8 Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> temp_path,
+  ffi.Pointer<ffi.Int8> passwd,
+);
+
+typedef _dart_clone_db_with_passwd = CResult_u8 Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> temp_path,
+  ffi.Pointer<ffi.Int8> passwd,
 );
 
 typedef _c_has_cuda = ffi.Int8 Function();

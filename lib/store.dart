@@ -221,6 +221,8 @@ abstract class _Settings with Store {
   @observable
   int minPrivacyLevel = 0;
 
+  String dbPasswd = "";
+
   @action
   Future<bool> restore() async {
     if (Platform.isIOS) SharedPreferencesIOS.registerWith();

@@ -38,6 +38,11 @@ Pointer<Uint8> toNativeBytes(Uint8List bytes) {
   return ptr;
 }
 
+bool unwrapResultBool(CResult_bool r) {
+  if (r.error != nullptr) throw convertCString(r.error);
+  return r.value != 0;
+}
+
 int unwrapResultU8(CResult_u8 r) {
   if (r.error != nullptr) throw convertCString(r.error);
   return r.value;
@@ -313,7 +318,11 @@ class WarpApi {
         syncHistoricalPricesIsolateFn, SyncHistoricalPricesParams(currency));
   }
 
-  static updateLWD(int coin, String url) {
+  static void setDbPasswd(int coin, String passwd) {
+    warp_api_lib.set_coin_passwd(coin, toNative(passwd));
+  }
+
+  static void updateLWD(int coin, String url) {
     warp_api_lib.set_coin_lwd_url(coin, url.toNativeUtf8().cast<Int8>());
   }
 
@@ -568,6 +577,14 @@ class WarpApi {
 
   static void clearTxDetails(int coin, int account) {
     warp_api_lib.clear_tx_details(coin, account);
+  }
+
+  static void cloneDbWithPasswd(int coin, String tempPath, String passwd) {
+    warp_api_lib.clone_db_with_passwd(coin, toNative(tempPath), toNative(passwd));
+  }
+
+  static bool decryptDb(String dbPath, String passwd) {
+    return unwrapResultBool(warp_api_lib.decrypt_db(toNative(dbPath), toNative(passwd)));
   }
 }
 

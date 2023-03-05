@@ -6,16 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:badges/badges.dart' as Badges;
+import 'package:path/path.dart' as p;
 
 import 'about.dart';
 import 'account.dart';
 import 'animated_qr.dart';
 import 'budget.dart';
+import 'coin/coins.dart';
 import 'contact.dart';
 import 'db.dart';
 import 'history.dart';
@@ -194,6 +197,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
               PopupMenuButton(
                   child: Text(s.advanced),
                   itemBuilder: (_) => [
+                    if (!isMobile()) PopupMenuItem(child: Text(s.encryptDatabase), value: "Encrypt"),
                     PopupMenuItem(child: Text(s.rewindToCheckpoint), value: "Rewind"),
                     PopupMenuItem(child: Text(s.convertToWatchonly), enabled: active.canPay, value: "Cold"),
                     PopupMenuItem(child: Text(s.signOffline), enabled: active.canPay, value: "Sign"),
@@ -296,6 +300,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         break;
       case "Expert":
         Navigator.of(context).pushNamed('/dev');
+        break;
+      case "Encrypt":
+        _encryptDb();
         break;
       case "Ledger":
         _ledger();
@@ -472,6 +479,56 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     //   final snackBar = SnackBar(content: Text(res));
     //   rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     // }
+  }
+
+  _encryptDb() async {
+    final s = S.of(context);
+    final hasPasswd = settings.dbPasswd.isNotEmpty;
+    final oldPasswdController = TextEditingController();
+    final newPasswdController = TextEditingController();
+    final repeatPasswdController = TextEditingController();
+    final confirmed = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) =>
+            AlertDialog(
+                title: Text(s.encryptDatabase),
+                contentPadding: EdgeInsets.all(16),
+                content: Form(child: SingleChildScrollView(child: Column(children: [
+                  if (hasPasswd) TextFormField(
+                    decoration: InputDecoration(labelText: s.currentPassword),
+                    obscureText: true,
+                    controller: oldPasswdController),
+                  TextFormField(
+                      decoration: InputDecoration(labelText: s.newPassword),
+                      obscureText: true,
+                      controller: newPasswdController),
+                  TextFormField(
+                      decoration: InputDecoration(labelText: s.repeatNewPassword),
+                      obscureText: true,
+                      controller: repeatPasswdController),
+                ]))),
+                actions: confirmButtons(
+                    context, () => Navigator.of(context).pop(true),
+                    cancelValue: false))) ??
+        false;
+    if (confirmed) {
+      if (oldPasswdController.text != settings.dbPasswd)
+        showSnackBar(s.currentPasswordIncorrect);
+      else if (newPasswdController.text != repeatPasswdController.text) {
+        showSnackBar(s.newPasswordsDoNotMatch);
+      }
+      else {
+        final passwd = newPasswdController.text;
+        for (var c in coins) {
+          final tempPath = p.join(settings.tempDir, c.dbName);
+          WarpApi.cloneDbWithPasswd(c.coin, tempPath, passwd);
+        }
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setBool('recover', true);
+        showSnackBar(s.databaseEncrypted);
+      }
+    }
   }
 
   _convertToWatchOnly() {

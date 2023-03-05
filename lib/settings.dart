@@ -152,13 +152,6 @@ class SettingsState extends State<SettingsPage>
                                       _needAuth = true;
                                     },
                                     onSaved: _onProtectOpen)),
-                            // if (coin.supportsUA)
-                            //   Expanded(
-                            //       child: FormBuilderCheckbox(
-                            //           name: 'use_ua',
-                            //           title: Text(s.useUa),
-                            //           initialValue: settings.useUA,
-                            //           onSaved: _onUseUA)),
                           ]),
 
                           if (!simpleMode)
@@ -304,6 +297,7 @@ class SettingsState extends State<SettingsPage>
                                 keyboardType: TextInputType.number,
                                 controller: _gapLimitController,
                                 onSaved: _onGapLimit),
+                          Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                           ButtonBar(children: confirmButtons(context, _onSave))
                         ]))))));
   }

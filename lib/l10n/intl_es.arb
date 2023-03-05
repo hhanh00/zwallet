@@ -294,5 +294,14 @@
   "signingPleaseWait": "Firmando",
   "sweep": "Barrer",
   "transparentKey": "Transparente Clavo",
-  "unifiedViewingKey": "Clave de visualización Unidad"
+  "unifiedViewingKey": "Clave de visualización Unidad",
+  "encryptDatabase": "Encrypt Database",
+  "currentPassword": "Current password",
+  "newPassword": "New Password",
+  "repeatNewPassword": "Repeat New Password",
+  "databasePassword": "Database Password",
+  "currentPasswordIncorrect": "Current password incorrect",
+  "newPasswordsDoNotMatch": "New passwords do not match",
+  "databaseEncrypted": "Database Encrypted. Please Restart the App.",
+  "invalidPassword": "Invalid Password"
 }

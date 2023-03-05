@@ -8,7 +8,6 @@ import 'dart:ui';
 import 'package:app_links/app_links.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart' as p;
 import 'package:csv/csv.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
@@ -212,11 +211,6 @@ void main() async {
   if (!isMobile()) {
     await windowManager.ensureInitialized();
 
-    final secureStorage = FlutterSecureStorage();
-    await secureStorage.write(key: 'TEST_KEY', value: '1000');
-    final v = await secureStorage.read(key: 'TEST_KEY');
-    print(v);
-
     final prefs = await SharedPreferences.getInstance();
     final width = prefs.getDouble('width');
     final height = prefs.getDouble('height');
@@ -391,9 +385,20 @@ class ZWalletAppState extends State<ZWalletApp> {
         _setProgress(0, 'Mempool');
         print("db path $dbPath");
         WarpApi.mempoolRun(unconfirmedBalancePort.sendPort.nativePort);
+
+        final c = coins.first;
+        if (!isMobile()) {
+          if (!WarpApi.decryptDb(c.dbFullPath, '')) {
+            final passwd = await getDbPasswd(context, c.dbFullPath);
+            if (passwd != null) {
+              settings.dbPasswd = passwd;
+            }
+          }
+        }
+
         for (var c in coins) {
           _setProgress(0.2 * (c.coin+1), 'Initializing ${c.ticker}');
-          await compute(_initWallet, c);
+          await compute(_initWallet, { 'coin': c, 'passwd': settings.dbPasswd });
         }
 
         _setProgress(0.7, 'Restoring Active Account');
@@ -451,7 +456,10 @@ class ZWalletAppState extends State<ZWalletApp> {
     return false;
   }
 
-  static void _initWallet(CoinBase c) {
+  static void _initWallet(Map<String, dynamic> args) {
+    CoinBase c = args['coin'];
+    String passwd = args['passwd'];
+    WarpApi.setDbPasswd(c.coin, passwd);
     WarpApi.migrateWallet(c.coin, c.dbFullPath);
     WarpApi.initWallet(c.coin, c.dbFullPath);
     try {
@@ -915,7 +923,7 @@ Future<String> getDataPath() async {
   String? home;
   if (Platform.isAndroid) home = (await getApplicationDocumentsDirectory()).parent.path;
   if (Platform.isWindows) home = Platform.environment['LOCALAPPDATA'];
-  if (Platform.isLinux) home = Platform.environment['XDG_DATA_HOME'];
+  if (Platform.isLinux) home = Platform.environment['XDG_DATA_HOME'] ?? Platform.environment['HOME'];
   if (Platform.isMacOS) home = Platform.environment['HOME'];
   final h = home ?? "";
   return h;
@@ -966,4 +974,38 @@ class NotificationController {
 
 void resetApp() {
   WarpApi.truncateData();
+}
+
+Future<String?> getDbPasswd(BuildContext context, String dbPath) async {
+  final s = S.of(context);
+  final passwdController = TextEditingController();
+  final checkPasswd = (String? v) {
+    final valid = WarpApi.decryptDb(dbPath, passwdController.text);
+    if (!valid) return s.invalidPassword;
+    return null;
+  };
+  final formKey = GlobalKey<FormState>();
+
+  final confirmed = await showDialog<bool>(
+      context: context,
+      barrierColor: Colors.black,
+      builder: (context) {
+        return AlertDialog(
+          content: Container(
+              width: double.maxFinite,
+              child: SingleChildScrollView(child: Form(key: formKey, child: Column(children: [
+                TextFormField(
+                  decoration: InputDecoration(labelText: s.databasePassword),
+                  controller: passwdController,
+                  validator: checkPasswd,
+                  obscureText: true,
+                ),
+              ])))),
+          actions: confirmButtons(context, () {
+            if (formKey.currentState!.validate())
+              Navigator.of(context).pop(true);
+          }, okLabel: s.ok),
+        );
+      }) ?? false;
+  return confirmed ? passwdController.text : null;
 }

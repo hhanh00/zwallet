@@ -190,8 +190,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Tap + to add a new contact"),
         "crypto": MessageLookupByLibrary.simpleMessage("Crypto"),
         "currency": MessageLookupByLibrary.simpleMessage("Currency"),
+        "currentPassword":
+            MessageLookupByLibrary.simpleMessage("Current Password"),
+        "currentPasswordIncorrect":
+            MessageLookupByLibrary.simpleMessage("Current password incorrect"),
         "custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "dark": MessageLookupByLibrary.simpleMessage("Dark"),
+        "databaseEncrypted": MessageLookupByLibrary.simpleMessage(
+            "Database Encrypted. Please Restart the App."),
+        "databasePassword":
+            MessageLookupByLibrary.simpleMessage("Database Password"),
         "databaseUpdatedPleaseRestartTheApp":
             MessageLookupByLibrary.simpleMessage(
                 "Database updated. Please restart the app."),
@@ -219,6 +227,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "duplicateContact": MessageLookupByLibrary.simpleMessage(
             "Another contact has this address"),
         "editContact": MessageLookupByLibrary.simpleMessage("Edit Contact"),
+        "encryptDatabase":
+            MessageLookupByLibrary.simpleMessage("Encrypt Database"),
         "encryptedBackup": m6,
         "encryptionKey": MessageLookupByLibrary.simpleMessage("Encryption Key"),
         "enterSecretShareIfAccountIsMultisignature":
@@ -255,6 +265,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "invalidAddress":
             MessageLookupByLibrary.simpleMessage("Invalid Address"),
         "invalidKey": MessageLookupByLibrary.simpleMessage("Invalid Key"),
+        "invalidPassword":
+            MessageLookupByLibrary.simpleMessage("Invalid Password"),
         "invalidQrCode": m8,
         "key": MessageLookupByLibrary.simpleMessage(
             "Seed, Secret Key or View Key (optional)"),
@@ -295,6 +307,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Name is empty"),
         "newAccount": MessageLookupByLibrary.simpleMessage("New Account"),
         "newLabel": MessageLookupByLibrary.simpleMessage("New"),
+        "newPassword": MessageLookupByLibrary.simpleMessage("New Password"),
+        "newPasswordsDoNotMatch":
+            MessageLookupByLibrary.simpleMessage("New passwords do not match"),
         "newSnapAddress":
             MessageLookupByLibrary.simpleMessage("New Snap Address"),
         "newSubAccount":
@@ -360,6 +375,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Receive Payment"),
         "received": m13,
         "recipient": MessageLookupByLibrary.simpleMessage("Recipient"),
+        "repeatNewPassword":
+            MessageLookupByLibrary.simpleMessage("Repeat New Password"),
         "reply": MessageLookupByLibrary.simpleMessage("Reply"),
         "rescan": MessageLookupByLibrary.simpleMessage("Rescan"),
         "rescanFrom": MessageLookupByLibrary.simpleMessage("Rescan from..."),
