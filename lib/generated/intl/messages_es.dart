@@ -193,8 +193,16 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Crea un contacto y aparecerá aquí."),
         "crypto": MessageLookupByLibrary.simpleMessage("Crypto"),
         "currency": MessageLookupByLibrary.simpleMessage("Moneda"),
+        "currentPassword":
+            MessageLookupByLibrary.simpleMessage("Current password"),
+        "currentPasswordIncorrect":
+            MessageLookupByLibrary.simpleMessage("Current password incorrect"),
         "custom": MessageLookupByLibrary.simpleMessage("Personalizado"),
         "dark": MessageLookupByLibrary.simpleMessage("Noche"),
+        "databaseEncrypted": MessageLookupByLibrary.simpleMessage(
+            "Database Encrypted. Please Restart the App."),
+        "databasePassword":
+            MessageLookupByLibrary.simpleMessage("Database Password"),
         "databaseUpdatedPleaseRestartTheApp":
             MessageLookupByLibrary.simpleMessage(
                 "Por favor reinicie la aplicación"),
@@ -221,6 +229,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "duplicateAccount":
             MessageLookupByLibrary.simpleMessage("Cuenta duplicada"),
         "editContact": MessageLookupByLibrary.simpleMessage("Editar contacto"),
+        "encryptDatabase":
+            MessageLookupByLibrary.simpleMessage("Encrypt Database"),
         "encryptedBackup": m6,
         "encryptionKey":
             MessageLookupByLibrary.simpleMessage("Clave de encriptación"),
@@ -260,6 +270,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "invalidAddress":
             MessageLookupByLibrary.simpleMessage("La Dirección no es válida"),
         "invalidKey": MessageLookupByLibrary.simpleMessage("Tecla inválida"),
+        "invalidPassword":
+            MessageLookupByLibrary.simpleMessage("Invalid Password"),
         "invalidQrCode": m8,
         "key": MessageLookupByLibrary.simpleMessage("Clave"),
         "keyTool": MessageLookupByLibrary.simpleMessage("Clave Utilidad"),
@@ -300,6 +312,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Nombre vacío"),
         "newAccount": MessageLookupByLibrary.simpleMessage("Nueva cuenta"),
         "newLabel": MessageLookupByLibrary.simpleMessage("Nueva"),
+        "newPassword": MessageLookupByLibrary.simpleMessage("New Password"),
+        "newPasswordsDoNotMatch":
+            MessageLookupByLibrary.simpleMessage("New passwords do not match"),
         "newSnapAddress":
             MessageLookupByLibrary.simpleMessage("Nueva Dirección instantánea"),
         "newSubAccount":
@@ -364,6 +379,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Recibir un pago"),
         "received": m13,
         "recipient": MessageLookupByLibrary.simpleMessage("Destinatario"),
+        "repeatNewPassword":
+            MessageLookupByLibrary.simpleMessage("Repeat New Password"),
         "reply": MessageLookupByLibrary.simpleMessage("Responder"),
         "rescan": MessageLookupByLibrary.simpleMessage("Escanear"),
         "rescanFrom":

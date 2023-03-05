@@ -3031,6 +3031,96 @@ class S {
       args: [],
     );
   }
+
+  /// `Encrypt Database`
+  String get encryptDatabase {
+    return Intl.message(
+      'Encrypt Database',
+      name: 'encryptDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current Password`
+  String get currentPassword {
+    return Intl.message(
+      'Current Password',
+      name: 'currentPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Password`
+  String get newPassword {
+    return Intl.message(
+      'New Password',
+      name: 'newPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Repeat New Password`
+  String get repeatNewPassword {
+    return Intl.message(
+      'Repeat New Password',
+      name: 'repeatNewPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database Password`
+  String get databasePassword {
+    return Intl.message(
+      'Database Password',
+      name: 'databasePassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current password incorrect`
+  String get currentPasswordIncorrect {
+    return Intl.message(
+      'Current password incorrect',
+      name: 'currentPasswordIncorrect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New passwords do not match`
+  String get newPasswordsDoNotMatch {
+    return Intl.message(
+      'New passwords do not match',
+      name: 'newPasswordsDoNotMatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database Encrypted. Please Restart the App.`
+  String get databaseEncrypted {
+    return Intl.message(
+      'Database Encrypted. Please Restart the App.',
+      name: 'databaseEncrypted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Password`
+  String get invalidPassword {
+    return Intl.message(
+      'Invalid Password',
+      name: 'invalidPassword',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

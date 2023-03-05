@@ -296,5 +296,14 @@
   "signingPleaseWait": "Signing, please wait...",
   "sweep": "Sweep",
   "transparentKey": "Transparent Key",
-  "unifiedViewingKey": "Unified Viewing Key"
+  "unifiedViewingKey": "Unified Viewing Key",
+  "encryptDatabase": "Encrypt Database",
+  "currentPassword": "Current Password",
+  "newPassword": "New Password",
+  "repeatNewPassword": "Repeat New Password",
+  "databasePassword": "Database Password",
+  "currentPasswordIncorrect": "Current password incorrect",
+  "newPasswordsDoNotMatch": "New passwords do not match",
+  "databaseEncrypted": "Database Encrypted. Please Restart the App.",
+  "invalidPassword": "Invalid Password"
 }
