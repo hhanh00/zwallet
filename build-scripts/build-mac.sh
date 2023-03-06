@@ -12,8 +12,8 @@ flutter doctor -v
 sed -e 's/rlib/cdylib/' < native/zcash-sync/Cargo.toml >/tmp/out.toml
 mv /tmp/out.toml native/zcash-sync/Cargo.toml
 
-cargo b -r --target=x86_64-apple-darwin --features=dart_ffi
-cargo b -r --target=aarch64-apple-darwin --features=dart_ffi
+cargo b -r --target=x86_64-apple-darwin --features=dart_ffi,sqlcipher
+cargo b -r --target=aarch64-apple-darwin --features=dart_ffi,sqlcipher
 
 mkdir -p target/universal/release
 lipo target/x86_64-apple-darwin/release/libwarp_api_ffi.dylib target/aarch64-apple-darwin/release/libwarp_api_ffi.dylib -output target/universal/release/libwarp_api_ffi.dylib -create

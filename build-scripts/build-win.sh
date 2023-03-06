@@ -14,7 +14,7 @@ flutter doctor -v
 # DLL
 sed -e 's/rlib/cdylib/' < native/zcash-sync/Cargo.toml >/tmp/out.toml
 mv /tmp/out.toml native/zcash-sync/Cargo.toml
-cargo b -r --features=dart_ffi
+cargo b -r --features=dart_ffi,sqlcipher
 
 # Codegen
 flutter pub get

@@ -102,11 +102,16 @@ class FullBackupState extends State<FullBackupPage> {
 
   _onSave(BuildContext context) async {
     if (key.text.isNotEmpty) {
-      settings.setBackupEncKey(key.text);
-      WarpApi.zipBackup(key.text, settings.tempDir);
-      final backupPath = p.join(settings.tempDir, BACKUP_NAME);
-      await exportFile(context, backupPath, BACKUP_NAME);
-      Navigator.of(context).pop();
+      try {
+        settings.setBackupEncKey(key.text);
+        WarpApi.zipBackup(key.text, settings.tempDir);
+        final backupPath = p.join(settings.tempDir, BACKUP_NAME);
+        await exportFile(context, backupPath, BACKUP_NAME);
+        Navigator.of(context).pop();
+      }
+      on String catch (msg) {
+        showSnackBar(msg);
+      }
     }
   }
 

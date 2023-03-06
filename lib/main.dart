@@ -989,6 +989,7 @@ Future<String?> getDbPasswd(BuildContext context, String dbPath) async {
   final confirmed = await showDialog<bool>(
       context: context,
       barrierColor: Colors.black,
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
           content: Container(
