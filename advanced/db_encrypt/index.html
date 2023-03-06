@@ -5,7 +5,7 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>Cold Storage :: YWallet</title>
+<title>Database Encryption :: YWallet</title>
 <link href=/css/nucleus.css?1678089312 rel=stylesheet>
 <link href=/css/fontawesome-all.min.css?1678089312 rel=stylesheet>
 <link href=/css/hybrid.css?1678089312 rel=stylesheet>
@@ -20,15 +20,16 @@
 <link href=/common.css?1678089312 rel=stylesheet>
 <script src=/js/jquery-3.3.1.min.js?1678089312></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
-<meta property="og:title" content="Cold Storage">
-<meta property="og:description" content="In a cold storage transaction, the mobile account does not have the secret key needed for spending. However, it is able to build an unsigned transaction and export it as a file.
-The account owner moves the file to another computer that holds the secret key (preferably offline and air-gapped for security).
-On the offline computer, he signs the transaction and generate a now valid transaction that he saves to another file.">
+<meta property="og:title" content="Database Encryption">
+<meta property="og:description" content="Desktop Only If you use the database encryption feature, all the database files are encrypted with 256 bit AES encryption in CBC mode.
+The encryption key is derived from your password/passphrase using PBKDF2. For more details, refer to SQLCipher Design.
+By encrypting your database files, your accounts are protected in case malware exfiltrates them our of your computer.
+This feature is only offered on the desktop versions because mobile devices have file system encryption and application isolation.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ywallet.app/advanced/cold-storage/"><meta property="article:section" content="advanced">
+<meta property="og:url" content="https://ywallet.app/advanced/db_encrypt/"><meta property="article:section" content="advanced">
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
-<body data-url=/advanced/cold-storage/>
+<body data-url=/advanced/db_encrypt/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -299,7 +300,7 @@ MultiPay
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/advanced/cold-storage/ title="Cold Storage" class="dd-item active">
+<li data-nav-id=/advanced/cold-storage/ title="Cold Storage" class=dd-item>
 <a href=/advanced/cold-storage/>
 Cold Storage
 <i class="fas fa-check read-icon"></i>
@@ -347,7 +348,7 @@ Key Tool
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/advanced/db_encrypt/ title="Database Encryption" class=dd-item>
+<li data-nav-id=/advanced/db_encrypt/ title="Database Encryption" class="dd-item active">
 <a href=/advanced/db_encrypt/>
 Database Encryption
 <i class="fas fa-check read-icon"></i>
@@ -462,33 +463,18 @@ FAQ
 </span>
 <span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > <a href=/advanced/>Advanced Usage</a> > Cold Storage
+<a href=/>YWallet</a> > <a href=/advanced/>Advanced Usage</a> > Database Encryption
 </span>
 </div>
 <div class=progress>
 <div class=wrapper>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#qr-codes-or-files>QR codes or Files</a></li>
-<li><a href=#preparing-the-unsigned-transaction>Preparing the unsigned transaction</a>
-<ul>
-<li><a href=#qr-code>QR Code</a></li>
-<li><a href=#files>Files</a></li>
-</ul>
-</li>
-<li><a href=#sign>Sign</a>
-<ul>
-<li><a href=#command-line-tool>Command Line Tool</a></li>
-</ul>
-</li>
-<li><a href=#offline-ywallet>Offline Ywallet</a>
-<ul>
-<li><a href=#qr-code-1>QR Code</a></li>
-</ul>
-</li>
-<li><a href=#broadcast>Broadcast</a></li>
-<li><a href=#remarks>Remarks</a></li>
-<li><a href=#demo>Demo</a></li>
+<li><a href=#desktop-only>Desktop Only</a></li>
+<li><a href=#encryptdecrypt>Encrypt/Decrypt</a></li>
+<li><a href=#startup>Startup</a></li>
+<li><a href=#backup--restore>Backup / Restore</a></li>
+<li><a href=#forgotten-password>Forgotten Password</a></li>
 </ul>
 </nav>
 </div>
@@ -499,117 +485,64 @@ FAQ
 </div>
 <div id=body-inner>
 <h1>
-Cold Storage
+Database Encryption
 </h1>
-<p>In a cold storage transaction, the mobile account does not have
-the secret key needed for spending.
-However, it is able to build an unsigned transaction and export
-it as a file.</p>
-<p>The account owner moves the file to another computer that holds
-the secret key (preferably offline and air-gapped for security).</p>
-<p>On the offline computer, he signs the transaction and generate
-a now valid transaction that he saves to another file.</p>
-<p>After importing the later into the Y/ZWallet, the transaction
-is finalized and broadcast.</p>
-<p>This workflow ensures that the secret key never leave the computer
-that is isolated from the Internet.</p>
-<p><a href=https://en.bitcoin.it/wiki/Cold_storage>Cold Storage in the context of Bitcoin</a></p>
-<p>The same concept is applicable to Zcash.</p>
-<h2 id=qr-codes-or-files>QR codes or Files</h2>
-<img class="img mb-4" src=../img/2022-06-21_17-27-37.png>
-<ul>
-<li>Choose QR codes if your signing device and your cold wallets have
-cameras and are in close proximity,</li>
-<li>Use files otherwise</li>
-</ul>
-<h2 id=preparing-the-unsigned-transaction>Preparing the unsigned transaction</h2>
-<p>If the account does not have a secret key either because it was restored
-from viewing key or because it was converted to Cold Storage,
-the button Send is dimmed. Instead of signing and broadcasting a transaction,
-the Send page prepares an unsigned transaction.</p>
-<h3 id=qr-code>QR Code</h3>
-<p>If you enabled the &ldquo;Use QR codes for offline signing&rdquo;,
-you will get an animated QR code:</p>
-<img class="img mb-4" src=../img/2022-06-21_17-26-12.png>
-<div class="notices note"><p>The transaction is too large to fit in a single QR code. YWallet uses
-animated QR codes with error correction (RaptorQ).</p>
+<h2 id=desktop-only>Desktop Only</h2>
+<p>If you use the database encryption feature, all the database files are
+encrypted with 256 bit AES encryption in CBC mode.</p>
+<p>The encryption key is derived from your password/passphrase
+using PBKDF2. For more details, refer to <a href=https://www.zetetic.net/sqlcipher/design/>SQLCipher Design</a>.</p>
+<p>By encrypting your database files, your accounts are protected in case
+malware exfiltrates them our of your computer.</p>
+<div class="notices note"><p>This feature is only offered on the desktop versions because mobile
+devices have file system encryption and application isolation.
+Their security model is stronger than desktop OS. The later typically
+only provides security at the user level.</p>
 </div>
-<h3 id=files>Files</h3>
-<p>Depending on your phone OS, you can save the unsigned transaction to
-a USB key, or to the Cloud.</p>
-<p>The transaction file must be copied to the computer that has the <code>sign</code>
-application.</p>
+<h2 id=encryptdecrypt>Encrypt/Decrypt</h2>
+<p>Choose the &ldquo;Advanced/Encrypt Database&rdquo; menu item.
 <div class=p-img>
-<img class=img src=../img/IMG_0094.PNG>
-</div>
-<h2 id=sign>Sign</h2>
-<p>There are two options for signing the transaction. You can either use
-a command line tool (with no GUI) or use another phone/device with
-YWallet that you keep offline.</p>
-<div class="notices note"><p>We recommend using another phone as the signer. Please, make sure that it was
-factory reset and that it was never connected to the Internet.</p>
-</div>
-<h3 id=command-line-tool>Command Line Tool</h3>
-<p>You can build the <code>sign</code> app from its <a href=https://github.com/hhanh00/zcash-sync>source code</a></p>
-<p>To run the <code>sign</code> app, you need to create an <code>.env</code> file that has
-a line</p>
-<pre tabindex=0><code>KEY=&quot;&lt;seed or secret-key&gt;&quot;
-</code></pre><p>For example,</p>
-<pre tabindex=0><code>KEY=&quot;human tissue pony dose host stamp tag hockey begin wisdom humble divorce goose grief analyst hard axis fiscal flat cloud huge pair sunset into&quot;
-</code></pre><p>Then run the signer as follows:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sign &lt;unsigned filename&gt; &lt;signed filename&gt;
-</code></pre></div><p>For example,</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sign tx.json tx.raw
-</code></pre></div><p>Then copy <code>tx.raw</code> back to a USB drive (or Cloud storage)</p>
-<h2 id=offline-ywallet>Offline Ywallet</h2>
-<img class="img mb-4" src=../img/2022-06-21_17-55-21.png>
-<p>Use the &ldquo;Sign&rdquo; menu. It will ask you to open the unsigned transaction file
-and proceed to sign it. If the current account contains the secret key
-it will create a raw transaction and offer you to save it.</p>
-<h3 id=qr-code-1>QR Code</h3>
-<p>Point your camera and scan the animated QR code. Every time a QR code is captured,
-your phone will make a little &ldquo;click&rdquo;. Once all the data is read, the wallet
-will display the details of the transaction.</p>
-<img class="img mb-4" src=../img/2022-06-22_8-42-42.png>
-<p>Make sure that the information is valid.</p>
-<p>Then tap to Sign the transaction and produce an animated QR code for it.</p>
-<h2 id=broadcast>Broadcast</h2>
-<p><div class=p-img>
-<img class=img src=../img/IMG_0095.PNG>
-</div>
-<div class=p-img>
-<img class=img src=../img/IMG_0097.PNG>
-</div>
-<div class=p-img>
-<img class=img src=../img/IMG_0098.PNG>
+<img class=img src=../img/2023-03-06_16-57-27.png>
 </div>
 </p>
-<ol>
-<li>Select &ldquo;Broadcast&rdquo; from the app menu</li>
-<li>Pick up the raw transaction file from the storage (or point your camera
-to scan the animated QR code)</li>
-<li>Wait for the transaction id</li>
-</ol>
-<h2 id=remarks>Remarks</h2>
-<ul>
-<li>USB drive is safer than Cloud storage but in any case, the files
-do not contain any information that could be used to reveal your secret key</li>
-<li>Do not send the unsigned transaction without authentication over a unsecure
-channel. An attacker could <em>modify</em> the payment information and make the signer
-sign a different transaction!</li>
-</ul>
-<div class="notices warning"><p>You should use GPG to encrypt and sign your transaction if you
-transmit it over an unsecure channel.</p>
+<p>If your database is encrypted, you will need to provide the
+current database password.</p>
+<p>Input the new password and repeat it for confirmation.</p>
+<div class=p-img>
+<img class=img src=../img/2023-03-06_17-10-25.png>
 </div>
-<h2 id=demo>Demo</h2>
-<p><a href="https://www.youtube.com/watch?v=Z5yXXHjjWNQ&t=547s">Youtube video</a></p>
+<p>To remove database encryption, leave the new password empty.</p>
+<h2 id=startup>Startup</h2>
+<div class=p-img>
+<img class=img src=../img/2023-03-06_17-08-37.png>
+</div>
+<p>At startup, you will be required to enter the database password
+if you have set one.</p>
+<div class="notices warning"><p>If you forget your database password, you will have to recover
+your accounts from seed or from batch backup!</p>
+</div>
+<h2 id=backup--restore>Backup / Restore</h2>
+<p>Backing up an encrypted database is not supported. Remove the encryption
+before making a batch backup.
+After restoring a batch backup, the database is unencrypted.</p>
+<h2 id=forgotten-password>Forgotten Password</h2>
+<p>If you need to reset the state of the application because you forgot
+the database password, you have to delete the database files.</p>
+<p>Their location varies depending on the OS.</p>
+<ul>
+<li>Windows: <localappdata>/databases</li>
+<li>Linux: &lt;XDG_DATA_HOME>/databases or <home>/databases</li>
+<li>MacOS: <home>/databases</li>
+</ul>
+<p>On mobile devices, the database directory is not accessible unless
+your device is rooted/jailbroken.</p>
 <footer class=footline>
 </footer>
 </div>
 </div>
 <div id=navigation>
-<a class="nav nav-prev" href=/advanced/multipay/ title=MultiPay> <i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=/advanced/offline_signature/ title="Offline Signature Tutorial" style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/advanced/keytool/ title="Key Tool"> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/settings/ title=Settings style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
