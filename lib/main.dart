@@ -98,6 +98,7 @@ void handleUri(BuildContext context, Uri uri) {
 }
 
 Future<void> registerURLHandler(BuildContext context) async {
+  if (Platform.isLinux) return;
   final _appLinks = AppLinks();
 
   final uri = await _appLinks.getInitialAppLink();
@@ -387,7 +388,7 @@ class ZWalletAppState extends State<ZWalletApp> {
         WarpApi.mempoolRun(unconfirmedBalancePort.sendPort.nativePort);
 
         final c = coins.first;
-        if (!isMobile()) {
+        if (!isMobile() && File(c.dbFullPath).existsSync()) {
           if (!WarpApi.decryptDb(c.dbFullPath, '')) {
             final passwd = await getDbPasswd(context, c.dbFullPath);
             if (passwd != null) {
