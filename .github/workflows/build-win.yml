@@ -17,10 +17,21 @@ jobs:
       - name: env
         run: |
           type build.env >> $env:GITHUB_ENV
+          echo 'D:\flutter\bin' >> $env:GITHUB_PATH
+          echo $env:GITHUB_PATH
 
-      - name: build
+      - name: build 1/3
         shell: bash
-        run: ./build-scripts/build-win.sh "${{ env.FLUTTER_VERSION }}"
+        run: ./build-scripts/build-win1.sh "${{ env.FLUTTER_VERSION }}"
+
+      - name: build 2/3
+        run: cargo b -r --features=dart_ffi,sqlcipher
+        env:
+          HOME: 'D:\'
+
+      - name: build 3/3
+        shell: bash
+        run: ./build-scripts/build-win2.sh
 
       - name: Release
         uses: softprops/action-gh-release@v1
