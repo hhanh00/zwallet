@@ -142,7 +142,8 @@ abstract class _ActiveAccount with Store {
     final prefs = await SharedPreferences.getInstance();
     final coin = prefs.getInt('coin') ?? 0;
     var id = prefs.getInt('account') ?? 0;
-    setActiveAccount(coin, id);
+    if (WarpApi.checkAccount(coin, id))
+      setActiveAccount(coin, id);
     checkAndUpdate();
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
+import 'coin/coins.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
 import 'package:path/path.dart' as p;
@@ -229,4 +230,17 @@ Future<void> showRestartMessage() async {
       content: Text(S.of(context).pleaseQuitAndRestartTheAppNow)
     )
   );
+}
+
+Future<void> clearApp(BuildContext context) async {
+  final reset = await showDialog<bool>(context: context, barrierDismissible: false, builder:
+    (context) => AlertDialog(
+      title: Text('Reset Database'),
+      content: Text('Are you sure you want to DELETE ALL your data?'),
+      actions: confirmButtons(context, () => Navigator.of(context).pop(true)),
+  )) ?? false;
+  if (reset) {
+    final c = coins.first;
+    File(c.dbDir).deleteSync(recursive: true);
+  }
 }
