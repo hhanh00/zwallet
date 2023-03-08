@@ -183,7 +183,6 @@
   "mode": "Mode",
   "simple": "Simple",
   "advanced": "Advanced",
-  "changingTheModeWillTakeEffectAtNextRestart": "Changing the mode will take effect at next restart",
   "sendFrom": "Sent from {app}",
   "defaultMemo": "Default Memo",
   "fullBackup": "Full Backup",
@@ -200,7 +199,6 @@
   "newSubAccount": "New Sub Account",
   "noActiveAccount": "No active account",
   "closeApplication": "Close Application",
-  "pleaseRestartNow": "Please Restart now",
   "disconnected": "Disconnected",
   "ledger": "Ledger",
   "mobileCharges": "On Mobile Data, scanning may incur additional charges. Do you want to proceed?",
@@ -270,7 +268,6 @@
   "set": "Set",
   "encryptionKey": "Encryption Key",
   "dbImportSuccessful": "Db Import Successful",
-  "databaseUpdatedPleaseRestartTheApp": "Database updated. Please restart the app.",
   "pools": "Pool Transfer",
   "fromPool": "From Pool",
   "toPool": "To Pool",
@@ -304,6 +301,7 @@
   "databasePassword": "Database Password",
   "currentPasswordIncorrect": "Current password incorrect",
   "newPasswordsDoNotMatch": "New passwords do not match",
-  "databaseEncrypted": "Database Encrypted. Please Restart the App.",
-  "invalidPassword": "Invalid Password"
+  "databaseEncrypted": "Database Encrypted",
+  "invalidPassword": "Invalid Password",
+  "databaseRestored": "Database Restored"
 }

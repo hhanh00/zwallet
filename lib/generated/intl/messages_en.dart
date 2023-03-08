@@ -159,9 +159,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Change Account Name"),
         "changeTransparentKey":
             MessageLookupByLibrary.simpleMessage("Change Transparent Key"),
-        "changingTheModeWillTakeEffectAtNextRestart":
-            MessageLookupByLibrary.simpleMessage(
-                "Changing the mode will take effect at next restart"),
         "checkTransaction":
             MessageLookupByLibrary.simpleMessage("Check Transaction"),
         "close": MessageLookupByLibrary.simpleMessage("Close"),
@@ -196,13 +193,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Current password incorrect"),
         "custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "dark": MessageLookupByLibrary.simpleMessage("Dark"),
-        "databaseEncrypted": MessageLookupByLibrary.simpleMessage(
-            "Database Encrypted. Please Restart the App."),
+        "databaseEncrypted":
+            MessageLookupByLibrary.simpleMessage("Database Encrypted"),
         "databasePassword":
             MessageLookupByLibrary.simpleMessage("Database Password"),
-        "databaseUpdatedPleaseRestartTheApp":
-            MessageLookupByLibrary.simpleMessage(
-                "Database updated. Please restart the app."),
+        "databaseRestored":
+            MessageLookupByLibrary.simpleMessage("Database Restored"),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "datetime": MessageLookupByLibrary.simpleMessage("Date/Time"),
         "dbImportSuccessful":
@@ -348,8 +344,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "pleaseConfirm": MessageLookupByLibrary.simpleMessage("Please Confirm"),
         "pleaseQuitAndRestartTheAppNow": MessageLookupByLibrary.simpleMessage(
             "Please Quit and Restart the app now"),
-        "pleaseRestartNow":
-            MessageLookupByLibrary.simpleMessage("Please Restart now"),
         "pnl": MessageLookupByLibrary.simpleMessage("Pnl"),
         "pnlHistory": MessageLookupByLibrary.simpleMessage("PNL History"),
         "pools": MessageLookupByLibrary.simpleMessage("Pool Transfer"),
