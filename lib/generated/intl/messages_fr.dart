@@ -160,9 +160,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Modifier le nom du compte"),
         "changeTransparentKey":
             MessageLookupByLibrary.simpleMessage("Changer la clé"),
-        "changingTheModeWillTakeEffectAtNextRestart":
-            MessageLookupByLibrary.simpleMessage(
-                "Changer le mode prendra effet au prochain démarrage"),
         "checkTransaction":
             MessageLookupByLibrary.simpleMessage("Vérifier la Transaction"),
         "close": MessageLookupByLibrary.simpleMessage("Fermer"),
@@ -193,17 +190,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "crypto": MessageLookupByLibrary.simpleMessage("Crypto"),
         "currency": MessageLookupByLibrary.simpleMessage("Devise"),
         "currentPassword":
-            MessageLookupByLibrary.simpleMessage("Current password"),
+            MessageLookupByLibrary.simpleMessage("Mot de Passe courrant"),
         "currentPasswordIncorrect":
-            MessageLookupByLibrary.simpleMessage("Current password incorrect"),
+            MessageLookupByLibrary.simpleMessage("Mot de Passe incorrect"),
         "custom": MessageLookupByLibrary.simpleMessage("Personnaliser"),
         "dark": MessageLookupByLibrary.simpleMessage("Sombre"),
-        "databaseEncrypted": MessageLookupByLibrary.simpleMessage(
-            "Database Encrypted. Please Restart the App."),
+        "databaseEncrypted":
+            MessageLookupByLibrary.simpleMessage("BD encryptée"),
         "databasePassword":
-            MessageLookupByLibrary.simpleMessage("Database Password"),
-        "databaseUpdatedPleaseRestartTheApp":
-            MessageLookupByLibrary.simpleMessage("Redémarrer l\'appli SVP"),
+            MessageLookupByLibrary.simpleMessage("Mot de Passe de la BD"),
+        "databaseRestored":
+            MessageLookupByLibrary.simpleMessage("BD Récupèrée"),
         "date": MessageLookupByLibrary.simpleMessage("Date"),
         "datetime": MessageLookupByLibrary.simpleMessage("Jour/Heure"),
         "dbImportSuccessful":
@@ -230,7 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "editContact":
             MessageLookupByLibrary.simpleMessage("Changer le Contact"),
         "encryptDatabase":
-            MessageLookupByLibrary.simpleMessage("Encrypt Database"),
+            MessageLookupByLibrary.simpleMessage("Encrypter la BD"),
         "encryptedBackup": m6,
         "encryptionKey": MessageLookupByLibrary.simpleMessage("Clé Publique"),
         "enterSecretShareIfAccountIsMultisignature":
@@ -270,7 +267,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Adresse invalide"),
         "invalidKey": MessageLookupByLibrary.simpleMessage("Clé invalide"),
         "invalidPassword":
-            MessageLookupByLibrary.simpleMessage("Invalid Password"),
+            MessageLookupByLibrary.simpleMessage("Mot de Passe incorrect"),
         "invalidQrCode": m8,
         "key": MessageLookupByLibrary.simpleMessage("Clé"),
         "keyTool": MessageLookupByLibrary.simpleMessage("Clés Utilitaires"),
@@ -312,9 +309,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Le nom est vide"),
         "newAccount": MessageLookupByLibrary.simpleMessage("Nouveau Compte"),
         "newLabel": MessageLookupByLibrary.simpleMessage("Nouveau"),
-        "newPassword": MessageLookupByLibrary.simpleMessage("New Password"),
-        "newPasswordsDoNotMatch":
-            MessageLookupByLibrary.simpleMessage("New passwords do not match"),
+        "newPassword":
+            MessageLookupByLibrary.simpleMessage("Nouveau Mot de Passe"),
+        "newPasswordsDoNotMatch": MessageLookupByLibrary.simpleMessage(
+            "Les nouveaux Mots de Passe ne correspondent pas"),
         "newSnapAddress": MessageLookupByLibrary.simpleMessage(
             "Nouvelle adresse instantanée"),
         "newSubAccount":
@@ -351,8 +349,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Veuillez vous authentifier pour voir la graine du compte"),
         "pleaseConfirm":
             MessageLookupByLibrary.simpleMessage("Veuillez confirmer"),
-        "pleaseRestartNow":
-            MessageLookupByLibrary.simpleMessage("Please Restart now"),
         "pnl": MessageLookupByLibrary.simpleMessage("P/P"),
         "pnlHistory":
             MessageLookupByLibrary.simpleMessage("Historique des P/P"),
@@ -380,8 +376,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Recevoir un payment"),
         "received": m13,
         "recipient": MessageLookupByLibrary.simpleMessage("Destinataire"),
-        "repeatNewPassword":
-            MessageLookupByLibrary.simpleMessage("Repeat New Password"),
+        "repeatNewPassword": MessageLookupByLibrary.simpleMessage(
+            "Répéter le Nouveau Mot de Passe"),
         "reply": MessageLookupByLibrary.simpleMessage("Répondre"),
         "rescan": MessageLookupByLibrary.simpleMessage("Parcourir à nouveau"),
         "rescanFrom":

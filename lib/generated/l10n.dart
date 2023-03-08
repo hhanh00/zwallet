@@ -1892,16 +1892,6 @@ class S {
     );
   }
 
-  /// `Changing the mode will take effect at next restart`
-  String get changingTheModeWillTakeEffectAtNextRestart {
-    return Intl.message(
-      'Changing the mode will take effect at next restart',
-      name: 'changingTheModeWillTakeEffectAtNextRestart',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Sent from {app}`
   String sendFrom(Object app) {
     return Intl.message(
@@ -2057,16 +2047,6 @@ class S {
     return Intl.message(
       'Close Application',
       name: 'closeApplication',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please Restart now`
-  String get pleaseRestartNow {
-    return Intl.message(
-      'Please Restart now',
-      name: 'pleaseRestartNow',
       desc: '',
       args: [],
     );
@@ -2762,16 +2742,6 @@ class S {
     );
   }
 
-  /// `Database updated. Please restart the app.`
-  String get databaseUpdatedPleaseRestartTheApp {
-    return Intl.message(
-      'Database updated. Please restart the app.',
-      name: 'databaseUpdatedPleaseRestartTheApp',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Pool Transfer`
   String get pools {
     return Intl.message(
@@ -3102,10 +3072,10 @@ class S {
     );
   }
 
-  /// `Database Encrypted. Please Restart the App.`
+  /// `Database Encrypted`
   String get databaseEncrypted {
     return Intl.message(
-      'Database Encrypted. Please Restart the App.',
+      'Database Encrypted',
       name: 'databaseEncrypted',
       desc: '',
       args: [],
@@ -3117,6 +3087,16 @@ class S {
     return Intl.message(
       'Invalid Password',
       name: 'invalidPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database Restored`
+  String get databaseRestored {
+    return Intl.message(
+      'Database Restored',
+      name: 'databaseRestored',
       desc: '',
       args: [],
     );

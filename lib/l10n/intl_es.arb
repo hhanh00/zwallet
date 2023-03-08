@@ -181,7 +181,6 @@
   "mode": "Modo",
   "simple": "Básico",
   "advanced": "Avanzado",
-  "changingTheModeWillTakeEffectAtNextRestart": "Cambiar el modo tendrá efecto en el próximo reinicio",
   "sendFrom": "Enviado desde {app}",
   "defaultMemo": "Nota",
   "fullBackup": "Copia completa",
@@ -198,7 +197,6 @@
   "newSubAccount": "Nueva subcuenta",
   "noActiveAccount": "Sin cuenta activa",
   "closeApplication": "Cierra la aplicación",
-  "pleaseRestartNow": "Reiniciar ahora",
   "disconnected": "Desconectado",
   "ledger": "Ledger",
   "mobileCharges": "Con datos móviles, el escaneo puede incurrir en cargos adicionales. ¿Quieres proceder?",
@@ -268,7 +266,6 @@
   "set": "Utilizar",
   "encryptionKey": "Clave de encriptación",
   "dbImportSuccessful": "Importación exitosa",
-  "databaseUpdatedPleaseRestartTheApp": "Por favor reinicie la aplicación",
   "pools": "Transferir Suministros",
   "fromPool": "Del Suministro",
   "toPool": "Para Suministro",
@@ -303,5 +300,6 @@
   "currentPasswordIncorrect": "Current password incorrect",
   "newPasswordsDoNotMatch": "New passwords do not match",
   "databaseEncrypted": "Database Encrypted. Please Restart the App.",
-  "invalidPassword": "Invalid Password"
+  "invalidPassword": "Invalid Password",
+  "databaseRestored": "Database Restored"
 }

@@ -204,32 +204,29 @@ class _FullRestoreState extends State<FullRestorePage> {
       try {
         if (key.isNotEmpty) {
           WarpApi.unzipBackup(key, filename, settings.tempDir);
-          await showDialog<bool>(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) =>
-                AlertDialog(
-                    title: Text(s.dbImportSuccessful),
-                    content: Text(s.databaseUpdatedPleaseRestartTheApp),
-                    actions: [
-                      ElevatedButton.icon(onPressed: () => Navigator.of(context).pop(), icon: Icon(Icons.check),
-                        label: Text(s.ok))
-                    ]
-          ));
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setBool('recover', true);
         }
         else {
           final file = File(filename);
           final backup = await file.readAsString();
           WarpApi.importFromZWL(active.coin, "ZWL Imported Account", backup);
         }
-        syncStatus.setAccountRestored(true);
-        Navigator.of(context).pop();
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('recover', true);
+        showSnackBar(s.databaseRestored);
+        await showRestartMessage(); // This doesn't return
       }
       on String catch (message) {
         showSnackBar(message);
       }
     }
   }
+}
+
+Future<void> showRestartMessage() async {
+  final context = navigatorKey.currentContext!;
+  await showDialog(context: context, barrierDismissible: false, builder:
+    (context) => AlertDialog(
+      content: Text(S.of(context).pleaseQuitAndRestartTheAppNow)
+    )
+  );
 }

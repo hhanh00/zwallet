@@ -160,9 +160,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cambiar nombre de la cuenta"),
         "changeTransparentKey": MessageLookupByLibrary.simpleMessage(
             "Cambiar la clave transparente"),
-        "changingTheModeWillTakeEffectAtNextRestart":
-            MessageLookupByLibrary.simpleMessage(
-                "Cambiar el modo tendrá efecto en el próximo reinicio"),
         "checkTransaction":
             MessageLookupByLibrary.simpleMessage("Verificar la transacción"),
         "close": MessageLookupByLibrary.simpleMessage("Cerrar"),
@@ -203,9 +200,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Database Encrypted. Please Restart the App."),
         "databasePassword":
             MessageLookupByLibrary.simpleMessage("Database Password"),
-        "databaseUpdatedPleaseRestartTheApp":
-            MessageLookupByLibrary.simpleMessage(
-                "Por favor reinicie la aplicación"),
+        "databaseRestored":
+            MessageLookupByLibrary.simpleMessage("Database Restored"),
         "date": MessageLookupByLibrary.simpleMessage("Fecha"),
         "datetime": MessageLookupByLibrary.simpleMessage("Fecha/Hora"),
         "dbImportSuccessful":
@@ -351,8 +347,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Autentíquese para ver la semilla de la cuenta"),
         "pleaseConfirm":
             MessageLookupByLibrary.simpleMessage("Por favor, confirmar"),
-        "pleaseRestartNow":
-            MessageLookupByLibrary.simpleMessage("Reiniciar ahora"),
         "pnl": MessageLookupByLibrary.simpleMessage("G&P"),
         "pnlHistory": MessageLookupByLibrary.simpleMessage("Historia de G&P"),
         "pools": MessageLookupByLibrary.simpleMessage("Transferir Suministros"),

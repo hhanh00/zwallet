@@ -26,6 +26,7 @@ import 'generated/l10n.dart';
 import 'main.dart';
 import 'message.dart';
 import 'note.dart';
+import 'reset.dart';
 import 'store.dart';
 
 class HomePage extends StatefulWidget {
@@ -527,6 +528,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         final prefs = await SharedPreferences.getInstance();
         prefs.setBool('recover', true);
         showSnackBar(s.databaseEncrypted);
+        await showRestartMessage();
       }
     }
   }
