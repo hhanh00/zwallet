@@ -6,19 +6,19 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>Database Encryption :: YWallet</title>
-<link href=/css/nucleus.css?1678093488 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1678093488 rel=stylesheet>
-<link href=/css/hybrid.css?1678093488 rel=stylesheet>
-<link href=/css/featherlight.min.css?1678093488 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1678093488 rel=stylesheet>
-<link href=/css/auto-complete.css?1678093488 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1678093488 rel=stylesheet>
-<link href=/css/theme.css?1678093488 rel=stylesheet>
-<link href=/css/tabs.css?1678093488 rel=stylesheet>
-<link href=/css/hugo-theme.css?1678093488 rel=stylesheet>
-<link href=/css/theme-blue.css?1678093488 rel=stylesheet>
-<link href=/common.css?1678093488 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1678093488></script>
+<link href=/css/nucleus.css?1678250686 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1678250686 rel=stylesheet>
+<link href=/css/hybrid.css?1678250686 rel=stylesheet>
+<link href=/css/featherlight.min.css?1678250686 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1678250686 rel=stylesheet>
+<link href=/css/auto-complete.css?1678250686 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1678250686 rel=stylesheet>
+<link href=/css/theme.css?1678250686 rel=stylesheet>
+<link href=/css/tabs.css?1678250686 rel=stylesheet>
+<link href=/css/hugo-theme.css?1678250686 rel=stylesheet>
+<link href=/css/theme-blue.css?1678250686 rel=stylesheet>
+<link href=/common.css?1678250686 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1678250686></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <meta property="og:title" content="Database Encryption">
 <meta property="og:description" content="Desktop Only If you use the database encryption feature, all the database files are encrypted with 256 bit AES encryption in CBC mode.
@@ -42,10 +42,10 @@ This feature is only offered on the desktop versions because mobile devices have
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1678093488></script>
-<script type=text/javascript src=/js/auto-complete.js?1678093488></script>
+<script type=text/javascript src=/js/lunr.min.js?1678250686></script>
+<script type=text/javascript src=/js/auto-complete.js?1678250686></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1678093488></script>
+<script type=text/javascript src=/js/search.js?1678250686></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -497,7 +497,9 @@ malware exfiltrates them our of your computer.</p>
 <div class="notices note"><p>This feature is only offered on the desktop versions because mobile
 devices have file system encryption and application isolation.
 Their security model is stronger than desktop OS. The later typically
-only provides permissions at the user level.</p>
+only provides permissions at the user level.
+On mobile devices, the &ldquo;Protect Open&rdquo; feature provides the same
+functionality.</p>
 </div>
 <h2 id=encryptdecrypt>Encrypt/Decrypt</h2>
 <p>Choose the &ldquo;Advanced/Encrypt Database&rdquo; menu item.
@@ -514,7 +516,7 @@ current database password.</p>
 <p>To remove database encryption, leave the new password empty.</p>
 <h2 id=startup>Startup</h2>
 <div class=p-img>
-<img class=img src=../img/2023-03-06_17-08-37.png>
+<img class=img src=../img/2023-03-08_14-38-22.png>
 </div>
 <p>At startup, you will be required to enter the database password
 if you have set one.</p>
@@ -527,15 +529,12 @@ before making a batch backup.
 After restoring a batch backup, the database is unencrypted.</p>
 <h2 id=forgotten-password>Forgotten Password</h2>
 <p>If you need to reset the state of the application because you forgot
-the database password, you have to delete the database files.</p>
-<p>Their location varies depending on the OS.</p>
-<ul>
-<li>Windows: <code>&lt;LOCALAPPDATA>/databases</code></li>
-<li>Linux: <code>&lt;XDG_DATA_HOME>/databases</code> or <code>&lt;HOME>/databases</code></li>
-<li>MacOS: <code>&lt;HOME>/databases</code></li>
-</ul>
-<p>On mobile devices, the database directory is not accessible unless
-your device is rooted/jailbroken.</p>
+the database password, you have to reset the app.</p>
+<div class=p-img>
+<img class=img src=../img/2023-03-08_14-38-41.png>
+</div>
+<div class="notices warning"><p>Resetting the database <strong>DELETES</strong> every account.</p>
+</div>
 <footer class=footline>
 </footer>
 </div>
@@ -548,17 +547,17 @@ your device is rooted/jailbroken.</p>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1678093488></script>
-<script src=/js/perfect-scrollbar.min.js?1678093488></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1678093488></script>
-<script src=/js/jquery.sticky.js?1678093488></script>
-<script src=/js/featherlight.min.js?1678093488></script>
-<script src=/js/highlight.pack.js?1678093488></script>
+<script src=/js/clipboard.min.js?1678250686></script>
+<script src=/js/perfect-scrollbar.min.js?1678250686></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1678250686></script>
+<script src=/js/jquery.sticky.js?1678250686></script>
+<script src=/js/featherlight.min.js?1678250686></script>
+<script src=/js/highlight.pack.js?1678250686></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1678093488></script>
-<script src=/js/learn.js?1678093488></script>
-<script src=/js/hugo-learn.js?1678093488></script>
-<script src=/mermaid/mermaid.js?1678093488></script>
+<script src=/js/modernizr.custom-3.6.0.js?1678250686></script>
+<script src=/js/learn.js?1678250686></script>
+<script src=/js/hugo-learn.js?1678250686></script>
+<script src=/mermaid/mermaid.js?1678250686></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
