@@ -761,6 +761,21 @@ class NativeLibrary {
   late final _dart_truncate_sync_data _truncate_sync_data =
       _truncate_sync_data_ptr.asFunction<_dart_truncate_sync_data>();
 
+  int check_account(
+    int coin,
+    int account,
+  ) {
+    return _check_account(
+      coin,
+      account,
+    );
+  }
+
+  late final _check_account_ptr =
+      _lookup<ffi.NativeFunction<_c_check_account>>('check_account');
+  late final _dart_check_account _check_account =
+      _check_account_ptr.asFunction<_dart_check_account>();
+
   void delete_account(
     int coin,
     int account,
@@ -2007,6 +2022,16 @@ typedef _dart_truncate_data = void Function();
 typedef _c_truncate_sync_data = ffi.Void Function();
 
 typedef _dart_truncate_sync_data = void Function();
+
+typedef _c_check_account = ffi.Int8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+);
+
+typedef _dart_check_account = int Function(
+  int coin,
+  int account,
+);
 
 typedef _c_delete_account = ffi.Void Function(
   ffi.Uint8 coin,

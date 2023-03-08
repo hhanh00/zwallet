@@ -190,6 +190,10 @@ class WarpApi {
     return unwrapResultString(address);
   }
 
+  static bool checkAccount(int coin, int account) {
+    return account != 0 && warp_api_lib.check_account(coin, account) != 0;
+  }
+
   static void setActiveAccount(int coin, int account) {
     warp_api_lib.set_active(coin);
     warp_api_lib.set_active_account(coin, account);

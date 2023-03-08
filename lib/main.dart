@@ -388,14 +388,17 @@ class ZWalletAppState extends State<ZWalletApp> {
         WarpApi.mempoolRun(unconfirmedBalancePort.sendPort.nativePort);
 
         final c = coins.first;
-        if (!isMobile() && File(c.dbFullPath).existsSync()) {
-          if (!WarpApi.decryptDb(c.dbFullPath, '')) {
-            final passwd = await getDbPasswd(context, c.dbFullPath);
-            if (passwd != null) {
-              settings.dbPasswd = passwd;
-            }
+        do {
+          if (isMobile()) break; // db encryption is only for desktop
+          if (!File(c.dbFullPath).existsSync()) break; // fresh install
+          if (WarpApi.decryptDb(c.dbFullPath, '')) break; // not encrypted
+
+          final reset = await getDbPasswd(context, c.dbFullPath);
+          if (reset) { // user didn't input the passwd and wants to reset
+            await clearApp(context);
           }
-        }
+          else break;
+        } while(true);
 
         for (var c in coins) {
           _setProgress(0.2 * (c.coin+1), 'Initializing ${c.ticker}');
@@ -977,8 +980,9 @@ void resetApp() {
   WarpApi.truncateData();
 }
 
-Future<String?> getDbPasswd(BuildContext context, String dbPath) async {
+Future<bool> getDbPasswd(BuildContext context, String dbPath) async {
   final s = S.of(context);
+  final navigator = navigatorKey.currentState!;
   final passwdController = TextEditingController();
   final checkPasswd = (String? v) {
     final valid = WarpApi.decryptDb(dbPath, passwdController.text);
@@ -987,7 +991,7 @@ Future<String?> getDbPasswd(BuildContext context, String dbPath) async {
   };
   final formKey = GlobalKey<FormState>();
 
-  final confirmed = await showDialog<bool>(
+  final reset = await showDialog<bool>(
       context: context,
       barrierColor: Colors.black,
       barrierDismissible: false,
@@ -1000,14 +1004,28 @@ Future<String?> getDbPasswd(BuildContext context, String dbPath) async {
                   decoration: InputDecoration(labelText: s.databasePassword),
                   controller: passwdController,
                   validator: checkPasswd,
+                  onSaved: (v) { settings.dbPasswd = v!; },
                   obscureText: true,
                 ),
               ])))),
-          actions: confirmButtons(context, () {
-            if (formKey.currentState!.validate())
-              Navigator.of(context).pop(true);
-          }, okLabel: s.ok),
-        );
+          actions:
+            <ElevatedButton>[
+            ElevatedButton.icon(
+              icon: Icon(Icons.lock_reset),
+              label: Text(s.reset),
+              onPressed: () => navigator.pop(true)),
+            ElevatedButton.icon(
+            icon: Icon(Icons.done),
+            label: Text(s.ok),
+            onPressed: () {
+              final fs = formKey.currentState!;
+              if (fs.validate()) {
+                fs.save();
+                navigator.pop(false);
+              }
+            })
+        ]);
       }) ?? false;
-  return confirmed ? passwdController.text : null;
+
+  return reset;
 }
