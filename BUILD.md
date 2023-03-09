@@ -196,7 +196,7 @@ you'd probably be better installing an IDE and the dependencies (Flutter & Rust)
 - Install the discsize & scp plugins
 - Use the `Vagrantfile` & `vagrant-install.sh` from `misc`
 - Edit `Vagrantfile` if you want to change:
-  - # of CPU
+  - Number of CPU
   - VM memory
   - Zwallet branch
 - vagrant up
