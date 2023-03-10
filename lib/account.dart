@@ -166,9 +166,7 @@ class QRAddressState extends State<QRAddressWidget> {
       final shortAddress = centerTrim(address);
       final showTAddr = active.showTAddr;
       final hasTAddr = active.taddress.isNotEmpty;
-      final flat = settings.flat;
       final qrSize = getScreenSize(context) / 2.5;
-      final hide = settings.autoHide && flat;
       final coinDef = active.coinDef;
 
       return Column(children: [
@@ -181,7 +179,7 @@ class QRAddressState extends State<QRAddressWidget> {
             onTap: hasTAddr ? _onQRTap : null,
             onLongPress: _onUpdateTAddr,
             child: RotatedBox(
-                quarterTurns: hide ? 2 : 0,
+                quarterTurns: 0,
                 child: QrImage(
                     data: address,
                     size: qrSize,
@@ -313,7 +311,17 @@ class BalanceWidget extends StatelessWidget {
         final s = S.of(context);
         final theme = Theme.of(context);
         final flat = settings.flat;
-        final hide = settings.autoHide && flat;
+        final hide = () {
+          switch (settings.autoHide) {
+            case 0:
+              return false;
+            case 1:
+              return flat;
+            case 2:
+              return true;
+          }
+          return true;
+        }();
         final showTAddr = active.showTAddr;
         final balance = showTAddr ? active.tbalance : active.balances.balance;
         final balanceColor = !showTAddr
@@ -342,7 +350,7 @@ class BalanceWidget extends StatelessWidget {
                 Text(' $balanceHi', style: balanceStyle),
                 if (!hide) Text('${_getBalanceLo(balance)}'),
               ]),
-          if (hide) Text(s.tiltYourDeviceUpToRevealYourBalance),
+          if (hide && settings.autoHide == 1) Text(s.tiltYourDeviceUpToRevealYourBalance),
           if (!hide && fx != 0.0)
             Text("${decimalFormat(balanceFX, 2, symbol: settings.currency)}",
                 style: theme.textTheme.titleLarge),

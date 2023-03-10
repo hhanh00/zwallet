@@ -111,6 +111,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "advanced": MessageLookupByLibrary.simpleMessage("Avanzado"),
         "advancedOptions":
             MessageLookupByLibrary.simpleMessage("Opciones Avanzadas"),
+        "always": MessageLookupByLibrary.simpleMessage("Always"),
         "amount": MessageLookupByLibrary.simpleMessage("Monto"),
         "amountInSettingscurrency": m0,
         "amountMustBeANumber": MessageLookupByLibrary.simpleMessage(
@@ -306,6 +307,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "na": MessageLookupByLibrary.simpleMessage("N/A"),
         "name": MessageLookupByLibrary.simpleMessage("Nombre"),
         "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Nombre vacío"),
+        "never": MessageLookupByLibrary.simpleMessage("Never"),
         "newAccount": MessageLookupByLibrary.simpleMessage("Nueva cuenta"),
         "newLabel": MessageLookupByLibrary.simpleMessage("Nueva"),
         "newPassword": MessageLookupByLibrary.simpleMessage("New Password"),

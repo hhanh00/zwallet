@@ -3101,6 +3101,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Never`
+  String get never {
+    return Intl.message(
+      'Never',
+      name: 'never',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Always`
+  String get always {
+    return Intl.message(
+      'Always',
+      name: 'always',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

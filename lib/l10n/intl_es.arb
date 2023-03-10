@@ -301,5 +301,7 @@
   "newPasswordsDoNotMatch": "New passwords do not match",
   "databaseEncrypted": "Database Encrypted. Please Restart the App.",
   "invalidPassword": "Invalid Password",
-  "databaseRestored": "Database Restored"
+  "databaseRestored": "Database Restored",
+  "never": "Never",
+  "always": "Always"
 }
