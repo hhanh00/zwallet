@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:flat_buffers/flat_buffers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:ffi/ffi.dart';
@@ -378,10 +379,9 @@ class WarpApi {
     return unwrapResultString(json);
   }
 
-  static AGEKeys generateKey() {
-    final key = warp_api_lib.generate_key();
-    final json = unwrapResultString(key);
-    final ageKeys = AGEKeys.fromJson(jsonDecode(json));
+  static Agekeys generateKey() {
+    final keys = unwrapResultBytes(warp_api_lib.generate_key());
+    final ageKeys = Agekeys(keys);
     return ageKeys;
   }
 
@@ -395,11 +395,10 @@ class WarpApi {
   }
 
   static List<String> splitData(int id, String data) {
-    final res = unwrapResultString(
+    final res = unwrapResultBytes(
         warp_api_lib.split_data(id, data.toNativeUtf8().cast<Int8>()));
-    final jsonMap = jsonDecode(res);
-    final raptorq = RaptorQDrops.fromJson(jsonMap);
-    return raptorq.drops;
+    final raptorq = RaptorQdrops(res);
+    return raptorq.drops!;
   }
 
   static String mergeData(String drop) {
@@ -413,10 +412,10 @@ class WarpApi {
   }
 
   static String getBestServer(List<String> urls) {
-    final servers = Servers(urls);
-    final serversJson = jsonEncode(servers);
+    final servers = ServersObjectBuilder(urls: urls);
+    final buffer = servers.toBytes();
     final bestServer = unwrapResultString(
-        warp_api_lib.get_best_server(serversJson.toNativeUtf8().cast<Int8>()));
+        warp_api_lib.get_best_server(toNativeBytes(buffer), buffer.length));
     return bestServer;
   }
 

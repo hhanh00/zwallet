@@ -24,18 +24,6 @@ class Recipient {
 }
 
 @JsonSerializable()
-class RaptorQDrops {
-  final List<String> drops;
-
-  RaptorQDrops(this.drops);
-
-  factory RaptorQDrops.fromJson(Map<String, dynamic> json) =>
-      _$RaptorQDropsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$RaptorQDropsToJson(this);
-}
-
-@JsonSerializable()
 class UnsignedTxSummary {
   final List<RecipientSummary> recipients;
 
@@ -76,20 +64,6 @@ class KeyPack {
 }
 
 @JsonSerializable()
-class Progress {
-  final int height;
-  final int trial_decryptions;
-  final int downloaded;
-
-  Progress(this.height, this.trial_decryptions, this.downloaded);
-
-  factory Progress.fromJson(Map<String, dynamic> json) =>
-      _$ProgressFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ProgressToJson(this);
-}
-
-@JsonSerializable()
 class TxOutput {
   final int id;
   final String address;
@@ -123,63 +97,4 @@ class TxReport {
       _$TxReportFromJson(json);
 
   Map<String, dynamic> toJson() => _$TxReportToJson(this);
-}
-
-// @JsonSerializable()
-// class Backup {
-//   final String name;
-//   final String? seed;
-//   final int index;
-//   final String? sk;
-//   final String ivk;
-//
-//   Backup(this.name, this.seed, this.index, this.sk, this.ivk);
-//
-//   String value() {
-//     switch (type) {
-//       case 0:
-//         return seed!;
-//       case 1:
-//         return sk!;
-//       case 2:
-//         return ivk;
-//     }
-//     return "";
-//   }
-//
-//   int get type {
-//     if (seed != null)
-//       return 0;
-//     else if (sk != null)
-//       return 1;
-//     return 2;
-//   }
-//
-//   factory Backup.fromJson(Map<String, dynamic> json) =>
-//       _$BackupFromJson(json);
-//
-//   Map<String, dynamic> toJson() => _$BackupToJson(this);
-// }
-
-@JsonSerializable()
-class Servers {
-  final List<String> urls;
-  Servers(this.urls);
-
-  factory Servers.fromJson(Map<String, dynamic> json) =>
-      _$ServersFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ServersToJson(this);
-}
-
-@JsonSerializable()
-class AGEKeys {
-  final String sk;
-  final String pk;
-  AGEKeys(this.sk, this.pk);
-
-  factory AGEKeys.fromJson(Map<String, dynamic> json) =>
-      _$AGEKeysFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AGEKeysToJson(this);
 }

@@ -859,7 +859,7 @@ abstract class _SyncStatus with Store {
 
   @action
   void setProgress(Progress progress) {
-    trialDecryptionCount = progress.trial_decryptions;
+    trialDecryptionCount = progress.trialDecryptions;
     syncedHeight = progress.height;
     downloadedSize = progress.downloaded;
   }
