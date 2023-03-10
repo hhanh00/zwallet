@@ -303,5 +303,7 @@
   "newPasswordsDoNotMatch": "New passwords do not match",
   "databaseEncrypted": "Database Encrypted",
   "invalidPassword": "Invalid Password",
-  "databaseRestored": "Database Restored"
+  "databaseRestored": "Database Restored",
+  "never": "Never",
+  "always": "Always"
 }

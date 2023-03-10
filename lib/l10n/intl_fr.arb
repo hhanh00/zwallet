@@ -302,5 +302,7 @@
   "newPasswordsDoNotMatch": "Les nouveaux Mots de Passe ne correspondent pas",
   "databaseEncrypted": "BD encryptée",
   "invalidPassword": "Mot de Passe incorrect",
-  "databaseRestored": "BD Récupèrée"
+  "databaseRestored": "BD Récupèrée",
+  "never": "Jamais",
+  "always": "Toujours"
 }

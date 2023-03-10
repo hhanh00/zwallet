@@ -155,7 +155,7 @@ abstract class _Settings with Store {
   bool useUA = false;
 
   @observable
-  bool autoHide = true;
+  int autoHide = 1;
 
   @observable
   bool includeReplyTo = false;
@@ -241,7 +241,8 @@ abstract class _Settings with Store {
     chartRange = prefs.getString('chart_range') ?? "1Y";
     autoShieldThreshold = prefs.getDouble('autoshield_threshold') ?? 0.0;
     useUA = prefs.getBool('use_ua') ?? false;
-    autoHide = prefs.getBool('auto_hide') ?? true;
+    final autoHideOld = prefs.getBool('auto_hide') ?? true;
+    autoHide = prefs.getInt('auto_hide2') ?? (autoHideOld ? 1 : 0);
     protectSend = prefs.getBool('protect_send') ?? false;
     protectOpen = prefs.getBool('protect_open') ?? false;
     includeReplyTo = prefs.getBool('include_reply_to') ?? false;
@@ -508,10 +509,10 @@ abstract class _Settings with Store {
   }
 
   @action
-  Future<void> setAutoHide(bool v) async {
+  Future<void> setAutoHide(int v) async {
     final prefs = await SharedPreferences.getInstance();
     autoHide = v;
-    prefs.setBool('auto_hide', autoHide);
+    prefs.setInt('auto_hide2', autoHide);
   }
 
   @action

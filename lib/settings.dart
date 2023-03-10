@@ -206,11 +206,17 @@ class SettingsState extends State<SettingsPage>
                                 title: Text(s.retrieveTransactionDetails),
                                 initialValue: settings.getTx,
                                 onSaved: _onGetTx),
-                          FormBuilderCheckbox(
-                              name: 'auto_hide',
-                              title: Text(s.autoHideBalance),
-                              initialValue: settings.autoHide,
-                              onSaved: _onAutoHide),
+                          FormBuilderRadioGroup<int>(
+                            orientation: OptionsOrientation.horizontal,
+                            name: 'auto_hide',
+                            decoration: InputDecoration(labelText: s.autoHideBalance),
+                            initialValue: settings.autoHide,
+                            onSaved: _onAutoHide,
+                            options: [
+                            FormBuilderFieldOption(child: Text(s.never), value: 0),
+                            FormBuilderFieldOption(child: Text(s.auto), value: 1),
+                            FormBuilderFieldOption(child: Text(s.always), value: 2),
+                          ]),
                           DropdownButtonFormField<int>(
                               decoration:
                               InputDecoration(labelText: s.minPrivacy),
@@ -346,8 +352,6 @@ class SettingsState extends State<SettingsPage>
     }
     return r;
   }
-
-
 
   _onAutoHide(v) {
     settings.setAutoHide(v);
