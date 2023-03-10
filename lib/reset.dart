@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:warp_api/types.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'coin/coins.dart';
 import 'generated/l10n.dart';
@@ -144,7 +144,7 @@ class FullBackupState extends State<FullBackupPage> {
 }
 
 class AGEKeysForm extends StatefulWidget {
-  final AGEKeys keys;
+  final Agekeys keys;
   AGEKeysForm(this.keys, {Key? key}): super(key: key);
 
   @override
@@ -158,16 +158,16 @@ class AGEKeysState extends State<AGEKeysForm> {
   @override
   void initState() {
     super.initState();
-    pk.text = widget.keys.pk;
-    sk.text = widget.keys.sk;
+    pk.text = widget.keys.pk!;
+    sk.text = widget.keys.sk!;
   }
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Form(child: SingleChildScrollView(child: Column(children: [
-      QRDisplay(s.encryptionKey, widget.keys.pk),
-      QRDisplay(s.secretKey, widget.keys.sk)
+      QRDisplay(s.encryptionKey, widget.keys.pk!),
+      QRDisplay(s.secretKey, widget.keys.sk!)
     ])));
   }
 }

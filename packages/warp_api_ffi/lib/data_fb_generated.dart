@@ -3410,3 +3410,450 @@ class BackupObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+class RaptorQdrops {
+  RaptorQdrops._(this._bc, this._bcOffset);
+  factory RaptorQdrops(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<RaptorQdrops> reader = _RaptorQdropsReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  List<String>? get drops => const fb.ListReader<String>(fb.StringReader()).vTableGetNullable(_bc, _bcOffset, 4);
+
+  @override
+  String toString() {
+    return 'RaptorQdrops{drops: ${drops}}';
+  }
+
+  RaptorQdropsT unpack() => RaptorQdropsT(
+      drops: const fb.ListReader<String>(fb.StringReader(), lazy: false).vTableGetNullable(_bc, _bcOffset, 4));
+
+  static int pack(fb.Builder fbBuilder, RaptorQdropsT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class RaptorQdropsT implements fb.Packable {
+  List<String>? drops;
+
+  RaptorQdropsT({
+      this.drops});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? dropsOffset = drops == null ? null
+        : fbBuilder.writeList(drops!.map(fbBuilder.writeString).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, dropsOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'RaptorQdropsT{drops: ${drops}}';
+  }
+}
+
+class _RaptorQdropsReader extends fb.TableReader<RaptorQdrops> {
+  const _RaptorQdropsReader();
+
+  @override
+  RaptorQdrops createObject(fb.BufferContext bc, int offset) => 
+    RaptorQdrops._(bc, offset);
+}
+
+class RaptorQdropsBuilder {
+  RaptorQdropsBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(1);
+  }
+
+  int addDropsOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class RaptorQdropsObjectBuilder extends fb.ObjectBuilder {
+  final List<String>? _drops;
+
+  RaptorQdropsObjectBuilder({
+    List<String>? drops,
+  })
+      : _drops = drops;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? dropsOffset = _drops == null ? null
+        : fbBuilder.writeList(_drops!.map(fbBuilder.writeString).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, dropsOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class Agekeys {
+  Agekeys._(this._bc, this._bcOffset);
+  factory Agekeys(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<Agekeys> reader = _AgekeysReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  String? get sk => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
+  String? get pk => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 6);
+
+  @override
+  String toString() {
+    return 'Agekeys{sk: ${sk}, pk: ${pk}}';
+  }
+
+  AgekeysT unpack() => AgekeysT(
+      sk: sk,
+      pk: pk);
+
+  static int pack(fb.Builder fbBuilder, AgekeysT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class AgekeysT implements fb.Packable {
+  String? sk;
+  String? pk;
+
+  AgekeysT({
+      this.sk,
+      this.pk});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? skOffset = sk == null ? null
+        : fbBuilder.writeString(sk!);
+    final int? pkOffset = pk == null ? null
+        : fbBuilder.writeString(pk!);
+    fbBuilder.startTable(2);
+    fbBuilder.addOffset(0, skOffset);
+    fbBuilder.addOffset(1, pkOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'AgekeysT{sk: ${sk}, pk: ${pk}}';
+  }
+}
+
+class _AgekeysReader extends fb.TableReader<Agekeys> {
+  const _AgekeysReader();
+
+  @override
+  Agekeys createObject(fb.BufferContext bc, int offset) => 
+    Agekeys._(bc, offset);
+}
+
+class AgekeysBuilder {
+  AgekeysBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(2);
+  }
+
+  int addSkOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+  int addPkOffset(int? offset) {
+    fbBuilder.addOffset(1, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class AgekeysObjectBuilder extends fb.ObjectBuilder {
+  final String? _sk;
+  final String? _pk;
+
+  AgekeysObjectBuilder({
+    String? sk,
+    String? pk,
+  })
+      : _sk = sk,
+        _pk = pk;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? skOffset = _sk == null ? null
+        : fbBuilder.writeString(_sk!);
+    final int? pkOffset = _pk == null ? null
+        : fbBuilder.writeString(_pk!);
+    fbBuilder.startTable(2);
+    fbBuilder.addOffset(0, skOffset);
+    fbBuilder.addOffset(1, pkOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class Servers {
+  Servers._(this._bc, this._bcOffset);
+  factory Servers(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<Servers> reader = _ServersReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  List<String>? get urls => const fb.ListReader<String>(fb.StringReader()).vTableGetNullable(_bc, _bcOffset, 4);
+
+  @override
+  String toString() {
+    return 'Servers{urls: ${urls}}';
+  }
+
+  ServersT unpack() => ServersT(
+      urls: const fb.ListReader<String>(fb.StringReader(), lazy: false).vTableGetNullable(_bc, _bcOffset, 4));
+
+  static int pack(fb.Builder fbBuilder, ServersT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class ServersT implements fb.Packable {
+  List<String>? urls;
+
+  ServersT({
+      this.urls});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? urlsOffset = urls == null ? null
+        : fbBuilder.writeList(urls!.map(fbBuilder.writeString).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, urlsOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'ServersT{urls: ${urls}}';
+  }
+}
+
+class _ServersReader extends fb.TableReader<Servers> {
+  const _ServersReader();
+
+  @override
+  Servers createObject(fb.BufferContext bc, int offset) => 
+    Servers._(bc, offset);
+}
+
+class ServersBuilder {
+  ServersBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(1);
+  }
+
+  int addUrlsOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class ServersObjectBuilder extends fb.ObjectBuilder {
+  final List<String>? _urls;
+
+  ServersObjectBuilder({
+    List<String>? urls,
+  })
+      : _urls = urls;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? urlsOffset = _urls == null ? null
+        : fbBuilder.writeList(_urls!.map(fbBuilder.writeString).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, urlsOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class Progress {
+  Progress._(this._bc, this._bcOffset);
+  factory Progress(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<Progress> reader = _ProgressReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  int get height => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 4, 0);
+  int get trialDecryptions => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 6, 0);
+  int get downloaded => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 8, 0);
+
+  @override
+  String toString() {
+    return 'Progress{height: ${height}, trialDecryptions: ${trialDecryptions}, downloaded: ${downloaded}}';
+  }
+
+  ProgressT unpack() => ProgressT(
+      height: height,
+      trialDecryptions: trialDecryptions,
+      downloaded: downloaded);
+
+  static int pack(fb.Builder fbBuilder, ProgressT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class ProgressT implements fb.Packable {
+  int height;
+  int trialDecryptions;
+  int downloaded;
+
+  ProgressT({
+      this.height = 0,
+      this.trialDecryptions = 0,
+      this.downloaded = 0});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    fbBuilder.startTable(3);
+    fbBuilder.addUint32(0, height);
+    fbBuilder.addUint64(1, trialDecryptions);
+    fbBuilder.addUint64(2, downloaded);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'ProgressT{height: ${height}, trialDecryptions: ${trialDecryptions}, downloaded: ${downloaded}}';
+  }
+}
+
+class _ProgressReader extends fb.TableReader<Progress> {
+  const _ProgressReader();
+
+  @override
+  Progress createObject(fb.BufferContext bc, int offset) => 
+    Progress._(bc, offset);
+}
+
+class ProgressBuilder {
+  ProgressBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(3);
+  }
+
+  int addHeight(int? height) {
+    fbBuilder.addUint32(0, height);
+    return fbBuilder.offset;
+  }
+  int addTrialDecryptions(int? trialDecryptions) {
+    fbBuilder.addUint64(1, trialDecryptions);
+    return fbBuilder.offset;
+  }
+  int addDownloaded(int? downloaded) {
+    fbBuilder.addUint64(2, downloaded);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class ProgressObjectBuilder extends fb.ObjectBuilder {
+  final int? _height;
+  final int? _trialDecryptions;
+  final int? _downloaded;
+
+  ProgressObjectBuilder({
+    int? height,
+    int? trialDecryptions,
+    int? downloaded,
+  })
+      : _height = height,
+        _trialDecryptions = trialDecryptions,
+        _downloaded = downloaded;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    fbBuilder.startTable(3);
+    fbBuilder.addUint32(0, _height);
+    fbBuilder.addUint64(1, _trialDecryptions);
+    fbBuilder.addUint64(2, _downloaded);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}

@@ -823,7 +823,7 @@ class NativeLibrary {
   late final _dart_parse_payment_uri _parse_payment_uri =
       _parse_payment_uri_ptr.asFunction<_dart_parse_payment_uri>();
 
-  CResult_____c_char generate_key() {
+  CResult______u8 generate_key() {
     return _generate_key();
   }
 
@@ -864,7 +864,7 @@ class NativeLibrary {
   late final _dart_unzip_backup _unzip_backup =
       _unzip_backup_ptr.asFunction<_dart_unzip_backup>();
 
-  CResult_____c_char split_data(
+  CResult______u8 split_data(
     int id,
     ffi.Pointer<ffi.Int8> data,
   ) {
@@ -906,10 +906,12 @@ class NativeLibrary {
       _get_tx_summary_ptr.asFunction<_dart_get_tx_summary>();
 
   CResult_____c_char get_best_server(
-    ffi.Pointer<ffi.Int8> servers,
+    ffi.Pointer<ffi.Uint8> servers,
+    int len,
   ) {
     return _get_best_server(
       servers,
+      len,
     );
   }
 
@@ -1539,6 +1541,16 @@ const int Backup_VT_FVK = 12;
 
 const int Backup_VT_UVK = 14;
 
+const int RaptorQDrops_VT_DROPS = 4;
+
+const int AGEKeys_VT_PK = 6;
+
+const int Servers_VT_URLS = 4;
+
+const int Progress_VT_TRIAL_DECRYPTIONS = 6;
+
+const int Progress_VT_DOWNLOADED = 8;
+
 typedef _c_dummy_export = ffi.Void Function();
 
 typedef _dart_dummy_export = void Function();
@@ -2065,9 +2077,9 @@ typedef _dart_parse_payment_uri = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> uri,
 );
 
-typedef _c_generate_key = CResult_____c_char Function();
+typedef _c_generate_key = CResult______u8 Function();
 
-typedef _dart_generate_key = CResult_____c_char Function();
+typedef _dart_generate_key = CResult______u8 Function();
 
 typedef _c_zip_backup = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> key,
@@ -2091,12 +2103,12 @@ typedef _dart_unzip_backup = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> dst_dir,
 );
 
-typedef _c_split_data = CResult_____c_char Function(
+typedef _c_split_data = CResult______u8 Function(
   ffi.Uint32 id,
   ffi.Pointer<ffi.Int8> data,
 );
 
-typedef _dart_split_data = CResult_____c_char Function(
+typedef _dart_split_data = CResult______u8 Function(
   int id,
   ffi.Pointer<ffi.Int8> data,
 );
@@ -2118,11 +2130,13 @@ typedef _dart_get_tx_summary = CResult_____c_char Function(
 );
 
 typedef _c_get_best_server = CResult_____c_char Function(
-  ffi.Pointer<ffi.Int8> servers,
+  ffi.Pointer<ffi.Uint8> servers,
+  ffi.Uint64 len,
 );
 
 typedef _dart_get_best_server = CResult_____c_char Function(
-  ffi.Pointer<ffi.Int8> servers,
+  ffi.Pointer<ffi.Uint8> servers,
+  int len,
 );
 
 typedef _c_import_from_zwl = ffi.Void Function(

@@ -65,9 +65,8 @@ class HomeState extends State<HomePage> {
       });
     });
     _syncDispose = syncStream.listen((p) {
-      if (p is String) {
-        final pjs = jsonDecode(p);
-        final progress = Progress.fromJson(pjs);
+      if (p is List<int>) {
+        final progress = Progress(p);
         syncStatus.setProgress(progress);
       }
 

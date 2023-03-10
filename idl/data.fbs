@@ -158,3 +158,22 @@ table Backup {
   fvk:string;
   uvk:string;
 }
+
+table RaptorQDrops {
+  drops:[string];
+}
+
+table AGEKeys {
+  sk:string;
+  pk:string;
+}
+
+table Servers {
+  urls:[string];
+}
+
+table Progress {
+  height:uint32;
+  trial_decryptions:uint64;
+  downloaded:uint64;
+}
