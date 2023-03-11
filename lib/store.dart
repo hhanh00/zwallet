@@ -13,7 +13,6 @@ import 'package:shared_preferences_ios/shared_preferences_ios.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'coin/coins.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:warp_api/types.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;

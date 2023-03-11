@@ -4,13 +4,11 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:flat_buffers/flat_buffers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:ffi/ffi.dart';
 import 'warp_api_generated.dart';
 import 'data_fb_generated.dart';
-import 'types.dart';
 
 typedef report_callback = Void Function(Int32);
 
@@ -263,9 +261,10 @@ class WarpApi {
     }, null);
   }
 
-  static String transactionReport(int coin, String plan) {
-    final report = warp_api_lib.transaction_report(coin, plan.toNativeUtf8().cast<Int8>());
-    return unwrapResultString(report);
+  static TxReport transactionReport(int coin, String plan) {
+    final data = unwrapResultBytes(warp_api_lib.transaction_report(coin, toNative(plan)));
+    final report = TxReport(data);
+    return report;
   }
 
   static Future<String> signAndBroadcast (int coin, int account, String plan) async {
@@ -421,15 +420,14 @@ class WarpApi {
 
   static KeyPack deriveZip32(int coin, int idAccount, int accountIndex,
       int externalIndex, int? addressIndex) {
-    final res = unwrapResultString(warp_api_lib.derive_zip32(
+    final res = unwrapResultBytes(warp_api_lib.derive_zip32(
         coin,
         idAccount,
         accountIndex,
         externalIndex,
         addressIndex != null ? 1 : 0,
         addressIndex ?? 0));
-    final jsonMap = jsonDecode(res);
-    final kp = KeyPack.fromJson(jsonMap);
+    final kp = KeyPack(res);
     return kp;
   }
 

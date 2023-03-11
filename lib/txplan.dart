@@ -4,7 +4,7 @@ import 'package:YWallet/main.dart';
 import 'package:YWallet/settings.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:warp_api/types.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'generated/l10n.dart';
@@ -17,9 +17,7 @@ class TxPlanPage extends StatelessWidget {
   TxPlanPage(this.plan, this.report, this.signOnly);
 
   factory TxPlanPage.fromPlan(String plan, bool signOnly) {
-    final reportStr = WarpApi.transactionReport(active.coin, plan);
-    final json = jsonDecode(reportStr);
-    final report = TxReport.fromJson(json);
+    final report = WarpApi.transactionReport(active.coin, plan);
     return TxPlanPage(plan, report, signOnly);
   }
 
@@ -29,14 +27,14 @@ class TxPlanPage extends StatelessWidget {
     final t = Theme.of(context);
     final supportsUA = active.coinDef.supportsUA;
     final theme = Theme.of(context);
-    final rows = report.outputs
+    final rows = report.outputs!
         .map((e) => DataRow(cells: [
-              DataCell(Text('...${trailing(e.address, 12)}')),
+              DataCell(Text('...${trailing(e.address!, 12)}')),
               DataCell(Text('${poolToString(e.pool)}')),
               DataCell(Text('${amountToString(e.amount, 3)}')),
             ]))
         .toList();
-    final invalidPrivacy = report.privacy_level < settings.minPrivacyLevel;
+    final invalidPrivacy = report.privacyLevel < settings.minPrivacyLevel;
 
     return Scaffold(
         appBar: AppBar(title: Text('Transaction Plan')),
@@ -57,11 +55,11 @@ class TxPlanPage extends StatelessWidget {
                   if (supportsUA) ListTile(title: Text('Orchard Input'), trailing: Text(
                       amountToString(report.orchard, MAX_PRECISION))),
                   ListTile(title: Text('Net Sapling Change'), trailing: Text(
-                      amountToString(report.net_sapling, MAX_PRECISION))),
+                      amountToString(report.netSapling, MAX_PRECISION))),
                   if (supportsUA) ListTile(title: Text('Net Orchard Change'), trailing: Text(
-                      amountToString(report.net_orchard, MAX_PRECISION))),
+                      amountToString(report.netOrchard, MAX_PRECISION))),
                   ListTile(title: Text('Fee'), trailing: Text(amountToString(report.fee, MAX_PRECISION))),
-                  privacyToString(context, report.privacy_level)!,
+                  privacyToString(context, report.privacyLevel)!,
                   if (invalidPrivacy) Padding(padding: EdgeInsets.only(top: 8), child: Text(s.privacyLevelTooLow, style: t.textTheme.bodyLarge)),
                   ButtonBar(children:
                     <ElevatedButton>[

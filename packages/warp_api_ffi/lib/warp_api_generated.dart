@@ -546,7 +546,7 @@ class NativeLibrary {
   late final _dart_prepare_multi_payment _prepare_multi_payment =
       _prepare_multi_payment_ptr.asFunction<_dart_prepare_multi_payment>();
 
-  CResult_____c_char transaction_report(
+  CResult______u8 transaction_report(
     int coin,
     ffi.Pointer<ffi.Int8> plan,
   ) {
@@ -937,7 +937,7 @@ class NativeLibrary {
   late final _dart_import_from_zwl _import_from_zwl =
       _import_from_zwl_ptr.asFunction<_dart_import_from_zwl>();
 
-  CResult_____c_char derive_zip32(
+  CResult______u8 derive_zip32(
     int coin,
     int id_account,
     int account,
@@ -1551,6 +1551,34 @@ const int Progress_VT_TRIAL_DECRYPTIONS = 6;
 
 const int Progress_VT_DOWNLOADED = 8;
 
+const int KeyPack_VT_T_ADDR = 4;
+
+const int KeyPack_VT_T_KEY = 6;
+
+const int KeyPack_VT_Z_ADDR = 8;
+
+const int KeyPack_VT_Z_KEY = 10;
+
+const int Recipient_VT_REPLY_TO = 10;
+
+const int Recipient_VT_MAX_AMOUNT_PER_NOTE = 16;
+
+const int UnsignedTxSummary_VT_RECIPIENTS = 4;
+
+const int TxOutput_VT_POOL = 10;
+
+const int TxReport_VT_OUTPUTS = 4;
+
+const int TxReport_VT_TRANSPARENT = 6;
+
+const int TxReport_VT_NET_SAPLING = 12;
+
+const int TxReport_VT_NET_ORCHARD = 14;
+
+const int TxReport_VT_FEE = 16;
+
+const int TxReport_VT_PRIVACY_LEVEL = 18;
+
 typedef _c_dummy_export = ffi.Void Function();
 
 typedef _dart_dummy_export = void Function();
@@ -1897,12 +1925,12 @@ typedef _dart_prepare_multi_payment = CResult_____c_char Function(
   int anchor_offset,
 );
 
-typedef _c_transaction_report = CResult_____c_char Function(
+typedef _c_transaction_report = CResult______u8 Function(
   ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> plan,
 );
 
-typedef _dart_transaction_report = CResult_____c_char Function(
+typedef _dart_transaction_report = CResult______u8 Function(
   int coin,
   ffi.Pointer<ffi.Int8> plan,
 );
@@ -2151,7 +2179,7 @@ typedef _dart_import_from_zwl = void Function(
   ffi.Pointer<ffi.Int8> data,
 );
 
-typedef _c_derive_zip32 = CResult_____c_char Function(
+typedef _c_derive_zip32 = CResult______u8 Function(
   ffi.Uint8 coin,
   ffi.Uint32 id_account,
   ffi.Uint32 account,
@@ -2160,7 +2188,7 @@ typedef _c_derive_zip32 = CResult_____c_char Function(
   ffi.Uint32 address,
 );
 
-typedef _dart_derive_zip32 = CResult_____c_char Function(
+typedef _dart_derive_zip32 = CResult______u8 Function(
   int coin,
   int id_account,
   int account,

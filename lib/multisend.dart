@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'store.dart';
-import 'package:warp_api/types.dart';
 
 import 'main.dart';
 import 'generated/l10n.dart';
@@ -27,7 +27,7 @@ class MultiPayState extends State<MultiPayPage> {
           return Dismissible(
             key: UniqueKey(),
             child: ListTile(
-                title: Text(recipient.address), subtitle: Text("$amount")),
+                title: Text(recipient.address!), subtitle: Text("$amount")),
             onDismissed: (_) {
               _remove(index);
             },

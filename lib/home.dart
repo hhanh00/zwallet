@@ -9,7 +9,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:badges/badges.dart' as Badges;
 import 'package:path/path.dart' as p;
