@@ -4198,6 +4198,108 @@ class RecipientObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+class Recipients {
+  Recipients._(this._bc, this._bcOffset);
+  factory Recipients(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<Recipients> reader = _RecipientsReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  List<Recipient>? get values => const fb.ListReader<Recipient>(Recipient.reader).vTableGetNullable(_bc, _bcOffset, 4);
+
+  @override
+  String toString() {
+    return 'Recipients{values: ${values}}';
+  }
+
+  RecipientsT unpack() => RecipientsT(
+      values: values?.map((e) => e.unpack()).toList());
+
+  static int pack(fb.Builder fbBuilder, RecipientsT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class RecipientsT implements fb.Packable {
+  List<RecipientT>? values;
+
+  RecipientsT({
+      this.values});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? valuesOffset = values == null ? null
+        : fbBuilder.writeList(values!.map((b) => b.pack(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, valuesOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'RecipientsT{values: ${values}}';
+  }
+}
+
+class _RecipientsReader extends fb.TableReader<Recipients> {
+  const _RecipientsReader();
+
+  @override
+  Recipients createObject(fb.BufferContext bc, int offset) => 
+    Recipients._(bc, offset);
+}
+
+class RecipientsBuilder {
+  RecipientsBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(1);
+  }
+
+  int addValuesOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class RecipientsObjectBuilder extends fb.ObjectBuilder {
+  final List<RecipientObjectBuilder>? _values;
+
+  RecipientsObjectBuilder({
+    List<RecipientObjectBuilder>? values,
+  })
+      : _values = values;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? valuesOffset = _values == null ? null
+        : fbBuilder.writeList(_values!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, valuesOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
 class RecipientSummary {
   RecipientSummary._(this._bc, this._bcOffset);
   factory RecipientSummary(List<int> bytes) {

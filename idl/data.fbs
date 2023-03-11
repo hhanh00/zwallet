@@ -195,6 +195,10 @@ table Recipient {
   max_amount_per_note:uint64;
 }
 
+table Recipients {
+  values:[Recipient];
+}
+
 table RecipientSummary {
   amount:uint64;
   address:string;

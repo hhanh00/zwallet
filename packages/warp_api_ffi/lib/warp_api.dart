@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:flat_buffers/flat_buffers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:ffi/ffi.dart';
@@ -250,11 +250,15 @@ class WarpApi {
 
   static Future<String> prepareTx(int coin, int account,
       List<Recipient> recipients, int anchorOffset) async {
-    final recipientsJson = jsonEncode(recipients);
+    final builder =  Builder();
+    final rs = recipients.map((r) => r.unpack()).toList();
+    int root = RecipientsT(values: rs).pack(builder);
+    builder.finish(root);
     return await compute((_) {
       final res = warp_api_lib.prepare_multi_payment(
           coin, account,
-          recipientsJson.toNativeUtf8().cast<Int8>(),
+          toNativeBytes(builder.buffer),
+          builder.size(),
           anchorOffset);
       final json = unwrapResultString(res);
       return json;

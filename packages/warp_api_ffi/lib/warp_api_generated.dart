@@ -529,13 +529,15 @@ class NativeLibrary {
   CResult_____c_char prepare_multi_payment(
     int coin,
     int account,
-    ffi.Pointer<ffi.Int8> recipients_json,
+    ffi.Pointer<ffi.Uint8> recipients_bytes,
+    int recipients_len,
     int anchor_offset,
   ) {
     return _prepare_multi_payment(
       coin,
       account,
-      recipients_json,
+      recipients_bytes,
+      recipients_len,
       anchor_offset,
     );
   }
@@ -1914,14 +1916,16 @@ typedef _dart_scan_transparent_accounts = CResult______u8 Function(
 typedef _c_prepare_multi_payment = CResult_____c_char Function(
   ffi.Uint8 coin,
   ffi.Uint32 account,
-  ffi.Pointer<ffi.Int8> recipients_json,
+  ffi.Pointer<ffi.Uint8> recipients_bytes,
+  ffi.Uint64 recipients_len,
   ffi.Uint32 anchor_offset,
 );
 
 typedef _dart_prepare_multi_payment = CResult_____c_char Function(
   int coin,
   int account,
-  ffi.Pointer<ffi.Int8> recipients_json,
+  ffi.Pointer<ffi.Uint8> recipients_bytes,
+  int recipients_len,
   int anchor_offset,
 );
 
