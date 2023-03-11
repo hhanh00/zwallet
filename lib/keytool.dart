@@ -53,13 +53,13 @@ class KeyToolState extends State<KeyToolPage> {
               ListTile(subtitle: Text('Transparent')),
               TextField(
               decoration: InputDecoration(labelText: 'Key'),
-                controller: TextEditingController(text: kp.t_key),
+                controller: TextEditingController(text: kp.tKey),
                   minLines: 1,
                   maxLines: 3,
                 readOnly: true),
               TextField(
                   decoration: InputDecoration(labelText: 'Address'),
-                  controller: TextEditingController(text: kp.t_addr),
+                  controller: TextEditingController(text: kp.tAddr),
                   readOnly: true),
               ])
           ),
@@ -69,13 +69,13 @@ class KeyToolState extends State<KeyToolPage> {
                 ListTile(subtitle: Text('Shielded')),
                 TextField(
                     decoration: InputDecoration(labelText: 'Key'),
-                    controller: TextEditingController(text: kp.z_key),
+                    controller: TextEditingController(text: kp.zKey),
                     minLines: 3,
                     maxLines: 10,
                     readOnly: true),
                 TextField(
                     decoration: InputDecoration(labelText: 'Address'),
-                    controller: TextEditingController(text: kp.z_addr),
+                    controller: TextEditingController(text: kp.zAddr),
                     minLines: 1,
                     maxLines: 3,
                     readOnly: true),

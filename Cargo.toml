@@ -19,5 +19,5 @@ debug = false
 
 [patch.crates-io]
 #zcash_note_encryption = { path = "librustzcash/components/zcash_note_encryption" }
-zcash_note_encryption = { git = "https://github.com/hhanh00/librustzcash.git", rev = "ad4a1c61fdaf04ac4fb884976ad175196e695264" }
+zcash_note_encryption = { git = "https://github.com/hhanh00/librustzcash.git", rev = "7469d70261e8e72f2bbf3163704ddf8fd825b1aa" }
 jubjub = { git = "https://github.com/hhanh00/jubjub.git", rev = "4a3edf3d242f368b5aa418ec659d01f191127cf3" }

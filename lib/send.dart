@@ -8,7 +8,6 @@ import 'package:warp_api/data_fb_generated.dart' hide Account;
 import 'accounts.dart';
 import 'contact.dart';
 import 'dualmoneyinput.dart';
-import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -73,11 +72,11 @@ class SendState extends State<SendPage> {
 
     final draftRecipient = active.draftRecipient;
     if (draftRecipient != null) {
-      _addressController.text = draftRecipient.address;
+      _addressController.text = draftRecipient.address!;
       _initialAmount = draftRecipient.amount;
-      _memoController.text = draftRecipient.memo;
-      _replyTo = draftRecipient.reply_to;
-      _subjectController.text = draftRecipient.subject;
+      _memoController.text = draftRecipient.memo ?? '';
+      _replyTo = draftRecipient.replyTo;
+      _subjectController.text = draftRecipient.subject ?? '';
       _memoInitialized = true;
     }
 
@@ -396,16 +395,16 @@ class SendState extends State<SendPage> {
     final feeIncluded = amountInput?.feeIncluded ?? false;
     final memo = _memoController.text;
     final subject = _subjectController.text;
-    final recipient = Recipient(
-      _address,
-      amount,
-      feeIncluded,
-      _replyTo,
-      subject,
-      memo,
-      0,
+    final recipient = RecipientObjectBuilder(
+      address: _address,
+      amount: amount,
+      feeIncluded: feeIncluded,
+      replyTo: _replyTo,
+      subject: subject,
+      memo: memo,
+      maxAmountPerNote: 0,
     );
-    return recipient;
+    return Recipient(recipient.toBytes());
   }
 
   void _onSend() async {

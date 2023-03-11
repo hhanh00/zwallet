@@ -177,3 +177,47 @@ table Progress {
   trial_decryptions:uint64;
   downloaded:uint64;
 }
+
+table KeyPack {
+  t_addr:string;
+  t_key:string;
+  z_addr:string;
+  z_key:string;
+}
+
+table Recipient {
+  address:string;
+  amount:uint64;
+  fee_included:bool;
+  reply_to:bool;
+  subject:string;
+  memo:string;
+  max_amount_per_note:uint64;
+}
+
+table RecipientSummary {
+  amount:uint64;
+  address:string;
+}
+
+table UnsignedTxSummary {
+  recipients:[RecipientSummary];
+}
+
+table TxOutput {
+  id:uint32;
+  address:string;
+  amount:uint64;
+  pool:uint8;
+}
+
+table TxReport {
+  outputs:[TxOutput];
+  transparent:uint64;
+  sapling:uint64;
+  orchard:uint64;
+  net_sapling:int64;
+  net_orchard:int64;
+  fee:uint64;
+  privacy_level:uint8;
+}

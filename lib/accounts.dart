@@ -1,6 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/data_fb_generated.dart' ;
-import 'package:warp_api/types.dart';
 import 'coin/coins.dart';
 import 'package:mobx/mobx.dart';
 import 'db.dart';

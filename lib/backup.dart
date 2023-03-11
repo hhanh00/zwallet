@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/types.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
