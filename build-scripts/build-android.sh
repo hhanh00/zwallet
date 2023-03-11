@@ -26,7 +26,7 @@ export PATH=$PATH:$HOME/flutter/bin
 flutter doctor -v
 
 rustup target add aarch64-linux-android armv7-linux-androideabi
-cargo install --force cargo-ndk
+cargo install --force --version ^2 cargo-ndk
 popd
 
 sed -e 's/rlib/cdylib/' < native/zcash-sync/Cargo.toml >/tmp/out.toml
