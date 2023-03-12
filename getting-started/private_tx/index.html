@@ -5,7 +5,7 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>UI Mode :: YWallet</title>
+<title>Transaction Privacy :: YWallet</title>
 <link href=/css/nucleus.css?1678615688 rel=stylesheet>
 <link href=/css/fontawesome-all.min.css?1678615688 rel=stylesheet>
 <link href=/css/hybrid.css?1678615688 rel=stylesheet>
@@ -20,14 +20,15 @@
 <link href=/common.css?1678615688 rel=stylesheet>
 <script src=/js/jquery-3.3.1.min.js?1678615688></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
-<meta property="og:title" content="UI Mode">
-<meta property="og:description" content="By default, Ywallet runs in &ldquo;Simple Mode&rdquo; where only the basic UI elements are shown.
- Account Information Messages Transaction History Contacts  To show the rest of the UI, switch to &ldquo;Advanced Mode&rdquo; in the application settings">
+<meta property="og:title" content="Transaction Privacy">
+<meta property="og:description" content="Zcash is arguably the most private cryptocurrency out there. Unlike its rivals, it offers fully encrypted transactions that do not reveal any information about the source and destination of funds.
+However, this doesn&rsquo;t mean that every transaction has the highest level of privacy, because in Zcash, privacy is optional.
+Users can decide to use unencrypted transactions that are nearly identical to Bitcoin transactions. In other words, Zcash transactions can be public too.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ywallet.app/getting-started/ui_mode/"><meta property="article:section" content="getting-started">
+<meta property="og:url" content="https://ywallet.app/getting-started/private_tx/"><meta property="article:section" content="getting-started">
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
-<body data-url=/getting-started/ui_mode/>
+<body data-url=/getting-started/private_tx/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -72,7 +73,7 @@ Welcome to YWallet
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/getting-started/ui_mode/ title="UI Mode" class="dd-item active">
+<li data-nav-id=/getting-started/ui_mode/ title="UI Mode" class=dd-item>
 <a href=/getting-started/ui_mode/>
 UI Mode
 <i class="fas fa-check read-icon"></i>
@@ -102,7 +103,7 @@ Send coins
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/getting-started/private_tx/ title="Transaction Privacy" class=dd-item>
+<li data-nav-id=/getting-started/private_tx/ title="Transaction Privacy" class="dd-item active">
 <a href=/getting-started/private_tx/>
 Transaction Privacy
 <i class="fas fa-check read-icon"></i>
@@ -473,12 +474,28 @@ FAQ
 </span>
 <span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > <a href=/getting-started/>Getting Started</a> > UI Mode
+<a href=/>YWallet</a> > <a href=/getting-started/>Getting Started</a> > Transaction Privacy
 </span>
 </div>
 <div class=progress>
 <div class=wrapper>
-<nav id=TableOfContents></nav>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#pools-and-addresses>Pools and Addresses</a>
+<ul>
+<li><a href=#transparent>Transparent</a></li>
+<li><a href=#shielded>Shielded</a></li>
+</ul>
+</li>
+<li><a href=#transactions>Transactions</a></li>
+<li><a href=#transaction-parts>Transaction Parts</a></li>
+<li><a href=#transaction-privacy>Transaction Privacy</a></li>
+<li><a href=#fund-management>Fund Management</a></li>
+<li><a href=#ua-to-the-rescue>UA to the Rescue</a></li>
+<li><a href=#multi-payment>Multi Payment</a></li>
+<li><a href=#privacy-levels>Privacy Levels</a></li>
+</ul>
+</nav>
 </div>
 </div>
 </div>
@@ -487,26 +504,229 @@ FAQ
 </div>
 <div id=body-inner>
 <h1>
-UI Mode
+Transaction Privacy
 </h1>
-<p>By default, Ywallet runs in &ldquo;Simple Mode&rdquo;
-where only the basic UI elements are shown.</p>
+<p>Zcash is arguably the most private cryptocurrency out there. Unlike
+its rivals, it offers fully encrypted transactions that do not
+reveal any information about the source and destination of funds.</p>
+<p>However, this doesn&rsquo;t mean that every transaction has the highest level
+of privacy, because in Zcash, privacy is <em>optional</em>.</p>
+<p>Users can decide to use unencrypted transactions that are nearly identical
+to Bitcoin transactions. In other words, Zcash transactions can be
+public too.</p>
+<p>Currently, a vast majority of the transactions are <em>not</em> using Zcash
+privacy features.</p>
+<p>In this article, we&rsquo;ll discuss how shielded wallets and Ywallet specifically
+work to produce the most private transactions possible.</p>
+<h2 id=pools-and-addresses>Pools and Addresses</h2>
+<h3 id=transparent>Transparent</h3>
+<p>Zcash has several pools of funds. Essentially, it is as Zcash had several
+different internal currencies that are inter exchangeable 1 to 1, but
+with different privacy properties.</p>
+<p>If you use a transparent address (they are easily recognizable by the leading
+character: &rsquo;t'), your coins are unencrypted and are in plain view, just as in
+Bitcoin.</p>
+<p>This applies to both sources of funds and destinations of a transaction.</p>
+<p>For example, if you send coins to a t-addr, both the amount sent and
+the t-addr are stored in clear in the Blockchain. Moreover, if the recipient
+transfers these funds to another t-addr, both the origin and the destination
+are public. Zcash calls these transactions &ldquo;t2t&rdquo; for transparent to transparent.</p>
+<h3 id=shielded>Shielded</h3>
+<p>To benefit from Zcash privacy feature, one must use shielded coins and addresses.
+Unfortunately, it is <em>not</em> as easy as transparent transactions.</p>
+<p>First of all, you need a wallet that supports shielded ZEC such as YWallet
+(disclaimer: I am its author). Shielded wallets also need a much more
+complex process to synchronize the Blockchain. The main impact to the user is a
+<em>longer</em> synchronization.</p>
+<p>If you are OK with all of that, I highly recommend using a shielded wallet.
+Otherwise, you are missing out on the privacy of Zcash and all your
+transactions are public.</p>
+<p>Secondly, there are 3 shielded pools!</p>
 <ul>
-<li>Account Information</li>
-<li>Messages</li>
-<li>Transaction History</li>
-<li>Contacts</li>
+<li>Sprout,</li>
+<li>Sapling and</li>
+<li>Orchard.</li>
 </ul>
-<p>To show the rest of the UI, switch to &ldquo;Advanced Mode&rdquo; in the
-application settings</p>
-<img class="img mb-4" src=../img/2022-04-05_9-31-05.png>
+<p>Sprout is mostly deprecated at this point and hardly supported anymore.
+Sapling is currently the largest pool, but it is being replaced by Orchard.
+Orchard was released less than 1 year ago. There are very few apps
+that support the Orchard pool at this moment.</p>
+<h2 id=transactions>Transactions</h2>
+<p>When you make a transaction, you are taking coins from your wallet
+and sending them to one/many recipients. Your coins were either transparent
+or shielded (Sapling or Orchard), and become transparent or shielded at
+the destination address(es).</p>
+<p>We saw earlier than
+when a transaction takes coins from a transparent address and sends them
+to a transparent address, the transaction is t2t. Similarly, if a transaction
+takes coins from a shielded address and sends them
+to a shielded address, the transaction is called z2z.</p>
+<div class="notices note"><p>However, t2t, z2z, etc are oversimplifications since transactions can take both
+transparent <em>and</em> shielded coins, and produce transparent <em>and</em> shielded coins.</p>
+</div>
+<h2 id=transaction-parts>Transaction Parts</h2>
+<p>Without getting into details, let&rsquo;s describe the elements of
+a transaction.</p>
+<p>A transaction has:</p>
+<ul>
+<li>some metadata: version, etc,</li>
+<li>a transparent section</li>
+<li>a sapling section</li>
+<li>an orchard section</li>
+</ul>
+<p>Each section has roughly the same structure. It has a set of
+inputs that specify where the funds come from, and a set of
+outputs that specify where the funds go to.</p>
+<p>In the transparent section, everything is in cleartext and
+one can see addresses and amounts.</p>
+<p>In the sapling and orchard sections, the information is encrypted
+and can only be decrypted by someone who holds the viewing key,
+i.e. the recipient. A special cryptographic data called a
+zero-knowledge proof ensures that the encrypted data is valid
+without revealing its contents.</p>
+<p>However, Sapling and Orchard sections reveal the net change
+of funds that resulted from the transaction. The protocol
+calls it <code>valueBalanceSapling</code> and <code>valueBalanceOrchard</code>.</p>
+<p><code>valueBalanceSapling</code> is the net value of Sapling spends minus
+Sapling outputs. And <code>valueBalanceOrchard</code> is the same value
+but for Orchard.</p>
+<div class="notices info"><p>YWallet shows net changes as Outputs - Spends, i.e.
+the opposite of value balance because a net value is
+usually the difference between the &ldquo;after&rdquo; value and
+the &ldquo;before&rdquo; value.</p>
+</div>
+<div class="notices note"><p><code>valueBalanceSapling</code> and <code>valueBalanceOrchard</code> are commonly
+referred to as the &ldquo;turnstiles&rdquo;.</p>
+</div>
+<h2 id=transaction-privacy>Transaction Privacy</h2>
+<p>A highly private transaction reveals little to no information.
+It must not contain any transparent inputs or outputs and
+have a low value of <code>valueBalanceSapling</code> and <code>valueBalanceOrchard</code>.</p>
+<p>In other words, try to:</p>
+<div class="notices warning"><ul>
+<li>avoid using transparent inputs and outputs,</li>
+<li>use shielded funds from the same pool.</li>
+</ul>
+</div>
+<p>That&rsquo;s easier said than done. Many factors impact your source
+of funds and the recipients of your transactions. If your receive
+funds from someone who uses a transparent-only wallet, they
+cannot send them to your shielded address. Likewise, if you want to
+pay them you will have to send funds to a transparent address.</p>
+<p>However, your wallet app can help you manage your funds.</p>
+<h2 id=fund-management>Fund Management</h2>
+<p>Let&rsquo;s see how this works with a concrete example.</p>
+<p>For instance, someone just sent you 100 ZEC through their
+transparent-only wallet and you now have 100 ZEC in your
+transparent address.</p>
+<div class=p-img>
+<img class=img src=../img/01_taddr.png>
+</div>
+<p>You want to shield some of these funds so that they are no longer
+visible on the blockchain.</p>
+<div class=p-img>
+<img class=img src=../img/02_shield.png>
+</div>
+<p>Ywallet will opt to shield <em>equally</em> as Sapling and Orchard notes.</p>
+<p>This is so that you can make highly private transactions with both
+Sapling and Orchard recipients.</p>
+<p>If it sent everything to its Orchard address, you would not be able
+to pay a Sapling address without crossing the turnstile from Orchard
+to Sapling.</p>
+<p>Similarly, if it sent everything to its Sapling address, you would not be able
+to pay an Orchard address without crossing the turnstile from Sapling
+to Orchard.</p>
+<p>The most versatile distribution is 50% Sapling and 50% Orchard.</p>
+<div class=p-img>
+<img class=img src=../img/03_shield.png>
+</div>
+<p>This transaction has &ldquo;VERY LOW PRIVACY&rdquo; since it involves transparent inputs
+and outputs.</p>
+<div class="notices info"><p><strong>VERY LOW PRIVACY</strong> transactions have transparent inputs and outputs.
+<strong>LOW PRIVACY</strong> transactions have transparent outputs but no transparent inputs.</p>
+</div>
+<p>After the shielding transaction, we now have two notes: one Sapling (in white)
+and one Orchard (in yellow). They are 45 ZEC each.</p>
+<div class=p-img>
+<img class=img src=../img/04_notes.png>
+</div>
+<p>Now, if we make a payment to a Sapling address of 45 ZEC or less, the
+wallet can just use the Sapling note and therefore not reveal any amount
+(except for the fees).</p>
+<div class="notices info"><p><strong>HIGH PRIVACY</strong> transactions do not have transparent elements and
+just reveal the fee going through the turnstiles.</p>
+</div>
+<div class=p-img>
+<img class=img src=../img/05_z2z.png>
+</div>
+<p>But if we go higher than 45 ZEC, the wallet needs to use the Orchard note
+as well, and this will make some Orchard funds cross to the Sapling pool.</p>
+<div class=p-img>
+<img class=img src=../img/06_z2z.png>
+</div>
+<p>The revealed amount is the excess that could not be covered by our Sapling note.
+We are not showing the exact amount of the transaction, but it is less private
+than before.</p>
+<div class="notices info"><p><strong>MEDIUM PRIVACY</strong> transactions do not have transparent elements but
+reveal a larger amount than the fee going through the turnstiles.</p>
+</div>
+<h2 id=ua-to-the-rescue>UA to the Rescue</h2>
+<p>With Multi-Receiver UA, i.e addresses that include multiple address
+types, the recipient shows their ability to get funds in several
+pools.</p>
+<p>Let&rsquo;s say that we need to pay the same amount as before (50 ZEC)
+but were given a UA that has Sapling and Orchard receivers.</p>
+<p>Now Ywallet can automatically split the payment between Sapling and Orchard
+and use both notes without going through the turnstiles.</p>
+<div class=p-img>
+<img class=img src=../img/07_z2zo.png>
+</div>
+<p>Moreover, it was able to keep the sender&rsquo;s pools balanced since after the
+transaction there is still the same amount in both shielded pools.</p>
+<p>The sender&rsquo;s wallet keeps optimal shielded spending potential.</p>
+<h2 id=multi-payment>Multi Payment</h2>
+<p>Even with more complex transactions that involve multiple recipients and
+address types, Ywallet can still compute an optimal execution plan.</p>
+<p>For instance, let&rsquo;s consider the case of a 6-recipient transaction that has:</p>
+<ol>
+<li>a Sapling address</li>
+<li>an Orchard UA</li>
+<li>a Transparent & Sapling UA</li>
+<li>a Transparent & Orchard UA</li>
+<li>a Sapling & Orchard UA</li>
+<li>and finally a Transparent, Sapling and Orchard UA.</li>
+</ol>
+<p>All address types are included except the t-addr which would ruin our privacy.</p>
+<div class=p-img>
+<img class=img src=../img/08_multi.png>
+</div>
+<p>Ywallet comes up with the following transaction:</p>
+<div class=p-img>
+<img class=img src=../img/09_multi.png>
+</div>
+<p>When offered the option to use Transparent or Shielded, Ywallet always chooses
+Shielded: Recipients #3 & #4 are fully shielded.</p>
+<p>When the recipient has both Sapling and Orchard receivers (#5 and #6)
+Ywallet computes amounts that sum up to the requested amount but also
+maximizes your privacy and your future shielded spending potential.</p>
+<p>The transaction is <strong>HIGHLY private</strong> and we spend an <strong>equal amount</strong> of Sapling and
+Orchard notes for it.</p>
+<h2 id=privacy-levels>Privacy Levels</h2>
+<ul>
+<li>High: Source and destination are shielded and from the same pool. Only the fee amount
+is revealed</li>
+<li>Medium: Source and destination are shielded but from different pools. Amounts that
+go through the pools are revealed</li>
+<li>Low: Destination is transparent</li>
+<li>Very Low: Source and Destination are transparent</li>
+</ul>
 <footer class=footline>
 </footer>
 </div>
 </div>
 <div id=navigation>
-<a class="nav nav-prev" href=/getting-started/first-account/ title="Welcome to YWallet"> <i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=/getting-started/account-summary/ title="Account summary" style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/getting-started/send/ title="Send coins"> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/account/ title=Accounts style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
