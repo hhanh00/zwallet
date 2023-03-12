@@ -25,9 +25,7 @@ import 'main.dart';
 
 part 'store.g.dart';
 
-enum ViewStyle {
-  Auto, Table, List
-}
+enum ViewStyle { Auto, Table, List }
 
 class LWDServer = _LWDServer with _$LWDServer;
 
@@ -52,8 +50,7 @@ abstract class _LWDServer with Store {
     if (_choice != null && _customUrl != null) {
       choice = _choice;
       customUrl = _customUrl;
-    }
-    else {
+    } else {
       await savePrefs(choice, customUrl);
     }
     return getLWDUrl();
@@ -76,13 +73,11 @@ abstract class _LWDServer with Store {
       servers.add(customUrl);
       try {
         url = WarpApi.getBestServer(servers);
-      }
-      catch (e) {
+      } catch (e) {
         print(e);
         return null;
       }
-    }
-    else if (choice == "custom")
+    } else if (choice == "custom")
       url = customUrl;
     else {
       final lwd = coinDef.lwd.firstWhere((lwd) => lwd.name == choice,
@@ -100,7 +95,8 @@ abstract class _CoinData with Store {
   final int coin;
   int syncedHeight = 0;
   final CoinBase def;
-  @observable bool contactsSaved = true;
+  @observable
+  bool contactsSaved = true;
 
   _CoinData(this.coin, this.def);
 }
@@ -285,8 +281,7 @@ abstract class _Settings with Store {
 
     _updateThemeData();
     Future.microtask(_loadCurrencies); // lazily
-    if (isMobile())
-      accelerometerEvents.listen(_handleAccel);
+    if (isMobile()) accelerometerEvents.listen(_handleAccel);
     return true;
   }
 
@@ -294,9 +289,12 @@ abstract class _Settings with Store {
   void _handleAccel(event) {
     final n = sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
     final inclination = acos(event.z / n) / pi * 180 * event.y.sign;
-    final _flat = inclination < 20 ? true : inclination > 40 ? false : null;
-    if (_flat != null && flat != _flat)
-      flat = _flat;
+    final _flat = inclination < 20
+        ? true
+        : inclination > 40
+            ? false
+            : null;
+    if (_flat != null && flat != _flat) flat = _flat;
   }
 
   @action
@@ -316,8 +314,7 @@ abstract class _Settings with Store {
   void updateLWD() async {
     for (var s in servers) {
       final url = await s.loadPrefs();
-      if (url != null)
-        WarpApi.updateLWD(s.coin, url);
+      if (url != null) WarpApi.updateLWD(s.coin, url);
     }
   }
 
@@ -489,8 +486,7 @@ abstract class _Settings with Store {
         c.sort();
         currencies = c;
       }
-    }
-    catch (_) {}
+    } catch (_) {}
   }
 
   @action
@@ -592,8 +588,7 @@ abstract class _Settings with Store {
       showSnackBar("You are $developerMode steps away from being a developer",
           autoClose: true, quick: true);
       return;
-    }
-    else if (developerMode == 0) {
+    } else if (developerMode == 0) {
       final authenticated = await authenticate(context, 'Developer Mode');
       if (authenticated) {
         final prefs = await SharedPreferences.getInstance();
@@ -624,8 +619,8 @@ abstract class _Settings with Store {
 
 Future<double?> getFxRate(String coin, String fiat) async {
   final base = "api.coingecko.com";
-  final uri = Uri.https(base, '/api/v3/simple/price',
-      {'ids': coin, 'vs_currencies': fiat});
+  final uri = Uri.https(
+      base, '/api/v3/simple/price', {'ids': coin, 'vs_currencies': fiat});
   try {
     final rep = await http.get(uri);
     if (rep.statusCode == 200) {
@@ -633,8 +628,7 @@ Future<double?> getFxRate(String coin, String fiat) async {
       final p = json[coin][fiat.toLowerCase()];
       return (p is double) ? p : (p as int).toDouble();
     }
-  }
-  catch (_) {}
+  } catch (_) {}
   return null;
 }
 
@@ -655,17 +649,14 @@ abstract class _PriceStore with Store {
   Future<void> updateChart() async {
     try {
       final _lastChartUpdateTime = lastChartUpdateTime;
-      final now = DateTime
-          .now()
-          .millisecondsSinceEpoch ~/ 1000;
+      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       await fetchCoinPrice(active.coin);
       if (_lastChartUpdateTime == null || now > _lastChartUpdateTime + 5 * 60) {
         await WarpApi.syncHistoricalPrices(settings.currency);
         active.fetchChartData();
         lastChartUpdateTime = now;
       }
-    }
-    on String {}
+    } on String {}
   }
 }
 
@@ -701,6 +692,8 @@ abstract class _SyncStatus with Store {
   @observable
   int trialDecryptionCount = 0;
 
+  int? pendingRescanHeight;
+
   bool isSynced() {
     final sh = syncedHeight;
     return sh != null && sh >= latestHeight;
@@ -716,9 +709,8 @@ abstract class _SyncStatus with Store {
     final _syncedHeight = syncedHeight;
     if (_startHeight != null && _syncedHeight != null) {
       final total = latestHeight - _startHeight;
-      final percent = total > 0
-          ? 100 * (_syncedHeight - _startHeight) ~/ total
-          : 0;
+      final percent =
+          total > 0 ? 100 * (_syncedHeight - _startHeight) ~/ total : 0;
       return percent;
     }
     return null;
@@ -726,8 +718,7 @@ abstract class _SyncStatus with Store {
 
   @action
   setSyncHeight(int? height, DateTime? _timestamp) {
-    if (height == null || syncedHeight != height)
-      syncedHeight = height;
+    if (height == null || syncedHeight != height) syncedHeight = height;
     timestamp = _timestamp;
   }
 
@@ -762,11 +753,11 @@ abstract class _SyncStatus with Store {
     }
     try {
       latestHeight = await WarpApi.getLatestHeight();
-    }
-    on String {}
+    } on String {}
     final _syncedInfo = getDbSyncedHeight();
     // if syncedHeight = 0, we just started sync therefore don't set it back to null
-    if (syncedHeight != 0 && _syncedInfo != null) setSyncHeight(_syncedInfo.height, _syncedInfo.timestamp);
+    if (syncedHeight != 0 && _syncedInfo != null)
+      setSyncHeight(_syncedInfo.height, _syncedInfo.timestamp);
     return latestHeight > 0 && syncedHeight == latestHeight;
   }
 
@@ -789,7 +780,9 @@ abstract class _SyncStatus with Store {
           );
         }
         final params = SyncParams(
-            active.coin, settings.getTx, settings.anchorOffset,
+            active.coin,
+            settings.getTx,
+            settings.anchorOffset,
             settings.antispam ? 50 : 1000000,
             syncPort.sendPort);
         final res = await compute(WarpApi.warpSync, params);
@@ -799,21 +792,17 @@ abstract class _SyncStatus with Store {
             await priceStore.updateChart();
             contacts.fetchContacts();
           }
-        }
-        else if (res == 1) {
+        } else if (res == 1) {
           await reorg();
         }
       }
-    }
-    on String catch (e) {
+    } on String catch (e) {
       showSnackBar(e);
       paused = true;
-    }
-    finally {
+    } finally {
       syncing = false;
       eta.reset();
-      if (Platform.isAndroid)
-        await FlutterForegroundTask.stopService();
+      if (Platform.isAndroid) await FlutterForegroundTask.stopService();
     }
   }
 
@@ -832,13 +821,21 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<void> rescan(int height) async {
-    if (syncing) return;
+    if (syncing) {
+      pendingRescanHeight = height;
+      return;
+    }
     eta.reset();
     showSnackBar(S.current.rescanRequested(height));
     syncedHeight = height;
     timestamp = null;
     WarpApi.rescanFrom(height);
     await sync(true);
+    final rh = pendingRescanHeight;
+    if (rh != null) {
+      pendingRescanHeight = null;
+      await rescan(rh);
+    }
   }
 
   @action
@@ -1012,8 +1009,8 @@ class Note extends HasHeight {
   bool excluded;
   bool spent;
 
-  Note(this.id, this.height, this.timestamp, this.value, this.orchard, this.excluded,
-      this.spent);
+  Note(this.id, this.height, this.timestamp, this.value, this.orchard,
+      this.excluded, this.spent);
 
   Note get invertExcluded =>
       Note(id, height, timestamp, value, orchard, !excluded, spent);
@@ -1108,7 +1105,8 @@ class SortConfig {
   SortConfig(this.field, this.order);
 
   SortConfig sortOn(String field) {
-    final order = field != this.field ? SortOrder.Ascending : nextSortOrder(this.order);
+    final order =
+        field != this.field ? SortOrder.Ascending : nextSortOrder(this.order);
     return SortConfig(field, order);
   }
 
@@ -1145,7 +1143,13 @@ class SendPageArgs {
 
   final String? uri; // send to payment URI
 
-  SendPageArgs({this.isMulti = false, this.contact, this.address, this.subject, this.uri, this.recipients = const[]});
+  SendPageArgs(
+      {this.isMulti = false,
+      this.contact,
+      this.address,
+      this.subject,
+      this.uri,
+      this.recipients = const []});
 }
 
 class ShareInfo {

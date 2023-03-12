@@ -10,14 +10,11 @@ final rescanKey = GlobalKey<RescanFormState>();
 Future<int?> rescanDialog(BuildContext context) async {
   try {
     DateTime minDate = WarpApi.getActivationDate();
-    final approved = await showDialog<bool>(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) =>
-            AlertDialog(
-                title: Text(S
-                    .of(context)
-                    .rescanFrom),
+    final bool approved = await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+                title: Text(S.of(context).rescanFrom),
                 content: RescanForm(minDate, key: rescanKey),
                 actions: confirmButtons(
                     context, () => Navigator.of(context).pop(true),
@@ -28,17 +25,14 @@ Future<int?> rescanDialog(BuildContext context) async {
       final heightText = rescanKey.currentState!.heightController.text;
       final approved = await confirmWifi(context);
       if (approved) {
-        showSnackBar(S
-            .of(context)
-            .rescanning, autoClose: true);
+        showSnackBar(S.of(context).rescanning, autoClose: true);
         final height = int.tryParse(heightText);
         if (height != null) return height;
         final height2 = await WarpApi.getBlockHeightByTime(date);
         return height2;
       }
     }
-  }
-  on String {}
+  } on String {}
   return null;
 }
 
@@ -65,19 +59,25 @@ class RescanFormState extends State<RescanForm> {
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('yyyy-MM-dd');
     return SingleChildScrollView(
-      child: Column(children: [
-        OutlinedButton(onPressed: _showDatePicker, child: Text(dateFormat.format(startDate))),
-        Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Text('OR')),
-        TextFormField(
-          decoration: InputDecoration(labelText: S.of(context).height),
-          keyboardType: TextInputType.number,
-          controller: heightController,
-        ),
-      ]));
+        child: Column(children: [
+      OutlinedButton(
+          onPressed: _showDatePicker,
+          child: Text(dateFormat.format(startDate))),
+      Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Text('OR')),
+      TextFormField(
+        decoration: InputDecoration(labelText: S.of(context).height),
+        keyboardType: TextInputType.number,
+        controller: heightController,
+      ),
+    ]));
   }
 
   _showDatePicker() async {
-    final date = await showDatePicker(context: context, firstDate: widget.minDate, initialDate: startDate, lastDate: maxDate);
+    final date = await showDatePicker(
+        context: context,
+        firstDate: widget.minDate,
+        initialDate: startDate,
+        lastDate: maxDate);
     if (date != null) {
       setState(() {
         startDate = date;
@@ -95,8 +95,7 @@ Future<bool> confirmWifi(BuildContext context) async {
             barrierDismissible: false,
             builder: (context) => AlertDialog(
                 title: Text(S.of(context).rescan),
-                content: Text(
-                    S.of(context).mobileCharges),
+                content: Text(S.of(context).mobileCharges),
                 actions: confirmButtons(
                     context, () => Navigator.of(context).pop(true),
                     cancelValue: false))) ??
