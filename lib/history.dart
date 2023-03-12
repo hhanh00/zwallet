@@ -14,12 +14,17 @@ class HistoryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       switch (settings.txView) {
-        case ViewStyle.Table: return HistoryTable();
-        case ViewStyle.List: return HistoryList();
-        case ViewStyle.Auto: return OrientationBuilder(builder: (context, orientation) {
-          if (orientation == Orientation.portrait) return HistoryList();
-          else return HistoryTable();
-        });
+        case ViewStyle.Table:
+          return HistoryTable();
+        case ViewStyle.List:
+          return HistoryList();
+        case ViewStyle.Auto:
+          return OrientationBuilder(builder: (context, orientation) {
+            if (orientation == Orientation.portrait)
+              return HistoryList();
+            else
+              return HistoryTable();
+          });
       }
     });
   }
@@ -48,7 +53,8 @@ class HistoryState extends State<HistoryTable>
           // ignore: unused_local_variable
           final _unused = active.sortedTxs;
           return PaginatedDataTable(
-              header: Text(S.of(context).tapTransactionForDetails, style: Theme.of(context).textTheme.bodyMedium),
+              header: Text(S.of(context).tapTransactionForDetails,
+                  style: Theme.of(context).textTheme.bodyMedium),
               actions: [
                 IconButton(onPressed: _onExport, icon: Icon(Icons.save))
               ],
@@ -63,8 +69,8 @@ class HistoryState extends State<HistoryTable>
                       });
                     }),
                 DataColumn(
-                  label: Text(s.datetime +
-                      active.txSortConfig.getIndicator("time")),
+                  label: Text(
+                      s.datetime + active.txSortConfig.getIndicator("time")),
                   onSort: (_, __) {
                     setState(() {
                       active.sortTx("time");
@@ -72,8 +78,8 @@ class HistoryState extends State<HistoryTable>
                   },
                 ),
                 DataColumn(
-                  label: Text(s.amount +
-                      active.txSortConfig.getIndicator("amount")),
+                  label: Text(
+                      s.amount + active.txSortConfig.getIndicator("amount")),
                   numeric: true,
                   onSort: (_, __) {
                     setState(() {
@@ -82,8 +88,8 @@ class HistoryState extends State<HistoryTable>
                   },
                 ),
                 DataColumn(
-                  label: Text('TXID' +
-                      active.txSortConfig.getIndicator("txid")),
+                  label:
+                      Text('TXID' + active.txSortConfig.getIndicator("txid")),
                   onSort: (_, __) {
                     setState(() {
                       active.sortTx("txid");
@@ -91,8 +97,8 @@ class HistoryState extends State<HistoryTable>
                   },
                 ),
                 DataColumn(
-                  label: Text(s.address +
-                      active.txSortConfig.getIndicator("address")),
+                  label: Text(
+                      s.address + active.txSortConfig.getIndicator("address")),
                   onSort: (_, __) {
                     setState(() {
                       active.sortTx("address");
@@ -100,8 +106,8 @@ class HistoryState extends State<HistoryTable>
                   },
                 ),
                 DataColumn(
-                  label: Text(s.memo +
-                      active.txSortConfig.getIndicator("memo")),
+                  label:
+                      Text(s.memo + active.txSortConfig.getIndicator("memo")),
                   onSort: (_, __) {
                     setState(() {
                       active.sortTx("memo");
@@ -122,9 +128,17 @@ class HistoryState extends State<HistoryTable>
   }
 
   _onExport() async {
-    final csvData = active.sortedTxs.map((tx) => [
-      tx.fullTxId, tx.height, tx.timestamp, tx.address, tx.contact ?? '',
-      tx.value, tx.memo]).toList();
+    final csvData = active.sortedTxs
+        .map((tx) => [
+              tx.fullTxId,
+              tx.height,
+              tx.timestamp,
+              tx.address,
+              tx.contact ?? '',
+              tx.value,
+              tx.memo
+            ])
+        .toList();
     await shareCsv(csvData, 'tx_history.csv', S.of(context).transactionHistory);
   }
 }
@@ -176,7 +190,8 @@ class HistoryList extends StatefulWidget {
   HistoryListState createState() => HistoryListState();
 }
 
-class HistoryListState extends State<HistoryList> with AutomaticKeepAliveClientMixin {
+class HistoryListState extends State<HistoryList>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -189,8 +204,7 @@ class HistoryListState extends State<HistoryList> with AutomaticKeepAliveClientM
             ZMessage? message;
             try {
               message = active.messages.firstWhere((m) => m.txId == tx.id);
-            }
-            on StateError {
+            } on StateError {
               message = null;
             }
             return TxItem(tx, message, index);
@@ -215,29 +229,36 @@ class TxItem extends StatelessWidget {
     final initial = contact[0];
     final color = amountColor(context, tx.value);
     return Container(
-      margin: EdgeInsets.only(top: 3.0, bottom: 3.0, right: 0.0),
-      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: GestureDetector(
-        onTap: () { _gotoTx(context); },
-        child: Row(
-          children: [
-            Column(children: [
-              CircleAvatar( child: Text(initial, style: theme.textTheme.headlineSmall!.apply(color: Colors.white)),
-                backgroundColor: initialToColor(contact)),
-              Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-              Text('${tx.txid}', style: theme.textTheme.labelSmall),
-            ]),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 4)),
-            Expanded(child: MessageContentWidget(tx.contact ?? tx.address ?? '', message, tx.memo ?? '')),
-            SizedBox(
-              width: 100,
-              child: Column(children: [
-                Text('${humanizeDateTime(tx.timestamp)}'),
-                Text('${tx.value}', style: theme.textTheme.titleLarge!.copyWith(color: color)),
-            ])),
-          ]
-      ))
-    );
+        margin: EdgeInsets.only(top: 3.0, bottom: 3.0, right: 0.0),
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: GestureDetector(
+            onTap: () {
+              _gotoTx(context);
+            },
+            child: Row(children: [
+              Column(children: [
+                CircleAvatar(
+                    child: Text(initial,
+                        style: theme.textTheme.headlineSmall!
+                            .apply(color: Colors.white)),
+                    backgroundColor: initialToColor(contact)),
+                Padding(padding: EdgeInsets.symmetric(vertical: 4)),
+                Text('${tx.txid}', style: theme.textTheme.labelSmall),
+              ]),
+              Padding(padding: EdgeInsets.symmetric(horizontal: 4)),
+              Expanded(
+                  child: MessageContentWidget(
+                      tx.contact ?? tx.address ?? '', message, tx.memo ?? '')),
+              SizedBox(
+                  width: 100,
+                  child: Column(children: [
+                    Text('${humanizeDateTime(tx.timestamp)}'),
+                    Text('${tx.value}',
+                        maxLines: 1,
+                        style:
+                            theme.textTheme.titleLarge!.copyWith(color: color)),
+                  ])),
+            ])));
   }
 
   _gotoTx(BuildContext context) {
@@ -256,15 +277,20 @@ class MessageContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final m = message;
+    final addressWidget =
+        Text('${trailing(address, 8)}', style: theme.textTheme.labelMedium);
     if (m != null) {
       return Column(children: [
-        Text('${trailing(address, 8)}', style: theme.textTheme.labelMedium),
+        addressWidget,
         Text("${m.subject}", style: theme.textTheme.titleSmall),
-        if (m.subject != m.body) Text("${m.body}", style: theme.textTheme.bodySmall),
+        if (m.subject != m.body)
+          Text("${m.body}", style: theme.textTheme.bodySmall),
       ]);
-    }
-    else {
-      return Text(memo, style: theme.textTheme.bodySmall);
+    } else {
+      return Column(children: [
+        addressWidget,
+        Text(memo, style: theme.textTheme.bodySmall),
+      ]);
     }
   }
 }
