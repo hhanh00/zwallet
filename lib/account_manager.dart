@@ -265,11 +265,33 @@ class AccountManagerState extends State<AccountManagerPage> {
   }
 
   _onFullRestore() {
-    Navigator.of(this.context).pushNamed('/fullRestore');
+    Navigator.of(context).pushNamed('/fullRestore');
   }
 
-  _onScanSubAccounts() {
-    Navigator.of(this.context).pushNamed('/scantaddr');
+  _onScanSubAccounts() async {
+    final s = S.of(context);
+    final nav = Navigator.of(context);
+    final gapController = TextEditingController(text: '10');
+    final confirmed = await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+                title: Text(s.scanTransparentAddresses),
+                content: SingleChildScrollView(
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  TextFormField(
+                      decoration: InputDecoration(labelText: s.gapLimit),
+                      controller: gapController,
+                      keyboardType: TextInputType.number)
+                ])),
+                actions: confirmButtons(context, () {
+                  nav.pop(true);
+                }))) ??
+        false;
+    if (confirmed) {
+      final gapLimit = int.parse(gapController.text);
+      Navigator.of(this.context).pushNamed('/scantaddr', arguments: gapLimit);
+    }
   }
 }
 

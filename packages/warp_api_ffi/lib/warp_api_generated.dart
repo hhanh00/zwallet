@@ -512,9 +512,13 @@ class NativeLibrary {
       _shield_taddr_ptr.asFunction<_dart_shield_taddr>();
 
   CResult______u8 scan_transparent_accounts(
+    int coin,
+    int account,
     int gap_limit,
   ) {
     return _scan_transparent_accounts(
+      coin,
+      account,
       gap_limit,
     );
   }
@@ -1906,10 +1910,14 @@ typedef _dart_shield_taddr = CResult_____c_char Function(
 );
 
 typedef _c_scan_transparent_accounts = CResult______u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
   ffi.Uint32 gap_limit,
 );
 
 typedef _dart_scan_transparent_accounts = CResult______u8 Function(
+  int coin,
+  int account,
   int gap_limit,
 );
 

@@ -304,5 +304,7 @@
   "invalidPassword": "Mot de Passe incorrect",
   "databaseRestored": "BD Récupèrée",
   "never": "Jamais",
-  "always": "Toujours"
+  "always": "Toujours",
+  "scanTransparentAddresses": "Scan Transparent Addresses",
+  "scanningAddresses": "Scanning addresses"
 }

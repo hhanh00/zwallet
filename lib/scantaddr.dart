@@ -5,6 +5,9 @@ import 'generated/l10n.dart';
 import 'main.dart';
 
 class ScanTAddrPage extends StatefulWidget {
+  final int gapLimit;
+  ScanTAddrPage(this.gapLimit);
+
   @override
   ScanTAddrPageState createState() => ScanTAddrPageState();
 }
@@ -16,7 +19,8 @@ class ScanTAddrPageState extends State<ScanTAddrPage> {
   void initState() {
     super.initState();
     Future(() async {
-      final _addresses = await WarpApi.scanTransparentAccounts(active.coin, active.id, settings.gapLimit);
+      final _addresses = await WarpApi.scanTransparentAccounts(
+          active.coin, active.id, widget.gapLimit);
       setState(() {
         addresses = _addresses;
       });
@@ -25,23 +29,25 @@ class ScanTAddrPageState extends State<ScanTAddrPage> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final _addresses = addresses;
     return Scaffold(
-      appBar: AppBar(title: Text('Scan Transparent Addresses')),
-      body: (_addresses == null) ?
-          Center(child: Text('Scanning addresses'))
-        : Column(
-        children: [
-          Expanded(child: ListView.builder(
-              itemCount: _addresses.length,
-              itemBuilder: (BuildContext context, int index) {
-                final a = _addresses[index];
-                return ListTile(title: Text(a.address!), subtitle: Text(amountToString(a.balance, MAX_PRECISION)));
-              })),
-          ButtonBar(children: confirmButtons(this.context, onPressed))
-        ]
-      )
-    );
+        appBar: AppBar(title: Text(s.scanTransparentAddresses)),
+        body: (_addresses == null)
+            ? Center(child: Text(s.scanningAddresses))
+            : Column(children: [
+                Expanded(
+                    child: ListView.builder(
+                        itemCount: _addresses.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final a = _addresses[index];
+                          return ListTile(
+                              title: Text(a.address!),
+                              subtitle: Text(
+                                  amountToString(a.balance, MAX_PRECISION)));
+                        })),
+                ButtonBar(children: confirmButtons(this.context, onPressed))
+              ]));
   }
 
   onPressed() async {
@@ -54,4 +60,3 @@ class ScanTAddrPageState extends State<ScanTAddrPage> {
     Navigator.of(context).pop();
   }
 }
-

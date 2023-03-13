@@ -93,8 +93,8 @@ void handleUri(BuildContext context, Uri uri) {
   final coin = coinDef.coin;
   final id = WarpApi.getActiveAccountId(coin);
   active.setActiveAccount(coin, id);
-  Navigator.of(context).pushNamed(
-      '/send', arguments: SendPageArgs(uri: uri.toString()));
+  Navigator.of(context)
+      .pushNamed('/send', arguments: SendPageArgs(uri: uri.toString()));
 }
 
 Future<void> registerURLHandler(BuildContext context) async {
@@ -128,7 +128,7 @@ void handleQuickAction(BuildContext context, String type) {
 }
 
 class LoadProgress extends StatefulWidget {
-  LoadProgress({Key? key}): super(key: key);
+  LoadProgress({Key? key}) : super(key: key);
 
   @override
   LoadProgressState createState() => LoadProgressState();
@@ -154,7 +154,7 @@ class LoadProgressState extends State<LoadProgress> {
     _disposed = true;
     super.dispose();
   }
-  
+
   void cancelResetTimer() {
     _reset?.cancel();
     _reset = null;
@@ -165,21 +165,21 @@ class LoadProgressState extends State<LoadProgress> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    return Scaffold(body: Container(
-        alignment: Alignment.center,
-        child: SizedBox(height: 240, width: 200, child:
-        Column(
-            children: [
-              Image.asset('assets/icon.png', height: 64),
-              Padding(padding: EdgeInsets.all(16)),
-              Text(S.of(context).loading, style: textTheme.headlineMedium),
-              Padding(padding: EdgeInsets.all(16)),
-              LinearProgressIndicator(value: _value),
-              Padding(padding: EdgeInsets.all(8)),
-              Text(_message, style: textTheme.labelMedium),
-            ]
-        )
-        )));
+    return Scaffold(
+        body: Container(
+            alignment: Alignment.center,
+            child: SizedBox(
+                height: 240,
+                width: 200,
+                child: Column(children: [
+                  Image.asset('assets/icon.png', height: 64),
+                  Padding(padding: EdgeInsets.all(16)),
+                  Text(S.of(context).loading, style: textTheme.headlineMedium),
+                  Padding(padding: EdgeInsets.all(16)),
+                  LinearProgressIndicator(value: _value),
+                  Padding(padding: EdgeInsets.all(8)),
+                  Text(_message, style: textTheme.labelMedium),
+                ]))));
   }
 
   void setValue(double v, String message) {
@@ -221,7 +221,8 @@ void main() async {
       size: size,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
-      titleBarStyle: Platform.isMacOS ? TitleBarStyle.hidden : TitleBarStyle.normal,
+      titleBarStyle:
+          Platform.isMacOS ? TitleBarStyle.hidden : TitleBarStyle.normal,
     );
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
@@ -230,90 +231,97 @@ void main() async {
     windowManager.addListener(OnWindow());
   }
   AwesomeNotifications().initialize(
-    'resource://drawable/res_notification',
-    [
-      NotificationChannel(
-        channelKey: APP_NAME,
-        channelName: APP_NAME,
-        channelDescription: 'Notification channel for $APP_NAME',
-        defaultColor: Color(0xFFB3F0FF),
-        ledColor: Colors.white,
-      )
-    ],
-    debug: true
-  );
+      'resource://drawable/res_notification',
+      [
+        NotificationChannel(
+          channelKey: APP_NAME,
+          channelName: APP_NAME,
+          channelDescription: 'Notification channel for $APP_NAME',
+          defaultColor: Color(0xFFB3F0FF),
+          ledColor: Colors.white,
+        )
+      ],
+      debug: true);
   final home = ZWalletApp();
 
   runApp(FutureBuilder(
       future: settings.restore(),
       builder: (context, snapshot) {
         return snapshot.connectionState == ConnectionState.waiting
-            ? MaterialApp(home: Container()) :
-        Observer(builder: (context) {
-          final theme = settings.themeData.copyWith(
-            useMaterial3: true,
-            dataTableTheme: DataTableThemeData(
-                headingRowColor: MaterialStateColor.resolveWith(
-                        (_) => settings.themeData.highlightColor)));
-          return MaterialApp(
-            title: APP_NAME,
-            debugShowCheckedModeBanner: false,
-            theme: theme,
-            home: home,
-            scaffoldMessengerKey: rootScaffoldMessengerKey,
-            navigatorKey: navigatorKey,
-            localizationsDelegates: [
-              S.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: S.delegate.supportedLocales,
-            onGenerateRoute: (RouteSettings routeSettings) {
-              var routes = <String, WidgetBuilder>{
-                '/welcome': (context) => WelcomePage(),
-                '/account': (context) => HomePage(),
-                '/add_account': (context) => AddAccountPage(),
-                '/add_first_account': (context) => AddAccountPage(firstAccount: true),
-                '/send': (context) =>
-                    SendPage(routeSettings.arguments as SendPageArgs?),
-                '/receive': (context) =>
-                    PaymentURIPage(),
-                '/accounts': (context) => AccountManagerPage(),
-                '/settings': (context) => SettingsPage(),
-                '/tx': (context) =>
-                    TransactionPage(routeSettings.arguments as int),
-                '/message': (context) =>
-                    MessagePage(routeSettings.arguments as int),
-                '/backup': (context) {
-                  final accountId = routeSettings.arguments as AccountId?;
-                  final accountId2 = accountId ?? active.toId();
-                  return BackupPage(accountId2.coin, accountId2.id);
-                },
-                '/pools': (context) => PoolsPage(),
-                '/multipay': (context) => MultiPayPage(),
-                '/edit_theme': (context) =>
-                    ThemeEditorPage(onSaved: settings.updateCustomThemeColors),
-                '/reset': (context) => ResetPage(),
-                '/fullBackup': (context) => FullBackupPage(),
-                '/fullRestore': (context) => FullRestorePage(),
-                '/scantaddr': (context) => ScanTAddrPage(),
-                '/qroffline': (context) => QrOffline(routeSettings.arguments as String),
-                '/showRawTx': (context) => ShowRawTx(routeSettings.arguments as String),
-                '/keytool': (context) => KeyToolPage(),
-                '/dev': (context) => DevPage(),
-                '/txplan': (context) => TxPlanPage.fromPlan(routeSettings.arguments as String, false),
-                '/sign': (context) => TxPlanPage.fromPlan(routeSettings.arguments as String, true),
-                '/syncstats': (context) => SyncChartPage(),
-                '/scanner': (context) {
-                  final args = routeSettings.arguments as Map<String, dynamic>;
-                  return QRScanner(args['onScan'], completed: args['completed'], multi: args['multi']);
-                },
-              };
-              return MaterialPageRoute(builder: routes[routeSettings.name]!);
-            },
-          );
-        });
+            ? MaterialApp(home: Container())
+            : Observer(builder: (context) {
+                final theme = settings.themeData.copyWith(
+                    useMaterial3: true,
+                    dataTableTheme: DataTableThemeData(
+                        headingRowColor: MaterialStateColor.resolveWith(
+                            (_) => settings.themeData.highlightColor)));
+                return MaterialApp(
+                  title: APP_NAME,
+                  debugShowCheckedModeBanner: false,
+                  theme: theme,
+                  home: home,
+                  scaffoldMessengerKey: rootScaffoldMessengerKey,
+                  navigatorKey: navigatorKey,
+                  localizationsDelegates: [
+                    S.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: S.delegate.supportedLocales,
+                  onGenerateRoute: (RouteSettings routeSettings) {
+                    var routes = <String, WidgetBuilder>{
+                      '/welcome': (context) => WelcomePage(),
+                      '/account': (context) => HomePage(),
+                      '/add_account': (context) => AddAccountPage(),
+                      '/add_first_account': (context) =>
+                          AddAccountPage(firstAccount: true),
+                      '/send': (context) =>
+                          SendPage(routeSettings.arguments as SendPageArgs?),
+                      '/receive': (context) => PaymentURIPage(),
+                      '/accounts': (context) => AccountManagerPage(),
+                      '/settings': (context) => SettingsPage(),
+                      '/tx': (context) =>
+                          TransactionPage(routeSettings.arguments as int),
+                      '/message': (context) =>
+                          MessagePage(routeSettings.arguments as int),
+                      '/backup': (context) {
+                        final accountId = routeSettings.arguments as AccountId?;
+                        final accountId2 = accountId ?? active.toId();
+                        return BackupPage(accountId2.coin, accountId2.id);
+                      },
+                      '/pools': (context) => PoolsPage(),
+                      '/multipay': (context) => MultiPayPage(),
+                      '/edit_theme': (context) => ThemeEditorPage(
+                          onSaved: settings.updateCustomThemeColors),
+                      '/reset': (context) => ResetPage(),
+                      '/fullBackup': (context) => FullBackupPage(),
+                      '/fullRestore': (context) => FullRestorePage(),
+                      '/scantaddr': (context) =>
+                          ScanTAddrPage(routeSettings.arguments as int),
+                      '/qroffline': (context) =>
+                          QrOffline(routeSettings.arguments as String),
+                      '/showRawTx': (context) =>
+                          ShowRawTx(routeSettings.arguments as String),
+                      '/keytool': (context) => KeyToolPage(),
+                      '/dev': (context) => DevPage(),
+                      '/txplan': (context) => TxPlanPage.fromPlan(
+                          routeSettings.arguments as String, false),
+                      '/sign': (context) => TxPlanPage.fromPlan(
+                          routeSettings.arguments as String, true),
+                      '/syncstats': (context) => SyncChartPage(),
+                      '/scanner': (context) {
+                        final args =
+                            routeSettings.arguments as Map<String, dynamic>;
+                        return QRScanner(args['onScan'],
+                            completed: args['completed'], multi: args['multi']);
+                      },
+                    };
+                    return MaterialPageRoute(
+                        builder: routes[routeSettings.name]!);
+                  },
+                );
+              });
       }));
 }
 
@@ -346,11 +354,14 @@ class ZWalletAppState extends State<ZWalletApp> {
         }
         // Only after at least the action method is set, the notification events are delivered
         AwesomeNotifications().setListeners(
-            onActionReceivedMethod:         NotificationController.onActionReceivedMethod,
-            onNotificationCreatedMethod:    NotificationController.onNotificationCreatedMethod,
-            onNotificationDisplayedMethod:  NotificationController.onNotificationDisplayedMethod,
-            onDismissActionReceivedMethod:  NotificationController.onDismissActionReceivedMethod
-        );
+            onActionReceivedMethod:
+                NotificationController.onActionReceivedMethod,
+            onNotificationCreatedMethod:
+                NotificationController.onNotificationCreatedMethod,
+            onNotificationDisplayedMethod:
+                NotificationController.onNotificationDisplayedMethod,
+            onDismissActionReceivedMethod:
+                NotificationController.onDismissActionReceivedMethod);
       });
     }
   }
@@ -367,15 +378,14 @@ class ZWalletAppState extends State<ZWalletApp> {
         final dbPath = await getDbPath();
         for (var coin in coins) {
           coin.init(dbPath);
-          final server = settings.servers.firstWhere((s) => s.coin == coin.coin);
+          final server =
+              settings.servers.firstWhere((s) => s.coin == coin.coin);
           final url = server.getLWDUrl();
-          if (url != null)
-            WarpApi.updateLWD(coin.coin, url);
+          if (url != null) WarpApi.updateLWD(coin.coin, url);
         }
 
         if (exportDb) {
-          for (var coin in coins)
-            await coin.export(context, dbPath);
+          for (var coin in coins) await coin.export(context, dbPath);
           prefs.setBool('export_db', false);
         }
         if (recover) {
@@ -394,24 +404,24 @@ class ZWalletAppState extends State<ZWalletApp> {
           if (WarpApi.decryptDb(c.dbFullPath, '')) break; // not encrypted
 
           final reset = await getDbPasswd(context, c.dbFullPath);
-          if (reset) { // user didn't input the passwd and wants to reset
+          if (reset) {
+            // user didn't input the passwd and wants to reset
             await clearApp(context);
-          }
-          else break;
-        } while(true);
+          } else
+            break;
+        } while (true);
 
         for (var c in coins) {
-          _setProgress(0.2 * (c.coin+1), 'Initializing ${c.ticker}');
-          await compute(_initWallet, { 'coin': c, 'passwd': settings.dbPasswd });
+          _setProgress(0.2 * (c.coin + 1), 'Initializing ${c.ticker}');
+          await compute(_initWallet, {'coin': c, 'passwd': settings.dbPasswd});
         }
 
         _setProgress(0.7, 'Restoring Active Account');
         if (recover) {
           final aid = getAvailableId(coins[0].coin);
-          if (aid != null)
-            active.setActiveAccount(aid.coin, aid.id);
-        }
-        else await active.restore();
+          if (aid != null) active.setActiveAccount(aid.coin, aid.id);
+        } else
+          await active.restore();
 
         _setProgress(0.8, 'Register URL Protocol Handlers');
         await registerURLHandler(this.context);
@@ -434,10 +444,12 @@ class ZWalletAppState extends State<ZWalletApp> {
             for (var c in settings.coins) {
               final coin = c.coin;
               final ticker = c.def.ticker;
-              shortcuts.add(ShortcutItem(type: '$coin.receive',
+              shortcuts.add(ShortcutItem(
+                  type: '$coin.receive',
                   localizedTitle: s.receive(ticker),
                   icon: 'receive'));
-              shortcuts.add(ShortcutItem(type: '$coin.send',
+              shortcuts.add(ShortcutItem(
+                  type: '$coin.send',
                   localizedTitle: s.sendCointicker(ticker),
                   icon: 'send'));
             }
@@ -468,8 +480,7 @@ class ZWalletAppState extends State<ZWalletApp> {
     WarpApi.initWallet(c.coin, c.dbFullPath);
     try {
       WarpApi.migrateData(c.coin);
-    }
-    catch (e) {} // do not fail on network exception
+    } catch (e) {} // do not fail on network exception
   }
 
   @override
@@ -489,10 +500,10 @@ class ZWalletAppState extends State<ZWalletApp> {
 }
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
-GlobalKey<ScaffoldMessengerState>();
+    GlobalKey<ScaffoldMessengerState>();
 
-List<ElevatedButton> confirmButtons(BuildContext context,
-    VoidCallback? onPressed,
+List<ElevatedButton> confirmButtons(
+    BuildContext context, VoidCallback? onPressed,
     {String? okLabel, Icon? okIcon, cancelValue}) {
   final s = S.of(context);
   final navigator = Navigator.of(context);
@@ -511,7 +522,8 @@ List<ElevatedButton> confirmButtons(BuildContext context,
   ];
 }
 
-List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(List<T> timeseries,
+List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(
+    List<T> timeseries,
     int start,
     int end,
     int Function(T) getDay,
@@ -550,67 +562,73 @@ void showQR(BuildContext context, String text, String title) {
         return AlertDialog(
             content: Container(
                 width: double.maxFinite,
-                child: SingleChildScrollView(child: Column(children: [
+                child: SingleChildScrollView(
+                    child: Column(children: [
                   LayoutBuilder(builder: (context, constraints) {
                     final size = getScreenSize(context) * 0.5;
-                    return QrImage(data: text, backgroundColor: Colors.white, size: size);
+                    return QrImage(
+                        data: text, backgroundColor: Colors.white, size: size);
                   }),
                   Padding(padding: EdgeInsets.all(8)),
-                  Text(title, style: Theme
-                      .of(context)
-                      .textTheme
-                      .titleSmall),
+                  Text(title, style: Theme.of(context).textTheme.titleSmall),
                   Padding(padding: EdgeInsets.all(4)),
                   ButtonBar(children: [
-                  ElevatedButton.icon(onPressed: () {
-                    Clipboard.setData(ClipboardData(text: text));
-                    showSnackBar(s.textCopiedToClipboard(title));
-                    Navigator.of(context).pop();
-                  }, icon: Icon(Icons.copy), label: Text(s.copy)),
-                  ElevatedButton.icon(onPressed: () => saveQRImage(text, title),
-                    icon: Icon(Icons.save), label: Text(s.save))
+                    ElevatedButton.icon(
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: text));
+                          showSnackBar(s.textCopiedToClipboard(title));
+                          Navigator.of(context).pop();
+                        },
+                        icon: Icon(Icons.copy),
+                        label: Text(s.copy)),
+                    ElevatedButton.icon(
+                        onPressed: () => saveQRImage(text, title),
+                        icon: Icon(Icons.save),
+                        label: Text(s.save))
                   ])
-                ])))
-        ); });
+                ]))));
+      });
 }
 
 Future<void> saveQRImage(String data, String title) async {
-  final code = QrCode.fromData(data: data, errorCorrectLevel: QrErrorCorrectLevel.L);
+  final code =
+      QrCode.fromData(data: data, errorCorrectLevel: QrErrorCorrectLevel.L);
   code.make();
-  final painter = QrPainter.withQr(qr: code, emptyColor: Colors.white, gapless: true);
+  final painter =
+      QrPainter.withQr(qr: code, emptyColor: Colors.white, gapless: true);
   final recorder = PictureRecorder();
   final canvas = Canvas(recorder);
   final size = code.moduleCount * 32;
-  final whitePaint = Paint()..color = Colors.white..style = PaintingStyle.fill;
+  final whitePaint = Paint()
+    ..color = Colors.white
+    ..style = PaintingStyle.fill;
   canvas.drawRect(Rect.fromLTWH(0, 0, size + 256, size + 256), whitePaint);
   canvas.translate(128, 128);
   painter.paint(canvas, Size(size.toDouble(), size.toDouble()));
   final image = await recorder.endRecording().toImage(size + 256, size + 256);
-  final ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
+  final ByteData? byteData =
+      await image.toByteData(format: ImageByteFormat.png);
   final Uint8List pngBytes = byteData!.buffer.asUint8List();
   await saveFileBinary(pngBytes, 'qr.png', title);
 }
 
-Future<bool> showMessageBox(BuildContext context, String title, String content,
-    String label) async {
+Future<bool> showMessageBox(
+    BuildContext context, String title, String content, String label) async {
   final confirm = await showDialog<bool>(
     context: context,
     barrierDismissible: false,
-    builder: (context) =>
-        AlertDialog(
-            title: Text(title),
-            content: Text(content),
-            actions: confirmButtons(context, () {
-              Navigator.of(context).pop(true);
-            }, okLabel: label, cancelValue: false)),
+    builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: confirmButtons(context, () {
+          Navigator.of(context).pop(true);
+        }, okLabel: label, cancelValue: false)),
   );
   return confirm ?? false;
 }
 
 double getScreenSize(BuildContext context) {
-  final size = MediaQuery
-      .of(context)
-      .size;
+  final size = MediaQuery.of(context).size;
   return min(size.height, size.width);
 }
 
@@ -650,8 +668,7 @@ int stringToAmount(String? s) {
 bool checkNumber(String s) {
   try {
     NumberFormat.currency().parse(s);
-  }
-  on FormatException {
+  } on FormatException {
     return false;
   }
   return true;
@@ -664,8 +681,7 @@ Future<String?> scanCode(BuildContext context) async {
   if (!isMobile()) {
     final code = await pickDecodeQRImage();
     return code;
-  }
-  else {
+  } else {
     final f = Completer();
     Navigator.of(context).pushNamed('/scanner', arguments: {
       'onScan': (String code) {
@@ -679,29 +695,30 @@ Future<String?> scanCode(BuildContext context) async {
 }
 
 String centerTrim(String v) =>
-  v.length >= 16 ? v.substring(0, 8) + "..." +
-      v.substring(v.length - 16) : v;
+    v.length >= 16 ? v.substring(0, 8) + "..." + v.substring(v.length - 16) : v;
 
 String trailing(String v, int n) {
   final len = min(n, v.length);
   return v.substring(v.length - len);
 }
 
-void showSnackBar(String msg, { bool autoClose = false, bool quick = false }) {
+void showSnackBar(String msg, {bool autoClose = false, bool quick = false}) {
   final duration = quick ? Duration(seconds: 1) : Duration(seconds: 4);
-  final snackBar = SnackBar(content: SelectableText(msg),
-    duration: autoClose ? duration : Duration(minutes: 1),
-    action: SnackBarAction(label: S.current.close, onPressed: () {
-      rootScaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-  }));
+  final snackBar = SnackBar(
+      content: SelectableText(msg),
+      duration: autoClose ? duration : Duration(minutes: 1),
+      action: SnackBarAction(
+          label: S.current.close,
+          onPressed: () {
+            rootScaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+          }));
   rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
 }
 
 void showBalanceNotification(int prevBalances, int curBalances) {
   final s = S.current;
   if (syncStatus.isRescan) return;
-  if (Platform.isAndroid &&
-      prevBalances != curBalances) {
+  if (Platform.isAndroid && prevBalances != curBalances) {
     final amount = (prevBalances - curBalances).abs();
     final amountStr = amountToString(amount, MAX_PRECISION);
     final ticker = active.coinDef.ticker;
@@ -714,8 +731,7 @@ void showBalanceNotification(int prevBalances, int curBalances) {
         body: s.received(amountStr, ticker),
         actionType: ActionType.Default,
       );
-    }
-    else {
+    } else {
       content = NotificationContent(
         id: 1,
         channelKey: APP_NAME,
@@ -724,25 +740,14 @@ void showBalanceNotification(int prevBalances, int curBalances) {
         actionType: ActionType.Default,
       );
     }
-    AwesomeNotifications().createNotification(
-        content: content
-    );
+    AwesomeNotifications().createNotification(content: content);
   }
 }
 
-enum DeviceWidth {
-  xs,
-  sm,
-  md,
-  lg,
-  xl
-}
+enum DeviceWidth { xs, sm, md, lg, xl }
 
 DeviceWidth getWidth(BuildContext context) {
-  final width = MediaQuery
-      .of(context)
-      .size
-      .width;
+  final width = MediaQuery.of(context).size.width;
   if (width < 600) return DeviceWidth.xs;
   if (width < 960) return DeviceWidth.sm;
   if (width < 1280) return DeviceWidth.md;
@@ -773,11 +778,13 @@ String humanizeDateTime(DateTime datetime) {
   return dateString;
 }
 
-String decimalFormat(double x, int decimalDigits, { String symbol = '' }) =>
-    NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol).format(
-        x).trimRight();
+String decimalFormat(double x, int decimalDigits, {String symbol = ''}) =>
+    NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol)
+        .format(x)
+        .trimRight();
 
-String amountToString(int amount, int decimalDigits) => decimalFormat(amount / ZECUNIT, decimalDigits);
+String amountToString(int amount, int decimalDigits) =>
+    decimalFormat(amount / ZECUNIT, decimalDigits);
 
 DecodedPaymentURI decodeAddress(BuildContext context, String? v) {
   final s = S.of(context);
@@ -789,8 +796,7 @@ DecodedPaymentURI decodeAddress(BuildContext context, String? v) {
     final json = WarpApi.parsePaymentURI(v);
     final payment = DecodedPaymentURI.fromJson(jsonDecode(json));
     return payment;
-  }
-  on String catch (e) {
+  } on String catch (e) {
     throw e;
   }
 }
@@ -802,8 +808,7 @@ Future<bool> authenticate(BuildContext context, String reason) async {
     final bool didAuthenticate;
     if (Platform.isAndroid && !await localAuth.canCheckBiometrics) {
       didAuthenticate = await KeyGuardmanager.authStatus == "true";
-    }
-    else  {
+    } else {
       didAuthenticate = await localAuth.authenticate(
           localizedReason: reason, options: AuthenticationOptions());
     }
@@ -814,10 +819,9 @@ Future<bool> authenticate(BuildContext context, String reason) async {
     await showDialog(
         context: context,
         barrierDismissible: true,
-        builder: (context) =>
-            AlertDialog(
-                title: Text(S.of(context).noAuthenticationMethod),
-                content: Text(e.message ?? "")));
+        builder: (context) => AlertDialog(
+            title: Text(S.of(context).noAuthenticationMethod),
+            content: Text(e.message ?? "")));
   }
   return false;
 }
@@ -827,8 +831,7 @@ Future<void> shieldTAddr(BuildContext context) async {
     final txPlan = WarpApi.shieldTAddr(
         active.coin, active.id, active.tbalance, settings.anchorOffset);
     Navigator.of(context).pushNamed('/txplan', arguments: txPlan);
-  }
-  on String catch (msg) {
+  } on String catch (msg) {
     showSnackBar(msg);
   }
 }
@@ -851,7 +854,8 @@ Future<void> saveFile(String data, String filename, String title) async {
   await saveFileBinary(utf8.encode(data), filename, title);
 }
 
-Future<void> saveFileBinary(List<int> data, String filename, String title) async {
+Future<void> saveFileBinary(
+    List<int> data, String filename, String title) async {
   if (isMobile()) {
     final context = navigatorKey.currentContext!;
     Size size = MediaQuery.of(context).size;
@@ -860,10 +864,12 @@ Future<void> saveFileBinary(List<int> data, String filename, String title) async
     final xfile = XFile(path);
     final file = File(path);
     await file.writeAsBytes(data);
-    await Share.shareXFiles([xfile], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
-  }
-  else {
-    final fn = await FilePicker.platform.saveFile(dialogTitle: title, fileName: filename);
+    await Share.shareXFiles([xfile],
+        subject: title,
+        sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
+  } else {
+    final fn = await FilePicker.platform
+        .saveFile(dialogTitle: title, fileName: filename);
     if (fn != null) {
       final file = File(fn);
       await file.writeAsBytes(data);
@@ -872,15 +878,17 @@ Future<void> saveFileBinary(List<int> data, String filename, String title) async
 }
 
 Future<void> exportFile(BuildContext context, String path, String title) async {
-  final confirmed = await showMessageBox(context, title, "Exporting $path", S.of(context).ok);
+  final confirmed =
+      await showMessageBox(context, title, "Exporting $path", S.of(context).ok);
   if (!confirmed) return;
   if (isMobile()) {
     final context = navigatorKey.currentContext!;
     Size size = MediaQuery.of(context).size;
     final xfile = XFile(path);
-    await Share.shareXFiles([xfile], subject: title, sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
-  }
-  else {
+    await Share.shareXFiles([xfile],
+        subject: title,
+        sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
+  } else {
     final fn = await FilePicker.platform.saveFile();
     if (fn != null) {
       final file = File(path);
@@ -895,18 +903,20 @@ Future<File> getRecoveryFile() async {
   return f;
 }
 
-Future<bool> showConfirmDialog(BuildContext context, String title, String body) async {
+Future<bool> showConfirmDialog(
+    BuildContext context, String title, String body) async {
   final s = S.of(context);
   final confirmation = await showDialog<bool>(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(body),
-        actions: confirmButtons(context, () {
-          Navigator.of(context).pop(true);
-        }, okLabel: s.ok, cancelValue: false)),
-  ) ?? false;
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+            title: Text(title),
+            content: Text(body),
+            actions: confirmButtons(context, () {
+              Navigator.of(context).pop(true);
+            }, okLabel: s.ok, cancelValue: false)),
+      ) ??
+      false;
   return confirmation;
 }
 
@@ -925,9 +935,12 @@ void cancelScan(BuildContext context) {
 
 Future<String> getDataPath() async {
   String? home;
-  if (Platform.isAndroid) home = (await getApplicationDocumentsDirectory()).parent.path;
+  if (Platform.isAndroid)
+    home = (await getApplicationDocumentsDirectory()).parent.path;
   if (Platform.isWindows) home = Platform.environment['LOCALAPPDATA'];
-  if (Platform.isLinux) home = Platform.environment['XDG_DATA_HOME'] ?? Platform.environment['HOME'];
+  if (Platform.isLinux)
+    home =
+        Platform.environment['XDG_DATA_HOME'] ?? Platform.environment['HOME'];
   if (Platform.isMacOS) home = Platform.environment['HOME'];
   final h = home ?? "";
   return h;
@@ -953,27 +966,27 @@ Future<String> getDbPath() async {
 bool isMobile() => Platform.isAndroid || Platform.isIOS;
 
 class NotificationController {
-
   /// Use this method to detect when a new notification or a schedule is created
   @pragma("vm:entry-point")
-  static Future <void> onNotificationCreatedMethod(ReceivedNotification receivedNotification) async {
-  }
+  static Future<void> onNotificationCreatedMethod(
+      ReceivedNotification receivedNotification) async {}
 
   /// Use this method to detect every time that a new notification is displayed
   @pragma("vm:entry-point")
-  static Future <void> onNotificationDisplayedMethod(ReceivedNotification receivedNotification) async {
+  static Future<void> onNotificationDisplayedMethod(
+      ReceivedNotification receivedNotification) async {
     FlutterRingtonePlayer.playNotification();
   }
 
   /// Use this method to detect if the user dismissed a notification
   @pragma("vm:entry-point")
-  static Future <void> onDismissActionReceivedMethod(ReceivedAction receivedAction) async {
-  }
+  static Future<void> onDismissActionReceivedMethod(
+      ReceivedAction receivedAction) async {}
 
   /// Use this method to detect when the user taps on a notification or action button
   @pragma("vm:entry-point")
-  static Future <void> onActionReceivedMethod(ReceivedAction receivedAction) async {
-  }
+  static Future<void> onActionReceivedMethod(
+      ReceivedAction receivedAction) async {}
 }
 
 void resetApp() {
@@ -992,40 +1005,46 @@ Future<bool> getDbPasswd(BuildContext context, String dbPath) async {
   final formKey = GlobalKey<FormState>();
 
   final reset = await showDialog<bool>(
-      context: context,
-      barrierColor: Colors.black,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          content: Container(
-              width: double.maxFinite,
-              child: SingleChildScrollView(child: Form(key: formKey, child: Column(children: [
-                TextFormField(
-                  decoration: InputDecoration(labelText: s.databasePassword),
-                  controller: passwdController,
-                  validator: checkPasswd,
-                  onSaved: (v) { settings.dbPasswd = v!; },
-                  obscureText: true,
-                ),
-              ])))),
-          actions:
-            <ElevatedButton>[
-            ElevatedButton.icon(
-              icon: Icon(Icons.lock_reset),
-              label: Text(s.reset),
-              onPressed: () => navigator.pop(true)),
-            ElevatedButton.icon(
-            icon: Icon(Icons.done),
-            label: Text(s.ok),
-            onPressed: () {
-              final fs = formKey.currentState!;
-              if (fs.validate()) {
-                fs.save();
-                navigator.pop(false);
-              }
-            })
-        ]);
-      }) ?? false;
+          context: context,
+          barrierColor: Colors.black,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+                content: Container(
+                    width: double.maxFinite,
+                    child: SingleChildScrollView(
+                        child: Form(
+                            key: formKey,
+                            child: Column(children: [
+                              TextFormField(
+                                decoration: InputDecoration(
+                                    labelText: s.databasePassword),
+                                controller: passwdController,
+                                validator: checkPasswd,
+                                onSaved: (v) {
+                                  settings.dbPasswd = v!;
+                                },
+                                obscureText: true,
+                              ),
+                            ])))),
+                actions: <ElevatedButton>[
+                  ElevatedButton.icon(
+                      icon: Icon(Icons.lock_reset),
+                      label: Text(s.reset),
+                      onPressed: () => navigator.pop(true)),
+                  ElevatedButton.icon(
+                      icon: Icon(Icons.done),
+                      label: Text(s.ok),
+                      onPressed: () {
+                        final fs = formKey.currentState!;
+                        if (fs.validate()) {
+                          fs.save();
+                          navigator.pop(false);
+                        }
+                      })
+                ]);
+          }) ??
+      false;
 
   return reset;
 }
