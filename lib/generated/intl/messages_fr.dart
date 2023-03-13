@@ -408,6 +408,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Scanner le QR Code"),
         "scanStartingMomentarily": MessageLookupByLibrary.simpleMessage(
             "Le scan démarre momentanément"),
+        "scanTransparentAddresses":
+            MessageLookupByLibrary.simpleMessage("Scan Transparent Addresses"),
+        "scanningAddresses":
+            MessageLookupByLibrary.simpleMessage("Scanning addresses"),
         "secondary": MessageLookupByLibrary.simpleMessage("Secondaire"),
         "secretKey": MessageLookupByLibrary.simpleMessage("Clé secrète"),
         "secretShare": MessageLookupByLibrary.simpleMessage("Secret Share"),

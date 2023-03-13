@@ -174,9 +174,6 @@ abstract class _Settings with Store {
   bool qrOffline = true;
 
   @observable
-  int gapLimit = 10;
-
-  @observable
   int primaryColorValue = 0;
   @observable
   int primaryVariantColorValue = 0;
@@ -244,7 +241,6 @@ abstract class _Settings with Store {
     messageView = ViewStyle.values[(prefs.getInt('message_view') ?? 0)];
     noteView = ViewStyle.values[(prefs.getInt('note_view') ?? 0)];
     txView = ViewStyle.values[(prefs.getInt('tx_view') ?? 0)];
-    gapLimit = prefs.getInt('gap_limit') ?? 10;
     qrOffline = prefs.getBool('qr_offline') ?? true;
 
     primaryColorValue = prefs.getInt('primary') ?? Colors.blue.value;
@@ -345,13 +341,6 @@ abstract class _Settings with Store {
     useGPU = v;
     prefs.setBool('gpu', v);
     WarpApi.useGPU(v);
-  }
-
-  @action
-  Future<void> setGapLimit(int _gapLimit) async {
-    final prefs = await SharedPreferences.getInstance();
-    gapLimit = _gapLimit;
-    prefs.setInt('gap_limit', gapLimit);
   }
 
   @action

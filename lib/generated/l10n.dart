@@ -3121,6 +3121,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Scan Transparent Addresses`
+  String get scanTransparentAddresses {
+    return Intl.message(
+      'Scan Transparent Addresses',
+      name: 'scanTransparentAddresses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scanning addresses`
+  String get scanningAddresses {
+    return Intl.message(
+      'Scanning addresses',
+      name: 'scanningAddresses',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

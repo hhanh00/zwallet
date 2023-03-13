@@ -305,5 +305,7 @@
   "invalidPassword": "Invalid Password",
   "databaseRestored": "Database Restored",
   "never": "Never",
-  "always": "Always"
+  "always": "Always",
+  "scanTransparentAddresses": "Scan Transparent Addresses",
+  "scanningAddresses": "Scanning addresses"
 }

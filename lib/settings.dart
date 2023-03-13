@@ -36,7 +36,6 @@ class SettingsState extends State<SettingsPage>
   var _anchorController =
       TextEditingController(text: "${settings.anchorOffset}");
   var _memoController = TextEditingController();
-  var _gapLimitController = TextEditingController(text: "${settings.gapLimit}");
   var _currency = settings.currency;
   var _needAuth = false;
   var _messageView = settings.messageView;
@@ -49,7 +48,6 @@ class SettingsState extends State<SettingsPage>
     final s = S.of(context);
     final simpleMode = settings.simpleMode;
     _memoController.text = settings.memoSignature ?? s.sendFrom(APP_NAME);
-
 
     final hasUA = active.coinDef.supportsUA;
     final uaType = settings.uaType;
@@ -153,7 +151,6 @@ class SettingsState extends State<SettingsPage>
                                     },
                                     onSaved: _onProtectOpen)),
                           ]),
-
                           if (!simpleMode)
                             FormBuilderCheckbox(
                                 name: 'use_millis',
@@ -191,7 +188,8 @@ class SettingsState extends State<SettingsPage>
                             FormBuilderCheckboxGroup<String>(
                                 orientation: OptionsOrientation.horizontal,
                                 name: 'ua',
-                                decoration: InputDecoration(labelText: 'Main Address Type'),
+                                decoration: InputDecoration(
+                                    labelText: 'Main Address Type'),
                                 initialValue: uaList,
                                 onSaved: _onUAType,
                                 validator: _checkUA,
@@ -207,19 +205,23 @@ class SettingsState extends State<SettingsPage>
                                 initialValue: settings.getTx,
                                 onSaved: _onGetTx),
                           FormBuilderRadioGroup<int>(
-                            orientation: OptionsOrientation.horizontal,
-                            name: 'auto_hide',
-                            decoration: InputDecoration(labelText: s.autoHideBalance),
-                            initialValue: settings.autoHide,
-                            onSaved: _onAutoHide,
-                            options: [
-                            FormBuilderFieldOption(child: Text(s.never), value: 0),
-                            FormBuilderFieldOption(child: Text(s.auto), value: 1),
-                            FormBuilderFieldOption(child: Text(s.always), value: 2),
-                          ]),
+                              orientation: OptionsOrientation.horizontal,
+                              name: 'auto_hide',
+                              decoration:
+                                  InputDecoration(labelText: s.autoHideBalance),
+                              initialValue: settings.autoHide,
+                              onSaved: _onAutoHide,
+                              options: [
+                                FormBuilderFieldOption(
+                                    child: Text(s.never), value: 0),
+                                FormBuilderFieldOption(
+                                    child: Text(s.auto), value: 1),
+                                FormBuilderFieldOption(
+                                    child: Text(s.always), value: 2),
+                              ]),
                           DropdownButtonFormField<int>(
                               decoration:
-                              InputDecoration(labelText: s.minPrivacy),
+                                  InputDecoration(labelText: s.minPrivacy),
                               value: _minPrivacy,
                               items: getPrivacyOptions(context),
                               onChanged: (v) {
@@ -235,41 +237,60 @@ class SettingsState extends State<SettingsPage>
                               title: Text(s.includeReplyTo),
                               initialValue: settings.includeReplyTo,
                               onSaved: _onIncludeReplyTo),
-                          if (!simpleMode) Row(children: [
-                            Expanded(child: DropdownButtonFormField<ViewStyle>(
-                                decoration: InputDecoration(labelText: s.messages),
-                                value: _messageView,
-                                items: ViewStyle.values.map((v) => DropdownMenuItem(
-                                        child: Text(v.name), value: v)).toList(),
-                                onChanged: (v) {
-                                  setState(() { _messageView = v!; });
-                                },
-                                onSaved: (_) {
-                                  settings.setMessageView(_messageView);
-                                })),
-                            Expanded(child: DropdownButtonFormField<ViewStyle>(
-                                decoration: InputDecoration(labelText: s.notes),
-                                value: _noteView,
-                                items: ViewStyle.values.map((v) => DropdownMenuItem(
-                                    child: Text(v.name), value: v)).toList(),
-                                onChanged: (v) {
-                                  setState(() { _noteView = v!; });
-                                },
-                                onSaved: (_) {
-                                  settings.setNoteView(_noteView);
-                                })),
-                            Expanded(child: DropdownButtonFormField<ViewStyle>(
-                                decoration: InputDecoration(labelText: s.transactions),
-                                value: _txView,
-                                items: ViewStyle.values.map((v) => DropdownMenuItem(
-                                    child: Text(v.name), value: v)).toList(),
-                                onChanged: (v) {
-                                  setState(() { _txView = v!; });
-                                },
-                                onSaved: (_) {
-                                  settings.setTxView(_txView);
-                                })),
-                          ]),
+                          if (!simpleMode)
+                            Row(children: [
+                              Expanded(
+                                  child: DropdownButtonFormField<ViewStyle>(
+                                      decoration: InputDecoration(
+                                          labelText: s.messages),
+                                      value: _messageView,
+                                      items: ViewStyle.values
+                                          .map((v) => DropdownMenuItem(
+                                              child: Text(v.name), value: v))
+                                          .toList(),
+                                      onChanged: (v) {
+                                        setState(() {
+                                          _messageView = v!;
+                                        });
+                                      },
+                                      onSaved: (_) {
+                                        settings.setMessageView(_messageView);
+                                      })),
+                              Expanded(
+                                  child: DropdownButtonFormField<ViewStyle>(
+                                      decoration:
+                                          InputDecoration(labelText: s.notes),
+                                      value: _noteView,
+                                      items: ViewStyle.values
+                                          .map((v) => DropdownMenuItem(
+                                              child: Text(v.name), value: v))
+                                          .toList(),
+                                      onChanged: (v) {
+                                        setState(() {
+                                          _noteView = v!;
+                                        });
+                                      },
+                                      onSaved: (_) {
+                                        settings.setNoteView(_noteView);
+                                      })),
+                              Expanded(
+                                  child: DropdownButtonFormField<ViewStyle>(
+                                      decoration: InputDecoration(
+                                          labelText: s.transactions),
+                                      value: _txView,
+                                      items: ViewStyle.values
+                                          .map((v) => DropdownMenuItem(
+                                              child: Text(v.name), value: v))
+                                          .toList(),
+                                      onChanged: (v) {
+                                        setState(() {
+                                          _txView = v!;
+                                        });
+                                      },
+                                      onSaved: (_) {
+                                        settings.setTxView(_txView);
+                                      })),
+                            ]),
                           if (!simpleMode)
                             FormBuilderCheckbox(
                                 name: 'use_cold_qr',
@@ -295,14 +316,6 @@ class SettingsState extends State<SettingsPage>
                                 name: 'memo',
                                 controller: _memoController,
                                 onSaved: _onMemo),
-                          if (!simpleMode)
-                            FormBuilderTextField(
-                                decoration:
-                                    InputDecoration(labelText: s.gapLimit),
-                                name: 'gap_limit',
-                                keyboardType: TextInputType.number,
-                                controller: _gapLimitController,
-                                onSaved: _onGapLimit),
                           Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                           ButtonBar(children: confirmButtons(context, _onSave))
                         ]))))));
@@ -345,9 +358,15 @@ class SettingsState extends State<SettingsPage>
     int r = 0;
     for (var v in vs) {
       switch (v) {
-        case 'T': r |= 1; break;
-        case 'S': r |= 2; break;
-        case 'O': r |= 4; break;
+        case 'T':
+          r |= 1;
+          break;
+        case 'S':
+          r |= 2;
+          break;
+        case 'O':
+          r |= 4;
+          break;
       }
     }
     return r;
@@ -391,10 +410,6 @@ class SettingsState extends State<SettingsPage>
 
   _onAnchorOffset(v) {
     settings.setAnchorOffset(int.parse(v));
-  }
-
-  _onGapLimit(v) {
-    settings.setGapLimit(int.parse(v));
   }
 
   _onGetTx(v) {

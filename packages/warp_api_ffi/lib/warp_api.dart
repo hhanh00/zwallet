@@ -179,9 +179,7 @@ class WarpApi {
   }
 
   static bool validAddress(int coin, String address) {
-    return warp_api_lib.valid_address(
-            coin, toNative(address)) !=
-        0;
+    return warp_api_lib.valid_address(coin, toNative(address)) != 0;
   }
 
   static String getDiversifiedAddress(int uaType, int time) {
@@ -230,50 +228,62 @@ class WarpApi {
     return balance;
   }
 
-  static Future<String> transferPools(int coin, int account, int fromPool, int toPool,
-      int amount, bool includeFee, String memo, int splitAmount, int anchorOffset) async {
-    final txId = await compute(transferPoolsIsolateFn, TransferPoolsParams(coin, account, fromPool, toPool, amount,
-        includeFee, memo, splitAmount, anchorOffset));
+  static Future<String> transferPools(
+      int coin,
+      int account,
+      int fromPool,
+      int toPool,
+      int amount,
+      bool includeFee,
+      String memo,
+      int splitAmount,
+      int anchorOffset) async {
+    final txId = await compute(
+        transferPoolsIsolateFn,
+        TransferPoolsParams(coin, account, fromPool, toPool, amount, includeFee,
+            memo, splitAmount, anchorOffset));
     return txId;
   }
 
-  static String shieldTAddr(int coin, int account, int amount, int anchorOffset) {
-    final txPlan = warp_api_lib.shield_taddr(coin, account, amount, anchorOffset);
+  static String shieldTAddr(
+      int coin, int account, int amount, int anchorOffset) {
+    final txPlan =
+        warp_api_lib.shield_taddr(coin, account, amount, anchorOffset);
     return unwrapResultString(txPlan);
   }
 
   static Future<List<AddressBalance>> scanTransparentAccounts(
       int coin, int account, int gapLimit) async {
     return await compute(scanTransparentAccountsParamsIsolateFn,
-        ScanTransparentAccountsParams(gapLimit));
+        {'coin': coin, 'account': account, 'gapLimit': gapLimit});
   }
 
   static Future<String> prepareTx(int coin, int account,
       List<Recipient> recipients, int anchorOffset) async {
-    final builder =  Builder();
+    final builder = Builder();
     final rs = recipients.map((r) => r.unpack()).toList();
     int root = RecipientsT(values: rs).pack(builder);
     builder.finish(root);
     return await compute((_) {
-      final res = warp_api_lib.prepare_multi_payment(
-          coin, account,
-          toNativeBytes(builder.buffer),
-          builder.size(),
-          anchorOffset);
+      final res = warp_api_lib.prepare_multi_payment(coin, account,
+          toNativeBytes(builder.buffer), builder.size(), anchorOffset);
       final json = unwrapResultString(res);
       return json;
     }, null);
   }
 
   static TxReport transactionReport(int coin, String plan) {
-    final data = unwrapResultBytes(warp_api_lib.transaction_report(coin, toNative(plan)));
+    final data = unwrapResultBytes(
+        warp_api_lib.transaction_report(coin, toNative(plan)));
     final report = TxReport(data);
     return report;
   }
 
-  static Future<String> signAndBroadcast (int coin, int account, String plan) async {
+  static Future<String> signAndBroadcast(
+      int coin, int account, String plan) async {
     return await compute((_) {
-      final txid = warp_api_lib.sign_and_broadcast(coin, account, plan.toNativeUtf8().cast<Int8>());
+      final txid = warp_api_lib.sign_and_broadcast(
+          coin, account, plan.toNativeUtf8().cast<Int8>());
       return unwrapResultString(txid);
     }, null);
   }
@@ -285,8 +295,8 @@ class WarpApi {
       f(progress);
     });
 
-    return await compute(
-        signOnlyIsolateFn, SignOnlyParams(coin, account, tx, receivePort.sendPort));
+    return await compute(signOnlyIsolateFn,
+        SignOnlyParams(coin, account, tx, receivePort.sendPort));
   }
 
   static String broadcast(String txStr) {
@@ -298,9 +308,11 @@ class WarpApi {
     return warp_api_lib.is_valid_tkey(toNative(key)) != 0;
   }
 
-  static Future<String> sweepTransparent(int latestHeight, String sk, int pool, int confirmations) async {
+  static Future<String> sweepTransparent(
+      int latestHeight, String sk, int pool, int confirmations) async {
     return await compute((_) {
-      final txid = warp_api_lib.sweep_tkey(latestHeight, toNative(sk), pool, confirmations);
+      final txid = warp_api_lib.sweep_tkey(
+          latestHeight, toNative(sk), pool, confirmations);
       return unwrapResultString(txid);
     }, null);
   }
@@ -344,7 +356,8 @@ class WarpApi {
   }
 
   static String commitUnsavedContacts(int anchorOffset) {
-    return unwrapResultString(warp_api_lib.commit_unsaved_contacts(anchorOffset));
+    return unwrapResultString(
+        warp_api_lib.commit_unsaved_contacts(anchorOffset));
   }
 
   static void markMessageAsRead(int messageId, bool read) {
@@ -367,12 +380,10 @@ class WarpApi {
     warp_api_lib.delete_account(coin, account);
   }
 
-  static String makePaymentURI(int coin, String address, int amount, String memo) {
+  static String makePaymentURI(
+      int coin, String address, int amount, String memo) {
     final uri = warp_api_lib.make_payment_uri(
-        coin,
-        toNative(address),
-        amount,
-        memo.toNativeUtf8().cast<Int8>());
+        coin, toNative(address), amount, memo.toNativeUtf8().cast<Int8>());
     return unwrapResultString(uri);
   }
 
@@ -394,7 +405,8 @@ class WarpApi {
   }
 
   static void unzipBackup(String key, String path, String tmpDir) {
-    unwrapResultU8(warp_api_lib.unzip_backup(toNative(key), toNative(path), toNative(tmpDir)));
+    unwrapResultU8(warp_api_lib.unzip_backup(
+        toNative(key), toNative(path), toNative(tmpDir)));
   }
 
   static List<String> splitData(int id, String data) {
@@ -477,7 +489,8 @@ class WarpApi {
   }
 
   static Balance getBalance(int coin, int id, int confirmedHeight) {
-    final r = unwrapResultBytes(warp_api_lib.get_balances(coin, id, confirmedHeight));
+    final r =
+        unwrapResultBytes(warp_api_lib.get_balances(coin, id, confirmedHeight));
     final b = Balance(r);
     return b;
   }
@@ -507,8 +520,10 @@ class WarpApi {
     return msgs.messages!;
   }
 
-  static PrevNext getPrevNextMessage(int coin, int id, String subject, int height) {
-    final r = unwrapResultBytes(warp_api_lib.get_prev_next_message(coin, id, toNative(subject), height));
+  static PrevNext getPrevNextMessage(
+      int coin, int id, String subject, int height) {
+    final r = unwrapResultBytes(warp_api_lib.get_prev_next_message(
+        coin, id, toNative(subject), height));
     final pn = PrevNext(r);
     return pn;
   }
@@ -535,7 +550,8 @@ class WarpApi {
     print("templ $t");
     final data = toNativeBytes(template);
 
-    return unwrapResultU32(warp_api_lib.save_send_template(coin, data, template.length));
+    return unwrapResultU32(
+        warp_api_lib.save_send_template(coin, data, template.length));
   }
 
   static void deleteSendTemplate(int coin, int id) {
@@ -555,13 +571,15 @@ class WarpApi {
   }
 
   static List<Quote> getQuotes(int coin, int timestamp, String currency) {
-    final r = unwrapResultBytes(warp_api_lib.get_historical_prices(coin, timestamp, toNative(currency)));
+    final r = unwrapResultBytes(warp_api_lib.get_historical_prices(
+        coin, timestamp, toNative(currency)));
     final quotes = QuoteVec(r);
     return quotes.values!;
   }
 
   static List<Spending> getSpendings(int coin, int id, int timestamp) {
-    final r = unwrapResultBytes(warp_api_lib.get_spendings(coin, id, timestamp));
+    final r =
+        unwrapResultBytes(warp_api_lib.get_spendings(coin, id, timestamp));
     final quotes = SpendingVec(r);
     return quotes.values!;
   }
@@ -585,17 +603,18 @@ class WarpApi {
   }
 
   static void cloneDbWithPasswd(int coin, String tempPath, String passwd) {
-    warp_api_lib.clone_db_with_passwd(coin, toNative(tempPath), toNative(passwd));
+    warp_api_lib.clone_db_with_passwd(
+        coin, toNative(tempPath), toNative(passwd));
   }
 
   static bool decryptDb(String dbPath, String passwd) {
-    return unwrapResultBool(warp_api_lib.decrypt_db(toNative(dbPath), toNative(passwd)));
+    return unwrapResultBool(
+        warp_api_lib.decrypt_db(toNative(dbPath), toNative(passwd)));
   }
 }
 
 String signOnlyIsolateFn(SignOnlyParams params) {
-  final txIdRes = warp_api_lib.sign(
-      params.coin, params.account,
+  final txIdRes = warp_api_lib.sign(params.coin, params.account,
       params.tx.toNativeUtf8().cast<Int8>(), params.port.nativePort);
   if (txIdRes.error != nullptr) throw convertCString(txIdRes.error);
   return convertCString(txIdRes.value);
@@ -606,8 +625,16 @@ int getLatestHeightIsolateFn(Null n) {
 }
 
 String transferPoolsIsolateFn(TransferPoolsParams params) {
-  final txId = warp_api_lib.transfer_pools(params.coin, params.account, params.fromPool, params.toPool,
-      params.amount, params.takeFee ? 1 : 0, toNative(params.memo), params.splitAmount, params.anchorOffset);
+  final txId = warp_api_lib.transfer_pools(
+      params.coin,
+      params.account,
+      params.fromPool,
+      params.toPool,
+      params.amount,
+      params.takeFee ? 1 : 0,
+      toNative(params.memo),
+      params.splitAmount,
+      params.anchorOffset);
   return unwrapResultString(txId);
 }
 
@@ -621,7 +648,8 @@ int syncHistoricalPricesIsolateFn(SyncHistoricalPricesParams params) {
 }
 
 int getTBalanceIsolateFn(GetTBalanceParams params) {
-  return unwrapResultU64(warp_api_lib.get_taddr_balance(params.coin, params.account));
+  return unwrapResultU64(
+      warp_api_lib.get_taddr_balance(params.coin, params.account));
 }
 
 int getBlockHeightByTimeIsolateFn(BlockHeightByTimeParams params) {
@@ -629,8 +657,11 @@ int getBlockHeightByTimeIsolateFn(BlockHeightByTimeParams params) {
 }
 
 List<AddressBalance> scanTransparentAccountsParamsIsolateFn(
-    ScanTransparentAccountsParams params) {
-  final r = unwrapResultBytes(warp_api_lib.scan_transparent_accounts(params.gapLimit));
+    Map<String, Object> params) {
+  final r = unwrapResultBytes(warp_api_lib.scan_transparent_accounts(
+      params['coin'] as int,
+      params['account'] as int,
+      params['gapLimit'] as int));
   final v = AddressBalanceVec(r);
   return v.values!;
 }
@@ -653,8 +684,8 @@ class PaymentParams {
   final int anchorOffset;
   final SendPort port;
 
-  PaymentParams(
-      this.coin, this.account, this.recipientsJson, this.useTransparent, this.anchorOffset, this.port);
+  PaymentParams(this.coin, this.account, this.recipientsJson,
+      this.useTransparent, this.anchorOffset, this.port);
 }
 
 class SignOnlyParams {
@@ -677,8 +708,16 @@ class TransferPoolsParams {
   final int splitAmount;
   final int anchorOffset;
 
-  TransferPoolsParams(this.coin, this.account, this.fromPool, this.toPool, this.amount, this.takeFee, this.memo,
-      this.splitAmount, this.anchorOffset);
+  TransferPoolsParams(
+      this.coin,
+      this.account,
+      this.fromPool,
+      this.toPool,
+      this.amount,
+      this.takeFee,
+      this.memo,
+      this.splitAmount,
+      this.anchorOffset);
 }
 
 class SyncHistoricalPricesParams {
@@ -700,12 +739,6 @@ class BlockHeightByTimeParams {
   BlockHeightByTimeParams(this.time);
 }
 
-class ScanTransparentAccountsParams {
-  final int gapLimit;
-
-  ScanTransparentAccountsParams(this.gapLimit);
-}
-
 String convertCString(Pointer<Int8> s) {
   final str = s.cast<Utf8>().toDartString();
   warp_api_lib.deallocate_str(s);
@@ -713,9 +746,9 @@ String convertCString(Pointer<Int8> s) {
 }
 
 List<int> convertBytes(Pointer<Uint8> s, int len) {
-    final bytes = [...s.asTypedList(len)];
-    warp_api_lib.deallocate_bytes(s, len);
-    return bytes;
+  final bytes = [...s.asTypedList(len)];
+  warp_api_lib.deallocate_bytes(s, len);
+  return bytes;
 }
 
 void mempoolRunIsolateFn(int port) {
