@@ -646,12 +646,14 @@ abstract class _PriceStore with Store {
     coinPrice = await getFxRate(c.currency, settings.currency) ?? 0.0;
   }
 
-  Future<void> updateChart() async {
+  Future<void> updateChart({bool? force}) async {
+    final f = force ?? false;
     try {
       final _lastChartUpdateTime = lastChartUpdateTime;
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      await fetchCoinPrice(active.coin);
-      if (_lastChartUpdateTime == null || now > _lastChartUpdateTime + 5 * 60) {
+      if (f ||
+          _lastChartUpdateTime == null ||
+          now > _lastChartUpdateTime + 5 * 60) {
         await WarpApi.syncHistoricalPrices(settings.currency);
         active.fetchChartData();
         lastChartUpdateTime = now;

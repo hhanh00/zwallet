@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:warp_api/data_fb_generated.dart' ;
+import 'package:warp_api/data_fb_generated.dart';
 import 'coin/coins.dart';
 import 'package:mobx/mobx.dart';
 import 'db.dart';
@@ -22,7 +22,9 @@ class Account {
   Account(this.coin, this.id, this.name, this.balance, this.tbalance);
 
   String get address {
-    return id != 0 ? WarpApi.getAddress(this.coin, this.id, settings.uaType) : "";
+    return id != 0
+        ? WarpApi.getAddress(this.coin, this.id, settings.uaType)
+        : "";
   }
 }
 
@@ -38,9 +40,9 @@ class AccountList {
   void refresh() {
     List<Account> _list = [];
     for (var coin in coins) {
-      var accounts = WarpApi.getAccountList(coin.coin).map((a) => Account(
-          coin.coin, a.id, a.name!, a.balance, 0)
-      ).toList();
+      var accounts = WarpApi.getAccountList(coin.coin)
+          .map((a) => Account(coin.coin, a.id, a.name!, a.balance, 0))
+          .toList();
       final id = WarpApi.getActiveAccountId(coin.coin);
       if (id != 0) {
         accounts.firstWhere((a) => a.id == id).active = true;
@@ -50,7 +52,9 @@ class AccountList {
     list = _list;
   }
 
-  bool get isEmpty { return list.isEmpty; }
+  bool get isEmpty {
+    return list.isEmpty;
+  }
 
   Future<void> updateTBalance() async {
     for (var a in list) {
@@ -69,14 +73,16 @@ class AccountList {
     refresh();
   }
 
-  Account get(int coin, int id) => list.firstWhere((e) => e.coin == coin && e.id == id, orElse: () => emptyAccount);
+  Account get(int coin, int id) =>
+      list.firstWhere((e) => e.coin == coin && e.id == id,
+          orElse: () => emptyAccount);
 }
 
 AccountId? getAvailableId(int coin) {
   final nid = getActiveAccountId(coin);
   if (nid.id != 0) return nid;
   for (var coinData in settings.coins) {
-  // look for an account in any other coin
+    // look for an account in any other coin
     if (coinData.coin != coin) {
       final nid = getActiveAccountId(coinData.coin);
       if (nid.id != 0) return nid;
@@ -94,27 +100,39 @@ AccountId getActiveAccountId(int coin) {
 class ActiveAccount = _ActiveAccount with _$ActiveAccount;
 
 abstract class _ActiveAccount with Store {
-  @observable int dataEpoch = 0;
+  @observable
+  int dataEpoch = 0;
 
-  @observable int coin = 0;
-  @observable int id = 0;
+  @observable
+  int coin = 0;
+  @observable
+  int id = 0;
 
   Account account = emptyAccount;
   CoinBase coinDef = zcash;
   bool canPay = false;
   Balances balances = Balances();
-  @observable String taddress = "";
+  @observable
+  String taddress = "";
   int tbalance = 0;
   PoolBalances poolBalances = PoolBalances();
 
-  @observable List<Note> notes = [];
-  @observable List<Tx> txs = [];
-  @observable List<Spending> spendings = [];
-  @observable List<TimeSeriesPoint<double>> accountBalances = [];
-  @observable List<PnL> pnls = [];
-  @observable ObservableList<ZMessage> messages = ObservableList();
-  @observable int unread = 0;
-  @observable String banner = "";
+  @observable
+  List<Note> notes = [];
+  @observable
+  List<Tx> txs = [];
+  @observable
+  List<Spending> spendings = [];
+  @observable
+  List<TimeSeriesPoint<double>> accountBalances = [];
+  @observable
+  List<PnL> pnls = [];
+  @observable
+  ObservableList<ZMessage> messages = ObservableList();
+  @observable
+  int unread = 0;
+  @observable
+  String banner = "";
 
   @observable
   bool showTAddr = false;
@@ -134,15 +152,16 @@ abstract class _ActiveAccount with Store {
   @observable
   Recipient? draftRecipient;
 
-  AccountId toId() { return AccountId(coin, id); }
+  AccountId toId() {
+    return AccountId(coin, id);
+  }
 
   @action
   Future<void> restore() async {
     final prefs = await SharedPreferences.getInstance();
     final coin = prefs.getInt('coin') ?? 0;
     var id = prefs.getInt('account') ?? 0;
-    if (WarpApi.checkAccount(coin, id))
-      setActiveAccount(coin, id);
+    if (WarpApi.checkAccount(coin, id)) setActiveAccount(coin, id);
     checkAndUpdate();
   }
 
@@ -150,25 +169,27 @@ abstract class _ActiveAccount with Store {
     final aid = getAvailableId(active.coin);
     if (aid == null) {
       setActiveAccount(0, 0);
-    }
-    else if (aid != active.toId()) {
+    } else if (aid != active.toId()) {
       setActiveAccount(aid.coin, aid.id);
     }
   }
 
-  @action
   void setActiveAccount(int coin, int id) {
     WarpApi.setActiveAccount(coin, id);
-    Future.microtask(() async {
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setInt('coin', coin);
-      prefs.setInt('account', id);
-    });
     if (coin != this.coin || id != this.id) {
       this.coin = coin;
       this.id = id;
       _refreshAccount();
     }
+    Future(Action(() async {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setInt('coin', coin);
+      prefs.setInt('account', id);
+      await priceStore.updateChart(force: true);
+      dataEpoch += 1;
+    }));
+    Future(() => priceStore.fetchCoinPrice(active.coin));
+    dataEpoch += 1;
   }
 
   void _refreshAccount() {
@@ -205,8 +226,7 @@ abstract class _ActiveAccount with Store {
   void updateTBalance() {
     try {
       tbalance = WarpApi.getTBalance();
-    }
-    on String {}
+    } on String {}
   }
 
   @action
@@ -214,7 +234,8 @@ abstract class _ActiveAccount with Store {
     final initialized = balances.initialized;
     final prevBalance = balances.balance;
     final b = WarpApi.getBalance(coin, id, syncStatus.confirmHeight);
-    balances.update(b.balance, b.shielded, b.unconfirmedSpent, b.underConfirmed, b.excluded);
+    balances.update(b.balance, b.shielded, b.unconfirmedSpent, b.underConfirmed,
+        b.excluded);
     if (initialized && prevBalance != balances.balance) {
       showBalanceNotification(prevBalance, balances.balance);
     }
@@ -283,8 +304,8 @@ abstract class _ActiveAccount with Store {
       case "txid":
         return _sort(txs2, (Tx tx) => tx.txid, txSortConfig.order);
       case "address":
-        return _sort(
-            txs2, (Tx tx) => tx.contact ?? tx.address ?? '', txSortConfig.order);
+        return _sort(txs2, (Tx tx) => tx.contact ?? tx.address ?? '',
+            txSortConfig.order);
       case "memo":
         return _sort(txs2, (Tx tx) => tx.memo ?? '', txSortConfig.order);
     }
@@ -352,7 +373,8 @@ abstract class _ActiveAccount with Store {
     final dbr = active.dbReader;
     pnls = dbr.getPNL(active.id);
     spendings = dbr.getSpending(active.id);
-    accountBalances = dbr.getAccountBalanceTimeSeries(active.id, active.balances.balance);
+    accountBalances =
+        dbr.getAccountBalanceTimeSeries(active.id, active.balances.balance);
   }
 
   @action
@@ -375,13 +397,15 @@ abstract class _ActiveAccount with Store {
 
   int prevInThread(int index) {
     final message = messages[index];
-    final pn = WarpApi.getPrevNextMessage(coin, id, message.subject, message.height);
+    final pn =
+        WarpApi.getPrevNextMessage(coin, id, message.subject, message.height);
     return pn.prev;
   }
 
   int nextInThread(int index) {
     final message = messages[index];
-    final pn = WarpApi.getPrevNextMessage(coin, id, message.subject, message.height);
+    final pn =
+        WarpApi.getPrevNextMessage(coin, id, message.subject, message.height);
     return pn.next;
   }
 
@@ -401,14 +425,20 @@ class Balances = _Balances with _$Balances;
 
 abstract class _Balances with Store {
   bool initialized = false;
-  @observable int balance = 0;
-  @observable int shieldedBalance = 0;
-  @observable int unconfirmedSpentBalance = 0;
-  @observable int underConfirmedBalance = 0;
-  @observable int excludedBalance = 0;
+  @observable
+  int balance = 0;
+  @observable
+  int shieldedBalance = 0;
+  @observable
+  int unconfirmedSpentBalance = 0;
+  @observable
+  int underConfirmedBalance = 0;
+  @observable
+  int excludedBalance = 0;
 
   @action
-  void update(int balance, int shieldedBalance, int unconfirmedSpentBalance, int underConfirmedBalance, int excludedBalance) {
+  void update(int balance, int shieldedBalance, int unconfirmedSpentBalance,
+      int underConfirmedBalance, int excludedBalance) {
     this.balance = balance;
     this.shieldedBalance = shieldedBalance;
     this.unconfirmedSpentBalance = unconfirmedSpentBalance;
@@ -427,12 +457,16 @@ class AccountId {
 class PoolBalances = _PoolBalances with _$PoolBalances;
 
 abstract class _PoolBalances with Store {
-  @observable int transparent = 0;
-  @observable int sapling = 0;
-  @observable int orchard = 0;
+  @observable
+  int transparent = 0;
+  @observable
+  int sapling = 0;
+  @observable
+  int orchard = 0;
 
   void update() {
-    final b = WarpApi.getBalance(active.coin, active.id, syncStatus.confirmHeight);
+    final b =
+        WarpApi.getBalance(active.coin, active.id, syncStatus.confirmHeight);
     _update(active.tbalance, b.sapling, b.orchard);
   }
 

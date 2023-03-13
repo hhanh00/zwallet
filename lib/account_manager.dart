@@ -24,8 +24,7 @@ class AccountManagerState extends State<AccountManagerPage> {
     super.initState();
     Future.microtask(() async {
       await _accounts.updateTBalance();
-      if (mounted)
-        setState(() {});
+      if (mounted) setState(() {});
     });
   }
 
@@ -38,7 +37,6 @@ class AccountManagerState extends State<AccountManagerPage> {
       compute(_markAsSynced, null);
       Future.microtask(() async {
         nav.pushNamedAndRemoveUntil('/welcome', (route) => false);
-
       });
       return SizedBox();
     }
@@ -54,73 +52,76 @@ class AccountManagerState extends State<AccountManagerPage> {
                   ],
               onSelected: _onMenu)
         ]),
-        body: Padding(padding: EdgeInsets.all(8), child: ListView.builder(
-                      itemCount: _accounts.list.length,
-                      itemBuilder: (BuildContext context, int index) {
-                      final a = _accounts.list[index];
-                      final weight = a.active ? FontWeight.bold : FontWeight.normal;
-                      final zbal = a.balance / ZECUNIT;
-                      final tbal = a.tbalance / ZECUNIT;
-                      final balance = zbal + tbal;
-                      return Card(
-                          child: Dismissible(
-                        key: Key(a.name),
-                        child: ListTile(
-                          leading: CircleAvatar(backgroundImage: settings.coins[a.coin].def.image),
-                          title: Text(a.name,
-                              style: theme.textTheme.headlineSmall
-                                ?.merge(TextStyle(fontWeight: weight))
-                                .apply(color: a.coin == 0 ? theme.colorScheme.primary : theme.colorScheme.secondary,
-                              )),
-                          subtitle: Text("${decimalFormat(zbal, 3)} + ${decimalFormat(tbal, 3)}"),
-                          trailing: Text(decimalFormat(balance, 3)),
-                          onTap: () {
-                            _selectAccount(a);
-                          },
-                          onLongPress: () {
-                            _editAccount(a);
-                          },
-                        ),
-                        confirmDismiss: (d) => _onAccountDelete(a),
-                        onDismissed: (d) =>
-                            _onDismissed(index, a),
-                      ));
-                    }),
-                ),
-        floatingActionButton: SpeedDial(
-          icon: Icons.add,
-          onPress: _onAddAccount,
-          children: [
-            SpeedDialChild(
-              child: Icon(Icons.download),
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-              label: 'Restore Batch',
-              onTap: _onFullRestore,
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.upload),
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              label: 'Save Batch',
-              onTap: _onFullBackup,
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.subdirectory_arrow_right),
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
-              label: 'New Sub-account',
-              onTap: _onNewSubaccount,
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.scanner),
-              backgroundColor: Colors.yellow,
-              foregroundColor: Colors.white,
-              label: 'Scan Accounts',
-              onTap: _onScanSubAccounts,
-            ),
-          ]
-        ));
+        body: Padding(
+          padding: EdgeInsets.all(8),
+          child: ListView.builder(
+              itemCount: _accounts.list.length,
+              itemBuilder: (BuildContext context, int index) {
+                final a = _accounts.list[index];
+                final weight = a.active ? FontWeight.bold : FontWeight.normal;
+                final zbal = a.balance / ZECUNIT;
+                final tbal = a.tbalance / ZECUNIT;
+                final balance = zbal + tbal;
+                return Card(
+                    child: Dismissible(
+                  key: Key(a.name),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                        backgroundImage: settings.coins[a.coin].def.image),
+                    title: Text(a.name,
+                        style: theme.textTheme.headlineSmall
+                            ?.merge(TextStyle(fontWeight: weight))
+                            .apply(
+                              color: a.coin == 0
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.secondary,
+                            )),
+                    subtitle: Text(
+                        "${decimalFormat(zbal, 3)} + ${decimalFormat(tbal, 3)}"),
+                    trailing: Text(decimalFormat(balance, 3)),
+                    onTap: () {
+                      _selectAccount(a);
+                    },
+                    onLongPress: () {
+                      _editAccount(a);
+                    },
+                  ),
+                  confirmDismiss: (d) => _onAccountDelete(a),
+                  onDismissed: (d) => _onDismissed(index, a),
+                ));
+              }),
+        ),
+        floatingActionButton:
+            SpeedDial(icon: Icons.add, onPress: _onAddAccount, children: [
+          SpeedDialChild(
+            child: Icon(Icons.download),
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            label: 'Restore Batch',
+            onTap: _onFullRestore,
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.upload),
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+            label: 'Save Batch',
+            onTap: _onFullBackup,
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.subdirectory_arrow_right),
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+            label: 'New Sub-account',
+            onTap: _onNewSubaccount,
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.scanner),
+            backgroundColor: Colors.yellow,
+            foregroundColor: Colors.white,
+            label: 'Scan Accounts',
+            onTap: _onScanSubAccounts,
+          ),
+        ]));
   }
 
   Future<bool> _onAccountDelete(Account account) async {
@@ -145,7 +146,8 @@ class AccountManagerState extends State<AccountManagerPage> {
         barrierDismissible: false,
         builder: (context) => AlertDialog(
             title: Text(S.of(context).deleteAccount),
-            content: Text(S.of(context).accountHasSomeBalanceAreYouSureYouWantTo),
+            content:
+                Text(S.of(context).accountHasSomeBalanceAreYouSureYouWantTo),
             actions: confirmButtons(context, () {
               Navigator.of(context).pop(true);
             }, okLabel: S.of(context).delete, cancelValue: false)),
@@ -163,13 +165,12 @@ class AccountManagerState extends State<AccountManagerPage> {
 
   _selectAccount(Account account) async {
     active.setActiveAccount(account.coin, account.id);
+    await syncStatus.update();
     if (syncStatus.accountRestored) {
       syncStatus.setAccountRestored(false);
       final height = await rescanDialog(context);
-      if (height != null)
-        syncStatus.rescan(height);
+      if (height != null) syncStatus.rescan(height);
     }
-    await syncStatus.update();
 
     final navigator = Navigator.of(context);
     navigator.pushNamedAndRemoveUntil('/account', (route) => false);
@@ -182,11 +183,14 @@ class AccountManagerState extends State<AccountManagerPage> {
         builder: (context) => AlertDialog(
             title: Text(S.of(context).changeAccountName),
             content: TextField(controller: _accountNameController),
-            actions: confirmButtons(context, () { _changeAccountName(account); })));
+            actions: confirmButtons(context, () {
+              _changeAccountName(account);
+            })));
   }
 
   _changeAccountName(Account account) {
-    _accounts.changeAccountName(account.coin, account.id, _accountNameController.text);
+    _accounts.changeAccountName(
+        account.coin, account.id, _accountNameController.text);
     Navigator.of(context).pop();
     setState(() {});
   }
@@ -233,8 +237,8 @@ class AccountManagerState extends State<AccountManagerPage> {
             title: Text(s.newSubAccount),
             content: Column(mainAxisSize: MainAxisSize.min, children: [
               TextField(
-                decoration: InputDecoration(label: Text(s.accountName)),
-                controller: _accountNameController),
+                  decoration: InputDecoration(label: Text(s.accountName)),
+                  controller: _accountNameController),
               TextField(
                 decoration: InputDecoration(label: Text(s.count)),
                 controller: _countController,
@@ -245,8 +249,8 @@ class AccountManagerState extends State<AccountManagerPage> {
               Navigator.of(context).pop(true);
             })));
     if (confirmed == true) {
-      WarpApi.newSubAccount(_accountNameController.text, -1,
-          int.parse(_countController.text));
+      WarpApi.newSubAccount(
+          _accountNameController.text, -1, int.parse(_countController.text));
     }
     await _refresh();
   }
@@ -255,7 +259,7 @@ class AccountManagerState extends State<AccountManagerPage> {
     _accounts.refresh();
     setState(() {});
   }
-  
+
   _onFullBackup() {
     Navigator.of(context).pushNamed('/fullBackup');
   }
