@@ -17,7 +17,8 @@ class MessageItem extends StatelessWidget {
     final width = MediaQuery.of(context).size.width - 96;
     final dateString = humanizeDateTime(message.timestamp);
 
-    final unreadStyle = (TextStyle? s) => message.read ? s : s?.copyWith(fontWeight: FontWeight.bold);
+    final unreadStyle = (TextStyle? s) =>
+        message.read ? s : s?.copyWith(fontWeight: FontWeight.bold);
 
     return GestureDetector(
         onTap: () {
@@ -49,27 +50,35 @@ class MessageItem extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(width: width,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Text(message.fromto(), style: unreadStyle(textTheme.bodySmall)),
-                      Text(dateString)
-                  ])),
+                  Container(
+                      width: width,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(message.fromto(),
+                                style: unreadStyle(textTheme.bodySmall)),
+                            Text(dateString)
+                          ])),
                   SizedBox(
                     height: 5.0,
                   ),
-                  Container(
-                      width: width,
-                      child: Text(
-                          message.subject,
-                          style: unreadStyle(textTheme.titleMedium), overflow: TextOverflow.ellipsis)),
-                  SizedBox(
-                    height: 4.0,
-                  ),
+                  if (message.subject.isNotEmpty)
+                    Container(
+                        width: width,
+                        child: Text(message.subject,
+                            style: unreadStyle(textTheme.titleMedium),
+                            overflow: TextOverflow.ellipsis)),
+                  if (message.subject.isNotEmpty)
+                    SizedBox(
+                      height: 4.0,
+                    ),
                   Container(
                     width: width,
                     child: Text(
                       message.body,
-                      softWrap: true, maxLines: 5, overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -116,7 +125,7 @@ final defaultColor = const Color(0xFF717171);
 Color initialToColor(String s) {
   final i = s.toUpperCase().codeUnitAt(0);
   if (i >= 65 && i < 91) {
-    return colors[i-65];
+    return colors[i - 65];
   }
   return defaultColor;
 }
