@@ -242,7 +242,7 @@ class QRAddressState extends State<QRAddressWidget> {
   }
 
   _onQRTap() {
-    active.changeAddrMode();
+    active.updateAddrMode(_getNextMode());
   }
 
   _onAddressCopy() {

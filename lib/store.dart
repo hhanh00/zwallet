@@ -780,7 +780,7 @@ abstract class _SyncStatus with Store {
         if (res == 0) {
           if (currentSyncedHeight != syncedHeight) {
             active.update();
-            await priceStore.updateChart();
+            priceStore.updateChart();
             contacts.fetchContacts();
           }
         } else if (res == 1) {
