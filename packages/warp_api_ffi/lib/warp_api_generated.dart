@@ -271,6 +271,22 @@ class NativeLibrary {
   late final _dart_get_backup _get_backup =
       _get_backup_ptr.asFunction<_dart_get_backup>();
 
+  CResult_u8 get_available_addrs(
+    int coin,
+    int account,
+  ) {
+    return _get_available_addrs(
+      coin,
+      account,
+    );
+  }
+
+  late final _get_available_addrs_ptr =
+      _lookup<ffi.NativeFunction<_c_get_available_addrs>>(
+          'get_available_addrs');
+  late final _dart_get_available_addrs _get_available_addrs =
+      _get_available_addrs_ptr.asFunction<_dart_get_available_addrs>();
+
   CResult_____c_char get_address(
     int coin,
     int id_account,
@@ -1777,6 +1793,16 @@ typedef _c_get_backup = CResult______u8 Function(
 typedef _dart_get_backup = CResult______u8 Function(
   int coin,
   int id_account,
+);
+
+typedef _c_get_available_addrs = CResult_u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+);
+
+typedef _dart_get_available_addrs = CResult_u8 Function(
+  int coin,
+  int account,
 );
 
 typedef _c_get_address = CResult_____c_char Function(

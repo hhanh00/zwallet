@@ -308,5 +308,6 @@
   "always": "Always",
   "scanTransparentAddresses": "Scan Transparent Addresses",
   "scanningAddresses": "Scanning addresses",
-  "blockExplorer": "Block Explorer"
+  "blockExplorer": "Block Explorer",
+  "tapQrCodeForSaplingAddress": "Tap QR Code for Sapling Address"
 }

@@ -472,6 +472,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "tapChartToToggleBetweenAddressAndAmount":
             MessageLookupByLibrary.simpleMessage(
                 "Appuyez sur le graphique pour basculer entre l\'adresse et le montant"),
+        "tapQrCodeForSaplingAddress": MessageLookupByLibrary.simpleMessage(
+            "Tap QR Code for Sapling Address"),
         "tapQrCodeForShieldedAddress": MessageLookupByLibrary.simpleMessage(
             "Appuyez sur le code QR pour l\'adresse protégée"),
         "tapQrCodeForTransparentAddress": MessageLookupByLibrary.simpleMessage(
