@@ -229,14 +229,16 @@ class QRAddressState extends State<QRAddressWidget> {
                   : LinearProgressIndicator(
                       value: _snapAddressProgress / SNAPADDRESS_LIFETIME)),
         if (!simpleMode && addrMode == 2)
-          OutlinedButton(
-            child: Text(s.shieldTranspBalance),
-            style: OutlinedButton.styleFrom(
-                side: BorderSide(width: 1, color: theme.primaryColor)),
-            onPressed: () {
-              shieldTAddr(context);
-            },
-          )
+          SizedBox(
+              height: 30,
+              child: OutlinedButton(
+                child: Text(s.shieldTranspBalance),
+                style: OutlinedButton.styleFrom(
+                    side: BorderSide(width: 1, color: theme.primaryColor)),
+                onPressed: () {
+                  shieldTAddr(context);
+                },
+              ))
       ]);
     });
   }
