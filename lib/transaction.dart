@@ -2,6 +2,7 @@ import 'package:YWallet/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/data_fb_generated.dart';
+import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
 import 'settings.dart';
@@ -37,29 +38,45 @@ class TransactionState extends State<TransactionPage> {
           ListTile(
               title: Text('TXID'), subtitle: SelectableText('${tx.fullTxId}')),
           ListTile(
-              title: Text(S.of(context).height), subtitle: SelectableText('${tx.height}')),
+              title: Text(S.of(context).height),
+              subtitle: SelectableText('${tx.height}')),
           ListTile(
-              title: Text(S.of(context).confs), subtitle: SelectableText('${syncStatus.latestHeight - tx.height + 1}')),
+              title: Text(S.of(context).confs),
+              subtitle:
+                  SelectableText('${syncStatus.latestHeight - tx.height + 1}')),
           ListTile(
               title: Text(S.of(context).timestamp),
               subtitle: Text('${tx.timestamp}')),
-          ListTile(title: Text(S.of(context).amount), subtitle: SelectableText(decimalFormat(tx.value, 8))),
           ListTile(
-              title: Text(S.of(context).address), subtitle: SelectableText('${tx.address}'),
-            trailing: IconButton(icon: Icon(Icons.contacts), onPressed: _addContact)),
+              title: Text(S.of(context).amount),
+              subtitle: SelectableText(decimalFormat(tx.value, 8))),
           ListTile(
-              title: Text(S.of(context).contactName), subtitle: SelectableText('${tx.contact ?? "N/A"}')),
-          ListTile(title: Text(S.of(context).memo), subtitle: SelectableText('${tx.memo}')),
+              title: Text(S.of(context).address),
+              subtitle: SelectableText('${tx.address}'),
+              trailing: IconButton(
+                  icon: Icon(Icons.contacts), onPressed: _addContact)),
+          ListTile(
+              title: Text(S.of(context).contactName),
+              subtitle: SelectableText('${tx.contact ?? "N/A"}')),
+          ListTile(
+              title: Text(S.of(context).memo),
+              subtitle: SelectableText('${tx.memo}')),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
-            IconButton(onPressed: txIndex > 0 ? _prev : null, icon: Icon(Icons.chevron_left)),
-            ElevatedButton(onPressed: _onOpen, child: Text(S.of(context).openInExplorer)),
-            IconButton(onPressed: txIndex < n-1 ? _next : null, icon: Icon(Icons.chevron_right)),
+            IconButton(
+                onPressed: txIndex > 0 ? _prev : null,
+                icon: Icon(Icons.chevron_left)),
+            ElevatedButton(
+                onPressed: _onOpen, child: Text(S.of(context).openInExplorer)),
+            IconButton(
+                onPressed: txIndex < n - 1 ? _next : null,
+                icon: Icon(Icons.chevron_right)),
           ]),
         ]));
   }
 
   _onOpen() {
-    launchUrl(Uri.parse("${activeCoin().explorerUrl}${tx.fullTxId}"));
+    final url = WarpApi.getProperty(active.coin, EXPLORER_KEY);
+    launchUrl(Uri.parse("$url/${tx.fullTxId}"));
   }
 
   _prev() {
