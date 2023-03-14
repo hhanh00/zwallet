@@ -307,5 +307,6 @@
   "never": "Never",
   "always": "Always",
   "scanTransparentAddresses": "Scan Transparent Addresses",
-  "scanningAddresses": "Scanning addresses"
+  "scanningAddresses": "Scanning addresses",
+  "blockExplorer": "Block Explorer"
 }

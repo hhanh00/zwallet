@@ -611,6 +611,15 @@ class WarpApi {
     return unwrapResultBool(
         warp_api_lib.decrypt_db(toNative(dbPath), toNative(passwd)));
   }
+
+  static String getProperty(int coin, String name) {
+    return unwrapResultString(warp_api_lib.get_property(coin, toNative(name)));
+  }
+
+  static void setProperty(int coin, String name, String value) {
+    unwrapResultU8(
+        warp_api_lib.set_property(coin, toNative(name), toNative(value)));
+  }
 }
 
 String signOnlyIsolateFn(SignOnlyParams params) {

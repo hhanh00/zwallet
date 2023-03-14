@@ -11,7 +11,6 @@ class YcashCoin extends CoinBase {
   int coinIndex = 347;
   String ticker = "YEC";
   String dbName = "yec.db";
-  String explorerUrl = "https://yecblockexplorer.com/tx/";
   AssetImage image = AssetImage('assets/ycash.png');
   List<LWInstance> lwd = [
     LWInstance("Lightwalletd", "https://lite.ycash.xyz:9067"),
@@ -19,4 +18,5 @@ class YcashCoin extends CoinBase {
   bool supportsUA = false;
   bool supportsMultisig = true;
   List<double> weights = [5, 25, 250];
+  List<String> blockExplorers = ["https://yecblockexplorer.com/tx"];
 }

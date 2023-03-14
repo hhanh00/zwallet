@@ -1,5 +1,6 @@
 import 'package:YWallet/store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:warp_api/warp_api.dart';
@@ -316,6 +317,20 @@ class SettingsState extends State<SettingsPage>
                                 name: 'memo',
                                 controller: _memoController,
                                 onSaved: _onMemo),
+                          Row(children: [
+                            Expanded(
+                                child: TextField(
+                              controller: TextEditingController(
+                                  text: WarpApi.getProperty(
+                                      active.coin, EXPLORER_KEY)),
+                              decoration:
+                                  InputDecoration(labelText: s.blockExplorer),
+                              readOnly: true,
+                            )),
+                            IconButton(
+                                onPressed: _editBlockExplorer,
+                                icon: Icon(Icons.edit))
+                          ]),
                           Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                           ButtonBar(children: confirmButtons(context, _onSave))
                         ]))))));
@@ -426,6 +441,61 @@ class SettingsState extends State<SettingsPage>
 
   _editTheme() {
     Navigator.of(context).pushNamed('/edit_theme');
+  }
+
+  _editBlockExplorer() async {
+    final selectedKey = 'selected_block_explorer';
+    final customKey = 'custom_block_explorer';
+    final s = S.of(context);
+    final customController = TextEditingController(
+        text: WarpApi.getProperty(active.coin, customKey));
+    String selectedExplorer = WarpApi.getProperty(active.coin, selectedKey);
+    if (selectedExplorer.isEmpty)
+      selectedExplorer = active.coinDef.blockExplorers[0];
+
+    List<FormBuilderFieldOption<String>> options = active.coinDef.blockExplorers
+        .map((explorer) => FormBuilderFieldOption<String>(
+            child: Text(explorer), value: explorer))
+        .toList();
+
+    options.add(
+      FormBuilderFieldOption(value: 'custom', child: Text(s.custom)),
+    );
+
+    final formKey = GlobalKey<FormBuilderState>();
+
+    final confirmed = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+                title: Text(s.blockExplorer),
+                content: FormBuilder(
+                    key: formKey,
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                      FormBuilderRadioGroup(
+                          orientation: OptionsOrientation.vertical,
+                          name: 'block_explorers',
+                          initialValue: selectedExplorer,
+                          options: options),
+                      FormBuilderTextField(
+                        decoration: InputDecoration(labelText: s.custom),
+                        name: 'custom',
+                        controller: customController,
+                      ),
+                    ])),
+                actions: confirmButtons(context, () {
+                  Navigator.of(context).pop(true);
+                }))) ??
+        false;
+    if (confirmed) {
+      final state = formKey.currentState!;
+      final selection = state.fields['block_explorers']!.value;
+      final custom = state.fields['custom']!.value;
+      WarpApi.setProperty(active.coin, selectedKey, selection);
+      WarpApi.setProperty(active.coin, customKey, custom);
+      final url = selection == 'custom' ? custom : selection;
+      WarpApi.setProperty(active.coin, EXPLORER_KEY, url);
+      setState(() {});
+    }
   }
 }
 

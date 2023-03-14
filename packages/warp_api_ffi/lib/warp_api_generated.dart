@@ -1350,6 +1350,38 @@ class NativeLibrary {
   late final _dart_clone_db_with_passwd _clone_db_with_passwd =
       _clone_db_with_passwd_ptr.asFunction<_dart_clone_db_with_passwd>();
 
+  CResult_____c_char get_property(
+    int coin,
+    ffi.Pointer<ffi.Int8> name,
+  ) {
+    return _get_property(
+      coin,
+      name,
+    );
+  }
+
+  late final _get_property_ptr =
+      _lookup<ffi.NativeFunction<_c_get_property>>('get_property');
+  late final _dart_get_property _get_property =
+      _get_property_ptr.asFunction<_dart_get_property>();
+
+  CResult_u8 set_property(
+    int coin,
+    ffi.Pointer<ffi.Int8> name,
+    ffi.Pointer<ffi.Int8> value,
+  ) {
+    return _set_property(
+      coin,
+      name,
+      value,
+    );
+  }
+
+  late final _set_property_ptr =
+      _lookup<ffi.NativeFunction<_c_set_property>>('set_property');
+  late final _dart_set_property _set_property =
+      _set_property_ptr.asFunction<_dart_set_property>();
+
   int has_cuda() {
     return _has_cuda();
   }
@@ -2465,6 +2497,28 @@ typedef _dart_clone_db_with_passwd = CResult_u8 Function(
   int coin,
   ffi.Pointer<ffi.Int8> temp_path,
   ffi.Pointer<ffi.Int8> passwd,
+);
+
+typedef _c_get_property = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> name,
+);
+
+typedef _dart_get_property = CResult_____c_char Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> name,
+);
+
+typedef _c_set_property = CResult_u8 Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> value,
+);
+
+typedef _dart_set_property = CResult_u8 Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> value,
 );
 
 typedef _c_has_cuda = ffi.Int8 Function();

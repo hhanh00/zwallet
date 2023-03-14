@@ -148,6 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "barcodeScannerIsNotAvailableOnDesktop":
             MessageLookupByLibrary.simpleMessage(
                 "Le Barcode scanner est seulement disponible sur mobile"),
+        "blockExplorer": MessageLookupByLibrary.simpleMessage("Block Explorer"),
         "blockReorgDetectedRewind": m3,
         "blue": MessageLookupByLibrary.simpleMessage("Bleu"),
         "body": MessageLookupByLibrary.simpleMessage("Contenu"),

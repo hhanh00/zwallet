@@ -69,6 +69,7 @@ const MAXMONEY = 21000000;
 const DOC_URL = "https://hhanh00.github.io/zwallet/";
 const APP_NAME = "YWallet";
 const BACKUP_NAME = "$APP_NAME.age";
+const EXPLORER_KEY = "block_explorer";
 
 const RECOVERY_FILE = "recover.bin";
 
@@ -414,6 +415,8 @@ class ZWalletAppState extends State<ZWalletApp> {
         for (var c in coins) {
           _setProgress(0.2 * (c.coin + 1), 'Initializing ${c.ticker}');
           await compute(_initWallet, {'coin': c, 'passwd': settings.dbPasswd});
+          if (WarpApi.getProperty(c.coin, EXPLORER_KEY).isEmpty)
+            WarpApi.setProperty(c.coin, EXPLORER_KEY, c.blockExplorers[0]);
         }
 
         _setProgress(0.7, 'Restoring Active Account');

@@ -3141,6 +3141,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Block Explorer`
+  String get blockExplorer {
+    return Intl.message(
+      'Block Explorer',
+      name: 'blockExplorer',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

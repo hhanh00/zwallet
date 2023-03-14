@@ -21,7 +21,6 @@ abstract class CoinBase {
   String get currency;
   String get ticker;
   int get coinIndex;
-  String get explorerUrl;
   AssetImage get image;
   String get dbName;
   late String dbDir;
@@ -30,6 +29,7 @@ abstract class CoinBase {
   bool get supportsUA;
   bool get supportsMultisig;
   List<double> get weights;
+  List<String> get blockExplorers;
 
   void init(String dbDirPath) {
     dbDir = dbDirPath;
@@ -70,8 +70,7 @@ abstract class CoinBase {
       await File(p.join(dbDir, dbName)).delete();
       await File(p.join(dbDir, "$dbName-shm")).delete();
       await File(p.join(dbDir, "$dbName-wal")).delete();
-    }
-    catch (e) {} // ignore failure
+    } catch (e) {} // ignore failure
   }
 
   String _getFullPath(String dbPath) {
