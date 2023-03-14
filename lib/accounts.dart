@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'coin/coins.dart';
@@ -209,7 +211,7 @@ abstract class _ActiveAccount with Store {
     draftRecipient = null;
 
     update();
-    Future.microtask(priceStore.updateChart);
+    Future(priceStore.updateChart);
   }
 
   @action
@@ -218,8 +220,8 @@ abstract class _ActiveAccount with Store {
   }
 
   @action
-  void changeAddrMode() {
-    addrMode = (addrMode + 1) % 3;
+  void updateAddrMode(int v) {
+    addrMode = v;
   }
 
   @action

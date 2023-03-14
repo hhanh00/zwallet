@@ -42,10 +42,10 @@ class HomeState extends State<HomePage> {
   void initState() {
     super.initState();
     contacts.fetchContacts();
-    Future.microtask(() async {
+    Future(() async {
       await syncStatus.update();
-      active.updateBalances();
-      await priceStore.updateChart();
+      active.updateBalances(); // lazy
+      priceStore.updateChart(); // lazy
 
       await Future.delayed(Duration(seconds: 3));
       await syncStatus.sync(false);
@@ -77,8 +77,7 @@ class HomeState extends State<HomePage> {
         active.update();
         final progress = syncStatus.progress;
         if (progress != null && isMobile()) {
-          FlutterForegroundTask.updateService(
-              notificationText: "$progress %");
+          FlutterForegroundTask.updateService(notificationText: "$progress %");
         }
         syncStats.add(DateTime.now(), syncedHeight.height);
       }
@@ -108,7 +107,8 @@ class HomeInnerPage extends StatefulWidget {
   HomeInnerState createState() => HomeInnerState();
 }
 
-class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderStateMixin {
+class HomeInnerState extends State<HomeInnerPage>
+    with SingleTickerProviderStateMixin {
   TabController? _tabController;
   int _tabIndex = 0;
   final contactKey = GlobalKey<ContactsState>();
@@ -116,9 +116,9 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid)
-      _initForegroundTask();
-    final tabController = TabController(length: settings.simpleMode ? 4 : 7, vsync: this);
+    if (Platform.isAndroid) _initForegroundTask();
+    final tabController =
+        TabController(length: settings.simpleMode ? 4 : 7, vsync: this);
     tabController.addListener(() {
       setState(() {
         _tabIndex = tabController.index;
@@ -171,11 +171,11 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         rescanMsg = s.rescan;
 
       final unread = active.unread;
-      final messageTab = unread != 0 ?
-        Tab(child: Badges.Badge(
-            child: Text(s.messages),
-            badgeContent: Text('$unread'))) :
-        Tab(text: s.messages);
+      final messageTab = unread != 0
+          ? Tab(
+              child: Badges.Badge(
+                  child: Text(s.messages), badgeContent: Text('$unread')))
+          : Tab(text: s.messages);
 
       if (active.id == 0) {
         Future.microtask(() async {
@@ -190,24 +190,45 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
             PopupMenuItem(child: Text(s.accounts), value: "Accounts"),
             PopupMenuItem(child: Text(s.backup), value: "Backup"),
             PopupMenuItem(child: Text(rescanMsg), value: "Rescan"),
-            if (!simpleMode) PopupMenuItem(child: Text(s.pools), value: "Pools"),
             if (!simpleMode)
-              PopupMenuItem(child:
-              PopupMenuButton(
-                  child: Text(s.advanced),
-                  itemBuilder: (_) => [
-                    if (!isMobile()) PopupMenuItem(child: Text(s.encryptDatabase), value: "Encrypt"),
-                    PopupMenuItem(child: Text(s.rewindToCheckpoint), value: "Rewind"),
-                    PopupMenuItem(child: Text(s.convertToWatchonly), enabled: active.canPay, value: "Cold"),
-                    PopupMenuItem(child: Text(s.signOffline), enabled: active.canPay, value: "Sign"),
-                    PopupMenuItem(child: Text(s.broadcast), value: "Broadcast"),
-                    PopupMenuItem(child: Text(s.multipay), value: "MultiPay"),
-                    PopupMenuItem(child: Text(s.keyTool), enabled: active.canPay, value: "KeyTool"),
-                    PopupMenuItem(child: Text(s.sweep), enabled: active.canPay, value: "Sweep"),
-                  ], onSelected: _onMenu)),
+              PopupMenuItem(child: Text(s.pools), value: "Pools"),
+            if (!simpleMode)
+              PopupMenuItem(
+                  child: PopupMenuButton(
+                      child: Text(s.advanced),
+                      itemBuilder: (_) => [
+                            if (!isMobile())
+                              PopupMenuItem(
+                                  child: Text(s.encryptDatabase),
+                                  value: "Encrypt"),
+                            PopupMenuItem(
+                                child: Text(s.rewindToCheckpoint),
+                                value: "Rewind"),
+                            PopupMenuItem(
+                                child: Text(s.convertToWatchonly),
+                                enabled: active.canPay,
+                                value: "Cold"),
+                            PopupMenuItem(
+                                child: Text(s.signOffline),
+                                enabled: active.canPay,
+                                value: "Sign"),
+                            PopupMenuItem(
+                                child: Text(s.broadcast), value: "Broadcast"),
+                            PopupMenuItem(
+                                child: Text(s.multipay), value: "MultiPay"),
+                            PopupMenuItem(
+                                child: Text(s.keyTool),
+                                enabled: active.canPay,
+                                value: "KeyTool"),
+                            PopupMenuItem(
+                                child: Text(s.sweep),
+                                enabled: active.canPay,
+                                value: "Sweep"),
+                          ],
+                      onSelected: _onMenu)),
             // if (!simpleMode && !isMobile())
             //   PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
-            if (settings.isDeveloper)             
+            if (settings.isDeveloper)
               PopupMenuItem(child: Text(s.expert), value: "Expert"),
             PopupMenuItem(child: Text(s.settings), value: "Settings"),
             PopupMenuItem(child: Text(s.help), value: "Help"),
@@ -219,13 +240,13 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
 
       showAboutOnce(this.context);
 
-      return WithForegroundTask(child:
-        Scaffold(
+      return WithForegroundTask(
+          child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: GestureDetector(
-            onTap: () => settings.tapDeveloperMode(context),
-            child: Text("${active.account.name}")),
+              onTap: () => settings.tapDeveloperMode(context),
+              child: Text("${active.account.name}")),
           bottom: TabBar(
             controller: _tabController,
             isScrollable: true,
@@ -319,14 +340,16 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
   }
 
   _backup() async {
-    final didAuthenticate = await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
+    final didAuthenticate = await authenticate(
+        context, S.of(context).pleaseAuthenticateToShowAccountSeed);
     if (didAuthenticate) {
       Navigator.of(context).pushNamed('/backup');
     }
   }
 
   _keyTool() async {
-    final didAuthenticate = await authenticate(context, S.of(context).pleaseAuthenticateToShowAccountSeed);
+    final didAuthenticate = await authenticate(
+        context, S.of(context).pleaseAuthenticateToShowAccountSeed);
     if (didAuthenticate) {
       Navigator.of(context).pushNamed('/keytool');
     }
@@ -342,63 +365,72 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       return null;
     };
     final confirmed = await showDialog<bool>(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-            title: Text(s.sweep),
-            content: SingleChildScrollView(child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    decoration: InputDecoration(labelText: s.transparentKey),
-                    controller: keyController,
-                    validator: checkKey,
-                ),
-                  FormBuilderRadioGroup<int>(
-                    orientation: OptionsOrientation.horizontal,
-                    decoration: InputDecoration(labelText: s.toPool),
-                    name: 'pool',
-                    initialValue: 0,
-                    onChanged: (v) { pool = v ?? 0; },
-                    options: [
-                      FormBuilderFieldOption(
-                          child: Text('T'), value: 0),
-                      FormBuilderFieldOption(
-                          child: Text('S'), value: 1),
-                      if (active.coinDef.supportsUA) FormBuilderFieldOption(
-                          child: Text('O'), value: 2),
-                  ]),
-                ],
-            )),
-            actions: confirmButtons(context, () => Navigator.of(context).pop(true))
-        )
-    ) ?? false;
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+                title: Text(s.sweep),
+                content: SingleChildScrollView(
+                    child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      decoration: InputDecoration(labelText: s.transparentKey),
+                      controller: keyController,
+                      validator: checkKey,
+                    ),
+                    FormBuilderRadioGroup<int>(
+                        orientation: OptionsOrientation.horizontal,
+                        decoration: InputDecoration(labelText: s.toPool),
+                        name: 'pool',
+                        initialValue: 0,
+                        onChanged: (v) {
+                          pool = v ?? 0;
+                        },
+                        options: [
+                          FormBuilderFieldOption(child: Text('T'), value: 0),
+                          FormBuilderFieldOption(child: Text('S'), value: 1),
+                          if (active.coinDef.supportsUA)
+                            FormBuilderFieldOption(child: Text('O'), value: 2),
+                        ]),
+                  ],
+                )),
+                actions: confirmButtons(
+                    context, () => Navigator.of(context).pop(true)))) ??
+        false;
     if (confirmed) {
-      final txid = await WarpApi.sweepTransparent(syncStatus.latestHeight, keyController.text, pool, settings.anchorOffset);
+      final txid = await WarpApi.sweepTransparent(syncStatus.latestHeight,
+          keyController.text, pool, settings.anchorOffset);
       showSnackBar(s.txId(txid));
     }
   }
-  
+
   _rewind() async {
     final s = S.of(context);
     int? height;
     final checkpoints = WarpApi.getCheckpoints(active.coin);
-    final items = checkpoints.map((c) => DropdownMenuItem<int>(value: c.height,
-      child: Text('${noteDateFormat.format(DateTime.fromMillisecondsSinceEpoch(c.timestamp * 1000))} - ${c.height}')
-    )).toList();
+    final items = checkpoints
+        .map((c) => DropdownMenuItem<int>(
+            value: c.height,
+            child: Text(
+                '${noteDateFormat.format(DateTime.fromMillisecondsSinceEpoch(c.timestamp * 1000))} - ${c.height}')))
+        .toList();
     final confirmed = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Text(s.rewindToCheckpoint),
-        content: SingleChildScrollView(child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DropdownButtonFormField<int>(items: items, hint: Text(s.selectCheckpoint), onChanged: (v) { height = v; })]
-        )),
-        actions: confirmButtons(context, () => Navigator.of(context).pop(true))
-      )
-    ) ?? false;
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+                title: Text(s.rewindToCheckpoint),
+                content: SingleChildScrollView(
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  DropdownButtonFormField<int>(
+                      items: items,
+                      hint: Text(s.selectCheckpoint),
+                      onChanged: (v) {
+                        height = v;
+                      })
+                ])),
+                actions: confirmButtons(
+                    context, () => Navigator.of(context).pop(true)))) ??
+        false;
     final h = height;
     if (confirmed && h != null) {
       showSnackBar(s.blockReorgDetectedRewind(h));
@@ -413,7 +445,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         builder: (context) => AlertDialog(
             title: Text(S.of(context).coldStorage),
             content:
-            Text(S.of(context).doYouWantToDeleteTheSecretKeyAndConvert),
+                Text(S.of(context).doYouWantToDeleteTheSecretKeyAndConvert),
             actions: confirmButtons(context, _convertToWatchOnly,
                 okLabel: S.of(context).delete)));
   }
@@ -442,8 +474,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       final file = File(path);
       tx = file.readAsStringSync();
     }
-    if (tx != null)
-      Navigator.of(context).pushNamed('/sign', arguments: tx);
+    if (tx != null) Navigator.of(context).pushNamed('/sign', arguments: tx);
   }
 
   _broadcast() async {
@@ -463,8 +494,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
       try {
         final res = WarpApi.broadcast(rawTx);
         showSnackBar(res);
-      }
-      on String catch (e) {
+      } on String catch (e) {
         showSnackBar(e);
       }
     }
@@ -487,23 +517,27 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     final newPasswdController = TextEditingController();
     final repeatPasswdController = TextEditingController();
     final confirmed = await showDialog<bool>(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) =>
-            AlertDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
                 title: Text(s.encryptDatabase),
                 contentPadding: EdgeInsets.all(16),
-                content: Form(child: SingleChildScrollView(child: Column(children: [
-                  if (hasPasswd) TextFormField(
-                    decoration: InputDecoration(labelText: s.currentPassword),
-                    obscureText: true,
-                    controller: oldPasswdController),
+                content: Form(
+                    child: SingleChildScrollView(
+                        child: Column(children: [
+                  if (hasPasswd)
+                    TextFormField(
+                        decoration:
+                            InputDecoration(labelText: s.currentPassword),
+                        obscureText: true,
+                        controller: oldPasswdController),
                   TextFormField(
                       decoration: InputDecoration(labelText: s.newPassword),
                       obscureText: true,
                       controller: newPasswdController),
                   TextFormField(
-                      decoration: InputDecoration(labelText: s.repeatNewPassword),
+                      decoration:
+                          InputDecoration(labelText: s.repeatNewPassword),
                       obscureText: true,
                       controller: repeatPasswdController),
                 ]))),
@@ -516,8 +550,7 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
         showSnackBar(s.currentPasswordIncorrect);
       else if (newPasswdController.text != repeatPasswdController.text) {
         showSnackBar(s.newPasswordsDoNotMatch);
-      }
-      else {
+      } else {
         final passwd = newPasswdController.text;
         for (var c in coins) {
           final tempPath = p.join(settings.tempDir, c.dbName);
@@ -573,4 +606,3 @@ class HomeInnerState extends State<HomeInnerPage> with SingleTickerProviderState
     FlutterForegroundTask.setOnLockScreenVisibility(false);
   }
 }
-
