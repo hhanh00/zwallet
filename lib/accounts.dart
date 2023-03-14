@@ -135,7 +135,7 @@ abstract class _ActiveAccount with Store {
   String banner = "";
 
   @observable
-  bool showTAddr = false;
+  int addrMode = 0;
 
   @observable
   SortConfig noteSortConfig = SortConfig("", SortOrder.Unsorted);
@@ -204,7 +204,7 @@ abstract class _ActiveAccount with Store {
       canPay = WarpApi.getSK(coin, id).isNotEmpty;
     }
 
-    showTAddr = false;
+    addrMode = 0;
     balances.initialized = false;
     draftRecipient = null;
 
@@ -218,8 +218,8 @@ abstract class _ActiveAccount with Store {
   }
 
   @action
-  void toggleShowTAddr() {
-    showTAddr = !showTAddr;
+  void changeAddrMode() {
+    addrMode = (addrMode + 1) % 3;
   }
 
   @action
@@ -269,8 +269,8 @@ abstract class _ActiveAccount with Store {
     draftRecipient = v;
   }
 
-  String getDiversifiedAddress(int time) {
-    return WarpApi.getDiversifiedAddress(settings.uaType, time);
+  String getDiversifiedAddress(int uaType, int time) {
+    return WarpApi.getDiversifiedAddress(uaType & settings.uaType, time);
   }
 
   String getAddress(int uaType) {

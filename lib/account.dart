@@ -20,7 +20,8 @@ class AccountPage extends StatefulWidget {
   _AccountState createState() => _AccountState();
 }
 
-class _AccountState extends State<AccountPage> with AutomaticKeepAliveClientMixin {
+class _AccountState extends State<AccountPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; //Set to true
 
@@ -29,15 +30,14 @@ class _AccountState extends State<AccountPage> with AutomaticKeepAliveClientMixi
     super.build(context);
     return SingleChildScrollView(
         child: Column(children: [
-            SyncStatusWidget(),
-            QRAddressWidget(),
-            Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-            BalanceWidget(),
-            Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-            MemPoolWidget(),
-            ProgressWidget(),
-          ])
-        );
+      SyncStatusWidget(),
+      QRAddressWidget(),
+      Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+      BalanceWidget(),
+      Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+      MemPoolWidget(),
+      ProgressWidget(),
+    ]));
   }
 }
 
@@ -53,14 +53,20 @@ class SyncStatusState extends State<SyncStatusWidget> {
     final s = S.of(context);
     final theme = Theme.of(context);
     final simpleMode = settings.simpleMode;
-    final syncStyle = theme.textTheme.bodySmall!.apply(color: theme.primaryColor);
+    final syncStyle =
+        theme.textTheme.bodySmall!.apply(color: theme.primaryColor);
 
     dynamic createText(String text, bool animated) {
-      return animated ? WavyAnimatedText(text, textStyle: syncStyle) : Text(text, style: syncStyle);
+      return animated
+          ? WavyAnimatedText(text, textStyle: syncStyle)
+          : Text(text, style: syncStyle);
     }
 
     return Column(children: [
-      if (simpleMode) Padding(padding: EdgeInsets.fromLTRB(0, 8, 0, 0), child: Text(s.simpleMode)),
+      if (simpleMode)
+        Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+            child: Text(s.simpleMode)),
       Observer(builder: (context) {
         final time = eta.eta;
         final neverSynced = syncStatus.syncedHeight == null;
@@ -68,16 +74,17 @@ class SyncStatusState extends State<SyncStatusWidget> {
         final startHeight = syncStatus.startSyncedHeight;
         final timestamp = syncStatus.timestamp?.timeAgo() ?? s.na;
         final latestHeight = syncStatus.latestHeight;
-        final remaining = max(latestHeight-syncedHeight, 0);
+        final remaining = max(latestHeight - syncedHeight, 0);
         final int? percent;
         if (startHeight != null) {
           final total = latestHeight - startHeight;
-          percent = total > 0 ? 100 * (syncedHeight - startHeight) ~/
-              total : 0;
-        }
-        else percent = 0;
-        final downloadedSize = NumberFormat.compact().format(syncStatus.downloadedSize);
-        final trialDecryptionCount = NumberFormat.compact().format(syncStatus.trialDecryptionCount);
+          percent = total > 0 ? 100 * (syncedHeight - startHeight) ~/ total : 0;
+        } else
+          percent = 0;
+        final downloadedSize =
+            NumberFormat.compact().format(syncStatus.downloadedSize);
+        final trialDecryptionCount =
+            NumberFormat.compact().format(syncStatus.trialDecryptionCount);
         final disconnected = latestHeight == 0;
         final synced = syncStatus.isSynced();
         final paused = syncStatus.paused;
@@ -107,12 +114,16 @@ class SyncStatusState extends State<SyncStatusWidget> {
           var d = display % 8;
           if (d == 0)
             return AnimatedTextKit(
-                key: ValueKey(syncedHeight),
-                repeatForever: true,
-                animatedTexts: [ for (int i = 0; i < 7; i++) createSyncText(i, true) ],
-                onTap: () => setState(() { display += 1; }),
+              key: ValueKey(syncedHeight),
+              repeatForever: true,
+              animatedTexts: [
+                for (int i = 0; i < 7; i++) createSyncText(i, true)
+              ],
+              onTap: () => setState(() {
+                display += 1;
+              }),
             );
-          return createSyncText(d-1, false);
+          return createSyncText(d - 1, false);
         }
 
         final text;
@@ -127,7 +138,11 @@ class SyncStatusState extends State<SyncStatusWidget> {
         else
           text = createSyncStatus();
 
-        return TextButton(onPressed: () { syncing ? _onNextDisplay() : _onSync(context); }, child: text);
+        return TextButton(
+            onPressed: () {
+              syncing ? _onNextDisplay() : _onSync(context);
+            },
+            child: text);
       })
     ]);
   }
@@ -142,7 +157,9 @@ class SyncStatusState extends State<SyncStatusWidget> {
   }
 
   _onNextDisplay() {
-    setState(() { display += 1; });
+    setState(() {
+      display += 1;
+    });
   }
 }
 
@@ -154,6 +171,7 @@ class QRAddressWidget extends StatefulWidget {
 class QRAddressState extends State<QRAddressWidget> {
   bool _useSnapAddress = false;
   String _snapAddress = "";
+  final addrsAvailable = WarpApi.getAvailableAddrs(active.coin, active.id);
 
   @override
   Widget build(BuildContext context) {
@@ -164,16 +182,15 @@ class QRAddressState extends State<QRAddressWidget> {
       final simpleMode = settings.simpleMode;
       final address = _address();
       final shortAddress = centerTrim(address);
-      final showTAddr = active.showTAddr;
+      final addrMode = active.addrMode;
       final hasTAddr = active.taddress.isNotEmpty;
       final qrSize = getScreenSize(context) / 2.5;
       final coinDef = active.coinDef;
+      final nextMode = _getNextMode();
+      final tapMessage = nextMode != addrMode ? _getTapMessage(nextMode) : null;
 
       return Column(children: [
-        if (hasTAddr)
-          Text(showTAddr
-              ? s.tapQrCodeForShieldedAddress
-              : s.tapQrCodeForTransparentAddress),
+        if (tapMessage != null) Text(tapMessage),
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
         GestureDetector(
             onTap: hasTAddr ? _onQRTap : null,
@@ -199,14 +216,19 @@ class QRAddressState extends State<QRAddressWidget> {
                   child: Icon(MdiIcons.qrcodeScan), onTap: _onReceive)),
         ])),
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-        if (!simpleMode && !showTAddr)
-          SizedBox(height: 30, child:
-          (_snapTimer == null) ? OutlinedButton(
-              child: Text(s.newSnapAddress),
-              style: OutlinedButton.styleFrom(
-                  side: BorderSide(width: 1, color: theme.primaryColor)),
-              onPressed: _onSnapAddress) : LinearProgressIndicator(value: _snapAddressProgress / SNAPADDRESS_LIFETIME)),
-        if (!simpleMode && showTAddr)
+        if (!simpleMode && addrMode != 2)
+          SizedBox(
+              height: 30,
+              child: (_snapTimer == null)
+                  ? OutlinedButton(
+                      child: Text(s.newSnapAddress),
+                      style: OutlinedButton.styleFrom(
+                          side:
+                              BorderSide(width: 1, color: theme.primaryColor)),
+                      onPressed: _onSnapAddress)
+                  : LinearProgressIndicator(
+                      value: _snapAddressProgress / SNAPADDRESS_LIFETIME)),
+        if (!simpleMode && addrMode == 2)
           OutlinedButton(
             child: Text(s.shieldTranspBalance),
             style: OutlinedButton.styleFrom(
@@ -220,7 +242,7 @@ class QRAddressState extends State<QRAddressWidget> {
   }
 
   _onQRTap() {
-    active.toggleShowTAddr();
+    active.changeAddrMode();
   }
 
   _onAddressCopy() {
@@ -238,7 +260,11 @@ class QRAddressState extends State<QRAddressWidget> {
 
   _onSnapAddress() {
     if (_snapTimer != null) return;
-    final address = active.getDiversifiedAddress(DateTime.now().millisecondsSinceEpoch ~/ 1000);
+    final uaType = active.addrMode == 0 ? 6 : 2; // S+O, S
+    final address = active.getDiversifiedAddress(
+      uaType,
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    );
     setState(() {
       _useSnapAddress = true;
       _snapAddress = address;
@@ -259,25 +285,29 @@ class QRAddressState extends State<QRAddressWidget> {
   }
 
   _onUpdateTAddr() async {
-    if (!active.showTAddr) return;
+    if (active.addrMode != 2) return;
     final s = S.of(context);
     final coinIndex = active.coinDef.coinIndex;
     var pathController = TextEditingController();
     var keyController = TextEditingController();
-    final confirmed = await showDialog<bool>(context: context, builder: (context) => AlertDialog(
-        title: Text(S.of(context).changeTransparentKey),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-                decoration: InputDecoration(label: Text(s.derivationPath), hintText: "m/44'/$coinIndex'/0'/0/0"),
-                controller: pathController),
-            TextField(
-                decoration: InputDecoration(label: Text(s.privateKey)),
-                controller: keyController)]),
-        actions: confirmButtons(context, () {
-          Navigator.of(context).pop(true);
-        }))) ?? false;
+    final confirmed = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+                title: Text(S.of(context).changeTransparentKey),
+                content: Column(mainAxisSize: MainAxisSize.min, children: [
+                  TextField(
+                      decoration: InputDecoration(
+                          label: Text(s.derivationPath),
+                          hintText: "m/44'/$coinIndex'/0'/0/0"),
+                      controller: pathController),
+                  TextField(
+                      decoration: InputDecoration(label: Text(s.privateKey)),
+                      controller: keyController)
+                ]),
+                actions: confirmButtons(context, () {
+                  Navigator.of(context).pop(true);
+                }))) ??
+        false;
     if (confirmed) {
       try {
         if (pathController.text.isNotEmpty)
@@ -288,20 +318,54 @@ class QRAddressState extends State<QRAddressWidget> {
               active.coin, active.id, keyController.text);
         await active.refreshTAddr();
         active.updateTBalance();
-      }
-      on String catch (message) {
+      } on String catch (message) {
         showSnackBar(message);
       }
     }
   }
 
   String _address() {
-    final address = active.showTAddr
-        ? active.taddress
-        : _useSnapAddress
-            ? _snapAddress
-            : active.address;
-    return address;
+    switch (active.addrMode) {
+      case 0:
+        if (_useSnapAddress) return _snapAddress;
+        return active.getAddress(settings.uaType);
+      case 1:
+        if (_useSnapAddress) return _snapAddress;
+        return active.getAddress(2);
+      default:
+        return active.taddress;
+    }
+  }
+
+  int _getNextMode() {
+    int next = active.addrMode;
+    do {
+      next = (next + 1) % 3;
+      switch (next) {
+        case 0:
+          return next;
+        case 1: // we have orchard -> show zaddr
+          if (addrsAvailable & 4 != 0) return next;
+          break;
+        case 2: // we have taddr -> show taddr
+          if (addrsAvailable & 1 != 0) return next;
+          break;
+      }
+    } while (next != active.addrMode);
+    return 0; // unreachable
+  }
+
+  String? _getTapMessage(int mode) {
+    final s = S.of(context);
+    switch (mode) {
+      case 0:
+        return s.tapQrCodeForShieldedAddress;
+      case 1:
+        return s.tapQrCodeForSaplingAddress;
+      case 2:
+        return s.tapQrCodeForTransparentAddress;
+    }
+    return null;
   }
 }
 
@@ -322,7 +386,7 @@ class BalanceWidget extends StatelessWidget {
           }
           return true;
         }();
-        final showTAddr = active.showTAddr;
+        final showTAddr = active.addrMode == 2;
         final balance = showTAddr ? active.tbalance : active.balances.balance;
         final balanceColor = !showTAddr
             ? theme.colorScheme.primary
@@ -346,44 +410,44 @@ class BalanceWidget extends StatelessWidget {
               textBaseline: TextBaseline.ideographic,
               children: <Widget>[
                 if (!hide)
-                  Text('${coinDef.symbol}', style: theme.textTheme.headlineSmall),
+                  Text('${coinDef.symbol}',
+                      style: theme.textTheme.headlineSmall),
                 Text(' $balanceHi', style: balanceStyle),
                 if (!hide) Text('${_getBalanceLo(balance)}'),
               ]),
-          if (hide && settings.autoHide == 1) Text(s.tiltYourDeviceUpToRevealYourBalance),
+          if (hide && settings.autoHide == 1)
+            Text(s.tiltYourDeviceUpToRevealYourBalance),
           if (!hide && fx != 0.0)
             Text("${decimalFormat(balanceFX, 2, symbol: settings.currency)}",
                 style: theme.textTheme.titleLarge),
           if (!hide && fx != 0.0)
             Text(
-                "1 ${coinDef.ticker} = ${decimalFormat(
-                    fx, 2, symbol: settings.currency)}"),
+                "1 ${coinDef.ticker} = ${decimalFormat(fx, 2, symbol: settings.currency)}"),
         ]);
-  });
+      });
 }
 
 class MemPoolWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Observer(builder: (context) {
-    final theme = Theme.of(context);
-    int unconfirmedBalance = unconfirmedBalanceStream.value ?? 0;
-    final unconfirmedStyle = TextStyle(
-        color: amountColor(context, unconfirmedBalance));
-    if (unconfirmedBalance == 0) return Container();
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.baseline,
-        textBaseline: TextBaseline.ideographic,
-        children: <Widget>[
-          Text(
-              '${_sign(unconfirmedBalance)} ${_getBalanceHi(unconfirmedBalance)}',
-              style: theme.textTheme.headlineMedium
-                  ?.merge(unconfirmedStyle)),
-          Text(
-              '${_getBalanceLo(unconfirmedBalance)}',
-              style: unconfirmedStyle),
-        ]);
-    });
+        final theme = Theme.of(context);
+        int unconfirmedBalance = unconfirmedBalanceStream.value ?? 0;
+        final unconfirmedStyle =
+            TextStyle(color: amountColor(context, unconfirmedBalance));
+        if (unconfirmedBalance == 0) return Container();
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.ideographic,
+            children: <Widget>[
+              Text(
+                  '${_sign(unconfirmedBalance)} ${_getBalanceHi(unconfirmedBalance)}',
+                  style:
+                      theme.textTheme.headlineMedium?.merge(unconfirmedStyle)),
+              Text('${_getBalanceLo(unconfirmedBalance)}',
+                  style: unconfirmedStyle),
+            ]);
+      });
 }
 
 class ProgressWidget extends StatefulWidget {
@@ -415,17 +479,18 @@ class ProgressState extends State<ProgressWidget> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Observer(builder: (context) => Column(children: [
-      if (active.banner.isNotEmpty) DefaultTextStyle(
-        style: theme.textTheme.titleLarge!,
-          child: AnimatedTextKit(
-            repeatForever: true,
-            animatedTexts: [
-              TypewriterAnimatedText(active.banner)]
-      )),
-      Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-      if (_progress != 0) LinearProgressIndicator(value: _progress / 100.0),
-    ]));
+    return Observer(
+        builder: (context) => Column(children: [
+              if (active.banner.isNotEmpty)
+                DefaultTextStyle(
+                    style: theme.textTheme.titleLarge!,
+                    child: AnimatedTextKit(repeatForever: true, animatedTexts: [
+                      TypewriterAnimatedText(active.banner)
+                    ])),
+              Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+              if (_progress != 0)
+                LinearProgressIndicator(value: _progress / 100.0),
+            ]));
   }
 }
 

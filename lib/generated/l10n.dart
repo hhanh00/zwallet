@@ -3151,6 +3151,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Tap QR Code for Sapling Address`
+  String get tapQrCodeForSaplingAddress {
+    return Intl.message(
+      'Tap QR Code for Sapling Address',
+      name: 'tapQrCodeForSaplingAddress',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

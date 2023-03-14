@@ -620,6 +620,10 @@ class WarpApi {
     unwrapResultU8(
         warp_api_lib.set_property(coin, toNative(name), toNative(value)));
   }
+
+  static int getAvailableAddrs(int coin, int account) {
+    return unwrapResultU8(warp_api_lib.get_available_addrs(coin, account));
+  }
 }
 
 String signOnlyIsolateFn(SignOnlyParams params) {
