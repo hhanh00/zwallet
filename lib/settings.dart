@@ -43,6 +43,7 @@ class SettingsState extends State<SettingsPage>
   var _noteView = settings.noteView;
   var _txView = settings.txView;
   var _minPrivacy = settings.minPrivacyLevel;
+  var _explorer = BlockExplorerSelection.create();
 
   @override
   Widget build(BuildContext context) {
@@ -320,9 +321,8 @@ class SettingsState extends State<SettingsPage>
                           Row(children: [
                             Expanded(
                                 child: TextField(
-                              controller: TextEditingController(
-                                  text: WarpApi.getProperty(
-                                      active.coin, EXPLORER_KEY)),
+                              controller:
+                                  TextEditingController(text: _explorer.url),
                               decoration:
                                   InputDecoration(labelText: s.blockExplorer),
                               readOnly: true,
@@ -419,6 +419,7 @@ class SettingsState extends State<SettingsPage>
         return;
       form.save();
       settings.updateLWD();
+      _explorer.save();
       Navigator.of(context).pop();
     }
   }
@@ -444,14 +445,8 @@ class SettingsState extends State<SettingsPage>
   }
 
   _editBlockExplorer() async {
-    final selectedKey = 'selected_block_explorer';
-    final customKey = 'custom_block_explorer';
     final s = S.of(context);
-    final customController = TextEditingController(
-        text: WarpApi.getProperty(active.coin, customKey));
-    String selectedExplorer = WarpApi.getProperty(active.coin, selectedKey);
-    if (selectedExplorer.isEmpty)
-      selectedExplorer = active.coinDef.blockExplorers[0];
+    final customController = TextEditingController(text: _explorer.custom);
 
     List<FormBuilderFieldOption<String>> options = active.coinDef.blockExplorers
         .map((explorer) => FormBuilderFieldOption<String>(
@@ -474,7 +469,7 @@ class SettingsState extends State<SettingsPage>
                       FormBuilderRadioGroup(
                           orientation: OptionsOrientation.vertical,
                           name: 'block_explorers',
-                          initialValue: selectedExplorer,
+                          initialValue: _explorer.selectedOption,
                           options: options),
                       FormBuilderTextField(
                         decoration: InputDecoration(labelText: s.custom),
@@ -490,12 +485,42 @@ class SettingsState extends State<SettingsPage>
       final state = formKey.currentState!;
       final selection = state.fields['block_explorers']!.value;
       final custom = state.fields['custom']!.value;
-      WarpApi.setProperty(active.coin, selectedKey, selection);
-      WarpApi.setProperty(active.coin, customKey, custom);
       final url = selection == 'custom' ? custom : selection;
-      WarpApi.setProperty(active.coin, EXPLORER_KEY, url);
+      _explorer.custom = custom;
+      _explorer.selectedOption = selection;
+      _explorer.url = url;
       setState(() {});
     }
+  }
+}
+
+class BlockExplorerSelection {
+  static const selectedKey = 'selected_block_explorer';
+  static const customKey = 'custom_block_explorer';
+
+  String selectedOption;
+  String custom;
+  String url;
+  BlockExplorerSelection(this.selectedOption, this.custom, this.url);
+
+  factory BlockExplorerSelection.create() {
+    var instance = BlockExplorerSelection('', '', '');
+    instance.load();
+    return instance;
+  }
+
+  void load() {
+    selectedOption = WarpApi.getProperty(active.coin, selectedKey);
+    if (selectedOption.isEmpty)
+      selectedOption = active.coinDef.blockExplorers[0];
+    custom = WarpApi.getProperty(active.coin, customKey);
+    url = WarpApi.getProperty(active.coin, EXPLORER_KEY);
+  }
+
+  void save() {
+    WarpApi.setProperty(active.coin, selectedKey, selectedOption);
+    WarpApi.setProperty(active.coin, customKey, custom);
+    WarpApi.setProperty(active.coin, EXPLORER_KEY, url);
   }
 }
 
