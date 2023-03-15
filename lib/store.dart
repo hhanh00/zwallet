@@ -27,65 +27,48 @@ part 'store.g.dart';
 
 enum ViewStyle { Auto, Table, List }
 
-class LWDServer = _LWDServer with _$LWDServer;
-
-abstract class _LWDServer with Store {
+class ServerSelection {
+  static String lwdChoiceKey = 'lwd_choice';
+  static String lwdCustomKey = 'lwd_custom';
   final int coin;
-  final CoinBase coinDef;
-  late String choice;
-  late String customUrl;
-  @observable
-  String current = "";
+  String selected;
+  String custom;
 
-  _LWDServer(this.coin, this.coinDef) {
-    choice = "auto";
-    customUrl = coinDef.lwd.first.url;
+  ServerSelection(this.coin, this.selected, this.custom);
+  factory ServerSelection.load(int coin) {
+    final selected = WarpApi.getProperty(coin, lwdChoiceKey);
+    final custom = WarpApi.getProperty(coin, lwdCustomKey);
+    return ServerSelection(coin, selected, custom);
   }
 
-  Future<String?> loadPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    final ticker = coinDef.ticker;
-    final _choice = prefs.getString('$ticker.lwd_choice');
-    final _customUrl = prefs.getString('$ticker.lwd_custom');
-    if (_choice != null && _customUrl != null) {
-      choice = _choice;
-      customUrl = _customUrl;
-    } else {
-      await savePrefs(choice, customUrl);
+  void save() {
+    WarpApi.setProperty(coin, lwdChoiceKey, selected);
+    WarpApi.setProperty(coin, lwdCustomKey, custom);
+    final url = _resolve();
+    WarpApi.updateLWD(coin, url);
+  }
+
+  String _resolve() {
+    final c = coins.firstWhere((c) => c.coin == coin);
+    switch (selected) {
+      case 'auto':
+        var servers = c.lwd.map((c) => c.url).toList();
+        servers.add(custom);
+        try {
+          return WarpApi.getBestServer(servers);
+        } catch (e) {
+          print(e);
+          return c.lwd.first.url;
+        }
+      case 'custom':
+        return custom;
+      default:
+        return c.lwd.firstWhere((s) => s.name == selected).url;
     }
-    return getLWDUrl();
   }
 
-  Future<void> savePrefs(String _choice, String _customUrl) async {
-    choice = _choice;
-    customUrl = _customUrl;
-    final ticker = coinDef.ticker;
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('$ticker.lwd_choice', _choice);
-    prefs.setString('$ticker.lwd_custom', _customUrl);
-  }
-
-  @action
-  String? getLWDUrl() {
-    String? url;
-    if (choice == "auto") {
-      var servers = coinDef.lwd.map((s) => s.url).toList();
-      servers.add(customUrl);
-      try {
-        url = WarpApi.getBestServer(servers);
-      } catch (e) {
-        print(e);
-        return null;
-      }
-    } else if (choice == "custom")
-      url = customUrl;
-    else {
-      final lwd = coinDef.lwd.firstWhere((lwd) => lwd.name == choice,
-          orElse: () => coinDef.lwd.first);
-      url = lwd.url;
-    }
-    current = url;
-    return url;
+  String get current {
+    return WarpApi.getLWD(coin);
   }
 }
 
@@ -107,7 +90,6 @@ abstract class _Settings with Store {
   @observable
   bool simpleMode = true;
 
-  List<LWDServer> servers = [LWDServer(0, zcash), LWDServer(1, ycash)];
   List<CoinData> coins = [CoinData(0, zcash), CoinData(1, ycash)];
 
   @observable
@@ -264,10 +246,6 @@ abstract class _Settings with Store {
     uaType = prefs.getInt('ua_type') ?? 7;
     minPrivacyLevel = prefs.getInt('min_privacy') ?? 0;
 
-    for (var s in servers) {
-      await s.loadPrefs();
-    }
-
     for (var c in coins) {
       final ticker = c.def.ticker;
       c.contactsSaved = prefs.getBool("$ticker.contacts_saved") ?? true;
@@ -308,9 +286,10 @@ abstract class _Settings with Store {
   }
 
   void updateLWD() async {
-    for (var s in servers) {
-      final url = await s.loadPrefs();
-      if (url != null) WarpApi.updateLWD(s.coin, url);
+    for (var c in coins) {
+      final server = ServerSelection.load(c.coin);
+      final url = server.current;
+      if (url.isNotEmpty) WarpApi.updateLWD(c.coin, url);
     }
   }
 
@@ -740,9 +719,9 @@ abstract class _SyncStatus with Store {
   Future<bool> update() async {
     final server = WarpApi.getLWD(active.coin);
     if (server.isEmpty) {
-      final server = settings.servers[active.coin].getLWDUrl();
-      if (server != null && server.isNotEmpty)
-        WarpApi.updateLWD(active.coin, server);
+      final server = ServerSelection.load(active.coin);
+      final url = server.current;
+      if (url.isNotEmpty) WarpApi.updateLWD(active.coin, url);
     }
     try {
       latestHeight = await WarpApi.getLatestHeight();

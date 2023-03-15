@@ -379,10 +379,6 @@ class ZWalletAppState extends State<ZWalletApp> {
         final dbPath = await getDbPath();
         for (var coin in coins) {
           coin.init(dbPath);
-          final server =
-              settings.servers.firstWhere((s) => s.coin == coin.coin);
-          final url = server.getLWDUrl();
-          if (url != null) WarpApi.updateLWD(coin.coin, url);
         }
 
         if (exportDb) {
@@ -415,6 +411,10 @@ class ZWalletAppState extends State<ZWalletApp> {
         for (var c in coins) {
           _setProgress(0.2 * (c.coin + 1), 'Initializing ${c.ticker}');
           await compute(_initWallet, {'coin': c, 'passwd': settings.dbPasswd});
+
+          final server = ServerSelection.load(c.coin);
+          server.save();
+
           if (WarpApi.getProperty(c.coin, EXPLORER_KEY).isEmpty)
             WarpApi.setProperty(c.coin, EXPLORER_KEY, c.blockExplorers[0]);
         }
