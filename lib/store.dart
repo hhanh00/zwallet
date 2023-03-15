@@ -647,7 +647,9 @@ abstract class _PriceStore with Store {
         active.fetchChartData();
         lastChartUpdateTime = now;
       }
-    } on String {}
+    } on String catch (msg) {
+      print(msg);
+    }
   }
 }
 
