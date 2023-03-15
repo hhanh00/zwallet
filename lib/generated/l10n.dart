@@ -1322,10 +1322,10 @@ class S {
     );
   }
 
-  /// `Auto Hide Balance`
+  /// `Hide Balance`
   String get autoHideBalance {
     return Intl.message(
-      'Auto Hide Balance',
+      'Hide Balance',
       name: 'autoHideBalance',
       desc: '',
       args: [],

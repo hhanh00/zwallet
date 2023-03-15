@@ -126,7 +126,7 @@
   "backupWarning": "Nadie puede recuperar sus claves secretas. Si no tiene una copia de seguridad, PERDERÁ SU DINERO si su teléfono se avería. Puede acceder a esta página mediante el menú de la aplicación y luego 'Copia de Seguridad'",
   "contactName": "Nombre del contacto",
   "date": "Fecha",
-  "autoHideBalance": "Ocultar saldo automáticamente",
+  "autoHideBalance": "Ocultar saldo",
   "tiltYourDeviceUpToRevealYourBalance": "Incline su dispositivo hacia arriba para revelar su saldo",
   "noContacts": "Sin Contactos",
   "createANewContactAndItWillShowUpHere": "Crea un contacto y aparecerá aquí.",

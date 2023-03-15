@@ -133,8 +133,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Voulez-vous vraiment supprimer ce modèle?"),
         "areYouSureYouWantToSaveYourContactsIt": m1,
         "auto": MessageLookupByLibrary.simpleMessage("Auto"),
-        "autoHideBalance": MessageLookupByLibrary.simpleMessage(
-            "Cacher le solde automatiquement"),
+        "autoHideBalance":
+            MessageLookupByLibrary.simpleMessage("Cacher le solde"),
         "backup": MessageLookupByLibrary.simpleMessage("Sauvegarde"),
         "backupAllAccounts":
             MessageLookupByLibrary.simpleMessage("Sauver tous les comptes"),
