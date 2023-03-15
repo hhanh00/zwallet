@@ -144,11 +144,15 @@ class SendState extends State<SendPage> {
     _underConfirmedBalance = underConfirmedBalance;
     _unconfirmedBalance = unconfirmedBalance ?? 0;
 
-    var templates = _templates.map((t) => DropdownMenuItem(child: Text(t.title!), value: t)).toList();
-    final addReset = _template != null ? IconButton(onPressed: _resetTemplate, icon: Icon(Icons.close)) : IconButton(onPressed: _addTemplate, icon: Icon(Icons.add));
+    var templates = _templates
+        .map((t) => DropdownMenuItem(child: Text(t.title!), value: t))
+        .toList();
+    final addReset = _template != null
+        ? IconButton(onPressed: _resetTemplate, icon: Icon(Icons.close))
+        : IconButton(onPressed: _addTemplate, icon: Icon(Icons.add));
 
     return Scaffold(
-      appBar: AppBar(title: Text(s.sendCointicker(active.coinDef.ticker))),
+        appBar: AppBar(title: Text(s.sendCointicker(active.coinDef.ticker))),
         body: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
@@ -164,7 +168,8 @@ class SendState extends State<SendPage> {
                           textFieldConfiguration: TextFieldConfiguration(
                             controller: _addressController,
                             decoration: InputDecoration(
-                                labelText: s.sendCointickerTo(active.coinDef.ticker)),
+                                labelText:
+                                    s.sendCointickerTo(active.coinDef.ticker)),
                             minLines: 4,
                             maxLines: 10,
                             keyboardType: TextInputType.multiline,
@@ -175,17 +180,23 @@ class SendState extends State<SendPage> {
                             _addressController.text = suggestion.name;
                           },
                           suggestionsCallback: (String pattern) {
-                            final matchingContacts = contacts.contacts.where((c) => c.name!
-                                .toLowerCase()
-                                .contains(pattern.toLowerCase())).map((c) => ContactSuggestion(c));
+                            final matchingContacts = contacts.contacts
+                                .where((c) => c.name!
+                                    .toLowerCase()
+                                    .contains(pattern.toLowerCase()))
+                                .map((c) => ContactSuggestion(c));
                             final matchingAccounts = _accounts.list
-                                .where((a) => a.coin == active.coin && a.name
-                                .toLowerCase()
-                                .contains(pattern.toLowerCase())).map((a) => AccountSuggestion(a));
+                                .where((a) =>
+                                    a.coin == active.coin &&
+                                    a.name
+                                        .toLowerCase()
+                                        .contains(pattern.toLowerCase()))
+                                .map((a) => AccountSuggestion(a));
                             return [...matchingContacts, ...matchingAccounts];
                           },
-                          itemBuilder: (BuildContext context, Suggestion suggestion) =>
-                              ListTile(title: Text(suggestion.name)),
+                          itemBuilder:
+                              (BuildContext context, Suggestion suggestion) =>
+                                  ListTile(title: Text(suggestion.name)),
                           noItemsFoundBuilder: (_) => SizedBox(),
                         )),
                         IconButton(
@@ -200,56 +211,79 @@ class SendState extends State<SendPage> {
                           max: true,
                           initialValue: _initialAmount,
                           spendable: spendable),
-                      if (!simpleMode) BalanceTable(_sBalance, _tBalance,
-                          _excludedBalance, _underConfirmedBalance, change, _usedBalance, _fee),
-                      Container(child: InputDecorator(
-                        decoration: InputDecoration(labelText: s.memo),
-                        child: Column(children: [
-                      FormBuilderCheckbox(
-                        key: UniqueKey(),
-                        name: 'reply-to',
-                        title: Text(s.includeReplyTo),
-                        initialValue: _replyTo,
-                        onChanged: (v) {
-                          setState(() {
-                            _replyTo = v ?? false;
-                          });
-                        },
-                      ),
-                      TextFormField(
-                        decoration:
-                        InputDecoration(labelText: s.subject),
-                        controller: _subjectController,
-                      ),
-                      TextFormField(
-                        decoration:
-                        InputDecoration(labelText: s.body),
-                        minLines: 4,
-                        maxLines: null,
-                        keyboardType: TextInputType.multiline,
-                        controller: _memoController,
-                      )]))),
+                      if (!simpleMode)
+                        BalanceTable(_sBalance, _tBalance, _excludedBalance,
+                            _underConfirmedBalance, change, _usedBalance, _fee),
+                      Container(
+                          child: InputDecorator(
+                              decoration: InputDecoration(labelText: s.memo),
+                              child: Column(children: [
+                                FormBuilderCheckbox(
+                                  key: UniqueKey(),
+                                  name: 'reply-to',
+                                  title: Text(s.includeReplyTo),
+                                  initialValue: _replyTo,
+                                  onChanged: (v) {
+                                    setState(() {
+                                      _replyTo = v ?? false;
+                                    });
+                                  },
+                                ),
+                                TextFormField(
+                                  decoration:
+                                      InputDecoration(labelText: s.subject),
+                                  controller: _subjectController,
+                                ),
+                                TextFormField(
+                                  decoration:
+                                      InputDecoration(labelText: s.body),
+                                  minLines: 4,
+                                  maxLines: null,
+                                  keyboardType: TextInputType.multiline,
+                                  controller: _memoController,
+                                )
+                              ]))),
                       Padding(padding: EdgeInsets.all(8)),
                       Row(children: [
-                        Expanded(child:
-                          DropdownButtonFormField<SendTemplateT>(
-                            hint: Text(s.template),
-                            items: templates, value: _template, onChanged: (v) {
-                              setState(() {
-                                _template = v;
-                              });
-                            })),
+                        Expanded(
+                            child: DropdownButtonFormField<SendTemplateT>(
+                                hint: Text(s.template),
+                                items: templates,
+                                value: _template,
+                                onChanged: (v) {
+                                  setState(() {
+                                    _template = v;
+                                  });
+                                })),
                         addReset,
-                        IconButton(onPressed: _template != null ? _openTemplate : null, icon: Icon(Icons.open_in_new)),
-                        IconButton(onPressed: _template != null ? () { _saveTemplate(_template!.id, _template!.title!, true); } : null, icon: Icon(Icons.save)),
-                        IconButton(onPressed: _template != null ? _deleteTemplate : null, icon: Icon(Icons.delete)),
+                        IconButton(
+                            onPressed: _template != null ? _openTemplate : null,
+                            icon: Icon(Icons.open_in_new)),
+                        IconButton(
+                            onPressed: _template != null
+                                ? () {
+                                    _saveTemplate(
+                                        _template!.id, _template!.title!, true);
+                                  }
+                                : null,
+                            icon: Icon(Icons.save)),
+                        IconButton(
+                            onPressed:
+                                _template != null ? _deleteTemplate : null,
+                            icon: Icon(Icons.delete)),
                       ]),
                       Padding(padding: EdgeInsets.all(8)),
                       ButtonBar(children: [
-                        ElevatedButton.icon(onPressed: clear, icon: Icon(Icons.clear), label: Text(s.reset)),
-                        ElevatedButton.icon(onPressed: _onSend, icon: Icon(MdiIcons.send), label: Text(widget.isMulti ? s.add : s.send))
-                    ])
-        ])))));
+                        ElevatedButton.icon(
+                            onPressed: clear,
+                            icon: Icon(Icons.clear),
+                            label: Text(s.reset)),
+                        ElevatedButton.icon(
+                            onPressed: _onSend,
+                            icon: Icon(MdiIcons.send),
+                            label: Text(widget.isMulti ? s.add : s.send))
+                      ])
+                    ])))));
   }
 
   void _resetTemplate() {
@@ -265,19 +299,18 @@ class SendState extends State<SendPage> {
       form.save();
       final titleController = TextEditingController();
       final confirmed = await showDialog<bool>(
-          context: context, builder: (context) =>
-          AlertDialog(
-              title: Text(s.newTemplate),
-              content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
+              context: context,
+              builder: (context) => AlertDialog(
+                  title: Text(s.newTemplate),
+                  content: Column(mainAxisSize: MainAxisSize.min, children: [
                     TextField(
                         decoration: InputDecoration(label: Text(s.name)),
                         controller: titleController)
                   ]),
-              actions: confirmButtons(context, () {
-                Navigator.of(context).pop(true);
-              }))) ?? false;
+                  actions: confirmButtons(context, () {
+                    Navigator.of(context).pop(true);
+                  }))) ??
+          false;
       if (!confirmed) return;
       final title = titleController.text;
       _saveTemplate(0, title, false);
@@ -307,7 +340,8 @@ class SendState extends State<SendPage> {
 
   Future<void> _deleteTemplate() async {
     final s = S.of(context);
-    final confirmed = await showConfirmDialog(context, s.deleteTemplate, s.areYouSureYouWantToDeleteThisSendTemplate);
+    final confirmed = await showConfirmDialog(
+        context, s.deleteTemplate, s.areYouSureYouWantToDeleteThisSendTemplate);
     if (!confirmed) return;
     WarpApi.deleteSendTemplate(active.coin, _template!.id);
     _resetTemplate();
@@ -319,7 +353,8 @@ class SendState extends State<SendPage> {
     if (tid == null) return;
     final template = _template;
     if (template == null) return;
-    amountInput?.restore(template.amount, template.fiatAmount, template.feeIncluded, template.fiat);
+    amountInput?.restore(template.amount, template.fiatAmount,
+        template.feeIncluded, template.fiat);
     setState(() {
       _addressController.text = template.address!;
       _replyTo = template.includeReplyTo;
@@ -331,8 +366,7 @@ class SendState extends State<SendPage> {
   void _loadTemplates(int id) {
     final templates = active.dbReader.loadTemplates();
     _templates = templates;
-    if (id != 0)
-      _template = _templates.firstWhere((t) => t.id == id);
+    if (id != 0) _template = _templates.firstWhere((t) => t.id == id);
     setState(() {});
   }
 
@@ -370,13 +404,10 @@ class SendState extends State<SendPage> {
       setState(() {
         _address = paymentURI.address;
         _addressController.text = _address;
-        if (paymentURI.memo.isNotEmpty)
-          _memoController.text = paymentURI.memo;
-        if (paymentURI.amount != 0)
-          amountInput?.setAmount(paymentURI.amount);
+        if (paymentURI.memo.isNotEmpty) _memoController.text = paymentURI.memo;
+        if (paymentURI.amount != 0) amountInput?.setAmount(paymentURI.amount);
       });
-    }
-    on String catch (e) {
+    } on String catch (e) {
       showSnackBar(S.of(context).invalidQrCode(e));
     }
   }
@@ -430,10 +461,10 @@ class SendState extends State<SendPage> {
 
   get spendable => math.max(
       _tBalance +
-      _sBalance -
-      _excludedBalance -
-      _underConfirmedBalance -
-      _usedBalance,
+          _sBalance -
+          _excludedBalance -
+          _underConfirmedBalance -
+          _usedBalance,
       0);
 
   get change => _unconfirmedSpentBalance + _unconfirmedBalance;
@@ -450,8 +481,8 @@ class BalanceTable extends StatelessWidget {
   final int used;
   final int fee;
 
-  BalanceTable(this.sBalance, this.tBalance,
-      this.excludedBalance, this.underConfirmedBalance, this.change, this.used, this.fee);
+  BalanceTable(this.sBalance, this.tBalance, this.excludedBalance,
+      this.underConfirmedBalance, this.change, this.used, this.fee);
 
   @override
   Widget build(BuildContext context) {
@@ -475,12 +506,7 @@ class BalanceTable extends StatelessWidget {
   get underConfirmed => -underConfirmedBalance - change;
 
   get spendable => math.max(
-      sBalance +
-          tBalance -
-          excludedBalance -
-          underConfirmedBalance -
-          used,
-      0);
+      sBalance + tBalance - excludedBalance - underConfirmedBalance - used, 0);
 }
 
 class BalanceRow extends StatelessWidget {
@@ -504,19 +530,17 @@ class BalanceRow extends StatelessWidget {
 Future<void> send(BuildContext context, List<Recipient> recipients) async {
   final s = S.of(context);
 
-  showSnackBar(s.preparingTransaction, autoClose: true);
+  await showSnackBar(s.preparingTransaction, autoClose: true);
 
   if (settings.protectSend &&
       !await authenticate(context, s.pleaseAuthenticateToSend)) return;
 
-  if (recipients.length == 1)
-    active.setDraftRecipient(recipients[0]);
+  if (recipients.length == 1) active.setDraftRecipient(recipients[0]);
   try {
-    final txPlan = await WarpApi.prepareTx(active.coin, active.id, recipients,
-        settings.anchorOffset);
+    final txPlan = await WarpApi.prepareTx(
+        active.coin, active.id, recipients, settings.anchorOffset);
     Navigator.pushReplacementNamed(context, '/txplan', arguments: txPlan);
-  }
-  on String catch (message) {
+  } on String catch (message) {
     showSnackBar(message);
   }
 }
@@ -543,5 +567,3 @@ class AccountSuggestion extends Suggestion {
   String get name => account.name;
   String get address => account.address;
 }
-
-
