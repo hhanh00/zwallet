@@ -495,7 +495,7 @@ class HomeInnerState extends State<HomeInnerPage>
         final res = WarpApi.broadcast(rawTx);
         showSnackBar(res);
       } on String catch (e) {
-        showSnackBar(e);
+        showSnackBar(e, error: true);
       }
     }
   }
@@ -516,51 +516,54 @@ class HomeInnerState extends State<HomeInnerPage>
     final oldPasswdController = TextEditingController();
     final newPasswdController = TextEditingController();
     final repeatPasswdController = TextEditingController();
+    final formKey = GlobalKey<FormBuilderState>();
     final confirmed = await showDialog<bool>(
             context: context,
             barrierDismissible: false,
             builder: (context) => AlertDialog(
                 title: Text(s.encryptDatabase),
                 contentPadding: EdgeInsets.all(16),
-                content: Form(
-                    child: SingleChildScrollView(
-                        child: Column(children: [
-                  if (hasPasswd)
-                    TextFormField(
-                        decoration:
-                            InputDecoration(labelText: s.currentPassword),
-                        obscureText: true,
-                        controller: oldPasswdController),
-                  TextFormField(
-                      decoration: InputDecoration(labelText: s.newPassword),
-                      obscureText: true,
-                      controller: newPasswdController),
-                  TextFormField(
-                      decoration:
-                          InputDecoration(labelText: s.repeatNewPassword),
-                      obscureText: true,
-                      controller: repeatPasswdController),
-                ]))),
-                actions: confirmButtons(
-                    context, () => Navigator.of(context).pop(true),
-                    cancelValue: false))) ??
+                content: FormBuilder(
+                    key: formKey,
+                    child: Column(children: [
+                      if (hasPasswd)
+                        TextFormField(
+                            decoration:
+                                InputDecoration(labelText: s.currentPassword),
+                            obscureText: true,
+                            validator: (v) =>
+                                oldPasswdController.text != settings.dbPasswd
+                                    ? s.invalidPassword
+                                    : null,
+                            controller: oldPasswdController),
+                      TextFormField(
+                          decoration: InputDecoration(labelText: s.newPassword),
+                          obscureText: true,
+                          controller: newPasswdController),
+                      TextFormField(
+                          decoration:
+                              InputDecoration(labelText: s.repeatNewPassword),
+                          obscureText: true,
+                          validator: (v) => newPasswdController.text != v
+                              ? s.newPasswordsDoNotMatch
+                              : null,
+                          controller: repeatPasswdController),
+                    ])),
+                actions: confirmButtons(context, () {
+                  if (formKey.currentState!.validate())
+                    Navigator.of(context).pop(true);
+                }, cancelValue: false))) ??
         false;
     if (confirmed) {
-      if (oldPasswdController.text != settings.dbPasswd)
-        showSnackBar(s.currentPasswordIncorrect);
-      else if (newPasswdController.text != repeatPasswdController.text) {
-        showSnackBar(s.newPasswordsDoNotMatch);
-      } else {
-        final passwd = newPasswdController.text;
-        for (var c in coins) {
-          final tempPath = p.join(settings.tempDir, c.dbName);
-          WarpApi.cloneDbWithPasswd(c.coin, tempPath, passwd);
-        }
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setBool('recover', true);
-        showSnackBar(s.databaseEncrypted);
-        await showRestartMessage();
+      final passwd = newPasswdController.text;
+      for (var c in coins) {
+        final tempPath = p.join(settings.tempDir, c.dbName);
+        WarpApi.cloneDbWithPasswd(c.coin, tempPath, passwd);
       }
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('recover', true);
+      showSnackBar(s.databaseEncrypted);
+      await showRestartMessage();
     }
   }
 

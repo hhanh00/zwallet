@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:app_links/app_links.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
@@ -705,17 +706,18 @@ String trailing(String v, int n) {
   return v.substring(v.length - len);
 }
 
-void showSnackBar(String msg, {bool autoClose = false, bool quick = false}) {
-  final duration = quick ? Duration(seconds: 1) : Duration(seconds: 4);
-  final snackBar = SnackBar(
-      content: SelectableText(msg),
-      duration: autoClose ? duration : Duration(minutes: 1),
-      action: SnackBarAction(
-          label: S.current.close,
-          onPressed: () {
-            rootScaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-          }));
-  rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+void showSnackBar(String msg,
+    {bool autoClose = false, bool quick = false, bool error = false}) {
+  final duration = !autoClose
+      ? Duration(minutes: 1)
+      : quick
+          ? Duration(seconds: 1)
+          : Duration(seconds: 4);
+
+  final bar = error
+      ? FlushbarHelper.createError(message: msg, duration: duration)
+      : FlushbarHelper.createInformation(message: msg, duration: duration);
+  bar.show(navigatorKey.currentContext!);
 }
 
 void showBalanceNotification(int prevBalances, int curBalances) {
@@ -835,7 +837,7 @@ Future<void> shieldTAddr(BuildContext context) async {
         active.coin, active.id, active.tbalance, settings.anchorOffset);
     Navigator.of(context).pushNamed('/txplan', arguments: txPlan);
   } on String catch (msg) {
-    showSnackBar(msg);
+    showSnackBar(msg, error: true);
   }
 }
 

@@ -321,7 +321,7 @@ class QRAddressState extends State<QRAddressWidget> {
         await active.refreshTAddr();
         active.updateTBalance();
       } on String catch (message) {
-        showSnackBar(message);
+        showSnackBar(message, error: true);
       }
     }
   }

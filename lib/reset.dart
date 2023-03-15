@@ -85,19 +85,22 @@ class FullBackupState extends State<FullBackupPage> {
     return Observer(builder: (context) {
       key.text = settings.backupEncKey;
       return Scaffold(
-        appBar: AppBar(title: Text(s.fullBackup)),
-        body: Card(
-            child: Column(children: [
-          QRInput(s.backupEncryptionKey, key, hint: 'age'),
-          Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-          ButtonBar(children: [
-          ElevatedButton.icon(onPressed: _onGenerate, icon: Icon(Icons.key), label: Text('Generate')),
-          ElevatedButton.icon(
-              onPressed: () => _onSave(context),
-              icon: Icon(Icons.save),
-              label: Text(s.saveBackup))
-          ])
-        ])));
+          appBar: AppBar(title: Text(s.fullBackup)),
+          body: Card(
+              child: Column(children: [
+            QRInput(s.backupEncryptionKey, key, hint: 'age'),
+            Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+            ButtonBar(children: [
+              ElevatedButton.icon(
+                  onPressed: _onGenerate,
+                  icon: Icon(Icons.key),
+                  label: Text('Generate')),
+              ElevatedButton.icon(
+                  onPressed: () => _onSave(context),
+                  icon: Icon(Icons.save),
+                  label: Text(s.saveBackup))
+            ])
+          ])));
     });
   }
 
@@ -109,9 +112,8 @@ class FullBackupState extends State<FullBackupPage> {
         final backupPath = p.join(settings.tempDir, BACKUP_NAME);
         await exportFile(context, backupPath, BACKUP_NAME);
         Navigator.of(context).pop();
-      }
-      on String catch (msg) {
-        showSnackBar(msg);
+      } on String catch (msg) {
+        showSnackBar(msg, error: true);
       }
     }
   }
@@ -121,31 +123,33 @@ class FullBackupState extends State<FullBackupPage> {
     final navigator = Navigator.of(context);
     final state = GlobalKey<AGEKeysState>();
     final assign = await showDialog<bool?>(
-        context: context,
-        builder: (context) => AlertDialog(
-          contentPadding: EdgeInsets.all(16),
-          title: Text('Backup Keys'),
-          content: AGEKeysForm(keys, key: state),
-          actions: [
-            ElevatedButton.icon(
-              icon: Icon(Icons.cancel),
-              label: Text(S.current.cancel),
-              onPressed: () { navigator.pop(null); }
-              ),
-            ElevatedButton.icon(
-              icon: Icon(Icons.check),
-              label: Text(S.current.set),
-              onPressed: () { navigator.pop(true); }
-              )]
-        )) ?? false;
-    if (assign)
-      settings.setBackupEncKey(state.currentState!.pk.text);
+            context: context,
+            builder: (context) => AlertDialog(
+                    contentPadding: EdgeInsets.all(16),
+                    title: Text('Backup Keys'),
+                    content: AGEKeysForm(keys, key: state),
+                    actions: [
+                      ElevatedButton.icon(
+                          icon: Icon(Icons.cancel),
+                          label: Text(S.current.cancel),
+                          onPressed: () {
+                            navigator.pop(null);
+                          }),
+                      ElevatedButton.icon(
+                          icon: Icon(Icons.check),
+                          label: Text(S.current.set),
+                          onPressed: () {
+                            navigator.pop(true);
+                          })
+                    ])) ??
+        false;
+    if (assign) settings.setBackupEncKey(state.currentState!.pk.text);
   }
 }
 
 class AGEKeysForm extends StatefulWidget {
   final Agekeys keys;
-  AGEKeysForm(this.keys, {Key? key}): super(key: key);
+  AGEKeysForm(this.keys, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => AGEKeysState();
@@ -165,7 +169,9 @@ class AGEKeysState extends State<AGEKeysForm> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    return Form(child: SingleChildScrollView(child: Column(children: [
+    return Form(
+        child: SingleChildScrollView(
+            child: Column(children: [
       QRDisplay(s.encryptionKey, widget.keys.pk!),
       QRDisplay(s.secretKey, widget.keys.sk!)
     ])));
@@ -185,7 +191,8 @@ class _FullRestoreState extends State<FullRestorePage> {
     final s = S.of(context);
     return Scaffold(
         appBar: AppBar(title: Text(s.fullRestore)),
-        body: Card(child: Column(children: [
+        body: Card(
+            child: Column(children: [
           QRInput(s.secretKey, controller, hint: 'AGE-SECRET-KEY-'),
           Padding(padding: EdgeInsets.symmetric(vertical: 8)),
           ElevatedButton.icon(
@@ -205,8 +212,7 @@ class _FullRestoreState extends State<FullRestorePage> {
       try {
         if (key.isNotEmpty) {
           WarpApi.unzipBackup(key, filename, settings.tempDir);
-        }
-        else {
+        } else {
           final file = File(filename);
           final backup = await file.readAsString();
           WarpApi.importFromZWL(active.coin, "ZWL Imported Account", backup);
@@ -215,9 +221,8 @@ class _FullRestoreState extends State<FullRestorePage> {
         await prefs.setBool('recover', true);
         showSnackBar(s.databaseRestored);
         await showRestartMessage(); // This doesn't return
-      }
-      on String catch (message) {
-        showSnackBar(message);
+      } on String catch (message) {
+        showSnackBar(message, error: true);
       }
     }
   }
@@ -225,20 +230,24 @@ class _FullRestoreState extends State<FullRestorePage> {
 
 Future<void> showRestartMessage() async {
   final context = navigatorKey.currentContext!;
-  await showDialog(context: context, barrierDismissible: false, builder:
-    (context) => AlertDialog(
-      content: Text(S.of(context).pleaseQuitAndRestartTheAppNow)
-    )
-  );
+  await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+          content: Text(S.of(context).pleaseQuitAndRestartTheAppNow)));
 }
 
 Future<void> clearApp(BuildContext context) async {
-  final reset = await showDialog<bool>(context: context, barrierDismissible: false, builder:
-    (context) => AlertDialog(
-      title: Text('Reset Database'),
-      content: Text('Are you sure you want to DELETE ALL your data?'),
-      actions: confirmButtons(context, () => Navigator.of(context).pop(true)),
-  )) ?? false;
+  final reset = await showDialog<bool>(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+                title: Text('Reset Database'),
+                content: Text('Are you sure you want to DELETE ALL your data?'),
+                actions: confirmButtons(
+                    context, () => Navigator.of(context).pop(true)),
+              )) ??
+      false;
   if (reset) {
     final c = coins.first;
     File(c.dbDir).deleteSync(recursive: true);
