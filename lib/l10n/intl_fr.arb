@@ -126,7 +126,7 @@
   "backupWarning": "Vos clés ne sont pas récupérables. Si vous n'avez pas de sauvegarde, vous pouvez PERDREZ VOTRE ARGENT. Cette page est accessible par Menu ... / Sauvegarde",
   "contactName": "Nom du Contact",
   "date": "Date",
-  "autoHideBalance": "Cacher le solde automatiquement",
+  "autoHideBalance": "Cacher le solde",
   "tiltYourDeviceUpToRevealYourBalance": "Redressez votre mobile pour révéler votre solde",
   "noContacts": "Pas de Contacts",
   "createANewContactAndItWillShowUpHere": "Créez un nouveau contact et il apparaîtra ici",

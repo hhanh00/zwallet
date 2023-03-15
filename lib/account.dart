@@ -419,10 +419,15 @@ class BalanceWidget extends StatelessWidget {
               ]),
           if (hide && settings.autoHide == 1)
             Text(s.tiltYourDeviceUpToRevealYourBalance),
-          if (!hide && fx != 0.0)
-            Text("${decimalFormat(balanceFX, 2, symbol: settings.currency)}",
-                style: theme.textTheme.titleLarge),
-          if (!hide && fx != 0.0)
+          if (fx != 0.0)
+            SizedBox(
+                height: 30,
+                child: hide
+                    ? Container()
+                    : Text(
+                        "${decimalFormat(balanceFX, 2, symbol: settings.currency)}",
+                        style: theme.textTheme.titleLarge)),
+          if (fx != 0.0)
             Text(
                 "1 ${coinDef.ticker} = ${decimalFormat(fx, 2, symbol: settings.currency)}"),
         ]);

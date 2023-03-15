@@ -132,8 +132,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Are you sure you want to delete this send template?"),
         "areYouSureYouWantToSaveYourContactsIt": m1,
         "auto": MessageLookupByLibrary.simpleMessage("Auto"),
-        "autoHideBalance":
-            MessageLookupByLibrary.simpleMessage("Auto Hide Balance"),
+        "autoHideBalance": MessageLookupByLibrary.simpleMessage("Hide Balance"),
         "backup": MessageLookupByLibrary.simpleMessage("Backup"),
         "backupAllAccounts":
             MessageLookupByLibrary.simpleMessage("Backup All Accounts"),

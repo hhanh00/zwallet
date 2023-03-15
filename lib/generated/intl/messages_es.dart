@@ -133,8 +133,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "¿Está seguro de que desea eliminar esta plantilla de envío?"),
         "areYouSureYouWantToSaveYourContactsIt": m1,
         "auto": MessageLookupByLibrary.simpleMessage("Auto"),
-        "autoHideBalance": MessageLookupByLibrary.simpleMessage(
-            "Ocultar saldo automáticamente"),
+        "autoHideBalance":
+            MessageLookupByLibrary.simpleMessage("Ocultar saldo"),
         "backup": MessageLookupByLibrary.simpleMessage("Copia de seguridad"),
         "backupAllAccounts":
             MessageLookupByLibrary.simpleMessage("Copia de seguridad completa"),
