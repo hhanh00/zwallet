@@ -11,7 +11,7 @@ import 'generated/l10n.dart';
 import 'store.dart';
 
 class ContactsTab extends StatefulWidget {
-  ContactsTab({key = Key}): super(key: key);
+  ContactsTab({key = Key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => ContactsState();
 }
@@ -21,41 +21,53 @@ class ContactsState extends State<ContactsTab> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = Theme.of(context);
-    return Observer(builder: (context) =>
-      Padding(padding: EdgeInsets.all(8), child: contacts.contacts.isEmpty
-          ? NoContact()
-          : Column(children: [
-            if (!settings.coins[active.coin].contactsSaved) OutlinedButton(onPressed: _onCommit, child: Text(s.saveToBlockchain), style: OutlinedButton.styleFrom(
-              side: BorderSide(
-                width: 1, color: theme.primaryColor))),
-            Expanded(child: ListView.builder(
-                itemCount: contacts.contacts.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final c = contacts.contacts[index];
-                  return Card(
-                      child: Dismissible(
-                          key: Key("${c.id}"),
-                          child: ListTile(
-                            title: Text(c.name!,
-                                style: theme.textTheme.headlineSmall),
-                            subtitle: Text(c.address!),
-                            trailing: Icon(Icons.chevron_right),
-                            onTap: () { _onContact(c); },
-                            onLongPress: () { _editContact(c); },
-                          ),
-                          confirmDismiss: (_) async {
-                            return await _onConfirmDelContact(c);
-                          },
-                          onDismissed: (_) {
-                            _delContact(c);
-                          }));
-                })
-            )]))
-    );
+    return Observer(
+        builder: (context) => Padding(
+            padding: EdgeInsets.all(8),
+            child: contacts.contacts.isEmpty
+                ? NoContact()
+                : Column(children: [
+                    if (!settings.coins[active.coin].contactsSaved)
+                      OutlinedButton(
+                          onPressed: _onCommit,
+                          child: Text(s.saveToBlockchain),
+                          style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                  width: 1, color: theme.primaryColor))),
+                    Expanded(
+                        child: ListView.builder(
+                            itemCount: contacts.contacts.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final c = contacts.contacts[index];
+                              return Card(
+                                  child: Dismissible(
+                                      key: Key("${c.id}"),
+                                      child: ListTile(
+                                        title: Text(c.name!,
+                                            style:
+                                                theme.textTheme.headlineSmall),
+                                        subtitle: Text(c.address!),
+                                        trailing: Icon(Icons.chevron_right),
+                                        onTap: () {
+                                          _onContact(c);
+                                        },
+                                        onLongPress: () {
+                                          _editContact(c);
+                                        },
+                                      ),
+                                      confirmDismiss: (_) async {
+                                        return await _onConfirmDelContact(c);
+                                      },
+                                      onDismissed: (_) {
+                                        _delContact(c);
+                                      }));
+                            }))
+                  ])));
   }
 
   _onContact(ContactT c) {
-    Navigator.of(context).pushNamed('/send', arguments: SendPageArgs(contact: c));
+    Navigator.of(context)
+        .pushNamed('/send', arguments: SendPageArgs(contact: c));
   }
 
   _editContact(ContactT c) async {
@@ -63,7 +75,9 @@ class ContactsState extends State<ContactsTab> {
   }
 
   Future<bool> _onConfirmDelContact(ContactT c) async {
-    final confirm = await showMessageBox(context, S.of(context).deleteContact,
+    final confirm = await showMessageBox(
+        context,
+        S.of(context).deleteContact,
         S.of(context).areYouSureYouWantToDeleteThisContact,
         S.of(context).delete);
     return confirm;
@@ -77,9 +91,8 @@ class ContactsState extends State<ContactsTab> {
     try {
       final txPlan = WarpApi.commitUnsavedContacts(settings.anchorOffset);
       Navigator.of(context).pushNamed('/txplan', arguments: txPlan);
-    }
-    on String catch (msg) {
-      showSnackBar(msg);
+    } on String catch (msg) {
+      showSnackBar(msg, error: true);
     }
   }
 }
@@ -93,7 +106,8 @@ class NoContact extends StatelessWidget {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       SizedBox(child: contact, height: 150, width: 150),
       Padding(padding: EdgeInsets.symmetric(vertical: 16)),
-      Text(S.of(context).noContacts, style: Theme.of(context).textTheme.headlineSmall),
+      Text(S.of(context).noContacts,
+          style: Theme.of(context).textTheme.headlineSmall),
       Padding(padding: EdgeInsets.symmetric(vertical: 8)),
       Text(S.of(context).createANewContactAndItWillShowUpHere,
           style: Theme.of(context).textTheme.bodyLarge),
@@ -133,9 +147,10 @@ class ContactState extends State<ContactForm> {
             controller: nameController,
             validator: _checkName,
           ),
-          AddressInput(widget.contact.id, S.of(context).address, address, (addr) {
-                address = addr ?? "";
-              })
+          AddressInput(widget.contact.id, S.of(context).address, address,
+              (addr) {
+            address = addr ?? "";
+          })
         ])));
   }
 
@@ -143,7 +158,8 @@ class ContactState extends State<ContactForm> {
     final state = formKey.currentState!;
     if (state.validate()) {
       state.save();
-      final contact = ContactT(id: widget.contact.id, name: nameController.text, address: address);
+      final contact = ContactT(
+          id: widget.contact.id, name: nameController.text, address: address);
       Navigator.of(context).pop(contact);
       active.update();
     }
@@ -196,8 +212,11 @@ class AddressState extends State<AddressInput> {
 
   String? _checkAddress(String? v) {
     if (v == null || v.isEmpty) return S.of(context).addressIsEmpty;
-    if (!WarpApi.validAddress(active.coin, v)) return S.of(context).invalidAddress;
-    if (contacts.contacts.where((c) => c.address == v && c.id != widget.id).isNotEmpty) return S.of(context).duplicateContact;
+    if (!WarpApi.validAddress(active.coin, v))
+      return S.of(context).invalidAddress;
+    if (contacts.contacts
+        .where((c) => c.address == v && c.id != widget.id)
+        .isNotEmpty) return S.of(context).duplicateContact;
     return null;
   }
 
@@ -217,13 +236,13 @@ Future<void> addContact(BuildContext context, ContactT? c) async {
   final contact = await showDialog<ContactT>(
       context: context,
       builder: (context) => AlertDialog(
-        contentPadding: EdgeInsets.all(16),
-        title: Text(c?.name != null ? s.editContact : s.addContact),
-        content: ContactForm(c ?? ContactT(), key: key),
-        actions: confirmButtons(context, () {
-          key.currentState!.onOK();
-        }),
-      ));
+            contentPadding: EdgeInsets.all(16),
+            title: Text(c?.name != null ? s.editContact : s.addContact),
+            content: ContactForm(c ?? ContactT(), key: key),
+            actions: confirmButtons(context, () {
+              key.currentState!.onOK();
+            }),
+          ));
   if (contact != null) {
     contacts.add(contact);
   }

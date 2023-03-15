@@ -226,7 +226,7 @@ class AccountManagerState extends State<AccountManagerPage> {
   _onNewSubaccount() async {
     final s = S.of(context);
     if (active.id == 0) {
-      showSnackBar(s.noActiveAccount);
+      showSnackBar(s.noActiveAccount, error: true);
       return;
     }
     final newName = s.subAccountOf(active.account.name);

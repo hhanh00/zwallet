@@ -36,8 +36,9 @@ class ServerSelection {
 
   ServerSelection(this.coin, this.selected, this.custom);
   factory ServerSelection.load(int coin) {
-    final selected = WarpApi.getProperty(coin, lwdChoiceKey);
+    var selected = WarpApi.getProperty(coin, lwdChoiceKey);
     final custom = WarpApi.getProperty(coin, lwdCustomKey);
+    if (selected.isEmpty) selected = 'auto';
     return ServerSelection(coin, selected, custom);
   }
 
@@ -769,7 +770,7 @@ abstract class _SyncStatus with Store {
         }
       }
     } on String catch (e) {
-      showSnackBar(e);
+      showSnackBar(e, error: true);
       paused = true;
     } finally {
       syncing = false;
