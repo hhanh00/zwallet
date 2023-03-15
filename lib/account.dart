@@ -417,8 +417,11 @@ class BalanceWidget extends StatelessWidget {
                 Text(' $balanceHi', style: balanceStyle),
                 if (!hide) Text('${_getBalanceLo(balance)}'),
               ]),
-          if (hide && settings.autoHide == 1)
-            Text(s.tiltYourDeviceUpToRevealYourBalance),
+          SizedBox(
+              height: 20,
+              child: (hide && settings.autoHide == 1)
+                  ? Text(s.tiltYourDeviceUpToRevealYourBalance)
+                  : Container()),
           if (fx != 0.0)
             SizedBox(
                 height: 30,

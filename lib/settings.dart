@@ -1,6 +1,5 @@
 import 'package:YWallet/store.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:warp_api/warp_api.dart';
@@ -534,13 +533,11 @@ class ServerSelect extends StatefulWidget {
 class _ServerSelectState extends State<ServerSelect>
     with AutomaticKeepAliveClientMixin {
   final int coin;
-  late String choice;
-  late String customUrl;
+  late ServerSelection server;
   bool _saved = true;
 
   _ServerSelectState(this.coin) {
-    choice = settings.servers[coin].choice;
-    customUrl = settings.servers[coin].customUrl;
+    server = ServerSelection.load(coin);
   }
 
   CoinBase get coinDef => settings.coins[widget.coin].def;
@@ -562,11 +559,11 @@ class _ServerSelectState extends State<ServerSelect>
           child: FormBuilderTextField(
             name: 'lwd_url ${coinDef.ticker}',
             decoration: InputDecoration(labelText: s.custom),
-            initialValue: customUrl,
+            initialValue: server.custom,
             onSaved: _save,
             onChanged: (v) {
               if (v == null) return;
-              customUrl = v;
+              server.custom = v;
               _saved = false;
             },
           )),
@@ -577,23 +574,24 @@ class _ServerSelectState extends State<ServerSelect>
           orientation: OptionsOrientation.vertical,
           name: 'lwd ${coinDef.ticker}',
           decoration: InputDecoration(labelText: s.server),
-          initialValue: choice,
+          initialValue: server.selected,
           onSaved: _save,
           onChanged: (v) {
             if (v == null) return;
-            choice = v;
+            server.selected = v;
             _saved = false;
           },
           options: options),
       Padding(padding: EdgeInsets.symmetric(vertical: 2)),
-      Observer(builder: (context) => Text(settings.servers[coin].current)),
+      Text(server.current),
     ]);
   }
 
   void _save(_) async {
     if (_saved) return;
-    await settings.servers[coin].savePrefs(choice, customUrl);
+    server.save();
     _saved = true;
+    setState(() {});
   }
 
   @override
