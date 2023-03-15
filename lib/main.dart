@@ -706,8 +706,8 @@ String trailing(String v, int n) {
   return v.substring(v.length - len);
 }
 
-void showSnackBar(String msg,
-    {bool autoClose = false, bool quick = false, bool error = false}) {
+Future<void> showSnackBar(String msg,
+    {bool autoClose = false, bool quick = false, bool error = false}) async {
   final duration = !autoClose
       ? Duration(minutes: 1)
       : quick
@@ -717,7 +717,7 @@ void showSnackBar(String msg,
   final bar = error
       ? FlushbarHelper.createError(message: msg, duration: duration)
       : FlushbarHelper.createInformation(message: msg, duration: duration);
-  bar.show(navigatorKey.currentContext!);
+  await bar.show(navigatorKey.currentContext!);
 }
 
 void showBalanceNotification(int prevBalances, int curBalances) {
