@@ -19,5 +19,10 @@ debug = false
 
 [patch.crates-io]
 #zcash_note_encryption = { path = "librustzcash/components/zcash_note_encryption" }
-zcash_note_encryption = { git = "https://github.com/hhanh00/librustzcash.git", rev = "7469d70261e8e72f2bbf3163704ddf8fd825b1aa" }
+zcash_note_encryption = { git = "https://github.com/hhanh00/librustzcash.git", rev = "f39dd6c2af20662fd1aaa9e00172efebd3435ff4" }
 jubjub = { git = "https://github.com/hhanh00/jubjub.git", rev = "4a3edf3d242f368b5aa418ec659d01f191127cf3" }
+
+# Android 32-bit fix
+halo2_gadgets  = { git = "https://github.com/zcash/halo2.git", rev = "642924d614305d882cc122739c59144109f4bd3f" }
+halo2_proofs = { git = "https://github.com/zcash/halo2.git", rev = "642924d614305d882cc122739c59144109f4bd3f" }
+orchard = { git = "https://github.com/zcash/orchard.git", rev = "6cbde279e90974201bedbd9b5ddf155e8f8b1e8e" }
