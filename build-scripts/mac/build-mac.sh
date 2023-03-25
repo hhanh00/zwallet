@@ -21,8 +21,3 @@ cp native/zcash-sync/binding.h packages/warp_api_ffi/ios/Classes/binding.h
 
 ./configure.sh
 flutter build macos
-
-npm install -g appdmg
-pushd misc
-appdmg app.json ../ywallet-universal.dmg
-popd
