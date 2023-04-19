@@ -117,6 +117,10 @@ class WarpApi {
         name.toNativeUtf8().cast<Int8>(), index, count);
   }
 
+  static String ledgerGetFVK(int coin) {
+    return unwrapResultString(warp_api_lib.ledger_get_fvk(coin));
+  }
+
   static void convertToWatchOnly(int coin, int id) {
     warp_api_lib.convert_to_watchonly(coin, id);
   }
@@ -445,6 +449,21 @@ class WarpApi {
         addressIndex ?? 0));
     final kp = KeyPack(res);
     return kp;
+  }
+
+  static void ledgerBuildKeys() {
+    unwrapResultU8(warp_api_lib.ledger_build_keys());
+  }
+
+  static String ledgerGetAddress() {
+    return unwrapResultString(warp_api_lib.ledger_get_address());
+  }
+
+  static Future<String> ledgerSend(int coin, String txPlan) async {
+    return await compute((_) {
+      return unwrapResultString(
+          warp_api_lib.ledger_send(coin, toNative(txPlan)));
+    }, null);
   }
 
   static bool hasCuda() {
