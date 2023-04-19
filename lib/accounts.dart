@@ -113,6 +113,7 @@ abstract class _ActiveAccount with Store {
   Account account = emptyAccount;
   CoinBase coinDef = zcash;
   bool canPay = false;
+  bool external = false;
   Balances balances = Balances();
   @observable
   String taddress = "";
@@ -203,7 +204,8 @@ abstract class _ActiveAccount with Store {
 
     if (id > 0) {
       taddress = WarpApi.getTAddr(coin, id);
-      canPay = WarpApi.getSK(coin, id).isNotEmpty;
+      external = WarpApi.ledgerHasAccount(coin, id);
+      canPay = WarpApi.getSK(coin, id).isNotEmpty || external;
     }
 
     addrMode = 0;

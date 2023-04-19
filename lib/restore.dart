@@ -111,10 +111,12 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                         onPressed: _onScan))
                               ],
                             ),
-                          if (_restore)
-                            ElevatedButton(
-                                onPressed: _importLedger,
-                                child: Text('Connect Ledger')),
+                          if (_restore && !isMobile())
+                            Padding(
+                                padding: EdgeInsets.all(16),
+                                child: ElevatedButton(
+                                    onPressed: _importLedger,
+                                    child: Text('Import From Ledger'))),
                           if (_restore && _showIndex)
                             TextFormField(
                               decoration:
@@ -227,12 +229,11 @@ class _AddAccountPageState extends State<AddAccountPage> {
     });
   }
 
-  _importLedger() {
-    setState(() {
-      WarpApi.ledgerBuildKeys();
-      // TODO: Show some waiting indicator ... this takes 1 mn!
-      _keyController.text = WarpApi.ledgerGetFVK(active.coin);
-    });
+  _importLedger() async {
+    final account =
+        await WarpApi.importFromLedger(active.coin, _nameController.text);
+    active.setActiveAccount(_coin, account);
+    Navigator.of(context).pushReplacementNamed("/account");
   }
 }
 

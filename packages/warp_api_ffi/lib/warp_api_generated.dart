@@ -1444,6 +1444,37 @@ class NativeLibrary {
   late final _dart_ledger_send _ledger_send =
       _ledger_send_ptr.asFunction<_dart_ledger_send>();
 
+  CResult_u32 ledger_import_account(
+    int coin,
+    ffi.Pointer<ffi.Int8> name,
+  ) {
+    return _ledger_import_account(
+      coin,
+      name,
+    );
+  }
+
+  late final _ledger_import_account_ptr =
+      _lookup<ffi.NativeFunction<_c_ledger_import_account>>(
+          'ledger_import_account');
+  late final _dart_ledger_import_account _ledger_import_account =
+      _ledger_import_account_ptr.asFunction<_dart_ledger_import_account>();
+
+  CResult_bool ledger_has_account(
+    int coin,
+    int account,
+  ) {
+    return _ledger_has_account(
+      coin,
+      account,
+    );
+  }
+
+  late final _ledger_has_account_ptr =
+      _lookup<ffi.NativeFunction<_c_ledger_has_account>>('ledger_has_account');
+  late final _dart_ledger_has_account _ledger_has_account =
+      _ledger_has_account_ptr.asFunction<_dart_ledger_has_account>();
+
   int has_cuda() {
     return _has_cuda();
   }
@@ -2617,6 +2648,26 @@ typedef _c_ledger_send = CResult_____c_char Function(
 typedef _dart_ledger_send = CResult_____c_char Function(
   int coin,
   ffi.Pointer<ffi.Int8> tx_plan,
+);
+
+typedef _c_ledger_import_account = CResult_u32 Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> name,
+);
+
+typedef _dart_ledger_import_account = CResult_u32 Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> name,
+);
+
+typedef _c_ledger_has_account = CResult_bool Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+);
+
+typedef _dart_ledger_has_account = CResult_bool Function(
+  int coin,
+  int account,
 );
 
 typedef _c_has_cuda = ffi.Int8 Function();
