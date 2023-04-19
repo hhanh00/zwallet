@@ -643,6 +643,17 @@ class WarpApi {
   static int getAvailableAddrs(int coin, int account) {
     return unwrapResultU8(warp_api_lib.get_available_addrs(coin, account));
   }
+
+  static Future<int> importFromLedger(int coin, String name) async {
+    return await compute((_) {
+      return unwrapResultU32(
+          warp_api_lib.ledger_import_account(coin, toNative(name)));
+    }, null);
+  }
+
+  static bool ledgerHasAccount(int coin, int account) {
+    return unwrapResultBool(warp_api_lib.ledger_has_account(coin, account));
+  }
 }
 
 String signOnlyIsolateFn(SignOnlyParams params) {

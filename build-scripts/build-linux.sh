@@ -10,11 +10,11 @@ flutter doctor -v
 sed -e 's/rlib/cdylib/' < native/zcash-sync/Cargo.toml >/tmp/out.toml
 mv /tmp/out.toml native/zcash-sync/Cargo.toml
 
-cargo b -r --features=dart_ffi,sqlcipher
-
 sudo apt-get update
-sudo apt-get install -y libunwind-dev
+sudo apt-get install -y libunwind-dev libudev-dev pkg-config
 sudo apt-get install -y clang cmake ninja-build libgtk-3-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libsecret-1-dev libjsoncpp-dev
+
+cargo b -r --features=dart_ffi,sqlcipher,ledger
 
 flutter pub get
 flutter pub run build_runner build
