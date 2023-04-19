@@ -29,8 +29,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
   @override
   void initState() {
     super.initState();
-    if (widget.firstAccount)
-      _nameController.text = "Main";
+    if (widget.firstAccount) _nameController.text = "Main";
   }
 
   @override
@@ -100,8 +99,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                   maxLines: 4,
                                   controller: _keyController,
                                   validator: (String? key) {
-                                    if (!_checkKey(key))
-                                      return s.invalidKey;
+                                    if (!_checkKey(key)) return s.invalidKey;
                                     return null;
                                   },
                                   onChanged: _checkKey,
@@ -113,10 +111,14 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                         onPressed: _onScan))
                               ],
                             ),
+                          if (_restore)
+                            ElevatedButton(
+                                onPressed: _importLedger,
+                                child: Text('Connect Ledger')),
                           if (_restore && _showIndex)
                             TextFormField(
                               decoration:
-                              InputDecoration(labelText: s.accountIndex),
+                                  InputDecoration(labelText: s.accountIndex),
                               keyboardType: TextInputType.number,
                               inputFormatters: <TextInputFormatter>[
                                 FilteringTextInputFormatter.digitsOnly
@@ -129,12 +131,13 @@ class _AddAccountPageState extends State<AddAccountPage> {
                               },
                             ),
                           ButtonBar(children: [
-                            if (!widget.firstAccount) ElevatedButton.icon(
-                                icon: Icon(Icons.cancel),
-                                label: Text(s.cancel),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                }),
+                            if (!widget.firstAccount)
+                              ElevatedButton.icon(
+                                  icon: Icon(Icons.cancel),
+                                  label: Text(s.cancel),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }),
                             ElevatedButton.icon(
                               icon: Icon(Icons.add),
                               label: Text(_restore ? s.import : s.newLabel),
@@ -186,11 +189,9 @@ class _AddAccountPageState extends State<AddAccountPage> {
           syncStatus.setAccountRestored(true);
           if (widget.firstAccount) {
             final height = await rescanDialog(context);
-            if (height != null)
-              syncStatus.rescan(height);
+            if (height != null) syncStatus.rescan(height);
             nav.pushReplacementNamed('/account');
-          }
-          else
+          } else
             nav.pop();
         } else {
           nav.pushReplacementNamed('/backup',
@@ -223,6 +224,14 @@ class _AddAccountPageState extends State<AddAccountPage> {
   _toggleShowAccountIndex() {
     setState(() {
       _showIndex = !_showIndex;
+    });
+  }
+
+  _importLedger() {
+    setState(() {
+      WarpApi.ledgerBuildKeys();
+      // TODO: Show some waiting indicator ... this takes 1 mn!
+      _keyController.text = WarpApi.ledgerGetFVK(active.coin);
     });
   }
 }

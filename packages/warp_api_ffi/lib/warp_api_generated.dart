@@ -424,6 +424,37 @@ class NativeLibrary {
   late final _dart_get_latest_height _get_latest_height =
       _get_latest_height_ptr.asFunction<_dart_get_latest_height>();
 
+  CResult_u8 ledger_build_keys() {
+    return _ledger_build_keys();
+  }
+
+  late final _ledger_build_keys_ptr =
+      _lookup<ffi.NativeFunction<_c_ledger_build_keys>>('ledger_build_keys');
+  late final _dart_ledger_build_keys _ledger_build_keys =
+      _ledger_build_keys_ptr.asFunction<_dart_ledger_build_keys>();
+
+  CResult_____c_char ledger_get_fvk(
+    int coin,
+  ) {
+    return _ledger_get_fvk(
+      coin,
+    );
+  }
+
+  late final _ledger_get_fvk_ptr =
+      _lookup<ffi.NativeFunction<_c_ledger_get_fvk>>('ledger_get_fvk');
+  late final _dart_ledger_get_fvk _ledger_get_fvk =
+      _ledger_get_fvk_ptr.asFunction<_dart_ledger_get_fvk>();
+
+  CResult_____c_char ledger_get_address() {
+    return _ledger_get_address();
+  }
+
+  late final _ledger_get_address_ptr =
+      _lookup<ffi.NativeFunction<_c_ledger_get_address>>('ledger_get_address');
+  late final _dart_ledger_get_address _ledger_get_address =
+      _ledger_get_address_ptr.asFunction<_dart_ledger_get_address>();
+
   void skip_to_last_height(
     int coin,
   ) {
@@ -1398,6 +1429,21 @@ class NativeLibrary {
   late final _dart_set_property _set_property =
       _set_property_ptr.asFunction<_dart_set_property>();
 
+  CResult_____c_char ledger_send(
+    int coin,
+    ffi.Pointer<ffi.Int8> tx_plan,
+  ) {
+    return _ledger_send(
+      coin,
+      tx_plan,
+    );
+  }
+
+  late final _ledger_send_ptr =
+      _lookup<ffi.NativeFunction<_c_ledger_send>>('ledger_send');
+  late final _dart_ledger_send _ledger_send =
+      _ledger_send_ptr.asFunction<_dart_ledger_send>();
+
   int has_cuda() {
     return _has_cuda();
   }
@@ -1894,6 +1940,22 @@ typedef _dart_get_diversified_address = CResult_____c_char Function(
 typedef _c_get_latest_height = CResult_u32 Function();
 
 typedef _dart_get_latest_height = CResult_u32 Function();
+
+typedef _c_ledger_build_keys = CResult_u8 Function();
+
+typedef _dart_ledger_build_keys = CResult_u8 Function();
+
+typedef _c_ledger_get_fvk = CResult_____c_char Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_ledger_get_fvk = CResult_____c_char Function(
+  int coin,
+);
+
+typedef _c_ledger_get_address = CResult_____c_char Function();
+
+typedef _dart_ledger_get_address = CResult_____c_char Function();
 
 typedef _c_skip_to_last_height = ffi.Void Function(
   ffi.Uint8 coin,
@@ -2545,6 +2607,16 @@ typedef _dart_set_property = CResult_u8 Function(
   int coin,
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> value,
+);
+
+typedef _c_ledger_send = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> tx_plan,
+);
+
+typedef _dart_ledger_send = CResult_____c_char Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> tx_plan,
 );
 
 typedef _c_has_cuda = ffi.Int8 Function();

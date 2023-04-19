@@ -107,7 +107,7 @@ class TxPlanPage extends StatelessWidget {
   }
 
   _onSend() async {
-    if (active.canPay) {
+    if (true || active.canPay) {
       if (signOnly)
         await _sign();
       else {
@@ -115,8 +115,9 @@ class TxPlanPage extends StatelessWidget {
           active.setBanner(S.current.paymentInProgress);
           final player = AudioPlayer();
           try {
-            final txid =
-                await WarpApi.signAndBroadcast(active.coin, active.id, plan);
+            // final txid =
+            //     await WarpApi.signAndBroadcast(active.coin, active.id, plan);
+            final txid = await WarpApi.ledgerSend(active.coin, plan);
             showSnackBar(S.current.txId(txid));
             await player.play(AssetSource("success.mp3"));
             active.setDraftRecipient(null);
