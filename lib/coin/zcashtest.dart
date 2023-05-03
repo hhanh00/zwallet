@@ -17,6 +17,7 @@ class ZcashTestCoin extends CoinBase {
   ];
   bool supportsUA = true;
   bool supportsMultisig = false;
+  bool supportsLedger = false;
   List<double> weights = [0.05, 0.25, 2.50];
   List<String> blockExplorers = ["https://explorer.zcha.in/transactions"];
 }

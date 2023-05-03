@@ -5,6 +5,7 @@ import 'package:warp_api/warp_api.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'accounts.dart';
+import 'coin/coins.dart';
 import 'main.dart';
 import 'generated/l10n.dart';
 import 'rescan.dart';
@@ -23,7 +24,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
   final _accountIndexController = TextEditingController(text: "0");
   final _keyController = TextEditingController();
   var _restore = false;
-  var _coin = 1;
+  var _coin = 0;
   var _showIndex = false;
 
   @override
@@ -65,7 +66,9 @@ class _AddAccountPageState extends State<AddAccountPage> {
                               name: 'coin',
                               initialValue: _coin,
                               onChanged: (int? v) {
-                                _coin = v!;
+                                setState(() {
+                                  _coin = v!;
+                                });
                               },
                               options: [
                                 FormBuilderFieldOption(
@@ -111,7 +114,9 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                         onPressed: _onScan))
                               ],
                             ),
-                          if (_restore && !isMobile())
+                          if (_restore &&
+                              coins[_coin].supportsLedger &&
+                              !isMobile())
                             Padding(
                                 padding: EdgeInsets.all(16),
                                 child: ElevatedButton(

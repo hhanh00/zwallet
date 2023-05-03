@@ -28,6 +28,7 @@ abstract class CoinBase {
   List<LWInstance> get lwd;
   bool get supportsUA;
   bool get supportsMultisig;
+  bool get supportsLedger;
   List<double> get weights;
   List<String> get blockExplorers;
 

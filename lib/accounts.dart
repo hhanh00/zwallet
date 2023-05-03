@@ -204,7 +204,9 @@ abstract class _ActiveAccount with Store {
 
     if (id > 0) {
       taddress = WarpApi.getTAddr(coin, id);
-      external = WarpApi.ledgerHasAccount(coin, id);
+      external = coinDef.supportsLedger &&
+          !isMobile() &&
+          WarpApi.ledgerHasAccount(coin, id);
       canPay = WarpApi.getSK(coin, id).isNotEmpty || external;
     }
 
