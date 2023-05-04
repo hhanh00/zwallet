@@ -304,6 +304,12 @@ class SettingsState extends State<SettingsPage>
                                 title: Text(s.antispamFilter),
                                 initialValue: settings.antispam,
                                 onSaved: _antispam),
+                          if (!simpleMode)
+                            FormBuilderCheckbox(
+                                name: 'sound',
+                                title: Text(s.playSound),
+                                initialValue: settings.sound,
+                                onSaved: _sound),
                           if (!simpleMode && WarpApi.hasGPU())
                             FormBuilderCheckbox(
                                 name: 'gpu',
@@ -404,6 +410,10 @@ class SettingsState extends State<SettingsPage>
 
   _antispam(v) {
     settings.setAntiSpam(v);
+  }
+
+  _sound(v) {
+    settings.setSound(v);
   }
 
   _useGPU(v) {

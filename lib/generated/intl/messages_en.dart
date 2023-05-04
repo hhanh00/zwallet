@@ -338,6 +338,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "paymentMade": MessageLookupByLibrary.simpleMessage("Payment made"),
         "pink": MessageLookupByLibrary.simpleMessage("Pink"),
         "pl": MessageLookupByLibrary.simpleMessage("P/L"),
+        "playSound": MessageLookupByLibrary.simpleMessage("Play Sound"),
         "pleaseAuthenticateToSend":
             MessageLookupByLibrary.simpleMessage("Please authenticate to Send"),
         "pleaseAuthenticateToShowAccountSeed":

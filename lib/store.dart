@@ -196,6 +196,9 @@ abstract class _Settings with Store {
   @observable
   int minPrivacyLevel = 0;
 
+  @observable
+  bool sound = true;
+
   String dbPasswd = "";
 
   @action
@@ -225,6 +228,7 @@ abstract class _Settings with Store {
     noteView = ViewStyle.values[(prefs.getInt('note_view') ?? 0)];
     txView = ViewStyle.values[(prefs.getInt('tx_view') ?? 0)];
     qrOffline = prefs.getBool('qr_offline') ?? true;
+    sound = prefs.getBool('sound') ?? true;
 
     primaryColorValue = prefs.getInt('primary') ?? Colors.blue.value;
     primaryVariantColorValue =
@@ -306,6 +310,13 @@ abstract class _Settings with Store {
     final prefs = await SharedPreferences.getInstance();
     antispam = v;
     prefs.setBool('antispam', v);
+  }
+
+  @action
+  Future<void> setSound(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    sound = v;
+    prefs.setBool('sound', v);
   }
 
   @action
