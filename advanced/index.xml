@@ -31,4 +31,9 @@ Ledger, Coinomi, Edge, Nighthawk, ZecWallet Lite Zcash (HDSeed), etc. However, t
 The encryption key is derived from your password/passphrase using PBKDF2. For more details, refer to SQLCipher Design.
 By encrypting your database files, your accounts are protected in case malware exfiltrates them our of your computer.
 This feature is only offered on the desktop versions because mobile devices have file system encryption and application isolation.</description></item><item><title>Standalone YWallet</title><link>https://ywallet.app/advanced/iso/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://ywallet.app/advanced/iso/</guid><description>In high security/value scenarios where you need a fully isolated deployment of YWallet, you can use Ywallet.iso a live CD/USB with a barebone Linux and YWallet pre-installed.
-Ywallet.iso is a ISO image that you can burn to a CD or install on a USB drive, and then boot from it. It is meant to be used as a offline signer. As such, there is no networking capabilities and no persistent state.</description></item></channel></rss>
+Ywallet.iso is a ISO image that you can burn to a CD or install on a USB drive, and then boot from it. It is meant to be used as a offline signer. As such, there is no networking capabilities and no persistent state.</description></item><item><title>H/W Ledger</title><link>https://ywallet.app/advanced/ledger/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://ywallet.app/advanced/ledger/</guid><description>YWallet supports hardware wallet from the Ledger company.
+The Zcash Ledger App is under review and is NOT yet available on Ledger Live.
+At this moment if you want to use a Ledger, you need to sideload the app on your NanoS+ (other models are not supported).
+Instructions are on the app website Zcash Ledger.
+Requirements Ledger support is only available on desktop: Linux, Mac and Windows.
+How to Import a Ledger Account Make sure your device is connected, unlocked and the Zcash app is running.</description></item></channel></rss>

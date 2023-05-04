@@ -5,7 +5,7 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>Theme :: YWallet</title>
+<title>H/W Ledger :: YWallet</title>
 <link href=/css/nucleus.css?1683174501 rel=stylesheet>
 <link href=/css/fontawesome-all.min.css?1683174501 rel=stylesheet>
 <link href=/css/hybrid.css?1683174501 rel=stylesheet>
@@ -20,14 +20,18 @@
 <link href=/common.css?1683174501 rel=stylesheet>
 <script src=/js/jquery-3.3.1.min.js?1683174501></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
-<meta property="og:title" content="Theme">
-<meta property="og:description" content="Select the theme color and Brightness Choose custom colors  Unlike other settings, changes are applied immediately.
-Custom Theme  Select &ldquo;Custom&rdquo; as the theme Click on the Edit button to open the Theme Editor    Choose the Primary color for OK buttons, etc Choose the Primary Variant color Choose the Secondary color for Cancel buttons, etc Choose the Secondary Variant color  Custom themes have both light and dark versions.">
+<meta property="og:title" content="H/W Ledger">
+<meta property="og:description" content="YWallet supports hardware wallet from the Ledger company.
+The Zcash Ledger App is under review and is NOT yet available on Ledger Live.
+ At this moment if you want to use a Ledger, you need to sideload the app on your NanoS+ (other models are not supported).
+Instructions are on the app website Zcash Ledger.
+Requirements Ledger support is only available on desktop: Linux, Mac and Windows.
+How to Import a Ledger Account  Make sure your device is connected, unlocked and the Zcash app is running.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ywallet.app/settings/theme/"><meta property="article:section" content="settings">
+<meta property="og:url" content="https://ywallet.app/advanced/ledger/"><meta property="article:section" content="advanced">
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
-<body data-url=/settings/theme/>
+<body data-url=/advanced/ledger/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -261,7 +265,8 @@ Save to Blockchain
 </li>
 </ul>
 </li>
-<li data-nav-id=/advanced/ title="Advanced Usage" class=dd-item>
+<li data-nav-id=/advanced/ title="Advanced Usage" class="dd-item
+parent">
 <a href=/advanced/><svg class="icon"><use xlink:href="https://ywallet.app//sprite.svg#flask"/></svg>
 Advanced Usage
 <i class="fas fa-check read-icon"></i>
@@ -363,7 +368,7 @@ Standalone YWallet
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/advanced/ledger/ title="H/W Ledger" class=dd-item>
+<li data-nav-id=/advanced/ledger/ title="H/W Ledger" class="dd-item active">
 <a href=/advanced/ledger/>
 H/W Ledger
 <i class="fas fa-check read-icon"></i>
@@ -371,8 +376,7 @@ H/W Ledger
 </li>
 </ul>
 </li>
-<li data-nav-id=/settings/ title=Settings class="dd-item
-parent">
+<li data-nav-id=/settings/ title=Settings class=dd-item>
 <a href=/settings/><svg class="icon"><use xlink:href="https://ywallet.app//sprite.svg#gear"/></svg>
 Settings
 <i class="fas fa-check read-icon"></i>
@@ -384,7 +388,7 @@ Server
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/settings/theme/ title=Theme class="dd-item active">
+<li data-nav-id=/settings/theme/ title=Theme class=dd-item>
 <a href=/settings/theme/>
 Theme
 <i class="fas fa-check read-icon"></i>
@@ -479,22 +483,18 @@ FAQ
 </span>
 <span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > <a href=/settings/>Settings</a> > Theme
+<a href=/>YWallet</a> > <a href=/advanced/>Advanced Usage</a> > H/W Ledger
 </span>
 </div>
 <div class=progress>
 <div class=wrapper>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#custom-theme>Custom Theme</a></li>
-<li><a href=#predefined-themes>Predefined Themes</a>
-<ul>
-<li><a href=#gold>Gold</a></li>
-<li><a href=#blue>Blue</a></li>
-<li><a href=#pink>Pink</a></li>
-<li><a href=#purple>Purple</a></li>
-</ul>
-</li>
+<li><a href=#requirements>Requirements</a></li>
+<li><a href=#how-to-import-a-ledger-account>How to Import a Ledger Account</a></li>
+<li><a href=#how-to-spend>How to spend</a></li>
+<li><a href=#approval>Approval</a></li>
+<li><a href=#video-demo>Video Demo</a></li>
 </ul>
 </nav>
 </div>
@@ -505,72 +505,47 @@ FAQ
 </div>
 <div id=body-inner>
 <h1>
-Theme
+H/W Ledger
 </h1>
+<p>YWallet supports hardware wallet from the Ledger company.</p>
+<div class="notices warning"><p>The Zcash Ledger App is under review and is NOT yet available
+on Ledger Live.</p>
+</div>
+<p>At this moment if you want to use a Ledger, you need to sideload the app
+on your NanoS+ (other models are not supported).</p>
+<p>Instructions are on the app website <a href=https://github.com/hhanh00/zcash-ledger>Zcash Ledger</a>.</p>
+<h2 id=requirements>Requirements</h2>
+<p>Ledger support is only available on desktop: Linux, Mac and Windows.</p>
+<h2 id=how-to-import-a-ledger-account>How to Import a Ledger Account</h2>
+<ul>
+<li>Make sure your device is connected, unlocked and the Zcash app is running.</li>
+<li>In the New account page, choose &ldquo;Restore an account&rdquo; and click on the &ldquo;Import from Ledger&rdquo; button.</li>
+</ul>
 <div class=p-img>
-<img class=img src=../img/2022-09-29_22-42-29.png>
+<img class=img src=../img/2023-05-04_13-43-33.png>
 </div>
-<ol>
-<li>Select the theme color</li>
-<li>and Brightness</li>
-<li>Choose custom colors</li>
-</ol>
-<p>Unlike other settings, changes are applied immediately.</p>
-<h2 id=custom-theme>Custom Theme</h2>
-<ol>
-<li>Select &ldquo;Custom&rdquo; as the theme</li>
-<li>Click on the Edit button to open the Theme Editor</li>
-</ol>
-<div class=p-img>
-<img class=img src=../img/2022-09-29_22-44-50.png>
+<p>Once your account is imported, you do not to keep your device connected. The
+account behaves exactly like an cold wallet account. You can backup the view keys
+if you want.</p>
+<h2 id=how-to-spend>How to spend</h2>
+<p>When you make an operation that requires withdrawal from the Ledger account,
+you must have your device connected, unlocked and the Zcash app running.</p>
+<p>Prior to spending, you will always be presented with a <a href=/getting-started/send/#transaction-summary>transaction summary
+report</a>.</p>
+<h2 id=approval>Approval</h2>
+<p>You are required to approve every output and the amount of fees.</p>
+<link href=/youtube.css rel=stylesheet integrity>
+<script src=/youtube.js></script>
+<h2 id=video-demo>Video Demo</h2>
+<div class=youtube-player data-id=_o-1UzQRP-8></div>
 </div>
-<ol>
-<li>Choose the Primary color for OK buttons, etc</li>
-<li>Choose the Primary Variant color</li>
-<li>Choose the Secondary color for Cancel buttons, etc</li>
-<li>Choose the Secondary Variant color</li>
-</ol>
-<p>Custom themes have both light and dark versions.</p>
-<h2 id=predefined-themes>Predefined Themes</h2>
-<h3 id=gold>Gold</h3>
-<p><div class=p-img>
-<img class=img src=../img/theme/IMG_0108.PNG>
-</div>
-<div class=p-img>
-<img class=img src=../img/theme/IMG_0109.PNG>
-</div>
-</p>
-<h3 id=blue>Blue</h3>
-<p><div class=p-img>
-<img class=img src=../img/theme/IMG_0110.PNG>
-</div>
-<div class=p-img>
-<img class=img src=../img/theme/IMG_0111.PNG>
-</div>
-</p>
-<h3 id=pink>Pink</h3>
-<p><div class=p-img>
-<img class=img src=../img/theme/IMG_0112.PNG>
-</div>
-<div class=p-img>
-<img class=img src=../img/theme/IMG_0113.PNG>
-</div>
-</p>
-<h3 id=purple>Purple</h3>
-<p><div class=p-img>
-<img class=img src=../img/theme/IMG_0114.PNG>
-</div>
-<div class=p-img>
-<img class=img src=../img/theme/IMG_0115.PNG>
-</div>
-</p>
 <footer class=footline>
 </footer>
 </div>
 </div>
 <div id=navigation>
-<a class="nav nav-prev" href=/settings/server/ title=Server> <i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=/settings/views/ title=Views style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/advanced/iso/ title="Standalone YWallet"> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/settings/ title=Settings style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
