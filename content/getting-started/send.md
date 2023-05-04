@@ -46,6 +46,28 @@ in the text of the memo.
 shield button to initiate the transfer to your shielded address
 5. Remaining balance spendable (taking the network fee into consideration)
 
+## Transaction Summary
+
+{{< img 2023-05-04_13-56-19.png >}}
+
+This page gives you a summary of the actual transaction that the wallet 
+is about to perform.
+
+When your recipient is a UA that includes multiple receivers, YWallet
+will choose one or many receivers in order to optimize your **privacy**.
+It may result in a split of an output into several parts.
+
+For example, suppose that you currently have 2 ZEC in a Sapling note and
+1 ZEC in an Orchard note. If you want to pay 2.5 ZEC to UA that has both
+Sapling and Orchard receivers, YWallet will make a transaction that
+pays 2 ZEC and 0.5 ZEC to the Sapling and Orchard receivers respectively.
+
+Your recipient will receive the exact same amount and there will be a single
+transaction. For the most part, the process is seamless. However, the
+transaction summary page will show the two receivers.
+
+The idea is similar to splitting a bill between two credit cards.
+
 ## Remarks
 
 - The spendable balance excludes the network fee of 0.01 mY/ZEC. 
