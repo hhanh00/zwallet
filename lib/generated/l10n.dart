@@ -3161,6 +3161,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Play Sound`
+  String get playSound {
+    return Intl.message(
+      'Play Sound',
+      name: 'playSound',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

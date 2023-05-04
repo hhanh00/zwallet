@@ -343,6 +343,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "paymentMade": MessageLookupByLibrary.simpleMessage("Pago enviado"),
         "pink": MessageLookupByLibrary.simpleMessage("Rosado"),
         "pl": MessageLookupByLibrary.simpleMessage("G/P"),
+        "playSound": MessageLookupByLibrary.simpleMessage("Sonido"),
         "pleaseAuthenticateToSend": MessageLookupByLibrary.simpleMessage(
             "Por favor autentíquese para enviar"),
         "pleaseAuthenticateToShowAccountSeed":
