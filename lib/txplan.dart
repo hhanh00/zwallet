@@ -123,14 +123,12 @@ class TxPlanPage extends StatelessWidget {
                   await WarpApi.signAndBroadcast(active.coin, active.id, plan);
             }
             showSnackBar(S.current.txId(txid));
-            if (settings.sound)
-              await player.play(AssetSource("success.mp3"));
+            if (settings.sound) await player.play(AssetSource("success.mp3"));
             active.setDraftRecipient(null);
             active.update();
           } on String catch (message) {
             showSnackBar(message, error: true);
-            if (settings.sound)
-              await player.play(AssetSource("fail.mp3"));
+            if (settings.sound) await player.play(AssetSource("fail.mp3"));
           } finally {
             active.setBanner("");
           }
