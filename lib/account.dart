@@ -193,7 +193,7 @@ class QRAddressState extends State<QRAddressWidget> {
         if (tapMessage != null) Text(tapMessage),
         Padding(padding: EdgeInsets.symmetric(vertical: 4)),
         GestureDetector(
-            onTap: hasTAddr ? _onQRTap : null,
+            onTap: _onQRTap,
             onLongPress: _onUpdateTAddr,
             child: RotatedBox(
                 quarterTurns: 0,
