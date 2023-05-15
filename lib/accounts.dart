@@ -18,10 +18,12 @@ class Account {
   final int id;
   final String name;
   final int balance;
+  final int type;
   bool active = false;
   int tbalance = 0;
 
-  Account(this.coin, this.id, this.name, this.balance, this.tbalance);
+  Account(
+      this.coin, this.id, this.name, this.type, this.balance, this.tbalance);
 
   String get address {
     return id != 0
@@ -30,7 +32,7 @@ class Account {
   }
 }
 
-final Account emptyAccount = Account(0, 0, "", 0, 0);
+final Account emptyAccount = Account(0, 0, "", 0, 0, 0);
 
 class AccountList {
   List<Account> list = [];
@@ -43,9 +45,11 @@ class AccountList {
     List<Account> _list = [];
     for (var coin in coins) {
       var accounts = WarpApi.getAccountList(coin.coin)
-          .map((a) => Account(coin.coin, a.id, a.name!, a.balance, 0))
+          .map(
+              (a) => Account(coin.coin, a.id, a.name!, a.keyType, a.balance, 0))
           .toList();
       final id = WarpApi.getActiveAccountId(coin.coin);
+      print("active $id");
       if (id != 0) {
         accounts.firstWhere((a) => a.id == id).active = true;
       }

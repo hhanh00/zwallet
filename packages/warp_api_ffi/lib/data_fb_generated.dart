@@ -21,16 +21,18 @@ class Account {
 
   int get id => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 4, 0);
   String? get name => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 6);
-  int get balance => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 8, 0);
+  int get keyType => const fb.Uint8Reader().vTableGet(_bc, _bcOffset, 8, 0);
+  int get balance => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 10, 0);
 
   @override
   String toString() {
-    return 'Account{id: ${id}, name: ${name}, balance: ${balance}}';
+    return 'Account{id: ${id}, name: ${name}, keyType: ${keyType}, balance: ${balance}}';
   }
 
   AccountT unpack() => AccountT(
       id: id,
       name: name,
+      keyType: keyType,
       balance: balance);
 
   static int pack(fb.Builder fbBuilder, AccountT? object) {
@@ -42,27 +44,30 @@ class Account {
 class AccountT implements fb.Packable {
   int id;
   String? name;
+  int keyType;
   int balance;
 
   AccountT({
       this.id = 0,
       this.name,
+      this.keyType = 0,
       this.balance = 0});
 
   @override
   int pack(fb.Builder fbBuilder) {
     final int? nameOffset = name == null ? null
         : fbBuilder.writeString(name!);
-    fbBuilder.startTable(3);
+    fbBuilder.startTable(4);
     fbBuilder.addUint32(0, id);
     fbBuilder.addOffset(1, nameOffset);
-    fbBuilder.addUint64(2, balance);
+    fbBuilder.addUint8(2, keyType);
+    fbBuilder.addUint64(3, balance);
     return fbBuilder.endTable();
   }
 
   @override
   String toString() {
-    return 'AccountT{id: ${id}, name: ${name}, balance: ${balance}}';
+    return 'AccountT{id: ${id}, name: ${name}, keyType: ${keyType}, balance: ${balance}}';
   }
 }
 
@@ -80,7 +85,7 @@ class AccountBuilder {
   final fb.Builder fbBuilder;
 
   void begin() {
-    fbBuilder.startTable(3);
+    fbBuilder.startTable(4);
   }
 
   int addId(int? id) {
@@ -91,8 +96,12 @@ class AccountBuilder {
     fbBuilder.addOffset(1, offset);
     return fbBuilder.offset;
   }
+  int addKeyType(int? keyType) {
+    fbBuilder.addUint8(2, keyType);
+    return fbBuilder.offset;
+  }
   int addBalance(int? balance) {
-    fbBuilder.addUint64(2, balance);
+    fbBuilder.addUint64(3, balance);
     return fbBuilder.offset;
   }
 
@@ -104,15 +113,18 @@ class AccountBuilder {
 class AccountObjectBuilder extends fb.ObjectBuilder {
   final int? _id;
   final String? _name;
+  final int? _keyType;
   final int? _balance;
 
   AccountObjectBuilder({
     int? id,
     String? name,
+    int? keyType,
     int? balance,
   })
       : _id = id,
         _name = name,
+        _keyType = keyType,
         _balance = balance;
 
   /// Finish building, and store into the [fbBuilder].
@@ -120,10 +132,11 @@ class AccountObjectBuilder extends fb.ObjectBuilder {
   int finish(fb.Builder fbBuilder) {
     final int? nameOffset = _name == null ? null
         : fbBuilder.writeString(_name!);
-    fbBuilder.startTable(3);
+    fbBuilder.startTable(4);
     fbBuilder.addUint32(0, _id);
     fbBuilder.addOffset(1, nameOffset);
-    fbBuilder.addUint64(2, _balance);
+    fbBuilder.addUint8(2, _keyType);
+    fbBuilder.addUint64(3, _balance);
     return fbBuilder.endTable();
   }
 

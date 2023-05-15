@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 import 'main.dart';
 import 'rescan.dart';
@@ -58,6 +59,26 @@ class AccountManagerState extends State<AccountManagerPage> {
               itemCount: _accounts.list.length,
               itemBuilder: (BuildContext context, int index) {
                 final a = _accounts.list[index];
+                WidgetSpan? icon;
+                switch (a.type) {
+                  case 0x80:
+                    icon = WidgetSpan(
+                        child: Icon(MdiIcons.snowflake,
+                            color: theme.colorScheme.secondary),
+                        style: theme.textTheme.bodyMedium);
+                    break;
+                  case 1: // secret key
+                    icon = WidgetSpan(
+                        child: Icon(MdiIcons.sprout,
+                            color: theme.colorScheme.secondary),
+                        style: theme.textTheme.bodyMedium);
+                    break;
+                  case 2: // ledger
+                    icon = WidgetSpan(
+                        child: SvgPicture.asset("assets/ledger.svg",
+                            height: 20, color: theme.colorScheme.secondary));
+                    break;
+                }
                 final weight = a.active ? FontWeight.bold : FontWeight.normal;
                 final zbal = a.balance / ZECUNIT;
                 final tbal = a.tbalance / ZECUNIT;
@@ -68,14 +89,24 @@ class AccountManagerState extends State<AccountManagerPage> {
                   child: ListTile(
                     leading: CircleAvatar(
                         backgroundImage: settings.coins[a.coin].def.image),
-                    title: Text(a.name,
-                        style: theme.textTheme.headlineSmall
-                            ?.merge(TextStyle(fontWeight: weight))
-                            .apply(
-                              color: a.coin == 0
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.secondary,
-                            )),
+                    title: RichText(
+                        text: TextSpan(children: [
+                      TextSpan(
+                          text: a.name,
+                          style: theme.textTheme.headlineSmall
+                              ?.merge(TextStyle(fontWeight: weight))
+                              .apply(
+                                color: a.coin == 0
+                                    ? theme.colorScheme.primary
+                                    : theme.colorScheme.secondary,
+                              )),
+                      if (icon != null)
+                        WidgetSpan(
+                            child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                        )),
+                      if (icon != null) icon,
+                    ])),
                     subtitle: Text(
                         "${decimalFormat(zbal, 3)} + ${decimalFormat(tbal, 3)}"),
                     trailing: Text(decimalFormat(balance, 3)),
@@ -161,6 +192,7 @@ class AccountManagerState extends State<AccountManagerPage> {
     _accounts.delete(account.coin, account.id);
     _accounts.refresh();
     active.checkAndUpdate();
+    setState(() {});
   }
 
   _selectAccount(Account account) async {

@@ -1582,7 +1582,11 @@ const int Account_VT_ID = 4;
 
 const int Account_VT_NAME = 6;
 
-const int Account_VT_BALANCE = 8;
+const int Account_VT_COLD = 8;
+
+const int Account_VT_HARDWARE = 10;
+
+const int Account_VT_BALANCE = 12;
 
 const int AccountVec_VT_ACCOUNTS = 4;
 
