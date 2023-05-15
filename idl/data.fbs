@@ -3,6 +3,7 @@ namespace fb;
 table Account {
     id:uint32;
     name:string;
+    key_type:uint8;
     balance:uint64;
 }
 
