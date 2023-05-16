@@ -429,6 +429,7 @@ abstract class _ActiveAccount with Store {
   }
 
   DbReader get dbReader => DbReader(coin, id);
+  int get availabeAddrs => WarpApi.getAvailableAddrs(coin, id);
 }
 
 class Balances = _Balances with _$Balances;

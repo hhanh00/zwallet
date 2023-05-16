@@ -228,7 +228,7 @@ class QRAddressState extends State<QRAddressWidget> {
                       onPressed: _onSnapAddress)
                   : LinearProgressIndicator(
                       value: _snapAddressProgress / SNAPADDRESS_LIFETIME)),
-        if (!simpleMode && addrMode == 2)
+        if (!simpleMode && addrMode == 2 && hasShielded)
           SizedBox(
               height: 30,
               child: OutlinedButton(
@@ -369,6 +369,8 @@ class QRAddressState extends State<QRAddressWidget> {
     }
     return null;
   }
+
+  bool get hasShielded => active.availabeAddrs & 6 != 0;
 }
 
 class BalanceWidget extends StatelessWidget {
