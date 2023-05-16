@@ -1,6 +1,7 @@
 import 'package:YWallet/chart.dart';
 import 'package:YWallet/dualmoneyinput.dart';
 import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
 import 'package:warp_api/warp_api.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
@@ -12,8 +13,9 @@ class PoolsPage extends StatefulWidget {
 
 class PoolsState extends State<PoolsPage> {
   final _formKey = GlobalKey<FormState>();
-  int _fromPool = 0;
-  int _toPool = 1;
+  late int _fromPool;
+  late int _toPool;
+  late List<Tuple3<int, String, double>> _pools;
   final _amountKey = GlobalKey<DualMoneyInputState>();
   var _maxAmountController = TextEditingController(
       text: amountToString(0, precision(settings.useMillis)));
@@ -23,20 +25,30 @@ class PoolsState extends State<PoolsPage> {
   void initState() {
     super.initState();
     active.poolBalances.update();
+
+    final b = active.poolBalances;
+    final availablePools = [
+      Tuple3(0, 'Transparent', b.transparent / ZECUNIT),
+      Tuple3(1, 'Sapling', b.sapling / ZECUNIT),
+      Tuple3(2, 'Orchard', b.orchard / ZECUNIT)
+    ];
+
+    final availableAddrs = active.availabeAddrs;
+    print(availableAddrs);
+    _pools = availablePools
+        .asMap()
+        .entries
+        .where((e) => (1 << e.key) & availableAddrs != 0)
+        .map((e) => e.value)
+        .toList();
+
+    _fromPool = _pools.first.item1;
+    _toPool = _pools.last.item1;
   }
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    var pools = ['Transparent', 'Sapling', 'Orchard'];
-
-    final b = active.poolBalances;
-    final balances =
-        [b.transparent, b.sapling, b.orchard].map((v) => v / ZECUNIT).toList();
-    if (!active.coinDef.supportsUA) {
-      pools.removeAt(2);
-      balances.removeAt(2);
-    }
     return Scaffold(
         appBar: AppBar(title: Text(s.pools)),
         body: SingleChildScrollView(
@@ -45,16 +57,15 @@ class PoolsState extends State<PoolsPage> {
               child: Form(
                   key: _formKey,
                   child: Column(children: [
-                    HorizontalBarChart(balances, height: 40),
+                    HorizontalBarChart(_pools.map((p) => p.item3).toList(),
+                        height: 40),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
                     DropdownButtonFormField<int>(
                         decoration: InputDecoration(labelText: s.fromPool),
                         value: _fromPool,
-                        items: pools
-                            .asMap()
-                            .entries
-                            .map((e) => DropdownMenuItem(
-                                child: Text(e.value), value: e.key))
+                        items: _pools
+                            .map((v) => DropdownMenuItem<int>(
+                                child: Text(v.item2), value: v.item1))
                             .toList(),
                         onChanged: (v) {
                           setState(() {
@@ -64,11 +75,9 @@ class PoolsState extends State<PoolsPage> {
                     DropdownButtonFormField<int>(
                         decoration: InputDecoration(labelText: s.toPool),
                         value: _toPool,
-                        items: pools
-                            .asMap()
-                            .entries
-                            .map((e) => DropdownMenuItem(
-                                child: Text(e.value), value: e.key))
+                        items: _pools
+                            .map((v) => DropdownMenuItem<int>(
+                                child: Text(v.item2), value: v.item1))
                             .toList(),
                         onChanged: (v) {
                           setState(() {
