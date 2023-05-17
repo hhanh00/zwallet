@@ -10,10 +10,12 @@ popd
 flutter build windows
 cp runtime/* build/windows/runner/release
 cp target/release/warp_api_ffi.dll build/windows/runner/release
-flutter pub run msix:create
-mv build/windows/runner/Release/YWallet.msix .
 
-flutter build windows
+# Disable MSIX - it hangs now
+# flutter pub run msix:create
+# mv build/windows/runner/Release/YWallet.msix .
+
+# flutter build windows
 cp runtime/* build/windows/runner/Release
 pushd build/windows/runner
 mv Release ywallet
