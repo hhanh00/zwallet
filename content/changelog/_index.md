@@ -4,6 +4,10 @@ weight: 80
 icon: wrench
 ---
 
+# 1.4.0
+
+- Support for [Ledger Nano S, Nano S+ and Nano X]({{< relref "advanced/ledger" >}}) (pending Ledger publication)
+
 # 1.3.6
 
 - Auto hide balance setting
