@@ -6,27 +6,26 @@
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
 <title>H/W Ledger :: YWallet</title>
-<link href=/css/nucleus.css?1683174501 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1683174501 rel=stylesheet>
-<link href=/css/hybrid.css?1683174501 rel=stylesheet>
-<link href=/css/featherlight.min.css?1683174501 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1683174501 rel=stylesheet>
-<link href=/css/auto-complete.css?1683174501 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1683174501 rel=stylesheet>
-<link href=/css/theme.css?1683174501 rel=stylesheet>
-<link href=/css/tabs.css?1683174501 rel=stylesheet>
-<link href=/css/hugo-theme.css?1683174501 rel=stylesheet>
-<link href=/css/theme-blue.css?1683174501 rel=stylesheet>
-<link href=/common.css?1683174501 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1683174501></script>
+<link href=/css/nucleus.css?1684803469 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1684803469 rel=stylesheet>
+<link href=/css/hybrid.css?1684803469 rel=stylesheet>
+<link href=/css/featherlight.min.css?1684803469 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1684803469 rel=stylesheet>
+<link href=/css/auto-complete.css?1684803469 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1684803469 rel=stylesheet>
+<link href=/css/theme.css?1684803469 rel=stylesheet>
+<link href=/css/tabs.css?1684803469 rel=stylesheet>
+<link href=/css/hugo-theme.css?1684803469 rel=stylesheet>
+<link href=/css/theme-blue.css?1684803469 rel=stylesheet>
+<link href=/common.css?1684803469 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1684803469></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
 <meta property="og:title" content="H/W Ledger">
-<meta property="og:description" content="YWallet supports hardware wallet from the Ledger company.
+<meta property="og:description" content="YWallet supports hardware wallets from the Ledger company.
 The Zcash Ledger App is under review and is NOT yet available on Ledger Live.
- At this moment if you want to use a Ledger, you need to sideload the app on your NanoS+ (other models are not supported).
+ At this moment if you want to use a Ledger, you need to sideload the app on your NanoS and NanoS+ (other models are not supported).
 Instructions are on the app website Zcash Ledger.
-Requirements Ledger support is only available on desktop: Linux, Mac and Windows.
-How to Import a Ledger Account  Make sure your device is connected, unlocked and the Zcash app is running.">
+Requirements Ledger support is only available on desktop: Linux, Mac and Windows.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://ywallet.app/advanced/ledger/"><meta property="article:section" content="advanced">
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
@@ -44,10 +43,10 @@ How to Import a Ledger Account  Make sure your device is connected, unlocked and
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1683174501></script>
-<script type=text/javascript src=/js/auto-complete.js?1683174501></script>
+<script type=text/javascript src=/js/lunr.min.js?1684803469></script>
+<script type=text/javascript src=/js/auto-complete.js?1684803469></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1683174501></script>
+<script type=text/javascript src=/js/search.js?1684803469></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -494,6 +493,7 @@ FAQ
 <li><a href=#how-to-import-a-ledger-account>How to Import a Ledger Account</a></li>
 <li><a href=#how-to-spend>How to spend</a></li>
 <li><a href=#approval>Approval</a></li>
+<li><a href=#security-remarks>Security Remarks</a></li>
 <li><a href=#video-demo>Video Demo</a></li>
 </ul>
 </nav>
@@ -507,12 +507,12 @@ FAQ
 <h1>
 H/W Ledger
 </h1>
-<p>YWallet supports hardware wallet from the Ledger company.</p>
+<p>YWallet supports hardware wallets from the Ledger company.</p>
 <div class="notices warning"><p>The Zcash Ledger App is under review and is NOT yet available
 on Ledger Live.</p>
 </div>
 <p>At this moment if you want to use a Ledger, you need to sideload the app
-on your NanoS+ (other models are not supported).</p>
+on your NanoS and NanoS+ (other models are not supported).</p>
 <p>Instructions are on the app website <a href=https://github.com/hhanh00/zcash-ledger>Zcash Ledger</a>.</p>
 <h2 id=requirements>Requirements</h2>
 <p>Ledger support is only available on desktop: Linux, Mac and Windows.</p>
@@ -527,6 +527,10 @@ on your NanoS+ (other models are not supported).</p>
 <p>Once your account is imported, you do not to keep your device connected. The
 account behaves exactly like an cold wallet account. You can backup the view keys
 if you want.</p>
+<div class="notices warning"><p>Due to Ledger OS Security Design, your Ledger shielded addresses are NOT
+the same as a regular account for the same seed phrase.</p>
+</div>
+<p>The transparent address is the same.</p>
 <h2 id=how-to-spend>How to spend</h2>
 <p>When you make an operation that requires withdrawal from the Ledger account,
 you must have your device connected, unlocked and the Zcash app running.</p>
@@ -536,6 +540,17 @@ report</a>.</p>
 <p>You are required to approve every output and the amount of fees.</p>
 <link href=/youtube.css rel=stylesheet integrity>
 <script src=/youtube.js></script>
+<h2 id=security-remarks>Security Remarks</h2>
+<p>The code of the ledger app in open-source and available on <a href=https://github.com/hhanh00/zcash-ledger>github</a>.
+At the time of writing, it has been submitted to Ledger for review but not yet processed.
+Unfortunately, I do not have a timeline. It could take months. In the meantime, if you have a Nano S or
+S+, you can build (or download a binary) and install it via USB cable. However, the Ledger will notify
+that the &ldquo;App is not genuine&rdquo; because it lacks an official signature from Ledger.</p>
+<p>The Zcash Ledger app is also going through independent security review.</p>
+<p>Finally, it should be noted that the app does not have access to
+the seed phrase but only the secret key of transparent account (technically speaking <code>m/44'/133'</code>
+derivation path). Therefore even if it has a backdoor (it does not), your other coins are out of
+reach.</p>
 <h2 id=video-demo>Video Demo</h2>
 <div class=youtube-player data-id=_o-1UzQRP-8></div>
 </div>
@@ -551,17 +566,17 @@ report</a>.</p>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=/js/clipboard.min.js?1683174501></script>
-<script src=/js/perfect-scrollbar.min.js?1683174501></script>
-<script src=/js/perfect-scrollbar.jquery.min.js?1683174501></script>
-<script src=/js/jquery.sticky.js?1683174501></script>
-<script src=/js/featherlight.min.js?1683174501></script>
-<script src=/js/highlight.pack.js?1683174501></script>
+<script src=/js/clipboard.min.js?1684803469></script>
+<script src=/js/perfect-scrollbar.min.js?1684803469></script>
+<script src=/js/perfect-scrollbar.jquery.min.js?1684803469></script>
+<script src=/js/jquery.sticky.js?1684803469></script>
+<script src=/js/featherlight.min.js?1684803469></script>
+<script src=/js/highlight.pack.js?1684803469></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script src=/js/modernizr.custom-3.6.0.js?1683174501></script>
-<script src=/js/learn.js?1683174501></script>
-<script src=/js/hugo-learn.js?1683174501></script>
-<script src=/mermaid/mermaid.js?1683174501></script>
+<script src=/js/modernizr.custom-3.6.0.js?1684803469></script>
+<script src=/js/learn.js?1684803469></script>
+<script src=/js/hugo-learn.js?1684803469></script>
+<script src=/mermaid/mermaid.js?1684803469></script>
 <script>mermaid.initialize({startOnLoad:!0})</script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js integrity=sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4 crossorigin=anonymous></script>
 <script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
