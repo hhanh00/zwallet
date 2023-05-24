@@ -107,7 +107,7 @@ class TxPlanPage extends StatelessWidget {
   }
 
   _onSend() async {
-    if (active.canPay) {
+    if (false && active.canPay) {
       if (signOnly)
         await _sign();
       else {

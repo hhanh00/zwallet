@@ -17,7 +17,7 @@ class YcashCoin extends CoinBase {
   ];
   bool supportsUA = false;
   bool supportsMultisig = true;
-  bool supportsLedger = false;
+  bool supportsLedger = true;
   List<double> weights = [5, 25, 250];
   List<String> blockExplorers = ["https://yecblockexplorer.com/tx"];
 }

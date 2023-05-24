@@ -237,7 +237,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
   _importLedger() async {
     try {
       final account =
-          await WarpApi.importFromLedger(active.coin, _nameController.text);
+          await WarpApi.importFromLedger(_coin, _nameController.text);
       active.setActiveAccount(_coin, account);
       Navigator.of(context).pushReplacementNamed("/account");
     } on String catch (msg) {
