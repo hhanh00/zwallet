@@ -1429,6 +1429,23 @@ class NativeLibrary {
   late final _dart_set_property _set_property =
       _set_property_ptr.asFunction<_dart_set_property>();
 
+  CResult_u8 import_uvk(
+    int coin,
+    ffi.Pointer<ffi.Int8> name,
+    ffi.Pointer<ffi.Int8> yfvk,
+  ) {
+    return _import_uvk(
+      coin,
+      name,
+      yfvk,
+    );
+  }
+
+  late final _import_uvk_ptr =
+      _lookup<ffi.NativeFunction<_c_import_uvk>>('import_uvk');
+  late final _dart_import_uvk _import_uvk =
+      _import_uvk_ptr.asFunction<_dart_import_uvk>();
+
   CResult_____c_char ledger_send(
     int coin,
     ffi.Pointer<ffi.Int8> tx_plan,
@@ -1582,11 +1599,9 @@ const int Account_VT_ID = 4;
 
 const int Account_VT_NAME = 6;
 
-const int Account_VT_COLD = 8;
+const int Account_VT_KEY_TYPE = 8;
 
-const int Account_VT_HARDWARE = 10;
-
-const int Account_VT_BALANCE = 12;
+const int Account_VT_BALANCE = 10;
 
 const int AccountVec_VT_ACCOUNTS = 4;
 
@@ -2642,6 +2657,18 @@ typedef _dart_set_property = CResult_u8 Function(
   int coin,
   ffi.Pointer<ffi.Int8> name,
   ffi.Pointer<ffi.Int8> value,
+);
+
+typedef _c_import_uvk = CResult_u8 Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> yfvk,
+);
+
+typedef _dart_import_uvk = CResult_u8 Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> name,
+  ffi.Pointer<ffi.Int8> yfvk,
 );
 
 typedef _c_ledger_send = CResult_____c_char Function(
