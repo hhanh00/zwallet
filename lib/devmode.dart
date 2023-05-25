@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:warp_api/warp_api.dart';
 
-import 'coin/coins.dart';
-import 'generated/l10n.dart';
 import 'main.dart';
-
-final String instantSyncHost = "zec.hanh00.fun"; // temporary & under debugmode
 
 class DevPage extends StatefulWidget {
   DevPageState createState() => DevPageState();
@@ -43,6 +39,10 @@ class DevPageState extends State<DevPage> {
               trailing: Icon(Icons.chevron_right),
               onTap: _clearTxDetails),
           ListTile(
+              title: Text('Import YFVK'),
+              trailing: Icon(Icons.chevron_right),
+              onTap: _importYFVK),
+          ListTile(
               title: Text('Revoke Dev mode'),
               trailing: Icon(Icons.chevron_right),
               onTap: _resetDevMode),
@@ -68,6 +68,49 @@ class DevPageState extends State<DevPage> {
 
   _clearTxDetails() {
     WarpApi.clearTxDetails(active.coin, active.id);
+  }
+
+  _importYFVK() async {
+    final nameController = TextEditingController();
+    final keyController = TextEditingController();
+    final formKey = GlobalKey<FormBuilderState>();
+    await showDialog(
+        context: this.context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+            title: Text("Import YFVK"),
+            content: FormBuilder(
+                key: formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Account Name'),
+                        controller: nameController,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Key'),
+                        controller: keyController,
+                        minLines: 8,
+                        maxLines: 16,
+                        validator: (k) => _validateYFVK(nameController.text, k),
+                      ),
+                    ],
+                  ),
+                )),
+            actions: confirmButtons(context, () {
+              final form = formKey.currentState!;
+              if (form.validate()) Navigator.of(context).pop();
+            })));
+  }
+
+  String? _validateYFVK(String name, String? key) {
+    try {
+      WarpApi.importYFVK(active.coin, name, key!);
+    } catch (e) {
+      return "Invalid key: $e";
+    }
+    return null;
   }
 
   _resetDevMode() {

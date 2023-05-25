@@ -321,10 +321,10 @@ class WarpApi {
     }, null);
   }
 
-  // static String ledgerSign(int coin, String txFilename) {
-  //   final res = warp_api_lib.ledger_sign(coin, txFilename.toNativeUtf8().cast<Int8>());
-  //   return res.cast<Utf8>().toDartString();
-  // }
+  static void importYFVK(int coin, String name, String yfvk) {
+    unwrapResultU8(
+        warp_api_lib.import_uvk(coin, toNative(name), toNative(yfvk)));
+  }
 
   static DateTime getActivationDate() {
     final res = unwrapResultU32(warp_api_lib.get_activation_date());

@@ -49,7 +49,6 @@ class AccountList {
               (a) => Account(coin.coin, a.id, a.name!, a.keyType, a.balance, 0))
           .toList();
       final id = WarpApi.getActiveAccountId(coin.coin);
-      print("active $id");
       if (id != 0) {
         accounts.firstWhere((a) => a.id == id).active = true;
       }
