@@ -183,7 +183,6 @@ class QRAddressState extends State<QRAddressWidget> {
       final address = _address();
       final shortAddress = centerTrim(address);
       final addrMode = active.addrMode;
-      final hasTAddr = active.taddress.isNotEmpty;
       final qrSize = getScreenSize(context) / 2.5;
       final coinDef = active.coinDef;
       final nextMode = _getNextMode();
