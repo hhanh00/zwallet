@@ -43,6 +43,10 @@ class DevPageState extends State<DevPage> {
               trailing: Icon(Icons.chevron_right),
               onTap: _importYFVK),
           ListTile(
+              title: Text('Bind/Unbind from Ledger'),
+              trailing: Icon(Icons.chevron_right),
+              onTap: _toggleLedgerBinding),
+          ListTile(
               title: Text('Revoke Dev mode'),
               trailing: Icon(Icons.chevron_right),
               onTap: _resetDevMode),
@@ -53,24 +57,24 @@ class DevPageState extends State<DevPage> {
     Navigator.of(context).pushNamed('/syncstats');
   }
 
-  _resetScan() {
+  void _resetScan() {
     WarpApi.truncateSyncData();
     syncStatus.reset();
   }
 
-  _reorg() async {
+  void _reorg() async {
     await syncStatus.reorg();
   }
 
-  _markAsSynced() {
+  void _markAsSynced() {
     WarpApi.skipToLastHeight(active.coin);
   }
 
-  _clearTxDetails() {
+  void _clearTxDetails() {
     WarpApi.clearTxDetails(active.coin, active.id);
   }
 
-  _importYFVK() async {
+  Future<void> _importYFVK() async {
     final nameController = TextEditingController();
     final keyController = TextEditingController();
     final formKey = GlobalKey<FormBuilderState>();
@@ -111,6 +115,10 @@ class DevPageState extends State<DevPage> {
       return "Invalid key: $e";
     }
     return null;
+  }
+
+  void _toggleLedgerBinding() {
+    WarpApi.ledgerToggleBinding(active.coin, active.id);
   }
 
   _resetDevMode() {

@@ -326,6 +326,10 @@ class WarpApi {
         warp_api_lib.import_uvk(coin, toNative(name), toNative(yfvk)));
   }
 
+  static void ledgerToggleBinding(int coin, int account) {
+    unwrapResultU8(warp_api_lib.ledger_toggle_binding(coin, account));
+  }
+
   static DateTime getActivationDate() {
     final res = unwrapResultU32(warp_api_lib.get_activation_date());
     return DateTime.fromMillisecondsSinceEpoch(res * 1000);
@@ -566,7 +570,6 @@ class WarpApi {
       subject: t.subject,
       body: t.body,
     ).toBytes();
-    print("templ $t");
     final data = toNativeBytes(template);
 
     return unwrapResultU32(

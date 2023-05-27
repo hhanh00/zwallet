@@ -1492,6 +1492,22 @@ class NativeLibrary {
   late final _dart_ledger_has_account _ledger_has_account =
       _ledger_has_account_ptr.asFunction<_dart_ledger_has_account>();
 
+  CResult_u8 ledger_toggle_binding(
+    int coin,
+    int account,
+  ) {
+    return _ledger_toggle_binding(
+      coin,
+      account,
+    );
+  }
+
+  late final _ledger_toggle_binding_ptr =
+      _lookup<ffi.NativeFunction<_c_ledger_toggle_binding>>(
+          'ledger_toggle_binding');
+  late final _dart_ledger_toggle_binding _ledger_toggle_binding =
+      _ledger_toggle_binding_ptr.asFunction<_dart_ledger_toggle_binding>();
+
   int has_cuda() {
     return _has_cuda();
   }
@@ -2697,6 +2713,16 @@ typedef _c_ledger_has_account = CResult_bool Function(
 );
 
 typedef _dart_ledger_has_account = CResult_bool Function(
+  int coin,
+  int account,
+);
+
+typedef _c_ledger_toggle_binding = CResult_u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+);
+
+typedef _dart_ledger_toggle_binding = CResult_u8 Function(
   int coin,
   int account,
 );

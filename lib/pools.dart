@@ -34,7 +34,6 @@ class PoolsState extends State<PoolsPage> {
     ];
 
     final availableAddrs = active.availabeAddrs;
-    print(availableAddrs);
     _pools = availablePools
         .asMap()
         .entries
