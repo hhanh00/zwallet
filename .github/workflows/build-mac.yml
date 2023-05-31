@@ -7,8 +7,30 @@ on:
       - "v*"
 
 jobs:
-  build_mac:
+  build_rust:
     runs-on: macos-12
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: download params
+        run: ./build-scripts/mac/download-params.sh
+
+      - name: build
+        run: ./build-scripts/mac/build-${{ matrix.arch }}.sh
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.arch }}
+          path: target/${{ matrix.arch }}-apple-darwin/release
+
+  build_flutter:
+    runs-on: macos-12
+    needs: build_rust
     steps:
       - uses: actions/checkout@v2
         with:
@@ -19,8 +41,18 @@ jobs:
           cat build.env >> $GITHUB_ENV
           echo $PWD/flutter/bin >> $GITHUB_PATH
 
-      - name: build
-        run: ./build-scripts/mac/build-mac.sh "$FLUTTER_VERSION"
+      - uses: actions/download-artifact@v3
+        with:
+          name: x86_64
+          path: target/x86_64-apple-darwin/release
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: aarch64
+          path: target/aarch64-apple-darwin/release
+
+      - name: build flutter
+        run: ./build-scripts/mac/build-flutter.sh "$FLUTTER_VERSION"
 
       - name: codesign
         env:
