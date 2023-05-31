@@ -8,6 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
+import 'package:queue/queue.dart';
 import 'package:shared_preferences_android/shared_preferences_android.dart';
 import 'package:shared_preferences_ios/shared_preferences_ios.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -619,6 +620,7 @@ abstract class _PriceStore with Store {
   double coinPrice = 0.0;
 
   int? lastChartUpdateTime;
+  final fetchQueue = new Queue();
 
   @action
   Future<void> fetchCoinPrice(int coin) async {
@@ -634,7 +636,8 @@ abstract class _PriceStore with Store {
       if (f ||
           _lastChartUpdateTime == null ||
           now > _lastChartUpdateTime + 5 * 60) {
-        await WarpApi.syncHistoricalPrices(settings.currency);
+        await fetchQueue
+            .add(() => WarpApi.syncHistoricalPrices(settings.currency));
         active.fetchChartData();
         lastChartUpdateTime = now;
       }
