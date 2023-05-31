@@ -72,6 +72,11 @@ jobs:
       - name: package
         run: ./build-scripts/mac/pkg-mac.sh
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dmg
+          path: ./ywallet-universal.dmg
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/v')
