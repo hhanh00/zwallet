@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -125,7 +126,7 @@ class ContactForm extends StatefulWidget {
 }
 
 class ContactState extends State<ContactForm> {
-  final formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormBuilderState>();
   final nameController = TextEditingController();
   var address = "";
 
@@ -138,20 +139,28 @@ class ContactState extends State<ContactForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
+    final mq = MediaQuery.of(context);
+    return FormBuilder(
         key: formKey,
-        child: SingleChildScrollView(
-            child: Column(children: [
-          TextFormField(
-            decoration: InputDecoration(labelText: S.of(context).contactName),
-            controller: nameController,
-            validator: _checkName,
+        child: Container(
+          width: mq.size.width,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration:
+                      InputDecoration(labelText: S.of(context).contactName),
+                  controller: nameController,
+                  validator: _checkName,
+                ),
+                AddressInput(widget.contact.id, S.of(context).address, address,
+                    (addr) {
+                  address = addr ?? "";
+                })
+              ],
+            ),
           ),
-          AddressInput(widget.contact.id, S.of(context).address, address,
-              (addr) {
-            address = addr ?? "";
-          })
-        ])));
+        ));
   }
 
   onOK() {
@@ -198,7 +207,7 @@ class AddressState extends State<AddressInput> {
       Expanded(
         child: TextFormField(
           decoration: InputDecoration(labelText: widget.labelText),
-          minLines: 4,
+          minLines: 8,
           maxLines: null,
           keyboardType: TextInputType.multiline,
           controller: _addressController,
@@ -236,7 +245,6 @@ Future<void> addContact(BuildContext context, ContactT? c) async {
   final contact = await showDialog<ContactT>(
       context: context,
       builder: (context) => AlertDialog(
-            contentPadding: EdgeInsets.all(16),
             title: Text(c?.name != null ? s.editContact : s.addContact),
             content: ContactForm(c ?? ContactT(), key: key),
             actions: confirmButtons(context, () {

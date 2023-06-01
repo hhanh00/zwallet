@@ -78,28 +78,35 @@ class DevPageState extends State<DevPage> {
     final nameController = TextEditingController();
     final keyController = TextEditingController();
     final formKey = GlobalKey<FormBuilderState>();
+    final mq = MediaQuery.of(context);
     await showDialog(
-        context: this.context,
+        context: context,
         barrierDismissible: false,
         builder: (context) => AlertDialog(
             title: Text("Import YFVK"),
+            insetPadding: EdgeInsets.all(64),
             content: FormBuilder(
                 key: formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'Account Name'),
-                        controller: nameController,
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'Key'),
-                        controller: keyController,
-                        minLines: 8,
-                        maxLines: 16,
-                        validator: (k) => _validateYFVK(nameController.text, k),
-                      ),
-                    ],
+                child: Container(
+                  width: mq.size.width,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          decoration:
+                              InputDecoration(labelText: 'Account Name'),
+                          controller: nameController,
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(labelText: 'Key'),
+                          controller: keyController,
+                          minLines: 16,
+                          maxLines: null,
+                          validator: (k) =>
+                              _validateYFVK(nameController.text, k),
+                        ),
+                      ],
+                    ),
                   ),
                 )),
             actions: confirmButtons(context, () {

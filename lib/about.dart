@@ -18,10 +18,8 @@ Future<void> showAbout(BuildContext context) async {
   String? versionString;
   final id = commitId.substring(0, 8);
   versionString = "${s.version}: $packageVersion/$id";
-  if (WarpApi.hasCuda())
-    versionString += "-CUDA";
-  if (WarpApi.hasMetal())
-    versionString += "-METAL";
+  if (WarpApi.hasCuda()) versionString += "-CUDA";
+  if (WarpApi.hasMetal()) versionString += "-METAL";
   final mq = MediaQuery.of(context);
   showDialog(
       context: context,
@@ -29,15 +27,19 @@ Future<void> showAbout(BuildContext context) async {
       builder: (context) => AlertDialog(
               title: Text('${S.of(context).about} $APP_NAME'),
               contentPadding: EdgeInsets.all(16),
-              content: Container(width: mq.size.width, height: mq.size.height,
-                  child: SingleChildScrollView(child: Column(
-                  children: [
-                    MarkdownBody(data: content),
-                    Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+              content: Container(
+                  width: mq.size.width,
+                  height: mq.size.height,
+                  child: SingleChildScrollView(
+                      child: Column(
+                    children: [
+                      MarkdownBody(data: content),
+                      Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                       if (versionString != null)
-                        TextButton(child: Text(versionString), onPressed: _onVersion),
-                  ],
-                ))),
+                        TextButton(
+                            child: Text(versionString), onPressed: _onVersion),
+                    ],
+                  ))),
               actions: [
                 ElevatedButton.icon(
                     onPressed: () {
