@@ -1119,11 +1119,13 @@ class NativeLibrary {
     int coin,
     int id,
     int confirmed_height,
+    int filter_excluded,
   ) {
     return _get_balances(
       coin,
       id,
       confirmed_height,
+      filter_excluded,
     );
   }
 
@@ -2467,12 +2469,14 @@ typedef _c_get_balances = CResult______u8 Function(
   ffi.Uint8 coin,
   ffi.Uint32 id,
   ffi.Uint32 confirmed_height,
+  ffi.Int8 filter_excluded,
 );
 
 typedef _dart_get_balances = CResult______u8 Function(
   int coin,
   int id,
   int confirmed_height,
+  int filter_excluded,
 );
 
 typedef _c_get_db_height = CResult______u8 Function(

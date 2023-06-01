@@ -327,13 +327,13 @@ class QRAddressState extends State<QRAddressWidget> {
 
   String _address() {
     switch (active.addrMode) {
-      case 0:
+      case 0: // UA
         if (_useSnapAddress) return _snapAddress;
         return active.getAddress(settings.uaType);
-      case 1:
+      case 1: // Sapling
         if (_useSnapAddress) return _snapAddress;
         return active.getAddress(2);
-      default:
+      default: // Transparent
         return active.taddress;
     }
   }
@@ -390,7 +390,16 @@ class BalanceWidget extends StatelessWidget {
           return true;
         }();
         final showTAddr = active.addrMode == 2;
-        final balance = showTAddr ? active.tbalance : active.balances.balance;
+        final balance = () {
+          switch (active.addrMode) {
+            case 1:
+              return active.balances.saplingBalance;
+            case 2:
+              return active.tbalance;
+            default:
+              return active.balances.balance;
+          }
+        }();
         final balanceColor = !showTAddr
             ? theme.colorScheme.primary
             : theme.colorScheme.secondary;

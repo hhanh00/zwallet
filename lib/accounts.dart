@@ -242,9 +242,9 @@ abstract class _ActiveAccount with Store {
   void updateBalances() {
     final initialized = balances.initialized;
     final prevBalance = balances.balance;
-    final b = WarpApi.getBalance(coin, id, syncStatus.confirmHeight);
-    balances.update(b.balance, b.shielded, b.unconfirmedSpent, b.underConfirmed,
-        b.excluded);
+    final b = WarpApi.getBalance(coin, id, syncStatus.confirmHeight, false);
+    balances.update(b.balance, b.shielded, b.sapling, b.unconfirmedSpent,
+        b.underConfirmed, b.excluded);
     if (initialized && prevBalance != balances.balance) {
       showBalanceNotification(prevBalance, balances.balance);
     }
@@ -440,6 +440,8 @@ abstract class _Balances with Store {
   @observable
   int shieldedBalance = 0;
   @observable
+  int saplingBalance = 0;
+  @observable
   int unconfirmedSpentBalance = 0;
   @observable
   int underConfirmedBalance = 0;
@@ -447,10 +449,16 @@ abstract class _Balances with Store {
   int excludedBalance = 0;
 
   @action
-  void update(int balance, int shieldedBalance, int unconfirmedSpentBalance,
-      int underConfirmedBalance, int excludedBalance) {
+  void update(
+      int balance,
+      int shieldedBalance,
+      int saplingBalance,
+      int unconfirmedSpentBalance,
+      int underConfirmedBalance,
+      int excludedBalance) {
     this.balance = balance;
     this.shieldedBalance = shieldedBalance;
+    this.saplingBalance = saplingBalance;
     this.unconfirmedSpentBalance = unconfirmedSpentBalance;
     this.underConfirmedBalance = underConfirmedBalance;
     this.excludedBalance = excludedBalance;
@@ -475,8 +483,8 @@ abstract class _PoolBalances with Store {
   int orchard = 0;
 
   void update() {
-    final b =
-        WarpApi.getBalance(active.coin, active.id, syncStatus.confirmHeight);
+    final b = WarpApi.getBalance(
+        active.coin, active.id, syncStatus.confirmHeight, false);
     _update(active.tbalance, b.sapling, b.orchard);
   }
 

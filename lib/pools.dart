@@ -2,6 +2,7 @@ import 'package:YWallet/chart.dart';
 import 'package:YWallet/dualmoneyinput.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'generated/l10n.dart';
 import 'main.dart';
@@ -20,17 +21,17 @@ class PoolsState extends State<PoolsPage> {
   var _maxAmountController = TextEditingController(
       text: amountToString(0, precision(settings.useMillis)));
   var _memoController = TextEditingController();
+  late Balance _balance;
 
   @override
   void initState() {
     super.initState();
-    active.poolBalances.update();
-
-    final b = active.poolBalances;
+    _balance = WarpApi.getBalance(
+        active.coin, active.id, syncStatus.confirmHeight, true);
     final availablePools = [
-      Tuple3(0, 'Transparent', b.transparent / ZECUNIT),
-      Tuple3(1, 'Sapling', b.sapling / ZECUNIT),
-      Tuple3(2, 'Orchard', b.orchard / ZECUNIT)
+      Tuple3(0, 'Transparent', active.tbalance / ZECUNIT),
+      Tuple3(1, 'Sapling', _balance.sapling / ZECUNIT),
+      Tuple3(2, 'Orchard', _balance.orchard / ZECUNIT)
     ];
 
     final availableAddrs = active.availabeAddrs;
@@ -118,14 +119,13 @@ class PoolsState extends State<PoolsPage> {
   }
 
   int get _spendable {
-    final b = active.poolBalances;
     switch (_fromPool) {
       case 0:
-        return b.transparent;
+        return active.tbalance;
       case 1:
-        return b.sapling;
+        return _balance.sapling;
       case 2:
-        return b.orchard;
+        return _balance.orchard;
     }
     return 0;
   }

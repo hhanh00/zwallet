@@ -511,9 +511,10 @@ class WarpApi {
     warp_api_lib.update_account_name(coin, id, toNative(name));
   }
 
-  static Balance getBalance(int coin, int id, int confirmedHeight) {
-    final r =
-        unwrapResultBytes(warp_api_lib.get_balances(coin, id, confirmedHeight));
+  static Balance getBalance(
+      int coin, int id, int confirmedHeight, bool filterExcluded) {
+    final r = unwrapResultBytes(warp_api_lib.get_balances(
+        coin, id, confirmedHeight, filterExcluded ? 1 : 0));
     final b = Balance(r);
     return b;
   }
