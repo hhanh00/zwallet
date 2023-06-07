@@ -31,22 +31,26 @@ class BudgetState extends State<BudgetWidget>
           final _ = active.dataEpoch;
           return Column(
             children: [
-              Card(
-                  child: Column(children: [
-                    Text(S.of(context).largestSpendingsByAddress,
-                        style: Theme.of(context).textTheme.titleLarge),
-                    Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-                    BudgetChart(),
-                  ])),
+              if (active.isPrivate)
+                Card(
+                    child: Column(children: [
+                  Text(S.of(context).largestSpendingsByAddress,
+                      style: Theme.of(context).textTheme.titleLarge),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 4)),
+                  BudgetChart(),
+                ])),
               Expanded(
                   child: Card(
                       child: Column(children: [
-                        Text(S.of(context).accountBalanceHistory,
-                            style: Theme.of(context).textTheme.titleLarge),
-                        Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-                        Expanded(child: Padding(padding: EdgeInsets.only(right: 20),
-                            child: LineChartTimeSeries.fromTimeSeries(active.accountBalances)))
-                      ]))),
+                Text(S.of(context).accountBalanceHistory,
+                    style: Theme.of(context).textTheme.titleLarge),
+                Padding(padding: EdgeInsets.symmetric(vertical: 4)),
+                Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.only(right: 20),
+                        child: LineChartTimeSeries.fromTimeSeries(
+                            active.accountBalances)))
+              ]))),
             ],
           );
         }));
@@ -67,27 +71,31 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return IconTheme.merge(
         data: IconThemeData(opacity: 0.54),
-        child:
-        Column(children: [
+        child: Column(children: [
           Row(children: [
-            Expanded(child:
-            FormBuilderRadioGroup(
-                orientation: OptionsOrientation.horizontal,
-                name: S.of(context).pnl,
-                initialValue: active.pnlSeriesIndex,
-                onChanged: (int? v) {
-                  setState(() {
-                    active.setPnlSeriesIndex(v!);
-                  });
-                },
-                options: [
-                  FormBuilderFieldOption(child: Text(S.of(context).price), value: 0),
+            Expanded(
+                child: FormBuilderRadioGroup(
+                    orientation: OptionsOrientation.horizontal,
+                    name: S.of(context).pnl,
+                    initialValue: active.pnlSeriesIndex,
+                    onChanged: (int? v) {
+                      setState(() {
+                        active.setPnlSeriesIndex(v!);
+                      });
+                    },
+                    options: [
+                  FormBuilderFieldOption(
+                      child: Text(S.of(context).price), value: 0),
                   FormBuilderFieldOption(
                       child: Text(S.of(context).realized), value: 1),
-                  FormBuilderFieldOption(child: Text(S.of(context).mm), value: 2),
-                  FormBuilderFieldOption(child: Text(S.of(context).total), value: 3),
-                  FormBuilderFieldOption(child: Text(S.of(context).qty), value: 4),
-                  FormBuilderFieldOption(child: Text(S.of(context).table), value: 5),
+                  FormBuilderFieldOption(
+                      child: Text(S.of(context).mm), value: 2),
+                  FormBuilderFieldOption(
+                      child: Text(S.of(context).total), value: 3),
+                  FormBuilderFieldOption(
+                      child: Text(S.of(context).qty), value: 4),
+                  FormBuilderFieldOption(
+                      child: Text(S.of(context).table), value: 5),
                 ])),
             IconButton(onPressed: _onExport, icon: Icon(Icons.save)),
           ]),
@@ -97,21 +105,23 @@ class PnLState extends State<PnLWidget> with AutomaticKeepAliveClientMixin {
                 child: Padding(
                     padding: EdgeInsets.only(right: 20),
                     child: active.pnlSeriesIndex != 5
-                        ? PnLChart(
-                        active.pnls, active.pnlSeriesIndex)
+                        ? PnLChart(active.pnls, active.pnlSeriesIndex)
                         : PnLTable()));
           })
         ]));
   }
 
   _onExport() async {
-    final csvData = active.pnlSorted.map((pnl) => [
-      pnl.timestamp,
-      pnl.amount,
-      pnl.price,
-      pnl.realized,
-      pnl.unrealized,
-      pnl.realized + pnl.unrealized]).toList();
+    final csvData = active.pnlSorted
+        .map((pnl) => [
+              pnl.timestamp,
+              pnl.amount,
+              pnl.price,
+              pnl.realized,
+              pnl.unrealized,
+              pnl.realized + pnl.unrealized
+            ])
+        .toList();
     await shareCsv(csvData, 'pnl_history.csv', S.of(context).pnlHistory);
   }
 }
@@ -148,8 +158,8 @@ class PnLChart extends StatelessWidget {
       List<PnL> data, int index, BuildContext context) {
     return data
         .map((pnl) => TimeSeriesPoint(
-        pnl.timestamp.millisecondsSinceEpoch ~/ DAY_MS,
-        _seriesData(pnl, index)))
+            pnl.timestamp.millisecondsSinceEpoch ~/ DAY_MS,
+            _seriesData(pnl, index)))
         .toList();
   }
 }
@@ -227,10 +237,13 @@ class BudgetChartState extends State<BudgetChart> {
     return Observer(
         builder: (context) => Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              HorizontalBarChart(active.spendings.map((s) => s.amount / ZECUNIT).toList()),
-              BudgetTable(active.spendings)
-            ])));
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  HorizontalBarChart(
+                      active.spendings.map((s) => s.amount / ZECUNIT).toList()),
+                  BudgetTable(active.spendings)
+                ])));
   }
 }
 
@@ -241,17 +254,24 @@ class BudgetTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = getPalette(Theme.of(context).primaryColor, spendings.length);
+    final palette =
+        getPalette(Theme.of(context).primaryColor, spendings.length);
     final rows = spendings.asMap().entries.map((e) {
-      final style = TextStyle(color: palette[e.key], fontFeatures: [FontFeature.tabularFigures()]);
+      final style = TextStyle(
+          color: palette[e.key], fontFeatures: [FontFeature.tabularFigures()]);
       final recipient = e.value.recipient!;
       return TableRow(children: [
-        Text(recipient, style: style, maxLines: 1, overflow: TextOverflow.ellipsis,),
+        Text(
+          recipient,
+          style: style,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         Text(decimalFormat(e.value.amount / ZECUNIT, 8), style: style)
       ]);
     }).toList();
     return Table(
-      columnWidths: { 0: FlexColumnWidth(), 1: IntrinsicColumnWidth() },
-      children: rows);
+        columnWidths: {0: FlexColumnWidth(), 1: IntrinsicColumnWidth()},
+        children: rows);
   }
 }

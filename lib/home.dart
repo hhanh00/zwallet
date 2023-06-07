@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
@@ -8,6 +9,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:badges/badges.dart' as Badges;
@@ -112,13 +114,34 @@ class HomeInnerState extends State<HomeInnerPage>
   TabController? _tabController;
   int _tabIndex = 0;
   final contactKey = GlobalKey<ContactsState>();
+  List<String> tabsShown = [];
 
   @override
   void initState() {
     super.initState();
     if (Platform.isAndroid) _initForegroundTask();
-    final tabController =
-        TabController(length: settings.simpleMode ? 4 : 7, vsync: this);
+    var tabs = {
+      // order is guaranteed by dart
+      "account": true,
+      "messages": true,
+      "notes": false,
+      "history": true,
+      "budget": false,
+      "pnl": false,
+      "contacts": true,
+    };
+    if (!settings.simpleMode) {
+      tabs["notes"] = true;
+      tabs["budget"] = true;
+      tabs["pnl"] = true;
+    }
+    if (!active.isPrivate) {
+      tabs["messages"] = false;
+      tabs["contacts"] = false;
+    }
+    tabsShown =
+        tabs.entries.where((kv) => kv.value).map((kv) => kv.key).toList();
+    final tabController = TabController(length: tabsShown.length, vsync: this);
     tabController.addListener(() {
       setState(() {
         _tabIndex = tabController.index;
@@ -133,7 +156,8 @@ class HomeInnerState extends State<HomeInnerPage>
     final theme = Theme.of(context);
     final simpleMode = settings.simpleMode;
 
-    final contactTabIndex = simpleMode ? 3 : 6;
+    final contactTabIndex = tabsShown.indexOf("contacts");
+    final messageTabIndex = tabsShown.indexOf("messages");
     Widget button = Container();
     if (_tabIndex == 0)
       button = FloatingActionButton(
@@ -147,7 +171,7 @@ class HomeInnerState extends State<HomeInnerPage>
         backgroundColor: theme.colorScheme.secondary,
         child: Icon(Icons.add),
       );
-    else if (_tabIndex == 1)
+    else if (_tabIndex == messageTabIndex)
       button = FloatingActionButton(
         onPressed: _onSend,
         backgroundColor: theme.colorScheme.secondary,
@@ -184,13 +208,15 @@ class HomeInnerState extends State<HomeInnerPage>
         return SizedBox(); // Show a placeholder
       }
 
+      final privateCoin = active.isPrivate;
+
       final menu = PopupMenuButton<String>(
         itemBuilder: (context) {
           return [
             PopupMenuItem(child: Text(s.accounts), value: "Accounts"),
             PopupMenuItem(child: Text(s.backup), value: "Backup"),
             PopupMenuItem(child: Text(rescanMsg), value: "Rescan"),
-            if (!simpleMode)
+            if (!simpleMode && privateCoin)
               PopupMenuItem(child: Text(s.pools), value: "Pools"),
             if (!simpleMode)
               PopupMenuItem(
@@ -216,18 +242,18 @@ class HomeInnerState extends State<HomeInnerPage>
                                 child: Text(s.broadcast), value: "Broadcast"),
                             PopupMenuItem(
                                 child: Text(s.multipay), value: "MultiPay"),
-                            PopupMenuItem(
-                                child: Text(s.keyTool),
-                                enabled: active.canPay,
-                                value: "KeyTool"),
-                            PopupMenuItem(
-                                child: Text(s.sweep),
-                                enabled: active.canPay,
-                                value: "Sweep"),
+                            if (privateCoin)
+                              PopupMenuItem(
+                                  child: Text(s.keyTool),
+                                  enabled: active.canPay,
+                                  value: "KeyTool"),
+                            if (privateCoin)
+                              PopupMenuItem(
+                                  child: Text(s.sweep),
+                                  enabled: active.canPay,
+                                  value: "Sweep"),
                           ],
                       onSelected: _onMenu)),
-            // if (!simpleMode && !isMobile())
-            //   PopupMenuItem(child: Text(s.ledger), value: "Ledger"),
             if (settings.isDeveloper)
               PopupMenuItem(child: Text(s.expert), value: "Expert"),
             PopupMenuItem(child: Text(s.settings), value: "Settings"),
@@ -252,12 +278,12 @@ class HomeInnerState extends State<HomeInnerPage>
             isScrollable: true,
             tabs: [
               Tab(text: s.account),
-              messageTab,
-              if (!simpleMode) Tab(text: s.notes),
-              Tab(text: s.history),
-              if (!simpleMode) Tab(text: s.budget),
-              if (!simpleMode) Tab(text: s.tradingPl),
-              Tab(text: s.contacts),
+              if (tabsShown.contains("messages")) messageTab,
+              if (tabsShown.contains("notes")) Tab(text: s.notes),
+              if (tabsShown.contains("history")) Tab(text: s.history),
+              if (tabsShown.contains("budget")) Tab(text: s.budget),
+              if (tabsShown.contains("pnl")) Tab(text: s.tradingPl),
+              if (tabsShown.contains("contacts")) Tab(text: s.contacts),
             ],
           ),
           actions: [menu],
@@ -266,12 +292,12 @@ class HomeInnerState extends State<HomeInnerPage>
           controller: _tabController,
           children: [
             AccountPage(),
-            MessageWidget(messageKey),
-            if (!simpleMode) NoteWidget(),
-            HistoryWidget(),
-            if (!simpleMode) BudgetWidget(),
-            if (!simpleMode) PnLWidget(),
-            ContactsTab(key: contactKey),
+            if (tabsShown.contains("messages")) MessageWidget(messageKey),
+            if (tabsShown.contains("notes")) NoteWidget(),
+            if (tabsShown.contains("history")) HistoryWidget(),
+            if (tabsShown.contains("budget")) BudgetWidget(),
+            if (tabsShown.contains("pnl")) PnLWidget(),
+            if (tabsShown.contains("contacts")) ContactsTab(key: contactKey),
           ],
         ),
         floatingActionButton: button,
@@ -492,7 +518,7 @@ class HomeInnerState extends State<HomeInnerPage>
 
     if (rawTx != null) {
       try {
-        final res = WarpApi.broadcast(rawTx);
+        final res = WarpApi.broadcast(active.coin, rawTx);
         showSnackBar(res);
       } on String catch (e) {
         showSnackBar(e, error: true);

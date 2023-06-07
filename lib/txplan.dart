@@ -31,10 +31,12 @@ class TxPlanPage extends StatelessWidget {
         .map((e) => DataRow(cells: [
               DataCell(Text('...${trailing(e.address!, 12)}')),
               DataCell(Text('${poolToString(e.pool)}')),
-              DataCell(Text('${amountToString(e.amount, 3)}')),
+              DataCell(Text('${amountToString(e.amount, MAX_PRECISION)}')),
             ]))
         .toList();
     final invalidPrivacy = report.privacyLevel < settings.minPrivacyLevel;
+    // TODO: Abstract sat into coinDef
+    final feeFx = decimalFormat(report.fee * priceStore.coinPrice / ZECUNIT, 2);
 
     return Scaffold(
         appBar: AppBar(title: Text('Transaction Plan')),
@@ -60,20 +62,22 @@ class TxPlanPage extends StatelessWidget {
                   title: Text('Transparent Input'),
                   trailing:
                       Text(amountToString(report.transparent, MAX_PRECISION))),
-              ListTile(
-                  title: Text('Sapling Input'),
-                  trailing:
-                      Text(amountToString(report.sapling, MAX_PRECISION))),
-              if (supportsUA)
+              if (active.isPrivate)
+                ListTile(
+                    title: Text('Sapling Input'),
+                    trailing:
+                        Text(amountToString(report.sapling, MAX_PRECISION))),
+              if (active.isPrivate && supportsUA)
                 ListTile(
                     title: Text('Orchard Input'),
                     trailing:
                         Text(amountToString(report.orchard, MAX_PRECISION))),
-              ListTile(
-                  title: Text('Net Sapling Change'),
-                  trailing:
-                      Text(amountToString(report.netSapling, MAX_PRECISION))),
-              if (supportsUA)
+              if (active.isPrivate)
+                ListTile(
+                    title: Text('Net Sapling Change'),
+                    trailing:
+                        Text(amountToString(report.netSapling, MAX_PRECISION))),
+              if (active.isPrivate && supportsUA)
                 ListTile(
                     title: Text('Net Orchard Change'),
                     trailing:
@@ -81,6 +85,9 @@ class TxPlanPage extends StatelessWidget {
               ListTile(
                   title: Text('Fee'),
                   trailing: Text(amountToString(report.fee, MAX_PRECISION))),
+              ListTile(
+                  title: Text('Fee ${settings.currency}'),
+                  trailing: Text(feeFx)),
               privacyToString(context, report.privacyLevel)!,
               if (invalidPrivacy)
                 Padding(

@@ -80,15 +80,16 @@ class AccountManagerState extends State<AccountManagerPage> {
                     break;
                 }
                 final weight = a.active ? FontWeight.bold : FontWeight.normal;
+                final def = settings.coins[a.coin].def;
                 final zbal = a.balance / ZECUNIT;
-                final tbal = a.tbalance / ZECUNIT;
+                final tbal = def.coin < 2 ? a.tbalance / ZECUNIT : 0.0;
                 final balance = zbal + tbal;
                 return Card(
                     child: Dismissible(
                   key: Key(a.name),
                   child: ListTile(
-                    leading: CircleAvatar(
-                        backgroundImage: settings.coins[a.coin].def.image),
+                    leading:
+                        CircleAvatar(backgroundImage: AssetImage(def.image)),
                     title: RichText(
                         text: TextSpan(children: [
                       TextSpan(

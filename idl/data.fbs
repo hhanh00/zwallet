@@ -47,13 +47,55 @@ table ShieldedTx {
     short_tx_id:string;
     timestamp:uint32;
     name:string;
-    value:uint64;
+    value:int64;
     address:string;
     memo:string;
 }
 
 table ShieldedTxVec {
     txs:[ShieldedTx];
+}
+
+table PlainTx {
+    id:uint32;
+    tx_id:string;
+    height:uint32;
+    timestamp:uint32;
+    value:int64;
+}
+
+table PlainTxVec {
+    txs:[PlainTx];
+}
+
+table PlainNote {
+    id:uint32;
+    tx_id:string;
+    height:uint32;
+    timestamp:uint32;
+    vout:uint32;
+    value:uint64;
+}
+
+table PlainNoteVec {
+    notes:[PlainNote];
+}
+
+table BTCInput {
+    tx_id:string;
+    vout:uint32;
+    value:uint64;
+}
+
+table BTCOutput {
+    script_pubkey:string;
+    value:uint64;
+}
+
+table BTCTx {
+    txins:[BTCInput];
+    txouts:[BTCOutput];
+    fee:uint64;
 }
 
 table Message {

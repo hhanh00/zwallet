@@ -101,8 +101,10 @@ class SendState extends State<SendPage> {
         _setPaymentURI(uri);
       });
 
-    final templateIds = active.dbReader.loadTemplates();
-    _templates = templateIds;
+    if (active.isPrivate) {
+      final templateIds = active.dbReader.loadTemplates();
+      _templates = templateIds;
+    }
   }
 
   @override
@@ -214,64 +216,67 @@ class SendState extends State<SendPage> {
                       if (!simpleMode)
                         BalanceTable(_sBalance, _tBalance, _excludedBalance,
                             _underConfirmedBalance, change, _usedBalance, _fee),
-                      Container(
-                          child: InputDecorator(
-                              decoration: InputDecoration(labelText: s.memo),
-                              child: Column(children: [
-                                FormBuilderCheckbox(
-                                  key: UniqueKey(),
-                                  name: 'reply-to',
-                                  title: Text(s.includeReplyTo),
-                                  initialValue: _replyTo,
+                      if (active.isPrivate)
+                        Container(
+                            child: InputDecorator(
+                                decoration: InputDecoration(labelText: s.memo),
+                                child: Column(children: [
+                                  FormBuilderCheckbox(
+                                    key: UniqueKey(),
+                                    name: 'reply-to',
+                                    title: Text(s.includeReplyTo),
+                                    initialValue: _replyTo,
+                                    onChanged: (v) {
+                                      setState(() {
+                                        _replyTo = v ?? false;
+                                      });
+                                    },
+                                  ),
+                                  TextFormField(
+                                    decoration:
+                                        InputDecoration(labelText: s.subject),
+                                    controller: _subjectController,
+                                  ),
+                                  TextFormField(
+                                    decoration:
+                                        InputDecoration(labelText: s.body),
+                                    minLines: 4,
+                                    maxLines: null,
+                                    keyboardType: TextInputType.multiline,
+                                    controller: _memoController,
+                                  )
+                                ]))),
+                      Padding(padding: EdgeInsets.all(8)),
+                      if (active.isPrivate)
+                        Row(children: [
+                          Expanded(
+                              child: DropdownButtonFormField<SendTemplateT>(
+                                  hint: Text(s.template),
+                                  items: templates,
+                                  value: _template,
                                   onChanged: (v) {
                                     setState(() {
-                                      _replyTo = v ?? false;
+                                      _template = v;
                                     });
-                                  },
-                                ),
-                                TextFormField(
-                                  decoration:
-                                      InputDecoration(labelText: s.subject),
-                                  controller: _subjectController,
-                                ),
-                                TextFormField(
-                                  decoration:
-                                      InputDecoration(labelText: s.body),
-                                  minLines: 4,
-                                  maxLines: null,
-                                  keyboardType: TextInputType.multiline,
-                                  controller: _memoController,
-                                )
-                              ]))),
-                      Padding(padding: EdgeInsets.all(8)),
-                      Row(children: [
-                        Expanded(
-                            child: DropdownButtonFormField<SendTemplateT>(
-                                hint: Text(s.template),
-                                items: templates,
-                                value: _template,
-                                onChanged: (v) {
-                                  setState(() {
-                                    _template = v;
-                                  });
-                                })),
-                        addReset,
-                        IconButton(
-                            onPressed: _template != null ? _openTemplate : null,
-                            icon: Icon(Icons.open_in_new)),
-                        IconButton(
-                            onPressed: _template != null
-                                ? () {
-                                    _saveTemplate(
-                                        _template!.id, _template!.title!, true);
-                                  }
-                                : null,
-                            icon: Icon(Icons.save)),
-                        IconButton(
-                            onPressed:
-                                _template != null ? _deleteTemplate : null,
-                            icon: Icon(Icons.delete)),
-                      ]),
+                                  })),
+                          addReset,
+                          IconButton(
+                              onPressed:
+                                  _template != null ? _openTemplate : null,
+                              icon: Icon(Icons.open_in_new)),
+                          IconButton(
+                              onPressed: _template != null
+                                  ? () {
+                                      _saveTemplate(_template!.id,
+                                          _template!.title!, true);
+                                    }
+                                  : null,
+                              icon: Icon(Icons.save)),
+                          IconButton(
+                              onPressed:
+                                  _template != null ? _deleteTemplate : null,
+                              icon: Icon(Icons.delete)),
+                        ]),
                       Padding(padding: EdgeInsets.all(8)),
                       ButtonBar(children: [
                         ElevatedButton.icon(

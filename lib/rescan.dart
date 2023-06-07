@@ -9,6 +9,7 @@ final rescanKey = GlobalKey<RescanFormState>();
 
 Future<int?> rescanDialog(BuildContext context) async {
   try {
+    if (active.coin >= 2) return 0;
     DateTime minDate = WarpApi.getActivationDate();
     final bool approved = await showDialog<bool>(
             context: context,

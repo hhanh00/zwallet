@@ -5,13 +5,12 @@ import "coin.dart";
 class YcashCoin extends CoinBase {
   int coin = 1;
   String name = "Ycash";
-  String app = "YWallet";
   String symbol = "\u24E8";
   String currency = "ycash";
   int coinIndex = 347;
   String ticker = "YEC";
   String dbName = "yec.db";
-  AssetImage image = AssetImage('assets/ycash.png');
+  String image = 'assets/ycash.png';
   List<LWInstance> lwd = [
     LWInstance("Lightwalletd", "https://lite.ycash.xyz:9067"),
   ];

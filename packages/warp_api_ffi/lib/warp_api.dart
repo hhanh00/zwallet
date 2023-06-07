@@ -117,10 +117,6 @@ class WarpApi {
         name.toNativeUtf8().cast<Int8>(), index, count);
   }
 
-  static String ledgerGetFVK(int coin) {
-    return unwrapResultString(warp_api_lib.ledger_get_fvk(coin));
-  }
-
   static void convertToWatchOnly(int coin, int id) {
     warp_api_lib.convert_to_watchonly(coin, id);
   }
@@ -159,8 +155,8 @@ class WarpApi {
     return unwrapResultU32(warp_api_lib.rewind_to(height));
   }
 
-  static void rescanFrom(int height) {
-    warp_api_lib.rescan_from(height);
+  static void rescanFrom(int coin, int height) {
+    warp_api_lib.rescan_from(coin, height);
   }
 
   static int warpSync(SyncParams params) {
@@ -174,8 +170,8 @@ class WarpApi {
     warp_api_lib.cancel_warp();
   }
 
-  static Future<int> getLatestHeight() async {
-    return await compute(getLatestHeightIsolateFn, null);
+  static Future<int> getLatestHeight(int coin) async {
+    return await compute(getLatestHeightIsolateFn, coin);
   }
 
   static int validKey(int coin, String key) {
@@ -221,8 +217,8 @@ class WarpApi {
   //           recipientJson, useTransparent, anchorOffset, receivePort.sendPort));
   // }
 
-  static int getTBalance() {
-    final balance = warp_api_lib.get_taddr_balance(0xFF, 0);
+  static int getTBalance(int coin, int account) {
+    final balance = warp_api_lib.get_taddr_balance(coin, account);
     return unwrapResultU64(balance);
   }
 
@@ -303,8 +299,9 @@ class WarpApi {
         SignOnlyParams(coin, account, tx, receivePort.sendPort));
   }
 
-  static String broadcast(String txStr) {
-    final res = warp_api_lib.broadcast_tx(txStr.toNativeUtf8().cast<Int8>());
+  static String broadcast(int coin, String txStr) {
+    final res =
+        warp_api_lib.broadcast_tx(coin, txStr.toNativeUtf8().cast<Int8>());
     return unwrapResultString(res);
   }
 
@@ -341,9 +338,9 @@ class WarpApi {
     return res;
   }
 
-  static Future<int> syncHistoricalPrices(String currency) async {
-    return await compute(
-        syncHistoricalPricesIsolateFn, SyncHistoricalPricesParams(currency));
+  static Future<int> syncHistoricalPrices(int coin, String currency) async {
+    return await compute(syncHistoricalPricesIsolateFn,
+        SyncHistoricalPricesParams(coin, currency));
   }
 
   static void setDbPasswd(int coin, String passwd) {
@@ -453,14 +450,6 @@ class WarpApi {
         addressIndex ?? 0));
     final kp = KeyPack(res);
     return kp;
-  }
-
-  static void ledgerBuildKeys() {
-    unwrapResultU8(warp_api_lib.ledger_build_keys());
-  }
-
-  static String ledgerGetAddress() {
-    return unwrapResultString(warp_api_lib.ledger_get_address());
   }
 
   static Future<String> ledgerSend(int coin, String txPlan) async {
@@ -667,8 +656,8 @@ String signOnlyIsolateFn(SignOnlyParams params) {
   return convertCString(txIdRes.value);
 }
 
-int getLatestHeightIsolateFn(Null n) {
-  return unwrapResultU32(warp_api_lib.get_latest_height());
+int getLatestHeightIsolateFn(int coin) {
+  return unwrapResultU32(warp_api_lib.get_latest_height(coin));
 }
 
 String transferPoolsIsolateFn(TransferPoolsParams params) {
@@ -689,6 +678,7 @@ int syncHistoricalPricesIsolateFn(SyncHistoricalPricesParams params) {
   final now = DateTime.now();
   final today = DateTime.utc(now.year, now.month, now.day);
   return unwrapResultU32(warp_api_lib.sync_historical_prices(
+      params.coin,
       today.millisecondsSinceEpoch ~/ 1000,
       365,
       params.currency.toNativeUtf8().cast<Int8>()));
@@ -768,9 +758,10 @@ class TransferPoolsParams {
 }
 
 class SyncHistoricalPricesParams {
+  final int coin;
   final String currency;
 
-  SyncHistoricalPricesParams(this.currency);
+  SyncHistoricalPricesParams(this.coin, this.currency);
 }
 
 class GetTBalanceParams {

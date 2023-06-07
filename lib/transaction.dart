@@ -50,17 +50,20 @@ class TransactionState extends State<TransactionPage> {
           ListTile(
               title: Text(S.of(context).amount),
               subtitle: SelectableText(decimalFormat(tx.value, 8))),
-          ListTile(
-              title: Text(S.of(context).address),
-              subtitle: SelectableText('${tx.address}'),
-              trailing: IconButton(
-                  icon: Icon(Icons.contacts), onPressed: _addContact)),
-          ListTile(
-              title: Text(S.of(context).contactName),
-              subtitle: SelectableText('${tx.contact ?? "N/A"}')),
-          ListTile(
-              title: Text(S.of(context).memo),
-              subtitle: SelectableText('${tx.memo}')),
+          if (active.isPrivate)
+            ListTile(
+                title: Text(S.of(context).address),
+                subtitle: SelectableText('${tx.address}'),
+                trailing: IconButton(
+                    icon: Icon(Icons.contacts), onPressed: _addContact)),
+          if (active.isPrivate)
+            ListTile(
+                title: Text(S.of(context).contactName),
+                subtitle: SelectableText('${tx.contact ?? "N/A"}')),
+          if (active.isPrivate)
+            ListTile(
+                title: Text(S.of(context).memo),
+                subtitle: SelectableText('${tx.memo}')),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
             IconButton(
                 onPressed: txIndex > 0 ? _prev : null,

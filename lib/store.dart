@@ -8,6 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:queue/queue.dart';
 import 'package:shared_preferences_android/shared_preferences_android.dart';
 import 'package:shared_preferences_ios/shared_preferences_ios.dart';
@@ -21,6 +22,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import 'coin/coin.dart';
+import 'coin/coins.dart' as Coins;
 import 'generated/l10n.dart';
 import 'main.dart';
 
@@ -92,7 +94,10 @@ abstract class _Settings with Store {
   @observable
   bool simpleMode = true;
 
-  List<CoinData> coins = [CoinData(0, zcash), CoinData(1, ycash)];
+  List<CoinData> coins = Coins.coins
+      .sortedByNum((c) => c.coin)
+      .map((c) => CoinData(c.coin, c))
+      .toList();
 
   @observable
   String version = "1.0.0";
@@ -636,8 +641,8 @@ abstract class _PriceStore with Store {
       if (f ||
           _lastChartUpdateTime == null ||
           now > _lastChartUpdateTime + 5 * 60) {
-        await fetchQueue
-            .add(() => WarpApi.syncHistoricalPrices(settings.currency));
+        await fetchQueue.add(
+            () => WarpApi.syncHistoricalPrices(active.coin, settings.currency));
         active.fetchChartData();
         lastChartUpdateTime = now;
       }
@@ -739,7 +744,7 @@ abstract class _SyncStatus with Store {
       if (url.isNotEmpty) WarpApi.updateLWD(active.coin, url);
     }
     try {
-      latestHeight = await WarpApi.getLatestHeight();
+      latestHeight = await WarpApi.getLatestHeight(active.coin);
     } on String {}
     final _syncedInfo = getDbSyncedHeight();
     // if syncedHeight = 0, we just started sync therefore don't set it back to null
@@ -816,7 +821,7 @@ abstract class _SyncStatus with Store {
     showSnackBar(S.current.rescanRequested(height));
     syncedHeight = height;
     timestamp = null;
-    WarpApi.rescanFrom(height);
+    WarpApi.rescanFrom(active.coin, height);
     await sync(true);
     final rh = pendingRescanHeight;
     if (rh != null) {

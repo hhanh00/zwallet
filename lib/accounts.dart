@@ -162,6 +162,8 @@ abstract class _ActiveAccount with Store {
     return AccountId(coin, id);
   }
 
+  bool get isPrivate => coin < 2;
+
   @action
   Future<void> restore() async {
     final prefs = await SharedPreferences.getInstance();
@@ -234,7 +236,7 @@ abstract class _ActiveAccount with Store {
   @action
   void updateTBalance() {
     try {
-      tbalance = WarpApi.getTBalance();
+      tbalance = WarpApi.getTBalance(active.coin, active.id);
     } on String {}
   }
 
@@ -368,13 +370,15 @@ abstract class _ActiveAccount with Store {
 
   @action
   void excludeNote(Note note) {
-    WarpApi.updateExcluded(coin, note.id, note.excluded);
+    if (active.isPrivate) WarpApi.updateExcluded(coin, note.id, note.excluded);
   }
 
   @action
   void invertExcludedNotes() {
-    WarpApi.invertExcluded(coin, id);
-    notes = notes.map((n) => n.invertExcluded).toList();
+    if (active.isPrivate) {
+      WarpApi.invertExcluded(coin, id);
+      notes = notes.map((n) => n.invertExcluded).toList();
+    }
   }
 
   @action

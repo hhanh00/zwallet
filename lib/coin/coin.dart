@@ -16,12 +16,11 @@ class LWInstance {
 abstract class CoinBase {
   String get name;
   int get coin;
-  String get app;
   String get symbol;
   String get currency;
   String get ticker;
   int get coinIndex;
-  AssetImage get image;
+  String get image;
   String get dbName;
   late String dbDir;
   late String dbFullPath;

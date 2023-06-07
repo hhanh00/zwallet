@@ -12,12 +12,17 @@ class NoteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       switch (settings.noteView) {
-        case ViewStyle.Table: return NoteTable();
-        case ViewStyle.List: return NoteList();
-        case ViewStyle.Auto: return OrientationBuilder(builder: (context, orientation) {
-          if (orientation == Orientation.portrait) return NoteList();
-          else return NoteTable();
-        });
+        case ViewStyle.Table:
+          return NoteTable();
+        case ViewStyle.List:
+          return NoteList();
+        case ViewStyle.Auto:
+          return OrientationBuilder(builder: (context, orientation) {
+            if (orientation == Orientation.portrait)
+              return NoteList();
+            else
+              return NoteTable();
+          });
       }
     });
   }
@@ -30,7 +35,8 @@ class NoteTable extends StatefulWidget {
   State<StatefulWidget> createState() => _NoteTableState();
 }
 
-class _NoteTableState extends State<NoteTable> with AutomaticKeepAliveClientMixin {
+class _NoteTableState extends State<NoteTable>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; //Set to true
 
@@ -77,7 +83,9 @@ class _NoteTableState extends State<NoteTable> with AutomaticKeepAliveClientMixi
             header: Text(S.of(context).selectNotesToExcludeFromPayments,
                 style: Theme.of(context).textTheme.bodyMedium),
             actions: [
-              IconButton(onPressed: _selectInverse, icon: Icon(MdiIcons.selectInverse)),
+              IconButton(
+                  onPressed: _selectInverse,
+                  icon: Icon(MdiIcons.selectInverse)),
             ],
             columnSpacing: 16,
             showCheckboxColumn: false,
@@ -93,6 +101,7 @@ class _NoteTableState extends State<NoteTable> with AutomaticKeepAliveClientMixi
   }
 
   _onRowSelected(Note note) {
+    if (!active.isPrivate) return;
     active.excludeNote(note);
   }
 
@@ -121,8 +130,7 @@ class NotesDataSource extends DataTableSource {
 
     if (note.spent)
       style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
-    if (note.orchard)
-      style = style.merge(TextStyle(color: theme.primaryColor));
+    if (note.orchard) style = style.merge(TextStyle(color: theme.primaryColor));
 
     final amountStyle = weightFromAmount(style, note.value);
 
@@ -135,7 +143,8 @@ class NotesDataSource extends DataTableSource {
               : theme.colorScheme.background),
       cells: [
         DataCell(Text("$confsOrHeight", style: style)),
-        DataCell(Text("${noteDateFormat.format(note.timestamp)}", style: style)),
+        DataCell(
+            Text("${noteDateFormat.format(note.timestamp)}", style: style)),
         DataCell(Text(decimalFormat(note.value, 8), style: amountStyle)),
       ],
       onSelectChanged: (selected) => _noteSelected(note, selected),
@@ -152,6 +161,7 @@ class NotesDataSource extends DataTableSource {
   int get selectedRowCount => 0;
 
   void _noteSelected(Note note, bool? selected) {
+    if (!active.isPrivate) return;
     note.excluded = !note.excluded;
     notifyListeners();
     onRowSelected(note);
@@ -170,21 +180,24 @@ class NoteListState extends State<NoteList> with AutomaticKeepAliveClientMixin {
     final s = S.of(context);
     return Observer(builder: (context) {
       final notes = active.sortedNotes;
-      return Padding(padding: EdgeInsets.all(16), child: CustomScrollView(
-        key: UniqueKey(),
-        slivers: [
-          SliverToBoxAdapter(child: ListTile(
-            onTap: _onInvert,
-            title: Text(s.selectNotesToExcludeFromPayments),
-            trailing: Icon(Icons.select_all),
-          )),
-          SliverFixedExtentList(
-            itemExtent: 50,
-            delegate: SliverChildBuilderDelegate((context, index) {
-              return NoteItem(notes[index], index);
-            }, childCount: notes.length))
-        ],
-      ));
+      return Padding(
+          padding: EdgeInsets.all(16),
+          child: CustomScrollView(
+            key: UniqueKey(),
+            slivers: [
+              SliverToBoxAdapter(
+                  child: ListTile(
+                onTap: _onInvert,
+                title: Text(s.selectNotesToExcludeFromPayments),
+                trailing: Icon(Icons.select_all),
+              )),
+              SliverFixedExtentList(
+                  itemExtent: 50,
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    return NoteItem(notes[index], index);
+                  }, childCount: notes.length))
+            ],
+          ));
     });
   }
 
@@ -225,24 +238,33 @@ class NoteItemState extends State<NoteItem> {
       style = style.merge(TextStyle(color: style.color!.withOpacity(0.5)));
     if (note.spent)
       style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
-    if (note.orchard)
-      style = style.merge(TextStyle(color: theme.primaryColor));
+    if (note.orchard) style = style.merge(TextStyle(color: theme.primaryColor));
 
     final amountStyle = weightFromAmount(style, note.value);
 
-    return GestureDetector(onTap: _onSelected, behavior: HitTestBehavior.opaque, child:
-      ColoredBox(color: excluded ? theme.primaryColor.withOpacity(0.5) : theme.colorScheme.background, child:
-        Padding(padding: EdgeInsets.all(8), child:
-          Row(children: [
-            Column(children: [Text("${note.height}", style: theme.textTheme.bodySmall),
-              Text("$confirmations", style: theme.textTheme.bodyMedium),
-            ]),
-            Expanded(child: Center(child: Text("${note.value}", style: amountStyle))),
-            Text("$timestamp"),
-      ]))));
+    return GestureDetector(
+        onTap: _onSelected,
+        behavior: HitTestBehavior.opaque,
+        child: ColoredBox(
+            color: excluded
+                ? theme.primaryColor.withOpacity(0.5)
+                : theme.colorScheme.background,
+            child: Padding(
+                padding: EdgeInsets.all(8),
+                child: Row(children: [
+                  Column(children: [
+                    Text("${note.height}", style: theme.textTheme.bodySmall),
+                    Text("$confirmations", style: theme.textTheme.bodyMedium),
+                  ]),
+                  Expanded(
+                      child: Center(
+                          child: Text("${note.value}", style: amountStyle))),
+                  Text("$timestamp"),
+                ]))));
   }
 
   _onSelected() {
+    if (!active.isPrivate) return;
     setState(() {
       excluded = !excluded;
       widget.note.excluded = excluded;
@@ -254,4 +276,3 @@ class NoteItemState extends State<NoteItem> {
 bool confirmed(int height) {
   return syncStatus.latestHeight - height >= settings.anchorOffset;
 }
-

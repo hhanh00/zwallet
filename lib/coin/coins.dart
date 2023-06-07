@@ -1,11 +1,10 @@
 import 'coin.dart';
 import 'ycash.dart';
 import 'zcash.dart';
-import 'zcashtest.dart';
+import 'btc.dart';
 
 CoinBase ycash = YcashCoin();
 CoinBase zcash = ZcashCoin();
-CoinBase zcashtest = ZcashTestCoin();
+CoinBase btc = BTCCoin();
 
-final coins = [zcash, ycash];
-
+final coins = [zcash, ycash, btc];

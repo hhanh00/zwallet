@@ -36,6 +36,14 @@ class _AddAccountPageState extends State<AddAccountPage> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+
+    final options = coins
+        .map((c) => FormBuilderFieldOption(
+            child: ListTile(
+                title: Text(c.name),
+                trailing: Image.asset(c.image, height: 32)),
+            value: c.coin))
+        .toList();
     return Scaffold(
         appBar: AppBar(
           title: Text(s.newAccount),
@@ -70,22 +78,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                   _coin = v!;
                                 });
                               },
-                              options: [
-                                FormBuilderFieldOption(
-                                    child: ListTile(
-                                        title: Text('Ycash'),
-                                        trailing: Image.asset(
-                                            'assets/ycash.png',
-                                            height: 32)),
-                                    value: 1),
-                                FormBuilderFieldOption(
-                                    child: ListTile(
-                                        title: Text('Zcash'),
-                                        trailing: Image.asset(
-                                            'assets/zcash.png',
-                                            height: 32)),
-                                    value: 0),
-                              ]),
+                              options: options),
                           FormBuilderCheckbox(
                             name: 'restore',
                             title: Text(s.restoreAnAccount),

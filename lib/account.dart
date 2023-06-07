@@ -26,6 +26,11 @@ class _AccountState extends State<AccountPage>
   bool get wantKeepAlive => true; //Set to true
 
   @override
+  void initState() {
+    if (!_hasAddress(active.addrMode)) active.addrMode = _getNextMode();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return SingleChildScrollView(
@@ -182,7 +187,7 @@ class QRAddressState extends State<QRAddressWidget> {
       final simpleMode = settings.simpleMode;
       final address = _address();
       final shortAddress = centerTrim(address);
-      final addrMode = active.addrMode;
+      var addrMode = active.addrMode;
       final qrSize = getScreenSize(context) / 2.5;
       final coinDef = active.coinDef;
       final nextMode = _getNextMode();
@@ -199,7 +204,7 @@ class QRAddressState extends State<QRAddressWidget> {
                 child: QrImage(
                     data: address,
                     size: qrSize,
-                    embeddedImage: coinDef.image,
+                    embeddedImage: AssetImage(coinDef.image),
                     backgroundColor: Colors.white))),
         Padding(padding: EdgeInsets.symmetric(vertical: 8)),
         RichText(
@@ -336,24 +341,6 @@ class QRAddressState extends State<QRAddressWidget> {
       default: // Transparent
         return active.taddress;
     }
-  }
-
-  int _getNextMode() {
-    int next = active.addrMode;
-    do {
-      next = (next + 1) % 3;
-      switch (next) {
-        case 0:
-          return next;
-        case 1: // we have orchard -> show zaddr
-          if (addrsAvailable & 4 != 0) return next;
-          break;
-        case 2: // we have taddr -> show taddr
-          if (addrsAvailable & 1 != 0) return next;
-          break;
-      }
-    } while (next != active.addrMode);
-    return 0; // unreachable
   }
 
   String? _getTapMessage(int mode) {
@@ -519,3 +506,24 @@ _getBalanceHi(int b) => decimalFormat((b.abs() ~/ 100000) / 1000.0, 3);
 _getBalanceLo(int b) => (b.abs() % 100000).toString().padLeft(5, '0');
 
 _sign(int b) => b < 0 ? '-' : '+';
+
+bool _hasAddress(int mode) {
+  switch (mode) {
+    case 0:
+      return active.availabeAddrs & 2 != 0;
+    case 1:
+      return active.availabeAddrs & 4 != 0;
+    case 2:
+      return active.availabeAddrs & 1 != 0;
+  }
+  return false;
+}
+
+int _getNextMode() {
+  int next = active.addrMode;
+  do {
+    next = (next + 1) % 3;
+    if (_hasAddress(next)) return next;
+  } while (next != active.addrMode);
+  return 0; // unreachable
+}

@@ -833,7 +833,7 @@ class ShieldedTx {
   String? get shortTxId => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 10);
   int get timestamp => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 12, 0);
   String? get name => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 14);
-  int get value => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 16, 0);
+  int get value => const fb.Int64Reader().vTableGet(_bc, _bcOffset, 16, 0);
   String? get address => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 18);
   String? get memo => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 20);
 
@@ -900,7 +900,7 @@ class ShieldedTxT implements fb.Packable {
     fbBuilder.addOffset(3, shortTxIdOffset);
     fbBuilder.addUint32(4, timestamp);
     fbBuilder.addOffset(5, nameOffset);
-    fbBuilder.addUint64(6, value);
+    fbBuilder.addInt64(6, value);
     fbBuilder.addOffset(7, addressOffset);
     fbBuilder.addOffset(8, memoOffset);
     return fbBuilder.endTable();
@@ -954,7 +954,7 @@ class ShieldedTxBuilder {
     return fbBuilder.offset;
   }
   int addValue(int? value) {
-    fbBuilder.addUint64(6, value);
+    fbBuilder.addInt64(6, value);
     return fbBuilder.offset;
   }
   int addAddressOffset(int? offset) {
@@ -1023,7 +1023,7 @@ class ShieldedTxObjectBuilder extends fb.ObjectBuilder {
     fbBuilder.addOffset(3, shortTxIdOffset);
     fbBuilder.addUint32(4, _timestamp);
     fbBuilder.addOffset(5, nameOffset);
-    fbBuilder.addUint64(6, _value);
+    fbBuilder.addInt64(6, _value);
     fbBuilder.addOffset(7, addressOffset);
     fbBuilder.addOffset(8, memoOffset);
     return fbBuilder.endTable();
@@ -1128,6 +1128,906 @@ class ShieldedTxVecObjectBuilder extends fb.ObjectBuilder {
         : fbBuilder.writeList(_txs!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
     fbBuilder.startTable(1);
     fbBuilder.addOffset(0, txsOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class PlainTx {
+  PlainTx._(this._bc, this._bcOffset);
+  factory PlainTx(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<PlainTx> reader = _PlainTxReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  int get id => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 4, 0);
+  String? get txId => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 6);
+  int get height => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 8, 0);
+  int get timestamp => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 10, 0);
+  int get value => const fb.Int64Reader().vTableGet(_bc, _bcOffset, 12, 0);
+
+  @override
+  String toString() {
+    return 'PlainTx{id: ${id}, txId: ${txId}, height: ${height}, timestamp: ${timestamp}, value: ${value}}';
+  }
+
+  PlainTxT unpack() => PlainTxT(
+      id: id,
+      txId: txId,
+      height: height,
+      timestamp: timestamp,
+      value: value);
+
+  static int pack(fb.Builder fbBuilder, PlainTxT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class PlainTxT implements fb.Packable {
+  int id;
+  String? txId;
+  int height;
+  int timestamp;
+  int value;
+
+  PlainTxT({
+      this.id = 0,
+      this.txId,
+      this.height = 0,
+      this.timestamp = 0,
+      this.value = 0});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? txIdOffset = txId == null ? null
+        : fbBuilder.writeString(txId!);
+    fbBuilder.startTable(5);
+    fbBuilder.addUint32(0, id);
+    fbBuilder.addOffset(1, txIdOffset);
+    fbBuilder.addUint32(2, height);
+    fbBuilder.addUint32(3, timestamp);
+    fbBuilder.addInt64(4, value);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'PlainTxT{id: ${id}, txId: ${txId}, height: ${height}, timestamp: ${timestamp}, value: ${value}}';
+  }
+}
+
+class _PlainTxReader extends fb.TableReader<PlainTx> {
+  const _PlainTxReader();
+
+  @override
+  PlainTx createObject(fb.BufferContext bc, int offset) => 
+    PlainTx._(bc, offset);
+}
+
+class PlainTxBuilder {
+  PlainTxBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(5);
+  }
+
+  int addId(int? id) {
+    fbBuilder.addUint32(0, id);
+    return fbBuilder.offset;
+  }
+  int addTxIdOffset(int? offset) {
+    fbBuilder.addOffset(1, offset);
+    return fbBuilder.offset;
+  }
+  int addHeight(int? height) {
+    fbBuilder.addUint32(2, height);
+    return fbBuilder.offset;
+  }
+  int addTimestamp(int? timestamp) {
+    fbBuilder.addUint32(3, timestamp);
+    return fbBuilder.offset;
+  }
+  int addValue(int? value) {
+    fbBuilder.addInt64(4, value);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class PlainTxObjectBuilder extends fb.ObjectBuilder {
+  final int? _id;
+  final String? _txId;
+  final int? _height;
+  final int? _timestamp;
+  final int? _value;
+
+  PlainTxObjectBuilder({
+    int? id,
+    String? txId,
+    int? height,
+    int? timestamp,
+    int? value,
+  })
+      : _id = id,
+        _txId = txId,
+        _height = height,
+        _timestamp = timestamp,
+        _value = value;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? txIdOffset = _txId == null ? null
+        : fbBuilder.writeString(_txId!);
+    fbBuilder.startTable(5);
+    fbBuilder.addUint32(0, _id);
+    fbBuilder.addOffset(1, txIdOffset);
+    fbBuilder.addUint32(2, _height);
+    fbBuilder.addUint32(3, _timestamp);
+    fbBuilder.addInt64(4, _value);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class PlainTxVec {
+  PlainTxVec._(this._bc, this._bcOffset);
+  factory PlainTxVec(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<PlainTxVec> reader = _PlainTxVecReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  List<PlainTx>? get txs => const fb.ListReader<PlainTx>(PlainTx.reader).vTableGetNullable(_bc, _bcOffset, 4);
+
+  @override
+  String toString() {
+    return 'PlainTxVec{txs: ${txs}}';
+  }
+
+  PlainTxVecT unpack() => PlainTxVecT(
+      txs: txs?.map((e) => e.unpack()).toList());
+
+  static int pack(fb.Builder fbBuilder, PlainTxVecT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class PlainTxVecT implements fb.Packable {
+  List<PlainTxT>? txs;
+
+  PlainTxVecT({
+      this.txs});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? txsOffset = txs == null ? null
+        : fbBuilder.writeList(txs!.map((b) => b.pack(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, txsOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'PlainTxVecT{txs: ${txs}}';
+  }
+}
+
+class _PlainTxVecReader extends fb.TableReader<PlainTxVec> {
+  const _PlainTxVecReader();
+
+  @override
+  PlainTxVec createObject(fb.BufferContext bc, int offset) => 
+    PlainTxVec._(bc, offset);
+}
+
+class PlainTxVecBuilder {
+  PlainTxVecBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(1);
+  }
+
+  int addTxsOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class PlainTxVecObjectBuilder extends fb.ObjectBuilder {
+  final List<PlainTxObjectBuilder>? _txs;
+
+  PlainTxVecObjectBuilder({
+    List<PlainTxObjectBuilder>? txs,
+  })
+      : _txs = txs;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? txsOffset = _txs == null ? null
+        : fbBuilder.writeList(_txs!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, txsOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class PlainNote {
+  PlainNote._(this._bc, this._bcOffset);
+  factory PlainNote(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<PlainNote> reader = _PlainNoteReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  int get id => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 4, 0);
+  String? get txId => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 6);
+  int get height => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 8, 0);
+  int get timestamp => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 10, 0);
+  int get vout => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 12, 0);
+  int get value => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 14, 0);
+
+  @override
+  String toString() {
+    return 'PlainNote{id: ${id}, txId: ${txId}, height: ${height}, timestamp: ${timestamp}, vout: ${vout}, value: ${value}}';
+  }
+
+  PlainNoteT unpack() => PlainNoteT(
+      id: id,
+      txId: txId,
+      height: height,
+      timestamp: timestamp,
+      vout: vout,
+      value: value);
+
+  static int pack(fb.Builder fbBuilder, PlainNoteT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class PlainNoteT implements fb.Packable {
+  int id;
+  String? txId;
+  int height;
+  int timestamp;
+  int vout;
+  int value;
+
+  PlainNoteT({
+      this.id = 0,
+      this.txId,
+      this.height = 0,
+      this.timestamp = 0,
+      this.vout = 0,
+      this.value = 0});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? txIdOffset = txId == null ? null
+        : fbBuilder.writeString(txId!);
+    fbBuilder.startTable(6);
+    fbBuilder.addUint32(0, id);
+    fbBuilder.addOffset(1, txIdOffset);
+    fbBuilder.addUint32(2, height);
+    fbBuilder.addUint32(3, timestamp);
+    fbBuilder.addUint32(4, vout);
+    fbBuilder.addUint64(5, value);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'PlainNoteT{id: ${id}, txId: ${txId}, height: ${height}, timestamp: ${timestamp}, vout: ${vout}, value: ${value}}';
+  }
+}
+
+class _PlainNoteReader extends fb.TableReader<PlainNote> {
+  const _PlainNoteReader();
+
+  @override
+  PlainNote createObject(fb.BufferContext bc, int offset) => 
+    PlainNote._(bc, offset);
+}
+
+class PlainNoteBuilder {
+  PlainNoteBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(6);
+  }
+
+  int addId(int? id) {
+    fbBuilder.addUint32(0, id);
+    return fbBuilder.offset;
+  }
+  int addTxIdOffset(int? offset) {
+    fbBuilder.addOffset(1, offset);
+    return fbBuilder.offset;
+  }
+  int addHeight(int? height) {
+    fbBuilder.addUint32(2, height);
+    return fbBuilder.offset;
+  }
+  int addTimestamp(int? timestamp) {
+    fbBuilder.addUint32(3, timestamp);
+    return fbBuilder.offset;
+  }
+  int addVout(int? vout) {
+    fbBuilder.addUint32(4, vout);
+    return fbBuilder.offset;
+  }
+  int addValue(int? value) {
+    fbBuilder.addUint64(5, value);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class PlainNoteObjectBuilder extends fb.ObjectBuilder {
+  final int? _id;
+  final String? _txId;
+  final int? _height;
+  final int? _timestamp;
+  final int? _vout;
+  final int? _value;
+
+  PlainNoteObjectBuilder({
+    int? id,
+    String? txId,
+    int? height,
+    int? timestamp,
+    int? vout,
+    int? value,
+  })
+      : _id = id,
+        _txId = txId,
+        _height = height,
+        _timestamp = timestamp,
+        _vout = vout,
+        _value = value;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? txIdOffset = _txId == null ? null
+        : fbBuilder.writeString(_txId!);
+    fbBuilder.startTable(6);
+    fbBuilder.addUint32(0, _id);
+    fbBuilder.addOffset(1, txIdOffset);
+    fbBuilder.addUint32(2, _height);
+    fbBuilder.addUint32(3, _timestamp);
+    fbBuilder.addUint32(4, _vout);
+    fbBuilder.addUint64(5, _value);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class PlainNoteVec {
+  PlainNoteVec._(this._bc, this._bcOffset);
+  factory PlainNoteVec(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<PlainNoteVec> reader = _PlainNoteVecReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  List<PlainNote>? get notes => const fb.ListReader<PlainNote>(PlainNote.reader).vTableGetNullable(_bc, _bcOffset, 4);
+
+  @override
+  String toString() {
+    return 'PlainNoteVec{notes: ${notes}}';
+  }
+
+  PlainNoteVecT unpack() => PlainNoteVecT(
+      notes: notes?.map((e) => e.unpack()).toList());
+
+  static int pack(fb.Builder fbBuilder, PlainNoteVecT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class PlainNoteVecT implements fb.Packable {
+  List<PlainNoteT>? notes;
+
+  PlainNoteVecT({
+      this.notes});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? notesOffset = notes == null ? null
+        : fbBuilder.writeList(notes!.map((b) => b.pack(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, notesOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'PlainNoteVecT{notes: ${notes}}';
+  }
+}
+
+class _PlainNoteVecReader extends fb.TableReader<PlainNoteVec> {
+  const _PlainNoteVecReader();
+
+  @override
+  PlainNoteVec createObject(fb.BufferContext bc, int offset) => 
+    PlainNoteVec._(bc, offset);
+}
+
+class PlainNoteVecBuilder {
+  PlainNoteVecBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(1);
+  }
+
+  int addNotesOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class PlainNoteVecObjectBuilder extends fb.ObjectBuilder {
+  final List<PlainNoteObjectBuilder>? _notes;
+
+  PlainNoteVecObjectBuilder({
+    List<PlainNoteObjectBuilder>? notes,
+  })
+      : _notes = notes;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? notesOffset = _notes == null ? null
+        : fbBuilder.writeList(_notes!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, notesOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class Btcinput {
+  Btcinput._(this._bc, this._bcOffset);
+  factory Btcinput(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<Btcinput> reader = _BtcinputReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  String? get txId => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
+  int get vout => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 6, 0);
+  int get value => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 8, 0);
+
+  @override
+  String toString() {
+    return 'Btcinput{txId: ${txId}, vout: ${vout}, value: ${value}}';
+  }
+
+  BtcinputT unpack() => BtcinputT(
+      txId: txId,
+      vout: vout,
+      value: value);
+
+  static int pack(fb.Builder fbBuilder, BtcinputT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class BtcinputT implements fb.Packable {
+  String? txId;
+  int vout;
+  int value;
+
+  BtcinputT({
+      this.txId,
+      this.vout = 0,
+      this.value = 0});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? txIdOffset = txId == null ? null
+        : fbBuilder.writeString(txId!);
+    fbBuilder.startTable(3);
+    fbBuilder.addOffset(0, txIdOffset);
+    fbBuilder.addUint32(1, vout);
+    fbBuilder.addUint64(2, value);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'BtcinputT{txId: ${txId}, vout: ${vout}, value: ${value}}';
+  }
+}
+
+class _BtcinputReader extends fb.TableReader<Btcinput> {
+  const _BtcinputReader();
+
+  @override
+  Btcinput createObject(fb.BufferContext bc, int offset) => 
+    Btcinput._(bc, offset);
+}
+
+class BtcinputBuilder {
+  BtcinputBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(3);
+  }
+
+  int addTxIdOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+  int addVout(int? vout) {
+    fbBuilder.addUint32(1, vout);
+    return fbBuilder.offset;
+  }
+  int addValue(int? value) {
+    fbBuilder.addUint64(2, value);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class BtcinputObjectBuilder extends fb.ObjectBuilder {
+  final String? _txId;
+  final int? _vout;
+  final int? _value;
+
+  BtcinputObjectBuilder({
+    String? txId,
+    int? vout,
+    int? value,
+  })
+      : _txId = txId,
+        _vout = vout,
+        _value = value;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? txIdOffset = _txId == null ? null
+        : fbBuilder.writeString(_txId!);
+    fbBuilder.startTable(3);
+    fbBuilder.addOffset(0, txIdOffset);
+    fbBuilder.addUint32(1, _vout);
+    fbBuilder.addUint64(2, _value);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class Btcoutput {
+  Btcoutput._(this._bc, this._bcOffset);
+  factory Btcoutput(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<Btcoutput> reader = _BtcoutputReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  String? get scriptPubkey => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
+  int get value => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 6, 0);
+
+  @override
+  String toString() {
+    return 'Btcoutput{scriptPubkey: ${scriptPubkey}, value: ${value}}';
+  }
+
+  BtcoutputT unpack() => BtcoutputT(
+      scriptPubkey: scriptPubkey,
+      value: value);
+
+  static int pack(fb.Builder fbBuilder, BtcoutputT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class BtcoutputT implements fb.Packable {
+  String? scriptPubkey;
+  int value;
+
+  BtcoutputT({
+      this.scriptPubkey,
+      this.value = 0});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? scriptPubkeyOffset = scriptPubkey == null ? null
+        : fbBuilder.writeString(scriptPubkey!);
+    fbBuilder.startTable(2);
+    fbBuilder.addOffset(0, scriptPubkeyOffset);
+    fbBuilder.addUint64(1, value);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'BtcoutputT{scriptPubkey: ${scriptPubkey}, value: ${value}}';
+  }
+}
+
+class _BtcoutputReader extends fb.TableReader<Btcoutput> {
+  const _BtcoutputReader();
+
+  @override
+  Btcoutput createObject(fb.BufferContext bc, int offset) => 
+    Btcoutput._(bc, offset);
+}
+
+class BtcoutputBuilder {
+  BtcoutputBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(2);
+  }
+
+  int addScriptPubkeyOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+  int addValue(int? value) {
+    fbBuilder.addUint64(1, value);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class BtcoutputObjectBuilder extends fb.ObjectBuilder {
+  final String? _scriptPubkey;
+  final int? _value;
+
+  BtcoutputObjectBuilder({
+    String? scriptPubkey,
+    int? value,
+  })
+      : _scriptPubkey = scriptPubkey,
+        _value = value;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? scriptPubkeyOffset = _scriptPubkey == null ? null
+        : fbBuilder.writeString(_scriptPubkey!);
+    fbBuilder.startTable(2);
+    fbBuilder.addOffset(0, scriptPubkeyOffset);
+    fbBuilder.addUint64(1, _value);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class Btctx {
+  Btctx._(this._bc, this._bcOffset);
+  factory Btctx(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<Btctx> reader = _BtctxReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  List<Btcinput>? get txins => const fb.ListReader<Btcinput>(Btcinput.reader).vTableGetNullable(_bc, _bcOffset, 4);
+  List<Btcoutput>? get txouts => const fb.ListReader<Btcoutput>(Btcoutput.reader).vTableGetNullable(_bc, _bcOffset, 6);
+  int get fee => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 8, 0);
+
+  @override
+  String toString() {
+    return 'Btctx{txins: ${txins}, txouts: ${txouts}, fee: ${fee}}';
+  }
+
+  BtctxT unpack() => BtctxT(
+      txins: txins?.map((e) => e.unpack()).toList(),
+      txouts: txouts?.map((e) => e.unpack()).toList(),
+      fee: fee);
+
+  static int pack(fb.Builder fbBuilder, BtctxT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class BtctxT implements fb.Packable {
+  List<BtcinputT>? txins;
+  List<BtcoutputT>? txouts;
+  int fee;
+
+  BtctxT({
+      this.txins,
+      this.txouts,
+      this.fee = 0});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? txinsOffset = txins == null ? null
+        : fbBuilder.writeList(txins!.map((b) => b.pack(fbBuilder)).toList());
+    final int? txoutsOffset = txouts == null ? null
+        : fbBuilder.writeList(txouts!.map((b) => b.pack(fbBuilder)).toList());
+    fbBuilder.startTable(3);
+    fbBuilder.addOffset(0, txinsOffset);
+    fbBuilder.addOffset(1, txoutsOffset);
+    fbBuilder.addUint64(2, fee);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'BtctxT{txins: ${txins}, txouts: ${txouts}, fee: ${fee}}';
+  }
+}
+
+class _BtctxReader extends fb.TableReader<Btctx> {
+  const _BtctxReader();
+
+  @override
+  Btctx createObject(fb.BufferContext bc, int offset) => 
+    Btctx._(bc, offset);
+}
+
+class BtctxBuilder {
+  BtctxBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(3);
+  }
+
+  int addTxinsOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+  int addTxoutsOffset(int? offset) {
+    fbBuilder.addOffset(1, offset);
+    return fbBuilder.offset;
+  }
+  int addFee(int? fee) {
+    fbBuilder.addUint64(2, fee);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class BtctxObjectBuilder extends fb.ObjectBuilder {
+  final List<BtcinputObjectBuilder>? _txins;
+  final List<BtcoutputObjectBuilder>? _txouts;
+  final int? _fee;
+
+  BtctxObjectBuilder({
+    List<BtcinputObjectBuilder>? txins,
+    List<BtcoutputObjectBuilder>? txouts,
+    int? fee,
+  })
+      : _txins = txins,
+        _txouts = txouts,
+        _fee = fee;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? txinsOffset = _txins == null ? null
+        : fbBuilder.writeList(_txins!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
+    final int? txoutsOffset = _txouts == null ? null
+        : fbBuilder.writeList(_txouts!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
+    fbBuilder.startTable(3);
+    fbBuilder.addOffset(0, txinsOffset);
+    fbBuilder.addOffset(1, txoutsOffset);
+    fbBuilder.addUint64(2, _fee);
     return fbBuilder.endTable();
   }
 

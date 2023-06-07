@@ -415,45 +415,18 @@ class NativeLibrary {
   late final _dart_get_diversified_address _get_diversified_address =
       _get_diversified_address_ptr.asFunction<_dart_get_diversified_address>();
 
-  CResult_u32 get_latest_height() {
-    return _get_latest_height();
+  CResult_u32 get_latest_height(
+    int coin,
+  ) {
+    return _get_latest_height(
+      coin,
+    );
   }
 
   late final _get_latest_height_ptr =
       _lookup<ffi.NativeFunction<_c_get_latest_height>>('get_latest_height');
   late final _dart_get_latest_height _get_latest_height =
       _get_latest_height_ptr.asFunction<_dart_get_latest_height>();
-
-  CResult_u8 ledger_build_keys() {
-    return _ledger_build_keys();
-  }
-
-  late final _ledger_build_keys_ptr =
-      _lookup<ffi.NativeFunction<_c_ledger_build_keys>>('ledger_build_keys');
-  late final _dart_ledger_build_keys _ledger_build_keys =
-      _ledger_build_keys_ptr.asFunction<_dart_ledger_build_keys>();
-
-  CResult_____c_char ledger_get_fvk(
-    int coin,
-  ) {
-    return _ledger_get_fvk(
-      coin,
-    );
-  }
-
-  late final _ledger_get_fvk_ptr =
-      _lookup<ffi.NativeFunction<_c_ledger_get_fvk>>('ledger_get_fvk');
-  late final _dart_ledger_get_fvk _ledger_get_fvk =
-      _ledger_get_fvk_ptr.asFunction<_dart_ledger_get_fvk>();
-
-  CResult_____c_char ledger_get_address() {
-    return _ledger_get_address();
-  }
-
-  late final _ledger_get_address_ptr =
-      _lookup<ffi.NativeFunction<_c_ledger_get_address>>('ledger_get_address');
-  late final _dart_ledger_get_address _ledger_get_address =
-      _ledger_get_address_ptr.asFunction<_dart_ledger_get_address>();
 
   void skip_to_last_height(
     int coin,
@@ -483,9 +456,11 @@ class NativeLibrary {
       _rewind_to_ptr.asFunction<_dart_rewind_to>();
 
   void rescan_from(
+    int coin,
     int height,
   ) {
     return _rescan_from(
+      coin,
       height,
     );
   }
@@ -649,9 +624,11 @@ class NativeLibrary {
       _sign_and_broadcast_ptr.asFunction<_dart_sign_and_broadcast>();
 
   CResult_____c_char broadcast_tx(
+    int coin,
     ffi.Pointer<ffi.Int8> tx_str,
   ) {
     return _broadcast_tx(
+      coin,
       tx_str,
     );
   }
@@ -717,11 +694,13 @@ class NativeLibrary {
       _get_block_by_time_ptr.asFunction<_dart_get_block_by_time>();
 
   CResult_u32 sync_historical_prices(
+    int coin,
     int now,
     int days,
     ffi.Pointer<ffi.Int8> currency,
   ) {
     return _sync_historical_prices(
+      coin,
       now,
       days,
       currency,
@@ -1655,6 +1634,16 @@ const int ShieldedTx_VT_MEMO = 20;
 
 const int ShieldedTxVec_VT_TXS = 4;
 
+const int PlainNote_VT_VOUT = 12;
+
+const int BTCOutput_VT_SCRIPT_PUBKEY = 4;
+
+const int BTCTx_VT_TXINS = 4;
+
+const int BTCTx_VT_TXOUTS = 6;
+
+const int BTCTx_VT_FEE = 8;
+
 const int Message_VT_ID_MSG = 4;
 
 const int Message_VT_ID_TX = 6;
@@ -1742,8 +1731,6 @@ const int TxReport_VT_TRANSPARENT = 6;
 const int TxReport_VT_NET_SAPLING = 12;
 
 const int TxReport_VT_NET_ORCHARD = 14;
-
-const int TxReport_VT_FEE = 16;
 
 const int TxReport_VT_PRIVACY_LEVEL = 18;
 
@@ -2005,25 +1992,13 @@ typedef _dart_get_diversified_address = CResult_____c_char Function(
   int time,
 );
 
-typedef _c_get_latest_height = CResult_u32 Function();
-
-typedef _dart_get_latest_height = CResult_u32 Function();
-
-typedef _c_ledger_build_keys = CResult_u8 Function();
-
-typedef _dart_ledger_build_keys = CResult_u8 Function();
-
-typedef _c_ledger_get_fvk = CResult_____c_char Function(
+typedef _c_get_latest_height = CResult_u32 Function(
   ffi.Uint8 coin,
 );
 
-typedef _dart_ledger_get_fvk = CResult_____c_char Function(
+typedef _dart_get_latest_height = CResult_u32 Function(
   int coin,
 );
-
-typedef _c_ledger_get_address = CResult_____c_char Function();
-
-typedef _dart_ledger_get_address = CResult_____c_char Function();
 
 typedef _c_skip_to_last_height = ffi.Void Function(
   ffi.Uint8 coin,
@@ -2042,10 +2017,12 @@ typedef _dart_rewind_to = CResult_u32 Function(
 );
 
 typedef _c_rescan_from = ffi.Void Function(
+  ffi.Uint8 coin,
   ffi.Uint32 height,
 );
 
 typedef _dart_rescan_from = void Function(
+  int coin,
   int height,
 );
 
@@ -2162,10 +2139,12 @@ typedef _dart_sign_and_broadcast = CResult_____c_char Function(
 );
 
 typedef _c_broadcast_tx = CResult_____c_char Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> tx_str,
 );
 
 typedef _dart_broadcast_tx = CResult_____c_char Function(
+  int coin,
   ffi.Pointer<ffi.Int8> tx_str,
 );
 
@@ -2204,12 +2183,14 @@ typedef _dart_get_block_by_time = CResult_u32 Function(
 );
 
 typedef _c_sync_historical_prices = CResult_u32 Function(
+  ffi.Uint8 coin,
   ffi.Int64 now,
   ffi.Uint32 days,
   ffi.Pointer<ffi.Int8> currency,
 );
 
 typedef _dart_sync_historical_prices = CResult_u32 Function(
+  int coin,
   int now,
   int days,
   ffi.Pointer<ffi.Int8> currency,
