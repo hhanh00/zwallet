@@ -74,3 +74,13 @@ The wallet can hold several accounts with different seeds, secret keys, or viewi
 Speaking of watch-only accounts, it is possible to spend from them using the companion tool. After confirming the transfer, the wallet creates an unsigned transaction file. I transfer it by USB OTG and sign it on my offline laptop. Finally, I bring it back to YWallet for broadcasting.
 ## 1. Sync speed
 Finally, the wallet is currently the fastest by far and scales well to large accounts with thousands of notes and transactions. Also, it starts quickly and synchronizes in seconds. I don’t have to think about keeping it in sync.
+
+# Installation
+
+The installation packages are on the [releases page](https://github.com/hhanh00/zwallet/releases).
+
+The `AppImage` Linux download requires that you [install GTK in your system](https://www.gtk.org/docs/installations/linux/#installing-gtk-from-packages).  For example, for Debian GNU/Linux, run:
+
+```
+sudo apt install libgtk-4-1
+```
