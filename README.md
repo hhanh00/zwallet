@@ -84,3 +84,7 @@ The `AppImage` Linux download requires that you [install GTK in your system](htt
 ```
 sudo apt install libgtk-4-1
 ```
+
+# License
+
+MIT. See [`LICENSE`](./LICENSE).
