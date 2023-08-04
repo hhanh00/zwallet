@@ -309,5 +309,6 @@
   "scanningAddresses": "Scanning addresses",
   "blockExplorer": "Block Explorer",
   "tapQrCodeForSaplingAddress": "Tap QR Code for Sapling Address",
-  "playSound": "Effets Sonores"
+  "playSound": "Effets Sonores",
+  "fee": "Fee"
 }

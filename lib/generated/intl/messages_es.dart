@@ -241,6 +241,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "excludedNotes":
             MessageLookupByLibrary.simpleMessage("Notas excluidas"),
         "expert": MessageLookupByLibrary.simpleMessage("Modo Experto"),
+        "fee": MessageLookupByLibrary.simpleMessage("Fee"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("Archivo guardado"),
         "fromPool": MessageLookupByLibrary.simpleMessage("Del Suministro"),
         "fromto": MessageLookupByLibrary.simpleMessage("Rem/Dest."),

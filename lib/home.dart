@@ -364,43 +364,61 @@ class HomeInnerState extends State<HomeInnerPage>
       if (!WarpApi.isValidTransparentKey(k)) return s.invalidKey;
       return null;
     };
+    final formKey = GlobalKey<FormBuilderState>();
     final confirmed = await showDialog<bool>(
             context: context,
             barrierDismissible: false,
             builder: (context) => AlertDialog(
                 title: Text(s.sweep),
                 content: SingleChildScrollView(
+                  child: FormBuilder(
+                    key: formKey,
                     child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      decoration: InputDecoration(labelText: s.transparentKey),
-                      controller: keyController,
-                      validator: checkKey,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FormBuilderTextField(
+                          name: 'key',
+                          decoration:
+                              InputDecoration(labelText: s.transparentKey),
+                          controller: keyController,
+                          validator: checkKey,
+                        ),
+                        FormBuilderRadioGroup<int>(
+                            orientation: OptionsOrientation.horizontal,
+                            decoration: InputDecoration(labelText: s.toPool),
+                            name: 'pool',
+                            initialValue: 0,
+                            onChanged: (v) {
+                              pool = v ?? 0;
+                            },
+                            options: [
+                              FormBuilderFieldOption(
+                                  child: Text('T'), value: 0),
+                              FormBuilderFieldOption(
+                                  child: Text('S'), value: 1),
+                              if (active.coinDef.supportsUA)
+                                FormBuilderFieldOption(
+                                    child: Text('O'), value: 2),
+                            ]),
+                      ],
                     ),
-                    FormBuilderRadioGroup<int>(
-                        orientation: OptionsOrientation.horizontal,
-                        decoration: InputDecoration(labelText: s.toPool),
-                        name: 'pool',
-                        initialValue: 0,
-                        onChanged: (v) {
-                          pool = v ?? 0;
-                        },
-                        options: [
-                          FormBuilderFieldOption(child: Text('T'), value: 0),
-                          FormBuilderFieldOption(child: Text('S'), value: 1),
-                          if (active.coinDef.supportsUA)
-                            FormBuilderFieldOption(child: Text('O'), value: 2),
-                        ]),
-                  ],
-                )),
-                actions: confirmButtons(
-                    context, () => Navigator.of(context).pop(true)))) ??
+                  ),
+                ),
+                actions: confirmButtons(context, () async {
+                  final form = formKey.currentState!;
+                  if (form.validate()) {
+                    try {
+                      final txid = await WarpApi.sweepTransparent(syncStatus.latestHeight,
+                          keyController.text, pool, settings.anchorOffset, settings.feeRule);
+                      showSnackBar(s.txId(txid));
+                      Navigator.of(context).pop(true);
+                    } on String catch (msg) {
+                      form.fields['key']!.invalidate(msg);
+                    }
+                  }
+                }))) ??
         false;
     if (confirmed) {
-      final txid = await WarpApi.sweepTransparent(syncStatus.latestHeight,
-          keyController.text, pool, settings.anchorOffset);
-      showSnackBar(s.txId(txid));
     }
   }
 

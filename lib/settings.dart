@@ -35,6 +35,7 @@ class SettingsState extends State<SettingsPage>
     with SingleTickerProviderStateMixin {
   var _anchorController =
       TextEditingController(text: "${settings.anchorOffset}");
+  var _feeController = TextEditingController(text: amountToString(settings.fee, MAX_PRECISION));
   var _memoController = TextEditingController();
   var _currency = settings.currency;
   var _needAuth = false;
@@ -152,6 +153,15 @@ class SettingsState extends State<SettingsPage>
                                     },
                                     onSaved: _onProtectOpen)),
                           ]),
+                          if (!simpleMode)
+                            FormBuilderTextField(
+                                decoration: InputDecoration(
+                                    labelText: s.fee),
+                                name: 'fee',
+                                keyboardType: TextInputType.number,
+                                controller: _feeController,
+                                inputFormatters: [makeInputFormatter(false)],
+                                onSaved: _onFee),
                           if (!simpleMode)
                             FormBuilderCheckbox(
                                 name: 'use_millis',
@@ -439,6 +449,10 @@ class SettingsState extends State<SettingsPage>
 
   _onGetTx(v) {
     settings.updateGetTx(v);
+  }
+
+  _onFee(v) {
+    settings.setFee(stringToAmount(v));
   }
 
   _onUseMillis(v) {

@@ -240,6 +240,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error": m7,
         "excludedNotes": MessageLookupByLibrary.simpleMessage("Billets exclus"),
         "expert": MessageLookupByLibrary.simpleMessage("Expert"),
+        "fee": MessageLookupByLibrary.simpleMessage("Fee"),
         "fileSaved": MessageLookupByLibrary.simpleMessage("File saved"),
         "fromPool": MessageLookupByLibrary.simpleMessage("A partir du Fond"),
         "fromto": MessageLookupByLibrary.simpleMessage("Env/Dest."),

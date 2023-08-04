@@ -226,3 +226,10 @@ table TxReport {
   fee:uint64;
   privacy_level:uint8;
 }
+
+table Fee {
+  fee:uint64;
+  min_fee:uint64;
+  max_fee:uint64;
+  scheme:uint8;
+}

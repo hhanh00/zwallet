@@ -520,6 +520,8 @@ class NativeLibrary {
     ffi.Pointer<ffi.Int8> memo,
     int split_amount,
     int confirmations,
+    ffi.Pointer<ffi.Uint8> fee_bytes,
+    int fee_len,
   ) {
     return _transfer_pools(
       coin,
@@ -531,6 +533,8 @@ class NativeLibrary {
       memo,
       split_amount,
       confirmations,
+      fee_bytes,
+      fee_len,
     );
   }
 
@@ -544,12 +548,16 @@ class NativeLibrary {
     int account,
     int amount,
     int confirmations,
+    ffi.Pointer<ffi.Uint8> fee_bytes,
+    int fee_len,
   ) {
     return _shield_taddr(
       coin,
       account,
       amount,
       confirmations,
+      fee_bytes,
+      fee_len,
     );
   }
 
@@ -583,6 +591,8 @@ class NativeLibrary {
     ffi.Pointer<ffi.Uint8> recipients_bytes,
     int recipients_len,
     int anchor_offset,
+    ffi.Pointer<ffi.Uint8> fee_bytes,
+    int fee_len,
   ) {
     return _prepare_multi_payment(
       coin,
@@ -590,6 +600,8 @@ class NativeLibrary {
       recipients_bytes,
       recipients_len,
       anchor_offset,
+      fee_bytes,
+      fee_len,
     );
   }
 
@@ -679,12 +691,16 @@ class NativeLibrary {
     ffi.Pointer<ffi.Int8> sk,
     int pool,
     int confirmations,
+    ffi.Pointer<ffi.Uint8> fee_bytes,
+    int fee_len,
   ) {
     return _sweep_tkey(
       last_height,
       sk,
       pool,
       confirmations,
+      fee_bytes,
+      fee_len,
     );
   }
 
@@ -755,9 +771,13 @@ class NativeLibrary {
 
   CResult_____c_char commit_unsaved_contacts(
     int anchor_offset,
+    ffi.Pointer<ffi.Uint8> fee_bytes,
+    int fee_len,
   ) {
     return _commit_unsaved_contacts(
       anchor_offset,
+      fee_bytes,
+      fee_len,
     );
   }
 
@@ -1582,11 +1602,9 @@ const int Account_VT_ID = 4;
 
 const int Account_VT_NAME = 6;
 
-const int Account_VT_COLD = 8;
+const int Account_VT_KEY_TYPE = 8;
 
-const int Account_VT_HARDWARE = 10;
-
-const int Account_VT_BALANCE = 12;
+const int Account_VT_BALANCE = 10;
 
 const int AccountVec_VT_ACCOUNTS = 4;
 
@@ -1713,6 +1731,12 @@ const int TxReport_VT_NET_ORCHARD = 14;
 const int TxReport_VT_FEE = 16;
 
 const int TxReport_VT_PRIVACY_LEVEL = 18;
+
+const int Fee_VT_MIN_FEE = 6;
+
+const int Fee_VT_MAX_FEE = 8;
+
+const int Fee_VT_SCHEME = 10;
 
 typedef _c_dummy_export = ffi.Void Function();
 
@@ -2036,6 +2060,8 @@ typedef _c_transfer_pools = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> memo,
   ffi.Uint64 split_amount,
   ffi.Uint32 confirmations,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  ffi.Uint64 fee_len,
 );
 
 typedef _dart_transfer_pools = CResult_____c_char Function(
@@ -2048,6 +2074,8 @@ typedef _dart_transfer_pools = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> memo,
   int split_amount,
   int confirmations,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  int fee_len,
 );
 
 typedef _c_shield_taddr = CResult_____c_char Function(
@@ -2055,6 +2083,8 @@ typedef _c_shield_taddr = CResult_____c_char Function(
   ffi.Uint32 account,
   ffi.Uint64 amount,
   ffi.Uint32 confirmations,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  ffi.Uint64 fee_len,
 );
 
 typedef _dart_shield_taddr = CResult_____c_char Function(
@@ -2062,6 +2092,8 @@ typedef _dart_shield_taddr = CResult_____c_char Function(
   int account,
   int amount,
   int confirmations,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  int fee_len,
 );
 
 typedef _c_scan_transparent_accounts = CResult______u8 Function(
@@ -2082,6 +2114,8 @@ typedef _c_prepare_multi_payment = CResult_____c_char Function(
   ffi.Pointer<ffi.Uint8> recipients_bytes,
   ffi.Uint64 recipients_len,
   ffi.Uint32 anchor_offset,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  ffi.Uint64 fee_len,
 );
 
 typedef _dart_prepare_multi_payment = CResult_____c_char Function(
@@ -2090,6 +2124,8 @@ typedef _dart_prepare_multi_payment = CResult_____c_char Function(
   ffi.Pointer<ffi.Uint8> recipients_bytes,
   int recipients_len,
   int anchor_offset,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  int fee_len,
 );
 
 typedef _c_transaction_report = CResult______u8 Function(
@@ -2149,6 +2185,8 @@ typedef _c_sweep_tkey = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> sk,
   ffi.Uint8 pool,
   ffi.Uint32 confirmations,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  ffi.Uint64 fee_len,
 );
 
 typedef _dart_sweep_tkey = CResult_____c_char Function(
@@ -2156,6 +2194,8 @@ typedef _dart_sweep_tkey = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> sk,
   int pool,
   int confirmations,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  int fee_len,
 );
 
 typedef _c_get_activation_date = CResult_u32 Function();
@@ -2198,10 +2238,14 @@ typedef _dart_store_contact = void Function(
 
 typedef _c_commit_unsaved_contacts = CResult_____c_char Function(
   ffi.Uint32 anchor_offset,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  ffi.Uint64 fee_len,
 );
 
 typedef _dart_commit_unsaved_contacts = CResult_____c_char Function(
   int anchor_offset,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  int fee_len,
 );
 
 typedef _c_mark_message_read = ffi.Void Function(

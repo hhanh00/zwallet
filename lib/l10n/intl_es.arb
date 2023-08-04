@@ -308,5 +308,6 @@
   "scanningAddresses": "Scanning addresses",
   "blockExplorer": "Block Explorer",
   "tapQrCodeForSaplingAddress": "Tap QR Code for Sapling Address",
-  "playSound": "Sonido"
+  "playSound": "Sonido",
+  "fee": "Fee"
 }
