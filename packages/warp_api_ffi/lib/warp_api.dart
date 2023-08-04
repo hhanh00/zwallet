@@ -7,6 +7,7 @@ import 'package:flat_buffers/flat_buffers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:ffi/ffi.dart';
+import 'package:tuple/tuple.dart';
 import 'warp_api_generated.dart';
 import 'data_fb_generated.dart';
 
@@ -241,18 +242,20 @@ class WarpApi {
       bool includeFee,
       String memo,
       int splitAmount,
-      int anchorOffset) async {
+      int anchorOffset,
+      FeeT fee) async {
     final txId = await compute(
         transferPoolsIsolateFn,
         TransferPoolsParams(coin, account, fromPool, toPool, amount, includeFee,
-            memo, splitAmount, anchorOffset));
+            memo, splitAmount, anchorOffset, fee));
     return txId;
   }
 
   static String shieldTAddr(
-      int coin, int account, int amount, int anchorOffset) {
-    final txPlan =
-        warp_api_lib.shield_taddr(coin, account, amount, anchorOffset);
+      int coin, int account, int amount, int anchorOffset, FeeT fee) {
+    final fee2 = encodeFee(fee);
+    final txPlan = warp_api_lib.shield_taddr(coin, account, amount,
+        anchorOffset, toNativeBytes(fee2), fee2.lengthInBytes);
     return unwrapResultString(txPlan);
   }
 
@@ -263,14 +266,21 @@ class WarpApi {
   }
 
   static Future<String> prepareTx(int coin, int account,
-      List<Recipient> recipients, int anchorOffset) async {
+      List<Recipient> recipients, int anchorOffset, FeeT fee) async {
     final builder = Builder();
     final rs = recipients.map((r) => r.unpack()).toList();
     int root = RecipientsT(values: rs).pack(builder);
     builder.finish(root);
+    final fee2 = encodeFee(fee);
     return await compute((_) {
-      final res = warp_api_lib.prepare_multi_payment(coin, account,
-          toNativeBytes(builder.buffer), builder.size(), anchorOffset);
+      final res = warp_api_lib.prepare_multi_payment(
+          coin,
+          account,
+          toNativeBytes(builder.buffer),
+          builder.size(),
+          anchorOffset,
+          toNativeBytes(fee2),
+          fee2.lengthInBytes);
       final json = unwrapResultString(res);
       return json;
     }, null);
@@ -312,11 +322,12 @@ class WarpApi {
     return warp_api_lib.is_valid_tkey(toNative(key)) != 0;
   }
 
-  static Future<String> sweepTransparent(
-      int latestHeight, String sk, int pool, int confirmations) async {
+  static Future<String> sweepTransparent(int latestHeight, String sk, int pool,
+      int confirmations, FeeT fee) async {
     return await compute((_) {
-      final txid = warp_api_lib.sweep_tkey(
-          latestHeight, toNative(sk), pool, confirmations);
+      final fee2 = encodeFee(fee);
+      final txid = warp_api_lib.sweep_tkey(latestHeight, toNative(sk), pool,
+          confirmations, toNativeBytes(fee2), fee2.lengthInBytes);
       return unwrapResultString(txid);
     }, null);
   }
@@ -359,9 +370,10 @@ class WarpApi {
         address.toNativeUtf8().cast<Int8>(), dirty ? 1 : 0);
   }
 
-  static String commitUnsavedContacts(int anchorOffset) {
-    return unwrapResultString(
-        warp_api_lib.commit_unsaved_contacts(anchorOffset));
+  static String commitUnsavedContacts(int anchorOffset, FeeT fee) {
+    final fee2 = encodeFee(fee);
+    return unwrapResultString(warp_api_lib.commit_unsaved_contacts(
+        anchorOffset, toNativeBytes(fee2), fee2.lengthInBytes));
   }
 
   static void markMessageAsRead(int messageId, bool read) {
@@ -668,6 +680,7 @@ int getLatestHeightIsolateFn(Null n) {
 }
 
 String transferPoolsIsolateFn(TransferPoolsParams params) {
+  final fee2 = encodeFee(params.fee);
   final txId = warp_api_lib.transfer_pools(
       params.coin,
       params.account,
@@ -677,7 +690,9 @@ String transferPoolsIsolateFn(TransferPoolsParams params) {
       params.takeFee ? 1 : 0,
       toNative(params.memo),
       params.splitAmount,
-      params.anchorOffset);
+      params.anchorOffset,
+      toNativeBytes(fee2),
+      fee2.lengthInBytes);
   return unwrapResultString(txId);
 }
 
@@ -750,6 +765,7 @@ class TransferPoolsParams {
   final String memo;
   final int splitAmount;
   final int anchorOffset;
+  final FeeT fee;
 
   TransferPoolsParams(
       this.coin,
@@ -760,7 +776,8 @@ class TransferPoolsParams {
       this.takeFee,
       this.memo,
       this.splitAmount,
-      this.anchorOffset);
+      this.anchorOffset,
+      this.fee);
 }
 
 class SyncHistoricalPricesParams {
@@ -792,6 +809,13 @@ List<int> convertBytes(Pointer<Uint8> s, int len) {
   final bytes = [...s.asTypedList(len)];
   warp_api_lib.deallocate_bytes(s, len);
   return bytes;
+}
+
+Uint8List encodeFee(FeeT fee) {
+  final feeBuilder = Builder();
+  int fee2 = fee.pack(feeBuilder);
+  feeBuilder.finish(fee2);
+  return feeBuilder.buffer;
 }
 
 void mempoolRunIsolateFn(int port) {

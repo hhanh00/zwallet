@@ -834,7 +834,7 @@ Future<bool> authenticate(BuildContext context, String reason) async {
 Future<void> shieldTAddr(BuildContext context) async {
   try {
     final txPlan = WarpApi.shieldTAddr(
-        active.coin, active.id, active.tbalance, settings.anchorOffset);
+        active.coin, active.id, active.tbalance, settings.anchorOffset, settings.feeRule);
     Navigator.of(context).pushNamed('/txplan', arguments: txPlan);
   } on String catch (msg) {
     showSnackBar(msg, error: true);

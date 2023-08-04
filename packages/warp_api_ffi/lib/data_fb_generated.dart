@@ -4864,3 +4864,140 @@ class TxReportObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+class Fee {
+  Fee._(this._bc, this._bcOffset);
+  factory Fee(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<Fee> reader = _FeeReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  int get fee => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 4, 0);
+  int get minFee => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 6, 0);
+  int get maxFee => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 8, 0);
+  int get scheme => const fb.Uint8Reader().vTableGet(_bc, _bcOffset, 10, 0);
+
+  @override
+  String toString() {
+    return 'Fee{fee: ${fee}, minFee: ${minFee}, maxFee: ${maxFee}, scheme: ${scheme}}';
+  }
+
+  FeeT unpack() => FeeT(
+      fee: fee,
+      minFee: minFee,
+      maxFee: maxFee,
+      scheme: scheme);
+
+  static int pack(fb.Builder fbBuilder, FeeT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class FeeT implements fb.Packable {
+  int fee;
+  int minFee;
+  int maxFee;
+  int scheme;
+
+  FeeT({
+      this.fee = 0,
+      this.minFee = 0,
+      this.maxFee = 0,
+      this.scheme = 0});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    fbBuilder.startTable(4);
+    fbBuilder.addUint64(0, fee);
+    fbBuilder.addUint64(1, minFee);
+    fbBuilder.addUint64(2, maxFee);
+    fbBuilder.addUint8(3, scheme);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'FeeT{fee: ${fee}, minFee: ${minFee}, maxFee: ${maxFee}, scheme: ${scheme}}';
+  }
+}
+
+class _FeeReader extends fb.TableReader<Fee> {
+  const _FeeReader();
+
+  @override
+  Fee createObject(fb.BufferContext bc, int offset) => 
+    Fee._(bc, offset);
+}
+
+class FeeBuilder {
+  FeeBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(4);
+  }
+
+  int addFee(int? fee) {
+    fbBuilder.addUint64(0, fee);
+    return fbBuilder.offset;
+  }
+  int addMinFee(int? minFee) {
+    fbBuilder.addUint64(1, minFee);
+    return fbBuilder.offset;
+  }
+  int addMaxFee(int? maxFee) {
+    fbBuilder.addUint64(2, maxFee);
+    return fbBuilder.offset;
+  }
+  int addScheme(int? scheme) {
+    fbBuilder.addUint8(3, scheme);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class FeeObjectBuilder extends fb.ObjectBuilder {
+  final int? _fee;
+  final int? _minFee;
+  final int? _maxFee;
+  final int? _scheme;
+
+  FeeObjectBuilder({
+    int? fee,
+    int? minFee,
+    int? maxFee,
+    int? scheme,
+  })
+      : _fee = fee,
+        _minFee = minFee,
+        _maxFee = maxFee,
+        _scheme = scheme;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    fbBuilder.startTable(4);
+    fbBuilder.addUint64(0, _fee);
+    fbBuilder.addUint64(1, _minFee);
+    fbBuilder.addUint64(2, _maxFee);
+    fbBuilder.addUint8(3, _scheme);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
