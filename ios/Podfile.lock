@@ -101,7 +101,7 @@ DEPENDENCIES:
   - flutter_zxing (from `.symlinks/plugins/flutter_zxing/ios`)
   - local_auth_ios (from `.symlinks/plugins/local_auth_ios/ios`)
   - network_info_plus (from `.symlinks/plugins/network_info_plus/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - quick_actions_ios (from `.symlinks/plugins/quick_actions_ios/ios`)
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
@@ -150,7 +150,7 @@ EXTERNAL SOURCES:
   network_info_plus:
     :path: ".symlinks/plugins/network_info_plus/ios"
   path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/ios"
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   quick_actions_ios:
     :path: ".symlinks/plugins/quick_actions_ios/ios"
   sensors_plus:
@@ -203,4 +203,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: e1af8a78652670a5b7b8de8c5f3641ce5c737641
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.12.1
