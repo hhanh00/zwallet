@@ -4,6 +4,18 @@ weight: 80
 icon: wrench
 ---
 
+# 1.4.2
+
+- Update target SDK to 33 per Google Play Policy Requirements
+
+# 1.4.1
+
+- [Addresses in messages do not show up unless there is a contact or an account for them](https://github.com/hhanh00/zwallet/issues/88)
+- [Editing the zec amount after scanning a payment uri is glitchy](https://github.com/hhanh00/zwallet/issues/89)
+- [Cannot pool transfer from orchard to transparent bug Priority-High Waiting for release](https://github.com/hhanh00/zwallet/issues/94)
+- [[iOS] unable to send. error 16 bad-tnx-orchard-unknown-anchor](https://github.com/hhanh00/zwallet/issues/95)
+- Custom Fees Setting
+
 # 1.4.0
 
 - Support for [Ledger Nano S, Nano S+ and Nano X]({{< relref "advanced/ledger" >}}) (pending Ledger publication)
