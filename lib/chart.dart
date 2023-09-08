@@ -20,8 +20,9 @@ class LineChartTimeSeries extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: KChartWidget(datas,
-      ChartStyle(), ChartColors(context: context),
+      ChartStyle(), ChartColors(),
       isLine: true,
+      isTrendLine: true,
       volHidden: true,
       showInfoDialog: true,
       mainState: MainState.MA,

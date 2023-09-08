@@ -30,8 +30,9 @@ class SyncChartState extends State<SyncChartPage> {
             return KChartWidget(
               datas,
               ChartStyle(),
-              ChartColors(context: context),
+              ChartColors(),
               isLine: true,
+              isTrendLine: true,
               volHidden: true,
               showInfoDialog: true,
               mainState: MainState.MA,
