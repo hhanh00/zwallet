@@ -356,11 +356,9 @@ abstract class _Settings with Store {
 
   void _updateThemeData() {
     if (theme == 'custom') {
-      final colors = FlexSchemeColor(
+      final colors = FlexSchemeColor.from(
           primary: Color(primaryColorValue),
-          primaryVariant: Color(primaryVariantColorValue),
-          secondary: Color(secondaryColorValue),
-          secondaryVariant: Color(secondaryVariantColorValue));
+          secondary: Color(secondaryColorValue));
       final scheme = FlexSchemeData(
           name: 'custom',
           description: 'Custom Theme',
