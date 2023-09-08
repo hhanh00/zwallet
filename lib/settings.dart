@@ -35,7 +35,8 @@ class SettingsState extends State<SettingsPage>
     with SingleTickerProviderStateMixin {
   var _anchorController =
       TextEditingController(text: "${settings.anchorOffset}");
-  var _feeController = TextEditingController(text: amountToString(settings.fee, MAX_PRECISION));
+  var _feeController =
+      TextEditingController(text: amountToString(settings.fee, MAX_PRECISION));
   var _memoController = TextEditingController();
   var _currency = settings.currency;
   var _needAuth = false;
@@ -154,14 +155,28 @@ class SettingsState extends State<SettingsPage>
                                     onSaved: _onProtectOpen)),
                           ]),
                           if (!simpleMode)
-                            FormBuilderTextField(
-                                decoration: InputDecoration(
-                                    labelText: s.fee),
-                                name: 'fee',
-                                keyboardType: TextInputType.number,
-                                controller: _feeController,
-                                inputFormatters: [makeInputFormatter(false)],
-                                onSaved: _onFee),
+                            Row(children: [
+                              Expanded(child: FormBuilderRadioGroup<int>(
+                                name: 'fee_rule',
+                                orientation: OptionsOrientation.horizontal,
+                                initialValue: settings.feeConfig.scheme,
+                                decoration: InputDecoration(label: Text(s.fee)),
+                                options: [
+                                  FormBuilderFieldOption(
+                                      value: 0, child: Text(s.auto)),
+                                  FormBuilderFieldOption(
+                                      value: 1, child: Text(s.custom)),
+                                ],
+                                onSaved: _onFeeRule,
+                              )),
+                              SizedBox(width: 150, child: FormBuilderTextField(
+                                  decoration: InputDecoration(labelText: s.fee),
+                                  name: 'fee',
+                                  keyboardType: TextInputType.number,
+                                  controller: _feeController,
+                                  inputFormatters: [makeInputFormatter(false)],
+                                  onSaved: _onCustomFee)),
+                            ]),
                           if (!simpleMode)
                             FormBuilderCheckbox(
                                 name: 'use_millis',
@@ -451,7 +466,11 @@ class SettingsState extends State<SettingsPage>
     settings.updateGetTx(v);
   }
 
-  _onFee(v) {
+  _onFeeRule(int? v) {
+    settings.setFeeRule(v ?? 0);
+  }
+
+  _onCustomFee(v) {
     settings.setFee(stringToAmount(v));
   }
 
@@ -524,6 +543,7 @@ class BlockExplorerSelection {
   String selectedOption;
   String custom;
   String url;
+
   BlockExplorerSelection(this.selectedOption, this.custom, this.url);
 
   factory BlockExplorerSelection.create() {
@@ -551,6 +571,7 @@ class ServerSelect extends StatefulWidget {
   final int coin;
 
   ServerSelect(this.coin);
+
   _ServerSelectState createState() => _ServerSelectState(coin);
 }
 
