@@ -150,7 +150,7 @@ class PoolsState extends State<PoolsPage> {
             _memoController.text,
             stringToAmount(_maxAmountController.text),
             settings.anchorOffset,
-            settings.feeRule);
+            settings.feeConfig);
         Navigator.of(context)
             .pushReplacementNamed('/txplan', arguments: txPlan);
       } on String catch (message) {

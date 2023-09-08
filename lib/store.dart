@@ -200,6 +200,9 @@ abstract class _Settings with Store {
   bool sound = true;
 
   @observable
+  int feeRule = 0;
+
+  @observable
   int fee = 1000;
 
   String dbPasswd = "";
@@ -232,6 +235,7 @@ abstract class _Settings with Store {
     txView = ViewStyle.values[(prefs.getInt('tx_view') ?? 0)];
     qrOffline = prefs.getBool('qr_offline') ?? true;
     sound = prefs.getBool('sound') ?? true;
+    feeRule = prefs.getInt('fee_rule') ?? 0;
     fee = prefs.getInt('fee') ?? 10000;
 
     primaryColorValue = prefs.getInt('primary') ?? Colors.blue.value;
@@ -597,6 +601,13 @@ abstract class _Settings with Store {
   }
 
   @action
+  Future<void> setFeeRule(int v) async {
+    final prefs = await SharedPreferences.getInstance();
+    fee = v;
+    prefs.setInt('fee_rule', v);
+  }
+
+  @action
   Future<void> setFee(int v) async {
     final prefs = await SharedPreferences.getInstance();
     fee = v;
@@ -605,8 +616,9 @@ abstract class _Settings with Store {
 
   bool get isDeveloper => developerMode == 0;
 
-  FeeT get feeRule {
+  FeeT get feeConfig {
     return FeeT(
+      scheme: feeRule,
       fee: fee,
     );
   }

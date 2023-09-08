@@ -89,7 +89,7 @@ class ContactsState extends State<ContactsTab> {
 
   _onCommit() async {
     try {
-      final txPlan = WarpApi.commitUnsavedContacts(settings.anchorOffset, settings.feeRule);
+      final txPlan = WarpApi.commitUnsavedContacts(settings.anchorOffset, settings.feeConfig);
       Navigator.of(context).pushNamed('/txplan', arguments: txPlan);
     } on String catch (msg) {
       showSnackBar(msg, error: true);
