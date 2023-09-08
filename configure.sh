@@ -1,4 +1,5 @@
 flutter pub get
+flutter pub upgrade
 flutter pub run flutter_launcher_icons:main
 #flutter pub run flutter_app_name
 #flutter pub run change_app_package_name:main me.hanh.ywallet
