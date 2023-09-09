@@ -7,7 +7,6 @@ import 'package:flat_buffers/flat_buffers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:ffi/ffi.dart';
-import 'package:tuple/tuple.dart';
 import 'warp_api_generated.dart';
 import 'data_fb_generated.dart';
 
