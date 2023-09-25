@@ -11,10 +11,10 @@ icon: download
 
 ## Desktop Binaries
 <a href="https://www.microsoft.com/en-us/p/ywallet/9pjz924hs2s6"><img class="download-badge" src="../microsoft-store-badge.svg"></a>
-- Windows: [ZIP](https://github.com/hhanh00/zwallet/releases/download/v1.4.2/ywallet.zip)
-- MacOS: [DMG](https://github.com/hhanh00/zwallet/releases/download/v1.4.2/ywallet-universal.dmg)
-- Linux: [Flatpak](https://github.com/hhanh00/zwallet/releases/download/v1.4.2/ywallet.flatpak),
-[AppImage](https://github.com/hhanh00/zwallet/releases/download/v1.4.2/Ywallet-latest-x86_64.AppImage)
+- Windows: [ZIP](https://github.com/hhanh00/zwallet/releases/download/v1.4.3/ywallet.zip)
+- MacOS: [DMG](https://github.com/hhanh00/zwallet/releases/download/v1.4.3/ywallet-universal.dmg)
+- Linux: [Flatpak](https://github.com/hhanh00/zwallet/releases/download/v1.4.3/ywallet.flatpak),
+[AppImage](https://github.com/hhanh00/zwallet/releases/download/v1.4.3/Ywallet-latest-x86_64.AppImage)
 
 {{% notice warning %}}
 ## MacOS
@@ -29,6 +29,6 @@ If you are upgrading from a version prior to 1.3.6, make sure [you read this iss
 If you are upgrading from a version prior to 1.3.6, make sure [you read this issue](https://github.com/hhanh00/zwallet/issues/72)
 {{% /notice %}}
 
-{{<imgcaption windows.png Windows "https://github.com/hhanh00/zwallet/releases/download/v1.4.2/ywallet.zip">}}
-{{<imgcaption linux.png Linux "https://github.com/hhanh00/zwallet/releases/download/v1.4.2/Ywallet-latest-x86_64.AppImage">}}
+{{<imgcaption windows.png Windows "https://github.com/hhanh00/zwallet/releases/download/v1.4.3/ywallet.zip">}}
+{{<imgcaption linux.png Linux "https://github.com/hhanh00/zwallet/releases/download/v1.4.3/Ywallet-latest-x86_64.AppImage">}}
 

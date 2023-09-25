@@ -4,6 +4,11 @@ weight: 80
 icon: wrench
 ---
 
+# 1.4.3
+
+- Support for ZIP 317 across the board: Single/Multiple Payments, Shielding, Pool transfers, etc.
+- Fees can be manually overridden
+
 # 1.4.2
 
 - Update target SDK to 33 per Google Play Policy Requirements
