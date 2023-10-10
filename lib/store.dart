@@ -234,7 +234,7 @@ abstract class _Settings with Store {
     noteView = ViewStyle.values[(prefs.getInt('note_view') ?? 0)];
     txView = ViewStyle.values[(prefs.getInt('tx_view') ?? 0)];
     qrOffline = prefs.getBool('qr_offline') ?? true;
-    sound = prefs.getBool('sound') ?? true;
+    sound = prefs.getBool('sound') ?? !Platform.isLinux;
     feeRule = prefs.getInt('fee_rule') ?? 0;
     fee = prefs.getInt('fee') ?? 10000;
 
