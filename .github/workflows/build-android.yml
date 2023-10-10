@@ -20,6 +20,10 @@ jobs:
       - name: env
         run: cat build.env >> $GITHUB_ENV
 
+      - name: Clean
+        id: clean
+        run: ./build-scripts/clean-runner.sh
+
       - name: Build
         id: build
         run: ./build-scripts/build-android.sh
