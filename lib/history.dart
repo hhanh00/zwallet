@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:go_router/go_router.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'db.dart';
 import 'main.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'message_item.dart';
 import 'store.dart';
 
@@ -166,7 +167,7 @@ class HistoryDataSource extends DataTableSource {
           DataCell(Text("${txDateFormat.format(tx.timestamp)}")),
           DataCell(Text(decimalFormat(tx.value, 8),
               style: style, textAlign: TextAlign.left)),
-          DataCell(Text("${tx.txid}")),
+          DataCell(Text("${tx.txId}")),
           DataCell(Text("$a")),
           DataCell(Text("$m")),
         ],
@@ -228,41 +229,31 @@ class TxItem extends StatelessWidget {
     final contact = tx.contact.isEmptyOrNull ? '?' : tx.contact!;
     final initial = contact[0];
     final color = amountColor(context, tx.value);
-    return Container(
-        margin: EdgeInsets.only(top: 3.0, bottom: 3.0, right: 0.0),
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        child: GestureDetector(
-            onTap: () {
-              _gotoTx(context);
-            },
-            child: Row(children: [
-              Column(children: [
-                CircleAvatar(
-                    child: Text(initial,
-                        style: theme.textTheme.headlineSmall!
-                            .apply(color: Colors.white)),
-                    backgroundColor: initialToColor(contact)),
-                Padding(padding: EdgeInsets.symmetric(vertical: 4)),
-                Text('${tx.txid}', style: theme.textTheme.labelSmall),
-              ]),
-              Padding(padding: EdgeInsets.symmetric(horizontal: 4)),
-              Expanded(
-                  child: MessageContentWidget(
-                      tx.contact ?? tx.address ?? '', message, tx.memo ?? '')),
-              SizedBox(
-                  width: 100,
-                  child: Column(children: [
-                    Text('${humanizeDateTime(tx.timestamp)}'),
-                    Text('${tx.value}',
-                        maxLines: 1,
-                        style:
-                            theme.textTheme.titleLarge!.copyWith(color: color)),
-                  ])),
-            ])));
+
+    final av = avatar(initial);
+    final dateString = Text(humanizeDateTime(context, tx.timestamp));
+    final value = Text('${tx.value.toDoubleStringAsPrecised()}',
+        style: theme.textTheme.titleLarge!.apply(color: color));
+    final trailing = Column(children: [dateString, value]);
+
+    return GestureDetector(
+        onTap: () => _gotoTx(context),
+        behavior: HitTestBehavior.translucent,
+        child: Row(
+          children: [
+            av,
+            SizedBox(width: 15),
+            Expanded(
+              child: MessageContentWidget(
+                  tx.contact ?? tx.address ?? '', message, tx.memo ?? ''),
+            ),
+            SizedBox(width: 120, child: trailing),
+          ],
+        ));
   }
 
   _gotoTx(BuildContext context) {
-    Navigator.of(context).pushNamed('/tx', arguments: index);
+    GoRouter.of(context).push('/history/details?id=$index');
   }
 }
 

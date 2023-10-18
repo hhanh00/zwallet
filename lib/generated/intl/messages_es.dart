@@ -1,534 +1,1082 @@
-// DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a es locale. All the
-// messages from the main program should be duplicated here with the same
-// function name.
+import 'messages.dart';
 
-// Ignore issues from commonly used lints in this file.
-// ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
-// ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
-// ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
-// ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
-// ignore_for_file:unnecessary_string_interpolations, unnecessary_string_escapes
+/// The translations for Spanish Castilian (`es`).
+class SEs extends S {
+  SEs([String locale = 'es']) : super(locale);
 
-import 'package:intl/intl.dart';
-import 'package:intl/message_lookup_by_library.dart';
+  @override
+  String get version => 'Versión';
 
-final messages = new MessageLookup();
+  @override
+  String get about => 'Acerca';
 
-typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
+  @override
+  String get ok => 'OK';
 
-class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'es';
+  @override
+  String get account => 'Cuenta';
 
-  static String m0(currency) => "Cantidad en ${currency}";
+  @override
+  String get notes => 'Notas';
 
-  static String m1(ticker) =>
-      "¿Estás seguro de que quieres guardar tus contactos? Costará 0,01 mZEC ";
+  @override
+  String get history => 'Historial';
 
-  static String m2(name) =>
-      "Copia de seguridad - ${name} - Requerida para restaurar";
+  @override
+  String get budget => 'Presupuesto';
 
-  static String m3(rewindHeight) =>
-      "Se ha detectado una reorganización de la blockchain. Rebobinar hasta ${rewindHeight}";
+  @override
+  String get tradingPl => 'Intercambio G&P';
 
-  static String m4(address, amount) =>
-      "Desea firmar una transacción a ${address} por ${amount}";
+  @override
+  String get contacts => 'Contactos';
 
-  static String m5(ticker) =>
-      "¿Quiere transferir su saldo transparente a su dirección blindada? ";
+  @override
+  String get accounts => 'Cuentas';
 
-  static String m6(app) => "${app} Copia completa";
+  @override
+  String get backup => 'Copia de seguridad';
 
-  static String m7(msg) => "ERROR: ${msg}";
+  @override
+  String get rescan => 'Escanear';
 
-  static String m8(message) => "QR inválido: ${message}";
+  @override
+  String get catchup => 'Catch up';
 
-  static String m9(amount, ticker) => "Max Gastable: ${amount} ${ticker}";
+  @override
+  String get coldStorage => 'Billetera fría';
 
-  static String m11(level) => "PRIVACIDAD: ${level}";
+  @override
+  String get multipay => 'Multi-Pagos';
 
-  static String m12(ticker) => "Recibir ${ticker}";
+  @override
+  String get broadcast => 'Transmisión';
 
-  static String m13(amount, ticker) => "Recibido ${amount} ${ticker}";
+  @override
+  String get settings => 'Ajustes';
 
-  static String m14(height) => "Escaneo solicitado desde ${height}…";
+  @override
+  String get synching => 'Sincronizando';
 
-  static String m15(ticker) => "Enviar ${ticker}";
+  @override
+  String get tapQrCodeForShieldedAddress => 'Toca el QR para Dirección blindada';
 
-  static String m16(ticker) => "Enviar ${ticker} a…";
+  @override
+  String get tapQrCodeForTransparentAddress => 'Toca el QR para Dirección transparente';
 
-  static String m17(app) => "Enviado desde ${app}";
+  @override
+  String get addressCopiedToClipboard => 'Dirección copiada al portapapeles';
 
-  static String m18(amount, ticker, count) =>
-      "Enviando un total de ${amount} ${ticker} a ${count} direcciones";
+  @override
+  String get shieldTransparentBalance => 'Blindar saldo transparente';
 
-  static String m19(aZEC, ticker, address) =>
-      "Enviado ${aZEC} ${ticker} a ${address}";
+  @override
+  String doYouWantToTransferYourEntireTransparentBalanceTo(Object ticker) {
+    return '¿Quiere transferir su saldo transparente a su dirección blindada? ';
+  }
 
-  static String m20(amount, ticker) => "Enviado ${amount} ${ticker}";
+  @override
+  String get shieldingInProgress => 'Blindaje en progreso…';
 
-  static String m21(index, name) => "Subcuenta ${index} de ${name}";
+  @override
+  String txId(Object txid) {
+    return 'TX ID: $txid';
+  }
 
-  static String m22(name) => "Subcuenta de ${name}";
+  @override
+  String get txID => 'TXID';
 
-  static String m23(text) => "${text} copiado al portapapeles";
+  @override
+  String get pleaseAuthenticateToShowAccountSeed => 'Autentíquese para ver la semilla de la cuenta';
 
-  static String m24(txid) => "TX ID: ${txid}";
+  @override
+  String get noAuthenticationMethod => 'Sin método de autenticación';
 
-  static String m25(currency) => "Utilizar ${currency}";
+  @override
+  String get rescanFrom => '¿Escanear desde...?';
 
-  final messages = _notInlinedMessages(_notInlinedMessages);
-  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "M1": MessageLookupByLibrary.simpleMessage("1 M"),
-        "M3": MessageLookupByLibrary.simpleMessage("3 M"),
-        "M6": MessageLookupByLibrary.simpleMessage("6 M"),
-        "Y1": MessageLookupByLibrary.simpleMessage("1 A"),
-        "about": MessageLookupByLibrary.simpleMessage("Acerca"),
-        "accentColor": MessageLookupByLibrary.simpleMessage("Color de acento"),
-        "account": MessageLookupByLibrary.simpleMessage("Cuenta"),
-        "accountBalanceHistory":
-            MessageLookupByLibrary.simpleMessage("Historial de la cuenta"),
-        "accountHasSomeBalanceAreYouSureYouWantTo":
-            MessageLookupByLibrary.simpleMessage(
-                "La cuenta tiene un saldo. ¿Estás seguro de que quieres eliminarlo?"),
-        "accountIndex":
-            MessageLookupByLibrary.simpleMessage("Índice de cuenta"),
-        "accountName":
-            MessageLookupByLibrary.simpleMessage("Nombre de la cuenta"),
-        "accountNameIsRequired": MessageLookupByLibrary.simpleMessage(
-            "Se requiere el nombre de la cuenta"),
-        "accounts": MessageLookupByLibrary.simpleMessage("Cuentas"),
-        "add": MessageLookupByLibrary.simpleMessage("Agregar"),
-        "addARecipientAndItWillShowHere": MessageLookupByLibrary.simpleMessage(
-            "Agregar un destinatario y se mostrará aquí"),
-        "addContact": MessageLookupByLibrary.simpleMessage("Agregar Contacto"),
-        "addnew": MessageLookupByLibrary.simpleMessage("AGREGAR"),
-        "address": MessageLookupByLibrary.simpleMessage("Dirección"),
-        "addressCopiedToClipboard": MessageLookupByLibrary.simpleMessage(
-            "Dirección copiada al portapapeles"),
-        "addressIsEmpty":
-            MessageLookupByLibrary.simpleMessage("La Dirección está vacía"),
-        "advanced": MessageLookupByLibrary.simpleMessage("Avanzado"),
-        "advancedOptions":
-            MessageLookupByLibrary.simpleMessage("Opciones Avanzadas"),
-        "always": MessageLookupByLibrary.simpleMessage("Always"),
-        "amount": MessageLookupByLibrary.simpleMessage("Monto"),
-        "amountInSettingscurrency": m0,
-        "amountMustBeANumber": MessageLookupByLibrary.simpleMessage(
-            "La cantidad debe ser un número"),
-        "amountMustBePositive": MessageLookupByLibrary.simpleMessage(
-            "La cantidad debe ser positiva"),
-        "amountTooHigh":
-            MessageLookupByLibrary.simpleMessage("Cantidad demasiado alta"),
-        "antispamFilter":
-            MessageLookupByLibrary.simpleMessage("Anti-Spam Filter"),
-        "applicationReset":
-            MessageLookupByLibrary.simpleMessage("Restablecer la aplicación"),
-        "approve": MessageLookupByLibrary.simpleMessage("APROBAR"),
-        "areYouSureYouWantToDeleteThisContact":
-            MessageLookupByLibrary.simpleMessage(
-                "¿Estás seguro de que deseas eliminar este contacto?"),
-        "areYouSureYouWantToDeleteThisSendTemplate":
-            MessageLookupByLibrary.simpleMessage(
-                "¿Está seguro de que desea eliminar esta plantilla de envío?"),
-        "areYouSureYouWantToSaveYourContactsIt": m1,
-        "auto": MessageLookupByLibrary.simpleMessage("Auto"),
-        "autoHideBalance":
-            MessageLookupByLibrary.simpleMessage("Ocultar saldo"),
-        "backup": MessageLookupByLibrary.simpleMessage("Copia de seguridad"),
-        "backupAllAccounts":
-            MessageLookupByLibrary.simpleMessage("Copia de seguridad completa"),
-        "backupDataRequiredForRestore": m2,
-        "backupEncryptionKey":
-            MessageLookupByLibrary.simpleMessage("Clave de cifrado"),
-        "backupWarning": MessageLookupByLibrary.simpleMessage(
-            "Nadie puede recuperar sus claves secretas. Si no tiene una copia de seguridad, PERDERÁ SU DINERO si su teléfono se avería. Puede acceder a esta página mediante el menú de la aplicación y luego \'Copia de Seguridad\'"),
-        "balance": MessageLookupByLibrary.simpleMessage("Saldo"),
-        "barcode": MessageLookupByLibrary.simpleMessage("Código de barras"),
-        "barcodeScannerIsNotAvailableOnDesktop":
-            MessageLookupByLibrary.simpleMessage(
-                "El escáner de código de barras no está disponible en el escritorio"),
-        "blockExplorer": MessageLookupByLibrary.simpleMessage("Block Explorer"),
-        "blockReorgDetectedRewind": m3,
-        "blue": MessageLookupByLibrary.simpleMessage("Azul"),
-        "body": MessageLookupByLibrary.simpleMessage("Cuerpo"),
-        "broadcast": MessageLookupByLibrary.simpleMessage("Transmisión"),
-        "broadcastFromYourOnlineDevice": MessageLookupByLibrary.simpleMessage(
-            "Transmite desde tu dispositivo en línea"),
-        "budget": MessageLookupByLibrary.simpleMessage("Presupuesto"),
-        "cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
-        "cancelScan": MessageLookupByLibrary.simpleMessage("Cancelar Escaneo"),
-        "changeAccountName":
-            MessageLookupByLibrary.simpleMessage("Cambiar nombre de la cuenta"),
-        "changeTransparentKey": MessageLookupByLibrary.simpleMessage(
-            "Cambiar la clave transparente"),
-        "checkTransaction":
-            MessageLookupByLibrary.simpleMessage("Verificar la transacción"),
-        "close": MessageLookupByLibrary.simpleMessage("Cerrar"),
-        "closeApplication":
-            MessageLookupByLibrary.simpleMessage("Cierra la aplicación"),
-        "coffee": MessageLookupByLibrary.simpleMessage("Café"),
-        "coldStorage": MessageLookupByLibrary.simpleMessage("Billetera fría"),
-        "color": MessageLookupByLibrary.simpleMessage("Color"),
-        "confirmDeleteAccount": MessageLookupByLibrary.simpleMessage(
-            "¿Está SEGURO de que desea BORRAR esta cuenta? DEBE tener una COPIA DE SEGURIDAD para recuperarla. Esta operación NO es reversible."),
-        "confirmResetApp": MessageLookupByLibrary.simpleMessage(
-            "¿Seguro que quieres restablecer la aplicación? Sus cuentas NO serán eliminadas"),
-        "confirmSignATransactionToAddressFor": m4,
-        "confirmSigning":
-            MessageLookupByLibrary.simpleMessage("Confirmar firma"),
-        "confs": MessageLookupByLibrary.simpleMessage("Confir"),
-        "contactName":
-            MessageLookupByLibrary.simpleMessage("Nombre del contacto"),
-        "contacts": MessageLookupByLibrary.simpleMessage("Contactos"),
-        "convertToWatchonly":
-            MessageLookupByLibrary.simpleMessage("Convertir en solo vista"),
-        "copy": MessageLookupByLibrary.simpleMessage("Copiar"),
-        "count": MessageLookupByLibrary.simpleMessage("Cuenta"),
-        "createANewAccount": MessageLookupByLibrary.simpleMessage(
-            "Crea una nueva cuenta y aparecerá aquí."),
-        "createANewContactAndItWillShowUpHere":
-            MessageLookupByLibrary.simpleMessage(
-                "Crea un contacto y aparecerá aquí."),
-        "crypto": MessageLookupByLibrary.simpleMessage("Crypto"),
-        "currency": MessageLookupByLibrary.simpleMessage("Moneda"),
-        "currentPassword":
-            MessageLookupByLibrary.simpleMessage("Current password"),
-        "currentPasswordIncorrect":
-            MessageLookupByLibrary.simpleMessage("Current password incorrect"),
-        "custom": MessageLookupByLibrary.simpleMessage("Personalizado"),
-        "dark": MessageLookupByLibrary.simpleMessage("Noche"),
-        "databaseEncrypted": MessageLookupByLibrary.simpleMessage(
-            "Database Encrypted. Please Restart the App."),
-        "databasePassword":
-            MessageLookupByLibrary.simpleMessage("Database Password"),
-        "databaseRestored":
-            MessageLookupByLibrary.simpleMessage("Database Restored"),
-        "date": MessageLookupByLibrary.simpleMessage("Fecha"),
-        "datetime": MessageLookupByLibrary.simpleMessage("Fecha/Hora"),
-        "dbImportSuccessful":
-            MessageLookupByLibrary.simpleMessage("Importación exitosa"),
-        "defaultMemo": MessageLookupByLibrary.simpleMessage("Nota"),
-        "delete": MessageLookupByLibrary.simpleMessage("ELIMINAR"),
-        "deleteAccount": MessageLookupByLibrary.simpleMessage("Borrar Cuenta"),
-        "deleteContact":
-            MessageLookupByLibrary.simpleMessage("Borrar contacto"),
-        "deleteTemplate":
-            MessageLookupByLibrary.simpleMessage("Eliminar plantilla?"),
-        "derivationPath":
-            MessageLookupByLibrary.simpleMessage("Ruta de Derivación"),
-        "disconnected": MessageLookupByLibrary.simpleMessage("Desconectado"),
-        "doYouWantToDeleteTheSecretKeyAndConvert":
-            MessageLookupByLibrary.simpleMessage(
-                "¿Quiere BORRAR la clave secreta y convertir esta cuenta a solo lectura? Ya no podrá gastar desde este dispositivo. Esta operación NO es reversible."),
-        "doYouWantToRestore": MessageLookupByLibrary.simpleMessage(
-            "¿Desea restaurar la base de datos? ¡ESTO BORRARÁ SUS DATOS ACTUALES!"),
-        "doYouWantToTransferYourEntireTransparentBalanceTo": m5,
-        "duplicateAccount":
-            MessageLookupByLibrary.simpleMessage("Cuenta duplicada"),
-        "editContact": MessageLookupByLibrary.simpleMessage("Editar contacto"),
-        "encryptDatabase":
-            MessageLookupByLibrary.simpleMessage("Encrypt Database"),
-        "encryptedBackup": m6,
-        "encryptionKey":
-            MessageLookupByLibrary.simpleMessage("Clave de encriptación"),
-        "enterSecretShareIfAccountIsMultisignature":
-            MessageLookupByLibrary.simpleMessage(
-                "Introduzca la clave secreta si la cuenta es multi-firma"),
-        "enterSeed": MessageLookupByLibrary.simpleMessage(
-            "Ingrese la Semilla, Clave secreta o Clave de visualización. Dejar en blanco para una nueva cuenta"),
-        "error": m7,
-        "excludedNotes":
-            MessageLookupByLibrary.simpleMessage("Notas excluidas"),
-        "expert": MessageLookupByLibrary.simpleMessage("Modo Experto"),
-        "fee": MessageLookupByLibrary.simpleMessage("Fee"),
-        "fileSaved": MessageLookupByLibrary.simpleMessage("Archivo guardado"),
-        "fromPool": MessageLookupByLibrary.simpleMessage("Del Suministro"),
-        "fromto": MessageLookupByLibrary.simpleMessage("Rem/Dest."),
-        "fullBackup": MessageLookupByLibrary.simpleMessage("Copia completa"),
-        "fullRestore": MessageLookupByLibrary.simpleMessage(
-            "Restauración de la copia de seguridad completada"),
-        "gapLimit": MessageLookupByLibrary.simpleMessage("Brecha"),
-        "goToTransaction":
-            MessageLookupByLibrary.simpleMessage("Ver Transacción"),
-        "gold": MessageLookupByLibrary.simpleMessage("Oro"),
-        "height": MessageLookupByLibrary.simpleMessage("Altura"),
-        "help": MessageLookupByLibrary.simpleMessage("Ayuda"),
-        "high": MessageLookupByLibrary.simpleMessage("Alto"),
-        "history": MessageLookupByLibrary.simpleMessage("Historial"),
-        "iHaveMadeABackup": MessageLookupByLibrary.simpleMessage(
-            "He hecho una copia de seguridad"),
-        "import": MessageLookupByLibrary.simpleMessage("Importar"),
-        "includeFeeInAmount": MessageLookupByLibrary.simpleMessage(
-            "Incluir comisión en la cantidad"),
-        "includeReplyTo": MessageLookupByLibrary.simpleMessage(
-            "Incluir mi dirección en el memo"),
-        "incomingFunds": MessageLookupByLibrary.simpleMessage("Pago recibido"),
-        "inputBarcodeValue":
-            MessageLookupByLibrary.simpleMessage("Escriba el Código de barras"),
-        "invalidAddress":
-            MessageLookupByLibrary.simpleMessage("La Dirección no es válida"),
-        "invalidKey": MessageLookupByLibrary.simpleMessage("Tecla inválida"),
-        "invalidPassword":
-            MessageLookupByLibrary.simpleMessage("Invalid Password"),
-        "invalidQrCode": m8,
-        "key": MessageLookupByLibrary.simpleMessage("Clave"),
-        "keyTool": MessageLookupByLibrary.simpleMessage("Clave Utilidad"),
-        "largestSpendingLastMonth": MessageLookupByLibrary.simpleMessage(
-            "Principales pagos del último mes"),
-        "largestSpendingsByAddress": MessageLookupByLibrary.simpleMessage(
-            "Pagos más grandes por dirección"),
-        "ledger": MessageLookupByLibrary.simpleMessage("Ledger"),
-        "light": MessageLookupByLibrary.simpleMessage("Día"),
-        "loadBackup": MessageLookupByLibrary.simpleMessage(
-            "Respaldar copia de seguridad"),
-        "loading": MessageLookupByLibrary.simpleMessage("Cargando..."),
-        "low": MessageLookupByLibrary.simpleMessage("Bajo"),
-        "markAllAsRead":
-            MessageLookupByLibrary.simpleMessage("Marcar todo como leído"),
-        "max": MessageLookupByLibrary.simpleMessage("MAX"),
-        "maxAmountPerNote":
-            MessageLookupByLibrary.simpleMessage("Monto máximo por nota"),
-        "maxSpendableAmount": m9,
-        "medium": MessageLookupByLibrary.simpleMessage("Medio"),
-        "memo": MessageLookupByLibrary.simpleMessage("Nota"),
-        "message": MessageLookupByLibrary.simpleMessage("Mensaje"),
-        "messages": MessageLookupByLibrary.simpleMessage("Mensajes"),
-        "minPrivacy": MessageLookupByLibrary.simpleMessage("Privacidad Mínima"),
-        "mm": MessageLookupByLibrary.simpleMessage("M/M"),
-        "mobileCharges": MessageLookupByLibrary.simpleMessage(
-            "Con datos móviles, el escaneo puede incurrir en cargos adicionales. ¿Quieres proceder?"),
-        "mode": MessageLookupByLibrary.simpleMessage("Modo"),
-        "multiPay": MessageLookupByLibrary.simpleMessage("Multi-Pagos"),
-        "multipay": MessageLookupByLibrary.simpleMessage("Multi-Pagos"),
-        "multipleAddresses":
-            MessageLookupByLibrary.simpleMessage("Múltiples direcciones"),
-        "multisig": MessageLookupByLibrary.simpleMessage("Multi-firma"),
-        "multisigShares":
-            MessageLookupByLibrary.simpleMessage("Acciones multi-firmas"),
-        "na": MessageLookupByLibrary.simpleMessage("N/A"),
-        "name": MessageLookupByLibrary.simpleMessage("Nombre"),
-        "nameIsEmpty": MessageLookupByLibrary.simpleMessage("Nombre vacío"),
-        "never": MessageLookupByLibrary.simpleMessage("Never"),
-        "newAccount": MessageLookupByLibrary.simpleMessage("Nueva cuenta"),
-        "newLabel": MessageLookupByLibrary.simpleMessage("Nueva"),
-        "newPassword": MessageLookupByLibrary.simpleMessage("New Password"),
-        "newPasswordsDoNotMatch":
-            MessageLookupByLibrary.simpleMessage("New passwords do not match"),
-        "newSnapAddress":
-            MessageLookupByLibrary.simpleMessage("Nueva Dirección instantánea"),
-        "newSubAccount":
-            MessageLookupByLibrary.simpleMessage("Nueva subcuenta"),
-        "newTemplate": MessageLookupByLibrary.simpleMessage("Nueva plantilla"),
-        "noAccount": MessageLookupByLibrary.simpleMessage("Sin Cuenta"),
-        "noActiveAccount":
-            MessageLookupByLibrary.simpleMessage("Sin cuenta activa"),
-        "noAuthenticationMethod":
-            MessageLookupByLibrary.simpleMessage("Sin método de autenticación"),
-        "noContacts": MessageLookupByLibrary.simpleMessage("Sin Contactos"),
-        "noRecipient": MessageLookupByLibrary.simpleMessage("Sin Destinatario"),
-        "noSpendingInTheLast30Days":
-            MessageLookupByLibrary.simpleMessage("Sin pagos en 30 días"),
-        "notEnoughBalance":
-            MessageLookupByLibrary.simpleMessage("Saldo insuficiente"),
-        "notes": MessageLookupByLibrary.simpleMessage("Notas"),
-        "now": MessageLookupByLibrary.simpleMessage("Ahora"),
-        "numberOfConfirmationsNeededBeforeSpending":
-            MessageLookupByLibrary.simpleMessage(
-                "Número de confirmaciones necesarias antes de gastar"),
-        "ok": MessageLookupByLibrary.simpleMessage("OK"),
-        "openInExplorer":
-            MessageLookupByLibrary.simpleMessage("Abrir en el Explorador"),
-        "paymentInProgress":
-            MessageLookupByLibrary.simpleMessage("Pago en curso..."),
-        "paymentMade": MessageLookupByLibrary.simpleMessage("Pago enviado"),
-        "pink": MessageLookupByLibrary.simpleMessage("Rosado"),
-        "pl": MessageLookupByLibrary.simpleMessage("G/P"),
-        "playSound": MessageLookupByLibrary.simpleMessage("Sonido"),
-        "pleaseAuthenticateToSend": MessageLookupByLibrary.simpleMessage(
-            "Por favor autentíquese para enviar"),
-        "pleaseAuthenticateToShowAccountSeed":
-            MessageLookupByLibrary.simpleMessage(
-                "Autentíquese para ver la semilla de la cuenta"),
-        "pleaseConfirm":
-            MessageLookupByLibrary.simpleMessage("Por favor, confirmar"),
-        "pnl": MessageLookupByLibrary.simpleMessage("G&P"),
-        "pnlHistory": MessageLookupByLibrary.simpleMessage("Historia de G&P"),
-        "pools": MessageLookupByLibrary.simpleMessage("Transferir Suministros"),
-        "preparingTransaction":
-            MessageLookupByLibrary.simpleMessage("Preparando la transacción…"),
-        "price": MessageLookupByLibrary.simpleMessage("Precio"),
-        "primary": MessageLookupByLibrary.simpleMessage("Primario"),
-        "privacy": m11,
-        "privacyLevelTooLow": MessageLookupByLibrary.simpleMessage(
-            "Nivel de Privacidad muy BAJO"),
-        "privateKey": MessageLookupByLibrary.simpleMessage("Clave Privada"),
-        "protectOpen": MessageLookupByLibrary.simpleMessage("Bloquer al abrir"),
-        "protectSend":
-            MessageLookupByLibrary.simpleMessage("Autenticar al enviar"),
-        "protectSendSettingChanged": MessageLookupByLibrary.simpleMessage(
-            "La configuración de Autenticar al enviar ha cambiado"),
-        "purple": MessageLookupByLibrary.simpleMessage("Morado"),
-        "qty": MessageLookupByLibrary.simpleMessage("Cantidad"),
-        "rawTransaction":
-            MessageLookupByLibrary.simpleMessage("Transacción con Firmar"),
-        "realized": MessageLookupByLibrary.simpleMessage("Realizado"),
-        "receive": m12,
-        "receivePayment":
-            MessageLookupByLibrary.simpleMessage("Recibir un pago"),
-        "received": m13,
-        "recipient": MessageLookupByLibrary.simpleMessage("Destinatario"),
-        "repeatNewPassword":
-            MessageLookupByLibrary.simpleMessage("Repeat New Password"),
-        "reply": MessageLookupByLibrary.simpleMessage("Responder"),
-        "rescan": MessageLookupByLibrary.simpleMessage("Escanear"),
-        "rescanFrom":
-            MessageLookupByLibrary.simpleMessage("¿Escanear desde...?"),
-        "rescanNeeded":
-            MessageLookupByLibrary.simpleMessage("Necesita escanear"),
-        "rescanRequested": m14,
-        "rescanning": MessageLookupByLibrary.simpleMessage("Escanear..."),
-        "reset": MessageLookupByLibrary.simpleMessage("Restablecer"),
-        "restart": MessageLookupByLibrary.simpleMessage("Reiniciar"),
-        "restoreAnAccount":
-            MessageLookupByLibrary.simpleMessage("¿Restaurar una Cuenta?"),
-        "resumeScan": MessageLookupByLibrary.simpleMessage("Reanudar Escaneo"),
-        "retrieveTransactionDetails": MessageLookupByLibrary.simpleMessage(
-            "Obtener detalles de la transacción"),
-        "rewindToCheckpoint": MessageLookupByLibrary.simpleMessage("Rebobinar"),
-        "roundToMillis":
-            MessageLookupByLibrary.simpleMessage("Redondear a milésimas"),
-        "save": MessageLookupByLibrary.simpleMessage("Guardar"),
-        "saveBackup":
-            MessageLookupByLibrary.simpleMessage("Guardar copia de seguridad"),
-        "saveToBlockchain":
-            MessageLookupByLibrary.simpleMessage("Guardar en la blockchain?"),
-        "scanQrCode":
-            MessageLookupByLibrary.simpleMessage("Escanear Código QR"),
-        "scanStartingMomentarily": MessageLookupByLibrary.simpleMessage(
-            "Escaneo iniciado momentáneamente"),
-        "scanTransparentAddresses":
-            MessageLookupByLibrary.simpleMessage("Scan Transparent Addresses"),
-        "scanningAddresses":
-            MessageLookupByLibrary.simpleMessage("Scanning addresses"),
-        "secondary": MessageLookupByLibrary.simpleMessage("Secundario"),
-        "secretKey": MessageLookupByLibrary.simpleMessage("Clave secreta"),
-        "secretShare": MessageLookupByLibrary.simpleMessage("Clave secreta"),
-        "seed": MessageLookupByLibrary.simpleMessage("Semilla"),
-        "selectAccount":
-            MessageLookupByLibrary.simpleMessage("Seleccionar cuenta"),
-        "selectCheckpoint":
-            MessageLookupByLibrary.simpleMessage("Seleccionar Fetcha/Altura"),
-        "selectNotesToExcludeFromPayments":
-            MessageLookupByLibrary.simpleMessage(
-                "Seleccionar Notas a EXCLUIR de los pagos"),
-        "send": MessageLookupByLibrary.simpleMessage("Enviar"),
-        "sendCointicker": m15,
-        "sendCointickerTo": m16,
-        "sendFrom": m17,
-        "sender": MessageLookupByLibrary.simpleMessage("Remitente"),
-        "sendingATotalOfAmountCointickerToCountRecipients": m18,
-        "sendingAzecCointickerToAddress": m19,
-        "server": MessageLookupByLibrary.simpleMessage("Servidor"),
-        "set": MessageLookupByLibrary.simpleMessage("Utilizar"),
-        "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
-        "shieldTranspBalance":
-            MessageLookupByLibrary.simpleMessage("Blindar Saldo transp."),
-        "shieldTransparentBalance":
-            MessageLookupByLibrary.simpleMessage("Blindar saldo transparente"),
-        "shieldingInProgress":
-            MessageLookupByLibrary.simpleMessage("Blindaje en progreso…"),
-        "showMessagesAsTable":
-            MessageLookupByLibrary.simpleMessage("Mostrar mensajes como tabla"),
-        "sign": MessageLookupByLibrary.simpleMessage("Firmar"),
-        "signOffline": MessageLookupByLibrary.simpleMessage("Firmar"),
-        "signOnYourOfflineDevice": MessageLookupByLibrary.simpleMessage(
-            "Firmar con tu dispositivo fuera de línea"),
-        "signedTx": MessageLookupByLibrary.simpleMessage("Tx firmada"),
-        "signingPleaseWait": MessageLookupByLibrary.simpleMessage("Firmando"),
-        "simple": MessageLookupByLibrary.simpleMessage("Básico"),
-        "simpleMode": MessageLookupByLibrary.simpleMessage("Modo básico"),
-        "spendable": MessageLookupByLibrary.simpleMessage("Disponible"),
-        "spendableBalance":
-            MessageLookupByLibrary.simpleMessage("Saldo disponible"),
-        "spent": m20,
-        "splitAccount": MessageLookupByLibrary.simpleMessage("Cuenta dividida"),
-        "splitNotes": MessageLookupByLibrary.simpleMessage("Dividar Billetes"),
-        "subAccountIndexOf": m21,
-        "subAccountOf": m22,
-        "subject": MessageLookupByLibrary.simpleMessage("Asunto"),
-        "sweep": MessageLookupByLibrary.simpleMessage("Barrer"),
-        "syncPaused": MessageLookupByLibrary.simpleMessage("Escaneo en pausa"),
-        "synching": MessageLookupByLibrary.simpleMessage("Sincronizando"),
-        "synchronizationInProgress":
-            MessageLookupByLibrary.simpleMessage("Sincronización en progreso"),
-        "table": MessageLookupByLibrary.simpleMessage("Lista"),
-        "tapAnIconToShowTheQrCode": MessageLookupByLibrary.simpleMessage(
-            "Tocar el icono para mostrar el código QR"),
-        "tapChartToToggleBetweenAddressAndAmount":
-            MessageLookupByLibrary.simpleMessage(
-                "Tocar gráfica para alternar entre dirección y cantidad"),
-        "tapQrCodeForSaplingAddress": MessageLookupByLibrary.simpleMessage(
-            "Tap QR Code for Sapling Address"),
-        "tapQrCodeForShieldedAddress": MessageLookupByLibrary.simpleMessage(
-            "Toca el QR para Dirección blindada"),
-        "tapQrCodeForTransparentAddress": MessageLookupByLibrary.simpleMessage(
-            "Toca el QR para Dirección transparente"),
-        "tapTransactionForDetails": MessageLookupByLibrary.simpleMessage(
-            "Toca una Transacción para ver detalles"),
-        "template": MessageLookupByLibrary.simpleMessage("Plantilla"),
-        "textCopiedToClipboard": m23,
-        "thePrivateWalletMessenger": MessageLookupByLibrary.simpleMessage(
-            "Billetera & Mensajería Privada"),
-        "theme": MessageLookupByLibrary.simpleMessage("Tema"),
-        "themeEditor": MessageLookupByLibrary.simpleMessage("Editor de temas"),
-        "thisAccountAlreadyExists":
-            MessageLookupByLibrary.simpleMessage("Esta cuenta ya existe."),
-        "tiltYourDeviceUpToRevealYourBalance":
-            MessageLookupByLibrary.simpleMessage(
-                "Incline su dispositivo hacia arriba para revelar su saldo"),
-        "timestamp": MessageLookupByLibrary.simpleMessage("Fecha/Hora"),
-        "toMakeAContactSendThemAMemoWithContact":
-            MessageLookupByLibrary.simpleMessage(
-                "Para contactar, enviar un memo con \'Contact:\'"),
-        "toPool": MessageLookupByLibrary.simpleMessage("Para Suministro"),
-        "total": MessageLookupByLibrary.simpleMessage("Total"),
-        "totalBalance": MessageLookupByLibrary.simpleMessage("Saldo Total"),
-        "tradingChartRange":
-            MessageLookupByLibrary.simpleMessage("Rango del gráfico"),
-        "tradingPl": MessageLookupByLibrary.simpleMessage("Intercambio G&P"),
-        "transactionDetails":
-            MessageLookupByLibrary.simpleMessage("Detalles de la transacción"),
-        "transactionHistory":
-            MessageLookupByLibrary.simpleMessage("Historial de transacciones"),
-        "transactions": MessageLookupByLibrary.simpleMessage("Transacciónes"),
-        "transfer": MessageLookupByLibrary.simpleMessage("Transferir"),
-        "transparentKey":
-            MessageLookupByLibrary.simpleMessage("Transparente Clavo"),
-        "txId": m24,
-        "underConfirmed":
-            MessageLookupByLibrary.simpleMessage("Confirmaciones insuficiente"),
-        "unifiedViewingKey": MessageLookupByLibrary.simpleMessage(
-            "Clave de visualización Unidad"),
-        "unshielded": MessageLookupByLibrary.simpleMessage("Sin blindaje"),
-        "unshieldedBalance":
-            MessageLookupByLibrary.simpleMessage("Saldo sin blindaje"),
-        "unsignedTransactionFile": MessageLookupByLibrary.simpleMessage(
-            "Archivo de transacción sin firmar"),
-        "unsignedTx": MessageLookupByLibrary.simpleMessage("Tx no firmada"),
-        "update": MessageLookupByLibrary.simpleMessage("Recalcular"),
-        "useGpu": MessageLookupByLibrary.simpleMessage("Utilizar GPU"),
-        "useQrForOfflineSigning": MessageLookupByLibrary.simpleMessage(
-            "Usar QR para firmar sin conexión"),
-        "useSettingscurrency": m25,
-        "useTransparentBalance":
-            MessageLookupByLibrary.simpleMessage("Usar saldo transp."),
-        "useUa": MessageLookupByLibrary.simpleMessage("Usar DU"),
-        "version": MessageLookupByLibrary.simpleMessage("Versión"),
-        "veryLow": MessageLookupByLibrary.simpleMessage("Muy Bajo"),
-        "viewingKey":
-            MessageLookupByLibrary.simpleMessage("Clave de visualización"),
-        "welcomeToYwallet":
-            MessageLookupByLibrary.simpleMessage("Bienvenido a YWallet")
-      };
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String rescanRequested(Object height) {
+    return 'Escaneo solicitado desde $height…';
+  }
+
+  @override
+  String get doYouWantToDeleteTheSecretKeyAndConvert => '¿Quiere BORRAR la clave secreta y convertir esta cuenta a solo lectura? Ya no podrá gastar desde este dispositivo. Esta operación NO es reversible.';
+
+  @override
+  String get delete => 'ELIMINAR';
+
+  @override
+  String get confs => 'Confir';
+
+  @override
+  String get height => 'Altura';
+
+  @override
+  String get datetime => 'Fecha/Hora';
+
+  @override
+  String get amount => 'Monto';
+
+  @override
+  String get selectNotesToExcludeFromPayments => 'Seleccionar Notas a EXCLUIR de los pagos';
+
+  @override
+  String get largestSpendingsByAddress => 'Pagos más grandes por dirección';
+
+  @override
+  String get tapChartToToggleBetweenAddressAndAmount => 'Tocar gráfica para alternar entre dirección y cantidad';
+
+  @override
+  String get accountBalanceHistory => 'Historial de la cuenta';
+
+  @override
+  String get noSpendingInTheLast30Days => 'Sin pagos en 30 días';
+
+  @override
+  String get largestSpendingLastMonth => 'Principales pagos del último mes';
+
+  @override
+  String get balance => 'Saldo';
+
+  @override
+  String get pnl => 'G&P';
+
+  @override
+  String get mm => 'M/M';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get price => 'Precio';
+
+  @override
+  String get qty => 'Cantidad';
+
+  @override
+  String get table => 'Lista';
+
+  @override
+  String get pl => 'G/P';
+
+  @override
+  String get realized => 'Realizado';
+
+  @override
+  String get toMakeAContactSendThemAMemoWithContact => 'Para contactar, enviar un memo con \'Contact:\'';
+
+  @override
+  String get newSnapAddress => 'Nueva Dirección instantánea';
+
+  @override
+  String get shieldTranspBalance => 'Blindar Saldo transp.';
+
+  @override
+  String get send => 'Enviar';
+
+  @override
+  String get noAccount => 'Sin Cuenta';
+
+  @override
+  String get seed => 'Semilla';
+
+  @override
+  String get confirmDeleteAccount => '¿Está SEGURO de que desea BORRAR esta cuenta? DEBE tener una COPIA DE SEGURIDAD para recuperarla. Esta operación NO es reversible.';
+
+  @override
+  String get confirmDeleteContact => 'Are you SURE you want to DELETE this contact?';
+
+  @override
+  String get changeAccountName => 'Cambiar nombre de la cuenta';
+
+  @override
+  String backupDataRequiredForRestore(Object name) {
+    return 'Copia de seguridad - $name - Requerida para restaurar';
+  }
+
+  @override
+  String get secretKey => 'Clave secreta';
+
+  @override
+  String get viewingKey => 'Clave de visualización';
+
+  @override
+  String get tapAnIconToShowTheQrCode => 'Tocar el icono para mostrar el código QR';
+
+  @override
+  String get multiPay => 'Multi-Pagos';
+
+  @override
+  String get pleaseConfirm => 'Por favor, confirmar';
+
+  @override
+  String sendingATotalOfAmountCointickerToCountRecipients(Object amount, Object count, Object ticker) {
+    return 'Enviando un total de $amount $ticker a $count direcciones';
+  }
+
+  @override
+  String get preparingTransaction => 'Preparando la transacción…';
+
+  @override
+  String sendCointickerTo(Object ticker) {
+    return 'Enviar $ticker a…';
+  }
+
+  @override
+  String get addressIsEmpty => 'La Dirección está vacía';
+
+  @override
+  String get invalidAddress => 'La Dirección no es válida';
+
+  @override
+  String get amountMustBeANumber => 'La cantidad debe ser un número';
+
+  @override
+  String get amountMustBePositive => 'La cantidad debe ser positiva';
+
+  @override
+  String get accountName => 'Nombre de la cuenta';
+
+  @override
+  String get accountNameIsRequired => 'Se requiere el nombre de la cuenta';
+
+  @override
+  String get enterSeed => 'Ingrese la Semilla, Clave secreta o Clave de visualización. Dejar en blanco para una nueva cuenta';
+
+  @override
+  String get scanStartingMomentarily => 'Escaneo iniciado momentáneamente';
+
+  @override
+  String get key => 'Clave';
+
+  @override
+  String sendCointicker(Object ticker) {
+    return 'Enviar $ticker';
+  }
+
+  @override
+  String get max => 'MAX';
+
+  @override
+  String get advancedOptions => 'Opciones Avanzadas';
+
+  @override
+  String get memo => 'Nota';
+
+  @override
+  String get roundToMillis => 'Redondear a milésimas';
+
+  @override
+  String useSettingscurrency(Object currency) {
+    return 'Utilizar $currency';
+  }
+
+  @override
+  String get includeFeeInAmount => 'Incluir comisión en la cantidad';
+
+  @override
+  String get maxAmountPerNote => 'Monto máximo por nota';
+
+  @override
+  String get spendable => 'Disponible';
+
+  @override
+  String get notEnoughBalance => 'Saldo insuficiente';
+
+  @override
+  String get approve => 'APROBAR';
+
+  @override
+  String sendingAzecCointickerToAddress(Object aZEC, Object address, Object ticker) {
+    return 'Enviado $aZEC $ticker a $address';
+  }
+
+  @override
+  String get unsignedTransactionFile => 'Archivo de transacción sin firmar';
+
+  @override
+  String amountInSettingscurrency(Object currency) {
+    return 'Cantidad en $currency';
+  }
+
+  @override
+  String get custom => 'Personalizado';
+
+  @override
+  String get server => 'Servidor';
+
+  @override
+  String get blue => 'Azul';
+
+  @override
+  String get pink => 'Rosado';
+
+  @override
+  String get coffee => 'Café';
+
+  @override
+  String get light => 'Día';
+
+  @override
+  String get dark => 'Noche';
+
+  @override
+  String get currency => 'Moneda';
+
+  @override
+  String get numberOfConfirmationsNeededBeforeSpending => 'Número de confirmaciones necesarias antes de gastar';
+
+  @override
+  String get retrieveTransactionDetails => 'Obtener detalles de la transacción';
+
+  @override
+  String get theme => 'Tema';
+
+  @override
+  String get transactionDetails => 'Detalles de la transacción';
+
+  @override
+  String get timestamp => 'Fecha/Hora';
+
+  @override
+  String get address => 'Dirección';
+
+  @override
+  String get openInExplorer => 'Abrir en el Explorador';
+
+  @override
+  String get na => 'N/A';
+
+  @override
+  String get add => 'Agregar';
+
+  @override
+  String get tradingChartRange => 'Rango del gráfico';
+
+  @override
+  String get m1 => '1 M';
+
+  @override
+  String get m3 => '3 M';
+
+  @override
+  String get m6 => '6 M';
+
+  @override
+  String get y1 => '1 Y';
+
+  @override
+  String get shieldTransparentBalanceWithSending => 'Shield Transparent Balance When Sending';
+
+  @override
+  String get useUa => 'Usar DU';
+
+  @override
+  String get createANewAccount => 'Crea una nueva cuenta y aparecerá aquí.';
+
+  @override
+  String get duplicateAccount => 'Cuenta duplicada';
+
+  @override
+  String get thisAccountAlreadyExists => 'Esta cuenta ya existe.';
+
+  @override
+  String get selectAccount => 'Seleccionar cuenta';
+
+  @override
+  String get nameIsEmpty => 'Nombre vacío';
+
+  @override
+  String get deleteContact => 'Borrar contacto';
+
+  @override
+  String get areYouSureYouWantToDeleteThisContact => '¿Estás seguro de que deseas eliminar este contacto?';
+
+  @override
+  String get saveToBlockchain => 'Guardar en la blockchain?';
+
+  @override
+  String areYouSureYouWantToSaveYourContactsIt(Object ticker) {
+    return '¿Estás seguro de que quieres guardar tus contactos? Costará 0,01 mZEC ';
+  }
+
+  @override
+  String get confirmSaveContacts => 'Are you sure you want to save your contacts?';
+
+  @override
+  String get backupWarning => 'Nadie puede recuperar sus claves secretas. Si no tiene una copia de seguridad, PERDERÁ SU DINERO si su teléfono se avería. Puede acceder a esta página mediante el menú de la aplicación y luego \'Copia de Seguridad\'';
+
+  @override
+  String get contactName => 'Nombre del contacto';
+
+  @override
+  String get date => 'Fecha';
+
+  @override
+  String get duplicateContact => 'Another contact has this address';
+
+  @override
+  String get autoHideBalance => 'Ocultar saldo';
+
+  @override
+  String get tiltYourDeviceUpToRevealYourBalance => 'Incline su dispositivo hacia arriba para revelar su saldo';
+
+  @override
+  String get noContacts => 'Sin Contactos';
+
+  @override
+  String get createANewContactAndItWillShowUpHere => 'Crea un contacto y aparecerá aquí.';
+
+  @override
+  String get addContact => 'Agregar Contacto';
+
+  @override
+  String get accountHasSomeBalanceAreYouSureYouWantTo => 'La cuenta tiene un saldo. ¿Estás seguro de que quieres eliminarlo?';
+
+  @override
+  String get deleteAccount => 'Borrar Cuenta';
+
+  @override
+  String get gold => 'Oro';
+
+  @override
+  String get purple => 'Morado';
+
+  @override
+  String get noRecipient => 'Sin Destinatario';
+
+  @override
+  String get addARecipientAndItWillShowHere => 'Agregar un destinatario y se mostrará aquí';
+
+  @override
+  String get receivePayment => 'Recibir un pago';
+
+  @override
+  String get amountTooHigh => 'Cantidad demasiado alta';
+
+  @override
+  String get protectSend => 'Autenticar al enviar';
+
+  @override
+  String get protectSendSettingChanged => 'La configuración de Autenticar al enviar ha cambiado';
+
+  @override
+  String get pleaseAuthenticateToSend => 'Por favor autentíquese para enviar';
+
+  @override
+  String get unshielded => 'Sin blindaje';
+
+  @override
+  String get unshieldedBalance => 'Saldo sin blindaje';
+
+  @override
+  String get totalBalance => 'Saldo Total';
+
+  @override
+  String get underConfirmed => 'Confirmaciones insuficiente';
+
+  @override
+  String get excludedNotes => 'Notas excluidas';
+
+  @override
+  String get spendableBalance => 'Saldo disponible';
+
+  @override
+  String get rescanNeeded => 'Necesita escanear';
+
+  @override
+  String get tapTransactionForDetails => 'Toca una Transacción para ver detalles';
+
+  @override
+  String get transactionHistory => 'Historial de transacciones';
+
+  @override
+  String get help => 'Ayuda';
+
+  @override
+  String receive(Object ticker) {
+    return 'Recibir $ticker';
+  }
+
+  @override
+  String get pnlHistory => 'Historia de G&P';
+
+  @override
+  String get useTransparentBalance => 'Usar saldo transp.';
+
+  @override
+  String get themeEditor => 'Editor de temas';
+
+  @override
+  String get color => 'Color';
+
+  @override
+  String get accentColor => 'Color de acento';
+
+  @override
+  String get primary => 'Primario';
+
+  @override
+  String get secondary => 'Secundario';
+
+  @override
+  String get multisig => 'Multi-firma';
+
+  @override
+  String get enterSecretShareIfAccountIsMultisignature => 'Introduzca la clave secreta si la cuenta es multi-firma';
+
+  @override
+  String get secretShare => 'Clave secreta';
+
+  @override
+  String get fileSaved => 'Archivo guardado';
+
+  @override
+  String numMoreSignersNeeded(Object num) {
+    return '$num more signers needed';
+  }
+
+  @override
+  String get sign => 'Firmar';
+
+  @override
+  String get splitAccount => 'Cuenta dividida';
+
+  @override
+  String get confirmSigning => 'Confirmar firma';
+
+  @override
+  String confirmSignATransactionToAddressFor(Object address, Object amount) {
+    return 'Desea firmar una transacción a $address por $amount';
+  }
+
+  @override
+  String get multisigShares => 'Acciones multi-firmas';
+
+  @override
+  String get copy => 'Copiar';
+
+  @override
+  String textCopiedToClipboard(Object text) {
+    return '$text copiado al portapapeles';
+  }
+
+  @override
+  String get multipleAddresses => 'Múltiples direcciones';
+
+  @override
+  String get addnew => 'AGREGAR';
+
+  @override
+  String get applicationReset => 'Restablecer la aplicación';
+
+  @override
+  String get confirmResetApp => '¿Seguro que quieres restablecer la aplicación? Sus cuentas NO serán eliminadas';
+
+  @override
+  String get reset => 'Restablecer';
+
+  @override
+  String get loading => 'Cargando...';
+
+  @override
+  String get restart => 'Reiniciar';
+
+  @override
+  String get pleaseQuitAndRestartTheAppNow => 'Please Quit and Restart the app now';
+
+  @override
+  String get mode => 'Modo';
+
+  @override
+  String get simple => 'Básico';
+
+  @override
+  String get advanced => 'Avanzado';
+
+  @override
+  String sendFrom(Object app) {
+    return 'Enviado desde $app';
+  }
+
+  @override
+  String get defaultMemo => 'Nota';
+
+  @override
+  String get fullBackup => 'Copia completa';
+
+  @override
+  String get backupEncryptionKey => 'Clave de cifrado';
+
+  @override
+  String get saveBackup => 'Guardar copia de seguridad';
+
+  @override
+  String encryptedBackup(Object app) {
+    return '$app Copia completa';
+  }
+
+  @override
+  String get fullRestore => 'Restauración de la copia de seguridad completada';
+
+  @override
+  String get loadBackup => 'Respaldar copia de seguridad';
+
+  @override
+  String get backupAllAccounts => 'Copia de seguridad completa';
+
+  @override
+  String get simpleMode => 'Modo básico';
+
+  @override
+  String get accountIndex => 'Índice de cuenta';
+
+  @override
+  String subAccountOf(Object name) {
+    return 'Subcuenta de $name';
+  }
+
+  @override
+  String subAccountIndexOf(Object index, Object name) {
+    return 'Subcuenta $index de $name';
+  }
+
+  @override
+  String get newSubAccount => 'Nueva subcuenta';
+
+  @override
+  String get noActiveAccount => 'Sin cuenta activa';
+
+  @override
+  String get closeApplication => 'Cierra la aplicación';
+
+  @override
+  String get disconnected => 'Desconectado';
+
+  @override
+  String get ledger => 'Ledger';
+
+  @override
+  String get mobileCharges => 'Con datos móviles, el escaneo puede incurrir en cargos adicionales. ¿Quieres proceder?';
+
+  @override
+  String get iHaveMadeABackup => 'He hecho una copia de seguridad';
+
+  @override
+  String get barcodeScannerIsNotAvailableOnDesktop => 'El escáner de código de barras no está disponible en el escritorio';
+
+  @override
+  String get signOffline => 'Firmar';
+
+  @override
+  String get rawTransaction => 'Transacción con Firmar';
+
+  @override
+  String get convertToWatchonly => 'Convertir en solo vista';
+
+  @override
+  String get messages => 'Mensajes';
+
+  @override
+  String get body => 'Cuerpo';
+
+  @override
+  String get subject => 'Asunto';
+
+  @override
+  String get includeReplyTo => 'Incluir mi dirección en el memo';
+
+  @override
+  String get sender => 'Remitente';
+
+  @override
+  String get message => 'Mensaje';
+
+  @override
+  String get reply => 'Responder';
+
+  @override
+  String get recipient => 'Destinatario';
+
+  @override
+  String get fromto => 'Rem/Dest.';
+
+  @override
+  String get rescanning => 'Escanear...';
+
+  @override
+  String get markAllAsRead => 'Marcar todo como leído';
+
+  @override
+  String get showMessagesAsTable => 'Mostrar mensajes como tabla';
+
+  @override
+  String get editContact => 'Editar contacto';
+
+  @override
+  String get now => 'Ahora';
+
+  @override
+  String get protectOpen => 'Bloquer al abrir';
+
+  @override
+  String get gapLimit => 'Brecha';
+
+  @override
+  String get error => 'ERROR';
+
+  @override
+  String get paymentInProgress => 'Pago en curso...';
+
+  @override
+  String get useQrForOfflineSigning => 'Usar QR para firmar sin conexión';
+
+  @override
+  String get unsignedTx => 'Tx no firmada';
+
+  @override
+  String get signOnYourOfflineDevice => 'Firmar con tu dispositivo fuera de línea';
+
+  @override
+  String get signedTx => 'Tx firmada';
+
+  @override
+  String get broadcastFromYourOnlineDevice => 'Transmite desde tu dispositivo en línea';
+
+  @override
+  String get checkTransaction => 'Verificar la transacción';
+
+  @override
+  String get crypto => 'Crypto';
+
+  @override
+  String get restoreAnAccount => '¿Restaurar una Cuenta?';
+
+  @override
+  String get welcomeToYwallet => 'Bienvenido a YWallet';
+
+  @override
+  String get thePrivateWalletMessenger => 'Billetera & Mensajería Privada';
+
+  @override
+  String get newAccount => 'Nueva cuenta';
+
+  @override
+  String get invalidKey => 'Tecla inválida';
+
+  @override
+  String get barcode => 'Código de barras';
+
+  @override
+  String get inputBarcodeValue => 'Escriba el Código de barras';
+
+  @override
+  String get auto => 'Auto';
+
+  @override
+  String get count => 'Cuenta';
+
+  @override
+  String get close => 'Cerrar';
+
+  @override
+  String get changeTransparentKey => 'Cambiar la clave transparente';
+
+  @override
+  String get cancelScan => 'Cancelar Escaneo';
+
+  @override
+  String get resumeScan => 'Reanudar Escaneo';
+
+  @override
+  String get syncPaused => 'Escaneo en pausa';
+
+  @override
+  String get derivationPath => 'Ruta de Derivación';
+
+  @override
+  String get privateKey => 'Clave Privada';
+
+  @override
+  String get keyTool => 'Clave Utilidad';
+
+  @override
+  String get update => 'Recalcular';
+
+  @override
+  String get antispamFilter => 'Anti-Spam Filter';
+
+  @override
+  String get doYouWantToRestore => '¿Desea restaurar la base de datos? ¡ESTO BORRARÁ SUS DATOS ACTUALES!';
+
+  @override
+  String get useGpu => 'Utilizar GPU';
+
+  @override
+  String get import => 'Importar';
+
+  @override
+  String get newLabel => 'Nueva';
+
+  @override
+  String invalidQrCode(Object message) {
+    return 'QR inválido: $message';
+  }
+
+  @override
+  String get expert => 'Modo Experto';
+
+  @override
+  String blockReorgDetectedRewind(Object rewindHeight) {
+    return 'Se ha detectado una reorganización de la blockchain. Rebobinar hasta $rewindHeight';
+  }
+
+  @override
+  String get goToTransaction => 'Ver Transacción';
+
+  @override
+  String get transactions => 'Transacciónes';
+
+  @override
+  String get synchronizationInProgress => 'Sincronización en progreso';
+
+  @override
+  String get incomingFunds => 'Pago recibido';
+
+  @override
+  String get paymentMade => 'Pago enviado';
+
+  @override
+  String received(Object amount, Object ticker) {
+    return 'Recibido $amount $ticker';
+  }
+
+  @override
+  String spent(Object amount, Object ticker) {
+    return 'Enviado $amount $ticker';
+  }
+
+  @override
+  String get set => 'Utilizar';
+
+  @override
+  String get encryptionKey => 'Clave de encriptación';
+
+  @override
+  String get dbImportSuccessful => 'Importación exitosa';
+
+  @override
+  String get pools => 'Transferir Suministros';
+
+  @override
+  String get poolTransfer => 'Pool Transfer';
+
+  @override
+  String get fromPool => 'Del Suministro';
+
+  @override
+  String get toPool => 'Para Suministro';
+
+  @override
+  String maxSpendableAmount(Object amount, Object ticker) {
+    return 'Max Gastable: $amount $ticker';
+  }
+
+  @override
+  String get splitNotes => 'Dividar Billetes';
+
+  @override
+  String get transfer => 'Transferir';
+
+  @override
+  String get template => 'Plantilla';
+
+  @override
+  String get newTemplate => 'Nueva plantilla';
+
+  @override
+  String get name => 'Nombre';
+
+  @override
+  String get deleteTemplate => 'Eliminar plantilla?';
+
+  @override
+  String get areYouSureYouWantToDeleteThisSendTemplate => '¿Está seguro de que desea eliminar esta plantilla de envío?';
+
+  @override
+  String get rewindToCheckpoint => 'Rebobinar';
+
+  @override
+  String get selectCheckpoint => 'Seleccionar Fetcha/Altura';
+
+  @override
+  String get scanQrCode => 'Escanear Código QR';
+
+  @override
+  String get minPrivacy => 'Privacidad Mínima';
+
+  @override
+  String get privacyLevelTooLow => 'Nivel de Privacidad muy BAJO';
+
+  @override
+  String get veryLow => 'Muy Bajo';
+
+  @override
+  String get low => 'Bajo';
+
+  @override
+  String get medium => 'Medio';
+
+  @override
+  String get high => 'Alto';
+
+  @override
+  String privacy(Object level) {
+    return 'PRIVACIDAD: $level';
+  }
+
+  @override
+  String get save => 'Guardar';
+
+  @override
+  String get signingPleaseWait => 'Firmando';
+
+  @override
+  String get sweep => 'Barrer';
+
+  @override
+  String get transparentKey => 'Transparente Clavo';
+
+  @override
+  String get unifiedViewingKey => 'Clave de visualización Unidad';
+
+  @override
+  String get encryptDatabase => 'Encrypt Database';
+
+  @override
+  String get currentPassword => 'Current password';
+
+  @override
+  String get newPassword => 'New Password';
+
+  @override
+  String get repeatNewPassword => 'Repeat New Password';
+
+  @override
+  String get databasePassword => 'Database Password';
+
+  @override
+  String get currentPasswordIncorrect => 'Current password incorrect';
+
+  @override
+  String get newPasswordsDoNotMatch => 'New passwords do not match';
+
+  @override
+  String get databaseEncrypted => 'Database Encrypted. Please Restart the App.';
+
+  @override
+  String get invalidPassword => 'Invalid Password';
+
+  @override
+  String get databaseRestored => 'Database Restored';
+
+  @override
+  String get never => 'Never';
+
+  @override
+  String get always => 'Always';
+
+  @override
+  String get scanTransparentAddresses => 'Scan Transparent Addresses';
+
+  @override
+  String get scanningAddresses => 'Scanning addresses';
+
+  @override
+  String get blockExplorer => 'Block Explorer';
+
+  @override
+  String get tapQrCodeForSaplingAddress => 'Tap QR Code for Sapling Address';
+
+  @override
+  String get playSound => 'Sonido';
+
+  @override
+  String get fee => 'Fee';
+
+  @override
+  String get coins => 'Coins';
+
+  @override
+  String get rewind => 'Rewind';
+
+  @override
+  String get more => 'More';
+
+  @override
+  String get or => 'or';
+
+  @override
+  String get marketPrice => 'Historical Prices';
+
+  @override
+  String get txPlan => 'Transaction Plan';
+
+  @override
+  String get pool => 'Pool';
+
+  @override
+  String get transparentInput => 'Transparent Input';
+
+  @override
+  String get saplingInput => 'Sapling Input';
+
+  @override
+  String get orchardInput => 'Orchard Input';
+
+  @override
+  String get netSapling => 'Net Sapling Change';
+
+  @override
+  String get netOrchard => 'Net Orchard Change';
+
+  @override
+  String get transparent => 'Transparent';
+
+  @override
+  String get sapling => 'Sapling';
+
+  @override
+  String get orchard => 'Orchard';
+
+  @override
+  String get paymentURI => 'Payment URI';
+
+  @override
+  String get lastPayment => 'Last Payment';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get prev => 'Prev';
+
+  @override
+  String get nan => 'Not a number';
+
+  @override
+  String get memoTooLong => 'Memo too long';
+
+  @override
+  String get sending => 'Sending Transaction';
+
+  @override
+  String get sent => 'Transaction Sent';
+
+  @override
+  String get sent_failed => 'Transaction Failed';
 }

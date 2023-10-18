@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
+import 'package:YWallet/accounts.dart';
+import 'package:YWallet/appsettings.dart';
 import 'package:YWallet/src/version.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -8,6 +10,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
+import 'package:reflectable/reflectable.dart';
 import 'package:shared_preferences_android/shared_preferences_android.dart';
 import 'package:shared_preferences_ios/shared_preferences_ios.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -20,12 +23,34 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import 'coin/coin.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 
 part 'store.g.dart';
 
-enum ViewStyle { Auto, Table, List }
+class AppStore = _AppStore with _$AppStore;
+
+abstract class _AppStore with Store {
+  String dbPassword = '';
+
+  @observable
+  bool flat = false;
+  @observable
+  bool showConfirmations = false;
+
+  @action
+  Future<void> toggleShowConfirmations() async {
+    showConfirmations = !showConfirmations;
+    appSettings.showConfirmations = showConfirmations;
+    appSettings.save(await SharedPreferences.getInstance());
+  }
+}
+
+enum ViewStyle {
+  Auto,
+  Table,
+  List,
+}
 
 class ServerSelection {
   static String lwdChoiceKey = 'lwd_choice';
@@ -208,6 +233,16 @@ abstract class _Settings with Store {
   String dbPasswd = "";
 
   @action
+  Future<void> restoreThemeSetting() async {
+    if (Platform.isIOS) SharedPreferencesIOS.registerWith();
+    if (Platform.isAndroid) SharedPreferencesAndroid.registerWith();
+    final prefs = await SharedPreferences.getInstance();
+    theme = prefs.getString('theme') ?? "gold";
+    themeBrightness = prefs.getString('theme_brightness') ?? "dark";
+    _updateThemeData();
+  }
+
+  @action
   Future<bool> restore() async {
     if (Platform.isIOS) SharedPreferencesIOS.registerWith();
     if (Platform.isAndroid) SharedPreferencesAndroid.registerWith();
@@ -270,6 +305,58 @@ abstract class _Settings with Store {
     Future.microtask(_loadCurrencies); // lazily
     if (isMobile()) accelerometerEvents.listen(_handleAccel);
     return true;
+  }
+
+  @action
+  Future<void> load(SharedPreferences prefs) async {
+    version = prefs.getString('version') ?? "1.0.0";
+    simpleMode = prefs.getBool('simple_mode') ?? true;
+    anchorOffset = prefs.getInt('anchor_offset') ?? 3;
+    getTx = prefs.getBool('get_txinfo') ?? true;
+    rowsPerPage = prefs.getInt('rows_per_age') ?? 10;
+    showConfirmations = prefs.getBool('show_confirmations') ?? false;
+    currency = prefs.getString('currency') ?? "USD";
+    chartRange = prefs.getString('chart_range') ?? "1Y";
+    autoShieldThreshold = prefs.getDouble('autoshield_threshold') ?? 0.0;
+    useUA = prefs.getBool('use_ua') ?? false;
+    final autoHideOld = prefs.getBool('auto_hide') ?? true;
+    autoHide = prefs.getInt('auto_hide2') ?? (autoHideOld ? 1 : 0);
+    protectSend = prefs.getBool('protect_send') ?? false;
+    protectOpen = prefs.getBool('protect_open') ?? false;
+    includeReplyTo = prefs.getBool('include_reply_to') ?? false;
+    messageView = ViewStyle.values[(prefs.getInt('message_view') ?? 0)];
+    noteView = ViewStyle.values[(prefs.getInt('note_view') ?? 0)];
+    txView = ViewStyle.values[(prefs.getInt('tx_view') ?? 0)];
+    qrOffline = prefs.getBool('qr_offline') ?? true;
+    sound = prefs.getBool('sound') ?? !Platform.isLinux;
+    feeRule = prefs.getInt('fee_rule') ?? 0;
+    fee = prefs.getInt('fee') ?? 10000;
+
+    primaryColorValue = prefs.getInt('primary') ?? Colors.blue.value;
+    primaryVariantColorValue =
+        prefs.getInt('primary.variant') ?? Colors.blueAccent.value;
+    secondaryColorValue = prefs.getInt('secondary') ?? Colors.green.value;
+    secondaryVariantColorValue =
+        prefs.getInt('secondary.variant') ?? Colors.greenAccent.value;
+
+    memoSignature = prefs.getString('memo_signature');
+    antispam = prefs.getBool('antispam') ?? true;
+    useMillis = prefs.getBool('use_millis') ?? true;
+
+    backupEncKey = prefs.getString('backup_key') ?? "";
+
+    final _developerMode = prefs.getBool('developer_mode') ?? false;
+    developerMode = _developerMode ? 0 : 10;
+
+    uaType = prefs.getInt('ua_type') ?? 7;
+    minPrivacyLevel = prefs.getInt('min_privacy') ?? 0;
+
+    for (var c in coins) {
+      final ticker = c.def.ticker;
+      c.contactsSaved = prefs.getBool("$ticker.contacts_saved") ?? true;
+    }
+
+    prefs.setString('version', packageVersion);
   }
 
   @action
@@ -405,22 +492,22 @@ abstract class _Settings with Store {
     }
   }
 
-  @action
-  Future<void> updateCustomThemeColors(Color primary, Color primaryVariant,
-      Color secondary, Color secondaryVariant) async {
-    final prefs = await SharedPreferences.getInstance();
-    primaryColorValue = primary.value;
-    primaryVariantColorValue = primaryVariant.value;
-    secondaryColorValue = secondary.value;
-    secondaryVariantColorValue = secondaryVariant.value;
+  // @action
+  // Future<void> updateCustomThemeColors(Color primary, Color primaryVariant,
+  //     Color secondary, Color secondaryVariant) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   primaryColorValue = primary.value;
+  //   primaryVariantColorValue = primaryVariant.value;
+  //   secondaryColorValue = secondary.value;
+  //   secondaryVariantColorValue = secondaryVariant.value;
 
-    prefs.setInt('primary', primaryColorValue);
-    prefs.setInt('primary.variant', primaryVariantColorValue);
-    prefs.setInt('secondary', secondaryColorValue);
-    prefs.setInt('secondary.variant', secondaryVariantColorValue);
+  //   prefs.setInt('primary', primaryColorValue);
+  //   prefs.setInt('primary.variant', primaryVariantColorValue);
+  //   prefs.setInt('secondary', secondaryColorValue);
+  //   prefs.setInt('secondary.variant', secondaryVariantColorValue);
 
-    _updateThemeData();
-  }
+  //   _updateThemeData();
+  // }
 
   @action
   Future<void> setChartRange(String v) async {
@@ -629,13 +716,17 @@ Future<double?> getFxRate(String coin, String fiat) async {
   final uri = Uri.https(
       base, '/api/v3/simple/price', {'ids': coin, 'vs_currencies': fiat});
   try {
+    print(uri);
     final rep = await http.get(uri);
+    print(rep.statusCode);
     if (rep.statusCode == 200) {
       final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
       final p = json[coin][fiat.toLowerCase()];
       return (p is double) ? p : (p as int).toDouble();
     }
-  } catch (_) {}
+  } catch (e) {
+    print(e);
+  }
   return null;
 }
 
@@ -774,6 +865,8 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<void> sync(bool _isRescan) async {
+    final context = navigatorKey.currentContext!;
+    final s = S.of(context);
     if (paused) return;
     if (syncing) return;
     await syncStatus.update();
@@ -786,7 +879,7 @@ abstract class _SyncStatus with Store {
       if (!isSynced()) {
         if (Platform.isAndroid) {
           await FlutterForegroundTask.startService(
-            notificationTitle: S.current.synchronizationInProgress,
+            notificationTitle: s.synchronizationInProgress,
             notificationText: '',
           );
         }
@@ -819,12 +912,14 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<void> reorg() async {
+    final context = navigatorKey.currentContext!;
+    final s = S.of(context);
     final _syncedHeight = getDbSyncedHeight();
     if (_syncedHeight != null) {
       final offset = max(settings.anchorOffset, 1);
       final rewindHeight = max(_syncedHeight.height - offset, 0);
       final height = WarpApi.rewindTo(rewindHeight);
-      showSnackBar(S.current.blockReorgDetectedRewind(height));
+      showSnackBar(s.blockReorgDetectedRewind(height));
       syncStatus.reset();
       await syncStatus.update();
     }
@@ -832,12 +927,14 @@ abstract class _SyncStatus with Store {
 
   @action
   Future<void> rescan(int height) async {
+    final context = navigatorKey.currentContext!;
+    final s = S.of(context);
     if (syncing) {
       pendingRescanHeight = height;
       return;
     }
     eta.reset();
-    showSnackBar(S.current.rescanRequested(height));
+    showSnackBar(s.rescanRequested(height));
     syncedHeight = height;
     timestamp = null;
     WarpApi.rescanFrom(height);
@@ -1011,35 +1108,66 @@ abstract class HasHeight {
   int height = 0;
 }
 
+class Reflector extends Reflectable {
+  const Reflector() : super(instanceInvokeCapability);
+}
+
+const reflector = const Reflector();
+
+@reflector
 class Note extends HasHeight {
   int id;
   int height;
+  int? confirmations;
   DateTime timestamp;
   double value;
   bool orchard;
   bool excluded;
-  bool spent;
 
-  Note(this.id, this.height, this.timestamp, this.value, this.orchard,
-      this.excluded, this.spent);
+  factory Note.from(int? latestHeight, int id, int height, DateTime timestamp,
+      double value, bool orchard, bool excluded) {
+    final confirmations = latestHeight?.let((h) => h - height + 1);
+    return Note(id, height, confirmations, timestamp, value, orchard, excluded);
+  }
+
+  Note(this.id, this.height, this.confirmations, this.timestamp, this.value,
+      this.orchard, this.excluded);
 
   Note get invertExcluded =>
-      Note(id, height, timestamp, value, orchard, !excluded, spent);
+      Note(id, height, confirmations, timestamp, value, orchard, !excluded);
 }
 
+@reflector
 class Tx extends HasHeight {
   int id;
   int height;
+  int? confirmations;
   DateTime timestamp;
-  String txid;
+  String txId;
   String fullTxId;
   double value;
   String? address;
   String? contact;
   String? memo;
 
-  Tx(this.id, this.height, this.timestamp, this.txid, this.fullTxId, this.value,
-      this.address, this.contact, this.memo);
+  factory Tx.from(
+      int? latestHeight,
+      int id,
+      int height,
+      DateTime timestamp,
+      String txid,
+      String fullTxId,
+      double value,
+      String? address,
+      String? contact,
+      String? memo) {
+    final confirmations = latestHeight?.let((h) => h - height + 1);
+    return Tx(id, height, confirmations, timestamp, txid, fullTxId, value,
+        address, contact, memo);
+  }
+
+  Tx(this.id, this.height, this.confirmations, this.timestamp, this.txId,
+      this.fullTxId, this.value, this.address, this.contact, this.memo);
 }
 
 class AccountBalance {

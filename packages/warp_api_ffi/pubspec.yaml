@@ -30,7 +30,7 @@ ffigen:
       - '../../native/zcash-sync/binding.h'
 # On MacOS
   llvm-path:
-    - '/opt/homebrew/Cellar/llvm/16.0.5'
+    - '/opt/homebrew/Cellar/llvm/16.0.6'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

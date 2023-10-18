@@ -7,7 +7,7 @@ import 'dualmoneyinput.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'settings.dart';
 
 class PaymentURIPage extends StatefulWidget {

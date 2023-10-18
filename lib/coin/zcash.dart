@@ -21,7 +21,6 @@ class ZcashCoin extends CoinBase {
   bool supportsLedger = true;
   List<double> weights = [0.05, 0.25, 2.50];
   List<String> blockExplorers = [
-    "https://explorer.zcha.in/transactions",
     "https://blockchair.com/zcash/transaction",
     "https://zcashblockexplorer.com/transactions",
     "https://zecblockexplorer.com/tx"

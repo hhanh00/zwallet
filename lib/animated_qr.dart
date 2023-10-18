@@ -6,7 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp_api/warp_api.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 
 class AnimatedQR extends StatefulWidget {

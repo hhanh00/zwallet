@@ -5,7 +5,7 @@ import 'package:warp_api/data_fb_generated.dart';
 import 'store.dart';
 
 import 'main.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'send.dart';
 
 class MultiPayPage extends StatefulWidget {

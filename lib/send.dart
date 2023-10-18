@@ -15,7 +15,7 @@ import 'dart:math' as math;
 
 import 'main.dart';
 import 'store.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 
 class SendPage extends StatefulWidget {
   final SendPageArgs? args;

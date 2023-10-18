@@ -7,7 +7,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'accounts.dart';
 import 'coin/coins.dart';
 import 'main.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'rescan.dart';
 
 class AddAccountPage extends StatefulWidget {

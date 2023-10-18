@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'coin/coins.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 
 final String instantSyncHost = "zec.hanh00.fun"; // temporary & under debugmode

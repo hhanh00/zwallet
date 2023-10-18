@@ -1,12 +1,51 @@
+import 'dart:convert';
+
 import 'package:YWallet/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'coin/coin.dart';
 import 'main.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
+
+part 'settings.g.dart';
+
+@JsonSerializable(explicitToJson: true)
+class CoinSettings {
+  final String? serverURL;
+  final String? serverChoice;
+  final int? replyToAddress;
+  @JsonKey(defaultValue: true)
+  bool antispam;
+  @JsonKey(defaultValue: true)
+  bool feeAuto;
+  @JsonKey(defaultValue: 1000)
+  int feeRule;
+
+  CoinSettings(
+      {required this.serverURL,
+      required this.serverChoice,
+      required this.replyToAddress,
+      required this.antispam,
+      required this.feeAuto,
+      required this.feeRule,
+      });
+
+  factory CoinSettings.fromJson(Map<String, dynamic> json) => _$CoinSettingsFromJson(json);
+  Map<String, dynamic> toJson() => _$CoinSettingsToJson(this);      
+}
+
+// late AppSettings appSettings;
+
+// Future<void> loadAppSettings(SharedPreferences prefs) async {
+//   final settings = prefs.getString('settings');
+//   final json = settings?.let(jsonDecode) ?? Map<String, dynamic>();
+//   appSettings = AppSettings.fromJson(json);
+// }
 
 List<DropdownMenuItem<int>> getPrivacyOptions(BuildContext context) {
   final s = S.of(context);
@@ -202,13 +241,13 @@ class SettingsState extends State<SettingsPage>
                                 onSaved: _onChartRange,
                                 options: [
                                   FormBuilderFieldOption(
-                                      child: Text(s.M1), value: '1M'),
+                                      child: Text(s.m1), value: '1M'),
                                   FormBuilderFieldOption(
-                                      child: Text(s.M3), value: '3M'),
+                                      child: Text(s.m3), value: '3M'),
                                   FormBuilderFieldOption(
-                                      child: Text(s.M6), value: '6M'),
+                                      child: Text(s.m6), value: '6M'),
                                   FormBuilderFieldOption(
-                                      child: Text(s.Y1), value: '1Y'),
+                                      child: Text(s.y1), value: '1Y'),
                                 ]),
                           if (!simpleMode && hasUA)
                             FormBuilderCheckboxGroup<String>(

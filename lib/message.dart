@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import 'db.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 import 'message_item.dart';
 import 'store.dart';
@@ -145,11 +145,11 @@ class MessageListState extends State<MessageList> with AutomaticKeepAliveClientM
   Widget build(BuildContext context) {
     super.build(context);
     if (active.messages.isEmpty) return Container();
-    return Container(child: ListView.builder(
+    return LayoutBuilder(builder: (context, box) => Container(child: ListView.builder(
       itemCount: active.messages.length,
       itemBuilder: (context, index) {
-        return MessageItem(active.messages[index], index);
-    }));
+        return MessageItem(active.messages[index], index, width: box.maxWidth);
+    })));
   }
 
   @override

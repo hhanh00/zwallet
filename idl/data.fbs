@@ -21,6 +21,12 @@ table Balance {
     orchard:uint64;
 }
 
+table PoolBalance {
+    transparent:uint64;
+    sapling:uint64;
+    orchard:uint64;
+}
+
 table Height {
     height:uint32;
     timestamp:uint32;
@@ -158,6 +164,7 @@ table Backup {
   sk:string;
   fvk:string;
   uvk:string;
+  tsk:string;
 }
 
 table RaptorQDrops {

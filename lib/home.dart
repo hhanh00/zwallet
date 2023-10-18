@@ -21,7 +21,7 @@ import 'coin/coins.dart';
 import 'contact.dart';
 import 'db.dart';
 import 'history.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 import 'message.dart';
 import 'note.dart';

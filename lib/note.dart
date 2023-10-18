@@ -1,3 +1,4 @@
+import 'package:YWallet/appsettings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -5,7 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'main.dart';
 import 'store.dart';
 import 'db.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 
 class NoteWidget extends StatelessWidget {
   @override
@@ -111,16 +112,12 @@ class NotesDataSource extends DataTableSource {
   DataRow getRow(int index) {
     final note = active.sortedNotes[index];
     final theme = Theme.of(context);
-    final confsOrHeight = settings.showConfirmations
-        ? syncStatus.latestHeight - note.height + 1
-        : note.height;
 
     var style = theme.textTheme.bodyMedium!;
-    if (!confirmed(note.height))
+    final confirmations = note.confirmations ?? -1;
+    if (confirmations >= appSettings.anchorOffset)
       style = style.copyWith(color: style.color!.withOpacity(0.5));
 
-    if (note.spent)
-      style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
     if (note.orchard)
       style = style.merge(TextStyle(color: theme.primaryColor));
 
@@ -134,7 +131,7 @@ class NotesDataSource extends DataTableSource {
               ? theme.primaryColor.withOpacity(0.5)
               : theme.colorScheme.background),
       cells: [
-        DataCell(Text("$confsOrHeight", style: style)),
+        // DataCell(Text("$confsOrHeight", style: style)),
         DataCell(Text("${noteDateFormat.format(note.timestamp)}", style: style)),
         DataCell(Text(decimalFormat(note.value, 8), style: amountStyle)),
       ],
@@ -218,13 +215,11 @@ class NoteItemState extends State<NoteItem> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final note = widget.note;
-    final timestamp = humanizeDateTime(note.timestamp);
+    final timestamp = humanizeDateTime(context, note.timestamp);
     final confirmations = syncStatus.latestHeight - note.height + 1;
     var style = theme.textTheme.titleLarge!;
     if (!confirmed(note.height))
       style = style.merge(TextStyle(color: style.color!.withOpacity(0.5)));
-    if (note.spent)
-      style = style.merge(TextStyle(decoration: TextDecoration.lineThrough));
     if (note.orchard)
       style = style.merge(TextStyle(color: theme.primaryColor));
 

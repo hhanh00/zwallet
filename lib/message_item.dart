@@ -5,8 +5,9 @@ import 'db.dart';
 class MessageItem extends StatelessWidget {
   final ZMessage message;
   final int index;
+  final double? width;
 
-  MessageItem(this.message, this.index);
+  MessageItem(this.message, this.index, {this.width});
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +15,34 @@ class MessageItem extends StatelessWidget {
     final textTheme = theme.textTheme;
     final s = message.incoming ? message.sender : message.recipient;
     final initial = (s == null || s.isEmpty) ? "?" : s[0];
-    final width = MediaQuery.of(context).size.width - 96;
-    final dateString = humanizeDateTime(message.timestamp);
+    final dateString = humanizeDateTime(context, message.timestamp);
 
     final unreadStyle = (TextStyle? s) =>
         message.read ? s : s?.copyWith(fontWeight: FontWeight.bold);
+
+    final av = avatar(initial);
+
+    final body = Column(
+      children: [
+        Text(message.fromto(), style: unreadStyle(textTheme.bodySmall)),
+        SizedBox(
+          height: 4.0,
+        ),
+        if (message.subject.isNotEmpty)
+          Text(message.subject,
+              style: unreadStyle(textTheme.titleMedium),
+              overflow: TextOverflow.ellipsis),
+        SizedBox(
+          height: 6.0,
+        ),
+        Text(
+          message.body,
+          softWrap: true,
+          maxLines: 5,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
 
     return GestureDetector(
         onTap: () {
@@ -27,63 +51,73 @@ class MessageItem extends StatelessWidget {
         onLongPress: () {
           active.markAllMessagesAsRead();
         },
-        child: Container(
-            margin: EdgeInsets.only(top: 3.0, bottom: 3.0, right: 0.0),
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Row(children: [
-              CircleAvatar(
-                backgroundColor: initialToColor(initial),
-                child: Text(
-                  initial,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                radius: 24.0,
-              ),
-              SizedBox(
-                width: 15.0,
-                height: 30.0,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                      width: width,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(message.fromto(),
-                                style: unreadStyle(textTheme.bodySmall)),
-                            Text(dateString)
-                          ])),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  if (message.subject.isNotEmpty)
-                    Container(
-                        width: width,
-                        child: Text(message.subject,
-                            style: unreadStyle(textTheme.titleMedium),
-                            overflow: TextOverflow.ellipsis)),
-                  if (message.subject.isNotEmpty)
-                    SizedBox(
-                      height: 4.0,
-                    ),
-                  Container(
-                    width: width,
-                    child: Text(
-                      message.body,
-                      softWrap: true,
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              )
-            ])));
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 8),
+          child: Row(children: [
+            av,
+            SizedBox(width: 15),
+            Expanded(child: body),
+            SizedBox(
+                width: 80, child: Text(dateString, textAlign: TextAlign.right)),
+          ]),
+        )
+        // Container(
+        //     margin: EdgeInsets.only(top: 3.0, bottom: 3.0, right: 0.0),
+        //     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        //     child: Row(children: [
+        //       CircleAvatar(
+        //         backgroundColor: initialToColor(initial),
+        //         child: Text(
+        //           initial,
+        //           style: TextStyle(
+        //             fontSize: 28,
+        //             fontWeight: FontWeight.bold,
+        //             color: Colors.white,
+        //           ),
+        //         ),
+        //         radius: 24.0,
+        //       ),
+        //       SizedBox(
+        //         width: 15.0,
+        //         height: 30.0,
+        //       ),
+        //       Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           Row(
+        //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //               children: [
+        //                 Text(message.fromto(),
+        //                     style: unreadStyle(textTheme.bodySmall)),
+        //                 Text(dateString)
+        //               ]),
+        //           SizedBox(
+        //             height: 5.0,
+        //           ),
+        //           if (message.subject.isNotEmpty)
+        //             Container(
+        //                 width: width,
+        //                 child: Text(message.subject,
+        //                     style: unreadStyle(textTheme.titleMedium),
+        //                     overflow: TextOverflow.ellipsis)),
+        //           if (message.subject.isNotEmpty)
+        //             SizedBox(
+        //               height: 4.0,
+        //             ),
+        //           Container(
+        //             width: width,
+        //             child: Text(
+        //               message.body,
+        //               softWrap: true,
+        //               maxLines: 5,
+        //               overflow: TextOverflow.ellipsis,
+        //             ),
+        //           ),
+        //         ],
+        //       )
+        //     ]))
+
+        );
   }
 
   _onSelect(BuildContext context) {
@@ -129,3 +163,16 @@ Color initialToColor(String s) {
   }
   return defaultColor;
 }
+
+Widget avatar(String initial) => CircleAvatar(
+      backgroundColor: initialToColor(initial),
+      child: Text(
+        initial,
+        style: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      radius: 24.0,
+    );

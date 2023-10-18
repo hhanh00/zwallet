@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobx/mobx.dart';
 
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 
 class DualMoneyInputWidget extends StatefulWidget {

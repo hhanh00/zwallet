@@ -1,6 +1,11 @@
 import 'dart:async';
 
+import 'package:YWallet/appsettings.dart';
+import 'package:YWallet/store2.dart';
+import 'package:reflectable/reflectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tuple/tuple.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'coin/coins.dart';
 import 'package:mobx/mobx.dart';
@@ -121,7 +126,8 @@ abstract class _ActiveAccount with Store {
   @observable
   String taddress = "";
   int tbalance = 0;
-  PoolBalances poolBalances = PoolBalances();
+  @observable
+  PoolBalanceT poolBalances = PoolBalanceT();
 
   @observable
   List<Note> notes = [];
@@ -232,9 +238,9 @@ abstract class _ActiveAccount with Store {
   }
 
   @action
-  void updateTBalance() {
+  Future<void> updateTBalance() async {
     try {
-      tbalance = WarpApi.getTBalance();
+      tbalance = await WarpApi.getTBalance(coin, id);
     } on String {}
   }
 
@@ -249,6 +255,12 @@ abstract class _ActiveAccount with Store {
       showBalanceNotification(prevBalance, balances.balance);
     }
   }
+  
+  @action
+  void updatePoolBalances() {
+    final b = WarpApi.getPoolBalances(active.coin, active.id, appSettings.anchorOffset);
+    poolBalances = b.unpack();
+  }
 
   @action
   void clear() {
@@ -260,17 +272,19 @@ abstract class _ActiveAccount with Store {
   }
 
   @action
-  void update() {
+  Future<void> update() async {
     updateBalances();
-    updateTBalance();
-    poolBalances.update();
+    await updateTBalance();
 
+    updatePoolBalances();
+    print(poolBalances);
     final dbr = DbReader(coin, id);
-    notes = dbr.getNotes();
-    txs = dbr.getTxs();
-    messages = ObservableList.of(dbr.getMessages());
+    notes = await dbr.getNotes(syncStatus2.latestHeight);
+    txs = await dbr.getTxs(syncStatus2.latestHeight);
+    messages = ObservableList.of(await dbr.getMessages());
     unread = messages.where((m) => !m.read).length;
     dataEpoch += 1;
+    print(DateTime.now());
   }
 
   @action
@@ -311,7 +325,7 @@ abstract class _ActiveAccount with Store {
       case "amount":
         return _sort(txs2, (Tx tx) => tx.value, txSortConfig.order);
       case "txid":
-        return _sort(txs2, (Tx tx) => tx.txid, txSortConfig.order);
+        return _sort(txs2, (Tx tx) => tx.txId, txSortConfig.order);
       case "address":
         return _sort(txs2, (Tx tx) => tx.contact ?? tx.address ?? '',
             txSortConfig.order);
@@ -369,6 +383,7 @@ abstract class _ActiveAccount with Store {
   @action
   void excludeNote(Note note) {
     WarpApi.updateExcluded(coin, note.id, note.excluded);
+    notes = notes.toList();
   }
 
   @action
@@ -429,7 +444,75 @@ abstract class _ActiveAccount with Store {
 
   DbReader get dbReader => DbReader(coin, id);
   int get availabeAddrs => WarpApi.getAvailableAddrs(coin, id);
+
+  SortConfig2? noteOrder;
+  SortConfig2? txOrder;
+  SortConfig2? messageOrder;
+
+  Tuple2<SortConfig2?, List<T>> setSortOrder<T extends HasHeight>(String field, SortConfig2? order, List<T> items) {
+    if (order == null)
+      order = SortConfig2(field, 1);
+    else
+      order = order.next(field);
+
+    final o = order;
+    if (o == null)
+      items = items.sortedByNum((n) => -n.height);
+    else {
+      items = items.sortedBy((a, b) {
+        final ra = reflector.reflect(a);
+        final va = ra.invokeGetter(field)! as dynamic;
+        final rb = reflector.reflect(b);
+        final vb = rb.invokeGetter(field)! as dynamic;
+        return va.compareTo(vb) * o.orderBy;
+      });
+    }
+    return Tuple2(o, items);
+  }
+
+  @action
+  void setNoteSortOrder(String field) {
+    final r = setSortOrder(field, noteOrder, notes);
+    noteOrder = r.item1;
+    notes = r.item2;
+  }
+
+  @action
+  void setTxSortOrder(String field) {
+    final r = setSortOrder(field, txOrder, txs);
+    txOrder = r.item1;
+    txs = r.item2;
+  }
+
+  @action
+  void setMessageSortOrder(String field) {
+    final r = setSortOrder(field, messageOrder, messages);
+    messageOrder = r.item1;
+    messages = ObservableList.of(r.item2);
+  }
 }
+
+class SortConfig2 {
+  String field;
+  int orderBy; // 1: asc, -1: desc
+  SortConfig2(this.field, this.orderBy);
+
+  SortConfig2? next(String newField) {
+    if (newField == field) {
+      if (orderBy > 0) return SortConfig2(field, -orderBy);
+      return null;
+    }
+    return SortConfig2(newField, 1);
+  }
+
+  String indicator(String field) {
+    if (this.field != field) return '';
+    if (orderBy > 0) return ' \u2191';
+    return ' \u2193';
+  }
+}
+
+
 
 class Balances = _Balances with _$Balances;
 
@@ -464,26 +547,3 @@ class AccountId {
   AccountId(this.coin, this.id);
 }
 
-class PoolBalances = _PoolBalances with _$PoolBalances;
-
-abstract class _PoolBalances with Store {
-  @observable
-  int transparent = 0;
-  @observable
-  int sapling = 0;
-  @observable
-  int orchard = 0;
-
-  void update() {
-    final b =
-        WarpApi.getBalance(active.coin, active.id, syncStatus.confirmHeight);
-    _update(active.tbalance, b.sapling, b.orchard);
-  }
-
-  @action
-  _update(int t, int s, int o) {
-    transparent = t;
-    sapling = s;
-    orchard = o;
-  }
-}

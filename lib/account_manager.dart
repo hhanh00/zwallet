@@ -6,7 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:warp_api/warp_api.dart';
 import 'main.dart';
 import 'rescan.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'about.dart';
 import 'accounts.dart';
 

@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'main.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'src/version.dart';
 
 Future<void> showAbout(BuildContext context) async {

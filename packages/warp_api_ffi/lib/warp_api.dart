@@ -136,6 +136,10 @@ class WarpApi {
     return unwrapResultString(address);
   }
 
+  static int receiversOfAddress(int coin, String address) {
+    return warp_api_lib.receivers_of_address(coin, toNative(address));
+  }
+
   static void importTransparentPath(int coin, int id, String path) {
     warp_api_lib.import_transparent_key(
         coin, id, path.toNativeUtf8().cast<Int8>());
@@ -170,6 +174,12 @@ class WarpApi {
     return unwrapResultU8(res);
   }
 
+  static Future<int> warpSync2(int coin, bool getTx, int anchorOffset, int maxCost, int port) async {
+    final res = await compute((_) => warp_api_lib.warp(coin, getTx ? 1 : 0,
+        anchorOffset, maxCost, port), null);
+    return unwrapResultU8(res);
+  }
+
   static void cancelSync() {
     warp_api_lib.cancel_warp();
   }
@@ -198,7 +208,7 @@ class WarpApi {
   static void setActiveAccount(int coin, int account) {
     warp_api_lib.set_active(coin);
     warp_api_lib.set_active_account(coin, account);
-    warp_api_lib.mempool_set_active(coin, account);
+    // warp_api_lib.mempool_set_active(coin, account);
   }
 
   // static Future<String> sendPayment(
@@ -221,9 +231,17 @@ class WarpApi {
   //           recipientJson, useTransparent, anchorOffset, receivePort.sendPort));
   // }
 
-  static int getTBalance() {
-    final balance = warp_api_lib.get_taddr_balance(0xFF, 0);
-    return unwrapResultU64(balance);
+  static PoolBalance getPoolBalances(int coin, int account, int confirmations) {
+    final bb = warp_api_lib.get_pool_balances(coin, account, confirmations);
+    final r = unwrapResultBytes(bb);
+    return PoolBalance(r);
+  }
+
+  static Future<int> getTBalance(int coin, int account) async {
+    return await compute((_) {
+      final balance = warp_api_lib.get_taddr_balance(coin, account);
+      return unwrapResultU64(balance);
+    }, null);
   }
 
   static Future<int> getTBalanceAsync(int coin, int account) async {
@@ -341,10 +359,11 @@ class WarpApi {
     return DateTime.fromMillisecondsSinceEpoch(res * 1000);
   }
 
-  static Future<int> getBlockHeightByTime(DateTime time) async {
-    final res = await compute(getBlockHeightByTimeIsolateFn,
-        BlockHeightByTimeParams(time.millisecondsSinceEpoch ~/ 1000));
-    return res;
+  static Future<int> getBlockHeightByTime(int coin, DateTime time) async {
+    final res = await compute((_) =>
+      warp_api_lib.get_block_by_time(coin, time.millisecondsSinceEpoch ~/ 1000),
+      null);
+    return unwrapResultU32(res);
   }
 
   static Future<int> syncHistoricalPrices(String currency) async {
@@ -525,29 +544,34 @@ class WarpApi {
     return b;
   }
 
-  static Height? getDbHeight(int coin) {
+  static Height getDbHeight(int coin) {
     final r = unwrapResultBytes(warp_api_lib.get_db_height(coin));
-    if (r.isEmpty) return null;
     final h = Height(r);
     return h;
   }
 
-  static List<ShieldedNote> getNotes(int coin, int id) {
-    final r = unwrapResultBytes(warp_api_lib.get_notes(coin, id));
-    final ns = ShieldedNoteVec(r);
-    return ns.notes!;
+  static Future<List<ShieldedNote>> getNotes(int coin, int id) async {
+    return await compute((_) {
+      final r = unwrapResultBytes(warp_api_lib.get_notes(coin, id));
+      final ns = ShieldedNoteVec(r);
+      return ns.notes!;
+    }, null);
   }
 
-  static List<ShieldedTx> getTxs(int coin, int id) {
-    final r = unwrapResultBytes(warp_api_lib.get_txs(coin, id));
-    final txs = ShieldedTxVec(r);
-    return txs.txs!;
+  static Future<List<ShieldedTx>> getTxs(int coin, int id) async {
+    return await compute((_) {
+      final r = unwrapResultBytes(warp_api_lib.get_txs(coin, id));
+      final txs = ShieldedTxVec(r);
+      return txs.txs!;
+    }, null);
   }
 
-  static List<Message> getMessages(int coin, int id) {
-    final r = unwrapResultBytes(warp_api_lib.get_messages(coin, id));
-    final msgs = MessageVec(r);
-    return msgs.messages!;
+  static Future<List<Message>> getMessages(int coin, int id) async {
+    return await compute((_) {
+      final r = unwrapResultBytes(warp_api_lib.get_messages(coin, id));
+      final msgs = MessageVec(r);
+      return msgs.messages!;
+    }, null);
   }
 
   static PrevNext getPrevNextMessage(
@@ -592,6 +616,12 @@ class WarpApi {
     final r = unwrapResultBytes(warp_api_lib.get_contacts(coin));
     final contacts = ContactVec(r).unpack();
     return contacts.contacts!;
+  }
+
+  static ContactT getContact(int coin, int id) {
+    final r = unwrapResultBytes(warp_api_lib.get_contact(coin, id));
+    final contact = Contact(r).unpack();
+    return contact;
   }
 
   static List<TxTimeValue> getPnLTxs(int coin, int id, int timestamp) {
@@ -707,10 +737,6 @@ int syncHistoricalPricesIsolateFn(SyncHistoricalPricesParams params) {
 int getTBalanceIsolateFn(GetTBalanceParams params) {
   return unwrapResultU64(
       warp_api_lib.get_taddr_balance(params.coin, params.account));
-}
-
-int getBlockHeightByTimeIsolateFn(BlockHeightByTimeParams params) {
-  return unwrapResultU32(warp_api_lib.get_block_by_time(params.time));
 }
 
 List<AddressBalance> scanTransparentAccountsParamsIsolateFn(

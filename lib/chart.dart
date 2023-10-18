@@ -19,7 +19,9 @@ class LineChartTimeSeries extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: KChartWidget(datas,
+      padding: EdgeInsets.all(16),
+      child: LayoutBuilder(builder: (context, box) { 
+        print(box); return Container(height: 100, child: KChartWidget(datas,
       ChartStyle(), ChartColors(),
       isLine: true,
       isTrendLine: true,
@@ -27,7 +29,7 @@ class LineChartTimeSeries extends StatelessWidget {
       showInfoDialog: true,
       mainState: MainState.MA,
       secondaryState: SecondaryState.NONE,
-      )
+      ));})
     );
   }
 }

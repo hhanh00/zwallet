@@ -3,7 +3,7 @@ import 'package:YWallet/dualmoneyinput.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 import 'package:warp_api/warp_api.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 
 class PoolsPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class PoolsState extends State<PoolsPage> {
   @override
   void initState() {
     super.initState();
-    active.poolBalances.update();
+    // TODO: active.poolBalances.update();
 
     final b = active.poolBalances;
     final availablePools = [
@@ -108,7 +108,7 @@ class PoolsState extends State<PoolsPage> {
                         inputFormatters: [
                           makeInputFormatter(settings.useMillis)
                         ],
-                        validator: _checkMaxAmountPerNote),
+                        validator: (v) => _checkMaxAmountPerNote(context, v)),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
                     ElevatedButton.icon(
                         onPressed: _transfer,
@@ -160,8 +160,8 @@ class PoolsState extends State<PoolsPage> {
   }
 }
 
-String? _checkMaxAmountPerNote(String? vs) {
-  final s = S.current;
+String? _checkMaxAmountPerNote(BuildContext context, String? vs) {
+  final s = S.of(context);
   if (vs == null) return s.amountMustBeANumber;
   if (!checkNumber(vs)) return s.amountMustBeANumber;
   final v = parseNumber(vs);

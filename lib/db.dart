@@ -15,34 +15,27 @@ class DbReader {
   int coin;
   int id;
 
-  DbReader(int coin, int id): this.init(coin, id);
+  DbReader(int coin, int id) : this.init(coin, id);
   DbReader.init(this.coin, this.id);
 
-  List<Note> getNotes() {
-    final ns = WarpApi.getNotes(coin, id);
+  Future<List<Note>> getNotes(int? latestHeight) async {
+    final ns = await WarpApi.getNotes(coin, id);
     final notes = ns.map((n) {
       final timestamp = DateTime.fromMillisecondsSinceEpoch(n.timestamp * 1000);
-      return Note(
-          n.id, n.height, timestamp, n.value / ZECUNIT, n.orchard, n.excluded, n.spent);
+      return Note.from(latestHeight, n.id, n.height, timestamp,
+          n.value / ZECUNIT, n.orchard, n.excluded);
     }).toList();
     print("NOTES ${notes.length}");
     return notes;
   }
 
-  List<Tx> getTxs() {
-    final txs = WarpApi.getTxs(coin, id);
+  Future<List<Tx>> getTxs(int? latestHeight) async {
+    final txs = await WarpApi.getTxs(coin, id);
     final transactions = txs.map((tx) {
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000);
-      return Tx(
-          tx.id,
-          tx.height,
-          timestamp,
-          tx.shortTxId!,
-          tx.txId!,
-          tx.value / ZECUNIT,
-          tx.address,
-          tx.name,
-          tx.memo);
+      final timestamp =
+          DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000);
+      return Tx.from(latestHeight, tx.id, tx.height, timestamp, tx.shortTxId!,
+          tx.txId!, tx.value / ZECUNIT, tx.address, tx.name, tx.memo);
     }).toList();
     print("TXS ${transactions.length}");
     return transactions;
@@ -62,13 +55,14 @@ class DbReader {
         trades,
         range.start,
         range.end,
-            (t) => t.dt.millisecondsSinceEpoch ~/ DAY_MS,
-            (t) => t,
-            (acc, t) => acc + t.qty,
+        (t) => t.dt.millisecondsSinceEpoch ~/ DAY_MS,
+        (t) => t,
+        (acc, t) => acc + t.qty,
         0.0);
 
     final List<Quote> quotes = [];
-    for (var row in WarpApi.getQuotes(coin, range.start ~/ 1000, settings.currency)) {
+    for (var row
+        in WarpApi.getQuotes(coin, range.start ~/ 1000, settings.currency)) {
       final dt = DateTime.fromMillisecondsSinceEpoch(row.timestamp * 1000);
       final price = row.price;
       quotes.add(Quote(dt, price));
@@ -108,7 +102,8 @@ class DbReader {
     return WarpApi.getSpendings(coin, id, range.start ~/ 1000);
   }
 
-  List<TimeSeriesPoint<double>> getAccountBalanceTimeSeries(int accountId, int balance) {
+  List<TimeSeriesPoint<double>> getAccountBalanceTimeSeries(
+      int accountId, int balance) {
     final range = _getChartRange();
     final trades = WarpApi.getPnLTxs(coin, id, range.start ~/ 1000);
     List<AccountBalance> _accountBalances = [];
@@ -116,7 +111,7 @@ class DbReader {
     _accountBalances.add(AccountBalance(DateTime.now(), b / ZECUNIT));
     for (var trade in trades) {
       final timestamp =
-      DateTime.fromMillisecondsSinceEpoch(trade.timestamp * 1000);
+          DateTime.fromMillisecondsSinceEpoch(trade.timestamp * 1000);
       final value = trade.value;
       final ab = AccountBalance(timestamp, b / ZECUNIT);
       _accountBalances.add(ab);
@@ -129,18 +124,28 @@ class DbReader {
         _accountBalances,
         range.start,
         range.end,
-            (AccountBalance ab) => ab.time.millisecondsSinceEpoch ~/ DAY_MS,
-            (AccountBalance ab) => ab.balance,
-            (acc, v) => v,
+        (AccountBalance ab) => ab.time.millisecondsSinceEpoch ~/ DAY_MS,
+        (AccountBalance ab) => ab.balance,
+        (acc, v) => v,
         0.0);
     return accountBalances;
   }
 
-  List<ZMessage> getMessages() {
-    final messages = WarpApi.getMessages(coin, id);
-    return messages.map((m) =>
-        ZMessage(m.idMsg, m.idTx, m.incoming, m.from, m.to!, m.subject!, m.body!,
-            DateTime.fromMillisecondsSinceEpoch(m.timestamp * 1000), m.height, m.read)).toList();
+  Future<List<ZMessage>> getMessages() async {
+    final messages = await WarpApi.getMessages(coin, id);
+    return messages
+        .map((m) => ZMessage(
+            m.idMsg,
+            m.idTx,
+            m.incoming,
+            m.from,
+            m.to!,
+            m.subject!,
+            m.body!,
+            DateTime.fromMillisecondsSinceEpoch(m.timestamp * 1000),
+            m.height,
+            m.read))
+        .toList();
   }
 
   // Future<List<TAccount>> getTAccounts() async {
@@ -184,7 +189,7 @@ class DbReader {
   }
 }
 
-class ZMessage {
+class ZMessage extends HasHeight {
   final int id;
   final int txId;
   final bool incoming;
@@ -196,11 +201,15 @@ class ZMessage {
   final int height;
   final bool read;
 
-  ZMessage(this.id, this.txId, this.incoming, this.sender, this.recipient, this.subject, this.body, this.timestamp, this.height, this.read);
+  ZMessage(this.id, this.txId, this.incoming, this.sender, this.recipient,
+      this.subject, this.body, this.timestamp, this.height, this.read);
 
   ZMessage withRead(bool v) {
-    return ZMessage(id, txId, incoming, sender, recipient, subject, body, timestamp, height, v);
+    return ZMessage(id, txId, incoming, sender, recipient, subject, body,
+        timestamp, height, v);
   }
 
-  String fromto() => incoming ? "\u{21e6} ${sender != null ? centerTrim(sender!) : ''}" : "\u{21e8} ${centerTrim(recipient)}";
+  String fromto() => incoming
+      ? "\u{21e6} ${sender != null ? centerTrim(sender!) : ''}"
+      : "\u{21e8} ${centerTrim(recipient)}";
 }

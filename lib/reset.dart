@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'coin/coins.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 import 'package:path/path.dart' as p;
 
@@ -122,6 +122,7 @@ class FullBackupState extends State<FullBackupPage> {
     final keys = WarpApi.generateKey();
     final navigator = Navigator.of(context);
     final state = GlobalKey<AGEKeysState>();
+    final s = S.of(context);
     final assign = await showDialog<bool?>(
             context: context,
             builder: (context) => AlertDialog(
@@ -131,13 +132,13 @@ class FullBackupState extends State<FullBackupPage> {
                     actions: [
                       ElevatedButton.icon(
                           icon: Icon(Icons.cancel),
-                          label: Text(S.current.cancel),
+                          label: Text(s.cancel),
                           onPressed: () {
                             navigator.pop(null);
                           }),
                       ElevatedButton.icon(
                           icon: Icon(Icons.check),
-                          label: Text(S.current.set),
+                          label: Text(s.set),
                           onPressed: () {
                             navigator.pop(true);
                           })
@@ -203,7 +204,7 @@ class _FullRestoreState extends State<FullRestorePage> {
   }
 
   _onLoad() async {
-    final s = S.current;
+    final s = S.of(context);
     final result = await pickFile();
 
     if (result != null) {

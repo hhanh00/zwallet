@@ -7,7 +7,7 @@ import 'package:warp_api/warp_api.dart';
 
 import 'home.dart';
 import 'main.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'store.dart';
 
 class ContactsTab extends StatefulWidget {

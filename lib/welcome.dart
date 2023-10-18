@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 
 class WelcomePage extends StatelessWidget {

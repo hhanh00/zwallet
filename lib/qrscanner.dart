@@ -4,7 +4,7 @@ import 'package:cross_file/cross_file.dart';
 import 'package:image/image.dart' as img;
 import 'package:zxing2/qrcode.dart';
 
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 
 class QRScanner extends StatefulWidget {

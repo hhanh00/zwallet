@@ -2,7 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:warp_api/warp_api.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 
 final rescanKey = GlobalKey<RescanFormState>();
@@ -28,7 +28,7 @@ Future<int?> rescanDialog(BuildContext context) async {
         showSnackBar(S.of(context).rescanning, autoClose: true);
         final height = int.tryParse(heightText);
         if (height != null) return height;
-        final height2 = await WarpApi.getBlockHeightByTime(date);
+        final height2 = await WarpApi.getBlockHeightByTime(active.coin, date);
         return height2;
       }
     }

@@ -399,6 +399,22 @@ class NativeLibrary {
   late final _dart_valid_address _valid_address =
       _valid_address_ptr.asFunction<_dart_valid_address>();
 
+  int receivers_of_address(
+    int coin,
+    ffi.Pointer<ffi.Int8> address,
+  ) {
+    return _receivers_of_address(
+      coin,
+      address,
+    );
+  }
+
+  late final _receivers_of_address_ptr =
+      _lookup<ffi.NativeFunction<_c_receivers_of_address>>(
+          'receivers_of_address');
+  late final _dart_receivers_of_address _receivers_of_address =
+      _receivers_of_address_ptr.asFunction<_dart_receivers_of_address>();
+
   CResult_____c_char get_diversified_address(
     int ua_type,
     int time,
@@ -720,9 +736,11 @@ class NativeLibrary {
       _get_activation_date_ptr.asFunction<_dart_get_activation_date>();
 
   CResult_u32 get_block_by_time(
+    int coin,
     int time,
   ) {
     return _get_block_by_time(
+      coin,
       time,
     );
   }
@@ -1152,6 +1170,23 @@ class NativeLibrary {
   late final _dart_get_balances _get_balances =
       _get_balances_ptr.asFunction<_dart_get_balances>();
 
+  CResult______u8 get_pool_balances(
+    int coin,
+    int id,
+    int confirmations,
+  ) {
+    return _get_pool_balances(
+      coin,
+      id,
+      confirmations,
+    );
+  }
+
+  late final _get_pool_balances_ptr =
+      _lookup<ffi.NativeFunction<_c_get_pool_balances>>('get_pool_balances');
+  late final _dart_get_pool_balances _get_pool_balances =
+      _get_pool_balances_ptr.asFunction<_dart_get_pool_balances>();
+
   CResult______u8 get_db_height(
     int coin,
   ) {
@@ -1286,6 +1321,21 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_get_contacts>>('get_contacts');
   late final _dart_get_contacts _get_contacts =
       _get_contacts_ptr.asFunction<_dart_get_contacts>();
+
+  CResult______u8 get_contact(
+    int coin,
+    int id,
+  ) {
+    return _get_contact(
+      coin,
+      id,
+    );
+  }
+
+  late final _get_contact_ptr =
+      _lookup<ffi.NativeFunction<_c_get_contact>>('get_contact');
+  late final _dart_get_contact _get_contact =
+      _get_contact_ptr.asFunction<_dart_get_contact>();
 
   CResult______u8 get_pnl_txs(
     int coin,
@@ -1620,6 +1670,8 @@ const int Balance_VT_SAPLING = 14;
 
 const int Balance_VT_ORCHARD = 16;
 
+const int PoolBalance_VT_TRANSPARENT = 4;
+
 const int Height_VT_HEIGHT = 4;
 
 const int Height_VT_TIMESTAMP = 6;
@@ -1694,6 +1746,8 @@ const int Backup_VT_FVK = 12;
 
 const int Backup_VT_UVK = 14;
 
+const int Backup_VT_TSK = 16;
+
 const int RaptorQDrops_VT_DROPS = 4;
 
 const int AGEKeys_VT_PK = 6;
@@ -1721,8 +1775,6 @@ const int UnsignedTxSummary_VT_RECIPIENTS = 4;
 const int TxOutput_VT_POOL = 10;
 
 const int TxReport_VT_OUTPUTS = 4;
-
-const int TxReport_VT_TRANSPARENT = 6;
 
 const int TxReport_VT_NET_SAPLING = 12;
 
@@ -1986,6 +2038,16 @@ typedef _dart_valid_address = int Function(
   ffi.Pointer<ffi.Int8> address,
 );
 
+typedef _c_receivers_of_address = ffi.Uint8 Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> address,
+);
+
+typedef _dart_receivers_of_address = int Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> address,
+);
+
 typedef _c_get_diversified_address = CResult_____c_char Function(
   ffi.Uint8 ua_type,
   ffi.Uint32 time,
@@ -2203,10 +2265,12 @@ typedef _c_get_activation_date = CResult_u32 Function();
 typedef _dart_get_activation_date = CResult_u32 Function();
 
 typedef _c_get_block_by_time = CResult_u32 Function(
+  ffi.Uint8 coin,
   ffi.Uint32 time,
 );
 
 typedef _dart_get_block_by_time = CResult_u32 Function(
+  int coin,
   int time,
 );
 
@@ -2488,6 +2552,18 @@ typedef _dart_get_balances = CResult______u8 Function(
   int confirmed_height,
 );
 
+typedef _c_get_pool_balances = CResult______u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+  ffi.Uint32 confirmations,
+);
+
+typedef _dart_get_pool_balances = CResult______u8 Function(
+  int coin,
+  int id,
+  int confirmations,
+);
+
 typedef _c_get_db_height = CResult______u8 Function(
   ffi.Uint8 coin,
 );
@@ -2576,6 +2652,16 @@ typedef _c_get_contacts = CResult______u8 Function(
 
 typedef _dart_get_contacts = CResult______u8 Function(
   int coin,
+);
+
+typedef _c_get_contact = CResult______u8 Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 id,
+);
+
+typedef _dart_get_contact = CResult______u8 Function(
+  int coin,
+  int id,
 );
 
 typedef _c_get_pnl_txs = CResult______u8 Function(

@@ -31,16 +31,20 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:reflectable/reflectable.dart';
+
+import 'main.reflectable.dart';
 import 'accounts.dart';
 import 'animated_qr.dart';
 import 'coin/coin.dart';
 import 'coin/coins.dart';
 import 'devmode.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 
 import 'account_manager.dart';
 import 'backup.dart';
 import 'home.dart';
+import 'init.dart';
 import 'keytool.dart';
 import 'message.dart';
 import 'multisend.dart';
@@ -50,6 +54,7 @@ import 'pools.dart';
 import 'qrscanner.dart';
 import 'rescan.dart';
 import 'reset.dart';
+import 'router.dart';
 import 'scantaddr.dart';
 import 'settings.dart';
 import 'restore.dart';
@@ -77,6 +82,8 @@ const RECOVERY_FILE = "recover.bin";
 const kExperimental = true;
 
 // var accountManager = AccountManager();
+var appStore = AppStore();
+
 var priceStore = PriceStore();
 var syncStatus = SyncStatus();
 var settings = Settings();
@@ -211,6 +218,16 @@ class OnWindow extends WindowListener {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initializeReflectable();
+  await initCoins();
+  await restoreWindow();
+  initNotifications();
+  await loadThemeSettings();
+  runApp(App());
+}
+
+void main2() async {
+  WidgetsFlutterBinding.ensureInitialized();
   if (!isMobile()) {
     await windowManager.ensureInitialized();
 
@@ -270,7 +287,7 @@ void main() async {
                     GlobalWidgetsLocalizations.delegate,
                     GlobalCupertinoLocalizations.delegate,
                   ],
-                  supportedLocales: S.delegate.supportedLocales,
+                  supportedLocales: [],
                   onGenerateRoute: (RouteSettings routeSettings) {
                     var routes = <String, WidgetBuilder>{
                       '/welcome': (context) => WelcomePage(),
@@ -294,8 +311,8 @@ void main() async {
                       },
                       '/pools': (context) => PoolsPage(),
                       '/multipay': (context) => MultiPayPage(),
-                      '/edit_theme': (context) => ThemeEditorPage(
-                          onSaved: settings.updateCustomThemeColors),
+                      // '/edit_theme': (context) => ThemeEditorPage(
+                      //     onSaved: settings.updateCustomThemeColors),
                       '/reset': (context) => ResetPage(),
                       '/fullBackup': (context) => FullBackupPage(),
                       '/fullRestore': (context) => FullRestorePage(),
@@ -564,10 +581,11 @@ void showQR(BuildContext context, String text, String title) {
       barrierColor: Colors.black,
       builder: (context) {
         return AlertDialog(
-            content: Container(
-                width: double.maxFinite,
-                child: SingleChildScrollView(
-                    child: Column(children: [
+          content: Container(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
                   LayoutBuilder(builder: (context, constraints) {
                     final size = getScreenSize(context) * 0.5;
                     return QrImage(
@@ -581,7 +599,6 @@ void showQR(BuildContext context, String text, String title) {
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: text));
                           showSnackBar(s.textCopiedToClipboard(title));
-                          Navigator.of(context).pop();
                         },
                         icon: Icon(Icons.copy),
                         label: Text(s.copy)),
@@ -590,7 +607,11 @@ void showQR(BuildContext context, String text, String title) {
                         icon: Icon(Icons.save),
                         label: Text(s.save))
                   ])
-                ]))));
+                ],
+              ),
+            ),
+          ),
+        );
       });
 }
 
@@ -717,11 +738,12 @@ Future<void> showSnackBar(String msg,
   final bar = error
       ? FlushbarHelper.createError(message: msg, duration: duration)
       : FlushbarHelper.createInformation(message: msg, duration: duration);
-  await bar.show(navigatorKey.currentContext!);
+  await bar.show(rootNavigatorKey.currentContext!);
 }
 
 void showBalanceNotification(int prevBalances, int curBalances) {
-  final s = S.current;
+  final context = rootNavigatorKey.currentContext!;
+  final s = S.of(context);
   if (syncStatus.isRescan) return;
   if (Platform.isAndroid && prevBalances != curBalances) {
     final amount = (prevBalances - curBalances).abs();
@@ -764,7 +786,7 @@ final DateFormat todayDateFormat = DateFormat("HH:mm");
 final DateFormat monthDateFormat = DateFormat("MMMd");
 final DateFormat longAgoDateFormat = DateFormat("yy-MM-dd");
 
-String humanizeDateTime(DateTime datetime) {
+String humanizeDateTime(BuildContext context, DateTime datetime) {
   final messageDate = datetime.toLocal();
   final now = DateTime.now();
   final justNow = now.subtract(Duration(minutes: 1));
@@ -773,7 +795,7 @@ String humanizeDateTime(DateTime datetime) {
 
   String dateString;
   if (justNow.isBefore(messageDate))
-    dateString = S.current.now;
+    dateString = S.of(context).now;
   else if (midnight.isBefore(messageDate))
     dateString = todayDateFormat.format(messageDate);
   else if (year.isBefore(messageDate))
@@ -789,6 +811,9 @@ String decimalFormat(double x, int decimalDigits, {String symbol = ''}) =>
         .trimRight();
 
 String amountToString(int amount, int decimalDigits) =>
+    decimalFormat(amount / ZECUNIT, decimalDigits);
+
+String amountToString2(int amount, {int decimalDigits = MAX_PRECISION}) =>
     decimalFormat(amount / ZECUNIT, decimalDigits);
 
 DecodedPaymentURI decodeAddress(BuildContext context, String? v) {
@@ -833,8 +858,8 @@ Future<bool> authenticate(BuildContext context, String reason) async {
 
 Future<void> shieldTAddr(BuildContext context) async {
   try {
-    final txPlan = WarpApi.shieldTAddr(
-        active.coin, active.id, active.tbalance, settings.anchorOffset, settings.feeConfig);
+    final txPlan = WarpApi.shieldTAddr(active.coin, active.id, active.tbalance,
+        settings.anchorOffset, settings.feeConfig);
     Navigator.of(context).pushNamed('/txplan', arguments: txPlan);
   } on String catch (msg) {
     showSnackBar(msg, error: true);
@@ -1052,4 +1077,8 @@ Future<bool> getDbPasswd(BuildContext context, String dbPath) async {
       false;
 
   return reset;
+}
+
+extension ScopeFunctions<T> on T {
+  R let<R>(R Function(T) block) => block(this);
 }

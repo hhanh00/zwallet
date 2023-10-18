@@ -10,7 +10,7 @@ import 'package:warp_api/warp_api.dart';
 import 'chart.dart';
 import 'store.dart';
 import 'main.dart';
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 
 class BudgetWidget extends StatefulWidget {
   @override

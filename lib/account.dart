@@ -11,7 +11,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 import 'main.dart';
 import 'store.dart';
 

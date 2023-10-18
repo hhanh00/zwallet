@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
-import 'generated/l10n.dart';
+import 'generated/intl/messages.dart';
 
 class TxPlanPage extends StatelessWidget {
   final String plan;
@@ -107,12 +107,14 @@ class TxPlanPage extends StatelessWidget {
   }
 
   _onSend() async {
+    final context = navigatorKey.currentContext!;
+    final s = S.of(context);
     if (active.canPay) {
       if (signOnly)
         await _sign();
       else {
         Future(() async {
-          active.setBanner(S.current.paymentInProgress);
+          active.setBanner(s.paymentInProgress);
           final player = AudioPlayer();
           try {
             final String txid;
@@ -122,7 +124,7 @@ class TxPlanPage extends StatelessWidget {
               txid =
                   await WarpApi.signAndBroadcast(active.coin, active.id, plan);
             }
-            showSnackBar(S.current.txId(txid));
+            showSnackBar(s.txId(txid));
             if (settings.sound) await player.play(AssetSource("success.mp3"));
             active.setDraftRecipient(null);
             active.update();
@@ -140,15 +142,17 @@ class TxPlanPage extends StatelessWidget {
         navigatorKey.currentState
             ?.pushReplacementNamed('/qroffline', arguments: plan);
       } else {
-        await saveFile(plan, "tx.json", S.current.unsignedTransactionFile);
-        showSnackBar(S.current.fileSaved);
+        await saveFile(plan, "tx.json", s.unsignedTransactionFile);
+        showSnackBar(s.fileSaved);
       }
     }
   }
 
   _sign() async {
+    final context = navigatorKey.currentContext!;
+    final s = S.of(context);
     try {
-      showSnackBar(S.current.signingPleaseWait);
+      showSnackBar(s.signingPleaseWait);
       final res =
           await WarpApi.signOnly(active.coin, active.id, plan, (progress) {
         // TODO progressPort.sendPort.send(progress);
@@ -161,7 +165,7 @@ class TxPlanPage extends StatelessWidget {
         navigatorKey.currentState
             ?.pushReplacementNamed('/showRawTx', arguments: res);
       } else {
-        await saveFile(res, 'tx.raw', S.current.rawTransaction);
+        await saveFile(res, 'tx.raw', s.rawTransaction);
       }
     } on String catch (error) {
       showSnackBar(error, error: true);
