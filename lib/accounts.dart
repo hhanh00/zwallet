@@ -277,7 +277,6 @@ abstract class _ActiveAccount with Store {
     await updateTBalance();
 
     updatePoolBalances();
-    print(poolBalances);
     final dbr = DbReader(coin, id);
     notes = await dbr.getNotes(syncStatus2.latestHeight);
     txs = await dbr.getTxs(syncStatus2.latestHeight);

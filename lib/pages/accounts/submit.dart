@@ -58,7 +58,13 @@ class _SubmitTxState extends State<SubmitTxPage> {
                   ],
                 )
               : error != null
-                  ? Jumbotron(error!, title: s.error, severity: Severity.Error)
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Jumbotron(error!,
+                            title: s.error, severity: Severity.Error)
+                      ],
+                    )
                   : LoadingAnimationWidget.beat(
                       color: t.colorScheme.primary, size: 200)),
     );
@@ -109,8 +115,7 @@ class Jumbotron extends StatelessWidget {
             alignment: Alignment.topCenter,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                border: Border.all(color: t.primaryColor, width: 4),
-                color: t.colorScheme.background),
+                  border: Border.all(color: color, width: 4), color: color),
               child: Padding(padding: EdgeInsets.all(8), child: Text(title!)),
             ),
           )

@@ -333,12 +333,14 @@
   "sapling": "Sapling",
   "orchard": "Orchard",
   "paymentURI": "Payment URI",
-  "lastPayment": "Last Payment",
+  "lastPayment": "Repeat Last Payment",
   "next": "Next",
   "prev": "Prev",
   "nan": "Not a number",
   "memoTooLong": "Memo too long",
   "sending": "Sending Transaction",
   "sent": "Transaction Sent",
-  "sent_failed": "Transaction Failed"
+  "sent_failed": "Transaction Failed",
+  "invalidPaymentURI": "Invalid Payment URI",
+  "noSelection": "Nothing Selected"
 }

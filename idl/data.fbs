@@ -5,6 +5,7 @@ table Account {
     name:string;
     key_type:uint8;
     balance:uint64;
+    address:string;
 }
 
 table AccountVec {
@@ -239,4 +240,10 @@ table Fee {
   min_fee:uint64;
   max_fee:uint64;
   scheme:uint8;
+}
+
+table PaymentURI {
+  address:string;
+  amount:uint64;
+  memo:string;
 }

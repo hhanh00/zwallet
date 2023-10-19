@@ -21,6 +21,7 @@ import 'pages/more/contacts.dart';
 import 'pages/more/more.dart';
 import 'pages/more/tx.dart';
 import 'pages/more/quotes.dart';
+import 'pages/scan.dart';
 import 'pages/splash.dart';
 import 'pages/welcome.dart';
 import 'pages/settings.dart';
@@ -167,6 +168,11 @@ final router = GoRouter(
             state.uri.queryParameters['coin']?.let(int.parse) ?? active.coin;
         return SettingsPage(coin: coin);
       },
+    ),
+    GoRoute(
+      path: '/scan',
+      builder: (context, state) => 
+        ScanQRCodePage(state.extra as ScanQRContext),
     ),
   ],
 );

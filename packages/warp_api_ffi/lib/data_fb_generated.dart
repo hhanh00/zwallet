@@ -23,17 +23,19 @@ class Account {
   String? get name => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 6);
   int get keyType => const fb.Uint8Reader().vTableGet(_bc, _bcOffset, 8, 0);
   int get balance => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 10, 0);
+  String? get address => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 12);
 
   @override
   String toString() {
-    return 'Account{id: ${id}, name: ${name}, keyType: ${keyType}, balance: ${balance}}';
+    return 'Account{id: ${id}, name: ${name}, keyType: ${keyType}, balance: ${balance}, address: ${address}}';
   }
 
   AccountT unpack() => AccountT(
       id: id,
       name: name,
       keyType: keyType,
-      balance: balance);
+      balance: balance,
+      address: address);
 
   static int pack(fb.Builder fbBuilder, AccountT? object) {
     if (object == null) return 0;
@@ -46,28 +48,33 @@ class AccountT implements fb.Packable {
   String? name;
   int keyType;
   int balance;
+  String? address;
 
   AccountT({
       this.id = 0,
       this.name,
       this.keyType = 0,
-      this.balance = 0});
+      this.balance = 0,
+      this.address});
 
   @override
   int pack(fb.Builder fbBuilder) {
     final int? nameOffset = name == null ? null
         : fbBuilder.writeString(name!);
-    fbBuilder.startTable(4);
+    final int? addressOffset = address == null ? null
+        : fbBuilder.writeString(address!);
+    fbBuilder.startTable(5);
     fbBuilder.addUint32(0, id);
     fbBuilder.addOffset(1, nameOffset);
     fbBuilder.addUint8(2, keyType);
     fbBuilder.addUint64(3, balance);
+    fbBuilder.addOffset(4, addressOffset);
     return fbBuilder.endTable();
   }
 
   @override
   String toString() {
-    return 'AccountT{id: ${id}, name: ${name}, keyType: ${keyType}, balance: ${balance}}';
+    return 'AccountT{id: ${id}, name: ${name}, keyType: ${keyType}, balance: ${balance}, address: ${address}}';
   }
 }
 
@@ -85,7 +92,7 @@ class AccountBuilder {
   final fb.Builder fbBuilder;
 
   void begin() {
-    fbBuilder.startTable(4);
+    fbBuilder.startTable(5);
   }
 
   int addId(int? id) {
@@ -104,6 +111,10 @@ class AccountBuilder {
     fbBuilder.addUint64(3, balance);
     return fbBuilder.offset;
   }
+  int addAddressOffset(int? offset) {
+    fbBuilder.addOffset(4, offset);
+    return fbBuilder.offset;
+  }
 
   int finish() {
     return fbBuilder.endTable();
@@ -115,28 +126,34 @@ class AccountObjectBuilder extends fb.ObjectBuilder {
   final String? _name;
   final int? _keyType;
   final int? _balance;
+  final String? _address;
 
   AccountObjectBuilder({
     int? id,
     String? name,
     int? keyType,
     int? balance,
+    String? address,
   })
       : _id = id,
         _name = name,
         _keyType = keyType,
-        _balance = balance;
+        _balance = balance,
+        _address = address;
 
   /// Finish building, and store into the [fbBuilder].
   @override
   int finish(fb.Builder fbBuilder) {
     final int? nameOffset = _name == null ? null
         : fbBuilder.writeString(_name!);
-    fbBuilder.startTable(4);
+    final int? addressOffset = _address == null ? null
+        : fbBuilder.writeString(_address!);
+    fbBuilder.startTable(5);
     fbBuilder.addUint32(0, _id);
     fbBuilder.addOffset(1, nameOffset);
     fbBuilder.addUint8(2, _keyType);
     fbBuilder.addUint64(3, _balance);
+    fbBuilder.addOffset(4, addressOffset);
     return fbBuilder.endTable();
   }
 
@@ -5131,6 +5148,138 @@ class FeeObjectBuilder extends fb.ObjectBuilder {
     fbBuilder.addUint64(1, _minFee);
     fbBuilder.addUint64(2, _maxFee);
     fbBuilder.addUint8(3, _scheme);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class PaymentUri {
+  PaymentUri._(this._bc, this._bcOffset);
+  factory PaymentUri(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<PaymentUri> reader = _PaymentUriReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  String? get address => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
+  int get amount => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 6, 0);
+  String? get memo => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 8);
+
+  @override
+  String toString() {
+    return 'PaymentUri{address: ${address}, amount: ${amount}, memo: ${memo}}';
+  }
+
+  PaymentUriT unpack() => PaymentUriT(
+      address: address,
+      amount: amount,
+      memo: memo);
+
+  static int pack(fb.Builder fbBuilder, PaymentUriT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class PaymentUriT implements fb.Packable {
+  String? address;
+  int amount;
+  String? memo;
+
+  PaymentUriT({
+      this.address,
+      this.amount = 0,
+      this.memo});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? addressOffset = address == null ? null
+        : fbBuilder.writeString(address!);
+    final int? memoOffset = memo == null ? null
+        : fbBuilder.writeString(memo!);
+    fbBuilder.startTable(3);
+    fbBuilder.addOffset(0, addressOffset);
+    fbBuilder.addUint64(1, amount);
+    fbBuilder.addOffset(2, memoOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'PaymentUriT{address: ${address}, amount: ${amount}, memo: ${memo}}';
+  }
+}
+
+class _PaymentUriReader extends fb.TableReader<PaymentUri> {
+  const _PaymentUriReader();
+
+  @override
+  PaymentUri createObject(fb.BufferContext bc, int offset) => 
+    PaymentUri._(bc, offset);
+}
+
+class PaymentUriBuilder {
+  PaymentUriBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(3);
+  }
+
+  int addAddressOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+  int addAmount(int? amount) {
+    fbBuilder.addUint64(1, amount);
+    return fbBuilder.offset;
+  }
+  int addMemoOffset(int? offset) {
+    fbBuilder.addOffset(2, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class PaymentUriObjectBuilder extends fb.ObjectBuilder {
+  final String? _address;
+  final int? _amount;
+  final String? _memo;
+
+  PaymentUriObjectBuilder({
+    String? address,
+    int? amount,
+    String? memo,
+  })
+      : _address = address,
+        _amount = amount,
+        _memo = memo;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? addressOffset = _address == null ? null
+        : fbBuilder.writeString(_address!);
+    final int? memoOffset = _memo == null ? null
+        : fbBuilder.writeString(_memo!);
+    fbBuilder.startTable(3);
+    fbBuilder.addOffset(0, addressOffset);
+    fbBuilder.addUint64(1, _amount);
+    fbBuilder.addOffset(2, memoOffset);
     return fbBuilder.endTable();
   }
 

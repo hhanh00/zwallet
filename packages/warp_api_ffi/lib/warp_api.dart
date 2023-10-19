@@ -427,6 +427,12 @@ class WarpApi {
     return unwrapResultString(json);
   }
 
+  static PaymentUri decodePaymentURI(String uri) {
+    final data =
+        unwrapResultBytes(warp_api_lib.decode_payment_uri(toNative(uri)));
+    return PaymentUri(data);
+  }
+
   static Agekeys generateKey() {
     final keys = unwrapResultBytes(warp_api_lib.generate_key());
     final ageKeys = Agekeys(keys);

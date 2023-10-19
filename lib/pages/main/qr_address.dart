@@ -6,7 +6,7 @@ import 'package:warp_api/warp_api.dart';
 import '../../main.dart';
 
 class QRAddressWidget extends StatefulWidget {
-  void Function(int)? onMode;
+  final void Function(int)? onMode;
 
   QRAddressWidget({this.onMode});
 

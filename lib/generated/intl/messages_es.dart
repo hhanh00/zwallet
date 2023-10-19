@@ -1057,7 +1057,7 @@ class SEs extends S {
   String get paymentURI => 'Payment URI';
 
   @override
-  String get lastPayment => 'Last Payment';
+  String get lastPayment => 'Repeat Last Payment';
 
   @override
   String get next => 'Next';
@@ -1079,4 +1079,10 @@ class SEs extends S {
 
   @override
   String get sent_failed => 'Transaction Failed';
+
+  @override
+  String get invalidPaymentURI => 'Invalid Payment URI';
+
+  @override
+  String get noSelection => 'Nothing Selected';
 }

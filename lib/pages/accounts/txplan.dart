@@ -36,49 +36,52 @@ class TxPlanPage extends StatelessWidget {
     final invalidPrivacy = report.privacyLevel < settings.minPrivacyLevel;
 
     return Column(children: [
-          Card(
-              child: DataTable(
-                  columnSpacing: 32,
-                  columns: [
-                    DataColumn(label: Text(s.address)),
-                    DataColumn(label: Text(s.pool)),
-                    DataColumn(label: Expanded(child: Text(s.amount))),
-                  ],
-                  rows: rows)),
-          Divider(
-            height: 16,
-            thickness: 2,
-            color: t.primaryColor,
-          ),
-          ListTile(
-              title: Text(s.transparentInput),
-              trailing:
-                  Text(amountToString(report.transparent, MAX_PRECISION))),
-          ListTile(
-              title: Text(s.saplingInput),
-              trailing: Text(amountToString(report.sapling, MAX_PRECISION))),
-          if (supportsUA)
-            ListTile(
-                title: Text(s.orchardInput),
-                trailing: Text(amountToString(report.orchard, MAX_PRECISION))),
-          ListTile(
-              title: Text(s.netSapling),
-              trailing: Text(amountToString(report.netSapling, MAX_PRECISION))),
-          if (supportsUA)
-            ListTile(
-                title: Text(s.netOrchard),
-                trailing:
-                    Text(amountToString(report.netOrchard, MAX_PRECISION))),
-          ListTile(
-              title: Text(s.fee),
-              trailing: Text(amountToString(report.fee, MAX_PRECISION))),
-          privacyToString(context, report.privacyLevel)!,
-          if (invalidPrivacy)
-            Padding(
-                padding: EdgeInsets.only(top: 8),
-                child:
-                    Text(s.privacyLevelTooLow, style: t.textTheme.bodyLarge)),
-        ]);
+      Row(children: [Expanded(child: DataTable(
+          headingRowHeight: 32,
+          columnSpacing: 32,
+          columns: [
+            DataColumn(label: Text(s.address)),
+            DataColumn(label: Text(s.pool)),
+            DataColumn(label: Expanded(child: Text(s.amount))),
+          ],
+          rows: rows))]),
+      Divider(
+        height: 16,
+        thickness: 2,
+        color: t.primaryColor,
+      ),
+      ListTile(
+          visualDensity: VisualDensity.compact,
+          title: Text(s.transparentInput),
+          trailing: Text(amountToString(report.transparent, MAX_PRECISION))),
+      ListTile(
+          visualDensity: VisualDensity.compact,
+          title: Text(s.saplingInput),
+          trailing: Text(amountToString(report.sapling, MAX_PRECISION))),
+      if (supportsUA)
+        ListTile(
+            visualDensity: VisualDensity.compact,
+            title: Text(s.orchardInput),
+            trailing: Text(amountToString(report.orchard, MAX_PRECISION))),
+      ListTile(
+          visualDensity: VisualDensity.compact,
+          title: Text(s.netSapling),
+          trailing: Text(amountToString(report.netSapling, MAX_PRECISION))),
+      if (supportsUA)
+        ListTile(
+            visualDensity: VisualDensity.compact,
+            title: Text(s.netOrchard),
+            trailing: Text(amountToString(report.netOrchard, MAX_PRECISION))),
+      ListTile(
+          visualDensity: VisualDensity.compact,
+          title: Text(s.fee),
+          trailing: Text(amountToString(report.fee, MAX_PRECISION))),
+      privacyToString(context, report.privacyLevel)!,
+      if (invalidPrivacy)
+        Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Text(s.privacyLevelTooLow, style: t.textTheme.bodyLarge)),
+    ]);
   }
 
   _onSend() async {

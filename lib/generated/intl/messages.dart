@@ -2102,7 +2102,7 @@ abstract class S {
   /// No description provided for @lastPayment.
   ///
   /// In en, this message translates to:
-  /// **'Last Payment'**
+  /// **'Repeat Last Payment'**
   String get lastPayment;
 
   /// No description provided for @next.
@@ -2146,6 +2146,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Transaction Failed'**
   String get sent_failed;
+
+  /// No description provided for @invalidPaymentURI.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Payment URI'**
+  String get invalidPaymentURI;
+
+  /// No description provided for @noSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing Selected'**
+  String get noSelection;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

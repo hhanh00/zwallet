@@ -1,8 +1,5 @@
 import 'dart:convert';
 
-import 'package:YWallet/appsettings.dart';
-import 'package:YWallet/store.dart';
-import 'package:YWallet/store2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:go_router/go_router.dart';
@@ -12,10 +9,25 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../appsettings.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../../main.dart';
 import '../../pages/accounts/txplan.dart';
+import '../../pages/accounts/submit.dart';
+import '../../store.dart';
+import '../../store2.dart';
+import '../scan.dart';
+
+class SendContext {
+  final String address;
+  final int pools;
+  final int amount;
+  final MemoData memo;
+  SendContext(this.address, this.pools, this.amount, this.memo);
+
+  static SendContext? instance;
+}
 
 class SendPage extends StatefulWidget {
   final bool single;
@@ -27,18 +39,31 @@ class SendPage extends StatefulWidget {
 
 class _SendState extends State<SendPage> {
   int activeStep = 0;
-  final typeFormKey = GlobalKey<FormBuilderState>();
+  final typeKey = GlobalKey<SendAddressTypeState>();
   final addressKey = GlobalKey<SendAddressState>();
+  final contactKey = GlobalKey<SendListState<Contact>>();
+  final accountKey = GlobalKey<SendListState<Account>>();
   final poolKey = GlobalKey<SendPoolState>();
   final amountKey = GlobalKey<SendAmountState>();
   final memoKey = GlobalKey<SendMemoState>();
+  final planKey = GlobalKey<SendReportState>();
 
+  int type = 0;
   String address = '';
+  int receivers = 0;
+  PoolData poolData = PoolData(7, 0);
   int amount = 0;
-  int pools = 7;
-  int spendable = 0;
-  String memo = '';
-  String txPlan = '';
+  MemoData memo = MemoData(false, '', '');
+  int? contactIndex;
+  late final List<Account> accounts;
+  int? accountIndex;
+  String? txPlan;
+
+  @override
+  void initState() {
+    super.initState();
+    accounts = WarpApi.getAccountList(active.coin);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,87 +78,99 @@ class _SendState extends State<SendPage> {
       Icon(Icons.confirmation_number),
     ];
 
-    final type = typeFormKey.currentState?.fields['type']!.value ?? 0;
+    if (activeStep == icons.length - 1)
+      SendContext.instance = SendContext(address, poolData.pools, amount, memo);
 
+    final hasContacts = contacts.contacts.isNotEmpty;
     final nextButton = activeStep < icons.length - 1
         ? IconButton.outlined(
             icon: Icon(Icons.chevron_right_rounded, size: 32),
             onPressed: () {
               if (!validate()) return;
-              if (activeStep < icons.length - 1) {
-                setState(() {
-                  activeStep++;
-                });
+              if (activeStep == 0 && type == 1) {
+                _paymentURI();
+                return;
+              }
+              if (activeStep == 0 && type == 4) {
+                _latestPayment();
+                return;
+              } else {
+                if (activeStep < icons.length - 1) {
+                  setState(() {
+                    activeStep++;
+                  });
+                }
               }
             },
           )
         : IconButton.filled(
-            onPressed: () {
-              GoRouter.of(context).go('/account/submit_tx', extra: txPlan);
-            },
+            onPressed: txPlan != null
+                ? () {
+                    GoRouter.of(context)
+                        .go('/account/submit_tx', extra: txPlan);
+                  }
+                : null,
             iconSize: 32,
             icon: Icon(Icons.send));
 
-    final previousButton = activeStep > 0 ? IconButton.outlined(
-      icon: Icon(Icons.chevron_left_rounded, size: 32),
-      onPressed: () {
-        if (activeStep > 0) {
-          setState(() {
-            activeStep--;
-          });
-        }
-      },
-    ) : SizedBox();
+    final previousButton = activeStep > 0
+        ? IconButton.outlined(
+            icon: Icon(Icons.chevron_left_rounded, size: 32),
+            onPressed: () {
+              if (activeStep > 0) {
+                setState(() {
+                  activeStep--;
+                });
+              }
+            },
+          )
+        : SizedBox();
 
     final recipientBuilder = RecipientObjectBuilder(
       address: address,
       amount: amount,
-      memo: memo,
-      subject: '',
+      replyTo: memo.reply,
+      subject: memo.subject,
+      memo: memo.memo,
     );
     final recipient = Recipient(recipientBuilder.toBytes());
 
     final b = [
-      () => SendAddressType(formKey: typeFormKey),
-      () => SendAddress(address,
-          key: addressKey,
-          onAddress: (a) => setState(() {
-                address = a;
-              })),
+      () => SendAddressType(type, key: typeKey, hasContacts: hasContacts),
+      () {
+        switch (type) {
+          case 3:
+            return SendList<Account>(accounts, accountIndex, key: accountKey,
+                itemBuilder: (context, index, account,
+                    {onTap, selected = false}) {
+              final a = account.unpack();
+              return ListTile(
+                title: Text(a.name!),
+                selected: selected,
+                onTap: onTap,
+              );
+            });
+          default:
+            return SendAddress(address, key: addressKey);
+        }
+      },
       () => SendPool(
-            PoolData(pools, spendable),
-            onPool: (p) => setState(() {
-              pools = p.pools;
-              spendable = p.spendable;
-            }),
+            poolData,
             key: poolKey,
           ),
       () => SendAmount(
-            amount,
-            spendable,
-            key: amountKey,
-            onAmount: (a) => setState(() {
-              amount = a;
-            }),
-          ),
-      () => SendMemo(memo,
-          onMemo: (m) => setState(() {
-                memo = m;
-              }),
-          key: memoKey),
-      () => SendReport(
-            recipient: recipient,
-            onTxPlan: (p) => setState(() {
-              txPlan = p;
-            }),
-          ),
+          AmountState(amount: amount, spendable: poolData.spendable),
+          key: amountKey),
+      () => SendMemo(memo, key: memoKey),
+      () => SendReport(key: planKey, recipient: recipient, 
+        onPlan: (p) => setState(() { txPlan = p; })),
     ];
     final body = (activeStep < b.length) ? b[activeStep].call() : Container();
-    final receivers = WarpApi.receiversOfAddress(active.coin, address);
-    print(address);
-    print(amount);
-    print(receivers);
-    print(memo);
+    receivers = WarpApi.receiversOfAddress(active.coin, address);
+    // print(address);
+    // print(amount);
+    // print(receivers);
+    // print(memo);
 
     return Scaffold(
         appBar: AppBar(
@@ -150,6 +187,7 @@ class _SendState extends State<SendPage> {
                     activeStep = index;
                   });
                 },
+                enableStepTapping: false,
               ),
               body,
               SizedBox(height: 16),
@@ -166,21 +204,80 @@ class _SendState extends State<SendPage> {
   }
 
   bool validate() {
-    if (activeStep == 1) return addressKey.currentState!.validate();
-    if (activeStep == 2) return poolKey.currentState!.validate();
-    if (activeStep == 3) return amountKey.currentState!.validate();
-    if (activeStep == 4) return memoKey.currentState!.validate();
-    // TODO: Revalidate everything before preparing the tx in case
-    // the user skipped forward
+    if (activeStep == 0) {
+      type = typeKey.currentState!.type;
+    }
+    if (activeStep == 1) {
+      String? v;
+      switch (type) {
+        case 0:
+          v = addressKey.currentState!.address;
+          break;
+        // case 1 is payment URI
+        case 2:
+          contactIndex = contactKey.currentState!.index;
+          v = contactIndex?.let((i) => contacts.contacts[i].address);
+          break;
+        case 3:
+          accountIndex = accountKey.currentState!.index;
+          v = accountIndex?.let((i) => accounts[i].address);
+          break;
+      }
+      if (v == null) return false;
+      address = v;
+    }
+    if (activeStep == 2) {
+      final v = poolKey.currentState!.poolData;
+      if (v == null) return false;
+      poolData = v;
+    }
+    if (activeStep == 3) {
+      final v = amountKey.currentState!.amount;
+      if (v == null) return false;
+      amount = v;
+    }
+    if (activeStep == 4) {
+      final v = memoKey.currentState!.memo;
+      if (v == null) return false;
+      memo = v;
+    }
     return true;
+  }
+
+  _paymentURI() async {
+    final s = S.of(context);
+    await scanQRCode(context, validator: (uri) {
+      try {
+        final p = WarpApi.decodePaymentURI(uri!);
+        address = p.address!;
+        amount = p.amount;
+        memo = MemoData(false, '', p.memo!);
+        return null;
+      } on String {
+        return s.invalidPaymentURI;
+      }
+    });
+    activeStep = 5;
+    setState(() {});
+  }
+
+  _latestPayment() {
+    final sc = SendContext.instance;
+    if (sc != null) {
+      address = sc.address;
+      amount = sc.amount;
+      memo = sc.memo;
+      activeStep = 5;
+      setState(() {});
+    }
   }
 }
 
 class SendAddressType extends StatefulWidget {
   final int type;
-  final void Function(int) onType;
-  SendAddressType(this.type, {required this.onType});
-  
+  final bool hasContacts;
+  SendAddressType(this.type, {super.key, required this.hasContacts});
+
   @override
   State<StatefulWidget> createState() => SendAddressTypeState();
 }
@@ -198,7 +295,7 @@ class SendAddressTypeState extends State<SendAddressType> {
         SizedBox(height: 16),
         FormBuilderRadioGroup(
           name: 'type',
-          initialValue: 0,
+          initialValue: widget.type,
           decoration: InputDecoration(
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
@@ -206,20 +303,25 @@ class SendAddressTypeState extends State<SendAddressType> {
           options: [
             FormBuilderFieldOption(value: 0, child: Text(s.address)),
             FormBuilderFieldOption(value: 1, child: Text(s.paymentURI)),
-            FormBuilderFieldOption(value: 2, child: Text(s.contacts)),
+            if (widget.hasContacts)
+              FormBuilderFieldOption(value: 2, child: Text(s.contacts)),
             FormBuilderFieldOption(value: 3, child: Text(s.account)),
-            FormBuilderFieldOption(value: 4, child: Text(s.lastPayment)),
+            if (SendContext.instance != null)
+              FormBuilderFieldOption(value: 4, child: Text(s.lastPayment)),
           ],
         ),
       ]),
     );
   }
+
+  int get type {
+    return formKey.currentState!.fields['type']?.value as int;
+  }
 }
 
 class SendAddress extends StatefulWidget {
   final String address;
-  final void Function(String) onAddress;
-  SendAddress(this.address, {super.key, required this.onAddress});
+  SendAddress(this.address, {super.key});
 
   @override
   State<StatefulWidget> createState() => SendAddressState();
@@ -245,7 +347,7 @@ class SendAddressState extends State<SendAddress> {
             child: FormBuilderTextField(
           name: 'address',
           controller: addressController,
-          maxLines: 4,
+          maxLines: 8,
           decoration: InputDecoration(label: Text(s.address)),
           validator: (v) => _addressCheck(v, s),
         )),
@@ -257,7 +359,12 @@ class SendAddressState extends State<SendAddress> {
     );
   }
 
-  _qr() {} // TODO
+  _qr() async {
+    addressController.text = await scanQRCode(context, validator: (address) {
+      final s = S.of(context);
+      return _addressCheck(address, s);
+    });
+  }
 
   String? _addressCheck(String? v, S s) {
     if (v == null || v.isEmpty) return s.addressIsEmpty;
@@ -266,18 +373,73 @@ class SendAddressState extends State<SendAddress> {
     return null;
   }
 
-  bool validate() {
+  String? get address {
     final form = formKey.currentState!;
-    if (!form.validate()) return false;
-    widget.onAddress(addressController.text);
-    return true;
+    if (!form.validate()) return null;
+    return addressController.text;
+  }
+}
+
+class SendList<T> extends StatefulWidget {
+  final List<T> items;
+  final int? index;
+  final Widget Function(BuildContext, int, T,
+      {bool selected, void Function()? onTap}) itemBuilder;
+  SendList(this.items, this.index, {super.key, required this.itemBuilder});
+  @override
+  State<StatefulWidget> createState() => SendListState<T>();
+}
+
+class SendListState<T> extends State<SendList<T>> {
+  final formKey = GlobalKey<FormBuilderState>();
+  late int? selectedIndex = widget.index;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final cs = widget.items;
+    return FormBuilder(
+      key: formKey,
+      child: FormBuilderField(
+        builder: (field) => InputDecorator(
+            decoration: InputDecoration(
+                label: Text(s.accounts), errorText: field.errorText),
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemBuilder: (context, index) => widget.itemBuilder(
+                  context, index, widget.items[index],
+                  selected: index == selectedIndex,
+                  onTap: () => _select(index)),
+              separatorBuilder: (context, index) => Divider(),
+              itemCount: cs.length,
+            )),
+        name: 'account',
+      ),
+    );
+  }
+
+  _select(int index) {
+    if (selectedIndex == index)
+      selectedIndex = null;
+    else
+      selectedIndex = index;
+    setState(() {});
+  }
+
+  int? get index {
+    final s = S.of(context);
+    final form = formKey.currentState!;
+    if (selectedIndex == null) {
+      form.fields['account']!.invalidate(s.noSelection);
+      return null;
+    }
+    return selectedIndex;
   }
 }
 
 class SendPool extends StatefulWidget {
   final PoolData initialPools;
-  final void Function(PoolData data) onPool;
-  SendPool(this.initialPools, {super.key, required this.onPool});
+  SendPool(this.initialPools, {super.key});
 
   @override
   State<StatefulWidget> createState() => SendPoolState();
@@ -364,10 +526,9 @@ class SendPoolState extends State<SendPool> {
         (pools & 4 != 0 ? bals.orchard : 0);
   }
 
-  bool validate() {
-    if (!formKey.currentState!.validate()) return false;
-    widget.onPool(PoolData(pools, spendable));
-    return true;
+  PoolData? get poolData {
+    if (!formKey.currentState!.validate()) return null;
+    return PoolData(pools, spendable);
   }
 }
 
@@ -383,12 +544,15 @@ enum AmountSource {
   Slider,
 }
 
+class AmountState {
+  int amount;
+  int spendable;
+  AmountState({required this.amount, required this.spendable});
+}
+
 class SendAmount extends StatefulWidget {
-  final int initialAmount;
-  final int spendable;
-  final void Function(int) onAmount;
-  SendAmount(this.initialAmount, this.spendable,
-      {super.key, required this.onAmount});
+  final AmountState initialAmount;
+  SendAmount(this.initialAmount, {super.key});
 
   @override
   State<StatefulWidget> createState() => SendAmountState();
@@ -397,7 +561,7 @@ class SendAmount extends StatefulWidget {
 class SendAmountState extends State<SendAmount> {
   final formKey = GlobalKey<FormBuilderState>();
   double? fxRate;
-  int amount = 0;
+  int _amount = 0;
   final amountController = TextEditingController();
   final fiatController = TextEditingController();
   final nformat = NumberFormat();
@@ -405,8 +569,8 @@ class SendAmountState extends State<SendAmount> {
   @override
   void initState() {
     super.initState();
-    amount = widget.initialAmount;
-    amountController.text = amountToString2(amount);
+    _amount = widget.initialAmount.amount;
+    amountController.text = amountToString2(_amount);
     Future(() async {
       final c = coins[active.coin];
       fxRate = await getFxRate(c.currency, appSettings.currency);
@@ -419,12 +583,13 @@ class SendAmountState extends State<SendAmount> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final c = coins[active.coin];
+    final spendable = widget.initialAmount.spendable;
     return FormBuilder(
       key: formKey,
       child: Column(children: [
         Title(s.amount),
         SizedBox(height: 16),
-        Text('${s.spendable}  ${amountToString2(widget.spendable)}'),
+        Text('${s.spendable}  ${amountToString2(spendable)}'),
         SizedBox(height: 16),
         FormBuilderTextField(
           name: 'amount',
@@ -435,14 +600,14 @@ class SendAmountState extends State<SendAmount> {
             final v = v0 == null || v0.isEmpty ? '0' : v0;
             try {
               final zec = nformat.parse(v).toDouble();
-              amount = (zec * ZECUNIT).toInt();
+              _amount = (zec * ZECUNIT).toInt();
               _update(AmountSource.Crypto);
             } on FormatException {}
           },
           validator: (_) {
             try {
-              if (amount < 0) return s.amountMustBePositive;
-              if (amount > widget.spendable) return s.amountTooHigh;
+              if (_amount < 0) return s.amountMustBePositive;
+              if (_amount > spendable) return s.amountTooHigh;
               return null;
             } on FormatException {
               return s.nan;
@@ -460,7 +625,7 @@ class SendAmountState extends State<SendAmount> {
               try {
                 final fiat = nformat.parse(v).toDouble();
                 final zec = fiat / fxRate!;
-                amount = (zec * ZECUNIT).toInt();
+                _amount = (zec * ZECUNIT).toInt();
                 _update(AmountSource.Fiat);
               } on FormatException {}
             }),
@@ -472,7 +637,7 @@ class SendAmountState extends State<SendAmount> {
           divisions: 10,
           onChanged: (v0) {
             final v = v0 ?? 0;
-            amount = widget.spendable * v ~/ 100;
+            _amount = spendable * v ~/ 100;
             _update(AmountSource.Slider);
           },
         )
@@ -482,38 +647,45 @@ class SendAmountState extends State<SendAmount> {
 
   _update(AmountSource source) {
     if (source != AmountSource.Crypto)
-      amountController.text = nformat.format(amount / ZECUNIT);
+      amountController.text = nformat.format(_amount / ZECUNIT);
     fxRate?.let((fx) {
       if (source != AmountSource.Fiat)
-        fiatController.text = nformat.format(amount * fx / ZECUNIT);
-      // slider
+        fiatController.text = nformat.format(_amount * fx / ZECUNIT);
     });
-    if (source != AmountSource.Slider && widget.spendable != 0) {
-      final p = amount / widget.spendable * 100;
+    final spendable = widget.initialAmount.spendable;
+    if (source != AmountSource.Slider && spendable != 0) {
+      final p = _amount / spendable * 100;
       formKey.currentState!.fields['slider']!.setValue(p.clamp(0.0, 100.0));
     }
     setState(() {});
   }
 
-  bool validate() {
-    if (!formKey.currentState!.validate()) return false;
-    widget.onAmount.call(amount);
-    return true;
+  int? get amount {
+    if (!formKey.currentState!.validate()) return null;
+    return _amount;
   }
 }
 
-class SendMemo extends StatefulWidget {
+class MemoData {
+  final bool reply;
+  final String subject;
   final String memo;
-  final void Function(String) onMemo;
+  MemoData(this.reply, this.subject, this.memo);
+}
 
-  SendMemo(this.memo, {super.key, required this.onMemo});
+class SendMemo extends StatefulWidget {
+  final MemoData memo;
+  SendMemo(this.memo, {super.key});
 
   @override
   State<StatefulWidget> createState() => SendMemoState();
 }
 
 class SendMemoState extends State<SendMemo> {
-  late final controller = TextEditingController(text: widget.memo);
+  late bool reply = widget.memo.reply;
+  late final subjectController =
+      TextEditingController(text: widget.memo.subject);
+  late final memoController = TextEditingController(text: widget.memo.memo);
   final formKey = GlobalKey<FormBuilderState>();
 
   @override
@@ -524,9 +696,22 @@ class SendMemoState extends State<SendMemo> {
         child: Column(children: [
           Title(s.memo),
           SizedBox(height: 16),
+          FormBuilderCheckbox(
+            name: 'reply',
+            initialValue: widget.memo.reply,
+            title: Text(s.includeReplyTo),
+            onChanged: (v) => setState(() {
+              reply = v!;
+            }),
+          ),
+          FormBuilderTextField(
+            name: 'subject',
+            controller: subjectController,
+            decoration: InputDecoration(label: Text(s.subject)),
+          ),
           FormBuilderTextField(
             name: 'memo',
-            controller: controller,
+            controller: memoController,
             decoration: InputDecoration(label: Text(s.memo)),
             maxLines: 10,
             validator: (v) {
@@ -538,38 +723,42 @@ class SendMemoState extends State<SendMemo> {
         ]));
   }
 
-  bool validate() {
-    if (!formKey.currentState!.validate()) return false;
-    widget.onMemo(controller.text);
-    return true;
+  MemoData? get memo {
+    if (!formKey.currentState!.validate()) return null;
+    return MemoData(reply, subjectController.text, memoController.text);
   }
 }
 
 class SendReport extends StatefulWidget {
   final Recipient recipient;
+  final void Function(String) onPlan;
   final bool signOnly;
-  final void Function(String) onTxPlan;
-  SendReport(
-      {required this.recipient, required this.onTxPlan, this.signOnly = false});
+  SendReport({super.key, required this.recipient, 
+    required this.onPlan, this.signOnly = false});
   @override
   State<StatefulWidget> createState() => SendReportState();
 }
 
 class SendReportState extends State<SendReport> {
   String? txPlan;
+  String? error;
 
   @override
   void initState() {
     super.initState();
     Future(() async {
-      final plan = await WarpApi.prepareTx(
-          active.coin,
-          active.id,
-          [widget.recipient],
-          appSettings.anchorOffset,
-          getCoinSettings(active.coin).feeT);
-      widget.onTxPlan(plan);
-      txPlan = plan;
+      try {
+        final plan = await WarpApi.prepareTx(
+            active.coin,
+            active.id,
+            [widget.recipient],
+            appSettings.anchorOffset,
+            getCoinSettings(active.coin).feeT);
+        widget.onPlan(plan);
+        txPlan = plan;
+      } on String catch (e) {
+        error = e;
+      }
       setState(() {});
     });
   }
@@ -578,15 +767,17 @@ class SendReportState extends State<SendReport> {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     final plan = txPlan;
-    if (plan != null)
-      return TxPlanPage.fromPlan(plan, widget.signOnly);
-    else
+    if (plan == null && error == null)
       return Center(
         child: LoadingAnimationWidget.newtonCradle(
           color: t.primaryColor,
           size: 200,
         ),
       );
+    else if (plan != null)
+      return TxPlanPage.fromPlan(plan, widget.signOnly);
+    else
+      return Jumbotron(error!, severity: Severity.Error);
   }
 }
 
