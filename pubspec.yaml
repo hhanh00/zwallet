@@ -109,6 +109,7 @@ dependency_overrides:
   intl: ^0.18.0
 
 dev_dependencies:
+  flutter_gen: ^5.3.1
   build_runner: ^2.1.2
   build_version:
     git: https://github.com/hhanh00/build_version_git.git
