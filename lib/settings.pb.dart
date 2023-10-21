@@ -38,6 +38,7 @@ class AppSettings extends $pb.GeneratedMessage {
     $core.bool? sound,
     $core.String? dbPasswd,
     $core.bool? advanced,
+    $core.int? replyUa,
   }) {
     final $result = create();
     if (anchorOffset != null) {
@@ -106,6 +107,9 @@ class AppSettings extends $pb.GeneratedMessage {
     if (advanced != null) {
       $result.advanced = advanced;
     }
+    if (replyUa != null) {
+      $result.replyUa = replyUa;
+    }
     return $result;
   }
   AppSettings._() : super();
@@ -135,6 +139,7 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOB(20, _omitFieldNames ? '' : 'sound')
     ..aOS(21, _omitFieldNames ? '' : 'dbPasswd')
     ..aOB(22, _omitFieldNames ? '' : 'advanced')
+    ..a<$core.int>(23, _omitFieldNames ? '' : 'replyUa', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
   ;
 
@@ -356,29 +361,30 @@ class AppSettings extends $pb.GeneratedMessage {
   $core.bool hasAdvanced() => $_has(21);
   @$pb.TagNumber(22)
   void clearAdvanced() => clearField(22);
+
+  @$pb.TagNumber(23)
+  $core.int get replyUa => $_getIZ(22);
+  @$pb.TagNumber(23)
+  set replyUa($core.int v) { $_setUnsignedInt32(22, v); }
+  @$pb.TagNumber(23)
+  $core.bool hasReplyUa() => $_has(22);
+  @$pb.TagNumber(23)
+  void clearReplyUa() => clearField(23);
 }
 
 class CoinSettings extends $pb.GeneratedMessage {
   factory CoinSettings({
-    $core.int? serverIndex,
-    $core.String? serverCustomURL,
-    $core.int? blockExplorerIndex,
-    $core.String? blockExplorerCustomURL,
+    ServerURL? lwd,
+    ServerURL? explorer,
     $core.bool? manualFee,
     $fixnum.Int64? fee,
   }) {
     final $result = create();
-    if (serverIndex != null) {
-      $result.serverIndex = serverIndex;
+    if (lwd != null) {
+      $result.lwd = lwd;
     }
-    if (serverCustomURL != null) {
-      $result.serverCustomURL = serverCustomURL;
-    }
-    if (blockExplorerIndex != null) {
-      $result.blockExplorerIndex = blockExplorerIndex;
-    }
-    if (blockExplorerCustomURL != null) {
-      $result.blockExplorerCustomURL = blockExplorerCustomURL;
+    if (explorer != null) {
+      $result.explorer = explorer;
     }
     if (manualFee != null) {
       $result.manualFee = manualFee;
@@ -393,12 +399,10 @@ class CoinSettings extends $pb.GeneratedMessage {
   factory CoinSettings.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'CoinSettings', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'serverIndex', $pb.PbFieldType.OU3)
-    ..aOS(2, _omitFieldNames ? '' : 'serverCustomURL', protoName: 'server_custom_URL')
-    ..a<$core.int>(3, _omitFieldNames ? '' : 'blockExplorerIndex', $pb.PbFieldType.OU3)
-    ..aOS(4, _omitFieldNames ? '' : 'blockExplorerCustomURL', protoName: 'block_explorer_custom_URL')
-    ..aOB(5, _omitFieldNames ? '' : 'manualFee')
-    ..a<$fixnum.Int64>(6, _omitFieldNames ? '' : 'fee', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aOM<ServerURL>(1, _omitFieldNames ? '' : 'lwd', subBuilder: ServerURL.create)
+    ..aOM<ServerURL>(2, _omitFieldNames ? '' : 'explorer', subBuilder: ServerURL.create)
+    ..aOB(3, _omitFieldNames ? '' : 'manualFee')
+    ..a<$fixnum.Int64>(4, _omitFieldNames ? '' : 'fee', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -424,58 +428,108 @@ class CoinSettings extends $pb.GeneratedMessage {
   static CoinSettings? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.int get serverIndex => $_getIZ(0);
+  ServerURL get lwd => $_getN(0);
   @$pb.TagNumber(1)
-  set serverIndex($core.int v) { $_setUnsignedInt32(0, v); }
+  set lwd(ServerURL v) { setField(1, v); }
   @$pb.TagNumber(1)
-  $core.bool hasServerIndex() => $_has(0);
+  $core.bool hasLwd() => $_has(0);
   @$pb.TagNumber(1)
-  void clearServerIndex() => clearField(1);
+  void clearLwd() => clearField(1);
+  @$pb.TagNumber(1)
+  ServerURL ensureLwd() => $_ensure(0);
 
   @$pb.TagNumber(2)
-  $core.String get serverCustomURL => $_getSZ(1);
+  ServerURL get explorer => $_getN(1);
   @$pb.TagNumber(2)
-  set serverCustomURL($core.String v) { $_setString(1, v); }
+  set explorer(ServerURL v) { setField(2, v); }
   @$pb.TagNumber(2)
-  $core.bool hasServerCustomURL() => $_has(1);
+  $core.bool hasExplorer() => $_has(1);
   @$pb.TagNumber(2)
-  void clearServerCustomURL() => clearField(2);
+  void clearExplorer() => clearField(2);
+  @$pb.TagNumber(2)
+  ServerURL ensureExplorer() => $_ensure(1);
 
   @$pb.TagNumber(3)
-  $core.int get blockExplorerIndex => $_getIZ(2);
+  $core.bool get manualFee => $_getBF(2);
   @$pb.TagNumber(3)
-  set blockExplorerIndex($core.int v) { $_setUnsignedInt32(2, v); }
+  set manualFee($core.bool v) { $_setBool(2, v); }
   @$pb.TagNumber(3)
-  $core.bool hasBlockExplorerIndex() => $_has(2);
+  $core.bool hasManualFee() => $_has(2);
   @$pb.TagNumber(3)
-  void clearBlockExplorerIndex() => clearField(3);
+  void clearManualFee() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get blockExplorerCustomURL => $_getSZ(3);
+  $fixnum.Int64 get fee => $_getI64(3);
   @$pb.TagNumber(4)
-  set blockExplorerCustomURL($core.String v) { $_setString(3, v); }
+  set fee($fixnum.Int64 v) { $_setInt64(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasBlockExplorerCustomURL() => $_has(3);
+  $core.bool hasFee() => $_has(3);
   @$pb.TagNumber(4)
-  void clearBlockExplorerCustomURL() => clearField(4);
+  void clearFee() => clearField(4);
+}
 
-  @$pb.TagNumber(5)
-  $core.bool get manualFee => $_getBF(4);
-  @$pb.TagNumber(5)
-  set manualFee($core.bool v) { $_setBool(4, v); }
-  @$pb.TagNumber(5)
-  $core.bool hasManualFee() => $_has(4);
-  @$pb.TagNumber(5)
-  void clearManualFee() => clearField(5);
+class ServerURL extends $pb.GeneratedMessage {
+  factory ServerURL({
+    $core.int? index,
+    $core.String? customURL,
+  }) {
+    final $result = create();
+    if (index != null) {
+      $result.index = index;
+    }
+    if (customURL != null) {
+      $result.customURL = customURL;
+    }
+    return $result;
+  }
+  ServerURL._() : super();
+  factory ServerURL.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ServerURL.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  @$pb.TagNumber(6)
-  $fixnum.Int64 get fee => $_getI64(5);
-  @$pb.TagNumber(6)
-  set fee($fixnum.Int64 v) { $_setInt64(5, v); }
-  @$pb.TagNumber(6)
-  $core.bool hasFee() => $_has(5);
-  @$pb.TagNumber(6)
-  void clearFee() => clearField(6);
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ServerURL', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'index', $pb.PbFieldType.OS3)
+    ..aOS(2, _omitFieldNames ? '' : 'customURL', protoName: 'custom_URL')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ServerURL clone() => ServerURL()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ServerURL copyWith(void Function(ServerURL) updates) => super.copyWith((message) => updates(message as ServerURL)) as ServerURL;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ServerURL create() => ServerURL._();
+  ServerURL createEmptyInstance() => create();
+  static $pb.PbList<ServerURL> createRepeated() => $pb.PbList<ServerURL>();
+  @$core.pragma('dart2js:noInline')
+  static ServerURL getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ServerURL>(create);
+  static ServerURL? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get index => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set index($core.int v) { $_setSignedInt32(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasIndex() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearIndex() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get customURL => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set customURL($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasCustomURL() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearCustomURL() => clearField(2);
 }
 
 

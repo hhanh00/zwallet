@@ -1003,7 +1003,7 @@ class SEn extends S {
   String get tapQrCodeForSaplingAddress => 'Tap QR Code for Sapling Address';
 
   @override
-  String get playSound => 'Play Sound';
+  String get playSound => 'Play Sound Effects';
 
   @override
   String get fee => 'Fee';
@@ -1085,4 +1085,40 @@ class SEn extends S {
 
   @override
   String get noSelection => 'Nothing Selected';
+
+  @override
+  String get confirmations => 'Min. Confirmations';
+
+  @override
+  String get hidden => 'Hidden';
+
+  @override
+  String get autoHide => 'Auto Hide';
+
+  @override
+  String get shown => 'Shown';
+
+  @override
+  String get useZats => 'Use Zats (8 decimals)';
+
+  @override
+  String get mainUA => 'Main UA Receivers';
+
+  @override
+  String get replyUA => 'Reply UA Receivers';
+
+  @override
+  String get list => 'List';
+
+  @override
+  String get autoView => 'Orientation';
+
+  @override
+  String get general => 'General';
+
+  @override
+  String get priv => 'Privacy';
+
+  @override
+  String get views => 'Views';
 }

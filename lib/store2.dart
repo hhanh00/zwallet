@@ -277,9 +277,9 @@ CoinSettings getCoinSettings(int coin) {
 
 String resolveBlockExplorer(int coin, CoinSettings settings) {
   final explorers = coins[coin].blockExplorers;
-  int idx = settings.blockExplorerIndex;
+  int idx = settings.explorer.index;
   if (idx >= 0) return explorers[idx];
-  return settings.blockExplorerCustomURL;
+  return settings.explorer.customURL;
 }
 
 extension CoinSettingsExtension on CoinSettings {

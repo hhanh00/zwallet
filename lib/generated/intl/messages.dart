@@ -1994,7 +1994,7 @@ abstract class S {
   /// No description provided for @playSound.
   ///
   /// In en, this message translates to:
-  /// **'Play Sound'**
+  /// **'Play Sound Effects'**
   String get playSound;
 
   /// No description provided for @fee.
@@ -2158,6 +2158,78 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Nothing Selected'**
   String get noSelection;
+
+  /// No description provided for @confirmations.
+  ///
+  /// In en, this message translates to:
+  /// **'Min. Confirmations'**
+  String get confirmations;
+
+  /// No description provided for @hidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get hidden;
+
+  /// No description provided for @autoHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto Hide'**
+  String get autoHide;
+
+  /// No description provided for @shown.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown'**
+  String get shown;
+
+  /// No description provided for @useZats.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Zats (8 decimals)'**
+  String get useZats;
+
+  /// No description provided for @mainUA.
+  ///
+  /// In en, this message translates to:
+  /// **'Main UA Receivers'**
+  String get mainUA;
+
+  /// No description provided for @replyUA.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply UA Receivers'**
+  String get replyUA;
+
+  /// No description provided for @list.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get list;
+
+  /// No description provided for @autoView.
+  ///
+  /// In en, this message translates to:
+  /// **'Orientation'**
+  String get autoView;
+
+  /// No description provided for @general.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
+  /// No description provided for @priv.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get priv;
+
+  /// No description provided for @views.
+  ///
+  /// In en, this message translates to:
+  /// **'Views'**
+  String get views;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

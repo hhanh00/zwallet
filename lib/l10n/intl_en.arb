@@ -315,7 +315,7 @@
   "scanningAddresses": "Scanning addresses",
   "blockExplorer": "Block Explorer",
   "tapQrCodeForSaplingAddress": "Tap QR Code for Sapling Address",
-  "playSound": "Play Sound",
+  "playSound": "Play Sound Effects",
   "fee": "Fee",
   "coins": "Coins",
   "rewind": "Rewind",
@@ -342,5 +342,17 @@
   "sent": "Transaction Sent",
   "sent_failed": "Transaction Failed",
   "invalidPaymentURI": "Invalid Payment URI",
-  "noSelection": "Nothing Selected"
+  "noSelection": "Nothing Selected",
+  "confirmations": "Min. Confirmations",
+  "hidden": "Hidden",
+  "autoHide": "Auto Hide",
+  "shown": "Shown",
+  "useZats": "Use Zats (8 decimals)",
+  "mainUA": "Main UA Receivers",
+  "replyUA": "Reply UA Receivers",
+  "list": "List",
+  "autoView": "Orientation",
+  "general": "General",
+  "priv": "Privacy",
+  "views": "Views"
 }

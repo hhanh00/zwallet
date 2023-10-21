@@ -39,6 +39,7 @@ const AppSettings$json = {
     {'1': 'sound', '3': 20, '4': 1, '5': 8, '10': 'sound'},
     {'1': 'db_passwd', '3': 21, '4': 1, '5': 9, '10': 'dbPasswd'},
     {'1': 'advanced', '3': 22, '4': 1, '5': 8, '10': 'advanced'},
+    {'1': 'reply_ua', '3': 23, '4': 1, '5': 13, '10': 'replyUa'},
   ],
 };
 
@@ -57,26 +58,36 @@ final $typed_data.Uint8List appSettingsDescriptor = $convert.base64Decode(
     'a2V5GBEgASgJUgxiYWNrdXBFbmNLZXkSJQoOZGV2ZWxvcGVyX21vZGUYEiABKA1SDWRldmVsb3'
     'Blck1vZGUSKgoRbWluX3ByaXZhY3lfbGV2ZWwYEyABKA1SD21pblByaXZhY3lMZXZlbBIUCgVz'
     'b3VuZBgUIAEoCFIFc291bmQSGwoJZGJfcGFzc3dkGBUgASgJUghkYlBhc3N3ZBIaCghhZHZhbm'
-    'NlZBgWIAEoCFIIYWR2YW5jZWQ=');
+    'NlZBgWIAEoCFIIYWR2YW5jZWQSGQoIcmVwbHlfdWEYFyABKA1SB3JlcGx5VWE=');
 
 @$core.Deprecated('Use coinSettingsDescriptor instead')
 const CoinSettings$json = {
   '1': 'CoinSettings',
   '2': [
-    {'1': 'server_index', '3': 1, '4': 1, '5': 13, '10': 'serverIndex'},
-    {'1': 'server_custom_URL', '3': 2, '4': 1, '5': 9, '10': 'serverCustomURL'},
-    {'1': 'block_explorer_index', '3': 3, '4': 1, '5': 13, '10': 'blockExplorerIndex'},
-    {'1': 'block_explorer_custom_URL', '3': 4, '4': 1, '5': 9, '10': 'blockExplorerCustomURL'},
-    {'1': 'manual_fee', '3': 5, '4': 1, '5': 8, '10': 'manualFee'},
-    {'1': 'fee', '3': 6, '4': 1, '5': 4, '10': 'fee'},
+    {'1': 'lwd', '3': 1, '4': 1, '5': 11, '6': '.pb.ServerURL', '10': 'lwd'},
+    {'1': 'explorer', '3': 2, '4': 1, '5': 11, '6': '.pb.ServerURL', '10': 'explorer'},
+    {'1': 'manual_fee', '3': 3, '4': 1, '5': 8, '10': 'manualFee'},
+    {'1': 'fee', '3': 4, '4': 1, '5': 4, '10': 'fee'},
   ],
 };
 
 /// Descriptor for `CoinSettings`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List coinSettingsDescriptor = $convert.base64Decode(
-    'CgxDb2luU2V0dGluZ3MSIQoMc2VydmVyX2luZGV4GAEgASgNUgtzZXJ2ZXJJbmRleBIqChFzZX'
-    'J2ZXJfY3VzdG9tX1VSTBgCIAEoCVIPc2VydmVyQ3VzdG9tVVJMEjAKFGJsb2NrX2V4cGxvcmVy'
-    'X2luZGV4GAMgASgNUhJibG9ja0V4cGxvcmVySW5kZXgSOQoZYmxvY2tfZXhwbG9yZXJfY3VzdG'
-    '9tX1VSTBgEIAEoCVIWYmxvY2tFeHBsb3JlckN1c3RvbVVSTBIdCgptYW51YWxfZmVlGAUgASgI'
-    'UgltYW51YWxGZWUSEAoDZmVlGAYgASgEUgNmZWU=');
+    'CgxDb2luU2V0dGluZ3MSHwoDbHdkGAEgASgLMg0ucGIuU2VydmVyVVJMUgNsd2QSKQoIZXhwbG'
+    '9yZXIYAiABKAsyDS5wYi5TZXJ2ZXJVUkxSCGV4cGxvcmVyEh0KCm1hbnVhbF9mZWUYAyABKAhS'
+    'CW1hbnVhbEZlZRIQCgNmZWUYBCABKARSA2ZlZQ==');
+
+@$core.Deprecated('Use serverURLDescriptor instead')
+const ServerURL$json = {
+  '1': 'ServerURL',
+  '2': [
+    {'1': 'index', '3': 1, '4': 1, '5': 17, '10': 'index'},
+    {'1': 'custom_URL', '3': 2, '4': 1, '5': 9, '10': 'customURL'},
+  ],
+};
+
+/// Descriptor for `ServerURL`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List serverURLDescriptor = $convert.base64Decode(
+    'CglTZXJ2ZXJVUkwSFAoFaW5kZXgYASABKBFSBWluZGV4Eh0KCmN1c3RvbV9VUkwYAiABKAlSCW'
+    'N1c3RvbVVSTA==');
 

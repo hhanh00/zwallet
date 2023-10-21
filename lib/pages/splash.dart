@@ -151,19 +151,19 @@ class _SplashState extends State<SplashPage> {
   }
 
   String _resolveURL(CoinBase c, CoinSettings settings) {
-    if (settings.serverIndex == 0) {
+    if (settings.lwd.index >= 0 && settings.lwd.index < c.lwd.length)
+      return c.lwd[settings.lwd.index].url;
+    else if (settings.lwd.index == -1) {
       var servers = c.lwd.map((c) => c.url).toList();
-      servers.add(settings.serverCustomURL);
+      servers.add(settings.lwd.customURL);
       try {
         return WarpApi.getBestServer(servers);
       } catch (e) {
         return c.lwd.first.url;
       }
     }
-    else if (settings.serverIndex == c.lwd.length + 1)
-      return settings.serverCustomURL;
     else {
-      return c.lwd[settings.serverIndex - 1].url;
+      return settings.lwd.customURL;
     }
   }
 
