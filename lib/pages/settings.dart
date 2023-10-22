@@ -14,7 +14,6 @@ import '../generated/intl/messages.dart';
 import '../appsettings.dart';
 import '../main.dart';
 import '../settings.pb.dart';
-import '../store2.dart';
 
 var _settings0 = AppSettings();
 var _settings = AppSettings();
@@ -42,7 +41,7 @@ class _SettingsState extends State<SettingsPage>
   void initState() {
     super.initState();
     _settings0 = appSettings;
-    _coinSettings0 = CoinSettingsExtension.load(active.coin);
+    _coinSettings0 = coinSettings;
     _coinSettings.lwd = ServerURL();
     _coinSettings.explorer = ServerURL();
     if (currencies == null) {
@@ -96,7 +95,8 @@ class _SettingsState extends State<SettingsPage>
       final prefs = await SharedPreferences.getInstance();
       await _settings0.save(prefs);
       _coinSettings0.save();
-      loadAppSettings(prefs);
+      appSettings = AppSettingsExtension.load(prefs);
+      coinSettings = CoinSettingsExtension.load(active.coin);
       GoRouter.of(context).pop();
     }
   }

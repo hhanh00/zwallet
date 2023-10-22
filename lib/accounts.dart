@@ -1,12 +1,13 @@
 import 'dart:async';
+import 'dart:math';
 
-import 'package:YWallet/appsettings.dart';
-import 'package:YWallet/store2.dart';
 import 'package:reflectable/reflectable.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:warp_api/data_fb_generated.dart';
+import 'package:warp_api/data_fb_generated.dart' hide Quote;
+import 'appsettings.dart';
 import 'coin/coins.dart';
 import 'package:mobx/mobx.dart';
 import 'db.dart';
@@ -15,6 +16,7 @@ import 'package:warp_api/warp_api.dart';
 import 'coin/coin.dart';
 import 'main.dart';
 import 'store.dart';
+import 'store2.dart';
 
 part 'accounts.g.dart';
 
@@ -107,6 +109,121 @@ AccountId getActiveAccountId(int coin) {
   return AccountId(coin, id);
 }
 
+var aa = ActiveAccount2();
+class ActiveAccount2 = _ActiveAccount2 with _$ActiveAccount2;
+
+abstract class _ActiveAccount2 with Store {
+  @observable
+  AccountData? instance;
+}
+
+class AccountData {
+  static AccountData? fromPrefs(SharedPreferences prefs) {
+    final coin = prefs.getInt('coin') ?? 0;
+    var id = prefs.getInt('account') ?? 0;
+    if (WarpApi.checkAccount(coin, id)) return AccountData.fromId(coin, id);
+    for (var c in coins) {
+      final id = WarpApi.getFirstAccount(c.coin);
+      if (id > 0) return AccountData.fromId(coin, id);
+    }
+    return null;
+  }
+
+  factory AccountData.fromId(int coin, int id) {
+    final c = coins[coin];
+    final backup = WarpApi.getBackup(coin, id);
+    final external =
+        c.supportsLedger && !isMobile() && WarpApi.ledgerHasAccount(coin, id);
+    final canPay = backup.sk != null || external;
+    return AccountData(coin, id, canPay, external);
+  }
+
+  final int coin;
+  final int id;
+  final bool canPay;
+  final bool external;
+  AccountData(this.coin, this.id, this.canPay, this.external);
+
+  @observable
+  int height = 0;
+
+  PoolBalanceT poolBalances = PoolBalanceT();
+  List<Note> notes = [];
+  List<Tx> txs = [];
+  List<Spending> spendings = [];
+  List<TimeSeriesPoint<double>> accountBalances = [];
+  List<PnL> pnls = [];
+  List<ZMessage> messages = [];
+
+  @action
+  void update(int newHeight) {
+    poolBalances =
+        WarpApi.getPoolBalances(coin, id, appSettings.anchorOffset).unpack();
+
+    final shieledNotes = WarpApi.getNotesSync(coin, id);
+    notes = shieledNotes.map((n) {
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(n.timestamp * 1000);
+      return Note.from(newHeight, n.id, n.height, timestamp, n.value / ZECUNIT,
+          n.orchard, n.excluded);
+    }).toList();
+
+    final shieldedTxs = WarpApi.getTxsSync(coin, id);
+    txs = shieldedTxs.map((tx) {
+      final timestamp =
+          DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000);
+      return Tx.from(newHeight, tx.id, tx.height, timestamp, tx.shortTxId!,
+          tx.txId!, tx.value / ZECUNIT, tx.address, tx.name, tx.memo);
+    }).toList();
+
+    final now = DateTime.now().toUtc();
+    final today = DateTime.utc(now.year, now.month, now.day);
+    final start =
+        today.add(Duration(days: -365)).millisecondsSinceEpoch ~/ 1000;
+    final end = today.microsecondsSinceEpoch ~/ 1000;
+    spendings = WarpApi.getSpendings(coin, id, start);
+
+    final trades = WarpApi.getPnLTxs(coin, id, start);
+    List<AccountBalance> abs = [];
+    var b = poolBalances.orchard + poolBalances.sapling;
+    abs.add(AccountBalance(DateTime.now(), b / ZECUNIT));
+    for (var trade in trades) {
+      final timestamp =
+          DateTime.fromMillisecondsSinceEpoch(trade.timestamp * 1000);
+      final value = trade.value;
+      final ab = AccountBalance(timestamp, b / ZECUNIT);
+      abs.add(ab);
+      b -= value;
+    }
+    abs.add(AccountBalance(
+        DateTime.fromMillisecondsSinceEpoch(start), b / ZECUNIT));
+    accountBalances = sampleDaily<AccountBalance, double, double>(
+        abs.reversed,
+        start,
+        end,
+        (AccountBalance ab) => ab.time.millisecondsSinceEpoch ~/ DAY_MS,
+        (AccountBalance ab) => ab.balance,
+        (acc, v) => v,
+        0.0);
+
+    final ms = WarpApi.getMessagesSync(coin, id);
+    messages = ms
+        .map((m) => ZMessage(
+            m.idMsg,
+            m.idTx,
+            m.incoming,
+            m.from,
+            m.to!,
+            m.subject!,
+            m.body!,
+            DateTime.fromMillisecondsSinceEpoch(m.timestamp * 1000),
+            m.height,
+            m.read))
+        .toList();
+
+    height = newHeight;
+  }
+}
+
 class ActiveAccount = _ActiveAccount with _$ActiveAccount;
 
 abstract class _ActiveAccount with Store {
@@ -193,6 +310,7 @@ abstract class _ActiveAccount with Store {
       this.id = id;
       _refreshAccount();
     }
+    coinSettings = CoinSettingsExtension.load(coin);
     Future(Action(() async {
       final prefs = await SharedPreferences.getInstance();
       prefs.setInt('coin', coin);
@@ -255,10 +373,11 @@ abstract class _ActiveAccount with Store {
       showBalanceNotification(prevBalance, balances.balance);
     }
   }
-  
+
   @action
   void updatePoolBalances() {
-    final b = WarpApi.getPoolBalances(active.coin, active.id, appSettings.anchorOffset);
+    final b = WarpApi.getPoolBalances(
+        active.coin, active.id, appSettings.anchorOffset);
     poolBalances = b.unpack();
   }
 
@@ -448,7 +567,8 @@ abstract class _ActiveAccount with Store {
   SortConfig2? txOrder;
   SortConfig2? messageOrder;
 
-  Tuple2<SortConfig2?, List<T>> setSortOrder<T extends HasHeight>(String field, SortConfig2? order, List<T> items) {
+  Tuple2<SortConfig2?, List<T>> setSortOrder<T extends HasHeight>(
+      String field, SortConfig2? order, List<T> items) {
     if (order == null)
       order = SortConfig2(field, 1);
     else
@@ -511,8 +631,6 @@ class SortConfig2 {
   }
 }
 
-
-
 class Balances = _Balances with _$Balances;
 
 abstract class _Balances with Store {
@@ -546,3 +664,55 @@ class AccountId {
   AccountId(this.coin, this.id);
 }
 
+List<PnL> getPNL(int start, int end, Iterable<TxTimeValue> tvs, Iterable<Quote> quotes) {
+  final List<Trade> trades = [];
+  for (var tv in tvs) {
+    final dt = DateTime.fromMillisecondsSinceEpoch(tv.timestamp * 1000);
+    final qty = tv.value / ZECUNIT;
+    trades.add(Trade(dt, qty));
+  }
+
+  final portfolioTimeSeries = sampleDaily<Trade, Trade, double>(
+      trades,
+      start,
+      end,
+      (t) => t.dt.millisecondsSinceEpoch ~/ DAY_MS,
+      (t) => t,
+      (acc, t) => acc + t.qty,
+      0.0);
+
+  var prevBalance = 0.0;
+  var cash = 0.0;
+  var realized = 0.0;
+  final len = min(quotes.length, portfolioTimeSeries.length);
+
+  final z = ZipStream.zip2<Quote, TimeSeriesPoint<double>, 
+    Tuple2<Quote, TimeSeriesPoint<double>>>(
+    Stream.fromIterable(quotes),
+    Stream.fromIterable(portfolioTimeSeries),
+    (a, b) => Tuple2(a, b),
+  ).take(len);
+
+  List<PnL> pnls = [];
+  z.listen((qv) {
+    final dt = qv.item1.dt;
+    final price = qv.item1.price;
+    final balance = qv.item2.value;
+    final qty = balance - prevBalance;
+
+    final closeQty =
+        qty * balance < 0 ? min(qty.abs(), prevBalance.abs()) * qty.sign : 0.0;
+    final openQty = qty - closeQty;
+    final avgPrice = prevBalance != 0 ? cash / prevBalance : 0.0;
+
+    cash += openQty * price + closeQty * avgPrice;
+    realized += closeQty * (avgPrice - price);
+    final unrealized = price * balance - cash;
+
+    final pnl = PnL(dt, price, balance, realized, unrealized);
+    pnls.add(pnl);
+
+    prevBalance = balance;
+  });
+  return pnls;
+}

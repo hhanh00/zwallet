@@ -1092,6 +1092,19 @@ class NativeLibrary {
   late final _dart_get_account_list _get_account_list =
       _get_account_list_ptr.asFunction<_dart_get_account_list>();
 
+  CResult_u32 get_first_account(
+    int coin,
+  ) {
+    return _get_first_account(
+      coin,
+    );
+  }
+
+  late final _get_first_account_ptr =
+      _lookup<ffi.NativeFunction<_c_get_first_account>>('get_first_account');
+  late final _dart_get_first_account _get_first_account =
+      _get_first_account_ptr.asFunction<_dart_get_first_account>();
+
   CResult_u32 get_active_account(
     int coin,
   ) {
@@ -1669,6 +1682,8 @@ const int Account_VT_KEY_TYPE = 8;
 
 const int Account_VT_BALANCE = 10;
 
+const int Account_VT_ADDRESS = 12;
+
 const int AccountVec_VT_ACCOUNTS = 4;
 
 const int Balance_VT_SHIELDED = 4;
@@ -1698,8 +1713,6 @@ const int ShieldedNoteVec_VT_NOTES = 4;
 const int ShieldedTx_VT_TX_ID = 6;
 
 const int ShieldedTx_VT_SHORT_TX_ID = 10;
-
-const int ShieldedTx_VT_ADDRESS = 18;
 
 const int ShieldedTx_VT_MEMO = 20;
 
@@ -2508,6 +2521,14 @@ typedef _c_get_account_list = CResult______u8 Function(
 );
 
 typedef _dart_get_account_list = CResult______u8 Function(
+  int coin,
+);
+
+typedef _c_get_first_account = CResult_u32 Function(
+  ffi.Uint8 coin,
+);
+
+typedef _dart_get_first_account = CResult_u32 Function(
   int coin,
 );
 

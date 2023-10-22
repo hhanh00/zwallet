@@ -88,7 +88,7 @@ class _SplashState extends State<SplashPage> {
   }
 
   Future<void> _restoreSettings(SharedPreferences prefs) async {
-    loadAppSettings(prefs);
+    appSettings = AppSettingsExtension.load(prefs);
     _setProgress(0.1, "Settings loaded");
   }
 

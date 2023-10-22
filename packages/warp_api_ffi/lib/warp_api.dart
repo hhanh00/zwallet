@@ -414,6 +414,10 @@ class WarpApi {
     warp_api_lib.delete_account(coin, account);
   }
 
+  static int getFirstAccount(int coin) {
+    return unwrapResultU32(warp_api_lib.get_first_account(coin));
+  }
+
   static String makePaymentURI(
       int coin, String address, int amount, String memo) {
     final uri = warp_api_lib.make_payment_uri(
@@ -578,6 +582,24 @@ class WarpApi {
       final msgs = MessageVec(r);
       return msgs.messages!;
     }, null);
+  }
+
+  static List<ShieldedNote> getNotesSync(int coin, int id) {
+    final r = unwrapResultBytes(warp_api_lib.get_notes(coin, id));
+    final ns = ShieldedNoteVec(r);
+    return ns.notes!;
+  }
+
+  static List<ShieldedTx> getTxsSync(int coin, int id) {
+    final r = unwrapResultBytes(warp_api_lib.get_txs(coin, id));
+    final txs = ShieldedTxVec(r);
+    return txs.txs!;
+  }
+
+  static List<Message> getMessagesSync(int coin, int id) {
+    final r = unwrapResultBytes(warp_api_lib.get_messages(coin, id));
+    final msgs = MessageVec(r);
+    return msgs.messages!;
   }
 
   static PrevNext getPrevNextMessage(

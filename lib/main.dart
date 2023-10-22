@@ -544,7 +544,7 @@ List<ElevatedButton> confirmButtons(
 }
 
 List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(
-    List<T> timeseries,
+    Iterable<T> timeseries,
     int start,
     int end,
     int Function(T) getDay,
@@ -555,21 +555,19 @@ List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(
   final s = start ~/ DAY_MS;
   final e = end ~/ DAY_MS;
 
-  var acc = initial;
-  var j = 0;
-  while (j < timeseries.length && getDay(timeseries[j]) < s) {
-    acc = accFn(acc, getY(timeseries[j]));
-    j += 1;
-  }
-
   List<TimeSeriesPoint<V>> ts = [];
+  var acc = initial;
+  var prevDay = s;
 
-  for (var i = s; i <= e; i++) {
-    while (j < timeseries.length && getDay(timeseries[j]) == i) {
-      acc = accFn(acc, getY(timeseries[j]));
-      j += 1;
+  for (var p in timeseries) {
+    final day = getDay(p);
+    if (day >= s) {
+      if (day != prevDay) {
+        ts.add(TimeSeriesPoint(prevDay, acc));
+        prevDay = day;
+      }
     }
-    ts.add(TimeSeriesPoint(i, acc));
+    acc = accFn(acc, getY(p));
   }
   return ts;
 }

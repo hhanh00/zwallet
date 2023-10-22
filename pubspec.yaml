@@ -64,6 +64,7 @@ dependencies:
   im_stepper: ^1.0.1
   loading_animation_widget: ^1.2.0
   animated_toggle_switch: ^0.8.0
+  rxdart: ^0.27.7
   grouped_list: ^4.1.0
   json_annotation: ^4.1.0
   share_plus: ^4.5.3

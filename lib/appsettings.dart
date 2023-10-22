@@ -8,13 +8,8 @@ import 'package:warp_api/warp_api.dart';
 import 'coin/coins.dart';
 
 var appSettings = AppSettings();
+var coinSettings = CoinSettings();
 
-void loadAppSettings(SharedPreferences prefs) {
-  final setting = prefs.getString('settings') ?? '';
-  final settingBytes  = base64Decode(setting);
-  appSettings = AppSettings.fromBuffer(settingBytes);
-  appSettings.defaults();
-}
 
 extension AppSettingsExtension on AppSettings {
   void defaults() {
@@ -25,11 +20,19 @@ extension AppSettingsExtension on AppSettings {
     if (!this.hasCurrency()) appSettings.currency = 'USD';
   }
 
+  static AppSettings load(SharedPreferences prefs) {
+    final setting = prefs.getString('settings') ?? '';
+    final settingBytes  = base64Decode(setting);
+    return AppSettings.fromBuffer(settingBytes);
+  }
+
   Future<void> save(SharedPreferences prefs) async {
     final bytes = this.writeToBuffer();
     final settings = base64Encode(bytes);
     await prefs.setString('settings', settings);
   }
+
+  int chartRangeDays() => 365;
 }
 
 extension CoinSettingsExtension on CoinSettings {
