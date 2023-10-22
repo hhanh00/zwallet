@@ -268,20 +268,3 @@ abstract class _MarketPrice with Store {
     price = await getFxRate(c.currency, appSettings.currency);
   }
 }
-
-CoinSettings getCoinSettings(int coin) {
-  final p = WarpApi.getProperty(coin, 'settings');
-  if (p.isEmpty) return CoinSettings();
-  return CoinSettings.fromBuffer(base64Decode(p));
-}
-
-String resolveBlockExplorer(int coin, CoinSettings settings) {
-  final explorers = coins[coin].blockExplorers;
-  int idx = settings.explorer.index;
-  if (idx >= 0) return explorers[idx];
-  return settings.explorer.customURL;
-}
-
-extension CoinSettingsExtension on CoinSettings {
-  FeeT get feeT => FeeT(scheme: manualFee ? 1 : 0, fee: fee.toInt());
-}

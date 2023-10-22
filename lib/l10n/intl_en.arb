@@ -354,5 +354,6 @@
   "autoView": "Orientation",
   "general": "General",
   "priv": "Privacy",
-  "views": "Views"
+  "views": "Views",
+  "autoFee": "Automatic Fee"
 }

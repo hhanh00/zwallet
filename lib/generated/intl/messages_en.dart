@@ -1121,4 +1121,7 @@ class SEn extends S {
 
   @override
   String get views => 'Views';
+
+  @override
+  String get autoFee => 'Automatic Fee';
 }

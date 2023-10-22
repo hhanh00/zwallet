@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import 'appsettings.dart';
 import 'main.dart';
 import 'store.dart';
 import 'generated/intl/messages.dart';
@@ -97,7 +98,7 @@ class TransactionState extends State<TransactionPage> {
 }
 
 void openTxInExplorer(String txId) {
-    final settings = getCoinSettings(active.coin);
-    final url = resolveBlockExplorer(active.coin, settings);
+    final settings = CoinSettingsExtension.load(active.coin);
+    final url = settings.resolveBlockExplorer();
     launchUrl(Uri.parse("$url/$txId"), mode: LaunchMode.inAppWebView);
 }

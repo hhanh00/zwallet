@@ -2230,6 +2230,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Views'**
   String get views;
+
+  /// No description provided for @autoFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic Fee'**
+  String get autoFee;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

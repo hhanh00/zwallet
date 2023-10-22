@@ -40,6 +40,7 @@ const AppSettings$json = {
     {'1': 'db_passwd', '3': 21, '4': 1, '5': 9, '10': 'dbPasswd'},
     {'1': 'advanced', '3': 22, '4': 1, '5': 8, '10': 'advanced'},
     {'1': 'reply_ua', '3': 23, '4': 1, '5': 13, '10': 'replyUa'},
+    {'1': 'memo', '3': 24, '4': 1, '5': 9, '10': 'memo'},
   ],
 };
 
@@ -58,24 +59,28 @@ final $typed_data.Uint8List appSettingsDescriptor = $convert.base64Decode(
     'a2V5GBEgASgJUgxiYWNrdXBFbmNLZXkSJQoOZGV2ZWxvcGVyX21vZGUYEiABKA1SDWRldmVsb3'
     'Blck1vZGUSKgoRbWluX3ByaXZhY3lfbGV2ZWwYEyABKA1SD21pblByaXZhY3lMZXZlbBIUCgVz'
     'b3VuZBgUIAEoCFIFc291bmQSGwoJZGJfcGFzc3dkGBUgASgJUghkYlBhc3N3ZBIaCghhZHZhbm'
-    'NlZBgWIAEoCFIIYWR2YW5jZWQSGQoIcmVwbHlfdWEYFyABKA1SB3JlcGx5VWE=');
+    'NlZBgWIAEoCFIIYWR2YW5jZWQSGQoIcmVwbHlfdWEYFyABKA1SB3JlcGx5VWESEgoEbWVtbxgY'
+    'IAEoCVIEbWVtbw==');
 
 @$core.Deprecated('Use coinSettingsDescriptor instead')
 const CoinSettings$json = {
   '1': 'CoinSettings',
   '2': [
-    {'1': 'lwd', '3': 1, '4': 1, '5': 11, '6': '.pb.ServerURL', '10': 'lwd'},
-    {'1': 'explorer', '3': 2, '4': 1, '5': 11, '6': '.pb.ServerURL', '10': 'explorer'},
-    {'1': 'manual_fee', '3': 3, '4': 1, '5': 8, '10': 'manualFee'},
-    {'1': 'fee', '3': 4, '4': 1, '5': 4, '10': 'fee'},
+    {'1': 'coin', '3': 1, '4': 1, '5': 13, '10': 'coin'},
+    {'1': 'lwd', '3': 2, '4': 1, '5': 11, '6': '.pb.ServerURL', '10': 'lwd'},
+    {'1': 'explorer', '3': 3, '4': 1, '5': 11, '6': '.pb.ServerURL', '10': 'explorer'},
+    {'1': 'manual_fee', '3': 4, '4': 1, '5': 8, '10': 'manualFee'},
+    {'1': 'fee', '3': 5, '4': 1, '5': 4, '10': 'fee'},
+    {'1': 'spam_filter', '3': 6, '4': 1, '5': 8, '10': 'spamFilter'},
   ],
 };
 
 /// Descriptor for `CoinSettings`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List coinSettingsDescriptor = $convert.base64Decode(
-    'CgxDb2luU2V0dGluZ3MSHwoDbHdkGAEgASgLMg0ucGIuU2VydmVyVVJMUgNsd2QSKQoIZXhwbG'
-    '9yZXIYAiABKAsyDS5wYi5TZXJ2ZXJVUkxSCGV4cGxvcmVyEh0KCm1hbnVhbF9mZWUYAyABKAhS'
-    'CW1hbnVhbEZlZRIQCgNmZWUYBCABKARSA2ZlZQ==');
+    'CgxDb2luU2V0dGluZ3MSEgoEY29pbhgBIAEoDVIEY29pbhIfCgNsd2QYAiABKAsyDS5wYi5TZX'
+    'J2ZXJVUkxSA2x3ZBIpCghleHBsb3JlchgDIAEoCzINLnBiLlNlcnZlclVSTFIIZXhwbG9yZXIS'
+    'HQoKbWFudWFsX2ZlZRgEIAEoCFIJbWFudWFsRmVlEhAKA2ZlZRgFIAEoBFIDZmVlEh8KC3NwYW'
+    '1fZmlsdGVyGAYgASgIUgpzcGFtRmlsdGVy');
 
 @$core.Deprecated('Use serverURLDescriptor instead')
 const ServerURL$json = {

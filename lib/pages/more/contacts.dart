@@ -57,7 +57,7 @@ class _ContactsState extends State<ContactsPage> {
 
   _save() async {
     final s = S.of(context);
-    final coinSettings = getCoinSettings(active.coin);
+    final coinSettings = CoinSettingsExtension.load(active.coin);
     final fee = coinSettings.feeT;
     final confirmed = await showConfirmDialog(context, s.save, s.confirmSaveContacts);
     if (!confirmed) return;

@@ -15,6 +15,7 @@ import '../../generated/intl/messages.dart';
 import '../../main.dart';
 import '../../pages/accounts/txplan.dart';
 import '../../pages/accounts/submit.dart';
+import '../../settings.dart';
 import '../../store.dart';
 import '../../store2.dart';
 import '../scan.dart';
@@ -753,7 +754,7 @@ class SendReportState extends State<SendReport> {
             active.id,
             [widget.recipient],
             appSettings.anchorOffset,
-            getCoinSettings(active.coin).feeT);
+            CoinSettingsExtension.load(active.coin).feeT);
         widget.onPlan(plan);
         txPlan = plan;
       } on String catch (e) {

@@ -1,0 +1,43 @@
+syntax = "proto3";
+package pb;
+
+message AppSettings {
+    uint32 anchor_offset = 1;
+    bool noget_tx = 2;
+    uint32 rows_per_page = 3;
+    bool show_confirmations = 4;
+    string currency = 5;
+    string chart_range = 6;
+    uint32 auto_hide = 7;
+    uint32 include_reply_to = 8;
+    uint32 message_view = 9;
+    uint32 note_view = 10;
+    uint32 tx_view = 11;
+    bool protect_send = 12;
+    bool protect_open = 13;
+    bool noqr_offline = 14;
+    bool full_prec = 15;
+    uint32 ua_type = 16;
+    string backup_enc_key = 17;
+    uint32 developer_mode = 18;
+    uint32 min_privacy_level = 19;
+    bool sound = 20;
+    string db_passwd = 21;
+    bool advanced = 22;
+    uint32 reply_ua = 23;
+    string memo = 24;
+}
+
+message CoinSettings {
+    uint32 coin = 1;
+    ServerURL lwd = 2;
+    ServerURL explorer = 3;
+    bool manual_fee = 4;
+    uint64 fee = 5;
+    bool spam_filter = 6;
+}
+
+message ServerURL {
+    sint32 index = 1;
+    string custom_URL = 2;
+}

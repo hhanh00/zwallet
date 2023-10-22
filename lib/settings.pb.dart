@@ -39,6 +39,7 @@ class AppSettings extends $pb.GeneratedMessage {
     $core.String? dbPasswd,
     $core.bool? advanced,
     $core.int? replyUa,
+    $core.String? memo,
   }) {
     final $result = create();
     if (anchorOffset != null) {
@@ -110,6 +111,9 @@ class AppSettings extends $pb.GeneratedMessage {
     if (replyUa != null) {
       $result.replyUa = replyUa;
     }
+    if (memo != null) {
+      $result.memo = memo;
+    }
     return $result;
   }
   AppSettings._() : super();
@@ -140,6 +144,7 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOS(21, _omitFieldNames ? '' : 'dbPasswd')
     ..aOB(22, _omitFieldNames ? '' : 'advanced')
     ..a<$core.int>(23, _omitFieldNames ? '' : 'replyUa', $pb.PbFieldType.OU3)
+    ..aOS(24, _omitFieldNames ? '' : 'memo')
     ..hasRequiredFields = false
   ;
 
@@ -370,16 +375,30 @@ class AppSettings extends $pb.GeneratedMessage {
   $core.bool hasReplyUa() => $_has(22);
   @$pb.TagNumber(23)
   void clearReplyUa() => clearField(23);
+
+  @$pb.TagNumber(24)
+  $core.String get memo => $_getSZ(23);
+  @$pb.TagNumber(24)
+  set memo($core.String v) { $_setString(23, v); }
+  @$pb.TagNumber(24)
+  $core.bool hasMemo() => $_has(23);
+  @$pb.TagNumber(24)
+  void clearMemo() => clearField(24);
 }
 
 class CoinSettings extends $pb.GeneratedMessage {
   factory CoinSettings({
+    $core.int? coin,
     ServerURL? lwd,
     ServerURL? explorer,
     $core.bool? manualFee,
     $fixnum.Int64? fee,
+    $core.bool? spamFilter,
   }) {
     final $result = create();
+    if (coin != null) {
+      $result.coin = coin;
+    }
     if (lwd != null) {
       $result.lwd = lwd;
     }
@@ -392,6 +411,9 @@ class CoinSettings extends $pb.GeneratedMessage {
     if (fee != null) {
       $result.fee = fee;
     }
+    if (spamFilter != null) {
+      $result.spamFilter = spamFilter;
+    }
     return $result;
   }
   CoinSettings._() : super();
@@ -399,10 +421,12 @@ class CoinSettings extends $pb.GeneratedMessage {
   factory CoinSettings.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'CoinSettings', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
-    ..aOM<ServerURL>(1, _omitFieldNames ? '' : 'lwd', subBuilder: ServerURL.create)
-    ..aOM<ServerURL>(2, _omitFieldNames ? '' : 'explorer', subBuilder: ServerURL.create)
-    ..aOB(3, _omitFieldNames ? '' : 'manualFee')
-    ..a<$fixnum.Int64>(4, _omitFieldNames ? '' : 'fee', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'coin', $pb.PbFieldType.OU3)
+    ..aOM<ServerURL>(2, _omitFieldNames ? '' : 'lwd', subBuilder: ServerURL.create)
+    ..aOM<ServerURL>(3, _omitFieldNames ? '' : 'explorer', subBuilder: ServerURL.create)
+    ..aOB(4, _omitFieldNames ? '' : 'manualFee')
+    ..a<$fixnum.Int64>(5, _omitFieldNames ? '' : 'fee', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aOB(6, _omitFieldNames ? '' : 'spamFilter')
     ..hasRequiredFields = false
   ;
 
@@ -428,44 +452,62 @@ class CoinSettings extends $pb.GeneratedMessage {
   static CoinSettings? _defaultInstance;
 
   @$pb.TagNumber(1)
-  ServerURL get lwd => $_getN(0);
+  $core.int get coin => $_getIZ(0);
   @$pb.TagNumber(1)
-  set lwd(ServerURL v) { setField(1, v); }
+  set coin($core.int v) { $_setUnsignedInt32(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasLwd() => $_has(0);
+  $core.bool hasCoin() => $_has(0);
   @$pb.TagNumber(1)
-  void clearLwd() => clearField(1);
-  @$pb.TagNumber(1)
-  ServerURL ensureLwd() => $_ensure(0);
+  void clearCoin() => clearField(1);
 
   @$pb.TagNumber(2)
-  ServerURL get explorer => $_getN(1);
+  ServerURL get lwd => $_getN(1);
   @$pb.TagNumber(2)
-  set explorer(ServerURL v) { setField(2, v); }
+  set lwd(ServerURL v) { setField(2, v); }
   @$pb.TagNumber(2)
-  $core.bool hasExplorer() => $_has(1);
+  $core.bool hasLwd() => $_has(1);
   @$pb.TagNumber(2)
-  void clearExplorer() => clearField(2);
+  void clearLwd() => clearField(2);
   @$pb.TagNumber(2)
-  ServerURL ensureExplorer() => $_ensure(1);
+  ServerURL ensureLwd() => $_ensure(1);
 
   @$pb.TagNumber(3)
-  $core.bool get manualFee => $_getBF(2);
+  ServerURL get explorer => $_getN(2);
   @$pb.TagNumber(3)
-  set manualFee($core.bool v) { $_setBool(2, v); }
+  set explorer(ServerURL v) { setField(3, v); }
   @$pb.TagNumber(3)
-  $core.bool hasManualFee() => $_has(2);
+  $core.bool hasExplorer() => $_has(2);
   @$pb.TagNumber(3)
-  void clearManualFee() => clearField(3);
+  void clearExplorer() => clearField(3);
+  @$pb.TagNumber(3)
+  ServerURL ensureExplorer() => $_ensure(2);
 
   @$pb.TagNumber(4)
-  $fixnum.Int64 get fee => $_getI64(3);
+  $core.bool get manualFee => $_getBF(3);
   @$pb.TagNumber(4)
-  set fee($fixnum.Int64 v) { $_setInt64(3, v); }
+  set manualFee($core.bool v) { $_setBool(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasFee() => $_has(3);
+  $core.bool hasManualFee() => $_has(3);
   @$pb.TagNumber(4)
-  void clearFee() => clearField(4);
+  void clearManualFee() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $fixnum.Int64 get fee => $_getI64(4);
+  @$pb.TagNumber(5)
+  set fee($fixnum.Int64 v) { $_setInt64(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasFee() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearFee() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.bool get spamFilter => $_getBF(5);
+  @$pb.TagNumber(6)
+  set spamFilter($core.bool v) { $_setBool(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasSpamFilter() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearSpamFilter() => clearField(6);
 }
 
 class ServerURL extends $pb.GeneratedMessage {
