@@ -546,14 +546,13 @@ List<ElevatedButton> confirmButtons(
 List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(
     Iterable<T> timeseries,
     int start,
-    int end,
+    int _end,
     int Function(T) getDay,
     Y Function(T) getY,
     V Function(V, Y) accFn,
     V initial) {
-  assert(start % DAY_MS == 0);
-  final s = start ~/ DAY_MS;
-  final e = end ~/ DAY_MS;
+  assert(start % DAY_SEC == 0);
+  final s = start ~/ DAY_SEC;
 
   List<TimeSeriesPoint<V>> ts = [];
   var acc = initial;

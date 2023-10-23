@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/warp_api.dart';
 
+import 'accounts.dart';
 import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
 import 'main.dart';
@@ -39,7 +40,7 @@ final router = GoRouter(
     GoRoute(
         path: '/',
         redirect: (context, state) {
-          if (active.id == 0) return '/welcome';
+          if (aa.id == 0) return '/welcome';
           return '/account';
         }),
     StatefulShellRoute.indexedStack(

@@ -12,7 +12,8 @@ import 'data_fb_generated.dart';
 
 typedef report_callback = Void Function(Int32);
 
-const DAY_MS = 24 * 3600 * 1000;
+const DAY_SEC = 24 * 3600;
+const DAY_MS = DAY_SEC * 1000;
 const DEFAULT_ACCOUNT = 1;
 
 final warp_api_lib = init();

@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:YWallet/accounts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -169,7 +169,12 @@ class _SplashState extends State<SplashPage> {
 
   Future<void> _restoreActive() async {
     _setProgress(0.8, 'Load Active Account');
-    await active.restore();
+    final prefs = await SharedPreferences.getInstance();
+    final a = ActiveAccount2.fromPrefs(prefs);
+    a?.let((a) {
+      setActiveAccount(a.coin, a.id);
+      aa.update(syncStatus2.latestHeight);
+    });
   }
 
   _initForegroundTask() {

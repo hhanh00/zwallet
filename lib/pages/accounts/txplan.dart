@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 
@@ -16,7 +17,7 @@ class TxPlanPage extends StatelessWidget {
   TxPlanPage(this.plan, this.report, this.signOnly);
 
   factory TxPlanPage.fromPlan(String plan, bool signOnly) {
-    final report = WarpApi.transactionReport(active.coin, plan);
+    final report = WarpApi.transactionReport(aa.coin, plan);
     return TxPlanPage(plan, report, signOnly);
   }
 
@@ -24,7 +25,7 @@ class TxPlanPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final t = Theme.of(context);
-    final c = coins[active.coin];
+    final c = coins[aa.coin];
     final supportsUA = c.supportsUA;
     final rows = report.outputs!
         .map((e) => DataRow(cells: [
@@ -87,30 +88,26 @@ class TxPlanPage extends StatelessWidget {
   _onSend() async {
     final context = navigatorKey.currentContext!;
     final s = S.of(context);
-    if (active.canPay) {
+    if (aa.canPay) {
       if (signOnly)
         await _sign();
       else {
         Future(() async {
-          active.setBanner(s.paymentInProgress);
           final player = AudioPlayer();
           try {
             final String txid;
-            if (active.external) {
-              txid = await WarpApi.ledgerSend(active.coin, plan);
+            if (aa.external) {
+              txid = await WarpApi.ledgerSend(aa.coin, plan);
             } else {
               txid =
-                  await WarpApi.signAndBroadcast(active.coin, active.id, plan);
+                  await WarpApi.signAndBroadcast(aa.coin, aa.id, plan);
             }
             showSnackBar(s.txId(txid));
             if (settings.sound) await player.play(AssetSource("success.mp3"));
-            active.setDraftRecipient(null);
-            active.update();
           } on String catch (message) {
             showSnackBar(message, error: true);
             if (settings.sound) await player.play(AssetSource("fail.mp3"));
           } finally {
-            active.setBanner("");
           }
         });
         navigatorKey.currentState?.pop();
@@ -132,9 +129,7 @@ class TxPlanPage extends StatelessWidget {
     try {
       showSnackBar(s.signingPleaseWait);
       final res =
-          await WarpApi.signOnly(active.coin, active.id, plan, (progress) {});
-      active.setBanner("");
-      active.setDraftRecipient(null);
+          await WarpApi.signOnly(aa.coin, aa.id, plan, (progress) {});
       if (settings.qrOffline) {
         navigatorKey.currentState
             ?.pushReplacementNamed('/showRawTx', arguments: res);

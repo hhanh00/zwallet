@@ -6,7 +6,6 @@ import '../accounts.dart';
 import '../appsettings.dart';
 import '../db.dart';
 import '../generated/intl/messages.dart';
-import '../main.dart';
 import '../message_item.dart';
 import '../tablelist.dart';
 
@@ -16,10 +15,10 @@ class MessagePage extends StatelessWidget {
     return SortSetting(
       child: Observer(
         builder: (context) {
-          active.messages;
+          aa.height;
           return TableListPage(
             view: appSettings.messageView,
-            items: active.messages,
+            items: aa.messages.items,
             metadata: TableListMessageMetadata(),
           );
         },
@@ -78,7 +77,7 @@ class TableListMessageMetadata extends TableListItemMetadata<ZMessage> {
 
   @override
   SortConfig2? sortBy(String field) {
-    active.setMessageSortOrder(field);
-    return active.messageOrder;
+    aa.messages.setSortOrder(field);
+    return aa.messages.order;
   }
 }

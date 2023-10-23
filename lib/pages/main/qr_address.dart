@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../accounts.dart';
 import '../../main.dart';
 
 class QRAddressWidget extends StatefulWidget {
@@ -22,8 +23,8 @@ class _QRAddressState extends State<QRAddressWidget> {
   @override
   void initState() {
     super.initState();
-    availableMode = WarpApi.getAvailableAddrs(active.coin, active.id);
-    address = WarpApi.getAddress(active.coin, active.id, appSettings.uaType);
+    availableMode = WarpApi.getAvailableAddrs(aa.coin, aa.id);
+    address = WarpApi.getAddress(aa.coin, aa.id, appSettings.uaType);
   }
 
   @override
@@ -67,7 +68,7 @@ class _QRAddressState extends State<QRAddressWidget> {
         uaType = 1 << (addressMode - 1);
         break;
     }
-    address = WarpApi.getAddress(active.coin, active.id, uaType);
+    address = WarpApi.getAddress(aa.coin, aa.id, uaType);
     setState(() {});
   }
 

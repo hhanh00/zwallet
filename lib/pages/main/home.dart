@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../accounts.dart';
 import 'balance.dart';
 import 'sync_status.dart';
 import 'qr_address.dart';
@@ -24,6 +25,8 @@ class _HomeState extends State<HomePage> {
           child: Center(
             child: Observer(
               builder: (context) {
+                aaObs.value;
+                aa.poolBalances;
                 syncStatus2.syncedHeight;
                 syncStatus2.syncing;
 

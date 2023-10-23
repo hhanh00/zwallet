@@ -36,16 +36,16 @@ class TableListPage<U, T extends TableListItemMetadata<U>>
   Widget build(BuildContext context) {
     switch (view) {
       case 0:
+        return _TableView(items, metadata);
+      case 1:
+        return _ListView(items, metadata);
+      case 2:
         return OrientationBuilder(builder: (context, orientation) {
           if (orientation == Orientation.portrait)
             return _ListView(items, metadata);
           else
             return _TableView(items, metadata);
         });
-      case 1:
-        return _TableView(items, metadata);
-      case 2:
-        return _ListView(items, metadata);
     }
     throw 'Unreachable';
   }

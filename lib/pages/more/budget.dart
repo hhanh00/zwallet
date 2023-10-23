@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../accounts.dart';
 import '../../chart.dart';
 import '../../generated/intl/messages.dart';
 import '../../main.dart';
@@ -44,7 +45,7 @@ class _BudgetState extends State<BudgetPage> {
                   child: Container(
                     height: height,
                     child: Chart<TimeSeriesPoint<double>>(
-                        data: active.accountBalances,
+                        data: aa.accountBalances,
                         variables: {
                           'day': Variable<TimeSeriesPoint<double>, DateTime>(
                               accessor: (data) =>
@@ -95,8 +96,8 @@ class _BudgetChartState extends State<BudgetChart> {
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       HorizontalBarChart(
-          active.spendings.map((s) => s.amount / ZECUNIT).toList()),
-      BudgetTable(active.spendings)
+          aa.spendings.map((s) => s.amount / ZECUNIT).toList()),
+      BudgetTable(aa.spendings)
     ]);
   }
 }

@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
-import '../../main.dart';
 import '../../transaction.dart';
 
 class SubmitTxPage extends StatefulWidget {
@@ -26,7 +26,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
     Future(() async {
       try {
         final txIdJs = await WarpApi.signAndBroadcast(
-            active.coin, active.id, widget.txPlan);
+            aa.coin, aa.id, widget.txPlan);
         txId = jsonDecode(txIdJs);
       } on String catch (e) {
         error = e;

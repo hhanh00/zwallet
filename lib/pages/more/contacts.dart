@@ -1,5 +1,3 @@
-import 'package:YWallet/init.dart';
-import 'package:YWallet/settings.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -7,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../accounts.dart';
 import '../../appsettings.dart';
 import '../../generated/intl/messages.dart';
 import '../../main.dart';
-import '../../store2.dart';
 
 class ContactsPage extends StatefulWidget {
   ContactsPage() {
@@ -57,7 +55,7 @@ class _ContactsState extends State<ContactsPage> {
 
   _save() async {
     final s = S.of(context);
-    final coinSettings = CoinSettingsExtension.load(active.coin);
+    final coinSettings = CoinSettingsExtension.load(aa.coin);
     final fee = coinSettings.feeT;
     final confirmed = await showConfirmDialog(context, s.save, s.confirmSaveContacts);
     if (!confirmed) return;
@@ -115,7 +113,7 @@ class _ContactEditState extends State<ContactEditPage> {
   @override
   void initState() {
     super.initState();
-    final c = WarpApi.getContact(active.coin, widget.id);
+    final c = WarpApi.getContact(aa.coin, widget.id);
     nameController.text = c.name!;
     addressController.text = c.address!;
   }

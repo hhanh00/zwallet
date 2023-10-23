@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
-import 'package:warp_api/warp_api.dart';
 
+import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
-import '../../main.dart';
 import '../../store.dart';
 import 'budget.dart';
 
@@ -14,7 +13,7 @@ class MarketQuotes extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(s.marketPrice)),
       body: Chart<PnL>(
-          data: active.pnls,
+          data: aa.pnls,
           variables: {
             'day': Variable<PnL, DateTime>(
                 accessor: (data) => data.timestamp,

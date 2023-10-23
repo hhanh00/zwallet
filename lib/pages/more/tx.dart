@@ -19,10 +19,10 @@ class TxPage extends StatelessWidget {
     return SortSetting(
       child: Observer(
         builder: (context) {
-          active.txs;
+          aa.height;
           return TableListPage(
             view: appSettings.txView,
-            items: active.txs,
+            items: aa.txs.items,
             metadata: TableListTxMetadata(),
           );
         },
@@ -45,7 +45,7 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
   Widget toListTile(BuildContext context, int index, Tx tx) {
     ZMessage? message;
     try {
-      message = active.messages.firstWhere((m) => m.txId == tx.id);
+      message = aa.messages.items.firstWhere((m) => m.txId == tx.id);
     } on StateError {
       message = null;
     }
@@ -92,7 +92,7 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
 
   @override
   SortConfig2? sortBy(String field) {
-    active.setTxSortOrder(field);
-    return active.txOrder;
+    aa.txs.setSortOrder(field);
+    return aa.txs.order;
   }
 }

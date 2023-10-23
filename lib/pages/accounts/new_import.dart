@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../../main.dart';
@@ -144,7 +145,7 @@ class _NewImportAccountState extends State<NewImportAccountPage> {
       if (account < 0)
         form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
       else {
-        active.setActiveAccount(coin, account);
+        setActiveAccount(coin, account);
         if (!widget.dialog)
           syncStatus2.setSyncedToLatestHeight(); // first account is synced
         if (keyController.text.isNotEmpty)
@@ -170,8 +171,8 @@ class _NewImportAccountState extends State<NewImportAccountPage> {
   _importLedger() async {
     try {
       final account =
-          await WarpApi.importFromLedger(active.coin, nameController.text);
-      active.setActiveAccount(coin, account);
+          await WarpApi.importFromLedger(aa.coin, nameController.text);
+      setActiveAccount(coin, account);
     } on String catch (msg) {
       formKey.currentState!.fields['key']!.invalidate(msg);
     }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
-import '../../main.dart';
 import '../../store2.dart';
 
 class RescanPage extends StatefulWidget {
@@ -56,9 +55,9 @@ class _RescanState extends State<RescanPage> {
   }
 
   _rescan() async {
-    active.clear();
     final height = int.tryParse(heightController.text) ??
-        await WarpApi.getBlockHeightByTime(active.coin, selectedDate!);
+        await WarpApi.getBlockHeightByTime(aa.coin, selectedDate!);
+    aa.reset(height);
     Future(() => syncStatus2.rescan(height));
     GoRouter.of(context).pop();
   }

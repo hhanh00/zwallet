@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../accounts.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import '../appsettings.dart';
@@ -96,7 +97,7 @@ class _SettingsState extends State<SettingsPage>
       await _settings0.save(prefs);
       _coinSettings0.save();
       appSettings = AppSettingsExtension.load(prefs);
-      coinSettings = CoinSettingsExtension.load(active.coin);
+      coinSettings = CoinSettingsExtension.load(aa.coin);
       GoRouter.of(context).pop();
     }
   }
@@ -404,7 +405,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
-    coinSettings = CoinSettingsExtension.load(active.coin);
+    coinSettings = CoinSettingsExtension.load(aa.coin);
   }
 
   @override
@@ -412,7 +413,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
     super.build(context);
     final s = S.of(context);
     final t = Theme.of(context);
-    final c = coins[active.coin];
+    final c = coins[aa.coin];
     final servers = c.lwd
         .asMap()
         .entries

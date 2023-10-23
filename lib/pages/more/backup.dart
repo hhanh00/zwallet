@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
 import '../../main.dart';
 
@@ -10,7 +11,7 @@ class BackupPage extends StatelessWidget {
   late final String primary;
 
   BackupPage() {
-    backup = WarpApi.getBackup(active.coin, active.id);
+    backup = WarpApi.getBackup(aa.coin, aa.id);
     if (backup.seed != null)
       primary = backup.seed!;
     else if (backup.sk != null)

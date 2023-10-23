@@ -109,71 +109,89 @@ AccountId getActiveAccountId(int coin) {
   return AccountId(coin, id);
 }
 
-var aa = ActiveAccount2();
-class ActiveAccount2 = _ActiveAccount2 with _$ActiveAccount2;
+ActiveAccount2 aa = ActiveAccount2(0, 0, false, false);
 
-abstract class _ActiveAccount2 with Store {
-  @observable
-  AccountData? instance;
+Observable<int> aaObs = Observable(0);
+
+@action
+void setActiveAccount(int coin, int id) {
+  aa = ActiveAccount2.fromId(coin, id);
+  aaObs.value = DateTime.now().microsecondsSinceEpoch;
 }
 
-class AccountData {
-  static AccountData? fromPrefs(SharedPreferences prefs) {
+class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
+  ActiveAccount2(super.coin, super.id, super.canPay, super.external);
+
+  static ActiveAccount2? fromPrefs(SharedPreferences prefs) {
     final coin = prefs.getInt('coin') ?? 0;
     var id = prefs.getInt('account') ?? 0;
-    if (WarpApi.checkAccount(coin, id)) return AccountData.fromId(coin, id);
+    if (WarpApi.checkAccount(coin, id)) return ActiveAccount2.fromId(coin, id);
     for (var c in coins) {
       final id = WarpApi.getFirstAccount(c.coin);
-      if (id > 0) return AccountData.fromId(coin, id);
+      if (id > 0) return ActiveAccount2.fromId(coin, id);
     }
     return null;
   }
 
-  factory AccountData.fromId(int coin, int id) {
+  factory ActiveAccount2.fromId(int coin, int id) {
     final c = coins[coin];
     final backup = WarpApi.getBackup(coin, id);
     final external =
         c.supportsLedger && !isMobile() && WarpApi.ledgerHasAccount(coin, id);
     final canPay = backup.sk != null || external;
-    return AccountData(coin, id, canPay, external);
+    return ActiveAccount2(coin, id, canPay, external);
   }
+}
 
+abstract class _ActiveAccount2 with Store {
   final int coin;
   final int id;
   final bool canPay;
   final bool external;
-  AccountData(this.coin, this.id, this.canPay, this.external);
+
+  _ActiveAccount2(this.coin, this.id, this.canPay, this.external): 
+    notes = Notes(coin, id),
+    txs = Txs(coin, id),
+    messages = Messages(coin, id);
 
   @observable
   int height = 0;
 
+  @observable
   PoolBalanceT poolBalances = PoolBalanceT();
-  List<Note> notes = [];
-  List<Tx> txs = [];
+  Notes notes;
+  Txs txs;
+  Messages messages;
+
   List<Spending> spendings = [];
   List<TimeSeriesPoint<double>> accountBalances = [];
   List<PnL> pnls = [];
-  List<ZMessage> messages = [];
 
   @action
-  void update(int newHeight) {
+  void reset(int resetHeight) {
+    poolBalances = PoolBalanceT();
+    notes.clear();
+    txs.clear();
+    spendings.clear();
+    accountBalances.clear();
+    pnls.clear();
+    messages.clear();
+    height = resetHeight;
+  }
+
+  @action
+  void updatePoolBalances() {
     poolBalances =
         WarpApi.getPoolBalances(coin, id, appSettings.anchorOffset).unpack();
+  }
 
-    final shieledNotes = WarpApi.getNotesSync(coin, id);
-    notes = shieledNotes.map((n) {
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(n.timestamp * 1000);
-      return Note.from(newHeight, n.id, n.height, timestamp, n.value / ZECUNIT,
-          n.orchard, n.excluded);
-    }).toList();
+  @action
+  void update(int? newHeight) {
+    updatePoolBalances();
 
-    final shieldedTxs = WarpApi.getTxsSync(coin, id);
-    txs = shieldedTxs.map((tx) {
-      final timestamp =
-          DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000);
-      return Tx.from(newHeight, tx.id, tx.height, timestamp, tx.shortTxId!,
-          tx.txId!, tx.value / ZECUNIT, tx.address, tx.name, tx.memo);
-    }).toList();
+    notes.read(newHeight);
+    txs.read(newHeight);
+    messages.read(newHeight);
 
     final now = DateTime.now().toUtc();
     final today = DateTime.utc(now.year, now.month, now.day);
@@ -205,8 +223,109 @@ class AccountData {
         (acc, v) => v,
         0.0);
 
+    if (newHeight != null)
+    height = newHeight;
+  }
+}
+
+class Notes extends _Notes with _$Notes {
+  Notes(super.coin, super.id);
+}
+
+abstract class _Notes with Store {
+  final int coin;
+  final int id;
+  _Notes(this.coin, this.id);
+
+  @observable List<Note> items = [];
+  SortConfig2? order;
+
+  @action
+  void read(int? height) {
+    final shieledNotes = WarpApi.getNotesSync(coin, id);
+    items = shieledNotes.map((n) {
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(n.timestamp * 1000);
+      return Note.from(height, n.id, n.height, timestamp, n.value / ZECUNIT,
+          n.orchard, n.excluded);
+    }).toList();
+  }
+
+  @action
+  void clear() {
+    items.clear();
+  }
+
+  @action
+  void invert() {
+    WarpApi.invertExcluded(coin, id);
+    items = items.map((n) => n.invertExcluded).toList();
+  }
+  @action
+  void exclude(Note note) {
+    WarpApi.updateExcluded(coin, note.id, note.excluded);
+    items = List.of(items);
+  }
+
+  @action
+  void setSortOrder(String field) {
+    final r = _sort(field, order, items);
+    order = r.item1;
+    items = r.item2;
+  }
+}
+
+class Txs extends _Txs with _$Txs {
+  Txs(super.coin, super.id);
+}
+
+abstract class _Txs with Store {
+  final int coin;
+  final int id;
+  _Txs(this.coin, this.id);
+
+  @observable List<Tx> items = [];
+  SortConfig2? order;
+
+  @action
+  void read(int? height) {
+    final shieldedTxs = WarpApi.getTxsSync(coin, id);
+    items = shieldedTxs.map((tx) {
+      final timestamp =
+          DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000);
+      return Tx.from(height, tx.id, tx.height, timestamp, tx.shortTxId!,
+          tx.txId!, tx.value / ZECUNIT, tx.address, tx.name, tx.memo);
+    }).toList();
+  }
+
+  @action
+  void clear() {
+    items.clear();
+  }
+
+  @action
+  void setSortOrder(String field) {
+    final r = _sort(field, order, items);
+    order = r.item1;
+    items = r.item2;
+  }
+}
+
+class Messages extends _Messages with _$Messages {
+  Messages(super.coin, super.id);
+}
+
+abstract class _Messages with Store {
+  final int coin;
+  final int id;
+  _Messages(this.coin, this.id);
+
+  @observable List<ZMessage> items = [];
+  SortConfig2? order;
+
+  @action
+  void read(int? height) {
     final ms = WarpApi.getMessagesSync(coin, id);
-    messages = ms
+    items = ms
         .map((m) => ZMessage(
             m.idMsg,
             m.idTx,
@@ -219,9 +338,41 @@ class AccountData {
             m.height,
             m.read))
         .toList();
-
-    height = newHeight;
   }
+
+  @action
+  void clear() {
+    items.clear();
+  }
+
+  @action
+  void setSortOrder(String field) {
+    final r = _sort(field, order, items);
+    order = r.item1;
+    items = r.item2;
+  }
+}
+
+Tuple2<SortConfig2?, List<T>> _sort<T extends HasHeight>(
+    String field, SortConfig2? order, List<T> items) {
+  if (order == null)
+    order = SortConfig2(field, 1);
+  else
+    order = order.next(field);
+
+  final o = order;
+  if (o == null)
+    items = items.sortedByNum((n) => -n.height);
+  else {
+    items = items.sortedBy((a, b) {
+      final ra = reflector.reflect(a);
+      final va = ra.invokeGetter(field)! as dynamic;
+      final rb = reflector.reflect(b);
+      final vb = rb.invokeGetter(field)! as dynamic;
+      return va.compareTo(vb) * o.orderBy;
+    });
+  }
+  return Tuple2(o, items);
 }
 
 class ActiveAccount = _ActiveAccount with _$ActiveAccount;

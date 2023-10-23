@@ -20,10 +20,10 @@ class CoinControlPage extends StatelessWidget {
         appBar: AppBar(title: Text(s.notes)),
         body: Observer(
           builder: (context) {
-            active.notes;
+            aa.notes.items;
             return TableListPage(
               view: appSettings.noteView,
-              items: active.notes,
+              items: aa.notes.items,
               metadata: TableListNoteMetadata(),
             );
           },
@@ -120,14 +120,14 @@ class TableListNoteMetadata extends TableListItemMetadata<Note> {
 
   @override
   void inverseSelection() {
-    active.invertExcludedNotes();
-    active.updatePoolBalances();
+    aa.notes.invert();
+    aa.updatePoolBalances();
   }
 
   _select(Note note) {
     note.excluded = !note.excluded;
-    active.excludeNote(note);
-    active.updatePoolBalances();
+    aa.notes.exclude(note);
+    aa.updatePoolBalances();
   }
 
   TextStyle _noteStyle(ThemeData t, Note note) {
@@ -142,8 +142,8 @@ class TableListNoteMetadata extends TableListItemMetadata<Note> {
 
   @override
   SortConfig2? sortBy(String field) {
-    active.setNoteSortOrder(field);
-    return active.noteOrder;
+    aa.notes.setSortOrder(field);
+    return aa.notes.order;
   }
 }
 
@@ -154,7 +154,7 @@ class CoinControlPage2 extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(s.notes)),
       body: Observer(builder: (context) {
-        active.notes;
+        aa.notes.items;
         switch (appSettings.noteView) {
           case 0:
             return OrientationBuilder(builder: (context, orientation) {
@@ -183,25 +183,25 @@ class NoteTable extends StatelessWidget {
         padding: EdgeInsets.all(8),
         scrollDirection: Axis.vertical,
         child: Observer(builder: (context) {
-          active.notes;
+          aa.notes.items;
           return PaginatedDataTable(
             columns: [
               DataColumn(
                 label: Text(
-                    s.height + (active.noteOrder?.indicator('height') ?? '')),
-                onSort: (_, __) => active.setNoteSortOrder('height'),
+                    s.height + (aa.notes.order?.indicator('height') ?? '')),
+                onSort: (_, __) => aa.notes.setSortOrder('height'),
               ),
               DataColumn(label: Text(s.confs)),
               DataColumn(
                 label: Text(s.datetime +
-                    (active.noteOrder?.indicator('timestamp') ?? '')),
-                onSort: (_, __) => active.setNoteSortOrder('timestamp'),
+                    (aa.notes.order?.indicator('timestamp') ?? '')),
+                onSort: (_, __) => aa.notes.setSortOrder('timestamp'),
               ),
               DataColumn(
                 numeric: true,
                 label: Text(
-                    s.amount + (active.noteOrder?.indicator('value') ?? '')),
-                onSort: (_, __) => active.setNoteSortOrder('value'),
+                    s.amount + (aa.notes.order?.indicator('value') ?? '')),
+                onSort: (_, __) => aa.notes.setSortOrder('value'),
               ),
             ],
             header: Text(s.selectNotesToExcludeFromPayments,
@@ -226,8 +226,8 @@ class NoteTable extends StatelessWidget {
   }
 
   _selectInverse() {
-    active.invertExcludedNotes();
-    active.updatePoolBalances();
+    aa.notes.invert();
+    aa.updatePoolBalances();
   }
 }
 
@@ -237,7 +237,7 @@ class NotesDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    final note = active.notes[index];
+    final note = aa.notes.items[index];
     final t = Theme.of(context);
     final confirmations = note.confirmations ?? -1;
 
@@ -270,14 +270,14 @@ class NotesDataSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => active.notes.length;
+  int get rowCount => aa.notes.items.length;
 
   @override
   int get selectedRowCount => 0;
 
   void _noteSelected(Note note) {
-    active.excludeNote(note);
-    active.updatePoolBalances();
+    aa.notes.exclude(note);
+    aa.updatePoolBalances();
   }
 }
 
@@ -292,7 +292,7 @@ class NoteListState extends State<NoteList> with AutomaticKeepAliveClientMixin {
     super.build(context);
     final s = S.of(context);
     return Observer(builder: (context) {
-      final notes = active.notes;
+      final notes = aa.notes;
       return Padding(
         padding: EdgeInsets.all(16),
         child: CustomScrollView(
@@ -308,8 +308,8 @@ class NoteListState extends State<NoteList> with AutomaticKeepAliveClientMixin {
             SliverFixedExtentList(
               itemExtent: 50,
               delegate: SliverChildBuilderDelegate((context, index) {
-                return NoteItem(notes[index], index);
-              }, childCount: notes.length),
+                return NoteItem(notes.items[index], index);
+              }, childCount: notes.items.length),
             )
           ],
         ),
@@ -318,8 +318,8 @@ class NoteListState extends State<NoteList> with AutomaticKeepAliveClientMixin {
   }
 
   _onInvert() {
-    active.invertExcludedNotes();
-    active.updatePoolBalances();
+    aa.notes.invert();
+    aa.updatePoolBalances();
   }
 
   @override
@@ -382,8 +382,8 @@ class NoteItemState extends State<NoteItem> {
     setState(() {
       excluded = !excluded;
       widget.note.excluded = excluded;
-      active.excludeNote(widget.note);
-      active.updatePoolBalances();
+      aa.notes.exclude(widget.note);
+      aa.updatePoolBalances();
     });
   }
 }

@@ -9,6 +9,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../accounts.dart' hide Account;
 import '../../appsettings.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
@@ -63,7 +64,7 @@ class _SendState extends State<SendPage> {
   @override
   void initState() {
     super.initState();
-    accounts = WarpApi.getAccountList(active.coin);
+    accounts = WarpApi.getAccountList(aa.coin);
   }
 
   @override
@@ -167,7 +168,7 @@ class _SendState extends State<SendPage> {
         onPlan: (p) => setState(() { txPlan = p; })),
     ];
     final body = (activeStep < b.length) ? b[activeStep].call() : Container();
-    receivers = WarpApi.receiversOfAddress(active.coin, address);
+    receivers = WarpApi.receiversOfAddress(aa.coin, address);
     // print(address);
     // print(amount);
     // print(receivers);
@@ -369,7 +370,7 @@ class SendAddressState extends State<SendAddress> {
 
   String? _addressCheck(String? v, S s) {
     if (v == null || v.isEmpty) return s.addressIsEmpty;
-    final valid = WarpApi.validAddress(active.coin, v);
+    final valid = WarpApi.validAddress(aa.coin, v);
     if (!valid) return s.invalidAddress;
     return null;
   }
@@ -455,7 +456,7 @@ class SendPoolState extends State<SendPool> {
   void initState() {
     super.initState();
     bals = WarpApi.getPoolBalances(
-            active.coin, active.id, appSettings.anchorOffset)
+            aa.coin, aa.id, appSettings.anchorOffset)
         .unpack();
   }
 
@@ -573,7 +574,7 @@ class SendAmountState extends State<SendAmount> {
     _amount = widget.initialAmount.amount;
     amountController.text = amountToString2(_amount);
     Future(() async {
-      final c = coins[active.coin];
+      final c = coins[aa.coin];
       fxRate = await getFxRate(c.currency, appSettings.currency);
       _update(AmountSource.Crypto);
       setState(() {});
@@ -583,7 +584,7 @@ class SendAmountState extends State<SendAmount> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final c = coins[active.coin];
+    final c = coins[aa.coin];
     final spendable = widget.initialAmount.spendable;
     return FormBuilder(
       key: formKey,
@@ -750,11 +751,11 @@ class SendReportState extends State<SendReport> {
     Future(() async {
       try {
         final plan = await WarpApi.prepareTx(
-            active.coin,
-            active.id,
+            aa.coin,
+            aa.id,
             [widget.recipient],
             appSettings.anchorOffset,
-            CoinSettingsExtension.load(active.coin).feeT);
+            CoinSettingsExtension.load(aa.coin).feeT);
         widget.onPlan(plan);
         txPlan = plan;
       } on String catch (e) {
