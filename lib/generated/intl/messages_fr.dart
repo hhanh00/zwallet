@@ -202,6 +202,9 @@ class SFr extends S {
   String get secretKey => 'Clé secrète';
 
   @override
+  String get publicKey => 'Public Key';
+
+  @override
   String get viewingKey => 'Clé publique';
 
   @override
@@ -347,6 +350,9 @@ class SFr extends S {
 
   @override
   String get openInExplorer => 'Ouvrir dans l\'explorateur';
+
+  @override
+  String get restore => 'Restore';
 
   @override
   String get na => 'N/D';
@@ -1124,4 +1130,7 @@ class SFr extends S {
 
   @override
   String get autoFee => 'Automatic Fee';
+
+  @override
+  String get accountManager => 'Account Manager';
 }

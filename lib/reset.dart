@@ -108,10 +108,11 @@ class FullBackupState extends State<FullBackupPage> {
     if (key.text.isNotEmpty) {
       try {
         settings.setBackupEncKey(key.text);
-        WarpApi.zipBackup(key.text, settings.tempDir);
+        WarpApi.zipBackup(key.text, "", settings.tempDir);
         final backupPath = p.join(settings.tempDir, BACKUP_NAME);
         await exportFile(context, backupPath, BACKUP_NAME);
         Navigator.of(context).pop();
+        throw '';
       } on String catch (msg) {
         showSnackBar(msg, error: true);
       }

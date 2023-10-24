@@ -47,7 +47,7 @@ class _SplashState extends State<SplashPage> {
         await _restoreActive();
         initSyncListener();
         _initForegroundTask();
-        GoRouter.of(context).go('/');
+        GoRouter.of(context).go('/account');
       });
     });
   }

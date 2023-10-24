@@ -1,17 +1,16 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 
 import 'package:YWallet/appsettings.dart';
-import 'package:YWallet/settings.pb.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:mobx/mobx.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import 'accounts.dart';
 import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
 import 'main.dart';
@@ -88,7 +87,7 @@ abstract class _SyncStatus2 with Store {
   @action
   void reset() {
     isRescan = false;
-    syncedHeight = WarpApi.getDbHeight(active.coin).height;
+    syncedHeight = WarpApi.getDbHeight(aa.coin).height;
     syncing = false;
     paused = false;
   }
@@ -102,7 +101,7 @@ abstract class _SyncStatus2 with Store {
       print(e);
       latestHeight = 0;
     }
-    syncedHeight = WarpApi.getDbHeight(active.coin).height;
+    syncedHeight = WarpApi.getDbHeight(aa.coin).height;
   }
 
   @action
@@ -129,16 +128,16 @@ abstract class _SyncStatus2 with Store {
 
       // This may take a long time
       await WarpApi.warpSync2(
-          active.coin,
+          aa.coin,
           settings.getTx,
           settings.anchorOffset,
           settings.antispam ? 50 : 1000000,
           syncProgressPort2.sendPort.nativePort);
 
-      active.update();
-      priceStore.updateChart();
+      aa.update(latestHeight);
       contacts.fetchContacts();
       marketPrice.update();
+      marketPrice.updateHistoricalPrices();
     } on String catch (e) {
       showSnackBar(e, error: true);
     } finally {
@@ -159,7 +158,7 @@ abstract class _SyncStatus2 with Store {
 
   @action
   void setSyncedToLatestHeight() {
-    WarpApi.skipToLastHeight(active.coin);
+    WarpApi.skipToLastHeight(aa.coin);
     _updateSyncedHeight();
   }
 
@@ -177,7 +176,7 @@ abstract class _SyncStatus2 with Store {
   }
 
   void _updateSyncedHeight() {
-    final h = WarpApi.getDbHeight(active.coin);
+    final h = WarpApi.getDbHeight(aa.coin);
     syncedHeight = h.height;
     timestamp = (h.timestamp != 0) ?
       DateTime.fromMillisecondsSinceEpoch(h.timestamp * 1000) : null;
@@ -264,7 +263,26 @@ abstract class _MarketPrice with Store {
 
   @action
   Future<void> update() async {
-    final c = coins[active.coin];
+    final c = coins[aa.coin];
     price = await getFxRate(c.currency, appSettings.currency);
+  }
+
+  int? lastChartUpdateTime;
+  
+  Future<void> updateHistoricalPrices({bool? force}) async {
+    final f = force ?? false;
+    print('updateHistoricalPrices');
+    try {
+      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      if (f ||
+          lastChartUpdateTime == null ||
+          now > lastChartUpdateTime! + 5 * 60) {
+        await WarpApi.syncHistoricalPrices(appSettings.currency);
+        active.fetchChartData();
+        lastChartUpdateTime = now;
+      }
+    } on String catch (msg) {
+      print(msg);
+    }
   }
 }

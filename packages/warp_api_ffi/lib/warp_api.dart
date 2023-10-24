@@ -127,6 +127,7 @@ class WarpApi {
   }
 
   static Backup getBackup(int coin, int id) {
+    print("$coin $id");
     final r = unwrapResultBytes(warp_api_lib.get_backup(coin, id));
     final backup = Backup(r);
     return backup;
@@ -444,8 +445,8 @@ class WarpApi {
     return ageKeys;
   }
 
-  static void zipBackup(String key, String tmpDir) {
-    final r = warp_api_lib.zip_backup(toNative(key), toNative(tmpDir));
+  static void zipBackup(String key, String filename, String tmpDir) {
+    final r = warp_api_lib.zip_backup(toNative(key), toNative(filename), toNative(tmpDir));
     unwrapResultU8(r);
   }
 

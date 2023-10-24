@@ -15,6 +15,7 @@ import '../generated/intl/messages.dart';
 import '../appsettings.dart';
 import '../main.dart';
 import '../settings.pb.dart';
+import '../store2.dart';
 
 var _settings0 = AppSettings();
 var _settings = AppSettings();
@@ -98,6 +99,10 @@ class _SettingsState extends State<SettingsPage>
       _coinSettings0.save();
       appSettings = AppSettingsExtension.load(prefs);
       coinSettings = CoinSettingsExtension.load(aa.coin);
+      Future(() async {
+        await marketPrice.update();
+        aa.currency = appSettings.currency;
+      });
       GoRouter.of(context).pop();
     }
   }

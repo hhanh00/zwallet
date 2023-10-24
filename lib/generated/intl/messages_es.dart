@@ -202,6 +202,9 @@ class SEs extends S {
   String get secretKey => 'Clave secreta';
 
   @override
+  String get publicKey => 'Public Key';
+
+  @override
   String get viewingKey => 'Clave de visualización';
 
   @override
@@ -347,6 +350,9 @@ class SEs extends S {
 
   @override
   String get openInExplorer => 'Abrir en el Explorador';
+
+  @override
+  String get restore => 'Restore';
 
   @override
   String get na => 'N/A';
@@ -1124,4 +1130,7 @@ class SEs extends S {
 
   @override
   String get autoFee => 'Automatic Fee';
+
+  @override
+  String get accountManager => 'Account Manager';
 }

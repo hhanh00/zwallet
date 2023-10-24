@@ -4,11 +4,102 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/warp_api.dart';
+import 'accounts_old.dart';
+import 'coin/coins.dart';
 import 'main.dart';
 import 'rescan.dart';
 import 'generated/intl/messages.dart';
 import 'about.dart';
 import 'accounts.dart';
+
+class Account {
+  final int coin;
+  final int id;
+  final String name;
+  final int balance;
+  final int type;
+  bool active = false;
+  int tbalance = 0;
+
+  Account(
+      this.coin, this.id, this.name, this.type, this.balance, this.tbalance);
+
+  String get address {
+    return id != 0
+        ? WarpApi.getAddress(this.coin, this.id, settings.uaType)
+        : "";
+  }
+}
+
+final Account emptyAccount = Account(0, 0, "", 0, 0, 0);
+
+class AccountList {
+  List<Account> list = [];
+
+  AccountList() {
+    refresh();
+  }
+
+  void refresh() {
+    List<Account> _list = [];
+    for (var coin in coins) {
+      var accounts = WarpApi.getAccountList(coin.coin)
+          .map(
+              (a) => Account(coin.coin, a.id, a.name!, a.keyType, a.balance, 0))
+          .toList();
+      final id = WarpApi.getActiveAccountId(coin.coin);
+      if (id != 0) {
+        accounts.firstWhere((a) => a.id == id).active = true;
+      }
+      _list.addAll(accounts);
+    }
+    list = _list;
+  }
+
+  bool get isEmpty {
+    return list.isEmpty;
+  }
+
+  Future<void> updateTBalance() async {
+    for (var a in list) {
+      final tbalance = await WarpApi.getTBalanceAsync(a.coin, a.id);
+      a.tbalance = tbalance;
+    }
+  }
+
+  void delete(int coin, int id) {
+    WarpApi.deleteAccount(coin, id);
+    active.checkAndUpdate();
+  }
+
+  Future<void> changeAccountName(int coin, int id, String name) async {
+    WarpApi.updateAccountName(coin, id, name);
+    refresh();
+  }
+
+  Account get(int coin, int id) =>
+      list.firstWhere((e) => e.coin == coin && e.id == id,
+          orElse: () => emptyAccount);
+}
+
+AccountId? getAvailableId(int coin) {
+  final nid = getActiveAccountId(coin);
+  if (nid.id != 0) return nid;
+  for (var coinData in settings.coins) {
+    // look for an account in any other coin
+    if (coinData.coin != coin) {
+      final nid = getActiveAccountId(coinData.coin);
+      if (nid.id != 0) return nid;
+    }
+  }
+  // We have no accounts
+  return null;
+}
+
+AccountId getActiveAccountId(int coin) {
+  final id = WarpApi.getActiveAccountId(coin);
+  return AccountId(coin, id);
+}
 
 class AccountManagerPage extends StatefulWidget {
   @override

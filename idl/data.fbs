@@ -1,6 +1,7 @@
 namespace fb;
 
 table Account {
+    coin:uint8;
     id:uint32;
     name:string;
     key_type:uint8;

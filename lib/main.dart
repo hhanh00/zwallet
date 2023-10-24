@@ -33,6 +33,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:reflectable/reflectable.dart';
 
+import 'accounts_old.dart';
 import 'main.reflectable.dart';
 import 'accounts.dart';
 import 'animated_qr.dart';
@@ -546,27 +547,30 @@ List<ElevatedButton> confirmButtons(
 List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(
     Iterable<T> timeseries,
     int start,
-    int _end,
+    int end,
     int Function(T) getDay,
     Y Function(T) getY,
     V Function(V, Y) accFn,
     V initial) {
   assert(start % DAY_SEC == 0);
   final s = start ~/ DAY_SEC;
+  final e = end ~/ DAY_SEC;
 
   List<TimeSeriesPoint<V>> ts = [];
   var acc = initial;
-  var prevDay = s;
 
-  for (var p in timeseries) {
-    final day = getDay(p);
-    if (day >= s) {
-      if (day != prevDay) {
-        ts.add(TimeSeriesPoint(prevDay, acc));
-        prevDay = day;
-      }
+  var tsIterator = timeseries.iterator;
+  var next = tsIterator.moveNext() ? tsIterator.current : null;
+  var nextDay = next?.let((n) => getDay(n));
+
+  for (var day = s; day <= e; day++) {
+    while (nextDay != null && day == nextDay) {
+      // accumulate
+      acc = accFn(acc, getY(next!));
+      next = tsIterator.moveNext() ? tsIterator.current : null;
+      nextDay = next?.let((n) => getDay(n));
     }
-    acc = accFn(acc, getY(p));
+    ts.add(TimeSeriesPoint(day, acc));
   }
   return ts;
 }

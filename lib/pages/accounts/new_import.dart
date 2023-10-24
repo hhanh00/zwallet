@@ -10,8 +10,8 @@ import '../../main.dart';
 import '../../store2.dart';
 
 class NewImportAccountPage extends StatefulWidget {
-  final bool dialog;
-  NewImportAccountPage({required this.dialog});
+  final bool first;
+  NewImportAccountPage({required this.first});
 
   @override
   State<StatefulWidget> createState() => _NewImportAccountState();
@@ -28,7 +28,7 @@ class _NewImportAccountState extends State<NewImportAccountPage> {
   @override
   void initState() {
     super.initState();
-    if (!widget.dialog) nameController.text = 'Main';
+    if (widget.first) nameController.text = 'Main';
     options = coins.map((c) {
       return FormBuilderFieldOption(
           child: ListTile(
@@ -114,7 +114,7 @@ class _NewImportAccountState extends State<NewImportAccountPage> {
                   ),
                 Padding(padding: EdgeInsets.all(4)),
                 ButtonBar(children: [
-                  if (widget.dialog)
+                  if (!widget.first)
                     ElevatedButton.icon(
                       icon: Icon(Icons.cancel),
                       label: Text(s.cancel),
@@ -146,12 +146,15 @@ class _NewImportAccountState extends State<NewImportAccountPage> {
         form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
       else {
         setActiveAccount(coin, account);
-        if (!widget.dialog)
+        if (widget.first) {
           syncStatus2.setSyncedToLatestHeight(); // first account is synced
-        if (keyController.text.isNotEmpty)
-          GoRouter.of(context).go('/account/rescan');
-        else
-          GoRouter.of(context).go('/account');
+          if (keyController.text.isNotEmpty)
+            GoRouter.of(context).go('/account/rescan');
+          else
+            GoRouter.of(context).go('/account');
+        }
+        else 
+            GoRouter.of(context).pop();
       }
     }
   }

@@ -23,8 +23,16 @@ class _MoreState extends State<MorePage> {
     final t = Theme.of(context);
     final buttons = [
       MoreButton(
+          url: '/account/account_manager',
+          icon: FaIcon(FontAwesomeIcons.users),
+          text: s.accounts),
+      MoreButton(
+          url: '/more/batch_backup',
+          icon: FaIcon(FontAwesomeIcons.database),
+          text: s.fullBackup),
+      MoreButton(
           url: '/more/coins',
-          icon: FaIcon(FontAwesomeIcons.coins),
+          icon: FaIcon(FontAwesomeIcons.moneyBill),
           text: s.notes),
       MoreButton(
           url: '/more/coins',
@@ -44,7 +52,7 @@ class _MoreState extends State<MorePage> {
           text: s.marketPrice),
       MoreButton(
           url: '/more/backup',
-          icon: FaIcon(FontAwesomeIcons.floppyDisk),
+          icon: FaIcon(FontAwesomeIcons.seedling),
           text: s.backup,
           secured: true),
       MoreButton(

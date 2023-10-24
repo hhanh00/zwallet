@@ -26,12 +26,14 @@ class BalanceState extends State<BalanceWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print('BalanceState::BUILD');
     final t = Theme.of(context);
     final color =
         _mode == 1 ? t.colorScheme.primaryContainer : t.colorScheme.primary;
     
     return Observer(builder: (context) {
       aa.height;
+      aa.currency;
       final c = coins[aa.coin];
       final balHi = decimalFormat((balance ~/ 100000) / 1000.0, 3);
       final balLo = (balance % 100000).toString().padLeft(5, '0');

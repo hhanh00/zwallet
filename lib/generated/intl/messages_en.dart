@@ -202,6 +202,9 @@ class SEn extends S {
   String get secretKey => 'Secret Key';
 
   @override
+  String get publicKey => 'Public Key';
+
+  @override
   String get viewingKey => 'Viewing Key';
 
   @override
@@ -347,6 +350,9 @@ class SEn extends S {
 
   @override
   String get openInExplorer => 'Open in Explorer';
+
+  @override
+  String get restore => 'Restore';
 
   @override
   String get na => 'N/A';
@@ -1124,4 +1130,7 @@ class SEn extends S {
 
   @override
   String get autoFee => 'Automatic Fee';
+
+  @override
+  String get accountManager => 'Account Manager';
 }

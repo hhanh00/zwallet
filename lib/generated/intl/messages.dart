@@ -473,6 +473,12 @@ abstract class S {
   /// **'Secret Key'**
   String get secretKey;
 
+  /// No description provided for @publicKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Public Key'**
+  String get publicKey;
+
   /// No description provided for @viewingKey.
   ///
   /// In en, this message translates to:
@@ -742,6 +748,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Open in Explorer'**
   String get openInExplorer;
+
+  /// No description provided for @restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restore;
 
   /// No description provided for @na.
   ///
@@ -2236,6 +2248,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Automatic Fee'**
   String get autoFee;
+
+  /// No description provided for @accountManager.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Manager'**
+  String get accountManager;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

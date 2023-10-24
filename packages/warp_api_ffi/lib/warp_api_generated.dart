@@ -938,11 +938,13 @@ class NativeLibrary {
 
   CResult_u8 zip_backup(
     ffi.Pointer<ffi.Int8> key,
-    ffi.Pointer<ffi.Int8> dst_dir,
+    ffi.Pointer<ffi.Int8> path,
+    ffi.Pointer<ffi.Int8> temp_dir,
   ) {
     return _zip_backup(
       key,
-      dst_dir,
+      path,
+      temp_dir,
     );
   }
 
@@ -953,13 +955,13 @@ class NativeLibrary {
 
   CResult_u8 unzip_backup(
     ffi.Pointer<ffi.Int8> key,
-    ffi.Pointer<ffi.Int8> data_path,
-    ffi.Pointer<ffi.Int8> dst_dir,
+    ffi.Pointer<ffi.Int8> path,
+    ffi.Pointer<ffi.Int8> temp_dir,
   ) {
     return _unzip_backup(
       key,
-      data_path,
-      dst_dir,
+      path,
+      temp_dir,
     );
   }
 
@@ -1674,15 +1676,17 @@ const int MAX_ATTEMPTS = 10;
 
 const int N = 200000;
 
-const int Account_VT_ID = 4;
+const int Account_VT_COIN = 4;
 
-const int Account_VT_NAME = 6;
+const int Account_VT_ID = 6;
 
-const int Account_VT_KEY_TYPE = 8;
+const int Account_VT_NAME = 8;
 
-const int Account_VT_BALANCE = 10;
+const int Account_VT_KEY_TYPE = 10;
 
-const int Account_VT_ADDRESS = 12;
+const int Account_VT_BALANCE = 12;
+
+const int Account_VT_ADDRESS = 14;
 
 const int AccountVec_VT_ACCOUNTS = 4;
 
@@ -2420,24 +2424,26 @@ typedef _dart_generate_key = CResult______u8 Function();
 
 typedef _c_zip_backup = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> key,
-  ffi.Pointer<ffi.Int8> dst_dir,
+  ffi.Pointer<ffi.Int8> path,
+  ffi.Pointer<ffi.Int8> temp_dir,
 );
 
 typedef _dart_zip_backup = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> key,
-  ffi.Pointer<ffi.Int8> dst_dir,
+  ffi.Pointer<ffi.Int8> path,
+  ffi.Pointer<ffi.Int8> temp_dir,
 );
 
 typedef _c_unzip_backup = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> key,
-  ffi.Pointer<ffi.Int8> data_path,
-  ffi.Pointer<ffi.Int8> dst_dir,
+  ffi.Pointer<ffi.Int8> path,
+  ffi.Pointer<ffi.Int8> temp_dir,
 );
 
 typedef _dart_unzip_backup = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> key,
-  ffi.Pointer<ffi.Int8> data_path,
-  ffi.Pointer<ffi.Int8> dst_dir,
+  ffi.Pointer<ffi.Int8> path,
+  ffi.Pointer<ffi.Int8> temp_dir,
 );
 
 typedef _c_split_data = CResult______u8 Function(

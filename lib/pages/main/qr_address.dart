@@ -18,17 +18,27 @@ class QRAddressWidget extends StatefulWidget {
 class _QRAddressState extends State<QRAddressWidget> {
   int addressMode = 0;
   late int availableMode;
-  late String address;
 
   @override
   void initState() {
     super.initState();
     availableMode = WarpApi.getAvailableAddrs(aa.coin, aa.id);
-    address = WarpApi.getAddress(aa.coin, aa.id, appSettings.uaType);
   }
 
   @override
   Widget build(BuildContext context) {
+    print('_QRAddressState::BUILD');
+    final uaType;
+    switch (addressMode) {
+      case 0:
+        uaType = appSettings.uaType;
+        break;
+      default:
+        uaType = 1 << (addressMode - 1);
+        break;
+    }
+    final address = WarpApi.getAddress(aa.coin, aa.id, uaType);
+
     return Column(
       children: [
         GestureDetector(
@@ -58,17 +68,6 @@ class _QRAddressState extends State<QRAddressWidget> {
       if (availableMode & (1 << (addressMode - 1)) != 0) break;
     }
     widget.onMode?.call(addressMode);
-
-    final int uaType;
-    switch (addressMode) {
-      case 0:
-        uaType = appSettings.uaType;
-        break;
-      default:
-        uaType = 1 << (addressMode - 1);
-        break;
-    }
-    address = WarpApi.getAddress(aa.coin, aa.id, uaType);
     setState(() {});
   }
 

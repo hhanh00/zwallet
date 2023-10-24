@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -8,6 +9,7 @@ import 'accounts.dart';
 import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
 import 'main.dart';
+import 'pages/accounts/manager.dart';
 import 'pages/accounts/new_import.dart';
 import 'pages/accounts/rescan.dart';
 import 'pages/accounts/send.dart';
@@ -16,6 +18,7 @@ import 'pages/accounts/txplan.dart';
 import 'pages/dblogin.dart';
 import 'pages/main/home.dart';
 import 'pages/more/backup.dart';
+import 'pages/more/batch.dart';
 import 'pages/more/budget.dart';
 import 'pages/more/coin.dart';
 import 'pages/more/contacts.dart';
@@ -37,30 +40,40 @@ final router = GoRouter(
   initialLocation: '/splash',
   debugLogDiagnostics: true,
   routes: [
-    GoRoute(
-        path: '/',
-        redirect: (context, state) {
-          if (aa.id == 0) return '/welcome';
-          return '/account';
-        }),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => ScaffoldBar(shell: shell),
       branches: [
         StatefulShellBranch(
-          navigatorKey: _accountNavigatorKey, 
+          navigatorKey: _accountNavigatorKey,
           routes: [
             GoRoute(
               path: '/account',
               builder: (context, state) => HomePage(),
+              redirect: (context, state) {
+                if (aa.id == 0) return '/welcome';
+                return null;
+              },
               routes: [
                 GoRoute(
+                    path: 'account_manager',
+                    builder: (context, state) => AccountManagerPage(),
+                    routes: [
+                      GoRoute(
+                        path: 'new',
+                        builder: (context, state) =>
+                            NewImportAccountPage(first: false),
+                      ),
+                    ]),
+                GoRoute(
                   path: 'txplan',
-                  builder: (context, state) => 
-                    TxPlanPage.fromPlan(state.extra as String, state.uri.queryParameters['sign'] != null),
+                  builder: (context, state) => TxPlanPage.fromPlan(
+                      state.extra as String,
+                      state.uri.queryParameters['sign'] != null),
                 ),
                 GoRoute(
                   path: 'submit_tx',
-                  builder: (context, state) => SubmitTxPage(state.extra as String),
+                  builder: (context, state) =>
+                      SubmitTxPage(state.extra as String),
                 ),
                 GoRoute(
                   path: 'rescan',
@@ -85,57 +98,57 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/history',
-              builder: (context, state) => TxPage(),
-              routes: [
-                GoRoute(
-                  path: 'details',
-                  builder: (context, state) => 
-                    TransactionPage(int.parse(state.uri.queryParameters["id"]!))
-                ),
-              ]
-            ),
+                path: '/history',
+                builder: (context, state) => TxPage(),
+                routes: [
+                  GoRoute(
+                      path: 'details',
+                      builder: (context, state) => TransactionPage(
+                          int.parse(state.uri.queryParameters["id"]!))),
+                ]),
           ],
         ),
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/more',
-              builder: (context, state) => MorePage(),
-              routes: [
-                GoRoute(
-                  path: 'contacts',
-                  builder: (context, state) => ContactsPage(),
-                  routes: [
-                    GoRoute(
-                      path: 'edit',
-                      builder: (context, state) => 
-                        ContactEditPage(int.parse(state.uri.queryParameters['id']!)),
-                    ),
-                  ]
-                ),
-                GoRoute(
-                  path: 'coins',
-                  builder: (context, state) => CoinControlPage(),
-                ),
-                GoRoute(
-                  path: 'backup',
-                  builder: (context, state) => BackupPage(),
-                ),
-                GoRoute(
-                  path: 'rescan',
-                  builder: (context, state) => RescanPage(),
-                ),
-                GoRoute(
-                  path: 'budget',
-                  builder: (context, state) => BudgetPage(),
-                ),
-                GoRoute(
-                  path: 'market',
-                  builder: (context, state) => MarketQuotes(),
-                ),
-              ]
-            ),
+                path: '/more',
+                builder: (context, state) => MorePage(),
+                routes: [
+                  GoRoute(
+                      path: 'contacts',
+                      builder: (context, state) => ContactsPage(),
+                      routes: [
+                        GoRoute(
+                          path: 'edit',
+                          builder: (context, state) => ContactEditPage(
+                              int.parse(state.uri.queryParameters['id']!)),
+                        ),
+                      ]),
+                  GoRoute(
+                    path: 'batch_backup',
+                    builder: (context, state) => BatchBackupPage(),
+                  ),
+                  GoRoute(
+                    path: 'coins',
+                    builder: (context, state) => CoinControlPage(),
+                  ),
+                  GoRoute(
+                    path: 'backup',
+                    builder: (context, state) => BackupPage(),
+                  ),
+                  GoRoute(
+                    path: 'rescan',
+                    builder: (context, state) => RescanPage(),
+                  ),
+                  GoRoute(
+                    path: 'budget',
+                    builder: (context, state) => BudgetPage(),
+                  ),
+                  GoRoute(
+                    path: 'market',
+                    builder: (context, state) => MarketQuotes(),
+                  ),
+                ]),
           ],
         ),
       ],
@@ -159,7 +172,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/first_account',
-      builder: (context, state) => NewImportAccountPage(dialog: false),
+      builder: (context, state) => NewImportAccountPage(first: true),
     ),
     GoRoute(
       path: '/settings',
@@ -172,8 +185,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/scan',
-      builder: (context, state) => 
-        ScanQRCodePage(state.extra as ScanQRContext),
+      builder: (context, state) => ScanQRCodePage(state.extra as ScanQRContext),
     ),
   ],
 );
@@ -193,21 +205,19 @@ class _ScaffoldBar extends State<ScaffoldBar> {
     final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(active.account.name),
+        title: Text(aa.name),
         actions: [
-        IconButton(onPressed: _settings, icon: Icon(Icons.settings)),
-      ]),
+          IconButton(onPressed: _settings, icon: Icon(Icons.settings)),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.account_balance), label: s.balance),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.message), label: s.messages),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.list), label: s.history),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.more_horiz), label: s.more),
+          BottomNavigationBarItem(icon: Icon(Icons.message), label: s.messages),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: s.history),
+          BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: s.more),
         ],
         currentIndex: widget.shell.currentIndex,
         onTap: (index) {

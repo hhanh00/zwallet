@@ -25,10 +25,11 @@ class _HomeState extends State<HomePage> {
           child: Center(
             child: Observer(
               builder: (context) {
-                aaObs.value;
+                aaSequence.seqno;
                 aa.poolBalances;
                 syncStatus2.syncedHeight;
                 syncStatus2.syncing;
+                print("REBUILD ${aa.id}");
 
                 return Column(
                   children: [

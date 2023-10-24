@@ -62,6 +62,7 @@
   "changeAccountName": "Change Account Name",
   "backupDataRequiredForRestore": "Backup Data - {name} - Required for Restore",
   "secretKey": "Secret Key",
+  "publicKey": "Public Key",
   "viewingKey": "Viewing Key",
   "tapAnIconToShowTheQrCode": "Tap an icon to show the QR code",
   "multiPay": "Multi Pay",
@@ -107,6 +108,7 @@
   "timestamp": "Timestamp",
   "address": "Address",
   "openInExplorer": "Open in Explorer",
+  "restore": "Restore",
   "na": "N/A",
   "add": "Add",
   "tradingChartRange": "Trading Chart Range",
@@ -355,5 +357,6 @@
   "general": "General",
   "priv": "Privacy",
   "views": "Views",
-  "autoFee": "Automatic Fee"
+  "autoFee": "Automatic Fee",
+  "accountManager": "Account Manager"
 }
