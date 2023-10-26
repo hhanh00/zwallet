@@ -30,7 +30,6 @@ import 'pages/splash.dart';
 import 'pages/welcome.dart';
 import 'pages/settings.dart';
 import 'pages/messages.dart';
-import 'transaction.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _accountNavigatorKey = GlobalKey<NavigatorState>();
@@ -92,6 +91,12 @@ final router = GoRouter(
             GoRoute(
               path: '/messages',
               builder: (context, state) => MessagePage(),
+              routes: [
+                  GoRoute(
+                      path: 'details',
+                      builder: (context, state) => MessageItemPage(
+                          int.parse(state.uri.queryParameters["index"]!))),
+              ]
             ),
           ],
         ),
@@ -104,7 +109,7 @@ final router = GoRouter(
                   GoRoute(
                       path: 'details',
                       builder: (context, state) => TransactionPage(
-                          int.parse(state.uri.queryParameters["id"]!))),
+                          int.parse(state.uri.queryParameters["index"]!))),
                 ]),
           ],
         ),

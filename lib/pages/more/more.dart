@@ -111,7 +111,7 @@ class _MoreState extends State<MorePage> {
               icon: kv.value.icon,
               type: GFButtonType.solid,
               textStyle: t.textTheme.bodyLarge,
-              child: Text(kv.value.text!, maxLines: 2),
+              child: Text(kv.value.text!, maxLines: 2, overflow: TextOverflow.fade),
               color: palette.colors[kv.key].toColor(),
               borderShape: RoundedRectangleBorder(
                 borderRadius: BorderRadiusDirectional.all(

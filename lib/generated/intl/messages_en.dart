@@ -593,7 +593,7 @@ class SEn extends S {
   String get restart => 'Restart';
 
   @override
-  String get pleaseQuitAndRestartTheAppNow => 'Please Quit and Restart the app now';
+  String get pleaseQuitAndRestartTheAppNow => 'Please Quit and Restart the app in order for these changes to take effect';
 
   @override
   String get mode => 'Advanced Mode';

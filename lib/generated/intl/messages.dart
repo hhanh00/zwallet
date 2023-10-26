@@ -1214,7 +1214,7 @@ abstract class S {
   /// No description provided for @pleaseQuitAndRestartTheAppNow.
   ///
   /// In en, this message translates to:
-  /// **'Please Quit and Restart the app now'**
+  /// **'Please Quit and Restart the app in order for these changes to take effect'**
   String get pleaseQuitAndRestartTheAppNow;
 
   /// No description provided for @mode.

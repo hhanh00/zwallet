@@ -953,15 +953,30 @@ class NativeLibrary {
   late final _dart_zip_backup _zip_backup =
       _zip_backup_ptr.asFunction<_dart_zip_backup>();
 
-  CResult_u8 unzip_backup(
+  CResult_____c_char decrypt_backup(
     ffi.Pointer<ffi.Int8> key,
     ffi.Pointer<ffi.Int8> path,
     ffi.Pointer<ffi.Int8> temp_dir,
   ) {
-    return _unzip_backup(
+    return _decrypt_backup(
       key,
       path,
       temp_dir,
+    );
+  }
+
+  late final _decrypt_backup_ptr =
+      _lookup<ffi.NativeFunction<_c_decrypt_backup>>('decrypt_backup');
+  late final _dart_decrypt_backup _decrypt_backup =
+      _decrypt_backup_ptr.asFunction<_dart_decrypt_backup>();
+
+  CResult_u8 unzip_backup(
+    ffi.Pointer<ffi.Int8> path,
+    ffi.Pointer<ffi.Int8> db_dir,
+  ) {
+    return _unzip_backup(
+      path,
+      db_dir,
     );
   }
 
@@ -2434,16 +2449,26 @@ typedef _dart_zip_backup = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> temp_dir,
 );
 
-typedef _c_unzip_backup = CResult_u8 Function(
+typedef _c_decrypt_backup = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> key,
   ffi.Pointer<ffi.Int8> path,
   ffi.Pointer<ffi.Int8> temp_dir,
 );
 
-typedef _dart_unzip_backup = CResult_u8 Function(
+typedef _dart_decrypt_backup = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> key,
   ffi.Pointer<ffi.Int8> path,
   ffi.Pointer<ffi.Int8> temp_dir,
+);
+
+typedef _c_unzip_backup = CResult_u8 Function(
+  ffi.Pointer<ffi.Int8> path,
+  ffi.Pointer<ffi.Int8> db_dir,
+);
+
+typedef _dart_unzip_backup = CResult_u8 Function(
+  ffi.Pointer<ffi.Int8> path,
+  ffi.Pointer<ffi.Int8> db_dir,
 );
 
 typedef _c_split_data = CResult______u8 Function(

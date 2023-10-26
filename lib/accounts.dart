@@ -274,6 +274,7 @@ abstract class _Messages with Store {
             m.height,
             m.read))
         .toList();
+    items = List.of(items.reversed);
   }
 
   @action

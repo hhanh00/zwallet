@@ -593,7 +593,7 @@ class SEs extends S {
   String get restart => 'Reiniciar';
 
   @override
-  String get pleaseQuitAndRestartTheAppNow => 'Please Quit and Restart the app now';
+  String get pleaseQuitAndRestartTheAppNow => 'Please Quit and Restart the app in order for these changes to take effect';
 
   @override
   String get mode => 'Modo';

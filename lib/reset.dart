@@ -213,7 +213,7 @@ class _FullRestoreState extends State<FullRestorePage> {
       final key = controller.text;
       try {
         if (key.isNotEmpty) {
-          WarpApi.unzipBackup(key, filename, settings.tempDir);
+          // WarpApi.unzipBackup(key, filename, settings.tempDir);
         } else {
           final file = File(filename);
           final backup = await file.readAsString();

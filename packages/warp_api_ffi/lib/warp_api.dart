@@ -450,9 +450,14 @@ class WarpApi {
     unwrapResultU8(r);
   }
 
-  static void unzipBackup(String key, String path, String tmpDir) {
+  static String decryptBackup(String key, String path, String tempDir) {
+    return unwrapResultString(warp_api_lib.decrypt_backup(
+        toNative(key), toNative(path), toNative(tempDir)));
+  }
+
+  static void unzipBackup(String path, String dbDir) {
     unwrapResultU8(warp_api_lib.unzip_backup(
-        toNative(key), toNative(path), toNative(tmpDir)));
+        toNative(path), toNative(dbDir)));
   }
 
   static List<String> splitData(int id, String data) {

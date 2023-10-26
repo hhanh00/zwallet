@@ -593,7 +593,7 @@ class SFr extends S {
   String get restart => 'Redémarrage';
 
   @override
-  String get pleaseQuitAndRestartTheAppNow => 'Please Quit and Restart the app now';
+  String get pleaseQuitAndRestartTheAppNow => 'Please Quit and Restart the app in order for these changes to take effect';
 
   @override
   String get mode => 'Mode';

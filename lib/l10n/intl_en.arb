@@ -185,7 +185,7 @@
   "reset": "Reset",
   "loading": "Loading...",
   "restart": "Restart",
-  "pleaseQuitAndRestartTheAppNow": "Please Quit and Restart the app now",
+  "pleaseQuitAndRestartTheAppNow": "Please Quit and Restart the app in order for these changes to take effect",
   "mode": "Advanced Mode",
   "simple": "Simple",
   "advanced": "Advanced",

@@ -20,7 +20,7 @@ class CoinControlPage extends StatelessWidget {
         appBar: AppBar(title: Text(s.notes)),
         body: Observer(
           builder: (context) {
-            aa.notes.items;
+            aaSequence.seqno;
             return TableListPage(
               view: appSettings.noteView,
               items: aa.notes.items,

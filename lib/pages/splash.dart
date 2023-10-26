@@ -58,24 +58,14 @@ class _SplashState extends State<SplashPage> {
   }
 
   Future<void> _recoverDb(SharedPreferences prefs, String dbPath) async {
-    final recover = prefs.getBool('recover') ?? false;
-    final exportDb = prefs.getBool('export_db') ?? false;
-    prefs.setBool('recover', false);
-
-    if (!recover && !exportDb) return;
-    for (var coin in coins) {
-      coin.init(dbPath);
+    final backupPath = prefs.getString('backup');
+    if (backupPath == null) return;
+    await prefs.remove('backup');
+    for (var c in coins) {
+      await c.delete();
     }
-
-    if (exportDb) {
-      for (var coin in coins) await coin.export(context, dbPath);
-      prefs.setBool('export_db', false);
-    }
-    if (recover) {
-      for (var coin in coins) {
-        await coin.importFromTemp();
-      }
-    }
+    final dbDir = await getDbPath();
+    WarpApi.unzipBackup(backupPath, dbDir);
     _setProgress(0.05, "Database recovered");
   }
 

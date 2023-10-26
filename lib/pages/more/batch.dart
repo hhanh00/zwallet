@@ -2,7 +2,10 @@ import 'package:YWallet/main.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:go_router/go_router.dart';
+import 'package:k_chart/extension/map_ext.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
@@ -25,9 +28,9 @@ class _BatchBackupState extends State<BatchBackupPage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(s.backupAllAccounts), actions: [
-        IconButton(onPressed: key, icon: Icon(Icons.key))
-      ]),
+      appBar: AppBar(
+          title: Text(s.backupAllAccounts),
+          actions: [IconButton(onPressed: key, icon: Icon(Icons.key))]),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -41,8 +44,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
                   child: Column(children: [
                     FormBuilderTextField(
                       name: 'backup',
-                      decoration:
-                          InputDecoration(label: Text(s.publicKey)),
+                      decoration: InputDecoration(label: Text(s.publicKey)),
                       controller: backupKeyController,
                     ),
                     SizedBox(height: 8),
@@ -69,8 +71,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
                   child: Column(children: [
                     FormBuilderTextField(
                       name: 'restore',
-                      decoration:
-                          InputDecoration(label: Text(s.secretKey)),
+                      decoration: InputDecoration(label: Text(s.secretKey)),
                       controller: restoreKeyController,
                     ),
                     SizedBox(height: 8),
@@ -102,8 +103,9 @@ class _BatchBackupState extends State<BatchBackupPage> {
   save() async {
     final s = S.of(context);
     final tempDir = await getTemporaryDirectory();
-    final path = isMobile() ? await getTemporaryPath('YWallet.age') :
-      await FilePicker.platform.saveFile(dialogTitle: s.fullBackup);
+    final path = isMobile()
+        ? await getTemporaryPath('YWallet.age')
+        : await FilePicker.platform.saveFile(dialogTitle: s.fullBackup);
     if (path != null) {
       WarpApi.zipBackup(backupKeyController.text, path, tempDir.path);
       if (isMobile()) {
@@ -114,11 +116,16 @@ class _BatchBackupState extends State<BatchBackupPage> {
 
   restore() async {
     final s = S.of(context);
-    final tempDir = await getTemporaryDirectory();
     final r = await FilePicker.platform.pickFiles(dialogTitle: s.fullRestore);
     if (r != null) {
       final file = r.files.first;
-      WarpApi.unzipBackup(restoreKeyController.text, file.path!, tempDir.path);
+      final dbDir = await getDbPath();
+      final zipFile =
+          WarpApi.decryptBackup(restoreKeyController.text, file.path!, dbDir);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('backup', zipFile);
+      await showMessageBox(context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow);
+      GoRouter.of(context).pop();
     }
   }
 }
@@ -128,10 +135,27 @@ Future<String> getTemporaryPath(String filename) async {
   return path.join(dir.path, filename);
 }
 
-Future<void> shareFile(BuildContext context, String path, { String? title }) async {
-    Size size = MediaQuery.of(context).size;
-    final xfile = XFile(path);
-    await Share.shareXFiles([xfile],
-        subject: title,
-        sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
+Future<void> shareFile(BuildContext context, String path,
+    {String? title}) async {
+  Size size = MediaQuery.of(context).size;
+  final xfile = XFile(path);
+  await Share.shareXFiles([xfile],
+      subject: title,
+      sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
+}
+
+Future<bool> showMessageBox(BuildContext context, String title, String content,
+    {String? label}) async {
+  final s = S.of(context);
+  final confirm = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) =>
+          AlertDialog(title: Text(title), content: Text(content), actions: [
+            ElevatedButton.icon(
+                onPressed: () => GoRouter.of(context).pop(),
+                icon: Icon(Icons.check),
+                label: Text(label ?? s.ok))
+          ]));
+  return confirm ?? false;
 }
