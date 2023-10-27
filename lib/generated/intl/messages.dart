@@ -2213,6 +2213,12 @@ abstract class S {
   /// **'Reply UA Receivers'**
   String get replyUA;
 
+  /// No description provided for @receivers.
+  ///
+  /// In en, this message translates to:
+  /// **'UA Receivers'**
+  String get receivers;
+
   /// No description provided for @list.
   ///
   /// In en, this message translates to:
@@ -2254,6 +2260,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Account Manager'**
   String get accountManager;
+
+  /// No description provided for @pleaseWaitPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Computing Transaction'**
+  String get pleaseWaitPlan;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

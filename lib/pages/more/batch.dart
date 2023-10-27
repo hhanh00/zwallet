@@ -3,7 +3,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:go_router/go_router.dart';
-import 'package:k_chart/extension/map_ext.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
@@ -12,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:cross_file/cross_file.dart';
 
 import '../../generated/intl/messages.dart';
+import '../utils.dart';
 
 class BatchBackupPage extends StatefulWidget {
   @override
@@ -124,7 +124,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
           WarpApi.decryptBackup(restoreKeyController.text, file.path!, dbDir);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('backup', zipFile);
-      await showMessageBox(context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow);
+      await showMessageBox2(context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow);
       GoRouter.of(context).pop();
     }
   }
@@ -144,18 +144,3 @@ Future<void> shareFile(BuildContext context, String path,
       sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
 }
 
-Future<bool> showMessageBox(BuildContext context, String title, String content,
-    {String? label}) async {
-  final s = S.of(context);
-  final confirm = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) =>
-          AlertDialog(title: Text(title), content: Text(content), actions: [
-            ElevatedButton.icon(
-                onPressed: () => GoRouter.of(context).pop(),
-                icon: Icon(Icons.check),
-                label: Text(label ?? s.ok))
-          ]));
-  return confirm ?? false;
-}

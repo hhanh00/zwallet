@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'generated/intl/messages.dart';
 import 'main.dart';
 import 'pages/accounts/manager.dart';
 import 'pages/accounts/new_import.dart';
+import 'pages/accounts/pay_uri.dart';
 import 'pages/accounts/rescan.dart';
 import 'pages/accounts/send.dart';
 import 'pages/accounts/submit.dart';
@@ -23,6 +25,7 @@ import 'pages/more/budget.dart';
 import 'pages/more/coin.dart';
 import 'pages/more/contacts.dart';
 import 'pages/more/more.dart';
+import 'pages/more/pool.dart';
 import 'pages/more/tx.dart';
 import 'pages/more/quotes.dart';
 import 'pages/scan.dart';
@@ -39,6 +42,9 @@ final router = GoRouter(
   initialLocation: '/splash',
   debugLogDiagnostics: true,
   routes: [
+    GoRoute(
+      path: '/',
+      redirect: (context, state) => '/account'),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => ScaffoldBar(shell: shell),
       branches: [
@@ -65,9 +71,9 @@ final router = GoRouter(
                     ]),
                 GoRoute(
                   path: 'txplan',
-                  builder: (context, state) => TxPlanPage.fromPlan(
+                  builder: (context, state) => TxPlanPage(
                       state.extra as String,
-                      state.uri.queryParameters['sign'] != null),
+                      signOnly: state.uri.queryParameters['sign'] != null),
                 ),
                 GoRoute(
                   path: 'submit_tx',
@@ -81,6 +87,10 @@ final router = GoRouter(
                 GoRoute(
                   path: 'send',
                   builder: (context, state) => SendPage(single: true),
+                ),
+                GoRoute(
+                  path: 'pay_uri',
+                  builder: (context, state) => PaymentURIPage(),
                 ),
               ],
             ),
@@ -152,6 +162,10 @@ final router = GoRouter(
                   GoRoute(
                     path: 'market',
                     builder: (context, state) => MarketQuotes(),
+                  ),
+                  GoRoute(
+                    path: 'transfer',
+                    builder: (context, state) => PoolTransferPage(),
                   ),
                 ]),
           ],

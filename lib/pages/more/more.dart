@@ -35,7 +35,7 @@ class _MoreState extends State<MorePage> {
           icon: FaIcon(FontAwesomeIcons.moneyBill),
           text: s.notes),
       MoreButton(
-          url: '/more/coins',
+          url: '/more/transfer',
           icon: FaIcon(FontAwesomeIcons.waterLadder),
           text: s.pools),
       MoreButton(

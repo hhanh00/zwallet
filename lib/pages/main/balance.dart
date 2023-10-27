@@ -26,7 +26,6 @@ class BalanceState extends State<BalanceWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('BalanceState::BUILD');
     final t = Theme.of(context);
     final color =
         _mode == 1 ? t.colorScheme.primaryContainer : t.colorScheme.primary;

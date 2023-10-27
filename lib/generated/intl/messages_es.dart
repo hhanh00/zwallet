@@ -1114,6 +1114,9 @@ class SEs extends S {
   String get replyUA => 'Reply UA Receivers';
 
   @override
+  String get receivers => 'UA Receivers';
+
+  @override
   String get list => 'List';
 
   @override
@@ -1133,4 +1136,7 @@ class SEs extends S {
 
   @override
   String get accountManager => 'Account Manager';
+
+  @override
+  String get pleaseWaitPlan => 'Computing Transaction';
 }

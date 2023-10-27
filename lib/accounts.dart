@@ -262,7 +262,7 @@ abstract class _Messages with Store {
   void read(int? height) {
     final ms = WarpApi.getMessagesSync(coin, id);
     items = ms
-        .map((m) => ZMessage(
+        .map((m) { print(m); return ZMessage(
             m.idMsg,
             m.idTx,
             m.incoming,
@@ -272,7 +272,7 @@ abstract class _Messages with Store {
             m.body!,
             DateTime.fromMillisecondsSinceEpoch(m.timestamp * 1000),
             m.height,
-            m.read))
+            m.read); })
         .toList();
     items = List.of(items.reversed);
   }

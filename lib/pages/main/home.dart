@@ -1,3 +1,4 @@
+import 'package:YWallet/appsettings.dart';
 import 'package:YWallet/store2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -29,13 +30,12 @@ class _HomeState extends State<HomePage> {
                 aa.poolBalances;
                 syncStatus2.syncedHeight;
                 syncStatus2.syncing;
-                print("REBUILD ${aa.id}");
 
                 return Column(
                   children: [
                     SyncStatusWidget(),
                     Padding(padding: EdgeInsets.all(8)),
-                    QRAddressWidget(onMode: _onMode),
+                    QRAddressWidget(uaType: appSettings.uaType, onMode: _onMode),
                     BalanceWidget(key: key),
                   ],
                 );

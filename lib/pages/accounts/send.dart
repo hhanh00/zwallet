@@ -11,15 +11,11 @@ import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart' hide Account;
 import '../../appsettings.dart';
-import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../../main.dart';
-import '../../pages/accounts/txplan.dart';
-import '../../pages/accounts/submit.dart';
-import '../../settings.dart';
-import '../../store.dart';
-import '../../store2.dart';
 import '../scan.dart';
+import '../utils.dart';
+import '../widgets.dart';
 
 class SendContext {
   final String address;
@@ -48,7 +44,7 @@ class _SendState extends State<SendPage> {
   final poolKey = GlobalKey<SendPoolState>();
   final amountKey = GlobalKey<SendAmountState>();
   final memoKey = GlobalKey<SendMemoState>();
-  final planKey = GlobalKey<SendReportState>();
+  // final planKey = GlobalKey<SendReportState>();
 
   int type = 0;
   String address = '';
@@ -59,7 +55,9 @@ class _SendState extends State<SendPage> {
   int? contactIndex;
   late final List<Account> accounts;
   int? accountIndex;
-  String? txPlan;
+  // String? txPlan;
+
+  bool waiting = false;
 
   @override
   void initState() {
@@ -77,7 +75,7 @@ class _SendState extends State<SendPage> {
       Icon(Icons.pool),
       Icon(Icons.paid),
       Icon(Icons.description),
-      Icon(Icons.confirmation_number),
+      // Icon(Icons.confirmation_number),
     ];
 
     if (activeStep == icons.length - 1)
@@ -106,12 +104,7 @@ class _SendState extends State<SendPage> {
             },
           )
         : IconButton.filled(
-            onPressed: txPlan != null
-                ? () {
-                    GoRouter.of(context)
-                        .go('/account/submit_tx', extra: txPlan);
-                  }
-                : null,
+            onPressed: calcPlan,
             iconSize: 32,
             icon: Icon(Icons.send));
 
@@ -127,15 +120,6 @@ class _SendState extends State<SendPage> {
             },
           )
         : SizedBox();
-
-    final recipientBuilder = RecipientObjectBuilder(
-      address: address,
-      amount: amount,
-      replyTo: memo.reply,
-      subject: memo.subject,
-      memo: memo.memo,
-    );
-    final recipient = Recipient(recipientBuilder.toBytes());
 
     final b = [
       () => SendAddressType(type, key: typeKey, hasContacts: hasContacts),
@@ -163,9 +147,9 @@ class _SendState extends State<SendPage> {
       () => SendAmount(
           AmountState(amount: amount, spendable: poolData.spendable),
           key: amountKey),
-      () => SendMemo(memo, key: memoKey),
-      () => SendReport(key: planKey, recipient: recipient, 
-        onPlan: (p) => setState(() { txPlan = p; })),
+      () => LoadingWrapper(waiting, child: SendMemo(memo, key: memoKey)),
+      // () => SendReport(key: planKey, recipient: recipient,
+      //   onPlan: (p) => setState(() { txPlan = p; })),
     ];
     final body = (activeStep < b.length) ? b[activeStep].call() : Container();
     receivers = WarpApi.receiversOfAddress(aa.coin, address);
@@ -206,6 +190,7 @@ class _SendState extends State<SendPage> {
   }
 
   bool validate() {
+    print("activeStep $activeStep");
     if (activeStep == 0) {
       type = typeKey.currentState!.type;
     }
@@ -240,6 +225,7 @@ class _SendState extends State<SendPage> {
     }
     if (activeStep == 4) {
       final v = memoKey.currentState!.memo;
+      print("MEMO ${v?.memo}");
       if (v == null) return false;
       memo = v;
     }
@@ -273,6 +259,39 @@ class _SendState extends State<SendPage> {
       setState(() {});
     }
   }
+
+  calcPlan() async {
+    final s = S.of(context);
+    if (!validate()) return;
+    print("memo ${memo.memo}");
+    final recipientBuilder = RecipientObjectBuilder(
+      address: address,
+      amount: amount,
+      replyTo: memo.reply,
+      subject: memo.subject,
+      memo: memo.memo,
+    );
+    final recipient = Recipient(recipientBuilder.toBytes());
+
+    try {
+      _calculating(true);
+      print('${aa.coin} ${aa.id} ${appSettings.replyUa}');
+      final plan = await WarpApi.prepareTx(
+          aa.coin,
+          aa.id,
+          [recipient],
+          appSettings.replyUa,
+          appSettings.anchorOffset,
+          CoinSettingsExtension.load(aa.coin).feeT);
+      GoRouter.of(context).push('/account/txplan', extra: plan);
+    } on String catch (e) {
+      await showMessageBox2(context, s.error, e);
+    } finally {
+      _calculating(false);
+    }
+  }
+
+  _calculating(bool v) => setState(() => waiting = v);
 }
 
 class SendAddressType extends StatefulWidget {
@@ -455,8 +474,7 @@ class SendPoolState extends State<SendPool> {
   @override
   void initState() {
     super.initState();
-    bals = WarpApi.getPoolBalances(
-            aa.coin, aa.id, appSettings.anchorOffset)
+    bals = WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset)
         .unpack();
   }
 
@@ -540,18 +558,6 @@ class PoolData {
   PoolData(this.pools, this.spendable);
 }
 
-enum AmountSource {
-  Crypto,
-  Fiat,
-  Slider,
-}
-
-class AmountState {
-  int amount;
-  int spendable;
-  AmountState({required this.amount, required this.spendable});
-}
-
 class SendAmount extends StatefulWidget {
   final AmountState initialAmount;
   SendAmount(this.initialAmount, {super.key});
@@ -561,110 +567,21 @@ class SendAmount extends StatefulWidget {
 }
 
 class SendAmountState extends State<SendAmount> {
-  final formKey = GlobalKey<FormBuilderState>();
-  double? fxRate;
-  int _amount = 0;
-  final amountController = TextEditingController();
-  final fiatController = TextEditingController();
-  final nformat = NumberFormat();
-
-  @override
-  void initState() {
-    super.initState();
-    _amount = widget.initialAmount.amount;
-    amountController.text = amountToString2(_amount);
-    Future(() async {
-      final c = coins[aa.coin];
-      fxRate = await getFxRate(c.currency, appSettings.currency);
-      _update(AmountSource.Crypto);
-      setState(() {});
-    });
-  }
+  final inputKey = GlobalKey<InputAmountState>();
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final c = coins[aa.coin];
-    final spendable = widget.initialAmount.spendable;
-    return FormBuilder(
-      key: formKey,
-      child: Column(children: [
-        Title(s.amount),
-        SizedBox(height: 16),
-        Text('${s.spendable}  ${amountToString2(spendable)}'),
-        SizedBox(height: 16),
-        FormBuilderTextField(
-          name: 'amount',
-          decoration: InputDecoration(label: Text(c.ticker)),
-          controller: amountController,
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
-          onChanged: (v0) {
-            final v = v0 == null || v0.isEmpty ? '0' : v0;
-            try {
-              final zec = nformat.parse(v).toDouble();
-              _amount = (zec * ZECUNIT).toInt();
-              _update(AmountSource.Crypto);
-            } on FormatException {}
-          },
-          validator: (_) {
-            try {
-              if (_amount < 0) return s.amountMustBePositive;
-              if (_amount > spendable) return s.amountTooHigh;
-              return null;
-            } on FormatException {
-              return s.nan;
-            }
-          },
-        ),
-        FormBuilderTextField(
-            name: 'fiat',
-            decoration: InputDecoration(label: Text(appSettings.currency)),
-            controller: fiatController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            enabled: fxRate != null,
-            onChanged: (v0) {
-              final v = v0 == null || v0.isEmpty ? '0' : v0;
-              try {
-                final fiat = nformat.parse(v).toDouble();
-                final zec = fiat / fxRate!;
-                _amount = (zec * ZECUNIT).toInt();
-                _update(AmountSource.Fiat);
-              } on FormatException {}
-            }),
-        FormBuilderSlider(
-          name: 'slider',
-          initialValue: 0,
-          min: 0,
-          max: 100,
-          divisions: 10,
-          onChanged: (v0) {
-            final v = v0 ?? 0;
-            _amount = spendable * v ~/ 100;
-            _update(AmountSource.Slider);
-          },
-        )
-      ]),
-    );
-  }
-
-  _update(AmountSource source) {
-    if (source != AmountSource.Crypto)
-      amountController.text = nformat.format(_amount / ZECUNIT);
-    fxRate?.let((fx) {
-      if (source != AmountSource.Fiat)
-        fiatController.text = nformat.format(_amount * fx / ZECUNIT);
-    });
-    final spendable = widget.initialAmount.spendable;
-    if (source != AmountSource.Slider && spendable != 0) {
-      final p = _amount / spendable * 100;
-      formKey.currentState!.fields['slider']!.setValue(p.clamp(0.0, 100.0));
-    }
-    setState(() {});
+    return Column(children: [
+      Title(s.amount),
+      SizedBox(height: 16),
+      InputAmountWidget(key: inputKey, widget.initialAmount),
+    ]);
   }
 
   int? get amount {
-    if (!formKey.currentState!.validate()) return null;
-    return _amount;
+    final state = inputKey.currentState!;
+    return state.amount;
   }
 }
 
@@ -731,57 +648,57 @@ class SendMemoState extends State<SendMemo> {
   }
 }
 
-class SendReport extends StatefulWidget {
-  final Recipient recipient;
-  final void Function(String) onPlan;
-  final bool signOnly;
-  SendReport({super.key, required this.recipient, 
-    required this.onPlan, this.signOnly = false});
-  @override
-  State<StatefulWidget> createState() => SendReportState();
-}
+// class SendReport extends StatefulWidget {
+//   final Recipient recipient;
+//   final void Function(String) onPlan;
+//   final bool signOnly;
+//   SendReport({super.key, required this.recipient,
+//     required this.onPlan, this.signOnly = false});
+//   @override
+//   State<StatefulWidget> createState() => SendReportState();
+// }
 
-class SendReportState extends State<SendReport> {
-  String? txPlan;
-  String? error;
+// class SendReportState extends State<SendReport> {
+//   String? txPlan;
+//   String? error;
 
-  @override
-  void initState() {
-    super.initState();
-    Future(() async {
-      try {
-        final plan = await WarpApi.prepareTx(
-            aa.coin,
-            aa.id,
-            [widget.recipient],
-            appSettings.anchorOffset,
-            CoinSettingsExtension.load(aa.coin).feeT);
-        widget.onPlan(plan);
-        txPlan = plan;
-      } on String catch (e) {
-        error = e;
-      }
-      setState(() {});
-    });
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     Future(() async {
+//       try {
+//         final plan = await WarpApi.prepareTx(
+//             aa.coin,
+//             aa.id,
+//             [widget.recipient],
+//             appSettings.anchorOffset,
+//             CoinSettingsExtension.load(aa.coin).feeT);
+//         widget.onPlan(plan);
+//         txPlan = plan;
+//       } on String catch (e) {
+//         error = e;
+//       }
+//       setState(() {});
+//     });
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    final t = Theme.of(context);
-    final plan = txPlan;
-    if (plan == null && error == null)
-      return Center(
-        child: LoadingAnimationWidget.newtonCradle(
-          color: t.primaryColor,
-          size: 200,
-        ),
-      );
-    else if (plan != null)
-      return TxPlanPage.fromPlan(plan, widget.signOnly);
-    else
-      return Jumbotron(error!, severity: Severity.Error);
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     final t = Theme.of(context);
+//     final plan = txPlan;
+//     if (plan == null && error == null)
+//       return Center(
+//         child: LoadingAnimationWidget.newtonCradle(
+//           color: t.primaryColor,
+//           size: 200,
+//         ),
+//       );
+//     else if (plan != null)
+//       return TxPlanWidget.fromPlan(plan, signOnly: widget.signOnly);
+//     else
+//       return Jumbotron(error!, severity: Severity.Error);
+//   }
+// }
 
 class Title extends StatelessWidget {
   final String title;

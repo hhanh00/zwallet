@@ -285,7 +285,7 @@ class WarpApi {
   }
 
   static Future<String> prepareTx(int coin, int account,
-      List<Recipient> recipients, int anchorOffset, FeeT fee) async {
+      List<Recipient> recipients, int senderUAType, int anchorOffset, FeeT fee) async {
     final builder = Builder();
     final rs = recipients.map((r) => r.unpack()).toList();
     int root = RecipientsT(values: rs).pack(builder);
@@ -297,6 +297,7 @@ class WarpApi {
           account,
           toNativeBytes(builder.buffer),
           builder.size(),
+          senderUAType,
           anchorOffset,
           toNativeBytes(fee2),
           fee2.lengthInBytes);

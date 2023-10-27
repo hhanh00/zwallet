@@ -171,7 +171,7 @@ class _GeneralState extends State<GeneralTab>
               _settings.currency = v!;
             },
           ),
-          FieldUA(
+          FieldUACheckbox(
             _settings0.uaType,
             label: s.mainUA,
             name: 'main_address',
@@ -179,7 +179,7 @@ class _GeneralState extends State<GeneralTab>
               _settings.uaType = v?.sum ?? 0;
             },
           ),
-          FieldUA(
+          FieldUACheckbox(
             _settings0.replyUa,
             label: s.replyUA,
             name: 'reply_address',
@@ -502,12 +502,12 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
 }
 
-class FieldUA extends StatelessWidget {
+class FieldUACheckbox extends StatelessWidget {
   final String name;
   final String label;
   late final List<int> initialValues;
   final void Function(List<int>?)? onChanged;
-  FieldUA(int initialValue,
+  FieldUACheckbox(int initialValue,
       {required this.name, required this.label, this.onChanged}) {
     List<int> fs = [];
     int v = 1;
@@ -531,6 +531,33 @@ class FieldUA extends StatelessWidget {
         FormBuilderChipOption(value: 1, child: Text(s.transparent)),
         FormBuilderChipOption(value: 2, child: Text(s.sapling)),
         FormBuilderChipOption(value: 4, child: Text(s.orchard)),
+      ],
+      onChanged: onChanged,
+    );
+  }
+}
+
+class FieldUARadio extends StatelessWidget {
+  final int initialView;
+  final String name;
+  final String label;
+  final void Function(int?)? onChanged;
+  FieldUARadio(this.initialView,
+      {required this.name, required this.label, this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+
+    return FormBuilderChoiceChip(
+      name: name,
+      decoration: InputDecoration(label: Text(label)),
+      initialValue: initialView,
+      spacing: 4,
+      options: [
+        FormBuilderChipOption(value: 0, child: Text(s.transparent)),
+        FormBuilderChipOption(value: 1, child: Text(s.sapling)),
+        FormBuilderChipOption(value: 2, child: Text(s.orchard)),
       ],
       onChanged: onChanged,
     );

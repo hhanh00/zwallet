@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:YWallet/main.dart';
 import 'package:YWallet/settings.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -10,15 +13,37 @@ import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 
 class TxPlanPage extends StatelessWidget {
+  final bool signOnly;
+  final String plan;
+  TxPlanPage(this.plan, {this.signOnly = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final txplan = TxPlanWidget.fromPlan(plan, signOnly: signOnly);
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(s.txPlan),
+          actions: [IconButton(onPressed: () => send(context), icon: Icon(Icons.send))],
+        ),
+        body: txplan);
+  }
+
+  send(BuildContext context) {
+    GoRouter.of(context).go('/account/submit_tx', extra: plan);
+  }
+}
+
+class TxPlanWidget extends StatelessWidget {
   final String plan;
   final TxReport report;
   final bool signOnly;
 
-  TxPlanPage(this.plan, this.report, this.signOnly);
+  TxPlanWidget(this.plan, this.report, {required this.signOnly});
 
-  factory TxPlanPage.fromPlan(String plan, bool signOnly) {
+  factory TxPlanWidget.fromPlan(String plan, {bool signOnly = false}) {
     final report = WarpApi.transactionReport(aa.coin, plan);
-    return TxPlanPage(plan, report, signOnly);
+    return TxPlanWidget(plan, report, signOnly: signOnly);
   }
 
   @override
@@ -31,21 +56,24 @@ class TxPlanPage extends StatelessWidget {
         .map((e) => DataRow(cells: [
               DataCell(Text('...${trailing(e.address!, 12)}')),
               DataCell(Text('${poolToString(s, e.pool)}')),
-              DataCell(Text('${amountToString(e.amount, 3)}')),
+              DataCell(Text('${amountToString2(e.amount)}')),
             ]))
         .toList();
     final invalidPrivacy = report.privacyLevel < settings.minPrivacyLevel;
 
     return Column(children: [
-      Row(children: [Expanded(child: DataTable(
-          headingRowHeight: 32,
-          columnSpacing: 32,
-          columns: [
-            DataColumn(label: Text(s.address)),
-            DataColumn(label: Text(s.pool)),
-            DataColumn(label: Expanded(child: Text(s.amount))),
-          ],
-          rows: rows))]),
+      Row(children: [
+        Expanded(
+            child: DataTable(
+                headingRowHeight: 32,
+                columnSpacing: 32,
+                columns: [
+                  DataColumn(label: Text(s.address)),
+                  DataColumn(label: Text(s.pool)),
+                  DataColumn(label: Expanded(child: Text(s.amount))),
+                ],
+                rows: rows))
+      ]),
       Divider(
         height: 16,
         thickness: 2,
@@ -99,16 +127,14 @@ class TxPlanPage extends StatelessWidget {
             if (aa.external) {
               txid = await WarpApi.ledgerSend(aa.coin, plan);
             } else {
-              txid =
-                  await WarpApi.signAndBroadcast(aa.coin, aa.id, plan);
+              txid = await WarpApi.signAndBroadcast(aa.coin, aa.id, plan);
             }
             showSnackBar(s.txId(txid));
             if (settings.sound) await player.play(AssetSource("success.mp3"));
           } on String catch (message) {
             showSnackBar(message, error: true);
             if (settings.sound) await player.play(AssetSource("fail.mp3"));
-          } finally {
-          }
+          } finally {}
         });
         navigatorKey.currentState?.pop();
       }
@@ -128,8 +154,7 @@ class TxPlanPage extends StatelessWidget {
     final s = S.of(context);
     try {
       showSnackBar(s.signingPleaseWait);
-      final res =
-          await WarpApi.signOnly(aa.coin, aa.id, plan, (progress) {});
+      final res = await WarpApi.signOnly(aa.coin, aa.id, plan, (progress) {});
       if (settings.qrOffline) {
         navigatorKey.currentState
             ?.pushReplacementNamed('/showRawTx', arguments: res);

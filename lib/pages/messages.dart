@@ -96,7 +96,7 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     final date = humanizeDateTime(context, message.timestamp);
-    final owner = (message.incoming ? message.sender : message.recipient) ?? '';
+    final owner = centerTrim((message.incoming ? message.sender : message.recipient) ?? '', length: 4);
     return GestureDetector(
         onTap: () => select(context),
         child: Bubble(

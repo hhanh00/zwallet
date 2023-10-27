@@ -352,11 +352,13 @@
   "useZats": "Use Zats (8 decimals)",
   "mainUA": "Main UA Receivers",
   "replyUA": "Reply UA Receivers",
+  "receivers": "UA Receivers",
   "list": "List",
   "autoView": "Orientation",
   "general": "General",
   "priv": "Privacy",
   "views": "Views",
   "autoFee": "Automatic Fee",
-  "accountManager": "Account Manager"
+  "accountManager": "Account Manager",
+  "pleaseWaitPlan": "Computing Transaction"
 }

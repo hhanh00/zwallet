@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:window_manager/window_manager.dart';
@@ -134,6 +135,7 @@ class _AppState extends State<App> {
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
+          FormBuilderLocalizations.delegate,
         ],
         supportedLocales: [
           Locale('en'),

@@ -720,8 +720,8 @@ Future<String?> scanCode(BuildContext context) async {
   }
 }
 
-String centerTrim(String v) =>
-    v.length >= 16 ? v.substring(0, 8) + "..." + v.substring(v.length - 16) : v;
+String centerTrim(String v, {int length = 16}) =>
+    v.length >= length ? v.substring(0, 8) + "..." + v.substring(v.length - length) : v;
 
 String trailing(String v, int n) {
   final len = min(n, v.length);

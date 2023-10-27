@@ -793,6 +793,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.6.0"
+  form_builder_validators:
+    dependency: "direct main"
+    description:
+      name: form_builder_validators
+      sha256: "19aa5282b7cede82d0025ab031a98d0554b84aa2ba40f12013471a3b3e22bf02"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.0"
   frontend_server_client:
     dependency: transitive
     description:

@@ -34,12 +34,12 @@ class _BudgetState extends State<BudgetPage> {
           syncStatus2.syncedHeight;
           return Column(
             children: [
-              Panel(
+              Section(
                 title: s.largestSpendingsByAddress,
                 color: t.colorScheme.primary,
                 child: Container(height: 130, child: BudgetChart()),
               ),
-              Panel(
+              Section(
                   title: s.accountBalanceHistory,
                   color: t.colorScheme.secondary,
                   child: Container(
@@ -130,11 +130,11 @@ class BudgetTable extends StatelessWidget {
   }
 }
 
-class Panel extends StatelessWidget {
+class Section extends StatelessWidget {
   final String title;
   final Color? color;
   final Widget? child;
-  Panel({required this.title, this.color, this.child});
+  Section({required this.title, this.color, this.child});
 
   @override
   Widget build(BuildContext context) {
