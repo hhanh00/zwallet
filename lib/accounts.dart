@@ -27,7 +27,6 @@ abstract class _AASequence with Store {
 }
 
 void setActiveAccount(int coin, int id) {
-  print("setActiveAccount $coin $id");
   aa = ActiveAccount2.fromId(coin, id);
   aaSequence.seqno = DateTime.now().microsecondsSinceEpoch;
 }
@@ -110,7 +109,6 @@ abstract class _ActiveAccount2 with Store {
 
   @action
   void update(int? newHeight) {
-    print('accounts::update');
     updatePoolBalances();
 
     notes.read(newHeight);

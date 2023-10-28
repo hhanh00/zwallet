@@ -35,7 +35,7 @@ class SendPage extends StatefulWidget {
   State<StatefulWidget> createState() => _SendState();
 }
 
-class _SendState extends State<SendPage> {
+class _SendState extends State<SendPage> with WithLoadingAnimation {
   int activeStep = 0;
   final typeKey = GlobalKey<SendAddressTypeState>();
   final addressKey = GlobalKey<SendAddressState>();
@@ -56,8 +56,6 @@ class _SendState extends State<SendPage> {
   late final List<Account> accounts;
   int? accountIndex;
   // String? txPlan;
-
-  bool waiting = false;
 
   @override
   void initState() {
@@ -104,9 +102,7 @@ class _SendState extends State<SendPage> {
             },
           )
         : IconButton.filled(
-            onPressed: calcPlan,
-            iconSize: 32,
-            icon: Icon(Icons.send));
+            onPressed: calcPlan, iconSize: 32, icon: Icon(Icons.send));
 
     final previousButton = activeStep > 0
         ? IconButton.outlined(
@@ -147,7 +143,7 @@ class _SendState extends State<SendPage> {
       () => SendAmount(
           AmountState(amount: amount, spendable: poolData.spendable),
           key: amountKey),
-      () => LoadingWrapper(waiting, child: SendMemo(memo, key: memoKey)),
+      () => wrapWithLoading(SendMemo(memo, key: memoKey)),
     ];
     final body = (activeStep < b.length) ? b[activeStep].call() : Container();
     receivers = WarpApi.receiversOfAddress(aa.coin, address);
@@ -268,28 +264,21 @@ class _SendState extends State<SendPage> {
       memo: memo.memo,
     );
     final recipient = Recipient(recipientBuilder.toBytes());
-    if (!widget.single)
-      GoRouter.of(context).pop(recipient);
+    if (!widget.single) GoRouter.of(context).pop(recipient);
     try {
-      _calculating(true);
-      print('${aa.coin} ${aa.id} ${appSettings.replyUa}');
-      final plan = await WarpApi.prepareTx(
-          aa.coin,
-          aa.id,
-          [recipient],
-          appSettings.replyUa,
-          appSettings.anchorOffset,
-          CoinSettingsExtension.load(aa.coin).feeT);
-      GoRouter.of(context).push('/account/txplan', extra: plan);
+      await load(() async {
+        final plan = await WarpApi.prepareTx(
+            aa.coin,
+            aa.id,
+            [recipient],
+            appSettings.replyUa,
+            appSettings.anchorOffset,
+            CoinSettingsExtension.load(aa.coin).feeT);
+        GoRouter.of(context).push('/account/txplan', extra: plan);
+      });
     } on String catch (e) {
       await showMessageBox2(context, s.error, e);
-    } finally {
-      _calculating(false);
     }
-  }
-
-  _calculating(bool v) {
-     if (mounted) setState(() => waiting = v);
   }
 }
 

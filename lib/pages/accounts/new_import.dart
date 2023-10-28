@@ -1,3 +1,4 @@
+import 'package:YWallet/pages/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:go_router/go_router.dart';
@@ -17,7 +18,7 @@ class NewImportAccountPage extends StatefulWidget {
   State<StatefulWidget> createState() => _NewImportAccountState();
 }
 
-class _NewImportAccountState extends State<NewImportAccountPage> {
+class _NewImportAccountState extends State<NewImportAccountPage> with WithLoadingAnimation {
   int coin = 0;
   final formKey = GlobalKey<FormBuilderState>();
   final nameController = TextEditingController();
@@ -42,7 +43,7 @@ class _NewImportAccountState extends State<NewImportAccountPage> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    return Scaffold(
+    return wrapWithLoading(Scaffold(
       appBar: AppBar(
         title: Text(s.newAccount),
         actions: [
@@ -133,29 +134,30 @@ class _NewImportAccountState extends State<NewImportAccountPage> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   _onOK() async {
     final s = S.of(context);
     final form = formKey.currentState!;
     if (form.validate()) {
-      final account =
-          WarpApi.newAccount(coin, nameController.text, keyController.text, 0);
-      if (account < 0)
-        form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
-      else {
-        setActiveAccount(coin, account);
-        if (widget.first) {
-          syncStatus2.setSyncedToLatestHeight(); // first account is synced
-          if (keyController.text.isNotEmpty)
-            GoRouter.of(context).go('/account/rescan');
-          else
-            GoRouter.of(context).go('/account');
+      await load(() async {
+        final account = await WarpApi.newAccount(coin, nameController.text, keyController.text, 0);
+        if (account < 0)
+          form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
+        else {
+          setActiveAccount(coin, account);
+          if (widget.first) {
+            await syncStatus2.setSyncedToLatestHeight(); // first account is synced
+            if (keyController.text.isNotEmpty)
+              GoRouter.of(context).go('/account/rescan');
+            else
+              GoRouter.of(context).go('/account');
+          }
+          else 
+              GoRouter.of(context).pop();
         }
-        else 
-            GoRouter.of(context).pop();
-      }
+      });
     }
   }
 

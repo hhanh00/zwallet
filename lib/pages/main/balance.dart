@@ -28,6 +28,7 @@ class BalanceState extends State<BalanceWidget> {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     final color =
+      _mode == 0 ? t.colorScheme.secondary :
         _mode == 1 ? t.colorScheme.primaryContainer : t.colorScheme.primary;
     
     return Observer(builder: (context) {

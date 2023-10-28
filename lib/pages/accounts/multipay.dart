@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:flat_buffers/flat_buffers.dart';
 
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';

@@ -105,12 +105,12 @@ class WarpApi {
     compute(mempoolRunIsolateFn, port);
   }
 
-  static int newAccount(int coin, String name, String key, int index) {
-    return unwrapResultU32(warp_api_lib.new_account(
+  static Future<int> newAccount(int coin, String name, String key, int index) async {
+    return await compute((_) => unwrapResultU32(warp_api_lib.new_account(
         coin,
         name.toNativeUtf8().cast<Int8>(),
         key.toNativeUtf8().cast<Int8>(),
-        index));
+        index)), null);
   }
 
   static void newSubAccount(String name, int index, int count) {
@@ -127,7 +127,6 @@ class WarpApi {
   }
 
   static Backup getBackup(int coin, int id) {
-    print("$coin $id");
     final r = unwrapResultBytes(warp_api_lib.get_backup(coin, id));
     final backup = Backup(r);
     return backup;

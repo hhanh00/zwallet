@@ -5,6 +5,7 @@ import 'dart:isolate';
 import 'dart:math';
 
 import 'package:YWallet/appsettings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:mobx/mobx.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -96,9 +97,7 @@ abstract class _SyncStatus2 with Store {
   Future<void> update() async {
     try {
       latestHeight = await WarpApi.getLatestHeight();
-      print(latestHeight);
     } on String catch (e) {
-      print(e);
       latestHeight = 0;
     }
     syncedHeight = WarpApi.getDbHeight(aa.coin).height;
@@ -157,8 +156,8 @@ abstract class _SyncStatus2 with Store {
   }
 
   @action
-  void setSyncedToLatestHeight() {
-    WarpApi.skipToLastHeight(aa.coin);
+  Future<void> setSyncedToLatestHeight() async {
+    await compute((_) => WarpApi.skipToLastHeight(aa.coin), null);
     _updateSyncedHeight();
   }
 
@@ -271,14 +270,12 @@ abstract class _MarketPrice with Store {
   
   Future<void> updateHistoricalPrices({bool? force}) async {
     final f = force ?? false;
-    print('updateHistoricalPrices');
     try {
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       if (f ||
           lastChartUpdateTime == null ||
           now > lastChartUpdateTime! + 5 * 60) {
         await WarpApi.syncHistoricalPrices(appSettings.currency);
-        active.fetchChartData();
         lastChartUpdateTime = now;
       }
     } on String catch (msg) {

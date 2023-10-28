@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
+import '../../generated/intl/messages.dart';
 import '../../main.dart';
 
 class QRAddressWidget extends StatefulWidget {
@@ -97,7 +98,9 @@ class _QRAddressState extends State<QRAddressWidget> {
   }
 
   addressCopy() {
+    final s = S.of(context);
     Clipboard.setData(ClipboardData(text: uri));
+    showSnackBar(s.addressCopiedToClipboard);
   }
 
   qrCode() {

@@ -174,7 +174,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
 
     if (form.validate()) {
       final account =
-          WarpApi.newAccount(_coin, _nameController.text, key, accountIndex);
+          await WarpApi.newAccount(_coin, _nameController.text, key, accountIndex);
       if (account < 0) {
         showDialog(
             context: context,

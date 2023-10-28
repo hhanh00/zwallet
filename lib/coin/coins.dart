@@ -9,3 +9,4 @@ CoinBase zcashtest = ZcashTestCoin();
 
 final coins = [zcash, ycash];
 
+final activationDate = DateTime(2018, 10, 29);

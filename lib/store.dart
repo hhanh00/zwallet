@@ -716,9 +716,7 @@ Future<double?> getFxRate(String coin, String fiat) async {
   final uri = Uri.https(
       base, '/api/v3/simple/price', {'ids': coin, 'vs_currencies': fiat});
   try {
-    print(uri);
     final rep = await http.get(uri);
-    print(rep.statusCode);
     if (rep.statusCode == 200) {
       final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
       final p = json[coin][fiat.toLowerCase()];
