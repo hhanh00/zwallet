@@ -18,7 +18,8 @@ class NewImportAccountPage extends StatefulWidget {
   State<StatefulWidget> createState() => _NewImportAccountState();
 }
 
-class _NewImportAccountState extends State<NewImportAccountPage> with WithLoadingAnimation {
+class _NewImportAccountState extends State<NewImportAccountPage>
+    with WithLoadingAnimation {
   int coin = 0;
   final formKey = GlobalKey<FormBuilderState>();
   final nameController = TextEditingController();
@@ -49,6 +50,7 @@ class _NewImportAccountState extends State<NewImportAccountPage> with WithLoadin
         actions: [
           IconButton(onPressed: _settings, icon: Icon(Icons.settings)),
           IconButton(onPressed: _help, icon: Icon(Icons.help)),
+          IconButton(onPressed: _onOK, icon: Icon(Icons.add)),
         ],
       ),
       body: Padding(
@@ -113,22 +115,6 @@ class _NewImportAccountState extends State<NewImportAccountPage> with WithLoadin
                       child: Text('Import From Ledger'),
                     ),
                   ),
-                Padding(padding: EdgeInsets.all(4)),
-                ButtonBar(children: [
-                  if (!widget.first)
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.cancel),
-                      label: Text(s.cancel),
-                      onPressed: () {
-                        GoRouter.of(context).pop();
-                      },
-                    ),
-                  ElevatedButton.icon(
-                    icon: Icon(Icons.add),
-                    label: Text(_restore ? s.import : s.newLabel),
-                    onPressed: _onOK,
-                  )
-                ])
               ],
             ),
           ),
@@ -142,20 +128,21 @@ class _NewImportAccountState extends State<NewImportAccountPage> with WithLoadin
     final form = formKey.currentState!;
     if (form.validate()) {
       await load(() async {
-        final account = await WarpApi.newAccount(coin, nameController.text, keyController.text, 0);
+        final account = await WarpApi.newAccount(
+            coin, nameController.text, keyController.text, 0);
         if (account < 0)
           form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
         else {
           setActiveAccount(coin, account);
           if (widget.first) {
-            await syncStatus2.setSyncedToLatestHeight(); // first account is synced
+            await syncStatus2
+                .setSyncedToLatestHeight(); // first account is synced
             if (keyController.text.isNotEmpty)
               GoRouter.of(context).go('/account/rescan');
             else
               GoRouter.of(context).go('/account');
-          }
-          else 
-              GoRouter.of(context).pop();
+          } else
+            GoRouter.of(context).pop();
         }
       });
     }

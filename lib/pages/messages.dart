@@ -96,7 +96,9 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     final date = humanizeDateTime(context, message.timestamp);
-    final owner = centerTrim((message.incoming ? message.sender : message.recipient) ?? '', length: 4);
+    final owner = centerTrim(
+        (message.incoming ? message.sender : message.recipient) ?? '',
+        length: 4);
     return GestureDetector(
         onTap: () => select(context),
         child: Bubble(
@@ -218,24 +220,21 @@ class _MessageItemState extends State<MessageItemPage> {
     final s = S.of(context);
     final ts = msgDateFormatFull.format(message.timestamp);
     return Scaffold(
-      appBar: AppBar(title: Text(message.subject)),
+      appBar: AppBar(title: Text(message.subject), actions: [
+        IconButton(
+            onPressed: prevInThread,
+            icon: Icon(Icons.arrow_left)), // because the sorting is desc
+        IconButton(
+            onPressed: idx > 0 ? prev : null, icon: Icon(Icons.chevron_left)),
+        IconButton(
+            onPressed: idx < n - 1 ? next : null,
+            icon: Icon(Icons.chevron_right)),
+        IconButton(
+            onPressed: nextInThread, icon: Icon(Icons.arrow_right)),
+        IconButton(onPressed: open, icon: Icon(Icons.open_in_browser)),
+      ]),
       body: SingleChildScrollView(
         child: Column(children: [
-          ButtonBar(alignment: MainAxisAlignment.center, children: [
-            IconButton.outlined(
-                onPressed: prevInThread,
-                icon: Icon(Icons.arrow_left)), // because the sorting is desc
-            IconButton.outlined(
-                onPressed: idx > 0 ? prev : null,
-                icon: Icon(Icons.chevron_left)),
-            IconButton.outlined(
-                onPressed: idx < n - 1 ? next : null,
-                icon: Icon(Icons.chevron_right)),
-            IconButton.outlined(
-                onPressed: nextInThread, icon: Icon(Icons.arrow_right)),
-            IconButton.outlined(
-                onPressed: open, icon: Icon(Icons.open_in_browser)),
-          ]),
           SizedBox(height: 16),
           Panel(s.datetime, text: ts),
           SizedBox(height: 8),
@@ -250,7 +249,8 @@ class _MessageItemState extends State<MessageItemPage> {
           FormBuilder(
               child: Row(
             children: [
-              Expanded(child: FormBuilderTextField(
+              Expanded(
+                  child: FormBuilderTextField(
                 name: 'reply',
                 decoration: InputDecoration(label: Text(s.reply)),
                 controller: replyController,

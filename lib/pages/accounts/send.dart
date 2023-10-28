@@ -171,8 +171,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
               ),
               body,
               SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ButtonBar(
                 children: [
                   previousButton,
                   nextButton,
@@ -184,7 +183,6 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
   }
 
   bool validate() {
-    print("activeStep $activeStep");
     if (activeStep == 0) {
       type = typeKey.currentState!.type;
     }

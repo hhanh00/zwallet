@@ -62,11 +62,12 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
   }
 
   _rescan() async {
-    final height = int.tryParse(heightController.text) ??
-        await load<int>(() => WarpApi.getBlockHeightByTime(aa.coin, selectedDate));
-    print(height);
-    aa.reset(height);
-    Future(() => syncStatus2.rescan(height));
-    GoRouter.of(context).pop();
+    load(() async {
+      final height = int.tryParse(heightController.text) ??
+          await WarpApi.getBlockHeightByTime(aa.coin, selectedDate);
+      aa.reset(height);
+      Future(() => syncStatus2.rescan(height));
+      GoRouter.of(context).pop();
+    });
   }
 }

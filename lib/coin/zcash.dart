@@ -13,14 +13,13 @@ class ZcashCoin extends CoinBase {
   String dbName = "zec.db";
   AssetImage image = AssetImage('assets/zcash.png');
   List<LWInstance> lwd = [
-    LWInstance("Zcash Infra (E. Europe)", "https://lwd1.zcash-infra.com:9067"),
+    LWInstance("Lightwalletd", "https://mainnet.lightwalletd.com:9067"),
     LWInstance("Zcash Infra (HK)", "https://lwd2.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (USA)", "https://lwd3.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (Canada)", "https://lwd4.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (France)", "https://lwd5.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (USA)", "https://lwd6.zcash-infra.com:9067"),
-    LWInstance("Lightwalletd", "https://mainnet.lightwalletd.com:9067"),
-    LWInstance("Zecwallet", "https://lwdv3.zecwallet.co"),
+    LWInstance("Zcash Infra (E. Europe)", "https://lwd1.zcash-infra.com:9067"),
   ];
   bool supportsUA = true;
   bool supportsMultisig = false;

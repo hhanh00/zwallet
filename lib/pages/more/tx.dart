@@ -160,20 +160,20 @@ class TransactionState extends State<TransactionPage> {
     final s = S.of(context);
     final n = aa.txs.items.length;
     return Scaffold(
-      appBar: AppBar(title: Text(s.transactionDetails)),
+      appBar: AppBar(title: Text(s.transactionDetails),
+      actions: [
+            IconButton(
+                onPressed: idx > 0 ? prev : null,
+                icon: Icon(Icons.chevron_left)),
+            IconButton(
+                onPressed: idx < n - 1 ? next : null,
+                icon: Icon(Icons.chevron_right)),
+            IconButton(
+                onPressed: open, icon: Icon(Icons.open_in_browser)),
+      ]),
       body: SingleChildScrollView(
         child: Column(
           children: [
-          ButtonBar(alignment: MainAxisAlignment.center, children: [
-            IconButton.outlined(
-                onPressed: idx > 0 ? prev : null,
-                icon: Icon(Icons.chevron_left)),
-            IconButton.outlined(
-                onPressed: idx < n - 1 ? next : null,
-                icon: Icon(Icons.chevron_right)),
-            IconButton.outlined(
-                onPressed: open, icon: Icon(Icons.open_in_browser)),
-          ]),
             SizedBox(height: 16),
             Panel(s.txID, text: tx.fullTxId),
             SizedBox(height: 8),
