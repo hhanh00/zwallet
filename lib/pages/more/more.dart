@@ -60,31 +60,31 @@ class _MoreState extends State<MorePage> {
           icon: FaIcon(FontAwesomeIcons.arrowRightLong),
           text: s.rescan),
       MoreButton(
-          url: '/more/coins',
+          url: '/more/not_implemented',
           icon: FaIcon(FontAwesomeIcons.arrowRotateLeft),
           text: s.rewind),
       MoreButton(
-          url: '/more/coins',
+          url: '/more/not_implemented',
           icon: FaIcon(FontAwesomeIcons.store),
           text: s.coldStorage),
       MoreButton(
-          url: '/more/coins',
+          url: '/more/not_implemented',
           icon: FaIcon(FontAwesomeIcons.signature),
           text: s.signOffline),
       MoreButton(
-          url: '/more/coins',
+          url: '/more/not_implemented',
           icon: FaIcon(FontAwesomeIcons.towerBroadcast),
           text: s.broadcast),
       MoreButton(
-          url: '/more/coins',
+          url: '/account/multi_pay',
           icon: FaIcon(FontAwesomeIcons.peopleArrows),
           text: s.multiPay),
       MoreButton(
-          url: '/more/coins',
+          url: '/more/not_implemented',
           icon: FaIcon(FontAwesomeIcons.key),
           text: s.keyTool),
       MoreButton(
-          url: '/more/coins',
+          url: '/more/not_implemented',
           icon: FaIcon(FontAwesomeIcons.broom),
           text: s.sweep),
     ];

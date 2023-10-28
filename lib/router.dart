@@ -11,6 +11,7 @@ import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
 import 'main.dart';
 import 'pages/accounts/manager.dart';
+import 'pages/accounts/multipay.dart';
 import 'pages/accounts/new_import.dart';
 import 'pages/accounts/pay_uri.dart';
 import 'pages/accounts/rescan.dart';
@@ -42,9 +43,7 @@ final router = GoRouter(
   initialLocation: '/splash',
   debugLogDiagnostics: true,
   routes: [
-    GoRoute(
-      path: '/',
-      redirect: (context, state) => '/account'),
+    GoRoute(path: '/', redirect: (context, state) => '/account'),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => ScaffoldBar(shell: shell),
       branches: [
@@ -64,15 +63,21 @@ final router = GoRouter(
                     builder: (context, state) => AccountManagerPage(),
                     routes: [
                       GoRoute(
-                        path: 'new',
-                        builder: (context, state) =>
-                            NewImportAccountPage(first: false),
-                      ),
+                          path: 'new',
+                          builder: (context, state) =>
+                              NewImportAccountPage(first: false)),
+                    ]),
+                GoRoute(
+                    path: 'multi_pay',
+                    builder: (context, state) => MultiPayPage(),
+                    routes: [
+                      GoRoute(
+                          path: 'new',
+                          builder: (context, state) => SendPage(single: false)),
                     ]),
                 GoRoute(
                   path: 'txplan',
-                  builder: (context, state) => TxPlanPage(
-                      state.extra as String,
+                  builder: (context, state) => TxPlanPage(state.extra as String,
                       signOnly: state.uri.queryParameters['sign'] != null),
                 ),
                 GoRoute(
@@ -99,15 +104,14 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/messages',
-              builder: (context, state) => MessagePage(),
-              routes: [
+                path: '/messages',
+                builder: (context, state) => MessagePage(),
+                routes: [
                   GoRoute(
                       path: 'details',
                       builder: (context, state) => MessageItemPage(
                           int.parse(state.uri.queryParameters["index"]!))),
-              ]
-            ),
+                ]),
           ],
         ),
         StatefulShellBranch(

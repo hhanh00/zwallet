@@ -2266,6 +2266,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Computing Transaction'**
   String get pleaseWaitPlan;
+
+  /// No description provided for @deletePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this recipient'**
+  String get deletePayment;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

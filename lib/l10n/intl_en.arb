@@ -360,5 +360,6 @@
   "views": "Views",
   "autoFee": "Automatic Fee",
   "accountManager": "Account Manager",
-  "pleaseWaitPlan": "Computing Transaction"
+  "pleaseWaitPlan": "Computing Transaction",
+  "deletePayment": "Are you sure you want to delete this recipient"
 }

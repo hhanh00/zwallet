@@ -53,7 +53,7 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
     } on StateError {
       message = null;
     }
-    return TxItem(tx, message, index);
+    return TxItem(tx, message, index: index);
   }
 
   @override
@@ -101,9 +101,9 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
 
 class TxItem extends StatelessWidget {
   final Tx tx;
-  final int index;
+  final int? index;
   final ZMessage? message;
-  TxItem(this.tx, this.message, this.index);
+  TxItem(this.tx, this.message, {this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +119,7 @@ class TxItem extends StatelessWidget {
     final trailing = Column(children: [dateString, value]);
 
     return GestureDetector(
-        onTap: () => gotoTx(context, index),
+        onTap: () { if (index != null) gotoTx(context, index!); },
         behavior: HitTestBehavior.translucent,
         child: Row(
           children: [

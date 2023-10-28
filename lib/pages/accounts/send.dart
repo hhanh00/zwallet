@@ -148,8 +148,6 @@ class _SendState extends State<SendPage> {
           AmountState(amount: amount, spendable: poolData.spendable),
           key: amountKey),
       () => LoadingWrapper(waiting, child: SendMemo(memo, key: memoKey)),
-      // () => SendReport(key: planKey, recipient: recipient,
-      //   onPlan: (p) => setState(() { txPlan = p; })),
     ];
     final body = (activeStep < b.length) ? b[activeStep].call() : Container();
     receivers = WarpApi.receiversOfAddress(aa.coin, address);
@@ -225,7 +223,6 @@ class _SendState extends State<SendPage> {
     }
     if (activeStep == 4) {
       final v = memoKey.currentState!.memo;
-      print("MEMO ${v?.memo}");
       if (v == null) return false;
       memo = v;
     }
@@ -263,7 +260,6 @@ class _SendState extends State<SendPage> {
   calcPlan() async {
     final s = S.of(context);
     if (!validate()) return;
-    print("memo ${memo.memo}");
     final recipientBuilder = RecipientObjectBuilder(
       address: address,
       amount: amount,
@@ -272,7 +268,8 @@ class _SendState extends State<SendPage> {
       memo: memo.memo,
     );
     final recipient = Recipient(recipientBuilder.toBytes());
-
+    if (!widget.single)
+      GoRouter.of(context).pop(recipient);
     try {
       _calculating(true);
       print('${aa.coin} ${aa.id} ${appSettings.replyUa}');
@@ -291,7 +288,9 @@ class _SendState extends State<SendPage> {
     }
   }
 
-  _calculating(bool v) => setState(() => waiting = v);
+  _calculating(bool v) {
+     if (mounted) setState(() => waiting = v);
+  }
 }
 
 class SendAddressType extends StatefulWidget {

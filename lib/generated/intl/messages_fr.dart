@@ -1139,4 +1139,7 @@ class SFr extends S {
 
   @override
   String get pleaseWaitPlan => 'Computing Transaction';
+
+  @override
+  String get deletePayment => 'Are you sure you want to delete this recipient';
 }

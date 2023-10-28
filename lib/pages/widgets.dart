@@ -1,8 +1,11 @@
+import 'package:YWallet/db.dart';
+import 'package:YWallet/history.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:warp_api/data_fb_generated.dart';
 
 import '../accounts.dart';
 import '../appsettings.dart';
@@ -178,5 +181,48 @@ class LoadingWrapper extends StatelessWidget {
         )
       ],
     );
+  }
+}
+
+class RecipientWidget extends StatelessWidget {
+  final RecipientT recipient;
+  final bool? selected;
+  late final ZMessage message;
+  RecipientWidget(this.recipient, {this.selected}) {
+    message = ZMessage(
+      0,
+      0,
+      false,
+      '',
+      recipient.address!,
+      recipient.subject!,
+      recipient.memo!,
+      DateTime.now(),
+      0,
+      false,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final t = Theme.of(context);
+    final select = selected ?? false;
+    return Card(
+        color: select ? t.primaryColor : null,
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              if (recipient.replyTo)
+                Text(s.includeReplyTo, style: t.textTheme.labelSmall),
+              MessageContentWidget(
+                  recipient.address!, message, recipient.memo!),
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(amountToString2(recipient.amount))),
+            ],
+          ),
+        ));
   }
 }
