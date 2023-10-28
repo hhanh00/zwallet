@@ -4,6 +4,12 @@ weight: 80
 icon: wrench
 ---
 
+# 1.4.4
+
+- [Disable sounds on Linux](https://github.com/hhanh00/zwallet/issues/104)
+- [Sweeping transparent key should report error when it fails](https://github.com/hhanh00/zwallet/issues/106)
+- [Detect reorgs during scan](https://github.com/hhanh00/zwallet/issues/107)
+
 # 1.4.3
 
 - Support for ZIP 317 across the board: Single/Multiple Payments, Shielding, Pool transfers, etc.
