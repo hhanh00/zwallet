@@ -31,14 +31,12 @@ class AppSettings extends $pb.GeneratedMessage {
     $core.bool? protectOpen,
     $core.bool? noqrOffline,
     $core.bool? fullPrec,
-    $core.int? uaType,
     $core.String? backupEncKey,
     $core.int? developerMode,
     $core.int? minPrivacyLevel,
     $core.bool? sound,
     $core.String? dbPasswd,
     $core.bool? advanced,
-    $core.int? replyUa,
     $core.String? memo,
   }) {
     final $result = create();
@@ -87,9 +85,6 @@ class AppSettings extends $pb.GeneratedMessage {
     if (fullPrec != null) {
       $result.fullPrec = fullPrec;
     }
-    if (uaType != null) {
-      $result.uaType = uaType;
-    }
     if (backupEncKey != null) {
       $result.backupEncKey = backupEncKey;
     }
@@ -107,9 +102,6 @@ class AppSettings extends $pb.GeneratedMessage {
     }
     if (advanced != null) {
       $result.advanced = advanced;
-    }
-    if (replyUa != null) {
-      $result.replyUa = replyUa;
     }
     if (memo != null) {
       $result.memo = memo;
@@ -136,14 +128,12 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOB(13, _omitFieldNames ? '' : 'protectOpen')
     ..aOB(14, _omitFieldNames ? '' : 'noqrOffline')
     ..aOB(15, _omitFieldNames ? '' : 'fullPrec')
-    ..a<$core.int>(16, _omitFieldNames ? '' : 'uaType', $pb.PbFieldType.OU3)
     ..aOS(17, _omitFieldNames ? '' : 'backupEncKey')
     ..a<$core.int>(18, _omitFieldNames ? '' : 'developerMode', $pb.PbFieldType.OU3)
     ..a<$core.int>(19, _omitFieldNames ? '' : 'minPrivacyLevel', $pb.PbFieldType.OU3)
     ..aOB(20, _omitFieldNames ? '' : 'sound')
     ..aOS(21, _omitFieldNames ? '' : 'dbPasswd')
     ..aOB(22, _omitFieldNames ? '' : 'advanced')
-    ..a<$core.int>(23, _omitFieldNames ? '' : 'replyUa', $pb.PbFieldType.OU3)
     ..aOS(24, _omitFieldNames ? '' : 'memo')
     ..hasRequiredFields = false
   ;
@@ -304,101 +294,81 @@ class AppSettings extends $pb.GeneratedMessage {
   @$pb.TagNumber(15)
   void clearFullPrec() => clearField(15);
 
-  @$pb.TagNumber(16)
-  $core.int get uaType => $_getIZ(15);
-  @$pb.TagNumber(16)
-  set uaType($core.int v) { $_setUnsignedInt32(15, v); }
-  @$pb.TagNumber(16)
-  $core.bool hasUaType() => $_has(15);
-  @$pb.TagNumber(16)
-  void clearUaType() => clearField(16);
-
   @$pb.TagNumber(17)
-  $core.String get backupEncKey => $_getSZ(16);
+  $core.String get backupEncKey => $_getSZ(15);
   @$pb.TagNumber(17)
-  set backupEncKey($core.String v) { $_setString(16, v); }
+  set backupEncKey($core.String v) { $_setString(15, v); }
   @$pb.TagNumber(17)
-  $core.bool hasBackupEncKey() => $_has(16);
+  $core.bool hasBackupEncKey() => $_has(15);
   @$pb.TagNumber(17)
   void clearBackupEncKey() => clearField(17);
 
   @$pb.TagNumber(18)
-  $core.int get developerMode => $_getIZ(17);
+  $core.int get developerMode => $_getIZ(16);
   @$pb.TagNumber(18)
-  set developerMode($core.int v) { $_setUnsignedInt32(17, v); }
+  set developerMode($core.int v) { $_setUnsignedInt32(16, v); }
   @$pb.TagNumber(18)
-  $core.bool hasDeveloperMode() => $_has(17);
+  $core.bool hasDeveloperMode() => $_has(16);
   @$pb.TagNumber(18)
   void clearDeveloperMode() => clearField(18);
 
   @$pb.TagNumber(19)
-  $core.int get minPrivacyLevel => $_getIZ(18);
+  $core.int get minPrivacyLevel => $_getIZ(17);
   @$pb.TagNumber(19)
-  set minPrivacyLevel($core.int v) { $_setUnsignedInt32(18, v); }
+  set minPrivacyLevel($core.int v) { $_setUnsignedInt32(17, v); }
   @$pb.TagNumber(19)
-  $core.bool hasMinPrivacyLevel() => $_has(18);
+  $core.bool hasMinPrivacyLevel() => $_has(17);
   @$pb.TagNumber(19)
   void clearMinPrivacyLevel() => clearField(19);
 
   @$pb.TagNumber(20)
-  $core.bool get sound => $_getBF(19);
+  $core.bool get sound => $_getBF(18);
   @$pb.TagNumber(20)
-  set sound($core.bool v) { $_setBool(19, v); }
+  set sound($core.bool v) { $_setBool(18, v); }
   @$pb.TagNumber(20)
-  $core.bool hasSound() => $_has(19);
+  $core.bool hasSound() => $_has(18);
   @$pb.TagNumber(20)
   void clearSound() => clearField(20);
 
   @$pb.TagNumber(21)
-  $core.String get dbPasswd => $_getSZ(20);
+  $core.String get dbPasswd => $_getSZ(19);
   @$pb.TagNumber(21)
-  set dbPasswd($core.String v) { $_setString(20, v); }
+  set dbPasswd($core.String v) { $_setString(19, v); }
   @$pb.TagNumber(21)
-  $core.bool hasDbPasswd() => $_has(20);
+  $core.bool hasDbPasswd() => $_has(19);
   @$pb.TagNumber(21)
   void clearDbPasswd() => clearField(21);
 
   @$pb.TagNumber(22)
-  $core.bool get advanced => $_getBF(21);
+  $core.bool get advanced => $_getBF(20);
   @$pb.TagNumber(22)
-  set advanced($core.bool v) { $_setBool(21, v); }
+  set advanced($core.bool v) { $_setBool(20, v); }
   @$pb.TagNumber(22)
-  $core.bool hasAdvanced() => $_has(21);
+  $core.bool hasAdvanced() => $_has(20);
   @$pb.TagNumber(22)
   void clearAdvanced() => clearField(22);
 
-  @$pb.TagNumber(23)
-  $core.int get replyUa => $_getIZ(22);
-  @$pb.TagNumber(23)
-  set replyUa($core.int v) { $_setUnsignedInt32(22, v); }
-  @$pb.TagNumber(23)
-  $core.bool hasReplyUa() => $_has(22);
-  @$pb.TagNumber(23)
-  void clearReplyUa() => clearField(23);
-
   @$pb.TagNumber(24)
-  $core.String get memo => $_getSZ(23);
+  $core.String get memo => $_getSZ(21);
   @$pb.TagNumber(24)
-  set memo($core.String v) { $_setString(23, v); }
+  set memo($core.String v) { $_setString(21, v); }
   @$pb.TagNumber(24)
-  $core.bool hasMemo() => $_has(23);
+  $core.bool hasMemo() => $_has(21);
   @$pb.TagNumber(24)
   void clearMemo() => clearField(24);
 }
 
 class CoinSettings extends $pb.GeneratedMessage {
   factory CoinSettings({
-    $core.int? coin,
     ServerURL? lwd,
     ServerURL? explorer,
     $core.bool? manualFee,
     $fixnum.Int64? fee,
     $core.bool? spamFilter,
+    $core.int? uaType,
+    $core.int? replyUa,
   }) {
     final $result = create();
-    if (coin != null) {
-      $result.coin = coin;
-    }
     if (lwd != null) {
       $result.lwd = lwd;
     }
@@ -414,6 +384,12 @@ class CoinSettings extends $pb.GeneratedMessage {
     if (spamFilter != null) {
       $result.spamFilter = spamFilter;
     }
+    if (uaType != null) {
+      $result.uaType = uaType;
+    }
+    if (replyUa != null) {
+      $result.replyUa = replyUa;
+    }
     return $result;
   }
   CoinSettings._() : super();
@@ -421,12 +397,13 @@ class CoinSettings extends $pb.GeneratedMessage {
   factory CoinSettings.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'CoinSettings', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'coin', $pb.PbFieldType.OU3)
     ..aOM<ServerURL>(2, _omitFieldNames ? '' : 'lwd', subBuilder: ServerURL.create)
     ..aOM<ServerURL>(3, _omitFieldNames ? '' : 'explorer', subBuilder: ServerURL.create)
     ..aOB(4, _omitFieldNames ? '' : 'manualFee')
     ..a<$fixnum.Int64>(5, _omitFieldNames ? '' : 'fee', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..aOB(6, _omitFieldNames ? '' : 'spamFilter')
+    ..a<$core.int>(7, _omitFieldNames ? '' : 'uaType', $pb.PbFieldType.OU3)
+    ..a<$core.int>(8, _omitFieldNames ? '' : 'replyUa', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
   ;
 
@@ -451,63 +428,72 @@ class CoinSettings extends $pb.GeneratedMessage {
   static CoinSettings getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CoinSettings>(create);
   static CoinSettings? _defaultInstance;
 
-  @$pb.TagNumber(1)
-  $core.int get coin => $_getIZ(0);
-  @$pb.TagNumber(1)
-  set coin($core.int v) { $_setUnsignedInt32(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasCoin() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearCoin() => clearField(1);
-
   @$pb.TagNumber(2)
-  ServerURL get lwd => $_getN(1);
+  ServerURL get lwd => $_getN(0);
   @$pb.TagNumber(2)
   set lwd(ServerURL v) { setField(2, v); }
   @$pb.TagNumber(2)
-  $core.bool hasLwd() => $_has(1);
+  $core.bool hasLwd() => $_has(0);
   @$pb.TagNumber(2)
   void clearLwd() => clearField(2);
   @$pb.TagNumber(2)
-  ServerURL ensureLwd() => $_ensure(1);
+  ServerURL ensureLwd() => $_ensure(0);
 
   @$pb.TagNumber(3)
-  ServerURL get explorer => $_getN(2);
+  ServerURL get explorer => $_getN(1);
   @$pb.TagNumber(3)
   set explorer(ServerURL v) { setField(3, v); }
   @$pb.TagNumber(3)
-  $core.bool hasExplorer() => $_has(2);
+  $core.bool hasExplorer() => $_has(1);
   @$pb.TagNumber(3)
   void clearExplorer() => clearField(3);
   @$pb.TagNumber(3)
-  ServerURL ensureExplorer() => $_ensure(2);
+  ServerURL ensureExplorer() => $_ensure(1);
 
   @$pb.TagNumber(4)
-  $core.bool get manualFee => $_getBF(3);
+  $core.bool get manualFee => $_getBF(2);
   @$pb.TagNumber(4)
-  set manualFee($core.bool v) { $_setBool(3, v); }
+  set manualFee($core.bool v) { $_setBool(2, v); }
   @$pb.TagNumber(4)
-  $core.bool hasManualFee() => $_has(3);
+  $core.bool hasManualFee() => $_has(2);
   @$pb.TagNumber(4)
   void clearManualFee() => clearField(4);
 
   @$pb.TagNumber(5)
-  $fixnum.Int64 get fee => $_getI64(4);
+  $fixnum.Int64 get fee => $_getI64(3);
   @$pb.TagNumber(5)
-  set fee($fixnum.Int64 v) { $_setInt64(4, v); }
+  set fee($fixnum.Int64 v) { $_setInt64(3, v); }
   @$pb.TagNumber(5)
-  $core.bool hasFee() => $_has(4);
+  $core.bool hasFee() => $_has(3);
   @$pb.TagNumber(5)
   void clearFee() => clearField(5);
 
   @$pb.TagNumber(6)
-  $core.bool get spamFilter => $_getBF(5);
+  $core.bool get spamFilter => $_getBF(4);
   @$pb.TagNumber(6)
-  set spamFilter($core.bool v) { $_setBool(5, v); }
+  set spamFilter($core.bool v) { $_setBool(4, v); }
   @$pb.TagNumber(6)
-  $core.bool hasSpamFilter() => $_has(5);
+  $core.bool hasSpamFilter() => $_has(4);
   @$pb.TagNumber(6)
   void clearSpamFilter() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.int get uaType => $_getIZ(5);
+  @$pb.TagNumber(7)
+  set uaType($core.int v) { $_setUnsignedInt32(5, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasUaType() => $_has(5);
+  @$pb.TagNumber(7)
+  void clearUaType() => clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.int get replyUa => $_getIZ(6);
+  @$pb.TagNumber(8)
+  set replyUa($core.int v) { $_setUnsignedInt32(6, v); }
+  @$pb.TagNumber(8)
+  $core.bool hasReplyUa() => $_has(6);
+  @$pb.TagNumber(8)
+  void clearReplyUa() => clearField(8);
 }
 
 class ServerURL extends $pb.GeneratedMessage {

@@ -99,6 +99,6 @@ class TransactionState extends State<TransactionPage> {
 
 void openTxInExplorer(String txId) {
     final settings = CoinSettingsExtension.load(active.coin);
-    final url = settings.resolveBlockExplorer();
+    final url = settings.resolveBlockExplorer(active.coin);
     launchUrl(Uri.parse("$url/$txId"), mode: LaunchMode.inAppWebView);
 }

@@ -263,13 +263,14 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     );
     final recipient = Recipient(recipientBuilder.toBytes());
     if (!widget.single) GoRouter.of(context).pop(recipient);
+    print('53 ${coinSettings.replyUa}');
     try {
       await load(() async {
         final plan = await WarpApi.prepareTx(
             aa.coin,
             aa.id,
             [recipient],
-            appSettings.replyUa,
+            coinSettings.replyUa,
             appSettings.anchorOffset,
             CoinSettingsExtension.load(aa.coin).feeT);
         GoRouter.of(context).push('/account/txplan', extra: plan);
@@ -509,7 +510,7 @@ class SendPoolState extends State<SendPool> {
                       Text(s.sapling, style: style.apply(color: Colors.yellow)),
                 ),
               ),
-              FormBuilderFieldOption(
+              if (aa.hasUA) FormBuilderFieldOption(
                 value: 2,
                 child: ListTile(
                   trailing: Text(amountToString2(bals.orchard)),

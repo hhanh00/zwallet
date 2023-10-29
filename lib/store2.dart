@@ -35,9 +35,10 @@ void initSyncListener() {
 Timer? syncTimer;
 
 void startAutoSync() {
+  print('startAutoSync');
   if (syncTimer == null) {
-    syncTimer = Timer.periodic(Duration(seconds: 5), (timer) {
-      syncStatus2.sync(false);
+    syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
+      syncStatus2.sync(false, auto: true);
     });
   }
 }
@@ -96,20 +97,24 @@ abstract class _SyncStatus2 with Store {
   @action
   Future<void> update() async {
     try {
-      latestHeight = await WarpApi.getLatestHeight();
-    } on String catch (e) {
-      latestHeight = 0;
+      latestHeight = await WarpApi.getLatestHeight(aa.coin);
+    } on String catch (_) {
     }
     syncedHeight = WarpApi.getDbHeight(aa.coin).height;
   }
 
   @action
-  Future<void> sync(bool rescan) async {
+  Future<void> sync(bool rescan, {bool auto = false}) async {
     final context = rootNavigatorKey.currentContext!;
     final s = S.of(context);
+    print('10 sync');
     if (paused) return;
     if (syncing) return;
     await update();
+    print('11 sync');
+    final lh = latestHeight;
+    // don't auto sync more than 1 month of data
+    if (!rescan && auto && lh != null && lh - syncedHeight > 30*24*60*4/5) return;
     if (isSynced) return;
     try {
       syncing = true;
@@ -125,6 +130,7 @@ abstract class _SyncStatus2 with Store {
       eta.begin(latestHeight!);
       eta.checkpoint(syncedHeight, DateTime.now());
 
+      print('12 warpSync2');
       // This may take a long time
       await WarpApi.warpSync2(
           aa.coin,

@@ -431,8 +431,12 @@ class NativeLibrary {
   late final _dart_get_diversified_address _get_diversified_address =
       _get_diversified_address_ptr.asFunction<_dart_get_diversified_address>();
 
-  CResult_u32 get_latest_height() {
-    return _get_latest_height();
+  CResult_u32 get_latest_height(
+    int coin,
+  ) {
+    return _get_latest_height(
+      coin,
+    );
   }
 
   late final _get_latest_height_ptr =
@@ -790,11 +794,13 @@ class NativeLibrary {
       _store_contact_ptr.asFunction<_dart_store_contact>();
 
   CResult_____c_char commit_unsaved_contacts(
+    int coin,
     int anchor_offset,
     ffi.Pointer<ffi.Uint8> fee_bytes,
     int fee_len,
   ) {
     return _commit_unsaved_contacts(
+      coin,
       anchor_offset,
       fee_bytes,
       fee_len,
@@ -2105,9 +2111,13 @@ typedef _dart_get_diversified_address = CResult_____c_char Function(
   int time,
 );
 
-typedef _c_get_latest_height = CResult_u32 Function();
+typedef _c_get_latest_height = CResult_u32 Function(
+  ffi.Uint8 coin,
+);
 
-typedef _dart_get_latest_height = CResult_u32 Function();
+typedef _dart_get_latest_height = CResult_u32 Function(
+  int coin,
+);
 
 typedef _c_ledger_build_keys = CResult_u8 Function();
 
@@ -2350,12 +2360,14 @@ typedef _dart_store_contact = void Function(
 );
 
 typedef _c_commit_unsaved_contacts = CResult_____c_char Function(
+  ffi.Uint8 coin,
   ffi.Uint32 anchor_offset,
   ffi.Pointer<ffi.Uint8> fee_bytes,
   ffi.Uint64 fee_len,
 );
 
 typedef _dart_commit_unsaved_contacts = CResult_____c_char Function(
+  int coin,
   int anchor_offset,
   ffi.Pointer<ffi.Uint8> fee_bytes,
   int fee_len,

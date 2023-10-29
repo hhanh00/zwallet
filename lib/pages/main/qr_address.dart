@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
+import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../../main.dart';
 
@@ -34,11 +35,13 @@ class _QRAddressState extends State<QRAddressWidget> {
   @override
   void initState() {
     super.initState();
+    addressMode = coins[aa.coin].defaultAddrMode;
     availableMode = WarpApi.getAvailableAddrs(aa.coin, aa.id);
   }
 
   @override
   Widget build(BuildContext context) {
+    print('97 addressMode $addressMode');
     final a = widget.amount ?? 0;
     final uri = 
       a != 0 ? WarpApi.makePaymentURI(aa.coin, address, widget.amount!, widget.memo ?? '')
@@ -67,11 +70,15 @@ class _QRAddressState extends State<QRAddressWidget> {
   }
 
   _nextAddressMode() {
+    print('101 availableMode $availableMode');
+    final c = coins[aa.coin];
     while (true) {
       addressMode = (addressMode - 1) % 4;
-      if (addressMode == 0) break;
+      if (addressMode == 0 && !c.supportsUA) continue;
+      if (addressMode == c.defaultAddrMode) break;
       if (availableMode & (1 << (addressMode - 1)) != 0) break;
     }
+    print('96 addressMode $addressMode');
     widget.onMode?.call(addressMode);
     setState(() {});
   }

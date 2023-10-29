@@ -7,7 +7,7 @@ for Blockchain data, and CoinGecko REST API for price info.
 
 ## You Own your accounts
 
-> **BACKUP** YOUR ACCOUNT DATA. 
+# **BACKUP** YOUR ACCOUNT DATA. 
  
 No one can recover your secret
 keys. If you don't have a backup, you **WILL LOSE YOUR MONEY** if your phone breaks down.

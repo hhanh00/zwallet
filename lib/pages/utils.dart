@@ -4,7 +4,10 @@ import 'package:YWallet/main.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../accounts.dart';
+import '../appsettings.dart';
 import '../generated/intl/messages.dart';
 import '../router.dart';
 import 'widgets.dart';
@@ -52,4 +55,10 @@ mixin WithLoadingAnimation<T extends StatefulWidget> on State<T> {
 Future<void> showSnackBar(String msg) async {
   final bar = FlushbarHelper.createInformation(message: msg, duration: Duration(seconds: 4));
   await bar.show(rootNavigatorKey.currentContext!);
+}
+
+void openTxInExplorer(String txId) {
+    final settings = CoinSettingsExtension.load(aa.coin);
+    final url = settings.resolveBlockExplorer(aa.coin);
+    launchUrl(Uri.parse("$url/$txId"), mode: LaunchMode.inAppWebView);
 }

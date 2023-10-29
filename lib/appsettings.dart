@@ -13,17 +13,16 @@ var coinSettings = CoinSettings();
 
 extension AppSettingsExtension on AppSettings {
   void defaults() {
-    if (!this.hasAnchorOffset()) appSettings.anchorOffset = 3;
-    if (!this.hasRowsPerPage()) appSettings.rowsPerPage = 10;
-    if (!this.hasUaType()) appSettings.uaType = 7;
-    if (!this.hasDeveloperMode()) appSettings.developerMode = 5;
-    if (!this.hasCurrency()) appSettings.currency = 'USD';
+    if (!hasAnchorOffset()) anchorOffset = 3;
+    if (!hasRowsPerPage()) rowsPerPage = 10;
+    if (!hasDeveloperMode()) developerMode = 5;
+    if (!hasCurrency()) currency = 'USD';
   }
 
   static AppSettings load(SharedPreferences prefs) {
     final setting = prefs.getString('settings') ?? '';
     final settingBytes  = base64Decode(setting);
-    return AppSettings.fromBuffer(settingBytes);
+    return AppSettings.fromBuffer(settingBytes)..defaults();
   }
 
   Future<void> save(SharedPreferences prefs) async {
@@ -36,21 +35,29 @@ extension AppSettingsExtension on AppSettings {
 }
 
 extension CoinSettingsExtension on CoinSettings {
-  static CoinSettings load(int coin) {
-    final p = WarpApi.getProperty(coin, 'settings');
-    if (p.isEmpty) return CoinSettings(coin: coin);
-    return CoinSettings.fromBuffer(base64Decode(p));
+  void defaults(int coin) {
+    int defaultAddrMode = coins[coin].defaultAddrMode;
+    if (!hasUaType()) uaType = defaultAddrMode;
+    if (!hasReplyUa()) replyUa = defaultAddrMode;
   }
 
-  void save() {
-    final bytes = this.writeToBuffer();
+  static CoinSettings load(int coin) {
+    final p = WarpApi.getProperty(coin, 'settings');
+    print('67 $p');
+    return CoinSettings.fromBuffer(base64Decode(p))..defaults(coin);
+  }
+
+  void save(int coin) {
+    print('35 $this');
+    final bytes = writeToBuffer();
     final settings = base64Encode(bytes);
+    print('35 $coin $settings');
     WarpApi.setProperty(coin, 'settings', settings);
   }
 
   FeeT get feeT => FeeT(scheme: manualFee ? 1 : 0, fee: fee.toInt());
 
-  String resolveBlockExplorer() {
+  String resolveBlockExplorer(int coin) {
     final explorers = coins[coin].blockExplorers;
     int idx = explorer.index;
     if (idx >= 0) return explorers[idx];

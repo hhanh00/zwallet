@@ -852,7 +852,7 @@ abstract class _SyncStatus with Store {
       if (url.isNotEmpty) WarpApi.updateLWD(active.coin, url);
     }
     try {
-      latestHeight = await WarpApi.getLatestHeight();
+      latestHeight = await WarpApi.getLatestHeight(aa.coin);
     } on String {}
     final _syncedInfo = getDbSyncedHeight();
     // if syncedHeight = 0, we just started sync therefore don't set it back to null

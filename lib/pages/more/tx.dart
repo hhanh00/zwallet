@@ -15,6 +15,7 @@ import '../../history.dart';
 import '../../main.dart';
 import '../../store.dart';
 import '../../tablelist.dart';
+import '../utils.dart';
 import '../widgets.dart';
 
 class TxPage extends StatelessWidget {
@@ -214,11 +215,6 @@ class TransactionState extends State<TransactionPage> {
   _addContact() async {
     // await addContact(context, ContactT(address: tx.address));
   }
-}
-
-void openTxInExplorer(String txId) {
-  final url = coinSettings.resolveBlockExplorer();
-  launchUrl(Uri.parse("$url/$txId"), mode: LaunchMode.inAppWebView);
 }
 
 void gotoTx(BuildContext context, int index) {

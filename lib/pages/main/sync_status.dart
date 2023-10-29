@@ -21,7 +21,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
     super.initState();
     Future(() async { 
       await syncStatus2.update();
-      // startAutoSync();
+      startAutoSync();
     });
   }
 
@@ -33,6 +33,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
       return s.syncPaused;
 
     final latestHeight = syncStatus2.latestHeight;
+    print('21 $latestHeight');
 
     if (latestHeight == null)
       return s.disconnected;

@@ -59,6 +59,7 @@ class _SettingsState extends State<SettingsPage>
   Widget build(BuildContext context) {
     final s = S.of(context);
     final c = coins[widget.coin];
+    print('46 ${widget.coin} $c');
     return Scaffold(
       appBar: AppBar(
         title: Text(s.settings),
@@ -81,10 +82,11 @@ class _SettingsState extends State<SettingsPage>
         child: TabBarView(
           controller: tabController,
           children: [
-            SingleChildScrollView(child: GeneralTab(key: generalKey, currencies: currencies)),
+            SingleChildScrollView(
+                child: GeneralTab(key: generalKey, currencies: currencies)),
             SingleChildScrollView(child: PrivacyTab(key: privacyKey)),
             SingleChildScrollView(child: ViewTab(key: viewKey)),
-            SingleChildScrollView(child: CoinTab(key: coinKey)),
+            SingleChildScrollView(child: CoinTab(widget.coin, key: coinKey)),
           ],
         ),
       ),
@@ -96,7 +98,7 @@ class _SettingsState extends State<SettingsPage>
       save();
       final prefs = await SharedPreferences.getInstance();
       await _settings0.save(prefs);
-      _coinSettings0.save();
+      _coinSettings0.save(aa.coin);
       appSettings = AppSettingsExtension.load(prefs);
       coinSettings = CoinSettingsExtension.load(aa.coin);
       Future(() async {
@@ -118,6 +120,7 @@ class _SettingsState extends State<SettingsPage>
   void save() {
     _settings0.mergeFromMessage(_settings);
     _coinSettings0.mergeFromMessage(_coinSettings);
+    print('29 ${_coinSettings0} ${_coinSettings}');
   }
 }
 
@@ -169,22 +172,6 @@ class _GeneralState extends State<GeneralTab>
             items: currencyOptions,
             onChanged: (v) {
               _settings.currency = v!;
-            },
-          ),
-          FieldUACheckbox(
-            _settings0.uaType,
-            label: s.mainUA,
-            name: 'main_address',
-            onChanged: (v) {
-              _settings.uaType = v?.sum ?? 0;
-            },
-          ),
-          FieldUACheckbox(
-            _settings0.replyUa,
-            label: s.replyUA,
-            name: 'reply_address',
-            onChanged: (v) {
-              _settings.replyUa = v?.sum ?? 0;
             },
           ),
           FormBuilderTextField(
@@ -398,7 +385,8 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
 }
 
 class CoinTab extends StatefulWidget {
-  CoinTab({super.key});
+  final int coin;
+  CoinTab(this.coin, {super.key});
   @override
   State<StatefulWidget> createState() => _CoinState();
 }
@@ -418,7 +406,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
     super.build(context);
     final s = S.of(context);
     final t = Theme.of(context);
-    final c = coins[aa.coin];
+    final c = coins[widget.coin];
     final servers = c.lwd
         .asMap()
         .entries
@@ -436,31 +424,42 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
     return FormBuilder(
         key: formKey,
         child: Column(children: [
-          FormBuilderSwitch(
-            name: 'spam',
-            initialValue: _coinSettings0.spamFilter,
-            title: Text(s.antispamFilter),
-            onChanged: (v) { _coinSettings.spamFilter = v!; },
-          ),
+          if (aa.hasUA)
+            FormBuilderSwitch(
+              name: 'spam',
+              initialValue: _coinSettings0.spamFilter,
+              title: Text(s.antispamFilter),
+              onChanged: (v) {
+                _coinSettings.spamFilter = v!;
+              },
+            ),
           FormBuilderSwitch(
             name: 'auto_fee',
             initialValue: !_coinSettings0.manualFee,
             title: Text(s.autoFee),
-            onChanged: (v) => setState(() { _coinSettings.manualFee = !v!; }),
+            onChanged: (v) => setState(() {
+              _coinSettings.manualFee = !v!;
+            }),
           ),
-          if (_coinSettings.manualFee) FormBuilderTextField(
-            name: 'custom_fee',
-            decoration: InputDecoration(label: Text(s.fee)),
-            initialValue: fee,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            onChanged: (v) { _coinSettings.fee = Int64(stringToAmount(v!)); },
-          ),
+          if (_coinSettings.manualFee)
+            FormBuilderTextField(
+              name: 'custom_fee',
+              decoration: InputDecoration(label: Text(s.fee)),
+              initialValue: fee,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              onChanged: (v) {
+                _coinSettings.fee = Int64(stringToAmount(v!));
+                print('67 ${_coinSettings.fee}');
+              },
+            ),
           FormBuilderRadioGroup<int>(
             name: 'server',
             orientation: OptionsOrientation.vertical,
             decoration: InputDecoration(label: Text(s.server)),
             initialValue: _coinSettings0.lwd.index,
-            onChanged: (v) { _coinSettings.lwd.index = v!; },
+            onChanged: (v) {
+              _coinSettings.lwd.index = v!;
+            },
             options: [
               ...servers,
               FormBuilderFieldOption(
@@ -468,7 +467,9 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
                   child: FormBuilderTextField(
                     name: 'server_custom',
                     initialValue: _coinSettings0.lwd.customURL,
-                    onChanged: (v) { _coinSettings.lwd.customURL = v!; },
+                    onChanged: (v) {
+                      _coinSettings.lwd.customURL = v!;
+                    },
                     style: t.textTheme.bodyMedium,
                   )),
             ],
@@ -478,7 +479,9 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
             orientation: OptionsOrientation.vertical,
             decoration: InputDecoration(label: Text(s.blockExplorer)),
             initialValue: _coinSettings0.explorer.index,
-            onChanged: (v) { _coinSettings.explorer.index = v!; },
+            onChanged: (v) {
+              _coinSettings.explorer.index = v!;
+            },
             options: [
               ...explorers,
               FormBuilderFieldOption(
@@ -486,10 +489,30 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
                   child: FormBuilderTextField(
                     name: 'explorer_custom',
                     initialValue: _coinSettings0.explorer.customURL,
-                    onChanged: (v) { _coinSettings.explorer.customURL = v!; },
+                    onChanged: (v) {
+                      _coinSettings.explorer.customURL = v!;
+                    },
                     style: t.textTheme.bodyMedium,
                   )),
             ],
+          ),
+          if (aa.hasUA)
+            FieldUACheckbox(
+              _coinSettings0.uaType,
+              label: s.mainUA,
+              name: 'main_address',
+              onChanged: (v) {
+                _coinSettings.uaType = v?.sum ?? 0;
+              },
+            ),
+          FieldUA(
+            _coinSettings0.replyUa,
+            label: s.replyUA,
+            name: 'reply_address',
+            onChanged: (v) {
+              print('76 $v');
+              _coinSettings.replyUa = v!;
+            },
           ),
         ]));
   }
@@ -500,6 +523,43 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class FieldUA extends StatelessWidget {
+  final String name;
+  final String label;
+  final int value;
+  final void Function(int?) onChanged;
+  FieldUA(
+    this.value, {
+    required this.onChanged,
+    required this.name,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return aa.hasUA
+        ? FieldUACheckbox(value, name: name, label: label,
+            onChanged: (v) {
+            final value = v?.sum;
+            onChanged(value);
+          })
+        : FieldUARadio(_bitSet(value), name: name, label: label,
+            onChanged: (v) {
+            final value = 1 << (v ?? 0);
+            onChanged(value);
+          });
+  }
+
+  _bitSet(v) {
+    switch (v) {
+      case 1: return 0;
+      case 2: return 1;
+      case 4: return 2;
+      default: return 0;
+    }
+  }
 }
 
 class FieldUACheckbox extends StatelessWidget {
@@ -530,7 +590,7 @@ class FieldUACheckbox extends StatelessWidget {
       options: [
         FormBuilderChipOption(value: 1, child: Text(s.transparent)),
         FormBuilderChipOption(value: 2, child: Text(s.sapling)),
-        FormBuilderChipOption(value: 4, child: Text(s.orchard)),
+        if (aa.hasUA) FormBuilderChipOption(value: 4, child: Text(s.orchard)),
       ],
       onChanged: onChanged,
     );
@@ -538,26 +598,25 @@ class FieldUACheckbox extends StatelessWidget {
 }
 
 class FieldUARadio extends StatelessWidget {
-  final int initialView;
+  final int initialValue;
   final String name;
   final String label;
   final void Function(int?)? onChanged;
-  FieldUARadio(this.initialView,
+  FieldUARadio(this.initialValue,
       {required this.name, required this.label, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-
     return FormBuilderChoiceChip(
       name: name,
       decoration: InputDecoration(label: Text(label)),
-      initialValue: initialView,
+      initialValue: initialValue,
       spacing: 4,
       options: [
         FormBuilderChipOption(value: 0, child: Text(s.transparent)),
         FormBuilderChipOption(value: 1, child: Text(s.sapling)),
-        FormBuilderChipOption(value: 2, child: Text(s.orchard)),
+        if (aa.hasUA) FormBuilderChipOption(value: 2, child: Text(s.orchard)),
       ],
       onChanged: onChanged,
     );

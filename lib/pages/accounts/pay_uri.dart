@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:collection/collection.dart';
 
+import '../../accounts.dart';
 import '../../appsettings.dart';
 import '../../generated/intl/messages.dart';
 import '../main/qr_address.dart';
@@ -19,7 +20,7 @@ class PaymentURIPage extends StatefulWidget {
 
 class _PaymentURIState extends State<PaymentURIPage> {
   late int amount;
-  int receivers = appSettings.uaType;
+  int receivers = coinSettings.uaType;
   final memoController = TextEditingController();
   final inputKey = GlobalKey<InputAmountState>();
 
@@ -45,14 +46,13 @@ class _PaymentURIState extends State<PaymentURIPage> {
                 memo: memoController.text,
                 paymentURI: false,
               ),
-              FieldUACheckbox(
-                appSettings.uaType,
-                label: s.receivers,
-                name: 'receivers',
+              FieldUA(
+                coinSettings.uaType,
+                name: 'receivers', label: s.receivers,
                 onChanged: (v) {
-                  receivers = v?.sum ?? 0;
+                  receivers = v!;
                   setState(() {});
-                },
+                }
               ),
               InputAmountWidget(a, key: inputKey, onChange: onAmount),
               FormBuilderTextField(

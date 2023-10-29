@@ -40,12 +40,13 @@ class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
     if (WarpApi.checkAccount(coin, id)) return ActiveAccount2.fromId(coin, id);
     for (var c in coins) {
       final id = WarpApi.getFirstAccount(c.coin);
-      if (id > 0) return ActiveAccount2.fromId(coin, id);
+      if (id > 0) return ActiveAccount2.fromId(c.coin, id);
     }
     return null;
   }
 
   Future<void> save(SharedPreferences prefs) async {
+    print('04 $coin $id');
     await prefs.setInt('coin', coin);
     await prefs.setInt('account', id);
   }
@@ -53,12 +54,15 @@ class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
   factory ActiveAccount2.fromId(int coin, int id) {
     if (id == 0) return ActiveAccount2(0, 0, "", false, false);
     final c = coins[coin];
+    print("27 $coin $id");
     final backup = WarpApi.getBackup(coin, id);
     final external =
         c.supportsLedger && !isMobile() && WarpApi.ledgerHasAccount(coin, id);
     final canPay = backup.sk != null || external;
     return ActiveAccount2(coin, id, backup.name!, canPay, external);
   }
+
+  bool get hasUA => coins[coin].supportsUA;
 }
 
 abstract class _ActiveAccount2 with Store {
@@ -272,7 +276,6 @@ abstract class _Messages with Store {
             m.height,
             m.read))
         .toList();
-    items = List.of(items.reversed);
   }
 
   @action

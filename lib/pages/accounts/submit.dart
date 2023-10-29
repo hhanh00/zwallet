@@ -7,7 +7,7 @@ import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
-import '../../transaction.dart';
+import '../utils.dart';
 
 class SubmitTxPage extends StatefulWidget {
   final String txPlan;
@@ -25,8 +25,9 @@ class _SubmitTxState extends State<SubmitTxPage> {
     super.initState();
     Future(() async {
       try {
-        final txIdJs = await WarpApi.signAndBroadcast(
-            aa.coin, aa.id, widget.txPlan);
+        print('61 ${aa.coin}');
+        final txIdJs =
+            await WarpApi.signAndBroadcast(aa.coin, aa.id, widget.txPlan);
         txId = jsonDecode(txIdJs);
       } on String catch (e) {
         error = e;
@@ -45,7 +46,10 @@ class _SubmitTxState extends State<SubmitTxPage> {
               ? s.sent
               : error != null
                   ? s.sent_failed
-                  : s.sending)),
+                  : s.sending),
+          actions: [
+            IconButton(onPressed: ok, icon: Icon(Icons.check)),
+          ]),
       body: Center(
           child: txId != null
               ? Column(
@@ -72,6 +76,10 @@ class _SubmitTxState extends State<SubmitTxPage> {
 
   _openTx() {
     openTxInExplorer(txId!);
+  }
+
+  ok() {
+    GoRouter.of(context).pop();
   }
 }
 

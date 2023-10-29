@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/components/button/gf_button.dart';
@@ -87,6 +88,15 @@ class _MoreState extends State<MorePage> {
           url: '/more/not_implemented',
           icon: FaIcon(FontAwesomeIcons.broom),
           text: s.sweep),
+      MoreButton(
+          url: '/more/about',
+          icon: FaIcon(FontAwesomeIcons.circleInfo),
+          text: s.about,
+          onPressed: () async {
+            final contentTemplate =
+                await rootBundle.loadString('assets/about.md');
+            GoRouter.of(context).push('/more/about', extra: contentTemplate);
+          }),
     ];
     final palette = getPalette(Theme.of(context).primaryColor, buttons.length);
 
@@ -102,16 +112,22 @@ class _MoreState extends State<MorePage> {
           .map(
             (kv) => GFButton(
               onPressed: () async {
-                if (kv.value.secured) {
-                  final auth = await authenticate(context, s.backup);
-                  if (!auth) return;
+                final onPressed = kv.value.onPressed;
+                if (onPressed != null) {
+                  await onPressed();
+                } else {
+                  if (kv.value.secured) {
+                    final auth = await authenticate(context, s.backup);
+                    if (!auth) return;
+                  }
+                  GoRouter.of(context).push(kv.value.url);
                 }
-                GoRouter.of(context).push(kv.value.url);
               },
               icon: kv.value.icon,
               type: GFButtonType.solid,
               textStyle: t.textTheme.bodyLarge,
-              child: Text(kv.value.text!, maxLines: 2, overflow: TextOverflow.fade),
+              child: Text(kv.value.text!,
+                  maxLines: 2, overflow: TextOverflow.fade),
               color: palette.colors[kv.key].toColor(),
               borderShape: RoundedRectangleBorder(
                 borderRadius: BorderRadiusDirectional.all(
@@ -138,10 +154,12 @@ class MoreButton {
   final String? text;
   final Widget? icon;
   final bool secured;
+  final Future<void> Function()? onPressed;
 
   MoreButton(
       {required this.url,
       required this.text,
       required this.icon,
-      this.secured = false});
+      this.secured = false,
+      this.onPressed});
 }

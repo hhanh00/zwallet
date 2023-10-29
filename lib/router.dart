@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -20,6 +18,7 @@ import 'pages/accounts/submit.dart';
 import 'pages/accounts/txplan.dart';
 import 'pages/dblogin.dart';
 import 'pages/main/home.dart';
+import 'pages/more/about.dart';
 import 'pages/more/backup.dart';
 import 'pages/more/batch.dart';
 import 'pages/more/budget.dart';
@@ -171,6 +170,12 @@ final router = GoRouter(
                     path: 'transfer',
                     builder: (context, state) => PoolTransferPage(),
                   ),
+                  GoRoute(
+                    path: 'about',
+                    builder: (context, state) {
+                      return AboutPage(state.extra as String);
+                    }
+                  ),
                 ]),
           ],
         ),
@@ -202,7 +207,7 @@ final router = GoRouter(
       parentNavigatorKey: rootNavigatorKey,
       builder: (context, state) {
         final coin =
-            state.uri.queryParameters['coin']?.let(int.parse) ?? active.coin;
+            state.uri.queryParameters['coin']?.let(int.parse) ?? aa.coin;
         return SettingsPage(coin: coin);
       },
     ),

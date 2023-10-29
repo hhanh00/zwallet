@@ -2,6 +2,7 @@ import 'package:YWallet/pages/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
@@ -134,6 +135,8 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
         else {
           setActiveAccount(coin, account);
+          final prefs = await SharedPreferences.getInstance();
+          await aa.save(prefs);
           if (widget.first) {
             await syncStatus2
                 .setSyncedToLatestHeight(); // first account is synced

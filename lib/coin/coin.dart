@@ -26,6 +26,7 @@ abstract class CoinBase {
   late String dbDir;
   late String dbFullPath;
   List<LWInstance> get lwd;
+  int get defaultAddrMode;
   bool get supportsUA;
   bool get supportsMultisig;
   bool get supportsLedger;

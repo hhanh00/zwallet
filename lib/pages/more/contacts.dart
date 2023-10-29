@@ -59,7 +59,7 @@ class _ContactsState extends State<ContactsPage> {
     final fee = coinSettings.feeT;
     final confirmed = await showConfirmDialog(context, s.save, s.confirmSaveContacts);
     if (!confirmed) return;
-    final txPlan = WarpApi.commitUnsavedContacts(appSettings.anchorOffset, fee);
+    final txPlan = WarpApi.commitUnsavedContacts(aa.coin, appSettings.anchorOffset, fee);
     GoRouter.of(context).pushReplacement('/account/txplan', extra: txPlan);
   }
 

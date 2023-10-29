@@ -185,8 +185,10 @@ class WarpApi {
     warp_api_lib.cancel_warp();
   }
 
-  static Future<int> getLatestHeight() async {
-    return await compute(getLatestHeightIsolateFn, null);
+  static Future<int> getLatestHeight(int coin) async {
+    return await compute(
+      (_) => unwrapResultU32(warp_api_lib.get_latest_height(coin)), 
+      null);
   }
 
   static int validKey(int coin, String key) {
@@ -390,10 +392,10 @@ class WarpApi {
         address.toNativeUtf8().cast<Int8>(), dirty ? 1 : 0);
   }
 
-  static String commitUnsavedContacts(int anchorOffset, FeeT fee) {
+  static String commitUnsavedContacts(int coin, int anchorOffset, FeeT fee) {
     final fee2 = encodeFee(fee);
     return unwrapResultString(warp_api_lib.commit_unsaved_contacts(
-        anchorOffset, toNativeBytes(fee2), fee2.lengthInBytes));
+        coin, anchorOffset, toNativeBytes(fee2), fee2.lengthInBytes));
   }
 
   static void markMessageAsRead(int messageId, bool read) {
@@ -737,10 +739,6 @@ String signOnlyIsolateFn(SignOnlyParams params) {
       params.tx.toNativeUtf8().cast<Int8>(), params.port.nativePort);
   if (txIdRes.error != nullptr) throw convertCString(txIdRes.error);
   return convertCString(txIdRes.value);
-}
-
-int getLatestHeightIsolateFn(Null n) {
-  return unwrapResultU32(warp_api_lib.get_latest_height());
 }
 
 String transferPoolsIsolateFn(TransferPoolsParams params) {

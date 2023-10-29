@@ -8,14 +8,13 @@ import '../../coin/coins.dart';
 import '../../main.dart';
 
 class BalanceWidget extends StatefulWidget {
-  BalanceWidget({Key? key}) : super(key: key);
+  final int mode;
+  BalanceWidget(this.mode, {Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => BalanceState();
 }
 
 class BalanceState extends State<BalanceWidget> {
-  int _mode = 0;
-
   @override
   void initState() {
     super.initState();
@@ -27,9 +26,11 @@ class BalanceState extends State<BalanceWidget> {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
+    final mode = widget.mode;
+
     final color =
-      _mode == 0 ? t.colorScheme.secondary :
-        _mode == 1 ? t.colorScheme.primaryContainer : t.colorScheme.primary;
+      mode == 0 ? t.colorScheme.secondary :
+        mode == 1 ? t.colorScheme.primaryContainer : t.colorScheme.primary;
     
     return Observer(builder: (context) {
       aa.height;
@@ -63,14 +64,8 @@ class BalanceState extends State<BalanceWidget> {
     });
   }
 
-  void setMode(int mode) {
-    setState(() {
-      _mode = mode;
-    });
-  }
-
   int get balance {
-    switch (_mode) {
+    switch (widget.mode) {
       case 0:
         return aa.poolBalances.sapling + aa.poolBalances.orchard;
       case 1:

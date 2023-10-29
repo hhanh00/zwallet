@@ -21,6 +21,7 @@ class ZcashCoin extends CoinBase {
     LWInstance("Zcash Infra (USA)", "https://lwd6.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (E. Europe)", "https://lwd1.zcash-infra.com:9067"),
   ];
+  int defaultAddrMode = 0;
   bool supportsUA = true;
   bool supportsMultisig = false;
   bool supportsLedger = true;
