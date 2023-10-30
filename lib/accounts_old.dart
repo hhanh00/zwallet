@@ -173,7 +173,7 @@ abstract class _ActiveAccount with Store {
   @action
   void updatePoolBalances() {
     final b = WarpApi.getPoolBalances(
-        active.coin, active.id, appSettings.anchorOffset);
+        active.coin, active.id, appSettings.anchorOffset, false);
     poolBalances = b.unpack();
   }
 

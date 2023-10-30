@@ -16,6 +16,7 @@ class ZcashTestCoin extends CoinBase {
     LWInstance("Lightwalletd", "https://testnet.lightwalletd.com:9067"),
   ];
   int defaultAddrMode = 0;
+  int defaultUAType = 7; // TSO
   bool supportsUA = true;
   bool supportsMultisig = false;
   bool supportsLedger = false;

@@ -17,6 +17,7 @@ class QRAddressWidget extends StatefulWidget {
   final bool paymentURI;
 
   QRAddressWidget({
+    super.key,
     required this.uaType,
     this.amount,
     this.memo,
@@ -41,11 +42,12 @@ class _QRAddressState extends State<QRAddressWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('97 addressMode $addressMode');
+    final t = Theme.of(context);
     final a = widget.amount ?? 0;
-    final uri = 
-      a != 0 ? WarpApi.makePaymentURI(aa.coin, address, widget.amount!, widget.memo ?? '')
-      : address;
+    final uri = a != 0
+        ? WarpApi.makePaymentURI(
+            aa.coin, address, widget.amount!, widget.memo ?? '')
+        : address;
 
     return Column(children: [
       GestureDetector(
@@ -58,19 +60,27 @@ class _QRAddressState extends State<QRAddressWidget> {
         ),
       ),
       Padding(padding: EdgeInsets.all(8)),
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(centerTrim(uri)),
-        Padding(padding: EdgeInsets.all(4)),
-        IconButton.outlined(onPressed: addressCopy, icon: Icon(Icons.copy)),
-        Padding(padding: EdgeInsets.all(4)),
-        if (widget.paymentURI)
-          IconButton.outlined(onPressed: qrCode, icon: Icon(Icons.qr_code)),
-      ]),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(centerTrim(uri)),
+          Padding(padding: EdgeInsets.all(4)),
+          IconButton.outlined(onPressed: addressCopy, icon: Icon(Icons.copy)),
+          Padding(padding: EdgeInsets.all(4)),
+          if (widget.paymentURI)
+            IconButton.outlined(onPressed: qrCode, icon: Icon(Icons.qr_code)),
+        ],
+      ),
+      Text(addressType, style: t.textTheme.labelSmall)
     ]);
   }
 
+  // Addr Modes
+  // 0: As chosen in settings
+  // 1: T
+  // 2: S
+  // 3: O
   _nextAddressMode() {
-    print('101 availableMode $availableMode');
     final c = coins[aa.coin];
     while (true) {
       addressMode = (addressMode - 1) % 4;
@@ -78,9 +88,18 @@ class _QRAddressState extends State<QRAddressWidget> {
       if (addressMode == c.defaultAddrMode) break;
       if (availableMode & (1 << (addressMode - 1)) != 0) break;
     }
-    print('96 addressMode $addressMode');
     widget.onMode?.call(addressMode);
     setState(() {});
+  }
+
+  String get addressType {
+    final s = S.of(context);
+    switch (addressMode) {
+      case 1: return s.transparent;
+      case 2: return s.sapling;
+      case 3: return s.orchard;
+      default: return s.ua;
+    }
   }
 
   String get address {
@@ -98,9 +117,10 @@ class _QRAddressState extends State<QRAddressWidget> {
 
   String get uri {
     final a = widget.amount ?? 0;
-    final uri = 
-      a != 0 ? WarpApi.makePaymentURI(aa.coin, address, widget.amount!, widget.memo ?? '')
-      : address;
+    final uri = a != 0
+        ? WarpApi.makePaymentURI(
+            aa.coin, address, widget.amount!, widget.memo ?? '')
+        : address;
     return uri;
   }
 

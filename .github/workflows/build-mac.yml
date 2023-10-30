@@ -46,3 +46,8 @@ jobs:
         with:
           files: |
             ./ywallet-universal.dmg
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: DMG
+          path: ./ywallet-universal.dmg

@@ -750,7 +750,7 @@ abstract class _PriceStore with Store {
       if (f ||
           _lastChartUpdateTime == null ||
           now > _lastChartUpdateTime + 5 * 60) {
-        await WarpApi.syncHistoricalPrices(settings.currency);
+        await WarpApi.syncHistoricalPrices(active.coin, settings.currency);
         active.fetchChartData();
         lastChartUpdateTime = now;
       }
@@ -916,7 +916,7 @@ abstract class _SyncStatus with Store {
     if (_syncedHeight != null) {
       final offset = max(settings.anchorOffset, 1);
       final rewindHeight = max(_syncedHeight.height - offset, 0);
-      final height = WarpApi.rewindTo(rewindHeight);
+      final height = WarpApi.rewindTo(active.coin, rewindHeight);
       showSnackBar(s.blockReorgDetectedRewind(height));
       syncStatus.reset();
       await syncStatus.update();
@@ -1173,6 +1173,8 @@ class AccountBalance {
   final double balance;
 
   AccountBalance(this.time, this.balance);
+  @override
+  String toString() => "($time $balance)";
 }
 
 enum SortOrder {
@@ -1204,6 +1206,9 @@ class TimeSeriesPoint<V> {
   final V value;
 
   TimeSeriesPoint(this.day, this.value);
+
+  @override
+  String toString() => '($day, $value)';
 }
 
 class Trade {

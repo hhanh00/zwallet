@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:im_stepper/stepper.dart';
-import 'package:intl/intl.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -263,7 +261,6 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     );
     final recipient = Recipient(recipientBuilder.toBytes());
     if (!widget.single) GoRouter.of(context).pop(recipient);
-    print('53 ${coinSettings.replyUa}');
     try {
       await load(() async {
         final plan = await WarpApi.prepareTx(
@@ -273,7 +270,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
             coinSettings.replyUa,
             appSettings.anchorOffset,
             CoinSettingsExtension.load(aa.coin).feeT);
-        GoRouter.of(context).push('/account/txplan', extra: plan);
+        GoRouter.of(context).push('/account/txplan?tab=account', extra: plan);
       });
     } on String catch (e) {
       await showMessageBox2(context, s.error, e);
@@ -357,7 +354,7 @@ class SendAddressState extends State<SendAddress> {
           controller: addressController,
           maxLines: 8,
           decoration: InputDecoration(label: Text(s.address)),
-          validator: (v) => _addressCheck(v, s),
+          validator: addressCheck,
         )),
         SizedBox(
             width: 80,
@@ -368,17 +365,7 @@ class SendAddressState extends State<SendAddress> {
   }
 
   _qr() async {
-    addressController.text = await scanQRCode(context, validator: (address) {
-      final s = S.of(context);
-      return _addressCheck(address, s);
-    });
-  }
-
-  String? _addressCheck(String? v, S s) {
-    if (v == null || v.isEmpty) return s.addressIsEmpty;
-    final valid = WarpApi.validAddress(aa.coin, v);
-    if (!valid) return s.invalidAddress;
-    return null;
+    addressController.text = await scanQRCode(context, validator: addressCheck);
   }
 
   String? get address {
@@ -461,8 +448,8 @@ class SendPoolState extends State<SendPool> {
   @override
   void initState() {
     super.initState();
-    bals = WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset)
-        .unpack();
+    bals = WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset,
+    false).unpack();
   }
 
   @override

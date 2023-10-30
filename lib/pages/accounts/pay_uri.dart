@@ -1,13 +1,10 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:collection/collection.dart';
 
-import '../../accounts.dart';
 import '../../appsettings.dart';
 import '../../generated/intl/messages.dart';
 import '../main/qr_address.dart';
-import '../settings.dart';
 import '../widgets.dart';
 
 class PaymentURIPage extends StatefulWidget {
@@ -19,16 +16,9 @@ class PaymentURIPage extends StatefulWidget {
 }
 
 class _PaymentURIState extends State<PaymentURIPage> {
-  late int amount;
-  int receivers = coinSettings.uaType;
+  late int amount = widget.amount;
   final memoController = TextEditingController();
   final inputKey = GlobalKey<InputAmountState>();
-
-  @override
-  void initState() {
-    super.initState();
-    amount = widget.amount;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,18 +31,10 @@ class _PaymentURIState extends State<PaymentURIPage> {
           child: Column(
             children: [
               QRAddressWidget(
-                uaType: receivers,
+                uaType: coinSettings.uaType,
                 amount: amount,
                 memo: memoController.text,
                 paymentURI: false,
-              ),
-              FieldUA(
-                coinSettings.uaType,
-                name: 'receivers', label: s.receivers,
-                onChanged: (v) {
-                  receivers = v!;
-                  setState(() {});
-                }
               ),
               InputAmountWidget(a, key: inputKey, onChange: onAmount),
               FormBuilderTextField(

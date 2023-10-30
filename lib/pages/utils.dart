@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:YWallet/main.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_palette/flutter_palette.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:warp_api/warp_api.dart';
 
 import '../accounts.dart';
 import '../appsettings.dart';
@@ -41,8 +44,7 @@ mixin WithLoadingAnimation<T extends StatefulWidget> on State<T> {
     try {
       setLoading(true);
       return await calc();
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   }
@@ -53,12 +55,29 @@ mixin WithLoadingAnimation<T extends StatefulWidget> on State<T> {
 }
 
 Future<void> showSnackBar(String msg) async {
-  final bar = FlushbarHelper.createInformation(message: msg, duration: Duration(seconds: 4));
+  final bar = FlushbarHelper.createInformation(
+      message: msg, duration: Duration(seconds: 4));
   await bar.show(rootNavigatorKey.currentContext!);
 }
 
 void openTxInExplorer(String txId) {
-    final settings = CoinSettingsExtension.load(aa.coin);
-    final url = settings.resolveBlockExplorer(aa.coin);
-    launchUrl(Uri.parse("$url/$txId"), mode: LaunchMode.inAppWebView);
+  final settings = CoinSettingsExtension.load(aa.coin);
+  final url = settings.resolveBlockExplorer(aa.coin);
+  launchUrl(Uri.parse("$url/$txId"), mode: LaunchMode.inAppWebView);
 }
+
+String? addressCheck(String? v) {
+  final s = S.of(rootNavigatorKey.currentContext!);
+  if (v == null || v.isEmpty) return s.addressIsEmpty;
+  final valid = WarpApi.validAddress(aa.coin, v);
+  if (!valid) return s.invalidAddress;
+  return null;
+}
+
+ColorPalette getPalette(Color color, int n) => ColorPalette.polyad(
+      color,
+      numberOfColors: max(n, 1),
+      hueVariability: 15,
+      saturationVariability: 10,
+      brightnessVariability: 10,
+    );

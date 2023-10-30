@@ -5,7 +5,6 @@ import 'package:YWallet/generated/intl/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../appsettings.dart';
@@ -25,6 +24,7 @@ class TxPage extends StatelessWidget {
       child: Observer(
         builder: (context) {
           aaSequence.seqno;
+          aaSequence.settingsSeqno;
           return TableListPage(
             view: appSettings.txView,
             items: aa.txs.items,
@@ -64,8 +64,8 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
       ColumnDefinition(field: 'height', label: s.height, numeric: true),
       ColumnDefinition(field: 'timestamp', label: s.datetime),
       ColumnDefinition(field: 'value', label: s.amount),
-      ColumnDefinition(field: 'txid', label: s.txID),
-      ColumnDefinition(label: s.address),
+      ColumnDefinition(field: 'fullTxId', label: s.txID),
+      ColumnDefinition(field: 'address', label: s.address),
       ColumnDefinition(field: 'memo', label: s.memo),
     ];
   }

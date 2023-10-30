@@ -21,6 +21,7 @@ class MessagePage extends StatelessWidget {
       child: Observer(
         builder: (context) {
           aaSequence.seqno;
+          aaSequence.settingsSeqno;
           return TableListPage(
             view: appSettings.messageView,
             items: aa.messages.items,
@@ -98,7 +99,7 @@ class MessageBubble extends StatelessWidget {
     final date = humanizeDateTime(context, message.timestamp);
     final owner = centerTrim(
         (message.incoming ? message.sender : message.recipient) ?? '',
-        length: 4);
+        length: 8);
     return GestureDetector(
         onTap: () => select(context),
         child: Bubble(
@@ -244,7 +245,7 @@ class _MessageItemState extends State<MessageItemPage> {
           SizedBox(height: 8),
           Panel(s.subject, text: message.subject),
           SizedBox(height: 8),
-          Panel(s.body, child: Text(message.body, maxLines: 20)),
+          Panel(s.body, child: SelectableText(message.body, maxLines: 20)),
           SizedBox(height: 16),
           FormBuilder(
               child: Row(
@@ -256,7 +257,7 @@ class _MessageItemState extends State<MessageItemPage> {
                 controller: replyController,
                 maxLines: 10,
               )),
-              IconButton.outlined(onPressed: () {}, icon: Icon(Icons.send)),
+              IconButton.outlined(onPressed: null, icon: Icon(Icons.send)),
             ],
           )),
         ]),

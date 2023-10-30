@@ -8,19 +8,16 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:protobuf/protobuf.dart';
 
 import '../accounts.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
-import '../appsettings.dart';
+import '../appsettings.dart' as app;
 import '../main.dart';
 import '../settings.pb.dart';
 import '../store2.dart';
 
-var _settings0 = AppSettings();
-var _settings = AppSettings();
-var _coinSettings0 = CoinSettings();
-var _coinSettings = CoinSettings();
 List<String>? currencies;
 
 class SettingsPage extends StatefulWidget {
@@ -38,14 +35,11 @@ class _SettingsState extends State<SettingsPage>
   final privacyKey = GlobalKey<_PrivacyState>();
   final viewKey = GlobalKey<_ViewState>();
   final coinKey = GlobalKey<_CoinState>();
+  final AppSettings appSettings = app.appSettings.deepCopy();
 
   @override
   void initState() {
     super.initState();
-    _settings0 = appSettings;
-    _coinSettings0 = coinSettings;
-    _coinSettings.lwd = ServerURL();
-    _coinSettings.explorer = ServerURL();
     if (currencies == null) {
       currencies = [];
       Future(() async {
@@ -59,7 +53,6 @@ class _SettingsState extends State<SettingsPage>
   Widget build(BuildContext context) {
     final s = S.of(context);
     final c = coins[widget.coin];
-    print('46 ${widget.coin} $c');
     return Scaffold(
       appBar: AppBar(
         title: Text(s.settings),
@@ -83,9 +76,9 @@ class _SettingsState extends State<SettingsPage>
           controller: tabController,
           children: [
             SingleChildScrollView(
-                child: GeneralTab(key: generalKey, currencies: currencies)),
-            SingleChildScrollView(child: PrivacyTab(key: privacyKey)),
-            SingleChildScrollView(child: ViewTab(key: viewKey)),
+                child: GeneralTab(appSettings, key: generalKey, currencies: currencies)),
+            SingleChildScrollView(child: PrivacyTab(appSettings, key: privacyKey)),
+            SingleChildScrollView(child: ViewTab(appSettings, key: viewKey)),
             SingleChildScrollView(child: CoinTab(widget.coin, key: coinKey)),
           ],
         ),
@@ -95,12 +88,12 @@ class _SettingsState extends State<SettingsPage>
 
   _ok() async {
     if (validate()) {
-      save();
       final prefs = await SharedPreferences.getInstance();
-      await _settings0.save(prefs);
-      _coinSettings0.save(aa.coin);
-      appSettings = AppSettingsExtension.load(prefs);
-      coinSettings = CoinSettingsExtension.load(aa.coin);
+      await appSettings.save(prefs);
+      coinKey.currentState?.let((c) => c.coinSettings.save(aa.coin));
+      app.appSettings = app.AppSettingsExtension.load(prefs);
+      app.coinSettings = app.CoinSettingsExtension.load(aa.coin);
+      aaSequence.settingsSeqno = DateTime.now().millisecondsSinceEpoch;
       Future(() async {
         await marketPrice.update();
         aa.currency = appSettings.currency;
@@ -116,17 +109,12 @@ class _SettingsState extends State<SettingsPage>
     if (!(coinKey.currentState?.validate() ?? true)) return false;
     return true;
   }
-
-  void save() {
-    _settings0.mergeFromMessage(_settings);
-    _coinSettings0.mergeFromMessage(_coinSettings);
-    print('29 ${_coinSettings0} ${_coinSettings}');
-  }
 }
 
 class GeneralTab extends StatefulWidget {
   final List<String>? currencies;
-  GeneralTab({super.key, this.currencies});
+  final AppSettings appSettings;
+  GeneralTab(this.appSettings, {super.key, this.currencies});
 
   @override
   State<StatefulWidget> createState() => _GeneralState();
@@ -152,26 +140,26 @@ class _GeneralState extends State<GeneralTab>
           FormBuilderSwitch(
             name: 'full_prec',
             title: Text(s.useZats),
-            initialValue: _settings0.fullPrec,
+            initialValue: widget.appSettings.fullPrec,
             onChanged: (v) {
-              _settings.fullPrec = v!;
+              widget.appSettings.fullPrec = v!;
             },
           ),
           FormBuilderSwitch(
             name: 'sound',
             title: Text(s.playSound),
-            initialValue: _settings0.sound,
+            initialValue: widget.appSettings.sound,
             onChanged: (v) {
-              _settings.sound = v!;
+              widget.appSettings.sound = v!;
             },
           ),
           FormBuilderDropdown<String>(
             name: 'currency',
             decoration: InputDecoration(label: Text(s.currency)),
-            initialValue: _settings0.currency,
+            initialValue: widget.appSettings.currency,
             items: currencyOptions,
             onChanged: (v) {
-              _settings.currency = v!;
+              widget.appSettings.currency = v!;
             },
           ),
           FormBuilderTextField(
@@ -180,9 +168,9 @@ class _GeneralState extends State<GeneralTab>
               label: Text(s.defaultMemo),
             ),
             maxLines: 10,
-            initialValue: _settings0.memo,
+            initialValue: widget.appSettings.memo,
             onChanged: (v) {
-              _settings.memo = v!;
+              widget.appSettings.memo = v!;
             },
           )
         ],
@@ -199,7 +187,8 @@ class _GeneralState extends State<GeneralTab>
 }
 
 class PrivacyTab extends StatefulWidget {
-  PrivacyTab({super.key});
+  final AppSettings appSettings;
+  PrivacyTab(this.appSettings, {super.key});
   @override
   State<StatefulWidget> createState() => _PrivacyState();
 }
@@ -223,22 +212,22 @@ class _PrivacyState extends State<PrivacyTab>
           FormBuilderSwitch(
             name: 'p_open',
             title: Text(s.protectOpen),
-            initialValue: _settings0.protectOpen,
+            initialValue: widget.appSettings.protectOpen,
             onChanged: (v) {
-              _settings.protectOpen = v!;
+              widget.appSettings.protectOpen = v!;
             },
           ),
           FormBuilderSwitch(
             name: 'p_send',
             title: Text(s.protectSend),
-            initialValue: _settings0.protectSend,
+            initialValue: widget.appSettings.protectSend,
             onChanged: (v) {
-              _settings.protectSend = v!;
+              widget.appSettings.protectSend = v!;
             },
           ),
           FormBuilderField<int>(
             name: 'privacy',
-            initialValue: _settings0.minPrivacyLevel,
+            initialValue: widget.appSettings.minPrivacyLevel,
             builder: (field) => ListTile(
               contentPadding:
                   EdgeInsetsDirectional.symmetric(horizontal: 14, vertical: 8),
@@ -272,20 +261,20 @@ class _PrivacyState extends State<PrivacyTab>
               ),
             ),
             onChanged: (v) {
-              _settings.minPrivacyLevel = v!;
+              widget.appSettings.minPrivacyLevel = v!;
             },
           ),
           FormBuilderSwitch(
             name: 'gettx',
             title: Text(s.retrieveTransactionDetails),
-            initialValue: !_settings0.nogetTx,
+            initialValue: !widget.appSettings.nogetTx,
             onChanged: (v) {
-              _settings.nogetTx = v!;
+              widget.appSettings.nogetTx = v!;
             },
           ),
           FormBuilderField<int>(
             name: 'hide',
-            initialValue: _settings0.autoHide,
+            initialValue: widget.appSettings.autoHide,
             builder: (field) => ListTile(
               contentPadding:
                   EdgeInsetsDirectional.symmetric(horizontal: 14, vertical: 8),
@@ -307,7 +296,7 @@ class _PrivacyState extends State<PrivacyTab>
               ),
             ),
             onChanged: (v) {
-              _settings.autoHide = v!;
+              widget.appSettings.autoHide = v!;
             },
           ),
           Divider(),
@@ -315,9 +304,9 @@ class _PrivacyState extends State<PrivacyTab>
             name: 'anchor',
             decoration: InputDecoration(
                 label: Text(s.confirmations, style: t.textTheme.bodyMedium)),
-            initialValue: _settings0.anchorOffset.toString(),
+            initialValue: widget.appSettings.anchorOffset.toString(),
             onChanged: (v) {
-              _settings.anchorOffset = int.tryParse(v!) ?? 0;
+              widget.appSettings.anchorOffset = int.tryParse(v!) ?? 0;
             },
           ),
         ]),
@@ -334,7 +323,8 @@ class _PrivacyState extends State<PrivacyTab>
 }
 
 class ViewTab extends StatefulWidget {
-  ViewTab({super.key});
+  final AppSettings appSettings;
+  ViewTab(this.appSettings, {super.key});
   @override
   State<StatefulWidget> createState() => _ViewState();
 }
@@ -350,27 +340,27 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
         key: formKey,
         child: Column(children: [
           FieldView(
-            _settings0.messageView,
+            widget.appSettings.messageView,
             name: 'messages',
             label: s.messages,
             onChanged: (v) {
-              _settings.messageView = v!;
+              widget.appSettings.messageView = v!;
             },
           ),
           FieldView(
-            _settings0.txView,
+            widget.appSettings.txView,
             name: 'transactions',
             label: s.transactionHistory,
             onChanged: (v) {
-              _settings.txView = v!;
+              widget.appSettings.txView = v!;
             },
           ),
           FieldView(
-            _settings0.noteView,
+            widget.appSettings.noteView,
             name: 'notes',
             label: s.notes,
             onChanged: (v) {
-              _settings.noteView = v!;
+              widget.appSettings.noteView = v!;
             },
           ),
         ]));
@@ -398,7 +388,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
-    coinSettings = CoinSettingsExtension.load(aa.coin);
+    coinSettings = app.CoinSettingsExtension.load(aa.coin);
   }
 
   @override
@@ -419,7 +409,9 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
         .map((kv) =>
             FormBuilderFieldOption(value: kv.key, child: Text(kv.value)))
         .toList();
-    final fee = amountToString2(_coinSettings0.fee.toInt());
+    final fee = amountToString2(coinSettings.fee.toInt());
+
+    print('build $coinSettings');
 
     return FormBuilder(
         key: formKey,
@@ -427,38 +419,37 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
           if (aa.hasUA)
             FormBuilderSwitch(
               name: 'spam',
-              initialValue: _coinSettings0.spamFilter,
+              initialValue: coinSettings.spamFilter,
               title: Text(s.antispamFilter),
               onChanged: (v) {
-                _coinSettings.spamFilter = v!;
+                coinSettings.spamFilter = v!;
               },
             ),
           FormBuilderSwitch(
             name: 'auto_fee',
-            initialValue: !_coinSettings0.manualFee,
+            initialValue: !coinSettings.manualFee,
             title: Text(s.autoFee),
             onChanged: (v) => setState(() {
-              _coinSettings.manualFee = !v!;
+              coinSettings.manualFee = !v!;
             }),
           ),
-          if (_coinSettings.manualFee)
+          if (coinSettings.manualFee)
             FormBuilderTextField(
               name: 'custom_fee',
               decoration: InputDecoration(label: Text(s.fee)),
               initialValue: fee,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               onChanged: (v) {
-                _coinSettings.fee = Int64(stringToAmount(v!));
-                print('67 ${_coinSettings.fee}');
+                coinSettings.fee = Int64(stringToAmount(v!));
               },
             ),
           FormBuilderRadioGroup<int>(
             name: 'server',
             orientation: OptionsOrientation.vertical,
             decoration: InputDecoration(label: Text(s.server)),
-            initialValue: _coinSettings0.lwd.index,
+            initialValue: coinSettings.lwd.index,
             onChanged: (v) {
-              _coinSettings.lwd.index = v!;
+              coinSettings.lwd.index = v!;
             },
             options: [
               ...servers,
@@ -466,9 +457,9 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
                   value: -1,
                   child: FormBuilderTextField(
                     name: 'server_custom',
-                    initialValue: _coinSettings0.lwd.customURL,
+                    initialValue: coinSettings.lwd.customURL,
                     onChanged: (v) {
-                      _coinSettings.lwd.customURL = v!;
+                      coinSettings.lwd.customURL = v!;
                     },
                     style: t.textTheme.bodyMedium,
                   )),
@@ -478,9 +469,9 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
             name: 'explorer',
             orientation: OptionsOrientation.vertical,
             decoration: InputDecoration(label: Text(s.blockExplorer)),
-            initialValue: _coinSettings0.explorer.index,
+            initialValue: coinSettings.explorer.index,
             onChanged: (v) {
-              _coinSettings.explorer.index = v!;
+              coinSettings.explorer.index = v!;
             },
             options: [
               ...explorers,
@@ -488,9 +479,9 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
                   value: -1,
                   child: FormBuilderTextField(
                     name: 'explorer_custom',
-                    initialValue: _coinSettings0.explorer.customURL,
+                    initialValue: coinSettings.explorer.customURL,
                     onChanged: (v) {
-                      _coinSettings.explorer.customURL = v!;
+                      coinSettings.explorer.customURL = v!;
                     },
                     style: t.textTheme.bodyMedium,
                   )),
@@ -498,20 +489,19 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
           ),
           if (aa.hasUA)
             FieldUACheckbox(
-              _coinSettings0.uaType,
+              coinSettings.uaType,
               label: s.mainUA,
               name: 'main_address',
               onChanged: (v) {
-                _coinSettings.uaType = v?.sum ?? 0;
+                coinSettings.uaType = v?.sum ?? 0;
               },
             ),
           FieldUA(
-            _coinSettings0.replyUa,
+            coinSettings.replyUa,
             label: s.replyUA,
             name: 'reply_address',
             onChanged: (v) {
-              print('76 $v');
-              _coinSettings.replyUa = v!;
+              coinSettings.replyUa = v!;
             },
           ),
         ]));

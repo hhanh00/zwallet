@@ -33,7 +33,6 @@ class SyncStatusState extends State<SyncStatusWidget> {
       return s.syncPaused;
 
     final latestHeight = syncStatus2.latestHeight;
-    print('21 $latestHeight');
 
     if (latestHeight == null)
       return s.disconnected;

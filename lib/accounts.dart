@@ -24,9 +24,13 @@ class AASequence = _AASequence with _$AASequence;
 abstract class _AASequence with Store {
   @observable
   int seqno = 0;
+
+  @observable
+  int settingsSeqno = 0;
 }
 
 void setActiveAccount(int coin, int id) {
+  coinSettings = CoinSettingsExtension.load(coin);
   aa = ActiveAccount2.fromId(coin, id);
   aaSequence.seqno = DateTime.now().microsecondsSinceEpoch;
 }
@@ -46,7 +50,6 @@ class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
   }
 
   Future<void> save(SharedPreferences prefs) async {
-    print('04 $coin $id');
     await prefs.setInt('coin', coin);
     await prefs.setInt('account', id);
   }
@@ -54,7 +57,6 @@ class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
   factory ActiveAccount2.fromId(int coin, int id) {
     if (id == 0) return ActiveAccount2(0, 0, "", false, false);
     final c = coins[coin];
-    print("27 $coin $id");
     final backup = WarpApi.getBackup(coin, id);
     final external =
         c.supportsLedger && !isMobile() && WarpApi.ledgerHasAccount(coin, id);
@@ -102,13 +104,14 @@ abstract class _ActiveAccount2 with Store {
     spendings = [];
     accountBalances = [];
     pnls = [];
+    WarpApi.rewindTo(aa.coin, resetHeight);
     height = resetHeight;
   }
 
   @action
   void updatePoolBalances() {
     poolBalances =
-        WarpApi.getPoolBalances(coin, id, appSettings.anchorOffset).unpack();
+        WarpApi.getPoolBalances(coin, id, 0, true).unpack();
   }
 
   @action
@@ -141,7 +144,7 @@ abstract class _ActiveAccount2 with Store {
       b -= value;
     }
     abs.add(AccountBalance(
-        DateTime.fromMillisecondsSinceEpoch(start), b / ZECUNIT));
+        DateTime.fromMillisecondsSinceEpoch(start * 1000), b / ZECUNIT));
     accountBalances = sampleDaily<AccountBalance, double, double>(
         abs.reversed,
         start,

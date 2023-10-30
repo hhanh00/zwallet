@@ -15,7 +15,8 @@ import '../../generated/intl/messages.dart';
 class TxPlanPage extends StatelessWidget {
   final bool signOnly;
   final String plan;
-  TxPlanPage(this.plan, {this.signOnly = false});
+  final String tab;
+  TxPlanPage(this.plan, {required this.tab, this.signOnly = false});
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +27,11 @@ class TxPlanPage extends StatelessWidget {
           title: Text(s.txPlan),
           actions: [IconButton(onPressed: () => send(context), icon: Icon(Icons.send))],
         ),
-        body: txplan);
+        body: SingleChildScrollView(child: txplan));
   }
 
   send(BuildContext context) {
-    GoRouter.of(context).go('/account/submit_tx', extra: plan);
+    GoRouter.of(context).go('/$tab/submit_tx', extra: plan);
   }
 }
 

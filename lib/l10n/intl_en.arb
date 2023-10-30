@@ -212,7 +212,7 @@
   "barcodeScannerIsNotAvailableOnDesktop": "Barcode scanner is not available on desktop",
   "signOffline": "Sign",
   "rawTransaction": "Raw Transaction",
-  "convertToWatchonly": "Convert to Watch-Only",
+  "convertToWatchonly": "To Watch-Only",
   "messages": "Messages",
   "body": "Body",
   "subject": "Subject",
@@ -352,7 +352,7 @@
   "useZats": "Use Zats (8 decimals)",
   "mainUA": "Main UA Receivers",
   "replyUA": "Reply UA Receivers",
-  "receivers": "UA Receivers",
+  "uaReceivers": "UA Receivers",
   "list": "List",
   "autoView": "Orientation",
   "general": "General",
@@ -361,5 +361,8 @@
   "autoFee": "Automatic Fee",
   "accountManager": "Account Manager",
   "pleaseWaitPlan": "Computing Transaction",
-  "deletePayment": "Are you sure you want to delete this recipient"
+  "deletePayment": "Are you sure you want to delete this recipient",
+  "ua": "UA",
+  "receivers": "Receivers",
+  "secured": "Secured"
 }

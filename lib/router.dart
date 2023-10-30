@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:YWallet/pages/more/cold.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/warp_api.dart';
+import 'package:protobuf/protobuf.dart';
 
 import 'accounts.dart';
+import 'appsettings.dart';
 import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
 import 'main.dart';
@@ -76,8 +79,11 @@ final router = GoRouter(
                     ]),
                 GoRoute(
                   path: 'txplan',
-                  builder: (context, state) => TxPlanPage(state.extra as String,
-                      signOnly: state.uri.queryParameters['sign'] != null),
+                  builder: (context, state) => TxPlanPage(
+                    state.extra as String,
+                    tab: state.uri.queryParameters['tab']!,
+                    signOnly: state.uri.queryParameters['sign'] != null,
+                  ),
                 ),
                 GoRoute(
                   path: 'submit_tx',
@@ -133,13 +139,31 @@ final router = GoRouter(
                 builder: (context, state) => MorePage(),
                 routes: [
                   GoRoute(
+                    path: 'submit_tx',
+                    builder: (context, state) =>
+                        SubmitTxPage(state.extra as String),
+                  ),
+                  GoRoute(
                       path: 'contacts',
                       builder: (context, state) => ContactsPage(),
                       routes: [
                         GoRoute(
+                          path: 'add',
+                          builder: (context, state) => ContactAddPage(),
+                        ),
+                        GoRoute(
                           path: 'edit',
                           builder: (context, state) => ContactEditPage(
                               int.parse(state.uri.queryParameters['id']!)),
+                        ),
+                      ]),
+                  GoRoute(
+                      path: 'cold',
+                      builder: (context, state) => ColdStoragePage(),
+                      routes: [
+                        GoRoute(
+                          path: 'batch_backup',
+                          builder: (context, state) => BatchBackupPage(),
                         ),
                       ]),
                   GoRoute(
@@ -171,11 +195,10 @@ final router = GoRouter(
                     builder: (context, state) => PoolTransferPage(),
                   ),
                   GoRoute(
-                    path: 'about',
-                    builder: (context, state) {
-                      return AboutPage(state.extra as String);
-                    }
-                  ),
+                      path: 'about',
+                      builder: (context, state) {
+                        return AboutPage(state.extra as String);
+                      }),
                 ]),
           ],
         ),

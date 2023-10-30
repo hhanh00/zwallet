@@ -25,7 +25,6 @@ class _SubmitTxState extends State<SubmitTxPage> {
     super.initState();
     Future(() async {
       try {
-        print('61 ${aa.coin}');
         final txIdJs =
             await WarpApi.signAndBroadcast(aa.coin, aa.id, widget.txPlan);
         txId = jsonDecode(txIdJs);

@@ -682,7 +682,7 @@ class SEn extends S {
   String get rawTransaction => 'Raw Transaction';
 
   @override
-  String get convertToWatchonly => 'Convert to Watch-Only';
+  String get convertToWatchonly => 'To Watch-Only';
 
   @override
   String get messages => 'Messages';
@@ -1114,7 +1114,7 @@ class SEn extends S {
   String get replyUA => 'Reply UA Receivers';
 
   @override
-  String get receivers => 'UA Receivers';
+  String get uaReceivers => 'UA Receivers';
 
   @override
   String get list => 'List';
@@ -1142,4 +1142,13 @@ class SEn extends S {
 
   @override
   String get deletePayment => 'Are you sure you want to delete this recipient';
+
+  @override
+  String get ua => 'UA';
+
+  @override
+  String get receivers => 'Receivers';
+
+  @override
+  String get secured => 'Secured';
 }

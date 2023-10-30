@@ -1,94 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_palette/flutter_palette.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:getwidget/components/button/gf_button.dart';
-import 'package:getwidget/types/gf_button_type.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../chart.dart';
 import '../../generated/intl/messages.dart';
-import '../../main.dart';
+import '../widgets.dart';
 
-class MorePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _MoreState();
-}
-
-class _MoreState extends State<MorePage> {
-  final buttons = <MoreButton>[];
-
+class MorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final t = Theme.of(context);
     final buttons = [
-      MoreButton(
+      MosaicButton(
           url: '/account/account_manager',
           icon: FaIcon(FontAwesomeIcons.users),
           text: s.accounts),
-      MoreButton(
+      MosaicButton(
           url: '/more/batch_backup',
           icon: FaIcon(FontAwesomeIcons.database),
           text: s.fullBackup),
-      MoreButton(
+      MosaicButton(
           url: '/more/coins',
           icon: FaIcon(FontAwesomeIcons.moneyBill),
           text: s.notes),
-      MoreButton(
+      MosaicButton(
           url: '/more/transfer',
           icon: FaIcon(FontAwesomeIcons.waterLadder),
           text: s.pools),
-      MoreButton(
+      MosaicButton(
           url: '/more/contacts',
           icon: FaIcon(FontAwesomeIcons.addressBook),
           text: s.contacts),
-      MoreButton(
+      MosaicButton(
           url: '/more/budget',
           icon: FaIcon(FontAwesomeIcons.scaleBalanced),
           text: s.budget),
-      MoreButton(
+      MosaicButton(
           url: '/more/market',
           icon: FaIcon(FontAwesomeIcons.arrowTrendUp),
           text: s.marketPrice),
-      MoreButton(
+      MosaicButton(
           url: '/more/backup',
           icon: FaIcon(FontAwesomeIcons.seedling),
           text: s.backup,
           secured: true),
-      MoreButton(
+      MosaicButton(
           url: '/more/rescan',
           icon: FaIcon(FontAwesomeIcons.arrowRightLong),
           text: s.rescan),
-      MoreButton(
+      MosaicButton(
           url: '/more/not_implemented',
           icon: FaIcon(FontAwesomeIcons.arrowRotateLeft),
           text: s.rewind),
-      MoreButton(
-          url: '/more/not_implemented',
+      MosaicButton(
+          url: '/more/cold',
           icon: FaIcon(FontAwesomeIcons.store),
           text: s.coldStorage),
-      MoreButton(
-          url: '/more/not_implemented',
-          icon: FaIcon(FontAwesomeIcons.signature),
-          text: s.signOffline),
-      MoreButton(
-          url: '/more/not_implemented',
-          icon: FaIcon(FontAwesomeIcons.towerBroadcast),
-          text: s.broadcast),
-      MoreButton(
+      MosaicButton(
           url: '/account/multi_pay',
           icon: FaIcon(FontAwesomeIcons.peopleArrows),
           text: s.multiPay),
-      MoreButton(
+      MosaicButton(
           url: '/more/not_implemented',
           icon: FaIcon(FontAwesomeIcons.key),
           text: s.keyTool),
-      MoreButton(
+      MosaicButton(
           url: '/more/not_implemented',
           icon: FaIcon(FontAwesomeIcons.broom),
           text: s.sweep),
-      MoreButton(
+      MosaicButton(
           url: '/more/about',
           icon: FaIcon(FontAwesomeIcons.circleInfo),
           text: s.about,
@@ -98,68 +78,7 @@ class _MoreState extends State<MorePage> {
             GoRouter.of(context).push('/more/about', extra: contentTemplate);
           }),
     ];
-    final palette = getPalette(Theme.of(context).primaryColor, buttons.length);
-
-    return GridView.count(
-      primary: true,
-      padding: const EdgeInsets.all(8),
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      crossAxisCount: 2,
-      children: buttons
-          .asMap()
-          .entries
-          .map(
-            (kv) => GFButton(
-              onPressed: () async {
-                final onPressed = kv.value.onPressed;
-                if (onPressed != null) {
-                  await onPressed();
-                } else {
-                  if (kv.value.secured) {
-                    final auth = await authenticate(context, s.backup);
-                    if (!auth) return;
-                  }
-                  GoRouter.of(context).push(kv.value.url);
-                }
-              },
-              icon: kv.value.icon,
-              type: GFButtonType.solid,
-              textStyle: t.textTheme.bodyLarge,
-              child: Text(kv.value.text!,
-                  maxLines: 2, overflow: TextOverflow.fade),
-              color: palette.colors[kv.key].toColor(),
-              borderShape: RoundedRectangleBorder(
-                borderRadius: BorderRadiusDirectional.all(
-                  Radius.circular(32),
-                ),
-              ),
-            ),
-          )
-          .toList(),
-    );
-  }
-
-  _coin() {
-    GoRouter.of(context).go('/more/coins');
-  }
-
-  _rescan() {
-    GoRouter.of(context).go('/more/rescan');
+    return MosaicWidget(buttons);
   }
 }
 
-class MoreButton {
-  final String url;
-  final String? text;
-  final Widget? icon;
-  final bool secured;
-  final Future<void> Function()? onPressed;
-
-  MoreButton(
-      {required this.url,
-      required this.text,
-      required this.icon,
-      this.secured = false,
-      this.onPressed});
-}

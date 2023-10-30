@@ -2,7 +2,10 @@ import 'package:YWallet/db.dart';
 import 'package:YWallet/history.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_palette/flutter_palette.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -225,4 +228,69 @@ class RecipientWidget extends StatelessWidget {
           ),
         ));
   }
+}
+
+class MosaicWidget extends StatelessWidget {
+  final List<MosaicButton> buttons;
+  MosaicWidget(this.buttons);
+  
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final t = Theme.of(context);
+    final palette = getPalette(t.primaryColor, buttons.length);
+    return GridView.count(
+      primary: true,
+      padding: const EdgeInsets.all(8),
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      crossAxisCount: 2,
+      children: buttons
+          .asMap()
+          .entries
+          .map(
+            (kv) => GFButton(
+              onPressed: () async {
+                final onPressed = kv.value.onPressed;
+                if (onPressed != null) {
+                  await onPressed();
+                } else {
+                  if (kv.value.secured) {
+                    final auth = await authenticate(context, s.secured);
+                    if (!auth) return;
+                  }
+                  GoRouter.of(context).push(kv.value.url);
+                }
+              },
+              icon: kv.value.icon,
+              type: GFButtonType.solid,
+              textStyle: t.textTheme.bodyLarge,
+              child: Text(kv.value.text!,
+                  maxLines: 2, overflow: TextOverflow.fade),
+              color: palette.colors[kv.key].toColor(),
+              borderShape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusDirectional.all(
+                  Radius.circular(32),
+                ),
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class MosaicButton {
+  final String url;
+  final String? text;
+  final Widget? icon;
+  final bool secured;
+  final Future<void> Function()? onPressed;
+
+  MosaicButton(
+      {required this.url,
+      required this.text,
+      required this.icon,
+      this.secured = false,
+      this.onPressed});
 }

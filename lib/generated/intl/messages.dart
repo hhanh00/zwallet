@@ -1376,7 +1376,7 @@ abstract class S {
   /// No description provided for @convertToWatchonly.
   ///
   /// In en, this message translates to:
-  /// **'Convert to Watch-Only'**
+  /// **'To Watch-Only'**
   String get convertToWatchonly;
 
   /// No description provided for @messages.
@@ -2213,11 +2213,11 @@ abstract class S {
   /// **'Reply UA Receivers'**
   String get replyUA;
 
-  /// No description provided for @receivers.
+  /// No description provided for @uaReceivers.
   ///
   /// In en, this message translates to:
   /// **'UA Receivers'**
-  String get receivers;
+  String get uaReceivers;
 
   /// No description provided for @list.
   ///
@@ -2272,6 +2272,24 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this recipient'**
   String get deletePayment;
+
+  /// No description provided for @ua.
+  ///
+  /// In en, this message translates to:
+  /// **'UA'**
+  String get ua;
+
+  /// No description provided for @receivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Receivers'**
+  String get receivers;
+
+  /// No description provided for @secured.
+  ///
+  /// In en, this message translates to:
+  /// **'Secured'**
+  String get secured;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

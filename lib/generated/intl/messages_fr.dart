@@ -1114,7 +1114,7 @@ class SFr extends S {
   String get replyUA => 'Reply UA Receivers';
 
   @override
-  String get receivers => 'UA Receivers';
+  String get uaReceivers => 'UA Receivers';
 
   @override
   String get list => 'List';
@@ -1142,4 +1142,13 @@ class SFr extends S {
 
   @override
   String get deletePayment => 'Are you sure you want to delete this recipient';
+
+  @override
+  String get ua => 'UA';
+
+  @override
+  String get receivers => 'Receivers';
+
+  @override
+  String get secured => 'Secured';
 }

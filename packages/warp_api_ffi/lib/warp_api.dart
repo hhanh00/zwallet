@@ -105,12 +105,15 @@ class WarpApi {
     compute(mempoolRunIsolateFn, port);
   }
 
-  static Future<int> newAccount(int coin, String name, String key, int index) async {
-    return await compute((_) => unwrapResultU32(warp_api_lib.new_account(
-        coin,
-        name.toNativeUtf8().cast<Int8>(),
-        key.toNativeUtf8().cast<Int8>(),
-        index)), null);
+  static Future<int> newAccount(
+      int coin, String name, String key, int index) async {
+    return await compute(
+        (_) => unwrapResultU32(warp_api_lib.new_account(
+            coin,
+            name.toNativeUtf8().cast<Int8>(),
+            key.toNativeUtf8().cast<Int8>(),
+            index)),
+        null);
   }
 
   static void newSubAccount(String name, int index, int count) {
@@ -160,8 +163,8 @@ class WarpApi {
     warp_api_lib.skip_to_last_height(coin);
   }
 
-  static int rewindTo(int height) {
-    return unwrapResultU32(warp_api_lib.rewind_to(height));
+  static int rewindTo(int coin, int height) {
+    return unwrapResultU32(warp_api_lib.rewind_to(coin, height));
   }
 
   static void rescanFrom(int height) {
@@ -175,9 +178,12 @@ class WarpApi {
     return unwrapResultU8(res);
   }
 
-  static Future<int> warpSync2(int coin, bool getTx, int anchorOffset, int maxCost, int port) async {
-    final res = await compute((_) => warp_api_lib.warp(coin, getTx ? 1 : 0,
-        anchorOffset, maxCost, port), null);
+  static Future<int> warpSync2(
+      int coin, bool getTx, int anchorOffset, int maxCost, int port) async {
+    final res = await compute(
+        (_) =>
+            warp_api_lib.warp(coin, getTx ? 1 : 0, anchorOffset, maxCost, port),
+        null);
     return unwrapResultU8(res);
   }
 
@@ -187,8 +193,7 @@ class WarpApi {
 
   static Future<int> getLatestHeight(int coin) async {
     return await compute(
-      (_) => unwrapResultU32(warp_api_lib.get_latest_height(coin)), 
-      null);
+        (_) => unwrapResultU32(warp_api_lib.get_latest_height(coin)), null);
   }
 
   static int validKey(int coin, String key) {
@@ -234,8 +239,10 @@ class WarpApi {
   //           recipientJson, useTransparent, anchorOffset, receivePort.sendPort));
   // }
 
-  static PoolBalance getPoolBalances(int coin, int account, int confirmations) {
-    final bb = warp_api_lib.get_pool_balances(coin, account, confirmations);
+  static PoolBalance getPoolBalances(
+      int coin, int account, int confirmations, bool include_unconfirmed) {
+    final bb = warp_api_lib.get_pool_balances(
+        coin, account, confirmations, include_unconfirmed ? 1 : 0);
     final r = unwrapResultBytes(bb);
     return PoolBalance(r);
   }
@@ -285,8 +292,13 @@ class WarpApi {
         {'coin': coin, 'account': account, 'gapLimit': gapLimit});
   }
 
-  static Future<String> prepareTx(int coin, int account,
-      List<Recipient> recipients, int senderUAType, int anchorOffset, FeeT fee) async {
+  static Future<String> prepareTx(
+      int coin,
+      int account,
+      List<Recipient> recipients,
+      int senderUAType,
+      int anchorOffset,
+      FeeT fee) async {
     final builder = Builder();
     final rs = recipients.map((r) => r.unpack()).toList();
     int root = RecipientsT(values: rs).pack(builder);
@@ -334,8 +346,9 @@ class WarpApi {
         SignOnlyParams(coin, account, tx, receivePort.sendPort));
   }
 
-  static String broadcast(String txStr) {
-    final res = warp_api_lib.broadcast_tx(txStr.toNativeUtf8().cast<Int8>());
+  static String broadcast(int coin, String txStr) {
+    final res =
+        warp_api_lib.broadcast_tx(coin, txStr.toNativeUtf8().cast<Int8>());
     return unwrapResultString(res);
   }
 
@@ -364,15 +377,23 @@ class WarpApi {
   }
 
   static Future<int> getBlockHeightByTime(int coin, DateTime time) async {
-    final res = await compute((_) =>
-      warp_api_lib.get_block_by_time(coin, time.millisecondsSinceEpoch ~/ 1000),
-      null);
+    final res = await compute(
+        (_) => warp_api_lib.get_block_by_time(
+            coin, time.millisecondsSinceEpoch ~/ 1000),
+        null);
     return unwrapResultU32(res);
   }
 
-  static Future<int> syncHistoricalPrices(String currency) async {
-    return await compute(
-        syncHistoricalPricesIsolateFn, SyncHistoricalPricesParams(currency));
+  static Future<int> syncHistoricalPrices(int coin, String currency) async {
+    return await compute((_) {
+      final now = DateTime.now();
+      final today = DateTime.utc(now.year, now.month, now.day);
+      return unwrapResultU32(warp_api_lib.sync_historical_prices(
+          coin,
+          today.millisecondsSinceEpoch ~/ 1000,
+          365,
+          currency.toNativeUtf8().cast<Int8>()));
+    }, null);
   }
 
   static void setDbPasswd(int coin, String passwd) {
@@ -448,7 +469,8 @@ class WarpApi {
   }
 
   static void zipBackup(String key, String filename, String tmpDir) {
-    final r = warp_api_lib.zip_backup(toNative(key), toNative(filename), toNative(tmpDir));
+    final r = warp_api_lib.zip_backup(
+        toNative(key), toNative(filename), toNative(tmpDir));
     unwrapResultU8(r);
   }
 
@@ -458,8 +480,7 @@ class WarpApi {
   }
 
   static void unzipBackup(String path, String dbDir) {
-    unwrapResultU8(warp_api_lib.unzip_backup(
-        toNative(path), toNative(dbDir)));
+    unwrapResultU8(warp_api_lib.unzip_backup(toNative(path), toNative(dbDir)));
   }
 
   static List<String> splitData(int id, String data) {
@@ -756,15 +777,6 @@ String transferPoolsIsolateFn(TransferPoolsParams params) {
       toNativeBytes(fee2),
       fee2.lengthInBytes);
   return unwrapResultString(txId);
-}
-
-int syncHistoricalPricesIsolateFn(SyncHistoricalPricesParams params) {
-  final now = DateTime.now();
-  final today = DateTime.utc(now.year, now.month, now.day);
-  return unwrapResultU32(warp_api_lib.sync_historical_prices(
-      today.millisecondsSinceEpoch ~/ 1000,
-      365,
-      params.currency.toNativeUtf8().cast<Int8>()));
 }
 
 int getTBalanceIsolateFn(GetTBalanceParams params) {

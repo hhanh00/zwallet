@@ -21,6 +21,7 @@ class CoinControlPage extends StatelessWidget {
         body: Observer(
           builder: (context) {
             aaSequence.seqno;
+            aaSequence.settingsSeqno;
             return TableListPage(
               view: appSettings.noteView,
               items: aa.notes.items,
@@ -132,7 +133,7 @@ class TableListNoteMetadata extends TableListItemMetadata<Note> {
 
   TextStyle _noteStyle(ThemeData t, Note note) {
     var style = t.textTheme.bodyMedium!;
-    if (confirmations(note) >= appSettings.anchorOffset)
+    if (confirmations(note) < appSettings.anchorOffset)
       style = style.copyWith(color: style.color!.withOpacity(0.5));
     if (note.orchard) style = style.apply(color: t.primaryColor);
     return style;

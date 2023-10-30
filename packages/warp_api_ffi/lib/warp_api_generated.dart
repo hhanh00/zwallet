@@ -490,9 +490,11 @@ class NativeLibrary {
       _skip_to_last_height_ptr.asFunction<_dart_skip_to_last_height>();
 
   CResult_u32 rewind_to(
+    int coin,
     int height,
   ) {
     return _rewind_to(
+      coin,
       height,
     );
   }
@@ -683,9 +685,11 @@ class NativeLibrary {
       _sign_and_broadcast_ptr.asFunction<_dart_sign_and_broadcast>();
 
   CResult_____c_char broadcast_tx(
+    int coin,
     ffi.Pointer<ffi.Int8> tx_str,
   ) {
     return _broadcast_tx(
+      coin,
       tx_str,
     );
   }
@@ -757,11 +761,13 @@ class NativeLibrary {
       _get_block_by_time_ptr.asFunction<_dart_get_block_by_time>();
 
   CResult_u32 sync_historical_prices(
+    int coin,
     int now,
     int days,
     ffi.Pointer<ffi.Int8> currency,
   ) {
     return _sync_historical_prices(
+      coin,
       now,
       days,
       currency,
@@ -1225,11 +1231,13 @@ class NativeLibrary {
     int coin,
     int id,
     int confirmations,
+    int include_spent,
   ) {
     return _get_pool_balances(
       coin,
       id,
       confirmations,
+      include_spent,
     );
   }
 
@@ -2144,10 +2152,12 @@ typedef _dart_skip_to_last_height = void Function(
 );
 
 typedef _c_rewind_to = CResult_u32 Function(
+  ffi.Uint8 coin,
   ffi.Uint32 height,
 );
 
 typedef _dart_rewind_to = CResult_u32 Function(
+  int coin,
   int height,
 );
 
@@ -2286,10 +2296,12 @@ typedef _dart_sign_and_broadcast = CResult_____c_char Function(
 );
 
 typedef _c_broadcast_tx = CResult_____c_char Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> tx_str,
 );
 
 typedef _dart_broadcast_tx = CResult_____c_char Function(
+  int coin,
   ffi.Pointer<ffi.Int8> tx_str,
 );
 
@@ -2334,12 +2346,14 @@ typedef _dart_get_block_by_time = CResult_u32 Function(
 );
 
 typedef _c_sync_historical_prices = CResult_u32 Function(
+  ffi.Uint8 coin,
   ffi.Int64 now,
   ffi.Uint32 days,
   ffi.Pointer<ffi.Int8> currency,
 );
 
 typedef _dart_sync_historical_prices = CResult_u32 Function(
+  int coin,
   int now,
   int days,
   ffi.Pointer<ffi.Int8> currency,
@@ -2645,12 +2659,14 @@ typedef _c_get_pool_balances = CResult______u8 Function(
   ffi.Uint8 coin,
   ffi.Uint32 id,
   ffi.Uint32 confirmations,
+  ffi.Int8 include_spent,
 );
 
 typedef _dart_get_pool_balances = CResult______u8 Function(
   int coin,
   int id,
   int confirmations,
+  int include_spent,
 );
 
 typedef _c_get_db_height = CResult______u8 Function(

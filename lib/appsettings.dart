@@ -36,22 +36,20 @@ extension AppSettingsExtension on AppSettings {
 
 extension CoinSettingsExtension on CoinSettings {
   void defaults(int coin) {
-    int defaultAddrMode = coins[coin].defaultAddrMode;
-    if (!hasUaType()) uaType = defaultAddrMode;
-    if (!hasReplyUa()) replyUa = defaultAddrMode;
+    int defaultUAType = coins[coin].defaultUAType;
+    if (!hasUaType()) uaType = defaultUAType;
+    if (!hasReplyUa()) replyUa = defaultUAType;
+    print('CoinSettingsExtension $uaType');
   }
 
   static CoinSettings load(int coin) {
     final p = WarpApi.getProperty(coin, 'settings');
-    print('67 $p');
     return CoinSettings.fromBuffer(base64Decode(p))..defaults(coin);
   }
 
   void save(int coin) {
-    print('35 $this');
     final bytes = writeToBuffer();
     final settings = base64Encode(bytes);
-    print('35 $coin $settings');
     WarpApi.setProperty(coin, 'settings', settings);
   }
 

@@ -1,6 +1,8 @@
+import 'package:YWallet/init.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
@@ -9,12 +11,14 @@ import '../../accounts.dart';
 import '../../appsettings.dart';
 import '../../generated/intl/messages.dart';
 import '../../main.dart';
+import '../scan.dart';
+import '../utils.dart';
 
 class ContactsPage extends StatefulWidget {
   ContactsPage() {
     contacts.fetchContacts();
   }
-  
+
   @override
   State<StatefulWidget> createState() => _ContactsState();
 }
@@ -29,26 +33,27 @@ class _ContactsState extends State<ContactsPage> {
         appBar: AppBar(
           title: Text(s.contacts),
           actions: [
-            if (idSelected != null) IconButton(onPressed: _edit, icon: Icon(Icons.edit)),
-            if (idSelected != null) IconButton(onPressed: _delete, icon: Icon(Icons.delete)),
+            if (idSelected != null)
+              IconButton(onPressed: _edit, icon: Icon(Icons.edit)),
+            if (idSelected != null)
+              IconButton(onPressed: _delete, icon: Icon(Icons.delete)),
             IconButton(onPressed: _save, icon: Icon(Icons.save)),
             IconButton(onPressed: _add, icon: Icon(Icons.add)),
-            ],
+          ],
         ),
         body: Observer(builder: (context) {
           final c = contacts.contacts;
           return ListView.separated(
-            itemBuilder: (context, index) => ContactItem(c[index], 
-              selected: idSelected == c[index].id,
-              onTap: () => setState(() {
-                if (idSelected == c[index].id) 
-                  idSelected = null;
-                else 
-                  idSelected = c[index].id;
-              }) ),
+            itemBuilder: (context, index) => ContactItem(c[index],
+                selected: idSelected == c[index].id,
+                onTap: () => setState(() {
+                      if (idSelected == c[index].id)
+                        idSelected = null;
+                      else
+                        idSelected = c[index].id;
+                    })),
             separatorBuilder: (context, index) => Divider(),
             itemCount: c.length,
-            
           );
         }));
   }
@@ -57,13 +62,18 @@ class _ContactsState extends State<ContactsPage> {
     final s = S.of(context);
     final coinSettings = CoinSettingsExtension.load(aa.coin);
     final fee = coinSettings.feeT;
-    final confirmed = await showConfirmDialog(context, s.save, s.confirmSaveContacts);
+    final confirmed =
+        await showConfirmDialog(context, s.save, s.confirmSaveContacts);
     if (!confirmed) return;
-    final txPlan = WarpApi.commitUnsavedContacts(aa.coin, appSettings.anchorOffset, fee);
-    GoRouter.of(context).pushReplacement('/account/txplan', extra: txPlan);
+    final txPlan =
+        WarpApi.commitUnsavedContacts(aa.coin, appSettings.anchorOffset, fee);
+    GoRouter.of(context)
+        .pushReplacement('/account/txplan?tab=more', extra: txPlan);
   }
 
-  _add() {}
+  _add() {
+    GoRouter.of(context).push('/more/contacts/add');
+  }
 
   _edit() {
     GoRouter.of(context).push('/more/contacts/edit?id=${idSelected!}');
@@ -124,9 +134,7 @@ class _ContactEditState extends State<ContactEditPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(s.editContact),
-          actions: [
-            IconButton(onPressed: _save, icon: Icon(Icons.save))
-          ],
+          actions: [IconButton(onPressed: _save, icon: Icon(Icons.save))],
         ),
         body: FormBuilder(
             key: formKey,
@@ -145,12 +153,68 @@ class _ContactEditState extends State<ContactEditPage> {
   }
 
   _save() {
-    WarpApi.storeContact(widget.id,
-      nameController.text,
-      addressController.text,
-      true
-    );
+    WarpApi.storeContact(
+        widget.id, nameController.text, addressController.text, true);
     contacts.fetchContacts();
   }
+}
 
+class ContactAddPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _ContactAddState();
+}
+
+class _ContactAddState extends State<ContactAddPage> {
+  final formKey = GlobalKey<FormBuilderState>();
+  final nameController = TextEditingController();
+  final addressController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(s.addContact),
+        actions: [
+          IconButton(onPressed: add, icon: Icon(Icons.add)),
+        ],
+      ),
+      body: FormBuilder(
+        key: formKey,
+        child: Column(
+          children: [
+            FormBuilderTextField(
+              name: 'name',
+              decoration: InputDecoration(label: Text(s.name)),
+              controller: nameController,
+              validator: FormBuilderValidators.required(),
+            ),
+            Row(children: [
+              Expanded(
+                  child: FormBuilderTextField(
+                name: 'address',
+                decoration: InputDecoration(label: Text(s.address)),
+                controller: addressController,
+                validator: addressCheck,
+              )),
+              IconButton.outlined(onPressed: _qr, icon: Icon(Icons.qr_code)),
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _qr() async {
+    addressController.text = await scanQRCode(context, validator: addressCheck);
+  }
+
+  add() async {
+    final form = formKey.currentState!;
+    if (form.validate()) {
+      WarpApi.storeContact(0, nameController.text, addressController.text, true);
+      contacts.fetchContacts();
+      GoRouter.of(context).pop();
+    }
+  }
 }

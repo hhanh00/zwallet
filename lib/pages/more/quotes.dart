@@ -10,7 +10,6 @@ class MarketQuotes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    print("AA PNLS ${aa.pnls}");
     return Scaffold(
       appBar: AppBar(title: Text(s.marketPrice)),
       body: Chart<PnL>(

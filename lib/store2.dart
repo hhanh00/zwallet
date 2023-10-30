@@ -35,7 +35,6 @@ void initSyncListener() {
 Timer? syncTimer;
 
 void startAutoSync() {
-  print('startAutoSync');
   if (syncTimer == null) {
     syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
       syncStatus2.sync(false, auto: true);
@@ -107,11 +106,9 @@ abstract class _SyncStatus2 with Store {
   Future<void> sync(bool rescan, {bool auto = false}) async {
     final context = rootNavigatorKey.currentContext!;
     final s = S.of(context);
-    print('10 sync');
     if (paused) return;
     if (syncing) return;
     await update();
-    print('11 sync');
     final lh = latestHeight;
     // don't auto sync more than 1 month of data
     if (!rescan && auto && lh != null && lh - syncedHeight > 30*24*60*4/5) return;
@@ -130,7 +127,6 @@ abstract class _SyncStatus2 with Store {
       eta.begin(latestHeight!);
       eta.checkpoint(syncedHeight, DateTime.now());
 
-      print('12 warpSync2');
       // This may take a long time
       await WarpApi.warpSync2(
           aa.coin,
@@ -281,7 +277,7 @@ abstract class _MarketPrice with Store {
       if (f ||
           lastChartUpdateTime == null ||
           now > lastChartUpdateTime! + 5 * 60) {
-        await WarpApi.syncHistoricalPrices(appSettings.currency);
+        await WarpApi.syncHistoricalPrices(aa.coin, appSettings.currency);
         lastChartUpdateTime = now;
       }
     } on String catch (msg) {

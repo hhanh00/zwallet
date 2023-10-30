@@ -15,6 +15,7 @@ import 'package:warp_api/warp_api.dart';
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
 import '../settings.dart';
+import '../utils.dart';
 
 class PoolTransferPage extends StatefulWidget {
   @override
@@ -113,7 +114,7 @@ class _PoolTransferState extends State<PoolTransferPage> {
           coinSettings.feeT,
         );
     _calc(false);
-    GoRouter.of(context).push('/account/txplan', extra: plan);
+    GoRouter.of(context).push('/account/txplan?tab=more', extra: plan);
   }
 
   _calc(bool v) => setState(() => calculatingPlan = v);
@@ -151,14 +152,6 @@ class HorizontalBarChart extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch, children: stacks));
   }
 }
-
-ColorPalette getPalette(Color color, int n) => ColorPalette.polyad(
-      color,
-      numberOfColors: max(n, 1),
-      hueVariability: 15,
-      saturationVariability: 10,
-      brightnessVariability: 10,
-    );
 
 extension PoolBalanceExtension on PoolBalanceT {
   int get(int p) {

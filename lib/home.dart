@@ -15,6 +15,7 @@ import 'package:path/path.dart' as p;
 
 import 'about.dart';
 import 'account.dart';
+import 'accounts.dart';
 import 'animated_qr.dart';
 import 'budget.dart';
 import 'coin/coins.dart';
@@ -452,7 +453,7 @@ class HomeInnerState extends State<HomeInnerPage>
     final h = height;
     if (confirmed && h != null) {
       showSnackBar(s.blockReorgDetectedRewind(h));
-      WarpApi.rewindTo(h);
+      WarpApi.rewindTo(active.coin, h);
     }
   }
 
@@ -510,7 +511,7 @@ class HomeInnerState extends State<HomeInnerPage>
 
     if (rawTx != null) {
       try {
-        final res = WarpApi.broadcast(rawTx);
+        final res = WarpApi.broadcast(aa.coin, rawTx);
         showSnackBar(res);
       } on String catch (e) {
         showSnackBar(e, error: true);
