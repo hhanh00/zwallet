@@ -130,9 +130,9 @@ abstract class _SyncStatus2 with Store {
       // This may take a long time
       await WarpApi.warpSync2(
           aa.coin,
-          settings.getTx,
-          settings.anchorOffset,
-          settings.antispam ? 50 : 1000000,
+          !appSettings.nogetTx,
+          appSettings.anchorOffset,
+          coinSettings.spamFilter ? 50 : 1000000,
           syncProgressPort2.sendPort.nativePort);
 
       aa.update(latestHeight);

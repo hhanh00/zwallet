@@ -31,6 +31,7 @@ import 'pages/more/contacts.dart';
 import 'pages/more/keytool.dart';
 import 'pages/more/more.dart';
 import 'pages/more/pool.dart';
+import 'pages/more/sweep.dart';
 import 'pages/more/tx.dart';
 import 'pages/more/quotes.dart';
 import 'pages/scan.dart';
@@ -205,10 +206,13 @@ final router = GoRouter(
                     builder: (context, state) => KeyToolPage(),
                   ),
                   GoRoute(
+                    path: 'sweep',
+                    builder: (context, state) => SweepPage(),
+                  ),
+                  GoRoute(
                       path: 'about',
-                      builder: (context, state) {
-                        return AboutPage(state.extra as String);
-                      }),
+                      builder: (context, state) =>
+                          AboutPage(state.extra as String)),
                 ]),
           ],
         ),

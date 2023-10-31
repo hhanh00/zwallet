@@ -66,7 +66,7 @@ class MorePage extends StatelessWidget {
           icon: FaIcon(FontAwesomeIcons.key),
           text: s.keyTool),
       MosaicButton(
-          url: '/more/not_implemented',
+          url: '/more/sweep',
           icon: FaIcon(FontAwesomeIcons.broom),
           text: s.sweep),
       MosaicButton(

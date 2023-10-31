@@ -17,6 +17,7 @@ import '../appsettings.dart' as app;
 import '../main.dart';
 import '../settings.pb.dart';
 import '../store2.dart';
+import 'utils.dart';
 
 List<String>? currencies;
 
@@ -389,6 +390,8 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     coinSettings = app.CoinSettingsExtension.load(aa.coin);
+    coinSettings.lwd = coinSettings.lwd.deepCopy(); // otherwise they cannot be edited
+    coinSettings.explorer = coinSettings.explorer.deepCopy();
   }
 
   @override
@@ -410,8 +413,6 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
             FormBuilderFieldOption(value: kv.key, child: Text(kv.value)))
         .toList();
     final fee = amountToString2(coinSettings.fee.toInt());
-
-    print('build $coinSettings');
 
     return FormBuilder(
         key: formKey,
@@ -535,20 +536,11 @@ class FieldUA extends StatelessWidget {
             final value = v?.sum;
             onChanged(value);
           })
-        : FieldUARadio(_bitSet(value), name: name, label: label,
+        : FieldUARadio(poolOf(value), name: name, label: label,
             onChanged: (v) {
             final value = 1 << (v ?? 0);
             onChanged(value);
           });
-  }
-
-  _bitSet(v) {
-    switch (v) {
-      case 1: return 0;
-      case 2: return 1;
-      case 4: return 2;
-      default: return 0;
-    }
   }
 }
 

@@ -118,13 +118,13 @@ class TableListKeyMetadata extends TableListItemMetadata<KeyPackT> {
           child: selected
               ? Column(
                   children: [
-                    Panel(s.index, child: Text(idx.toString())),
+                    Panel(s.index, text: idx.toString()),
                     SizedBox(height: 8),
-                    Panel(s.derpath, child: Text(derPath)),
+                    Panel(s.derpath, text: derPath),
                     SizedBox(height: 8),
-                    Panel(s.address, child: Text(address)),
+                    Panel(s.address, text: address),
                     SizedBox(height: 8),
-                    Panel(s.key, child: Text(key)),
+                    Panel(s.key, text: key),
                   ],
                 )
               : ListTile(leading: Text(idx.toString()), title: Text(address))),

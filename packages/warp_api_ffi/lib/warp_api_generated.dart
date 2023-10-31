@@ -713,18 +713,20 @@ class NativeLibrary {
       _is_valid_tkey_ptr.asFunction<_dart_is_valid_tkey>();
 
   CResult_____c_char sweep_tkey(
+    int coin,
+    int account,
     int last_height,
     ffi.Pointer<ffi.Int8> sk,
     int pool,
-    int confirmations,
     ffi.Pointer<ffi.Uint8> fee_bytes,
     int fee_len,
   ) {
     return _sweep_tkey(
+      coin,
+      account,
       last_height,
       sk,
       pool,
-      confirmations,
       fee_bytes,
       fee_len,
     );
@@ -734,6 +736,35 @@ class NativeLibrary {
       _lookup<ffi.NativeFunction<_c_sweep_tkey>>('sweep_tkey');
   late final _dart_sweep_tkey _sweep_tkey =
       _sweep_tkey_ptr.asFunction<_dart_sweep_tkey>();
+
+  CResult_____c_char sweep_tseed(
+    int coin,
+    int account,
+    int last_height,
+    ffi.Pointer<ffi.Int8> seed,
+    int pool,
+    int index,
+    int limit,
+    ffi.Pointer<ffi.Uint8> fee_bytes,
+    int fee_len,
+  ) {
+    return _sweep_tseed(
+      coin,
+      account,
+      last_height,
+      seed,
+      pool,
+      index,
+      limit,
+      fee_bytes,
+      fee_len,
+    );
+  }
+
+  late final _sweep_tseed_ptr =
+      _lookup<ffi.NativeFunction<_c_sweep_tseed>>('sweep_tseed');
+  late final _dart_sweep_tseed _sweep_tseed =
+      _sweep_tseed_ptr.asFunction<_dart_sweep_tseed>();
 
   CResult_u32 get_activation_date() {
     return _get_activation_date();
@@ -2314,19 +2345,45 @@ typedef _dart_is_valid_tkey = int Function(
 );
 
 typedef _c_sweep_tkey = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
   ffi.Uint32 last_height,
   ffi.Pointer<ffi.Int8> sk,
   ffi.Uint8 pool,
-  ffi.Uint32 confirmations,
   ffi.Pointer<ffi.Uint8> fee_bytes,
   ffi.Uint64 fee_len,
 );
 
 typedef _dart_sweep_tkey = CResult_____c_char Function(
+  int coin,
+  int account,
   int last_height,
   ffi.Pointer<ffi.Int8> sk,
   int pool,
-  int confirmations,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  int fee_len,
+);
+
+typedef _c_sweep_tseed = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
+  ffi.Uint32 last_height,
+  ffi.Pointer<ffi.Int8> seed,
+  ffi.Uint8 pool,
+  ffi.Uint32 index,
+  ffi.Uint32 limit,
+  ffi.Pointer<ffi.Uint8> fee_bytes,
+  ffi.Uint64 fee_len,
+);
+
+typedef _dart_sweep_tseed = CResult_____c_char Function(
+  int coin,
+  int account,
+  int last_height,
+  ffi.Pointer<ffi.Int8> seed,
+  int pool,
+  int index,
+  int limit,
   ffi.Pointer<ffi.Uint8> fee_bytes,
   int fee_len,
 );

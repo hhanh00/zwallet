@@ -81,3 +81,16 @@ ColorPalette getPalette(Color color, int n) => ColorPalette.polyad(
       saturationVariability: 10,
       brightnessVariability: 10,
     );
+
+int poolOf(v) {
+  switch (v) {
+    case 1:
+      return 0;
+    case 2:
+      return 1;
+    case 4:
+      return 2;
+    default:
+      return 0;
+  }
+}

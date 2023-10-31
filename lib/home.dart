@@ -409,8 +409,10 @@ class HomeInnerState extends State<HomeInnerPage>
                   final form = formKey.currentState!;
                   if (form.validate()) {
                     try {
-                      final txid = await WarpApi.sweepTransparent(syncStatus.latestHeight,
-                          keyController.text, pool, settings.anchorOffset, settings.feeConfig);
+                      final txid = await WarpApi.sweepTransparent(
+                        active.coin, active.id,
+                        syncStatus.latestHeight,
+                          keyController.text, pool, settings.feeConfig);
                       showSnackBar(s.txId(txid));
                       Navigator.of(context).pop(true);
                     } on String catch (msg) {

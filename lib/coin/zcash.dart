@@ -14,12 +14,12 @@ class ZcashCoin extends CoinBase {
   AssetImage image = AssetImage('assets/zcash.png');
   List<LWInstance> lwd = [
     LWInstance("Lightwalletd", "https://mainnet.lightwalletd.com:9067"),
+    LWInstance("Zcash Infra (USA)", "https://lwd1.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (HK)", "https://lwd2.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (USA)", "https://lwd3.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (Canada)", "https://lwd4.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (France)", "https://lwd5.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (USA)", "https://lwd6.zcash-infra.com:9067"),
-    LWInstance("Zcash Infra (E. Europe)", "https://lwd1.zcash-infra.com:9067"),
   ];
   int defaultAddrMode = 0;
   int defaultUAType = 7; // TSO
