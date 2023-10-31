@@ -1,6 +1,8 @@
+import 'package:YWallet/db.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
@@ -69,5 +71,47 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
       Future(() => syncStatus2.rescan(height));
       GoRouter.of(context).pop();
     });
+  }
+}
+
+class RewindPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _RewindState();
+}
+
+class _RewindState extends State<RewindPage> {
+  int? selected;
+  final List<Checkpoint> checkpoints = WarpApi.getCheckpoints(aa.coin);
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    return Scaffold(
+      appBar: AppBar(title: Text(s.rewind), actions: [
+        if (selected != null) IconButton(onPressed: rewind, icon: Icon(Icons.check)),
+      ]),
+      body: ListView.separated(
+          itemBuilder: (context, index) {
+            final cp = checkpoints[index];
+            final time = noteDateFormat.format(
+                DateTime.fromMillisecondsSinceEpoch(cp.timestamp * 1000));
+            return ListTile(
+              selected: index == selected,
+              title: Text(time),
+              trailing: Text(cp.height.toString()),
+              onTap: () => setState(() => selected = index != selected ? index : null),
+            );
+          },
+          separatorBuilder: (context, index) => Divider(),
+          itemCount: checkpoints.length),
+    );
+  }
+
+  rewind() {
+    WarpApi.rewindTo(aa.coin, checkpoints[selected!].height);
+    Future(() async {
+      syncStatus2.sync(true);
+    });
+    GoRouter.of(context).pop();
   }
 }

@@ -46,12 +46,8 @@ class _ContactsState extends State<ContactsPage> {
           return ListView.separated(
             itemBuilder: (context, index) => ContactItem(c[index],
                 selected: idSelected == c[index].id,
-                onTap: () => setState(() {
-                      if (idSelected == c[index].id)
-                        idSelected = null;
-                      else
-                        idSelected = c[index].id;
-                    })),
+                onTap: () => setState(() => idSelected =
+                    idSelected != c[index].id ? c[index].id : null)),
             separatorBuilder: (context, index) => Divider(),
             itemCount: c.length,
           );
@@ -212,7 +208,8 @@ class _ContactAddState extends State<ContactAddPage> {
   add() async {
     final form = formKey.currentState!;
     if (form.validate()) {
-      WarpApi.storeContact(0, nameController.text, addressController.text, true);
+      WarpApi.storeContact(
+          0, nameController.text, addressController.text, true);
       contacts.fetchContacts();
       GoRouter.of(context).pop();
     }

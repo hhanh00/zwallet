@@ -50,7 +50,6 @@ class _NewImportAccountState extends State<NewImportAccountPage>
         title: Text(s.newAccount),
         actions: [
           IconButton(onPressed: _settings, icon: Icon(Icons.settings)),
-          IconButton(onPressed: _help, icon: Icon(Icons.help)),
           IconButton(onPressed: _onOK, icon: Icon(Icons.add)),
         ],
       ),
@@ -108,14 +107,15 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                       ),
                     ],
                   ),
-                if (_restore && coins[coin].supportsLedger && !isMobile())
-                  Padding(
-                    padding: EdgeInsets.all(8),
-                    child: ElevatedButton(
-                      onPressed: _importLedger,
-                      child: Text('Import From Ledger'),
-                    ),
-                  ),
+                // TODO: Ledger
+                // if (_restore && coins[coin].supportsLedger && !isMobile())
+                //   Padding(
+                //     padding: EdgeInsets.all(8),
+                //     child: ElevatedButton(
+                //       onPressed: _importLedger,
+                //       child: Text('Import From Ledger'),
+                //     ),
+                //   ),
               ],
             ),
           ),
@@ -172,6 +172,4 @@ class _NewImportAccountState extends State<NewImportAccountPage>
       formKey.currentState!.fields['key']!.invalidate(msg);
     }
   }
-
-  _help() {}
 }

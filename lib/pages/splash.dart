@@ -163,7 +163,6 @@ class _SplashState extends State<SplashPage> {
     final a = ActiveAccount2.fromPrefs(prefs);
     a?.let((a) {
       setActiveAccount(a.coin, a.id);
-      print('_restoreActive $coinSettings');
       aa.update(syncStatus2.latestHeight);
     });
   }

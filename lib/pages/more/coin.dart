@@ -55,7 +55,7 @@ class TableListNoteMetadata extends TableListItemMetadata<Note> {
   }
 
   @override
-  Text? header(BuildContext context) {
+  Text? headerText(BuildContext context) {
     final s = S.of(context);
     final t = Theme.of(context);
     return Text(
@@ -65,8 +65,7 @@ class TableListNoteMetadata extends TableListItemMetadata<Note> {
   }
 
   @override
-  Widget toListTile(BuildContext context, int index, Note note) {
-    final s = S.of(context);
+  Widget toListTile(BuildContext context, int index, Note note, {void Function(void Function())? setState}) {
     final t = Theme.of(context);
     final excluded = note.excluded;
     final style = _noteStyle(t, note);
@@ -146,6 +145,9 @@ class TableListNoteMetadata extends TableListItemMetadata<Note> {
     aa.notes.setSortOrder(field);
     return aa.notes.order;
   }
+  
+  @override
+  Widget? header(BuildContext context) => null;
 }
 
 class CoinControlPage2 extends StatelessWidget {

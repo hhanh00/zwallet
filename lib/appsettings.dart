@@ -39,7 +39,6 @@ extension CoinSettingsExtension on CoinSettings {
     int defaultUAType = coins[coin].defaultUAType;
     if (!hasUaType()) uaType = defaultUAType;
     if (!hasReplyUa()) replyUa = defaultUAType;
-    print('CoinSettingsExtension $uaType');
   }
 
   static CoinSettings load(int coin) {

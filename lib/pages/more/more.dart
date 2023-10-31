@@ -34,7 +34,8 @@ class MorePage extends StatelessWidget {
       MosaicButton(
           url: '/more/budget',
           icon: FaIcon(FontAwesomeIcons.scaleBalanced),
-          text: s.budget),
+          text: s.budget,
+          secured: true),
       MosaicButton(
           url: '/more/market',
           icon: FaIcon(FontAwesomeIcons.arrowTrendUp),
@@ -49,7 +50,7 @@ class MorePage extends StatelessWidget {
           icon: FaIcon(FontAwesomeIcons.arrowRightLong),
           text: s.rescan),
       MosaicButton(
-          url: '/more/not_implemented',
+          url: '/more/rewind',
           icon: FaIcon(FontAwesomeIcons.arrowRotateLeft),
           text: s.rewind),
       MosaicButton(
@@ -61,7 +62,7 @@ class MorePage extends StatelessWidget {
           icon: FaIcon(FontAwesomeIcons.peopleArrows),
           text: s.multiPay),
       MosaicButton(
-          url: '/more/not_implemented',
+          url: '/more/keytool',
           icon: FaIcon(FontAwesomeIcons.key),
           text: s.keyTool),
       MosaicButton(
@@ -81,4 +82,3 @@ class MorePage extends StatelessWidget {
     return MosaicWidget(buttons);
   }
 }
-

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:YWallet/pages/more/cold.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:protobuf/protobuf.dart';
 
@@ -27,6 +28,7 @@ import 'pages/more/batch.dart';
 import 'pages/more/budget.dart';
 import 'pages/more/coin.dart';
 import 'pages/more/contacts.dart';
+import 'pages/more/keytool.dart';
 import 'pages/more/more.dart';
 import 'pages/more/pool.dart';
 import 'pages/more/tx.dart';
@@ -183,6 +185,10 @@ final router = GoRouter(
                     builder: (context, state) => RescanPage(),
                   ),
                   GoRoute(
+                    path: 'rewind',
+                    builder: (context, state) => RewindPage(),
+                  ),
+                  GoRoute(
                     path: 'budget',
                     builder: (context, state) => BudgetPage(),
                   ),
@@ -193,6 +199,10 @@ final router = GoRouter(
                   GoRoute(
                     path: 'transfer',
                     builder: (context, state) => PoolTransferPage(),
+                  ),
+                  GoRoute(
+                    path: 'keytool',
+                    builder: (context, state) => KeyToolPage(),
                   ),
                   GoRoute(
                       path: 'about',
@@ -257,8 +267,10 @@ class _ScaffoldBar extends State<ScaffoldBar> {
     return Scaffold(
       appBar: AppBar(
         title: Text(aa.name),
+        centerTitle: true,
         actions: [
-          IconButton(onPressed: _settings, icon: Icon(Icons.settings)),
+          IconButton(onPressed: help, icon: Icon(Icons.help)),
+          IconButton(onPressed: settings, icon: Icon(Icons.settings)),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -279,7 +291,11 @@ class _ScaffoldBar extends State<ScaffoldBar> {
     );
   }
 
-  _settings() {
+  help() {
+    launchUrl(Uri.https('ywallet.app'));
+  }
+
+  settings() {
     GoRouter.of(context).push('/settings');
   }
 }

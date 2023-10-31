@@ -364,5 +364,10 @@
   "deletePayment": "Are you sure you want to delete this recipient",
   "ua": "UA",
   "receivers": "Receivers",
-  "secured": "Secured"
+  "secured": "Secured",
+  "external": "External",
+  "derpath": "Derivation Path",
+  "shielded": "Shielded",
+  "addressIndex": "Address Index",
+  "index": "Index"
 }

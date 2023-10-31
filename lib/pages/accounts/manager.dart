@@ -57,13 +57,8 @@ class _AccountManagerState extends State<AccountManagerPage> {
                 a,
                 selected: index == selected,
                 editing: editing,
-                onTap: () {
-                  if (selected == index)
-                    selected = null;
-                  else
-                    selected = index;
-                  setState(() {});
-                },
+                onTap: () => setState(() => 
+                  selected = selected != index ? index : null),
                 onEdit: onEdit,
               );
             },

@@ -41,13 +41,13 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
   List<Widget>? actions(BuildContext context) => null;
 
   @override
-  Text? header(BuildContext context) => null;
+  Text? headerText(BuildContext context) => null;
 
   @override
   void inverseSelection() {}
 
   @override
-  Widget toListTile(BuildContext context, int index, Tx tx) {
+  Widget toListTile(BuildContext context, int index, Tx tx, {void Function(void Function())? setState}) {
     ZMessage? message;
     try {
       message = aa.messages.items.firstWhere((m) => m.txId == tx.id);
@@ -98,6 +98,9 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
     aa.txs.setSortOrder(field);
     return aa.txs.order;
   }
+  
+  @override
+  Widget? header(BuildContext context) => null;
 }
 
 class TxItem extends StatelessWidget {

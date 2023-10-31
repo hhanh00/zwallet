@@ -1151,4 +1151,19 @@ class SFr extends S {
 
   @override
   String get secured => 'Secured';
+
+  @override
+  String get external => 'External';
+
+  @override
+  String get derpath => 'Derivation Path';
+
+  @override
+  String get shielded => 'Shielded';
+
+  @override
+  String get addressIndex => 'Address Index';
+
+  @override
+  String get index => 'Index';
 }

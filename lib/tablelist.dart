@@ -10,8 +10,8 @@ class SortSetting extends InheritedWidget {
   final config = ValueNotifier<SortConfig2?>(null);
   SortSetting({super.key, required super.child});
 
-  static SortSetting of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<SortSetting>()!;
+  static SortSetting? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<SortSetting>();
   }
 
   @override
@@ -52,10 +52,11 @@ class TableListPage<U, T extends TableListItemMetadata<U>>
 }
 
 abstract class TableListItemMetadata<T> {
-  Text? header(BuildContext context);
+  Text? headerText(BuildContext context);
+  Widget? header(BuildContext context);
   List<Widget>? actions(BuildContext context);
   List<ColumnDefinition> columns(BuildContext context);
-  Widget toListTile(BuildContext context, int index, T item);
+  Widget toListTile(BuildContext context, int index, T item, {void Function(void Function())? setState});
   DataRow toRow(BuildContext context, int index, T item);
   void inverseSelection();
   SortConfig2? sortBy(String field);
@@ -85,16 +86,14 @@ class TableViewState<U, T extends TableListItemMetadata<U>>
     extends State<_TableView<U, T>> {
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
-    final t = Theme.of(context);
-    final sort = SortSetting.of(context).config.value;
+    final sort = SortSetting.of(context)?.config.value;
     final columns = widget.metadata
         .columns(context)
         .map((c) => DataColumn(
               label: Text(
                   c.label + (c.field?.let((f) => sort?.indicator(f)) ?? '')),
               onSort: c.field?.let((f) => (_, __) {
-                    SortSetting.of(context).config.value =
+                    SortSetting.of(context)?.config.value =
                         widget.metadata.sortBy(f);
                   }),
             ))
@@ -107,7 +106,7 @@ class TableViewState<U, T extends TableListItemMetadata<U>>
                   width: box.maxWidth,
                   child: PaginatedDataTable(
                     columns: columns,
-                    header: widget.metadata.header(context),
+                    header: widget.metadata.headerText(context),
                     actions: widget.metadata.actions(context),
                     columnSpacing: 16,
                     showCheckboxColumn: false,
@@ -160,23 +159,25 @@ class ListViewState<U, T extends TableListItemMetadata<U>>
     extends State<_ListView<U, T>> {
   @override
   Widget build(BuildContext context) {
-    final header = widget.metadata.header(context);
+    final headerText = widget.metadata.headerText(context);
+    final Widget? headerTextWidget = headerText?.let((h) => ListTile(
+            onTap: _onInvert,
+            title: h,
+            trailing: Icon(Icons.select_all),
+          ));
+    final header = headerTextWidget ?? widget.metadata.header(context);
     return CustomScrollView(
       key: UniqueKey(),
       semanticChildCount: widget.items.length,
       slivers: [
         if (header != null) SliverToBoxAdapter(
-          child: ListTile(
-            onTap: _onInvert,
-            title: header,
-            trailing: Icon(Icons.select_all),
-          ),
+          child: header,
         ),
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, index) => index.isEven
                 ? widget.metadata
-                    .toListTile(context, index ~/ 2, widget.items[index ~/ 2])
+                    .toListTile(context, index ~/ 2, widget.items[index ~/ 2], setState: setState)
                 : Divider(),
             childCount: widget.items.length * 2 - 1,
             semanticIndexCallback: (Widget widget, int index) =>

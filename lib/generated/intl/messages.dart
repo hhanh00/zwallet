@@ -2290,6 +2290,36 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Secured'**
   String get secured;
+
+  /// No description provided for @external.
+  ///
+  /// In en, this message translates to:
+  /// **'External'**
+  String get external;
+
+  /// No description provided for @derpath.
+  ///
+  /// In en, this message translates to:
+  /// **'Derivation Path'**
+  String get derpath;
+
+  /// No description provided for @shielded.
+  ///
+  /// In en, this message translates to:
+  /// **'Shielded'**
+  String get shielded;
+
+  /// No description provided for @addressIndex.
+  ///
+  /// In en, this message translates to:
+  /// **'Address Index'**
+  String get addressIndex;
+
+  /// No description provided for @index.
+  ///
+  /// In en, this message translates to:
+  /// **'Index'**
+  String get index;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -38,13 +38,13 @@ class TableListMessageMetadata extends TableListItemMetadata<ZMessage> {
   List<Widget>? actions(BuildContext context) => null;
 
   @override
-  Text? header(BuildContext context) => null;
+  Text? headerText(BuildContext context) => null;
 
   @override
   void inverseSelection() {}
 
   @override
-  Widget toListTile(BuildContext context, int index, ZMessage message) {
+  Widget toListTile(BuildContext context, int index, ZMessage message, {void Function(void Function())? setState}) {
     return MessageBubble(message, index: index);
   }
 
@@ -86,6 +86,9 @@ class TableListMessageMetadata extends TableListItemMetadata<ZMessage> {
     aa.messages.setSortOrder(field);
     return aa.messages.order;
   }
+  
+  @override
+  Widget? header(BuildContext context) => null;
 }
 
 class MessageBubble extends StatelessWidget {
