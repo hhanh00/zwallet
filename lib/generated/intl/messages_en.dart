@@ -1166,4 +1166,7 @@ class SEn extends S {
 
   @override
   String get index => 'Index';
+
+  @override
+  String get pleaseAuthenticate => 'Please Authenticate';
 }

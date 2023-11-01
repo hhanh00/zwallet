@@ -44,6 +44,10 @@ class _SplashState extends State<SplashPage> {
         await _restoreActive();
         initSyncListener();
         _initForegroundTask();
+        final protectOpen = appSettings.protectOpen;
+        if (protectOpen) {
+          await authBarrier(context);
+        }
         GoRouter.of(context).go('/account');
       });
     });

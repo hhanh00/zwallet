@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../accounts.dart';
 import '../../coin/coins.dart';
+import '../utils.dart';
 import 'balance.dart';
 import 'sync_status.dart';
 import 'qr_address.dart';
@@ -70,7 +71,11 @@ class _HomeState extends State<HomePageInner> {
     setState(() {});
   }
 
-  _send() {
+  _send() async {
+    final protectSend = appSettings.protectSend;
+    if (protectSend) {
+      await authBarrier(context);
+    }
     GoRouter.of(context).push('/account/send');
   }
 }

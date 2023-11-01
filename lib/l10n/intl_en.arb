@@ -369,5 +369,6 @@
   "derpath": "Derivation Path",
   "shielded": "Shielded",
   "addressIndex": "Address Index",
-  "index": "Index"
+  "index": "Index",
+  "pleaseAuthenticate": "Please Authenticate"
 }

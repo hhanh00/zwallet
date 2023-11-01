@@ -25,10 +25,11 @@ Future<bool> showMessageBox2(BuildContext context, String title, String content,
       barrierDismissible: false,
       builder: (context) =>
           AlertDialog(title: Text(title), content: Text(content), actions: [
-            if (dismissable) ElevatedButton.icon(
-                onPressed: () => GoRouter.of(context).pop(),
-                icon: Icon(Icons.check),
-                label: Text(label ?? s.ok))
+            if (dismissable)
+              ElevatedButton.icon(
+                  onPressed: () => GoRouter.of(context).pop(),
+                  icon: Icon(Icons.check),
+                  label: Text(label ?? s.ok))
           ]));
   return confirm ?? false;
 }
@@ -92,5 +93,13 @@ int poolOf(v) {
       return 2;
     default:
       return 0;
+  }
+}
+
+Future<void> authBarrier(BuildContext context) async {
+  final s = S.of(context);
+  while (true) {
+    final authed = await authenticate(context, s.pleaseAuthenticate);
+    if (authed) break;
   }
 }

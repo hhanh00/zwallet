@@ -2320,6 +2320,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Index'**
   String get index;
+
+  /// No description provided for @pleaseAuthenticate.
+  ///
+  /// In en, this message translates to:
+  /// **'Please Authenticate'**
+  String get pleaseAuthenticate;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
