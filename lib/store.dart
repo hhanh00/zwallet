@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'dart:math';
 import 'package:YWallet/accounts.dart';
 import 'package:YWallet/appsettings.dart';
+import 'package:YWallet/pages/utils.dart' hide showSnackBar;
 import 'package:YWallet/src/version.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';

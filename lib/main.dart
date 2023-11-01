@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:YWallet/pages/utils.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:app_links/app_links.dart';
 import 'package:camera/camera.dart';
@@ -850,31 +851,6 @@ DecodedPaymentURI decodeAddress(BuildContext context, String? v) {
   } on String catch (e) {
     throw e;
   }
-}
-
-Future<bool> authenticate(BuildContext context, String reason) async {
-  if (!isMobile()) return true;
-  final localAuth = LocalAuthentication();
-  try {
-    final bool didAuthenticate;
-    if (Platform.isAndroid && !await localAuth.canCheckBiometrics) {
-      didAuthenticate = await KeyGuardmanager.authStatus == "true";
-    } else {
-      didAuthenticate = await localAuth.authenticate(
-          localizedReason: reason, options: AuthenticationOptions());
-    }
-    if (didAuthenticate) {
-      return true;
-    }
-  } on PlatformException catch (e) {
-    await showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) => AlertDialog(
-            title: Text(S.of(context).noAuthenticationMethod),
-            content: Text(e.message ?? "")));
-  }
-  return false;
 }
 
 Future<void> shieldTAddr(BuildContext context) async {

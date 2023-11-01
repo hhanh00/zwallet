@@ -1,11 +1,17 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:YWallet/main.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_palette/flutter_palette.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
+import 'package:key_guardmanager/key_guardmanager.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -96,10 +102,77 @@ int poolOf(v) {
   }
 }
 
-Future<void> authBarrier(BuildContext context) async {
+Future<bool> authBarrier(BuildContext context, {bool dismissable = false}) async {
   final s = S.of(context);
   while (true) {
     final authed = await authenticate(context, s.pleaseAuthenticate);
-    if (authed) break;
+    if (authed) return true;
+    if (dismissable) return false;
   }
+}
+
+Future<bool> authenticate(BuildContext context, String reason) async {
+  final s = S.of(context);
+  if (!isMobile()) {
+    if (appStore.dbPassword.isEmpty) return true;
+    final formKey = GlobalKey<FormBuilderState>();
+    final passwdController = TextEditingController();
+    final authed = await showAdaptiveDialog<bool>(
+            context: context,
+            builder: (context) {
+              return AlertDialog.adaptive(
+                title: Text(s.pleaseAuthenticate),
+                content: Card(
+                    child: FormBuilder(
+                        key: formKey,
+                        child: FormBuilderTextField(
+                          name: 'passwd',
+                          decoration:
+                              InputDecoration(label: Text(s.databasePassword)),
+                          controller: passwdController,
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.required(),
+                            (v) => v != appStore.dbPassword
+                                ? s.invalidPassword
+                                : null,
+                          ]),
+                        ))),
+                actions: [
+                  IconButton(
+                      onPressed: () => GoRouter.of(context).pop(false),
+                      icon: Icon(Icons.cancel)),
+                  IconButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate())
+                          GoRouter.of(context).pop(true);
+                      },
+                      icon: Icon(Icons.check)),
+                ],
+              );
+            }) ??
+        false;
+    return authed;
+  }
+
+  final localAuth = LocalAuthentication();
+  try {
+    final bool didAuthenticate;
+    if (Platform.isAndroid && !await localAuth.canCheckBiometrics) {
+      didAuthenticate = await KeyGuardmanager.authStatus == "true";
+    } else {
+      didAuthenticate = await localAuth.authenticate(
+          localizedReason: reason, options: AuthenticationOptions());
+    }
+    if (didAuthenticate) {
+      return true;
+    }
+  } on PlatformException catch (e) {
+    await showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) => AlertDialog(
+            title: Text(S.of(context).noAuthenticationMethod),
+            content: Text(e.message ?? '')));
+  }
+  return false;
 }

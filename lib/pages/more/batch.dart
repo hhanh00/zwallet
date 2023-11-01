@@ -124,7 +124,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
           WarpApi.decryptBackup(restoreKeyController.text, file.path!, dbDir);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('backup', zipFile);
-      await showMessageBox2(context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow);
+      await showMessageBox2(context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow, dismissable: false);
       GoRouter.of(context).pop();
     }
   }

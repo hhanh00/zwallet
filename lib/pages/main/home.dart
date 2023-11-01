@@ -74,7 +74,8 @@ class _HomeState extends State<HomePageInner> {
   _send() async {
     final protectSend = appSettings.protectSend;
     if (protectSend) {
-      await authBarrier(context);
+      final authed = await authBarrier(context, dismissable: true);
+      if (!authed) return;
     }
     GoRouter.of(context).push('/account/send');
   }
