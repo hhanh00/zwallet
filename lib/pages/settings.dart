@@ -77,8 +77,10 @@ class _SettingsState extends State<SettingsPage>
           controller: tabController,
           children: [
             SingleChildScrollView(
-                child: GeneralTab(appSettings, key: generalKey, currencies: currencies)),
-            SingleChildScrollView(child: PrivacyTab(appSettings, key: privacyKey)),
+                child: GeneralTab(appSettings,
+                    key: generalKey, currencies: currencies)),
+            SingleChildScrollView(
+                child: PrivacyTab(appSettings, key: privacyKey)),
             SingleChildScrollView(child: ViewTab(appSettings, key: viewKey)),
             SingleChildScrollView(child: CoinTab(widget.coin, key: coinKey)),
           ],
@@ -199,6 +201,7 @@ class _PrivacyState extends State<PrivacyTab>
   final formKey = GlobalKey<FormBuilderState>();
 
   final anchorController = TextEditingController();
+  final dbPasswdController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -310,9 +313,18 @@ class _PrivacyState extends State<PrivacyTab>
               widget.appSettings.anchorOffset = int.tryParse(v!) ?? 0;
             },
           ),
+          Divider(),
+          if (!isMobile()) ElevatedButton.icon(
+              onPressed: encryptDb,
+              icon: Icon(Icons.enhanced_encryption),
+              label: Text(s.encryptDatabase))
         ]),
       ),
     );
+  }
+
+  encryptDb() {
+    GoRouter.of(context).pushReplacement('/encrypt_db');
   }
 
   bool validate() {
@@ -390,7 +402,8 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     coinSettings = app.CoinSettingsExtension.load(aa.coin);
-    coinSettings.lwd = coinSettings.lwd.deepCopy(); // otherwise they cannot be edited
+    coinSettings.lwd =
+        coinSettings.lwd.deepCopy(); // otherwise they cannot be edited
     coinSettings.explorer = coinSettings.explorer.deepCopy();
   }
 
@@ -531,13 +544,11 @@ class FieldUA extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return aa.hasUA
-        ? FieldUACheckbox(value, name: name, label: label,
-            onChanged: (v) {
+        ? FieldUACheckbox(value, name: name, label: label, onChanged: (v) {
             final value = v?.sum;
             onChanged(value);
           })
-        : FieldUARadio(poolOf(value), name: name, label: label,
-            onChanged: (v) {
+        : FieldUARadio(poolOf(value), name: name, label: label, onChanged: (v) {
             final value = 1 << (v ?? 0);
             onChanged(value);
           });

@@ -1030,6 +1030,19 @@ class NativeLibrary {
   late final _dart_unzip_backup _unzip_backup =
       _unzip_backup_ptr.asFunction<_dart_unzip_backup>();
 
+  CResult_____c_char zip_dbs(
+    ffi.Pointer<ffi.Int8> passwd,
+    ffi.Pointer<ffi.Int8> temp_dir,
+  ) {
+    return _zip_dbs(
+      passwd,
+      temp_dir,
+    );
+  }
+
+  late final _zip_dbs_ptr = _lookup<ffi.NativeFunction<_c_zip_dbs>>('zip_dbs');
+  late final _dart_zip_dbs _zip_dbs = _zip_dbs_ptr.asFunction<_dart_zip_dbs>();
+
   CResult______u8 split_data(
     int id,
     ffi.Pointer<ffi.Int8> data,
@@ -2556,6 +2569,16 @@ typedef _c_unzip_backup = CResult_u8 Function(
 typedef _dart_unzip_backup = CResult_u8 Function(
   ffi.Pointer<ffi.Int8> path,
   ffi.Pointer<ffi.Int8> db_dir,
+);
+
+typedef _c_zip_dbs = CResult_____c_char Function(
+  ffi.Pointer<ffi.Int8> passwd,
+  ffi.Pointer<ffi.Int8> temp_dir,
+);
+
+typedef _dart_zip_dbs = CResult_____c_char Function(
+  ffi.Pointer<ffi.Int8> passwd,
+  ffi.Pointer<ffi.Int8> temp_dir,
 );
 
 typedef _c_split_data = CResult______u8 Function(

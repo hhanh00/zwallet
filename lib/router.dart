@@ -21,6 +21,7 @@ import 'pages/accounts/send.dart';
 import 'pages/accounts/submit.dart';
 import 'pages/accounts/txplan.dart';
 import 'pages/dblogin.dart';
+import 'pages/encrypt.dart';
 import 'pages/main/home.dart';
 import 'pages/more/about.dart';
 import 'pages/more/backup.dart';
@@ -247,6 +248,10 @@ final router = GoRouter(
             state.uri.queryParameters['coin']?.let(int.parse) ?? aa.coin;
         return SettingsPage(coin: coin);
       },
+    ),
+    GoRoute(
+      path: '/encrypt_db',
+      builder: (context, state) => EncryptDbPage(),
     ),
     GoRoute(
       path: '/scan',

@@ -61,6 +61,7 @@ import 'settings.dart';
 import 'restore.dart';
 import 'send.dart';
 import 'store.dart';
+import 'store2.dart';
 import 'theme_editor.dart';
 import 'transaction.dart';
 import 'sync_chart.dart';
@@ -224,7 +225,22 @@ void main() async {
   await restoreWindow();
   initNotifications();
   await loadThemeSettings();
+  final prefs = await SharedPreferences.getInstance();
+  final dbPath = await getDbPath();
+  print("db path $dbPath");
+  await recoverDb(prefs, dbPath);
   runApp(App());
+}
+
+Future<void> recoverDb(SharedPreferences prefs, String dbPath) async {
+  final backupPath = prefs.getString('backup');
+  if (backupPath == null) return;
+  await prefs.remove('backup');
+  for (var c in coins) {
+    await c.delete();
+  }
+  final dbDir = await getDbPath();
+  WarpApi.unzipBackup(backupPath, dbDir);
 }
 
 void main2() async {

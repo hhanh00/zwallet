@@ -18,14 +18,14 @@ import 'widgets.dart';
 int decimalDigits(bool fullPrec) => fullPrec ? MAX_PRECISION : 3;
 
 Future<bool> showMessageBox2(BuildContext context, String title, String content,
-    {String? label}) async {
+    {String? label, bool dismissable = true}) async {
   final s = S.of(context);
   final confirm = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (context) =>
           AlertDialog(title: Text(title), content: Text(content), actions: [
-            ElevatedButton.icon(
+            if (dismissable) ElevatedButton.icon(
                 onPressed: () => GoRouter.of(context).pop(),
                 icon: Icon(Icons.check),
                 label: Text(label ?? s.ok))

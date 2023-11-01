@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:io';
 
 import 'package:YWallet/accounts.dart';
+import 'package:YWallet/pages/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quick_actions/quick_actions.dart';
@@ -26,6 +27,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashState extends State<SplashPage> {
+  late final s = S.of(context);
   final progressKey = GlobalKey<_LoadProgressState>();
 
   @override
@@ -33,12 +35,7 @@ class _SplashState extends State<SplashPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future(() async {
-        final prefs = await SharedPreferences.getInstance();
-        final dbPath = await getDbPath();
-        print("db path $dbPath");
-        await _recoverDb(prefs, dbPath);
-        await _decryptDb();
-        await _restoreSettings(prefs);
+        await _restoreSettings();
         // await _setupMempool();
         await _registerURLHandler();
         await _registerQuickActions();
@@ -57,27 +54,8 @@ class _SplashState extends State<SplashPage> {
     return LoadProgress(key: progressKey);
   }
 
-  Future<void> _recoverDb(SharedPreferences prefs, String dbPath) async {
-    final backupPath = prefs.getString('backup');
-    if (backupPath == null) return;
-    await prefs.remove('backup');
-    for (var c in coins) {
-      await c.delete();
-    }
-    final dbDir = await getDbPath();
-    WarpApi.unzipBackup(backupPath, dbDir);
-    _setProgress(0.05, "Database recovered");
-  }
-
-  _decryptDb() {
-    final c = coins.first;
-    if (isMobile()) return; // db encryption is only for desktop
-    if (!File(c.dbFullPath).existsSync()) return; // fresh install
-    if (WarpApi.decryptDb(c.dbFullPath, '')) return; // not encrypted
-    GoRouter.of(context).push('/decrypt_db');
-  }
-
-  Future<void> _restoreSettings(SharedPreferences prefs) async {
+  Future<void> _restoreSettings() async {
+    final prefs = await SharedPreferences.getInstance();
     appSettings = AppSettingsExtension.load(prefs);
     _setProgress(0.1, "Settings loaded");
   }
