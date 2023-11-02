@@ -73,7 +73,7 @@ class BalanceState extends State<BalanceWidget> {
   bool hide(bool flat) {
     switch (appSettings.autoHide) {
       case 0: return true;
-      case 1: return !flat;
+      case 1: return flat;
       default: return false;
     }
   }

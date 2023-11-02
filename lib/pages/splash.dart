@@ -158,9 +158,7 @@ class _SplashState extends State<SplashPage> {
   }
 
   _initAccel() {
-    if (isMobile()) accelerometerEvents.listen((e) {
-
-    });
+    if (isMobile()) accelerometerEvents.listen(handleAccel);
   }
 
   void _setProgress(double progress, String message) {

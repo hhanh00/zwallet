@@ -26,7 +26,7 @@ abstract class _AppStore with Store {
   String dbPassword = '';
 
   @observable
-  bool flat = true;
+  bool flat = false;
 }
 
 final syncProgressPort2 = ReceivePort();
