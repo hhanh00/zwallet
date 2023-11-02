@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp_api/warp_api.dart';
@@ -44,35 +45,38 @@ class _QRAddressState extends State<QRAddressWidget> {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     final a = widget.amount ?? 0;
-    final uri = a != 0
-        ? WarpApi.makePaymentURI(
-            aa.coin, address, widget.amount!, widget.memo ?? '')
-        : address;
 
-    return Column(children: [
-      GestureDetector(
-        onTap: _nextAddressMode,
-        child: QrImage(
-          data: uri,
-          version: QrVersions.auto,
-          size: 200.0,
-          backgroundColor: Colors.white,
+    return Observer(builder: (context) {
+      aa.diversifiedAddress;
+      final uri = a != 0
+          ? WarpApi.makePaymentURI(
+              aa.coin, address, widget.amount!, widget.memo ?? '')
+          : address;
+      return Column(children: [
+        GestureDetector(
+          onTap: _nextAddressMode,
+          child: QrImage(
+            data: uri,
+            version: QrVersions.auto,
+            size: 200.0,
+            backgroundColor: Colors.white,
+          ),
         ),
-      ),
-      Padding(padding: EdgeInsets.all(8)),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(centerTrim(uri)),
-          Padding(padding: EdgeInsets.all(4)),
-          IconButton.outlined(onPressed: addressCopy, icon: Icon(Icons.copy)),
-          Padding(padding: EdgeInsets.all(4)),
-          if (widget.paymentURI)
-            IconButton.outlined(onPressed: qrCode, icon: Icon(Icons.qr_code)),
-        ],
-      ),
-      Text(addressType, style: t.textTheme.labelSmall)
-    ]);
+        Padding(padding: EdgeInsets.all(8)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(centerTrim(uri)),
+            Padding(padding: EdgeInsets.all(4)),
+            IconButton.outlined(onPressed: addressCopy, icon: Icon(Icons.copy)),
+            Padding(padding: EdgeInsets.all(4)),
+            if (widget.paymentURI)
+              IconButton.outlined(onPressed: qrCode, icon: Icon(Icons.qr_code)),
+          ],
+        ),
+        Text(addressType, style: t.textTheme.labelSmall)
+      ]);
+    });
   }
 
   // Addr Modes
@@ -83,9 +87,10 @@ class _QRAddressState extends State<QRAddressWidget> {
   _nextAddressMode() {
     final c = coins[aa.coin];
     while (true) {
-      addressMode = (addressMode - 1) % 4;
+      addressMode = (addressMode - 1) % 5;
       if (addressMode == 0 && !c.supportsUA) continue;
       if (addressMode == c.defaultAddrMode) break;
+      if (addressMode == 4) break; // diversified address
       if (availableMode & (1 << (addressMode - 1)) != 0) break;
     }
     widget.onMode?.call(addressMode);
@@ -95,10 +100,16 @@ class _QRAddressState extends State<QRAddressWidget> {
   String get addressType {
     final s = S.of(context);
     switch (addressMode) {
-      case 1: return s.transparent;
-      case 2: return s.sapling;
-      case 3: return s.orchard;
-      default: return s.ua;
+      case 1:
+        return s.transparent;
+      case 2:
+        return s.sapling;
+      case 3:
+        return s.orchard;
+      case 4:
+        return s.diversified;
+      default:
+        return s.ua;
     }
   }
 
@@ -108,6 +119,8 @@ class _QRAddressState extends State<QRAddressWidget> {
       case 0:
         uaType = widget.uaType;
         break;
+      case 4:
+        return aa.diversifiedAddress;
       default:
         uaType = 1 << (addressMode - 1);
         break;

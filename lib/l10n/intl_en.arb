@@ -370,5 +370,6 @@
   "shielded": "Shielded",
   "addressIndex": "Address Index",
   "index": "Index",
-  "pleaseAuthenticate": "Please Authenticate"
+  "pleaseAuthenticate": "Please Authenticate",
+  "diversified": "Diversified"
 }

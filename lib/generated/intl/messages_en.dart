@@ -1169,4 +1169,7 @@ class SEn extends S {
 
   @override
   String get pleaseAuthenticate => 'Please Authenticate';
+
+  @override
+  String get diversified => 'Diversified';
 }

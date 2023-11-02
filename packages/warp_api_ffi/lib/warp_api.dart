@@ -204,8 +204,8 @@ class WarpApi {
     return warp_api_lib.valid_address(coin, toNative(address)) != 0;
   }
 
-  static String getDiversifiedAddress(int uaType, int time) {
-    final address = warp_api_lib.get_diversified_address(uaType, time);
+  static String getDiversifiedAddress(int coin, int account, int uaType, int time) {
+    final address = warp_api_lib.get_diversified_address(coin, account, uaType, time);
     return unwrapResultString(address);
   }
 

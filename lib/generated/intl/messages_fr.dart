@@ -1169,4 +1169,7 @@ class SFr extends S {
 
   @override
   String get pleaseAuthenticate => 'Please Authenticate';
+
+  @override
+  String get diversified => 'Diversified';
 }

@@ -2326,6 +2326,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Please Authenticate'**
   String get pleaseAuthenticate;
+
+  /// No description provided for @diversified.
+  ///
+  /// In en, this message translates to:
+  /// **'Diversified'**
+  String get diversified;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

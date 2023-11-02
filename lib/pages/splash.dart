@@ -7,6 +7,7 @@ import 'package:YWallet/pages/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quick_actions/quick_actions.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_protocol/url_protocol.dart';
 import 'package:warp_api/warp_api.dart';
@@ -44,6 +45,7 @@ class _SplashState extends State<SplashPage> {
         await _restoreActive();
         initSyncListener();
         _initForegroundTask();
+        _initAccel();
         final protectOpen = appSettings.protectOpen;
         if (protectOpen) {
           await authBarrier(context);
@@ -153,6 +155,12 @@ class _SplashState extends State<SplashPage> {
     if (Platform.isAndroid)
       initForegroundTask();
     _setProgress(0.9, 'Initialize Foreground Service');
+  }
+
+  _initAccel() {
+    if (isMobile()) accelerometerEvents.listen((e) {
+
+    });
   }
 
   void _setProgress(double progress, String message) {

@@ -26,7 +26,7 @@ abstract class _AppStore with Store {
   String dbPassword = '';
 
   @observable
-  bool flat = false;
+  bool flat = true;
 }
 
 final syncProgressPort2 = ReceivePort();
@@ -47,6 +47,7 @@ void startAutoSync() {
   if (syncTimer == null) {
     syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
       syncStatus2.sync(false, auto: true);
+      aa.updateDivisified();
     });
   }
 }

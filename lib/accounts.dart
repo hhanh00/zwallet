@@ -32,11 +32,13 @@ abstract class _AASequence with Store {
 void setActiveAccount(int coin, int id) {
   coinSettings = CoinSettingsExtension.load(coin);
   aa = ActiveAccount2.fromId(coin, id);
+  aa.updateDivisified();
   aaSequence.seqno = DateTime.now().microsecondsSinceEpoch;
 }
 
 class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
-  ActiveAccount2(super.coin, super.id, super.name, super.canPay, super.external);
+  ActiveAccount2(
+      super.coin, super.id, super.name, super.canPay, super.external);
 
   static ActiveAccount2? fromPrefs(SharedPreferences prefs) {
     final coin = prefs.getInt('coin') ?? 0;
@@ -74,10 +76,13 @@ abstract class _ActiveAccount2 with Store {
   final bool canPay;
   final bool external;
 
-  _ActiveAccount2(this.coin, this.id, this.name, this.canPay, this.external): 
-    notes = Notes(coin, id),
-    txs = Txs(coin, id),
-    messages = Messages(coin, id);
+  _ActiveAccount2(this.coin, this.id, this.name, this.canPay, this.external)
+      : notes = Notes(coin, id),
+        txs = Txs(coin, id),
+        messages = Messages(coin, id);
+
+  @observable
+  String diversifiedAddress = '';
 
   @observable
   int height = 0;
@@ -110,12 +115,18 @@ abstract class _ActiveAccount2 with Store {
 
   @action
   void updatePoolBalances() {
-    poolBalances =
-        WarpApi.getPoolBalances(coin, id, 0, true).unpack();
+    poolBalances = WarpApi.getPoolBalances(coin, id, 0, true).unpack();
+  }
+
+  @action
+  void updateDivisified() {
+    diversifiedAddress = WarpApi.getDiversifiedAddress(coin, id,
+        coinSettings.uaType, DateTime.now().millisecondsSinceEpoch ~/ 1000);
   }
 
   @action
   void update(int? newHeight) {
+    updateDivisified();
     updatePoolBalances();
 
     notes.read(newHeight);
@@ -155,17 +166,16 @@ abstract class _ActiveAccount2 with Store {
         0.0);
 
     final pnlTxs = WarpApi.getPnLTxs(coin, id, start);
-    final quotes = WarpApi.getQuotes(coin, start, appSettings.currency)
-      .map((q) {
-        final dt = DateTime.fromMillisecondsSinceEpoch(q.timestamp * 1000);
-        final price = q.price;
-        return Quote(dt, price);
-      });
+    final quotes =
+        WarpApi.getQuotes(coin, start, appSettings.currency).map((q) {
+      final dt = DateTime.fromMillisecondsSinceEpoch(q.timestamp * 1000);
+      final price = q.price;
+      return Quote(dt, price);
+    });
 
     pnls = getPNL(start, end, pnlTxs, quotes);
 
-    if (newHeight != null)
-    height = newHeight;
+    if (newHeight != null) height = newHeight;
   }
 }
 
@@ -178,7 +188,8 @@ abstract class _Notes with Store {
   final int id;
   _Notes(this.coin, this.id);
 
-  @observable List<Note> items = [];
+  @observable
+  List<Note> items = [];
   SortConfig2? order;
 
   @action
@@ -201,6 +212,7 @@ abstract class _Notes with Store {
     WarpApi.invertExcluded(coin, id);
     items = items.map((n) => n.invertExcluded).toList();
   }
+
   @action
   void exclude(Note note) {
     WarpApi.updateExcluded(coin, note.id, note.excluded);
@@ -224,7 +236,8 @@ abstract class _Txs with Store {
   final int id;
   _Txs(this.coin, this.id);
 
-  @observable List<Tx> items = [];
+  @observable
+  List<Tx> items = [];
   SortConfig2? order;
 
   @action
@@ -260,7 +273,8 @@ abstract class _Messages with Store {
   final int id;
   _Messages(this.coin, this.id);
 
-  @observable List<ZMessage> items = [];
+  @observable
+  List<ZMessage> items = [];
   SortConfig2? order;
 
   @action
@@ -336,7 +350,8 @@ class SortConfig2 {
   }
 }
 
-List<PnL> getPNL(int start, int end, Iterable<TxTimeValue> tvs, Iterable<Quote> quotes) {
+List<PnL> getPNL(
+    int start, int end, Iterable<TxTimeValue> tvs, Iterable<Quote> quotes) {
   final trades = tvs.map((tv) {
     final dt = DateTime.fromMillisecondsSinceEpoch(tv.timestamp * 1000);
     final qty = tv.value / ZECUNIT;
@@ -357,8 +372,8 @@ List<PnL> getPNL(int start, int end, Iterable<TxTimeValue> tvs, Iterable<Quote> 
   var realized = 0.0;
   final len = min(quotes.length, portfolioTimeSeries.length);
 
-  final z = ZipStream.zip2<Quote, TimeSeriesPoint<double>, 
-    Tuple2<Quote, TimeSeriesPoint<double>>>(
+  final z = ZipStream.zip2<Quote, TimeSeriesPoint<double>,
+      Tuple2<Quote, TimeSeriesPoint<double>>>(
     Stream.fromIterable(quotes),
     Stream.fromIterable(portfolioTimeSeries),
     (a, b) => Tuple2(a, b),

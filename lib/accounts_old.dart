@@ -207,7 +207,7 @@ abstract class _ActiveAccount with Store {
   }
 
   String getDiversifiedAddress(int uaType, int time) {
-    return WarpApi.getDiversifiedAddress(uaType & settings.uaType, time);
+    return WarpApi.getDiversifiedAddress(active.coin, active.id, uaType & settings.uaType, time);
   }
 
   String getAddress(int uaType) {

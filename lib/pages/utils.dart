@@ -12,6 +12,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:key_guardmanager/key_guardmanager.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -175,4 +176,18 @@ Future<bool> authenticate(BuildContext context, String reason) async {
             content: Text(e.message ?? '')));
   }
   return false;
+}
+
+void handleAccel(AccelerometerEvent event) {
+  final n = sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
+  final inclination = acos(event.z / n) / pi * 180 * event.y.sign;
+  final flat = inclination < 20
+      ? true
+      : inclination > 40
+          ? false
+          : null;
+  flat?.let((f) {
+    if (f != appStore.flat) 
+      appStore.flat = f;
+  });
 }

@@ -33,8 +33,14 @@ class BalanceState extends State<BalanceWidget> {
         mode == 1 ? t.colorScheme.primaryContainer : t.colorScheme.primary;
     
     return Observer(builder: (context) {
+      aaSequence.settingsSeqno;
       aa.height;
       aa.currency;
+      appStore.flat;
+
+      final hideBalance = hide(appStore.flat);
+      if (hideBalance) return SizedBox();
+
       final c = coins[aa.coin];
       final balHi = decimalFormat((balance ~/ 100000) / 1000.0, 3);
       final balLo = (balance % 100000).toString().padLeft(5, '0');
@@ -64,9 +70,18 @@ class BalanceState extends State<BalanceWidget> {
     });
   }
 
+  bool hide(bool flat) {
+    switch (appSettings.autoHide) {
+      case 0: return true;
+      case 1: return !flat;
+      default: return false;
+    }
+  }
+
   int get balance {
     switch (widget.mode) {
       case 0:
+      case 4:
         return aa.poolBalances.sapling + aa.poolBalances.orchard;
       case 1:
         return aa.poolBalances.transparent;

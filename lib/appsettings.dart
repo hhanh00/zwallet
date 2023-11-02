@@ -10,13 +10,13 @@ import 'coin/coins.dart';
 var appSettings = AppSettings();
 var coinSettings = CoinSettings();
 
-
 extension AppSettingsExtension on AppSettings {
   void defaults() {
     if (!hasAnchorOffset()) anchorOffset = 3;
     if (!hasRowsPerPage()) rowsPerPage = 10;
     if (!hasDeveloperMode()) developerMode = 5;
     if (!hasCurrency()) currency = 'USD';
+    if (!hasAutoHide()) autoHide = 1;
   }
 
   static AppSettings load(SharedPreferences prefs) {

@@ -416,10 +416,14 @@ class NativeLibrary {
       _receivers_of_address_ptr.asFunction<_dart_receivers_of_address>();
 
   CResult_____c_char get_diversified_address(
+    int coin,
+    int account,
     int ua_type,
     int time,
   ) {
     return _get_diversified_address(
+      coin,
+      account,
       ua_type,
       time,
     );
@@ -2154,11 +2158,15 @@ typedef _dart_receivers_of_address = int Function(
 );
 
 typedef _c_get_diversified_address = CResult_____c_char Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
   ffi.Uint8 ua_type,
   ffi.Uint32 time,
 );
 
 typedef _dart_get_diversified_address = CResult_____c_char Function(
+  int coin,
+  int account,
   int ua_type,
   int time,
 );
