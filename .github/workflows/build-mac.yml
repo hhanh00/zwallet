@@ -38,7 +38,10 @@ jobs:
         run: ./build-scripts/mac/notarize-mac.sh "$MACOS_NOTARIZATION_APPLE_ID" "$MACOS_NOTARIZATION_TEAM_ID" "$MACOS_NOTARIZATION_PWD"
 
       - name: package
-        run: ./build-scripts/mac/pkg-mac.sh
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: ./build-scripts/mac/pkg-mac.sh
 
       - name: Release
         uses: softprops/action-gh-release@v1
