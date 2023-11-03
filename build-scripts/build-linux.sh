@@ -17,7 +17,8 @@ sudo apt-get install -y clang cmake ninja-build libgtk-3-dev libgstreamer1.0-dev
 cargo b -r --features=dart_ffi,sqlcipher,ledger
 
 flutter pub get
-flutter pub run build_runner build
+flutter gen-l10n
+flutter pub run build_runner build -d
 (cd packages/warp_api_ffi;flutter pub get;flutter pub run build_runner build)
 flutter build linux
 
