@@ -79,7 +79,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
 
     final hasContacts = contacts.contacts.isNotEmpty;
     final nextButton = activeStep < icons.length - 1
-        ? IconButton.outlined(
+        ? IconButton(
             icon: Icon(Icons.chevron_right_rounded, size: 32),
             onPressed: () {
               if (!validate()) return;
@@ -99,11 +99,11 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
               }
             },
           )
-        : IconButton.filled(
+        : IconButton(
             onPressed: calcPlan, iconSize: 32, icon: Icon(Icons.send));
 
-    final previousButton = activeStep > 0
-        ? IconButton.outlined(
+    final previousButton = 
+        IconButton(
             icon: Icon(Icons.chevron_left_rounded, size: 32),
             onPressed: () {
               if (activeStep > 0) {
@@ -112,8 +112,12 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
                 });
               }
             },
-          )
-        : SizedBox();
+          );
+
+    final actions = [
+      if (activeStep > 0) previousButton,
+      nextButton,
+    ];
 
     final b = [
       () => SendAddressType(type, key: typeKey, hasContacts: hasContacts),
@@ -153,6 +157,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     return Scaffold(
         appBar: AppBar(
           title: Text(s.send),
+          actions: actions,
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -160,6 +165,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
               IconStepper(
                 icons: icons,
                 activeStep: activeStep,
+                enableNextPreviousButtons: false,
                 onStepReached: (index) {
                   setState(() {
                     activeStep = index;
@@ -168,13 +174,6 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
                 enableStepTapping: false,
               ),
               body,
-              SizedBox(height: 16),
-              ButtonBar(
-                children: [
-                  previousButton,
-                  nextButton,
-                ],
-              ),
             ],
           ),
         ));
