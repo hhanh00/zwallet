@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:YWallet/db.dart';
 import 'package:YWallet/history.dart';
 import 'package:flutter/material.dart';
@@ -32,134 +34,6 @@ class Panel extends StatelessWidget {
         decoration:
             InputDecoration(label: Text(title), border: OutlineInputBorder()),
         child: text != null ? SelectableText(text!) : child);
-  }
-}
-
-enum AmountSource {
-  Crypto,
-  Fiat,
-  Slider,
-}
-
-class AmountState {
-  int amount;
-  int? spendable;
-  AmountState({required this.amount, this.spendable});
-}
-
-class InputAmountWidget extends StatefulWidget {
-  final AmountState initialAmount;
-  final void Function(int)? onChange;
-  InputAmountWidget(this.initialAmount, {super.key, this.onChange});
-
-  @override
-  State<StatefulWidget> createState() => InputAmountState();
-}
-
-class InputAmountState extends State<InputAmountWidget> {
-  final formKey = GlobalKey<FormBuilderState>();
-  double? fxRate;
-  int _amount = 0;
-  final amountController = TextEditingController();
-  final fiatController = TextEditingController();
-  final nformat = NumberFormat.decimalPatternDigits(
-      decimalDigits: decimalDigits(appSettings.fullPrec));
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final c = coins[aa.coin];
-      fxRate = await getFxRate(c.currency, appSettings.currency);
-      _update(AmountSource.Crypto);
-      setState(() {});
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    final c = coins[aa.coin];
-    final spendable = widget.initialAmount.spendable;
-    return FormBuilder(
-      key: formKey,
-      child: Column(children: [
-        if (spendable != null)
-          Text('${s.spendable}  ${amountToString2(spendable)}'),
-        SizedBox(height: 16),
-        FormBuilderTextField(
-          name: 'amount',
-          decoration: InputDecoration(label: Text(c.ticker)),
-          controller: amountController,
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
-          onChanged: (v0) {
-            final v = v0 == null || v0.isEmpty ? '0' : v0;
-            try {
-              final zec = nformat.parse(v).toDouble();
-              _amount = (zec * ZECUNIT).toInt();
-              _update(AmountSource.Crypto);
-            } on FormatException {}
-          },
-          validator: FormBuilderValidators.compose([
-            FormBuilderValidators.min(0, inclusive: false),
-            if (spendable != null) FormBuilderValidators.max(spendable),
-          ]),
-        ),
-        FormBuilderTextField(
-            name: 'fiat',
-            decoration: InputDecoration(label: Text(appSettings.currency)),
-            controller: fiatController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            enabled: fxRate != null,
-            onChanged: (v0) {
-              final v = v0 == null || v0.isEmpty ? '0' : v0;
-              try {
-                final fiat = nformat.parse(v).toDouble();
-                final zec = fiat / fxRate!;
-                _amount = (zec * ZECUNIT).toInt();
-                _update(AmountSource.Fiat);
-              } on FormatException {}
-            }),
-        if (spendable != null)
-          FormBuilderSlider(
-            name: 'slider',
-            initialValue: 0,
-            min: 0,
-            max: 100,
-            divisions: 10,
-            onChanged: (v0) {
-              final v = v0 ?? 0;
-              _amount = spendable * v ~/ 100;
-              _update(AmountSource.Slider);
-            },
-          )
-      ]),
-    );
-  }
-
-  _update(AmountSource source) {
-    if (source != AmountSource.Crypto)
-      amountController.text = nformat.format(_amount / ZECUNIT);
-    fxRate?.let((fx) {
-      if (source != AmountSource.Fiat)
-        fiatController.text = nformat.format(_amount * fx / ZECUNIT);
-    });
-    final spendable = widget.initialAmount.spendable;
-    if (source != AmountSource.Slider && spendable != null && spendable > 0) {
-      final p = _amount / spendable * 100;
-      formKey.currentState!.fields['slider']!.setValue(p.clamp(0.0, 100.0));
-    }
-    widget.onChange?.let((onChange) => onChange.call(_amount));
-    setState(() {});
-  }
-
-  int? get amount {
-    if (!validate()) return null;
-    return _amount;
-  }
-
-  bool validate() {
-    return formKey.currentState!.validate();
   }
 }
 
@@ -413,11 +287,17 @@ class _PoolSelectionState extends State<PoolSelection> {
   }
 }
 
+enum AmountSource {
+  Crypto,
+  Fiat,
+  Slider,
+}
+
 class AmountPicker extends StatefulWidget {
   final int? spendable;
   final int initialAmount;
-  final void Function(int?)? onSaved;
-  AmountPicker(this.initialAmount, {this.spendable, this.onSaved});
+  final void Function(int?)? onChanged;
+  AmountPicker(this.initialAmount, {this.spendable, this.onChanged});
   @override
   State<StatefulWidget> createState() => _AmountPickerState();
 }
@@ -451,10 +331,11 @@ class _AmountPickerState extends State<AmountPicker> {
     return FormBuilderField(
         name: 'amount',
         initialValue: widget.initialAmount,
-        onSaved: widget.onSaved,
+        onChanged: widget.onChanged,
         validator: FormBuilderValidators.compose([
           FormBuilderValidators.min(0, inclusive: false),
-          if (spendable != null) (int? v) => v! > spendable ? s.notEnoughBalance : null,
+          if (spendable != null)
+            (int? v) => v! > spendable ? s.notEnoughBalance : null,
         ]),
         builder: (field) {
           return Column(children: [
@@ -519,5 +400,56 @@ class _AmountPickerState extends State<AmountPicker> {
     }
     field?.didChange(_amount);
     setState(() {});
+  }
+}
+
+class InputMemo extends StatefulWidget {
+  final MemoData memo;
+  final void Function(MemoData?)? onSaved;
+  InputMemo(this.memo, {super.key, this.onSaved});
+
+  @override
+  State<StatefulWidget> createState() => _InputMemoState();
+}
+
+class _InputMemoState extends State<InputMemo> {
+  late MemoData value = widget.memo.clone();
+  late final subjectController =
+      TextEditingController(text: widget.memo.subject);
+  late final memoController = TextEditingController(text: widget.memo.memo);
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    return FormBuilderField<MemoData>(
+        name: 'memo',
+        initialValue: value,
+        validator: (MemoData? v) {
+          if (v == null) return null;
+          if (utf8.encode(v.memo).length > 511) return s.memoTooLong;
+          return null;
+        },
+        onSaved: widget.onSaved,
+        builder: (field) {
+          return Column(children: [
+            FormBuilderFilterChip(name: 'reply', options: [
+              FormBuilderChipOption(value: 1, child: Text(s.includeReplyTo))
+            ],
+            initialValue: [if (value.reply) 1],
+                  onChanged: (v) => setState(() => value.reply = v!.isNotEmpty),
+            ),
+            TextField(
+              controller: subjectController,
+              decoration: InputDecoration(label: Text(s.subject)),
+              onChanged: (v) => setState(() => value.subject = v),
+            ),
+            TextField(
+              controller: memoController,
+              decoration: InputDecoration(label: Text(s.memo)),
+              maxLines: 10,
+              onChanged: (v) => setState(() => value.memo = v),
+            )
+          ]);
+        });
   }
 }

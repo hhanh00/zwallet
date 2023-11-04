@@ -18,12 +18,10 @@ class PaymentURIPage extends StatefulWidget {
 class _PaymentURIState extends State<PaymentURIPage> {
   late int amount = widget.amount;
   final memoController = TextEditingController();
-  final inputKey = GlobalKey<InputAmountState>();
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final a = AmountState(amount: amount);
     return Scaffold(
       appBar: AppBar(title: Text(s.paymentURI)),
       body: SingleChildScrollView(
@@ -36,12 +34,12 @@ class _PaymentURIState extends State<PaymentURIPage> {
                 memo: memoController.text,
                 paymentURI: false,
               ),
-              InputAmountWidget(a, key: inputKey, onChange: onAmount),
+              AmountPicker(amount, onChanged: onAmount),
               FormBuilderTextField(
                 name: 'memo',
                 decoration: InputDecoration(label: Text(s.memo)),
                 controller: memoController,
-                onChanged: (_) => setState(() {}),
+                onChanged: (_) => onMemo(),
                 maxLines: 10,
               ),
             ],
@@ -51,9 +49,15 @@ class _PaymentURIState extends State<PaymentURIPage> {
     );
   }
 
-  onAmount(int a) {
+  onAmount(int? a) {
     EasyDebounce.debounce('payment_uri', Duration(milliseconds: 500), () {
-      amount = a;
+      amount = a!;
+      setState(() {});
+    });
+  }
+
+  onMemo() {
+    EasyDebounce.debounce('payment_uri', Duration(milliseconds: 500), () {
       setState(() {});
     });
   }

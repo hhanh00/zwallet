@@ -5,7 +5,6 @@ import 'package:YWallet/main.dart';
 import 'package:YWallet/pages/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_palette/flutter_palette.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -23,10 +22,10 @@ class PoolTransferPage extends StatefulWidget {
 }
 
 class _PoolTransferState extends State<PoolTransferPage> {
-  final amountKey = GlobalKey<InputAmountState>();
   final memoController = TextEditingController(text: appSettings.memo);
   final splitController = TextEditingController(text: amountToString2(0));
   late final List<double> balances;
+  int amount = 0;
   int from = 0;
   int to = 1;
   bool calculatingPlan = false;
@@ -44,7 +43,6 @@ class _PoolTransferState extends State<PoolTransferPage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final spendable = aa.poolBalances.get(from);
-    final a = AmountState(amount: 0, spendable: spendable);
     return Scaffold(
       appBar: AppBar(
           title: Text(s.poolTransfer),
@@ -69,7 +67,7 @@ class _PoolTransferState extends State<PoolTransferPage> {
                           to = v!;
                         })),
                 SizedBox(height: 16),
-                InputAmountWidget(a, key: amountKey),
+                AmountPicker(amount, spendable: spendable),
                 SizedBox(height: 16),
                 FormBuilderTextField(
                   name: 'memo',
@@ -97,8 +95,6 @@ class _PoolTransferState extends State<PoolTransferPage> {
   }
 
   ok() async {
-    final amount = amountKey.currentState?.amount;
-    if (amount == null) return;
     final splitAmount = stringToAmount(splitController.text);
     _calc(true);
     final plan = await WarpApi.transferPools(

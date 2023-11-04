@@ -296,6 +296,7 @@ class WarpApi {
       int coin,
       int account,
       List<Recipient> recipients,
+      int pools,
       int senderUAType,
       int anchorOffset,
       FeeT fee) async {
@@ -310,6 +311,7 @@ class WarpApi {
           account,
           toNativeBytes(builder.buffer),
           builder.size(),
+          pools,
           senderUAType,
           anchorOffset,
           toNativeBytes(fee2),

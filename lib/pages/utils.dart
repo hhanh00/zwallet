@@ -17,6 +17,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:path/path.dart' as p;
 
@@ -222,6 +223,21 @@ Future<void> saveFileBinary(
       await file.writeAsBytes(data);
     }
   }
+}
+
+int getSpendable(int pools, PoolBalanceT balances) {
+  return (pools & 1 != 0 ? balances.transparent : 0) +
+      (pools & 2 != 0 ? balances.sapling : 0) +
+      (pools & 4 != 0 ? balances.orchard : 0);
+}
+
+class MemoData {
+  bool reply;
+  String subject;
+  String memo;
+  MemoData(this.reply, this.subject, this.memo);
+
+  MemoData clone() => MemoData(reply, subject, memo);
 }
 
 extension ScopeFunctions<T> on T {

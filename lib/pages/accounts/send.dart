@@ -2,15 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
-import '../../accounts.dart' hide Account;
+import '../../accounts.dart';
 import '../../appsettings.dart';
 import '../../generated/intl/messages.dart';
-import '../../main.dart';
 import '../scan.dart';
 import '../utils.dart';
 import '../widgets.dart';
@@ -19,7 +19,7 @@ class SendContext {
   final String address;
   final int pools;
   final int amount;
-  final MemoData memo;
+  final MemoData? memo;
   SendContext(this.address, this.pools, this.amount, this.memo);
 
   static SendContext? instance;
@@ -42,12 +42,14 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
   final poolKey = GlobalKey<SendPoolState>();
   final amountKey = GlobalKey<SendAmountState>();
   final memoKey = GlobalKey<SendMemoState>();
-  // final planKey = GlobalKey<SendReportState>();
+  late final PoolBalanceT balances =
+      WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset, false)
+          .unpack();
 
   int type = 0;
   String address = '';
   int receivers = 0;
-  PoolData poolData = PoolData(7, 0);
+  int pools = 7;
   int amount = 0;
   MemoData memo = MemoData(false, '', '');
   int? contactIndex;
@@ -70,7 +72,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     ];
 
     if (activeStep == icons.length - 1)
-      SendContext.instance = SendContext(address, poolData.pools, amount, memo);
+      SendContext.instance = SendContext(address, pools, amount, memo);
 
     final hasContacts = contacts.isNotEmpty;
     final nextButton = activeStep < icons.length - 1
@@ -112,6 +114,8 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
       nextButton,
     ];
 
+    final spendable = getSpendable(pools, balances);
+
     final b = [
       () => SendAddressType(type, key: typeKey, hasContacts: hasContacts),
       () {
@@ -141,15 +145,14 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
         }
       },
       () => SendPool(
-            poolData,
+            pools,
             key: poolKey,
+            balances: balances,
           ),
-      () => SendAmount(
-          AmountState(amount: amount, spendable: poolData.spendable),
-          key: amountKey),
-      () => wrapWithLoading(SendMemo(memo, key: memoKey)),
+      () => SendAmount(amount, spendable: spendable, key: amountKey),
+      () => SendMemo(memo, key: memoKey),
     ];
-    final body = (activeStep < b.length) ? b[activeStep].call() : Container();
+    final body = b[activeStep].call();
     receivers = WarpApi.receiversOfAddress(aa.coin, address);
     // print(address);
     // print(amount);
@@ -175,7 +178,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
                 },
                 enableStepTapping: false,
               ),
-              body,
+              wrapWithLoading(body),
             ],
           ),
         ));
@@ -205,9 +208,9 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
       address = v;
     }
     if (activeStep == 2) {
-      final v = poolKey.currentState!.poolData;
+      final v = poolKey.currentState!.pools;
       if (v == null) return false;
-      poolData = v;
+      pools = v;
     }
     if (activeStep == 3) {
       final v = amountKey.currentState!.amount;
@@ -235,18 +238,16 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
         return s.invalidPaymentURI;
       }
     });
-    activeStep = 5;
-    setState(() {});
+    await calcPlan();
   }
 
-  _latestPayment() {
+  _latestPayment() async {
     final sc = SendContext.instance;
     if (sc != null) {
       address = sc.address;
       amount = sc.amount;
-      memo = sc.memo;
-      activeStep = 5;
-      setState(() {});
+      memo = sc.memo ?? MemoData(false, '', appSettings.memo);
+      await calcPlan();
     }
   }
 
@@ -268,6 +269,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
             aa.coin,
             aa.id,
             [recipient],
+            pools,
             coinSettings.replyUa,
             appSettings.anchorOffset,
             CoinSettingsExtension.load(aa.coin).feeT);
@@ -298,7 +300,7 @@ class SendAddressTypeState extends State<SendAddressType> {
       key: formKey,
       child: Column(children: [
         SendStepTitle(s.recipient),
-        SizedBox(height: 16),
+        Gap(16),
         FormBuilderRadioGroup(
           name: 'type',
           initialValue: widget.type,
@@ -348,7 +350,6 @@ class SendAddressState extends State<SendAddress> {
   String? get address {
     final form = formKey.currentState!;
     if (!form.validate()) return null;
-    print('SendAddressState address');
     form.save();
     return _address;
   }
@@ -412,139 +413,77 @@ class SendListState<T> extends State<SendList<T>> {
 }
 
 class SendPool extends StatefulWidget {
-  final PoolData initialPools;
-  SendPool(this.initialPools, {super.key});
+  final int initialPools;
+  final PoolBalanceT balances;
+  SendPool(this.initialPools, {super.key, required this.balances});
 
   @override
   State<StatefulWidget> createState() => SendPoolState();
 }
 
 class SendPoolState extends State<SendPool> {
-  PoolBalanceT bals = PoolBalanceT();
-  late int pools = widget.initialPools.pools;
+  late int _pools = widget.initialPools;
   final formKey = GlobalKey<FormBuilderState>();
-
-  @override
-  void initState() {
-    super.initState();
-    bals =
-        WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset, false)
-            .unpack();
-  }
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final t = Theme.of(context);
-    final style = t.textTheme.titleLarge!;
-    List<int> initialPools = [];
-    var p = pools;
-    for (var i = 0; i < 3; i++) {
-      if (p & 1 != 0) initialPools.add(i);
-      p ~/= 2;
-    }
     return FormBuilder(
       key: formKey,
       child: Column(
         children: [
           SendStepTitle(s.pools),
-          SizedBox(height: 16),
-          FormBuilderCheckboxGroup<int>(
-            name: 'pools',
-            orientation: OptionsOrientation.vertical,
-            initialValue: initialPools,
-            onChanged: (values) {
-              pools = 0;
-              for (var v in values!) {
-                pools |= 1 << v;
-              }
-              setState(() {});
-            },
-            options: [
-              FormBuilderFieldOption(
-                value: 0,
-                child: ListTile(
-                  trailing: Text(amountToString2(bals.transparent)),
-                  title: Text(s.transparent,
-                      style: style.apply(color: Colors.red)),
-                ),
-              ),
-              FormBuilderFieldOption(
-                value: 1,
-                child: ListTile(
-                  trailing: Text(amountToString2(bals.sapling)),
-                  title:
-                      Text(s.sapling, style: style.apply(color: Colors.yellow)),
-                ),
-              ),
-              if (aa.hasUA)
-                FormBuilderFieldOption(
-                  value: 2,
-                  child: ListTile(
-                    trailing: Text(amountToString2(bals.orchard)),
-                    title: Text(s.orchard,
-                        style: style.apply(color: Colors.green)),
-                  ),
-                ),
-            ],
+          Gap(16),
+          PoolSelection(
+            _pools,
+            balances: widget.balances,
+            onChanged: (v) => setState(() => _pools = v!),
           ),
-          SizedBox(height: 16),
-          Text('${s.spendable} ${amountToString2(spendable)}')
         ],
       ),
     );
   }
 
-  int get spendable {
-    return (pools & 1 != 0 ? bals.transparent : 0) +
-        (pools & 2 != 0 ? bals.sapling : 0) +
-        (pools & 4 != 0 ? bals.orchard : 0);
-  }
-
-  PoolData? get poolData {
+  int? get pools {
     if (!formKey.currentState!.validate()) return null;
-    return PoolData(pools, spendable);
+    return _pools;
   }
-}
-
-class PoolData {
-  final int pools;
-  final int spendable;
-  PoolData(this.pools, this.spendable);
 }
 
 class SendAmount extends StatefulWidget {
-  final AmountState initialAmount;
-  SendAmount(this.initialAmount, {super.key});
+  final int initialAmount;
+  final int spendable;
+  SendAmount(this.initialAmount, {super.key, required this.spendable});
 
   @override
   State<StatefulWidget> createState() => SendAmountState();
 }
 
 class SendAmountState extends State<SendAmount> {
-  final inputKey = GlobalKey<InputAmountState>();
+  final formKey = GlobalKey<FormBuilderState>();
+  late int _amount = widget.initialAmount;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Column(children: [
       SendStepTitle(s.amount),
-      SizedBox(height: 16),
-      InputAmountWidget(key: inputKey, widget.initialAmount),
+      Gap(16),
+      FormBuilder(
+        key: formKey,
+        child: AmountPicker(
+          widget.initialAmount,
+          spendable: widget.spendable,
+          onChanged: (v) => setState(() => _amount = v!),
+        ),
+      ),
     ]);
   }
 
   int? get amount {
-    final state = inputKey.currentState!;
-    return state.amount;
+    if (!formKey.currentState!.validate()) return null;
+    return _amount;
   }
-}
-
-class MemoData {
-  final bool reply;
-  final String subject;
-  final String memo;
-  MemoData(this.reply, this.subject, this.memo);
 }
 
 class SendMemo extends StatefulWidget {
@@ -569,7 +508,7 @@ class SendMemoState extends State<SendMemo> {
         key: formKey,
         child: Column(children: [
           SendStepTitle(s.memo),
-          SizedBox(height: 16),
+          Gap(16),
           FormBuilderCheckbox(
             name: 'reply',
             initialValue: widget.memo.reply,
@@ -624,62 +563,89 @@ class QuickSendPage extends StatefulWidget {
   State<StatefulWidget> createState() => _QuickSendState();
 }
 
-class _QuickSendState extends State<QuickSendPage> {
+class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   late final s = S.of(context);
   late final t = Theme.of(context);
   final formKey = GlobalKey<FormBuilderState>();
+  late final balances =
+      WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset, false)
+          .unpack();
   String _address = '';
   int _pools = 7;
   int _amount = 0;
-  String _memo = '';
+  MemoData? _memo;
 
   @override
   Widget build(BuildContext context) {
+    final spendable = getSpendable(_pools, balances);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(s.send),
-        actions: [
-          IconButton(
-            onPressed: send,
-            icon: Icon(Icons.send),
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: FormBuilder(
-          key: formKey,
-          child: Column(
-            children: [
-              InputAddress(_address, onSaved: (v) => setState(() => _address = v!)),
-              PoolSelection(
-                _pools,
-                balances: aa.poolBalances,
-                onChanged: (v) => setState(() => _pools = v!),
-              ),
-              AmountPicker(
-                _amount,
-                spendable: spendable,
-                onSaved: (v) => setState(() => _amount = v!),
-              ),
-              FormBuilderTextField(
-                name: 'memo',
-                decoration: InputDecoration(label: Text(s.memo)),
-                initialValue: appSettings.memo,
-                onSaved: (v) => setState(() => _memo = v!),
-                maxLines: 10,
-              ),
-            ],
-          ),
+        appBar: AppBar(
+          title: Text(s.send),
+          actions: [
+            IconButton(
+              onPressed: send,
+              icon: Icon(Icons.send),
+            )
+          ],
         ),
-      ),
-    );
+        body: wrapWithLoading(
+          SingleChildScrollView(
+            child: FormBuilder(
+              key: formKey,
+              child: Column(
+                children: [
+                  InputAddress(_address,
+                      onSaved: (v) => setState(() => _address = v!)),
+                  PoolSelection(
+                    _pools,
+                    balances: aa.poolBalances,
+                    onChanged: (v) => setState(() => _pools = v!),
+                  ),
+                  AmountPicker(
+                    _amount,
+                    spendable: spendable,
+                    onChanged: (v) => setState(() => _amount = v!),
+                  ),
+                  InputMemo(
+                    MemoData(
+                        appSettings.includeReplyTo != 0, '', appSettings.memo),
+                    onSaved: (v) => setState(() => _memo = v!),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 
-  send() {}
-
-  int get spendable {
-    return (_pools & 1 != 0 ? aa.poolBalances.transparent : 0) +
-        (_pools & 2 != 0 ? aa.poolBalances.sapling : 0) +
-        (_pools & 4 != 0 ? aa.poolBalances.orchard : 0);
+  send() async {
+    final form = formKey.currentState!;
+    if (form.validate()) {
+      form.save();
+      print(
+          '$_address $_amount $_pools ${_memo?.reply} ${_memo?.subject} ${_memo?.memo}');
+      final builder = RecipientObjectBuilder(
+        address: _address,
+        amount: _amount,
+        replyTo: _memo?.reply ?? false,
+        subject: _memo?.subject ?? '',
+        memo: _memo?.memo ?? '',
+      );
+      final recipient = Recipient(builder.toBytes());
+      SendContext.instance = SendContext(_address, _pools, _amount, _memo);
+      try {
+        final plan = await load(() => WarpApi.prepareTx(
+            aa.coin,
+            aa.id,
+            [recipient],
+            _pools,
+            coinSettings.replyUa,
+            appSettings.anchorOffset,
+            coinSettings.feeT));
+        GoRouter.of(context).push('/account/txplan?tab=account', extra: plan);
+      } on String catch (e) {
+        showMessageBox2(context, s.error, e);
+      }
+    }
   }
 }

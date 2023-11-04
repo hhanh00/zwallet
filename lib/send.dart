@@ -541,7 +541,7 @@ Future<void> send(BuildContext context, List<Recipient> recipients) async {
   if (recipients.length == 1) active.setDraftRecipient(recipients[0]);
   try {
     final txPlan = await WarpApi.prepareTx(
-        active.coin, active.id, recipients, settings.uaType,
+        active.coin, active.id, recipients, 7, settings.uaType,
         settings.anchorOffset, settings.feeConfig);
     Navigator.pushReplacementNamed(context, '/txplan', arguments: txPlan);
   } on String catch (message) {

@@ -79,6 +79,7 @@ class _MultiPayState extends State<MultiPayPage> {
         aa.coin,
         aa.id,
         outputs,
+        7,
         coinSettings.replyUa,
         appSettings.anchorOffset,
         coinSettings.feeT,
