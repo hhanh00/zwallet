@@ -27,7 +27,7 @@ class _BudgetState extends State<BudgetPage> {
     final s = S.of(context);
     final t = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    final height = size.height - 400;
+    final height = size.height - 420;
     return Scaffold(
         appBar: AppBar(title: Text(s.budget)),
         body: Observer(builder: (context) {

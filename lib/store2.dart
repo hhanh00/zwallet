@@ -4,17 +4,18 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 
-import 'package:YWallet/appsettings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:mobx/mobx.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import 'appsettings.dart';
+import 'pages/utils.dart';
 import 'accounts.dart';
 import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
-import 'main.dart';
+import 'main.dart' hide showSnackBar;
 import 'router.dart';
 import 'store.dart';
 
@@ -150,7 +151,7 @@ abstract class _SyncStatus2 with Store {
       marketPrice.update();
       marketPrice.updateHistoricalPrices();
     } on String catch (e) {
-      showSnackBar(e, error: true);
+      showSnackBar(e);
     } finally {
       syncing = false;
       eta.end();

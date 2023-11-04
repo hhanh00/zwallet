@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:gap/gap.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +17,7 @@ import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import '../main.dart';
 import '../store.dart';
+import 'scan.dart';
 import 'utils.dart';
 
 class Panel extends StatelessWidget {
@@ -233,7 +235,7 @@ class RecipientWidget extends StatelessWidget {
 class MosaicWidget extends StatelessWidget {
   final List<MosaicButton> buttons;
   MosaicWidget(this.buttons);
-  
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
@@ -293,4 +295,229 @@ class MosaicButton {
       required this.icon,
       this.secured = false,
       this.onPressed});
+}
+
+class Title extends StatelessWidget {
+  final String title;
+  Title(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context);
+    return Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: t.colorScheme.primary),
+        child: Text(title, style: t.textTheme.bodyLarge));
+  }
+}
+
+class InputAddress extends StatelessWidget {
+  final String initialValue;
+  final void Function(String?)? onSaved;
+  InputAddress(this.initialValue, {this.onSaved});
+
+  late final addressController = TextEditingController(text: initialValue);
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    return FormBuilderField(
+      name: 'address',
+      validator: addressValidator,
+      onSaved: onSaved,
+      builder: (FormFieldState<dynamic> field) {
+        return Row(children: [
+          Expanded(
+            child: TextField(
+              controller: addressController,
+              maxLines: 4,
+              decoration: InputDecoration(
+                label: Text(s.address),
+                errorText: field.errorText,
+              ),
+              onChanged: (v) => field.didChange(v),
+            ),
+          ),
+          Gap(16),
+          Container(
+            width: 80,
+            child: IconButton.outlined(
+              onPressed: () => qr(context),
+              icon: Icon(Icons.qr_code),
+            ),
+          ),
+        ]);
+      },
+    );
+  }
+
+  qr(BuildContext context) async {
+    addressController.text =
+        await scanQRCode(context, validator: addressValidator);
+  }
+}
+
+class PoolSelection extends StatefulWidget {
+  final PoolBalanceT balances;
+  final void Function(int? pools)? onChanged;
+  final int initialValue;
+  PoolSelection(this.initialValue, {required this.balances, this.onChanged});
+  @override
+  State<StatefulWidget> createState() => _PoolSelectionState();
+}
+
+class _PoolSelectionState extends State<PoolSelection> {
+  @override
+  Widget build(BuildContext context) {
+    List<int> initialPools = [];
+    var p = widget.initialValue;
+    for (var i = 0; i < 3; i++) {
+      if (p & 1 != 0) initialPools.add(i);
+      p ~/= 2;
+    }
+
+    return FormBuilderFilterChip<int>(
+      name: 'pool_select',
+      initialValue: initialPools,
+      onChanged: (values) {
+        int pools = 0;
+        for (var v in values!) {
+          pools |= 1 << v;
+        }
+        widget.onChanged?.call(pools);
+      },
+      spacing: 8,
+      options: [
+        FormBuilderChipOption(
+            value: 0,
+            child: Text(
+              '${amountToString2(widget.balances.transparent)}',
+              style: TextStyle(color: Colors.red),
+            )),
+        FormBuilderChipOption(
+            value: 1,
+            child: Text(
+              '${amountToString2(widget.balances.sapling)}',
+              style: TextStyle(color: Colors.orange),
+            )),
+        FormBuilderChipOption(
+            value: 2,
+            child: Text(
+              '${amountToString2(widget.balances.orchard)}',
+              style: TextStyle(color: Colors.green),
+            )),
+      ],
+    );
+  }
+}
+
+class AmountPicker extends StatefulWidget {
+  final int? spendable;
+  final int initialAmount;
+  final void Function(int?)? onSaved;
+  AmountPicker(this.initialAmount, {this.spendable, this.onSaved});
+  @override
+  State<StatefulWidget> createState() => _AmountPickerState();
+}
+
+class _AmountPickerState extends State<AmountPicker> {
+  late final s = S.of(context);
+  final formKey = GlobalKey<FormBuilderState>();
+  double? fxRate;
+  int _amount = 0;
+  double _sliderValue = 0;
+  final amountController = TextEditingController();
+  final fiatController = TextEditingController();
+  final nformat = NumberFormat.decimalPatternDigits(
+      decimalDigits: decimalDigits(appSettings.fullPrec));
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final c = coins[aa.coin];
+      fxRate = await getFxRate(c.currency, appSettings.currency);
+      _update(null, AmountSource.Crypto);
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = coins[aa.coin];
+    final spendable = widget.spendable;
+    return FormBuilderField(
+        name: 'amount',
+        initialValue: widget.initialAmount,
+        onSaved: widget.onSaved,
+        validator: FormBuilderValidators.compose([
+          FormBuilderValidators.min(0, inclusive: false),
+          if (spendable != null) (int? v) => v! > spendable ? s.notEnoughBalance : null,
+        ]),
+        builder: (field) {
+          return Column(children: [
+            Gap(16),
+            if (spendable != null)
+              Text('${s.spendable}  ${amountToString2(spendable)}'),
+            TextField(
+              decoration: InputDecoration(
+                  label: Text(c.ticker), errorText: field.errorText),
+              controller: amountController,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              onChanged: (v0) {
+                final v = v0.isEmpty ? '0' : v0;
+                try {
+                  final zec = nformat.parse(v).toDouble();
+                  _amount = (zec * ZECUNIT).toInt();
+                  _update(field, AmountSource.Crypto);
+                } on FormatException {}
+              },
+            ),
+            TextField(
+                decoration: InputDecoration(label: Text(appSettings.currency)),
+                controller: fiatController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                enabled: fxRate != null,
+                onChanged: (v0) {
+                  final v = v0.isEmpty ? '0' : v0;
+                  try {
+                    final fiat = nformat.parse(v).toDouble();
+                    final zec = fiat / fxRate!;
+                    _amount = (zec * ZECUNIT).toInt();
+                    _update(field, AmountSource.Fiat);
+                  } on FormatException {}
+                }),
+            if (spendable != null)
+              Slider(
+                value: _sliderValue,
+                min: 0,
+                max: 100,
+                divisions: 10,
+                onChanged: (v) {
+                  _amount = spendable * v ~/ 100;
+                  _sliderValue = v;
+                  _update(field, AmountSource.Slider);
+                },
+              )
+          ]);
+        });
+  }
+
+  _update(FormFieldState? field, AmountSource source) {
+    if (source != AmountSource.Crypto)
+      amountController.text = nformat.format(_amount / ZECUNIT);
+    fxRate?.let((fx) {
+      if (source != AmountSource.Fiat)
+        fiatController.text = nformat.format(_amount * fx / ZECUNIT);
+    });
+    final spendable = widget.spendable;
+    if (source != AmountSource.Slider && spendable != null && spendable > 0) {
+      final p = _amount / spendable * 100;
+      _sliderValue = p.clamp(0.0, 100.0);
+    }
+    field?.didChange(_amount);
+    setState(() {});
+  }
 }

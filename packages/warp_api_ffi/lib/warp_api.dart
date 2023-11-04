@@ -680,9 +680,9 @@ class WarpApi {
     warp_api_lib.delete_send_template(coin, id);
   }
 
-  static List<ContactT> getContacts(int coin) {
+  static List<Contact> getContacts(int coin) {
     final r = unwrapResultBytes(warp_api_lib.get_contacts(coin));
-    final contacts = ContactVec(r).unpack();
+    final contacts = ContactVec(r);
     return contacts.contacts!;
   }
 

@@ -4,6 +4,8 @@ import 'dart:math';
 
 import 'package:YWallet/main.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
+import 'package:cross_file/cross_file.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -13,8 +15,10 @@ import 'package:go_router/go_router.dart';
 import 'package:key_guardmanager/key_guardmanager.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
+import 'package:path/path.dart' as p;
 
 import '../accounts.dart';
 import '../appsettings.dart';
@@ -74,7 +78,7 @@ void openTxInExplorer(String txId) {
   launchUrl(Uri.parse("$url/$txId"), mode: LaunchMode.inAppWebView);
 }
 
-String? addressCheck(String? v) {
+String? addressValidator(String? v) {
   final s = S.of(rootNavigatorKey.currentContext!);
   if (v == null || v.isEmpty) return s.addressIsEmpty;
   final valid = WarpApi.validAddress(aa.coin, v);
@@ -103,7 +107,8 @@ int poolOf(v) {
   }
 }
 
-Future<bool> authBarrier(BuildContext context, {bool dismissable = false}) async {
+Future<bool> authBarrier(BuildContext context,
+    {bool dismissable = false}) async {
   final s = S.of(context);
   while (true) {
     final authed = await authenticate(context, s.pleaseAuthenticate);
@@ -187,7 +192,38 @@ void handleAccel(AccelerometerEvent event) {
           ? false
           : null;
   flat?.let((f) {
-    if (f != appStore.flat) 
-      appStore.flat = f;
+    if (f != appStore.flat) appStore.flat = f;
   });
+}
+
+double getScreenSize(BuildContext context) {
+  final size = MediaQuery.of(context).size;
+  return min(size.height, size.width);
+}
+
+Future<void> saveFileBinary(
+    List<int> data, String filename, String title) async {
+  if (isMobile()) {
+    final context = navigatorKey.currentContext!;
+    Size size = MediaQuery.of(context).size;
+    final tempDir = settings.tempDir;
+    final path = p.join(tempDir, filename);
+    final xfile = XFile(path);
+    final file = File(path);
+    await file.writeAsBytes(data);
+    await Share.shareXFiles([xfile],
+        subject: title,
+        sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
+  } else {
+    final fn = await FilePicker.platform
+        .saveFile(dialogTitle: title, fileName: filename);
+    if (fn != null) {
+      final file = File(fn);
+      await file.writeAsBytes(data);
+    }
+  }
+}
+
+extension ScopeFunctions<T> on T {
+  R let<R>(R Function(T) block) => block(this);
 }

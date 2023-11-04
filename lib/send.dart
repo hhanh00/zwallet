@@ -186,7 +186,7 @@ class SendState extends State<SendPage> {
                                 .where((c) => c.name!
                                     .toLowerCase()
                                     .contains(pattern.toLowerCase()))
-                                .map((c) => ContactSuggestion(c));
+                                .map((c) => ContactSuggestion(c.unpack()));
                             final matchingAccounts = _accounts.list
                                 .where((a) =>
                                     a.coin == active.coin &&
@@ -374,7 +374,7 @@ class SendState extends State<SendPage> {
 
   Suggestion? getSuggestion(String v) {
     final c = contacts.contacts.where((c) => c.name == v);
-    if (c.isNotEmpty) return ContactSuggestion(c.first);
+    if (c.isNotEmpty) return ContactSuggestion(c.first.unpack());
     final a = _accounts.list.where((a) => a.name == v);
     if (a.isNotEmpty) return AccountSuggestion(a.first);
     return null;
@@ -397,7 +397,8 @@ class SendState extends State<SendPage> {
   }
 
   Future<void> _onAddContact() async {
-    await addContact(context, ContactT(address: _addressController.text));
+    final c = ContactObjectBuilder(address: _addressController.text);
+    await addContact(context, Contact(c.toBytes()));
   }
 
   void _setPaymentURI(String uriOrAddress) {

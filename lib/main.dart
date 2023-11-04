@@ -1076,6 +1076,3 @@ Future<bool> getDbPasswd(BuildContext context, String dbPath) async {
   return reset;
 }
 
-extension ScopeFunctions<T> on T {
-  R let<R>(R Function(T) block) => block(this);
-}

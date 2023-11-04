@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -94,5 +95,9 @@ class BackupPanel extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  showQR(BuildContext context, String value, String title) {
+    GoRouter.of(context).push('/showqr?title=$title', extra: value);
   }
 }

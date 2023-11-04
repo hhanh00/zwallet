@@ -1,13 +1,11 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../generated/intl/messages.dart';
 import '../../store2.dart';
-import '../../main.dart';
+import '../utils.dart';
 
 class SyncStatusWidget extends StatefulWidget {
   SyncStatusState createState() => SyncStatusState();

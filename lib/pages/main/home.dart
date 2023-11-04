@@ -41,8 +41,12 @@ class _HomeState extends State<HomePageInner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton:
-            FloatingActionButton(onPressed: _send, child: Icon(Icons.send)),
+        floatingActionButton: GestureDetector(
+            onLongPress: () => _send(true),
+            child: FloatingActionButton(
+              onPressed: () => _send(false),
+              child: Icon(Icons.send),
+            )),
         body: SingleChildScrollView(
           child: Center(
             child: Observer(
@@ -56,7 +60,8 @@ class _HomeState extends State<HomePageInner> {
                   children: [
                     SyncStatusWidget(),
                     Padding(padding: EdgeInsets.all(8)),
-                    QRAddressWidget(uaType: coinSettings.uaType, onMode: _onMode),
+                    QRAddressWidget(
+                        uaType: coinSettings.uaType, onMode: _onMode),
                     BalanceWidget(addressMode, key: key),
                   ],
                 );
@@ -71,12 +76,15 @@ class _HomeState extends State<HomePageInner> {
     setState(() {});
   }
 
-  _send() async {
+  _send(bool quick) async {
     final protectSend = appSettings.protectSend;
     if (protectSend) {
       final authed = await authBarrier(context, dismissable: true);
       if (!authed) return;
     }
-    GoRouter.of(context).push('/account/send');
+    if (quick)
+      GoRouter.of(context).push('/account/quick_send');
+    else
+      GoRouter.of(context).push('/account/send');
   }
 }

@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'appsettings.dart';
 import 'generated/intl/messages.dart';
 import 'main.dart';
+import 'pages/utils.dart';
 
 class SortSetting extends InheritedWidget {
   final config = ValueNotifier<SortConfig2?>(null);

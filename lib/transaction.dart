@@ -93,7 +93,8 @@ class TransactionState extends State<TransactionPage> {
   }
 
   _addContact() async {
-    await addContact(context, ContactT(address: tx.address));
+    final c = ContactObjectBuilder(address: tx.address);
+    await addContact(context, Contact(c.toBytes()));
   }
 }
 

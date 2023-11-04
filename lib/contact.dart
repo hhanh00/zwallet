@@ -49,7 +49,7 @@ class ContactsState extends State<ContactsTab> {
                                         subtitle: Text(c.address!),
                                         trailing: Icon(Icons.chevron_right),
                                         onTap: () {
-                                          _onContact(c);
+                                          _onContact(c.unpack());
                                         },
                                         onLongPress: () {
                                           _editContact(c);
@@ -70,11 +70,11 @@ class ContactsState extends State<ContactsTab> {
         .pushNamed('/send', arguments: SendPageArgs(contact: c));
   }
 
-  _editContact(ContactT c) async {
+  _editContact(Contact c) async {
     await addContact(context, c);
   }
 
-  Future<bool> _onConfirmDelContact(ContactT c) async {
+  Future<bool> _onConfirmDelContact(Contact c) async {
     final confirm = await showMessageBox(
         context,
         S.of(context).deleteContact,
@@ -83,7 +83,7 @@ class ContactsState extends State<ContactsTab> {
     return confirm;
   }
 
-  _delContact(ContactT c) {
+  _delContact(Contact c) {
     contacts.remove(c);
   }
 
@@ -116,7 +116,7 @@ class NoContact extends StatelessWidget {
 }
 
 class ContactForm extends StatefulWidget {
-  final ContactT contact;
+  final Contact contact;
 
   ContactForm(this.contact, {Key? key}) : super(key: key);
 
@@ -230,15 +230,15 @@ class AddressState extends State<AddressInput> {
   }
 }
 
-Future<void> addContact(BuildContext context, ContactT? c) async {
+Future<void> addContact(BuildContext context, Contact? c) async {
   final s = S.of(context);
   final key = GlobalKey<ContactState>();
-  final contact = await showDialog<ContactT>(
+  final contact = await showDialog<Contact>(
       context: context,
       builder: (context) => AlertDialog(
             contentPadding: EdgeInsets.all(16),
             title: Text(c?.name != null ? s.editContact : s.addContact),
-            content: ContactForm(c ?? ContactT(), key: key),
+            content: ContactForm(c!, key: key),
             actions: confirmButtons(context, () {
               key.currentState!.onOK();
             }),

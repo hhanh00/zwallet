@@ -44,7 +44,7 @@ class _ContactsState extends State<ContactsPage> {
         body: Observer(builder: (context) {
           final c = contacts.contacts;
           return ListView.separated(
-            itemBuilder: (context, index) => ContactItem(c[index],
+            itemBuilder: (context, index) => ContactItem(c[index].unpack(),
                 selected: idSelected == c[index].id,
                 onTap: () => setState(() => idSelected =
                     idSelected != c[index].id ? c[index].id : null)),
@@ -191,7 +191,7 @@ class _ContactAddState extends State<ContactAddPage> {
                 name: 'address',
                 decoration: InputDecoration(label: Text(s.address)),
                 controller: addressController,
-                validator: addressCheck,
+                validator: addressValidator,
               )),
               IconButton.outlined(onPressed: _qr, icon: Icon(Icons.qr_code)),
             ]),
@@ -202,7 +202,7 @@ class _ContactAddState extends State<ContactAddPage> {
   }
 
   _qr() async {
-    addressController.text = await scanQRCode(context, validator: addressCheck);
+    addressController.text = await scanQRCode(context, validator: addressValidator);
   }
 
   add() async {

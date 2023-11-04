@@ -600,7 +600,7 @@ class HomeInnerState extends State<HomeInnerPage>
   }
 
   _onAddContact() async {
-    await addContact(context, ContactT());
+    // await addContact(context, ContactT());
   }
 
   void _initForegroundTask() {

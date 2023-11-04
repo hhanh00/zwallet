@@ -36,10 +36,12 @@ import 'pages/more/sweep.dart';
 import 'pages/more/tx.dart';
 import 'pages/more/quotes.dart';
 import 'pages/scan.dart';
+import 'pages/showqr.dart';
 import 'pages/splash.dart';
 import 'pages/welcome.dart';
 import 'pages/settings.dart';
 import 'pages/messages.dart';
+import 'pages/utils.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _accountNavigatorKey = GlobalKey<NavigatorState>();
@@ -101,6 +103,10 @@ final router = GoRouter(
                 GoRoute(
                   path: 'send',
                   builder: (context, state) => SendPage(single: true),
+                ),
+                GoRoute(
+                  path: 'quick_send',
+                  builder: (context, state) => QuickSendPage(),
                 ),
                 GoRoute(
                   path: 'pay_uri',
@@ -257,6 +263,11 @@ final router = GoRouter(
       path: '/scan',
       builder: (context, state) => ScanQRCodePage(state.extra as ScanQRContext),
     ),
+    GoRoute(
+      path: '/showqr',
+      builder: (context, state) => ShowQRPage(title: state.uri.queryParameters['title']!,
+        text: state.extra as String),
+    ),
   ],
 );
 
@@ -296,7 +307,7 @@ class _ScaffoldBar extends State<ScaffoldBar> {
           widget.shell.goBranch(index);
         },
       ),
-      body: Padding(padding: EdgeInsets.all(8), child: widget.shell),
+      body: Padding(padding: EdgeInsets.all(16), child: widget.shell),
     );
   }
 

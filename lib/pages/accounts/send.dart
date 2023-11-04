@@ -51,15 +51,10 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
   int amount = 0;
   MemoData memo = MemoData(false, '', '');
   int? contactIndex;
-  late final List<Account> accounts;
+  late final accounts = WarpApi.getAccountList(aa.coin);
+  late final contacts = WarpApi.getContacts(aa.coin);
   int? accountIndex;
   // String? txPlan;
-
-  @override
-  void initState() {
-    super.initState();
-    accounts = WarpApi.getAccountList(aa.coin);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +72,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     if (activeStep == icons.length - 1)
       SendContext.instance = SendContext(address, poolData.pools, amount, memo);
 
-    final hasContacts = contacts.contacts.isNotEmpty;
+    final hasContacts = contacts.isNotEmpty;
     final nextButton = activeStep < icons.length - 1
         ? IconButton(
             icon: Icon(Icons.chevron_right_rounded, size: 32),
@@ -99,20 +94,18 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
               }
             },
           )
-        : IconButton(
-            onPressed: calcPlan, iconSize: 32, icon: Icon(Icons.send));
+        : IconButton(onPressed: calcPlan, iconSize: 32, icon: Icon(Icons.send));
 
-    final previousButton = 
-        IconButton(
-            icon: Icon(Icons.chevron_left_rounded, size: 32),
-            onPressed: () {
-              if (activeStep > 0) {
-                setState(() {
-                  activeStep--;
-                });
-              }
-            },
-          );
+    final previousButton = IconButton(
+      icon: Icon(Icons.chevron_left_rounded, size: 32),
+      onPressed: () {
+        if (activeStep > 0) {
+          setState(() {
+            activeStep--;
+          });
+        }
+      },
+    );
 
     final actions = [
       if (activeStep > 0) previousButton,
@@ -123,6 +116,15 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
       () => SendAddressType(type, key: typeKey, hasContacts: hasContacts),
       () {
         switch (type) {
+          case 2:
+            return SendList<Contact>(contacts, contactIndex, key: contactKey,
+                itemBuilder: (context, index, c, {onTap, selected = false}) {
+              return ListTile(
+                title: Text(c.name!),
+                selected: selected,
+                onTap: onTap,
+              );
+            });
           case 3:
             return SendList<Account>(accounts, accountIndex, key: accountKey,
                 itemBuilder: (context, index, account,
@@ -192,7 +194,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
         // case 1 is payment URI
         case 2:
           contactIndex = contactKey.currentState!.index;
-          v = contactIndex?.let((i) => contacts.contacts[i].address);
+          v = contactIndex?.let((i) => contacts[i].address);
           break;
         case 3:
           accountIndex = accountKey.currentState!.index;
@@ -295,7 +297,7 @@ class SendAddressTypeState extends State<SendAddressType> {
     return FormBuilder(
       key: formKey,
       child: Column(children: [
-        Title(s.recipient),
+        SendStepTitle(s.recipient),
         SizedBox(height: 16),
         FormBuilderRadioGroup(
           name: 'type',
@@ -332,45 +334,23 @@ class SendAddress extends StatefulWidget {
 }
 
 class SendAddressState extends State<SendAddress> {
+  late String _address = widget.address;
   final formKey = GlobalKey<FormBuilderState>();
-  final addressController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    addressController.text = widget.address;
-  }
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     return FormBuilder(
       key: formKey,
-      child: Row(children: [
-        Expanded(
-            child: FormBuilderTextField(
-          name: 'address',
-          controller: addressController,
-          maxLines: 8,
-          decoration: InputDecoration(label: Text(s.address)),
-          validator: addressCheck,
-        )),
-        SizedBox(
-            width: 80,
-            child:
-                IconButton.outlined(onPressed: _qr, icon: Icon(Icons.qr_code))),
-      ]),
+      child: InputAddress(widget.address, onSaved: (v) => _address = v!),
     );
-  }
-
-  _qr() async {
-    addressController.text = await scanQRCode(context, validator: addressCheck);
   }
 
   String? get address {
     final form = formKey.currentState!;
     if (!form.validate()) return null;
-    return addressController.text;
+    print('SendAddressState address');
+    form.save();
+    return _address;
   }
 }
 
@@ -407,7 +387,7 @@ class SendListState<T> extends State<SendList<T>> {
               separatorBuilder: (context, index) => Divider(),
               itemCount: cs.length,
             )),
-        name: 'account',
+        name: 'value',
       ),
     );
   }
@@ -424,7 +404,7 @@ class SendListState<T> extends State<SendList<T>> {
     final s = S.of(context);
     final form = formKey.currentState!;
     if (selectedIndex == null) {
-      form.fields['account']!.invalidate(s.noSelection);
+      form.fields['value']!.invalidate(s.noSelection);
       return null;
     }
     return selectedIndex;
@@ -447,8 +427,9 @@ class SendPoolState extends State<SendPool> {
   @override
   void initState() {
     super.initState();
-    bals = WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset,
-    false).unpack();
+    bals =
+        WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset, false)
+            .unpack();
   }
 
   @override
@@ -466,7 +447,7 @@ class SendPoolState extends State<SendPool> {
       key: formKey,
       child: Column(
         children: [
-          Title(s.pools),
+          SendStepTitle(s.pools),
           SizedBox(height: 16),
           FormBuilderCheckboxGroup<int>(
             name: 'pools',
@@ -496,14 +477,15 @@ class SendPoolState extends State<SendPool> {
                       Text(s.sapling, style: style.apply(color: Colors.yellow)),
                 ),
               ),
-              if (aa.hasUA) FormBuilderFieldOption(
-                value: 2,
-                child: ListTile(
-                  trailing: Text(amountToString2(bals.orchard)),
-                  title:
-                      Text(s.orchard, style: style.apply(color: Colors.green)),
+              if (aa.hasUA)
+                FormBuilderFieldOption(
+                  value: 2,
+                  child: ListTile(
+                    trailing: Text(amountToString2(bals.orchard)),
+                    title: Text(s.orchard,
+                        style: style.apply(color: Colors.green)),
+                  ),
                 ),
-              ),
             ],
           ),
           SizedBox(height: 16),
@@ -546,7 +528,7 @@ class SendAmountState extends State<SendAmount> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Column(children: [
-      Title(s.amount),
+      SendStepTitle(s.amount),
       SizedBox(height: 16),
       InputAmountWidget(key: inputKey, widget.initialAmount),
     ]);
@@ -586,7 +568,7 @@ class SendMemoState extends State<SendMemo> {
     return FormBuilder(
         key: formKey,
         child: Column(children: [
-          Title(s.memo),
+          SendStepTitle(s.memo),
           SizedBox(height: 16),
           FormBuilderCheckbox(
             name: 'reply',
@@ -621,61 +603,9 @@ class SendMemoState extends State<SendMemo> {
   }
 }
 
-// class SendReport extends StatefulWidget {
-//   final Recipient recipient;
-//   final void Function(String) onPlan;
-//   final bool signOnly;
-//   SendReport({super.key, required this.recipient,
-//     required this.onPlan, this.signOnly = false});
-//   @override
-//   State<StatefulWidget> createState() => SendReportState();
-// }
-
-// class SendReportState extends State<SendReport> {
-//   String? txPlan;
-//   String? error;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     Future(() async {
-//       try {
-//         final plan = await WarpApi.prepareTx(
-//             aa.coin,
-//             aa.id,
-//             [widget.recipient],
-//             appSettings.anchorOffset,
-//             CoinSettingsExtension.load(aa.coin).feeT);
-//         widget.onPlan(plan);
-//         txPlan = plan;
-//       } on String catch (e) {
-//         error = e;
-//       }
-//       setState(() {});
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final t = Theme.of(context);
-//     final plan = txPlan;
-//     if (plan == null && error == null)
-//       return Center(
-//         child: LoadingAnimationWidget.newtonCradle(
-//           color: t.primaryColor,
-//           size: 200,
-//         ),
-//       );
-//     else if (plan != null)
-//       return TxPlanWidget.fromPlan(plan, signOnly: widget.signOnly);
-//     else
-//       return Jumbotron(error!, severity: Severity.Error);
-//   }
-// }
-
-class Title extends StatelessWidget {
+class SendStepTitle extends StatelessWidget {
   final String title;
-  Title(this.title);
+  SendStepTitle(this.title);
 
   @override
   Widget build(BuildContext context) {
@@ -686,5 +616,70 @@ class Title extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             color: t.colorScheme.primary),
         child: Text(title, style: t.textTheme.bodyLarge));
+  }
+}
+
+class QuickSendPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _QuickSendState();
+}
+
+class _QuickSendState extends State<QuickSendPage> {
+  late final s = S.of(context);
+  late final t = Theme.of(context);
+  final formKey = GlobalKey<FormBuilderState>();
+  String _address = '';
+  int _pools = 7;
+  int _amount = 0;
+  String _memo = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(s.send),
+        actions: [
+          IconButton(
+            onPressed: send,
+            icon: Icon(Icons.send),
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: FormBuilder(
+          key: formKey,
+          child: Column(
+            children: [
+              InputAddress(_address, onSaved: (v) => setState(() => _address = v!)),
+              PoolSelection(
+                _pools,
+                balances: aa.poolBalances,
+                onChanged: (v) => setState(() => _pools = v!),
+              ),
+              AmountPicker(
+                _amount,
+                spendable: spendable,
+                onSaved: (v) => setState(() => _amount = v!),
+              ),
+              FormBuilderTextField(
+                name: 'memo',
+                decoration: InputDecoration(label: Text(s.memo)),
+                initialValue: appSettings.memo,
+                onSaved: (v) => setState(() => _memo = v!),
+                maxLines: 10,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  send() {}
+
+  int get spendable {
+    return (_pools & 1 != 0 ? aa.poolBalances.transparent : 0) +
+        (_pools & 2 != 0 ? aa.poolBalances.sapling : 0) +
+        (_pools & 4 != 0 ? aa.poolBalances.orchard : 0);
   }
 }

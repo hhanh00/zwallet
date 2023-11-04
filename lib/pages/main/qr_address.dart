@@ -70,8 +70,7 @@ class _QRAddressState extends State<QRAddressWidget> {
             Padding(padding: EdgeInsets.all(4)),
             IconButton.outlined(onPressed: addressCopy, icon: Icon(Icons.copy)),
             Padding(padding: EdgeInsets.all(4)),
-            if (widget.paymentURI)
-              IconButton.outlined(onPressed: qrCode, icon: Icon(Icons.qr_code)),
+            IconButton.outlined(onPressed: qrCode, icon: Icon(Icons.qr_code)),
           ],
         ),
         Text(addressType, style: t.textTheme.labelSmall)
@@ -84,6 +83,7 @@ class _QRAddressState extends State<QRAddressWidget> {
   // 1: T
   // 2: S
   // 3: O
+  // 4: Diversified
   _nextAddressMode() {
     final c = coins[aa.coin];
     while (true) {
@@ -144,6 +144,13 @@ class _QRAddressState extends State<QRAddressWidget> {
   }
 
   qrCode() {
-    GoRouter.of(context).push('/account/pay_uri');
+    if (widget.paymentURI)
+      GoRouter.of(context).push('/account/pay_uri');
+    else {
+      final qrUri = Uri(
+        path: '/showqr',
+        queryParameters: {'title': widget.memo ?? ''});
+      GoRouter.of(context).push(qrUri.toString(), extra: uri);
+    }
   }
 }

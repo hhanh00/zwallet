@@ -39,6 +39,7 @@ extension CoinSettingsExtension on CoinSettings {
     int defaultUAType = coins[coin].defaultUAType;
     if (!hasUaType()) uaType = defaultUAType;
     if (!hasReplyUa()) replyUa = defaultUAType;
+    if (!hasSpamFilter()) spamFilter = true;
   }
 
   static CoinSettings load(int coin) {

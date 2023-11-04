@@ -1018,7 +1018,7 @@ class ContactStore = _ContactStore with _$ContactStore;
 
 abstract class _ContactStore with Store {
   @observable
-  ObservableList<ContactT> contacts = ObservableList<ContactT>.of([]);
+  ObservableList<Contact> contacts = ObservableList<Contact>.of([]);
 
   @action
   void fetchContacts() {
@@ -1027,14 +1027,14 @@ abstract class _ContactStore with Store {
   }
 
   @action
-  void add(ContactT c) {
+  void add(Contact c) {
     WarpApi.storeContact(c.id, c.name!, c.address!, true);
     markContactsSaved(active.coin, false);
     fetchContacts();
   }
 
   @action
-  void remove(ContactT c) {
+  void remove(Contact c) {
     contacts.removeWhere((contact) => contact.id == c.id);
     WarpApi.storeContact(c.id, c.name!, "", true);
     markContactsSaved(active.coin, false);
