@@ -371,5 +371,7 @@
   "addressIndex": "Address Index",
   "index": "Index",
   "pleaseAuthenticate": "Please Authenticate",
-  "diversified": "Diversified"
+  "diversified": "Diversified",
+  "source": "Source",
+  "destination": "Destination"
 }

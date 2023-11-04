@@ -432,11 +432,13 @@ class _InputMemoState extends State<InputMemo> {
         onSaved: widget.onSaved,
         builder: (field) {
           return Column(children: [
-            FormBuilderFilterChip(name: 'reply', options: [
-              FormBuilderChipOption(value: 1, child: Text(s.includeReplyTo))
-            ],
-            initialValue: [if (value.reply) 1],
-                  onChanged: (v) => setState(() => value.reply = v!.isNotEmpty),
+            FormBuilderFilterChip(
+              name: 'reply',
+              options: [
+                FormBuilderChipOption(value: 1, child: Text(s.includeReplyTo))
+              ],
+              initialValue: [if (value.reply) 1],
+              onChanged: (v) => setState(() => value.reply = v!.isNotEmpty),
             ),
             TextField(
               controller: subjectController,

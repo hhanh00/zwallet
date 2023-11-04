@@ -2332,6 +2332,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Diversified'**
   String get diversified;
+
+  /// No description provided for @source.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get source;
+
+  /// No description provided for @destination.
+  ///
+  /// In en, this message translates to:
+  /// **'Destination'**
+  String get destination;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -413,7 +413,7 @@ class HomeInnerState extends State<HomeInnerPage>
                       final txid = await WarpApi.sweepTransparent(
                         active.coin, active.id,
                         syncStatus.latestHeight,
-                          keyController.text, pool, settings.feeConfig);
+                          keyController.text, pool, '', settings.feeConfig);
                       showSnackBar(s.txId(txid));
                       Navigator.of(context).pop(true);
                     } on String catch (msg) {

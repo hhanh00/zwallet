@@ -724,6 +724,7 @@ class NativeLibrary {
     int last_height,
     ffi.Pointer<ffi.Int8> sk,
     int pool,
+    ffi.Pointer<ffi.Int8> address,
     ffi.Pointer<ffi.Uint8> fee_bytes,
     int fee_len,
   ) {
@@ -733,6 +734,7 @@ class NativeLibrary {
       last_height,
       sk,
       pool,
+      address,
       fee_bytes,
       fee_len,
     );
@@ -749,6 +751,7 @@ class NativeLibrary {
     int last_height,
     ffi.Pointer<ffi.Int8> seed,
     int pool,
+    ffi.Pointer<ffi.Int8> address,
     int index,
     int limit,
     ffi.Pointer<ffi.Uint8> fee_bytes,
@@ -760,6 +763,7 @@ class NativeLibrary {
       last_height,
       seed,
       pool,
+      address,
       index,
       limit,
       fee_bytes,
@@ -2375,6 +2379,7 @@ typedef _c_sweep_tkey = CResult_____c_char Function(
   ffi.Uint32 last_height,
   ffi.Pointer<ffi.Int8> sk,
   ffi.Uint8 pool,
+  ffi.Pointer<ffi.Int8> address,
   ffi.Pointer<ffi.Uint8> fee_bytes,
   ffi.Uint64 fee_len,
 );
@@ -2385,6 +2390,7 @@ typedef _dart_sweep_tkey = CResult_____c_char Function(
   int last_height,
   ffi.Pointer<ffi.Int8> sk,
   int pool,
+  ffi.Pointer<ffi.Int8> address,
   ffi.Pointer<ffi.Uint8> fee_bytes,
   int fee_len,
 );
@@ -2395,6 +2401,7 @@ typedef _c_sweep_tseed = CResult_____c_char Function(
   ffi.Uint32 last_height,
   ffi.Pointer<ffi.Int8> seed,
   ffi.Uint8 pool,
+  ffi.Pointer<ffi.Int8> address,
   ffi.Uint32 index,
   ffi.Uint32 limit,
   ffi.Pointer<ffi.Uint8> fee_bytes,
@@ -2407,6 +2414,7 @@ typedef _dart_sweep_tseed = CResult_____c_char Function(
   int last_height,
   ffi.Pointer<ffi.Int8> seed,
   int pool,
+  ffi.Pointer<ffi.Int8> address,
   int index,
   int limit,
   ffi.Pointer<ffi.Uint8> fee_bytes,

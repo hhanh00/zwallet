@@ -359,21 +359,21 @@ class WarpApi {
   }
 
   static Future<String> sweepTransparent(int coin, int account, int latestHeight, String sk, int pool,
-      FeeT fee) async {
+      String address, FeeT fee) async {
     return await compute((_) {
       final fee2 = encodeFee(fee);
       final txid = warp_api_lib.sweep_tkey(coin, account, latestHeight, toNative(sk), pool,
-          toNativeBytes(fee2), fee2.lengthInBytes);
+          toNative(address), toNativeBytes(fee2), fee2.lengthInBytes);
       return unwrapResultString(txid);
     }, null);
   }
 
   static Future<String> sweepTransparentSeed(int coin, int account, int latestHeight, String seed, int pool,
-      int index, int limit, FeeT fee) async {
+      String address, int index, int limit, FeeT fee) async {
     return await compute((_) {
       final fee2 = encodeFee(fee);
       final txid = warp_api_lib.sweep_tseed(coin, account, latestHeight, toNative(seed), pool,
-          index, limit, toNativeBytes(fee2), fee2.lengthInBytes);
+          toNative(address), index, limit, toNativeBytes(fee2), fee2.lengthInBytes);
       return unwrapResultString(txid);
     }, null);
   }

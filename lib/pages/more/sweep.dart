@@ -5,8 +5,10 @@ import 'package:YWallet/store2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
@@ -21,11 +23,14 @@ class SweepPage extends StatefulWidget {
 class _SweepState extends State<SweepPage>
     with WithLoadingAnimation<SweepPage> {
   late final s = S.of(context);
+  late final t = Theme.of(context);
   final formKey = GlobalKey<FormBuilderState>();
   final seedController = TextEditingController();
   final privateKeyController = TextEditingController();
   final indexController = TextEditingController(text: '0');
   final gapController = TextEditingController(text: '40');
+  int? _pool = 0;
+  String? _address;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,9 @@ class _SweepState extends State<SweepPage>
               child: FormBuilder(
                 key: formKey,
                 child: Column(children: [
-                  SizedBox(height: 8),
+                  Divider(),
+                  Text(s.source, style: t.textTheme.titleLarge),
+                  Gap(8),
                   Panel(
                     s.seed,
                     child: Column(children: [
@@ -69,13 +76,18 @@ class _SweepState extends State<SweepPage>
                       ),
                     ]),
                   ),
-                  SizedBox(height: 16),
+                  Gap(16),
                   Panel(s.privateKey,
                       child: FormBuilderTextField(
                         name: 'sk',
                         controller: privateKeyController,
                       )),
-                  FieldUARadio(0, name: 'pool', label: s.pool),
+                  Divider(),
+                  Gap(8),
+                  Text(s.destination, style: t.textTheme.titleLarge),
+                  Gap(16),
+                  FieldUARadio(0, name: 'pool', label: s.pool, onChanged: (v) => setState(() => _pool = v),),
+                  if (_pool == null) InputAddress('', onSaved: (v) => setState(() => _address = v)),
                 ]),
               ),
             )));
@@ -86,14 +98,15 @@ class _SweepState extends State<SweepPage>
     final seed = seedController.text;
     final sk = privateKeyController.text;
 
+    if (!form.validate()) return;
+
     final latestHeight = await WarpApi.getLatestHeight(aa.coin);
-    final pool = form.fields['pool']!.value as int;
 
     try {
       if (seed.isNotEmpty) {
         load(() async {
           final txPlan = await WarpApi.sweepTransparentSeed(aa.coin, aa.id,
-              latestHeight, seed, pool, 0, 30, coinSettings.feeT);
+              latestHeight, seed, _pool ?? 0, _address ?? '', 0, 30, coinSettings.feeT);
           GoRouter.of(context).push('/account/txplan?tab=more', extra: txPlan);
         });
       }
@@ -101,7 +114,7 @@ class _SweepState extends State<SweepPage>
       if (sk.isNotEmpty) {
         await load(() async {
           final txPlan = await WarpApi.sweepTransparent(
-              aa.coin, aa.id, latestHeight, sk, pool, coinSettings.feeT);
+              aa.coin, aa.id, latestHeight, sk, _pool ?? 0, _address ?? '', coinSettings.feeT);
           GoRouter.of(context).push('/account/txplan?tab=more', extra: txPlan);
         });
       }

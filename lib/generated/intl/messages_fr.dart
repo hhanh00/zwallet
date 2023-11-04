@@ -1172,4 +1172,10 @@ class SFr extends S {
 
   @override
   String get diversified => 'Diversified';
+
+  @override
+  String get source => 'Source';
+
+  @override
+  String get destination => 'Destination';
 }
