@@ -338,14 +338,18 @@ class WarpApi {
   }
 
   static Future<String> signOnly(
-      int coin, int account, String tx, void Function(int) f) async {
+      int coin, int account, String tx, {void Function(int)? progressFn}) async {
     var receivePort = ReceivePort();
     receivePort.listen((progress) {
-      f(progress);
+      progressFn?.call(progress);
     });
+    int nativePort = receivePort.sendPort.nativePort;
 
-    return await compute(signOnlyIsolateFn,
-        SignOnlyParams(coin, account, tx, receivePort.sendPort));
+    return await compute((_) {
+      final txIdRes = unwrapResultString(warp_api_lib.sign(coin, account,
+          toNative(tx), nativePort));
+      return txIdRes;
+    }, null);
   }
 
   static String broadcast(int coin, String txStr) {

@@ -94,7 +94,17 @@ final router = GoRouter(
                 GoRoute(
                   path: 'submit_tx',
                   builder: (context, state) =>
-                      SubmitTxPage(state.extra as String),
+                      SubmitTxPage(txPlan: state.extra as String),
+                ),
+                GoRoute(
+                  path: 'broadcast_tx',
+                  builder: (context, state) =>
+                      SubmitTxPage(txBin: state.extra as String),
+                ),
+                GoRoute(
+                  path: 'export_raw_tx',
+                  builder: (context, state) =>
+                      ExportUnsignedTxPage(state.extra as String),
                 ),
                 GoRoute(
                   path: 'rescan',
@@ -149,11 +159,6 @@ final router = GoRouter(
                 builder: (context, state) => MorePage(),
                 routes: [
                   GoRoute(
-                    path: 'submit_tx',
-                    builder: (context, state) =>
-                        SubmitTxPage(state.extra as String),
-                  ),
-                  GoRoute(
                       path: 'contacts',
                       builder: (context, state) => ContactsPage(),
                       routes: [
@@ -172,8 +177,18 @@ final router = GoRouter(
                       builder: (context, state) => ColdStoragePage(),
                       routes: [
                         GoRoute(
-                          path: 'batch_backup',
-                          builder: (context, state) => BatchBackupPage(),
+                          path: 'sign',
+                          builder: (context, state) => ColdSignPage(),
+                        ),
+                        GoRoute(
+                          path: 'signed',
+                          builder: (context, state) =>
+                              SignedTxPage(state.extra as String),
+                        ),
+                        GoRoute(
+                          path: 'broadcast',
+                          builder: (context, state) =>
+                              BroadcastTxPage(),
                         ),
                       ]),
                   GoRoute(
@@ -265,8 +280,9 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/showqr',
-      builder: (context, state) => ShowQRPage(title: state.uri.queryParameters['title']!,
-        text: state.extra as String),
+      builder: (context, state) => ShowQRPage(
+          title: state.uri.queryParameters['title']!,
+          text: state.extra as String),
     ),
   ],
 );
@@ -307,7 +323,8 @@ class _ScaffoldBar extends State<ScaffoldBar> {
           widget.shell.goBranch(index);
         },
       ),
-      body: Padding(padding: EdgeInsets.all(16), child: widget.shell),
+      body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16), child: widget.shell),
     );
   }
 

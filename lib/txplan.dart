@@ -154,10 +154,7 @@ class TxPlanPage extends StatelessWidget {
     try {
       showSnackBar(s.signingPleaseWait);
       final res =
-          await WarpApi.signOnly(active.coin, active.id, plan, (progress) {
-        // TODO progressPort.sendPort.send(progress);
-        // Orchard builder does not support progress reporting yet
-      });
+          await WarpApi.signOnly(active.coin, active.id, plan);
       // TODO progressPort.sendPort.send(0);
       active.setBanner("");
       active.setDraftRecipient(null);

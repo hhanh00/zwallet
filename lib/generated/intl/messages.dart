@@ -2344,6 +2344,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Destination'**
   String get destination;
+
+  /// No description provided for @scanRawTx.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the Unsigned Tx QR codes'**
+  String get scanRawTx;
+
+  /// No description provided for @scanSignedTx.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the Signed Tx QR codes'**
+  String get scanSignedTx;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

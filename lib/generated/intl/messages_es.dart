@@ -1178,4 +1178,10 @@ class SEs extends S {
 
   @override
   String get destination => 'Destination';
+
+  @override
+  String get scanRawTx => 'Scan the Unsigned Tx QR codes';
+
+  @override
+  String get scanSignedTx => 'Scan the Signed Tx QR codes';
 }

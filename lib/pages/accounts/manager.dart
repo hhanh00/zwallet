@@ -17,6 +17,7 @@ class AccountManagerPage extends StatefulWidget {
 }
 
 class _AccountManagerState extends State<AccountManagerPage> {
+  late final s = S.of(context);
   List<Account> accounts = [];
   int? selected;
   bool editing = false;
@@ -37,14 +38,14 @@ class _AccountManagerState extends State<AccountManagerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
-
     return Scaffold(
         appBar: AppBar(title: Text(s.accountManager), actions: [
           if (selected != null)
             IconButton(onPressed: edit, icon: Icon(Icons.edit)),
           if (selected != null)
             IconButton(onPressed: delete, icon: Icon(Icons.delete)),
+          if (selected != null)
+            IconButton(onPressed: cold, icon: Icon(MdiIcons.snowflake)),
           if (selected == null)
             IconButton(onPressed: add, icon: Icon(Icons.add)),
           if (selected != null)
@@ -97,7 +98,6 @@ class _AccountManagerState extends State<AccountManagerPage> {
   }
 
   delete() async {
-    final s = S.of(context);
     final a = accounts[selected!];
     final confirmed =
         await showConfirmDialog(context, s.delete, s.confirmDeleteAccount);
@@ -112,6 +112,15 @@ class _AccountManagerState extends State<AccountManagerPage> {
       selected = null;
       setState(() {});
     }
+  }
+
+  cold() async {
+    final confirmed =
+        await showConfirmDialog(context, s.convertToWatchonly, s.pleaseConfirm);
+    if (!confirmed) return;
+    WarpApi.convertToWatchOnly(aa.coin, aa.id);
+    reset();
+    setState(() {});
   }
 }
 

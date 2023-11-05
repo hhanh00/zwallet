@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:YWallet/main.dart';
+import 'package:YWallet/pages/utils.dart';
 import 'package:YWallet/settings.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -12,26 +14,51 @@ import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 
-class TxPlanPage extends StatelessWidget {
+class TxPlanPage extends StatefulWidget {
   final bool signOnly;
   final String plan;
   final String tab;
   TxPlanPage(this.plan, {required this.tab, this.signOnly = false});
+  
+  @override
+  State<StatefulWidget> createState() => _TxPlanState();
+}
 
+class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final txplan = TxPlanWidget.fromPlan(plan, signOnly: signOnly);
+    final txplan = TxPlanWidget.fromPlan(widget.plan, signOnly: widget.signOnly);
     return Scaffold(
         appBar: AppBar(
           title: Text(s.txPlan),
-          actions: [IconButton(onPressed: () => send(context), icon: Icon(Icons.send))],
+          actions: [
+            IconButton(
+              onPressed: () => exportRaw(context),
+              icon: Icon(MdiIcons.snowflake),
+            ),
+            IconButton(
+              onPressed: () => widget.signOnly ? sign(context) : send(context),
+              icon: widget.signOnly ? FaIcon(FontAwesomeIcons.signature) : Icon(Icons.send),
+            )
+          ],
         ),
-        body: SingleChildScrollView(child: txplan));
+        body: wrapWithLoading(SingleChildScrollView(child: txplan)));
   }
 
   send(BuildContext context) {
-    GoRouter.of(context).go('/$tab/submit_tx', extra: plan);
+      GoRouter.of(context).go('/${widget.tab}/submit_tx', extra: widget.plan);
+  }
+
+  exportRaw(BuildContext context) {
+      GoRouter.of(context).go('/account/export_raw_tx', extra: widget.plan);
+  }
+
+  sign(BuildContext context) async {
+    await load(() async {
+      final txBin = await WarpApi.signOnly(aa.coin, aa.id, widget.plan);
+      GoRouter.of(context).go('/more/cold/signed', extra: txBin);
+    });
   }
 }
 
@@ -112,59 +139,6 @@ class TxPlanWidget extends StatelessWidget {
             padding: EdgeInsets.only(top: 8),
             child: Text(s.privacyLevelTooLow, style: t.textTheme.bodyLarge)),
     ]);
-  }
-
-  _onSend() async {
-    final context = navigatorKey.currentContext!;
-    final s = S.of(context);
-    if (aa.canPay) {
-      if (signOnly)
-        await _sign();
-      else {
-        Future(() async {
-          final player = AudioPlayer();
-          try {
-            final String txid;
-            if (aa.external) {
-              txid = await WarpApi.ledgerSend(aa.coin, plan);
-            } else {
-              txid = await WarpApi.signAndBroadcast(aa.coin, aa.id, plan);
-            }
-            showSnackBar(s.txId(txid));
-            if (settings.sound) await player.play(AssetSource("success.mp3"));
-          } on String catch (message) {
-            showSnackBar(message, error: true);
-            if (settings.sound) await player.play(AssetSource("fail.mp3"));
-          } finally {}
-        });
-        navigatorKey.currentState?.pop();
-      }
-    } else {
-      if (settings.qrOffline) {
-        navigatorKey.currentState
-            ?.pushReplacementNamed('/qroffline', arguments: plan);
-      } else {
-        await saveFile(plan, "tx.json", s.unsignedTransactionFile);
-        showSnackBar(s.fileSaved);
-      }
-    }
-  }
-
-  _sign() async {
-    final context = navigatorKey.currentContext!;
-    final s = S.of(context);
-    try {
-      showSnackBar(s.signingPleaseWait);
-      final res = await WarpApi.signOnly(aa.coin, aa.id, plan, (progress) {});
-      if (settings.qrOffline) {
-        navigatorKey.currentState
-            ?.pushReplacementNamed('/showRawTx', arguments: res);
-      } else {
-        await saveFile(res, 'tx.raw', s.rawTransaction);
-      }
-    } on String catch (error) {
-      showSnackBar(error, error: true);
-    }
   }
 }
 

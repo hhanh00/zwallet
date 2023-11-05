@@ -373,5 +373,7 @@
   "pleaseAuthenticate": "Please Authenticate",
   "diversified": "Diversified",
   "source": "Source",
-  "destination": "Destination"
+  "destination": "Destination",
+  "scanRawTx": "Scan the Unsigned Tx QR codes",
+  "scanSignedTx": "Scan the Signed Tx QR codes"
 }

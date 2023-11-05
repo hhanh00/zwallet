@@ -7,11 +7,14 @@ import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
+import '../../main.dart';
 import '../utils.dart';
+import '../widgets.dart';
 
 class SubmitTxPage extends StatefulWidget {
-  final String txPlan;
-  SubmitTxPage(this.txPlan);
+  final String? txPlan;
+  final String? txBin;
+  SubmitTxPage({this.txPlan, this.txBin});
   @override
   State<StatefulWidget> createState() => _SubmitTxState();
 }
@@ -25,9 +28,12 @@ class _SubmitTxState extends State<SubmitTxPage> {
     super.initState();
     Future(() async {
       try {
-        final txIdJs =
-            await WarpApi.signAndBroadcast(aa.coin, aa.id, widget.txPlan);
-        txId = jsonDecode(txIdJs);
+        String? txIdJs;
+        if (widget.txPlan != null)
+          txIdJs = await WarpApi.signAndBroadcast(aa.coin, aa.id, widget.txPlan!);
+        if (widget.txBin != null)
+          txIdJs = WarpApi.broadcast(aa.coin, widget.txBin!);
+        txId = jsonDecode(txIdJs!);
       } on String catch (e) {
         error = e;
       }
@@ -82,57 +88,23 @@ class _SubmitTxState extends State<SubmitTxPage> {
   }
 }
 
-class Jumbotron extends StatelessWidget {
-  final Severity severity;
-  final String? title;
-  final String message;
-  Jumbotron(this.message, {this.title, this.severity = Severity.Info});
+class ExportUnsignedTxPage extends StatelessWidget {
+  final String data;
+  ExportUnsignedTxPage(this.data);
 
   @override
   Widget build(BuildContext context) {
-    final t = Theme.of(context);
-    final Color color;
-    switch (severity) {
-      case Severity.Error:
-        color = Colors.red;
-        break;
-      case Severity.Warning:
-        color = Colors.orange;
-        break;
-      default:
-        color = t.colorScheme.primary;
-        break;
-    }
-    return Stack(
-      children: [
-        Align(
-          child: Container(
-            padding: EdgeInsets.all(16),
-            margin: EdgeInsetsDirectional.all(15),
-            decoration: BoxDecoration(
-                border: Border.all(color: color, width: 4),
-                borderRadius: BorderRadius.all(Radius.circular(32))),
-            child: SelectableText(message,
-                style: t.textTheme.headlineMedium
-                    ?.apply(color: t.appBarTheme.foregroundColor)),
-          ),
-        ),
-        if (title != null)
-          Align(
-            alignment: Alignment.topCenter,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                  border: Border.all(color: color, width: 4), color: color),
-              child: Padding(padding: EdgeInsets.all(8), child: Text(title!)),
-            ),
-          )
-      ],
+    final s = S.of(context);
+    return Scaffold(
+      appBar: AppBar(title: Text(s.unsignedTx), actions: [
+        IconButton(onPressed: () => export(context), icon: Icon(Icons.save))
+      ]),
+      body: AnimatedQR.init(s.rawTransaction, s.scanQrCode, data),
     );
   }
-}
 
-enum Severity {
-  Info,
-  Warning,
-  Error,
+  export(BuildContext context) async {
+    final s = S.of(context);
+    await saveFile(data, 'tx.raw', s.rawTransaction);
+  }
 }

@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:YWallet/db.dart';
 import 'package:YWallet/history.dart';
@@ -11,13 +13,15 @@ import 'package:getwidget/getwidget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp_api/data_fb_generated.dart';
+import 'package:warp_api/warp_api.dart';
 
 import '../accounts.dart';
 import '../appsettings.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
-import '../main.dart';
+import '../main.dart' hide getScreenSize;
 import '../store.dart';
 import 'scan.dart';
 import 'utils.dart';
@@ -453,5 +457,121 @@ class _InputMemoState extends State<InputMemo> {
             )
           ]);
         });
+  }
+}
+
+class Jumbotron extends StatelessWidget {
+  final Severity severity;
+  final String? title;
+  final String message;
+  Jumbotron(this.message, {this.title, this.severity = Severity.Info});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context);
+    final Color color;
+    switch (severity) {
+      case Severity.Error:
+        color = Colors.red;
+        break;
+      case Severity.Warning:
+        color = Colors.orange;
+        break;
+      default:
+        color = t.colorScheme.primary;
+        break;
+    }
+    return Stack(
+      children: [
+        Align(
+          child: Container(
+            padding: EdgeInsets.all(16),
+            margin: EdgeInsetsDirectional.all(15),
+            decoration: BoxDecoration(
+                border: Border.all(color: color, width: 4),
+                borderRadius: BorderRadius.all(Radius.circular(32))),
+            child: SelectableText(message,
+                style: t.textTheme.headlineMedium
+                    ?.apply(color: t.appBarTheme.foregroundColor)),
+          ),
+        ),
+        if (title != null)
+          Align(
+            alignment: Alignment.topCenter,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                  border: Border.all(color: color, width: 4), color: color),
+              child: Padding(padding: EdgeInsets.all(8), child: Text(title!)),
+            ),
+          )
+      ],
+    );
+  }
+}
+
+enum Severity {
+  Info,
+  Warning,
+  Error,
+}
+
+class AnimatedQR extends StatefulWidget {
+  final String title;
+  final String caption;
+  final String data;
+  final List<String> chunks;
+
+  AnimatedQR.init(String title, String caption, String data)
+      : this(
+            title,
+            caption,
+            data,
+            WarpApi.splitData(DateTime.now().millisecondsSinceEpoch ~/ 1000,
+                base64Encode(ZLibCodec().encode(utf8.encode(data)))));
+
+  AnimatedQR(this.title, this.caption, this.data, this.chunks);
+
+  @override
+  State<StatefulWidget> createState() => _AnimatedQRState();
+}
+
+class _AnimatedQRState extends State<AnimatedQR> {
+  var index = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = new Timer.periodic(Duration(seconds: 3), (Timer timer) {
+      setState(() {
+        index += 1;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final idx = index % widget.chunks.length;
+    final qrSize = getScreenSize(context) - 250;
+    return Center(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        QrImage(
+            key: ValueKey(idx),
+            data: widget.chunks[idx],
+            size: qrSize,
+            backgroundColor: Colors.white),
+        Gap(8),
+        Text(widget.caption, style: theme.textTheme.titleMedium),
+      ],
+    ));
   }
 }
