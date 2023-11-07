@@ -34,6 +34,7 @@ message CoinSettings {
     bool spam_filter = 6;
     uint32 ua_type = 7;
     uint32 reply_ua = 8;
+    bool contacts_saved = 9;
 }
 
 message ServerURL {

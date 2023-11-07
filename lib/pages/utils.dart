@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 
-import 'package:YWallet/main.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:file_picker/file_picker.dart';
@@ -12,22 +13,44 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:key_guardmanager/key_guardmanager.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:reflectable/reflectable.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:path/path.dart' as p;
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 import '../accounts.dart';
 import '../appsettings.dart';
+import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import '../router.dart';
+import '../store2.dart';
 import 'widgets.dart';
 
+const APP_NAME = "YWallet";
+const ZECUNIT = 100000000.0;
+const ZECUNIT_INT = 100000000;
+const MAX_PRECISION = 8;
+
+final DateFormat noteDateFormat = DateFormat("yy-MM-dd HH:mm");
+final DateFormat txDateFormat = DateFormat("MM-dd HH:mm");
+final DateFormat msgDateFormat = DateFormat("MM-dd HH:mm");
+final DateFormat msgDateFormatFull = DateFormat("yy-MM-dd HH:mm:ss");
+
+
 int decimalDigits(bool fullPrec) => fullPrec ? MAX_PRECISION : 3;
+String decimalFormat(double x, int decimalDigits, {String symbol = ''}) =>
+    NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol)
+        .format(x)
+        .trimRight();
 
 Future<bool> showMessageBox2(BuildContext context, String title, String content,
     {String? label, bool dismissable = true}) async {
@@ -202,12 +225,20 @@ double getScreenSize(BuildContext context) {
   return min(size.height, size.width);
 }
 
+Future<FilePickerResult?> pickFile() async {
+  if (isMobile()) {
+    await FilePicker.platform.clearTemporaryFiles();
+  }
+  final result = await FilePicker.platform.pickFiles();
+  return result;
+}
+
 Future<void> saveFileBinary(
     List<int> data, String filename, String title) async {
   if (isMobile()) {
-    final context = navigatorKey.currentContext!;
+    final context = rootNavigatorKey.currentContext!;
     Size size = MediaQuery.of(context).size;
-    final tempDir = settings.tempDir;
+    final tempDir = await getTempPath();
     final path = p.join(tempDir, filename);
     final xfile = XFile(path);
     final file = File(path);
@@ -243,3 +274,325 @@ class MemoData {
 extension ScopeFunctions<T> on T {
   R let<R>(R Function(T) block) => block(this);
 }
+
+Future<bool> showConfirmDialog(
+    BuildContext context, String title, String body) async {
+  final s = S.of(context);
+
+  void close(bool res) {
+    GoRouter.of(context).pop<bool>(res);
+  }
+
+  final confirmation = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+            title: Text(title),
+            content: Text(body),
+            actions: [
+              ElevatedButton.icon(onPressed: () => close(true), icon: Icon(Icons.cancel), label: Text(s.cancel)),
+              ElevatedButton.icon(onPressed: () => close(false), icon: Icon(Icons.check), label: Text(s.ok)),
+            ]
+      )) ??
+      false;
+  return confirmation;
+}
+
+num parseNumber(String? s) {
+  if (s == null || s.isEmpty) return 0;
+  return NumberFormat.currency().parse(s);
+}
+
+int stringToAmount(String? s) {
+  return (parseNumber(s) * ZECUNIT_INT).toInt();
+}
+
+String amountToString2(int amount, {int decimalDigits = MAX_PRECISION}) =>
+    decimalFormat(amount / ZECUNIT, decimalDigits);
+
+Future<void> saveFile(String data, String filename, String title) async {
+  await saveFileBinary(utf8.encode(data), filename, title);
+}
+
+String centerTrim(String v, {int length = 16}) { 
+  if (v.length <= length) return v;
+  final s = length ~/ 2;
+  final e = v.length - length + s;
+  return v.substring(0, s) + '...' + v.substring(e);
+}
+
+String trailing(String v, int n) {
+  final len = min(n, v.length);
+  return v.substring(v.length - len);
+}
+
+String getPrivacyLevel(BuildContext context, int level) {
+  final s = S.of(context);
+  final privacyLevels = [s.veryLow, s.low, s.medium, s.high];
+  return privacyLevels[level];
+}
+
+bool isMobile() => Platform.isAndroid || Platform.isIOS;
+
+Future<String> getDataPath() async {
+  String? home;
+  if (Platform.isAndroid)
+    home = (await getApplicationDocumentsDirectory()).parent.path;
+  if (Platform.isWindows) home = Platform.environment['LOCALAPPDATA'];
+  if (Platform.isLinux)
+    home =
+        Platform.environment['XDG_DATA_HOME'] ?? Platform.environment['HOME'];
+  if (Platform.isMacOS) home = (await getApplicationSupportDirectory()).path;
+  final h = home ?? "";
+  return h;
+}
+
+Future<String> getTempPath() async {
+  if (isMobile()) {
+    final d = await getTemporaryDirectory();
+    return d.path;
+  }
+  final dataPath = await getDataPath();
+  final tempPath = p.join(dataPath, "tmp");
+  Directory(tempPath).createSync(recursive: true);
+  return tempPath;
+}
+
+Future<String> getDbPath() async {
+  if (Platform.isIOS) return (await getApplicationDocumentsDirectory()).path;
+  final h = await getDataPath();
+  return "$h/databases";
+}
+
+abstract class HasHeight {
+  int height = 0;
+}
+
+class Reflector extends Reflectable {
+  const Reflector() : super(instanceInvokeCapability);
+}
+
+const reflector = const Reflector();
+
+@reflector
+class Note extends HasHeight {
+  int id;
+  int height;
+  int? confirmations;
+  DateTime timestamp;
+  double value;
+  bool orchard;
+  bool excluded;
+
+  factory Note.from(int? latestHeight, int id, int height, DateTime timestamp,
+      double value, bool orchard, bool excluded) {
+    final confirmations = latestHeight?.let((h) => h - height + 1);
+    return Note(id, height, confirmations, timestamp, value, orchard, excluded);
+  }
+
+  Note(this.id, this.height, this.confirmations, this.timestamp, this.value,
+      this.orchard, this.excluded);
+
+  Note get invertExcluded =>
+      Note(id, height, confirmations, timestamp, value, orchard, !excluded);
+}
+
+@reflector
+class Tx extends HasHeight {
+  int id;
+  int height;
+  int? confirmations;
+  DateTime timestamp;
+  String txId;
+  String fullTxId;
+  double value;
+  String? address;
+  String? contact;
+  String? memo;
+
+  factory Tx.from(
+      int? latestHeight,
+      int id,
+      int height,
+      DateTime timestamp,
+      String txid,
+      String fullTxId,
+      double value,
+      String? address,
+      String? contact,
+      String? memo) {
+    final confirmations = latestHeight?.let((h) => h - height + 1);
+    return Tx(id, height, confirmations, timestamp, txid, fullTxId, value,
+        address, contact, memo);
+  }
+
+  Tx(this.id, this.height, this.confirmations, this.timestamp, this.txId,
+      this.fullTxId, this.value, this.address, this.contact, this.memo);
+}
+
+class ZMessage extends HasHeight {
+  final int id;
+  final int txId;
+  final bool incoming;
+  final String? sender;
+  final String recipient;
+  final String subject;
+  final String body;
+  final DateTime timestamp;
+  final int height;
+  final bool read;
+
+  ZMessage(this.id, this.txId, this.incoming, this.sender, this.recipient,
+      this.subject, this.body, this.timestamp, this.height, this.read);
+
+  ZMessage withRead(bool v) {
+    return ZMessage(id, txId, incoming, sender, recipient, subject, body,
+        timestamp, height, v);
+  }
+
+  String fromto() => incoming
+      ? "\u{21e6} ${sender != null ? centerTrim(sender!) : ''}"
+      : "\u{21e8} ${centerTrim(recipient)}";
+}
+
+class PnL {
+  final DateTime timestamp;
+  final double price;
+  final double amount;
+  final double realized;
+  final double unrealized;
+
+  PnL(this.timestamp, this.price, this.amount, this.realized, this.unrealized);
+
+  @override
+  String toString() {
+    return "$timestamp $price $amount $realized $unrealized";
+  }
+}
+
+Color amountColor(BuildContext context, num a) {
+  final theme = Theme.of(context);
+  if (a < 0) return Colors.red;
+  if (a > 0) return Colors.green;
+  return theme.textTheme.bodyLarge!.color!;
+}
+
+TextStyle weightFromAmount(TextStyle style, num v) {
+  final value = v.abs();
+  final coin = coins[aa.coin];
+  final style2 = style.copyWith(fontFeatures: [FontFeature.tabularFigures()]);
+  if (value >= coin.weights[2])
+    return style2.copyWith(fontWeight: FontWeight.w800);
+  else if (value >= coin.weights[1])
+    return style2.copyWith(fontWeight: FontWeight.w600);
+  else if (value >= coin.weights[0])
+    return style2.copyWith(fontWeight: FontWeight.w400);
+  return style2.copyWith(fontWeight: FontWeight.w200);
+}
+
+final DateFormat todayDateFormat = DateFormat("HH:mm");
+final DateFormat monthDateFormat = DateFormat("MMMd");
+final DateFormat longAgoDateFormat = DateFormat("yy-MM-dd");
+
+String humanizeDateTime(BuildContext context, DateTime datetime) {
+  final messageDate = datetime.toLocal();
+  final now = DateTime.now();
+  final justNow = now.subtract(Duration(minutes: 1));
+  final midnight = DateTime(now.year, now.month, now.day);
+  final year = DateTime(now.year, 1, 1);
+
+  String dateString;
+  if (justNow.isBefore(messageDate))
+    dateString = S.of(context).now;
+  else if (midnight.isBefore(messageDate))
+    dateString = todayDateFormat.format(messageDate);
+  else if (year.isBefore(messageDate))
+    dateString = monthDateFormat.format(messageDate);
+  else
+    dateString = longAgoDateFormat.format(messageDate);
+  return dateString;
+}
+
+Future<double?> getFxRate(String coin, String fiat) async {
+  final base = "api.coingecko.com";
+  final uri = Uri.https(
+      base, '/api/v3/simple/price', {'ids': coin, 'vs_currencies': fiat});
+  try {
+    final rep = await http.get(uri);
+    if (rep.statusCode == 200) {
+      final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
+      final p = json[coin][fiat.toLowerCase()];
+      return (p is double) ? p : (p as int).toDouble();
+    }
+  } catch (e) {
+    print(e);
+  }
+  return null;
+}
+
+class TimeSeriesPoint<V> {
+  final int day;
+  final V value;
+
+  TimeSeriesPoint(this.day, this.value);
+
+  @override
+  String toString() => '($day, $value)';
+}
+
+class AccountBalance {
+  final DateTime time;
+  final double balance;
+
+  AccountBalance(this.time, this.balance);
+  @override
+  String toString() => "($time $balance)";
+}
+
+List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(
+    Iterable<T> timeseries,
+    int start,
+    int end,
+    int Function(T) getDay,
+    Y Function(T) getY,
+    V Function(V, Y) accFn,
+    V initial) {
+  assert(start % DAY_SEC == 0);
+  final s = start ~/ DAY_SEC;
+  final e = end ~/ DAY_SEC;
+
+  List<TimeSeriesPoint<V>> ts = [];
+  var acc = initial;
+
+  var tsIterator = timeseries.iterator;
+  var next = tsIterator.moveNext() ? tsIterator.current : null;
+  var nextDay = next?.let((n) => getDay(n));
+
+  for (var day = s; day <= e; day++) {
+    while (nextDay != null && day == nextDay) {
+      // accumulate
+      acc = accFn(acc, getY(next!));
+      next = tsIterator.moveNext() ? tsIterator.current : null;
+      nextDay = next?.let((n) => getDay(n));
+    }
+    ts.add(TimeSeriesPoint(day, acc));
+  }
+  return ts;
+}
+
+class Quote {
+  final DateTime dt;
+  final price;
+
+  Quote(this.dt, this.price);
+}
+
+class Trade {
+  final DateTime dt;
+  final qty;
+
+  Trade(this.dt, this.qty);
+}
+
+
+

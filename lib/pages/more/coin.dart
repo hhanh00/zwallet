@@ -1,15 +1,13 @@
-import 'package:YWallet/accounts.dart';
-import 'package:YWallet/appsettings.dart';
-import 'package:YWallet/generated/intl/messages.dart';
-import 'package:YWallet/tablelist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../db.dart';
-import '../../main.dart';
-import '../../store.dart';
+import '../../accounts.dart';
+import '../../appsettings.dart';
+import '../../generated/intl/messages.dart';
+import '../../tablelist.dart';
+import '../utils.dart';
 
 class CoinControlPage extends StatelessWidget {
   @override

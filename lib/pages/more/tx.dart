@@ -1,19 +1,15 @@
 import 'dart:math';
 
-import 'package:YWallet/accounts.dart';
-import 'package:YWallet/generated/intl/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../accounts.dart';
+import '../../generated/intl/messages.dart';
 import '../../appsettings.dart';
-import '../../avatar.dart';
-import '../../db.dart';
-import '../../history.dart';
-import '../../main.dart';
-import '../../store.dart';
 import '../../tablelist.dart';
+import '../avatar.dart';
 import '../utils.dart';
 import '../widgets.dart';
 

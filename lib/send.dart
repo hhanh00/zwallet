@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:YWallet/pages/utils.dart' hide showSnackBar;
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobx/mobx.dart';
@@ -535,8 +534,8 @@ Future<void> send(BuildContext context, List<Recipient> recipients) async {
 
   await showSnackBar(s.preparingTransaction, autoClose: true);
 
-  if (settings.protectSend &&
-      !await authenticate(context, s.pleaseAuthenticateToSend)) return;
+  // if (settings.protectSend &&
+  //     !await authenticate(context, s.pleaseAuthenticateToSend)) return;
 
   if (recipients.length == 1) active.setDraftRecipient(recipients[0]);
   try {

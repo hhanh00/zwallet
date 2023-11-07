@@ -2,8 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 import 'package:YWallet/accounts.dart';
-import 'package:YWallet/appsettings.dart';
-import 'package:YWallet/pages/utils.dart' hide showSnackBar;
+import 'package:YWallet/pages/utils.dart' show authenticate, ScopeFunctions;
 import 'package:YWallet/src/version.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -1011,44 +1010,6 @@ abstract class _ETAStore with Store {
     final duration =
         Duration(milliseconds: eta.floor()).toString().split('.')[0];
     return "ETA: $duration";
-  }
-}
-
-class ContactStore = _ContactStore with _$ContactStore;
-
-abstract class _ContactStore with Store {
-  @observable
-  ObservableList<Contact> contacts = ObservableList<Contact>.of([]);
-
-  @action
-  void fetchContacts() {
-    contacts.clear();
-    contacts.addAll(WarpApi.getContacts(active.coin));
-  }
-
-  @action
-  void add(Contact c) {
-    WarpApi.storeContact(c.id, c.name!, c.address!, true);
-    markContactsSaved(active.coin, false);
-    fetchContacts();
-  }
-
-  @action
-  void remove(Contact c) {
-    contacts.removeWhere((contact) => contact.id == c.id);
-    WarpApi.storeContact(c.id, c.name!, "", true);
-    markContactsSaved(active.coin, false);
-    fetchContacts();
-  }
-
-  @action
-  markContactsSaved(int coin, bool v) {
-    settings.coins[coin].contactsSaved = v;
-    Future.microtask(() async {
-      final prefs = await SharedPreferences.getInstance();
-      final c = settings.coins[coin].def;
-      prefs.setBool("${c.ticker}.contacts_saved", v);
-    });
   }
 }
 

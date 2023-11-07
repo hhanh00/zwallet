@@ -5,7 +5,6 @@ import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
-import '../../main.dart';
 
 class BackupPage extends StatelessWidget {
   late final Backup backup;

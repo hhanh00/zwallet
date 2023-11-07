@@ -7,6 +7,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -15,11 +16,11 @@ import 'pages/utils.dart';
 import 'accounts.dart';
 import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
-import 'main.dart' hide showSnackBar;
 import 'router.dart';
-import 'store.dart';
 
 part 'store2.g.dart';
+
+var appStore = AppStore();
 
 class AppStore = _AppStore with _$AppStore;
 
@@ -294,5 +295,41 @@ abstract class _MarketPrice with Store {
     } on String catch (msg) {
       print(msg);
     }
+  }
+}
+
+var contacts = ContactStore();
+
+class ContactStore = _ContactStore with _$ContactStore;
+
+abstract class _ContactStore with Store {
+  @observable
+  ObservableList<Contact> contacts = ObservableList<Contact>.of([]);
+
+  @action
+  void fetchContacts() {
+    contacts.clear();
+    contacts.addAll(WarpApi.getContacts(aa.coin));
+  }
+
+  @action
+  void add(Contact c) {
+    WarpApi.storeContact(c.id, c.name!, c.address!, true);
+    markContactsSaved(aa.coin, false);
+    fetchContacts();
+  }
+
+  @action
+  void remove(Contact c) {
+    contacts.removeWhere((contact) => contact.id == c.id);
+    WarpApi.storeContact(c.id, c.name!, "", true);
+    markContactsSaved(aa.coin, false);
+    fetchContacts();
+  }
+
+  @action
+  markContactsSaved(int coin, bool v) {
+    coinSettings.contactsSaved = true;
+    coinSettings.save(coin);
   }
 }

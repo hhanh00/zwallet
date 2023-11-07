@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
-import 'package:YWallet/db.dart';
-import 'package:YWallet/history.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_palette/flutter_palette.dart';
@@ -21,8 +20,6 @@ import '../accounts.dart';
 import '../appsettings.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
-import '../main.dart' hide getScreenSize;
-import '../store.dart';
 import 'scan.dart';
 import 'utils.dart';
 
@@ -573,5 +570,61 @@ class _AnimatedQRState extends State<AnimatedQR> {
         Text(widget.caption, style: theme.textTheme.titleMedium),
       ],
     ));
+  }
+}
+
+class HorizontalBarChart extends StatelessWidget {
+  final List<double> values;
+  final double height;
+
+  HorizontalBarChart(this.values, { this.height = 32 });
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = getPalette(Theme.of(context).primaryColor, values.length);
+
+    final sum = values.fold<double>(0, ((acc, v) => acc + v));
+    final stacks = values.asMap().entries.map((e) {
+      final i = e.key;
+      final color = palette[i];
+      final v = NumberFormat.compact().format(values[i]);
+      final flex = sum != 0 ? max((values[i] / sum * 100).round(), 1) : 1;
+      return Flexible(child: Container(child:
+        Center(child: Text(v, textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
+        color: color, height: height), flex: flex);
+    }).toList();
+
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch, children: stacks));
+  }
+}
+
+class MessageContentWidget extends StatelessWidget {
+  final String address;
+  final ZMessage? message;
+  final String memo;
+
+  MessageContentWidget(this.address, this.message, this.memo);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final m = message;
+    final addressWidget =
+        Text('${trailing(address, 8)}', style: theme.textTheme.labelMedium);
+    if (m != null) {
+      return Column(children: [
+        addressWidget,
+        Text("${m.subject}", style: theme.textTheme.titleSmall),
+        if (m.subject != m.body)
+          Text("${m.body}", style: theme.textTheme.bodySmall),
+      ]);
+    } else {
+      return Column(children: [
+        addressWidget,
+        Text(memo, style: theme.textTheme.bodySmall),
+      ]);
+    }
   }
 }

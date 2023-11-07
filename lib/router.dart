@@ -5,13 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:protobuf/protobuf.dart';
 
 import 'accounts.dart';
-import 'appsettings.dart';
 import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
-import 'main.dart';
 import 'pages/accounts/manager.dart';
 import 'pages/accounts/multipay.dart';
 import 'pages/accounts/new_import.dart';
@@ -42,6 +39,7 @@ import 'pages/welcome.dart';
 import 'pages/settings.dart';
 import 'pages/messages.dart';
 import 'pages/utils.dart';
+import 'store2.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _accountNavigatorKey = GlobalKey<NavigatorState>();
@@ -117,6 +115,10 @@ final router = GoRouter(
                 GoRoute(
                   path: 'quick_send',
                   builder: (context, state) => QuickSendPage(),
+                ),
+                GoRoute(
+                  path: 'send_to_pay_uri',
+                  builder: (context, state) => PlaceHolderPage('send_to_pay_uri'),
                 ),
                 GoRoute(
                   path: 'pay_uri',

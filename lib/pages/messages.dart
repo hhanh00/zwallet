@@ -7,11 +7,10 @@ import 'package:warp_api/warp_api.dart';
 
 import '../accounts.dart';
 import '../appsettings.dart';
-import '../avatar.dart';
-import '../db.dart';
 import '../generated/intl/messages.dart';
-import '../main.dart';
 import '../tablelist.dart';
+import 'avatar.dart';
+import 'utils.dart';
 import 'widgets.dart';
 
 class MessagePage extends StatelessWidget {
@@ -179,7 +178,7 @@ class MessageTile extends StatelessWidget {
           _onSelect(context);
         },
         onLongPress: () {
-          active.markAllMessagesAsRead();
+          WarpApi.markAllMessagesAsRead(aa.coin, aa.id, true);
         },
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 8),

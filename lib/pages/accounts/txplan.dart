@@ -1,8 +1,3 @@
-import 'dart:async';
-
-import 'package:YWallet/main.dart';
-import 'package:YWallet/pages/utils.dart';
-import 'package:YWallet/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +5,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../appsettings.dart';
+import '../utils.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
@@ -87,7 +84,7 @@ class TxPlanWidget extends StatelessWidget {
               DataCell(Text('${amountToString2(e.amount)}')),
             ]))
         .toList();
-    final invalidPrivacy = report.privacyLevel < settings.minPrivacyLevel;
+    final invalidPrivacy = report.privacyLevel < appSettings.minPrivacyLevel;
 
     return Column(children: [
       Row(children: [
@@ -110,29 +107,29 @@ class TxPlanWidget extends StatelessWidget {
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.transparentInput),
-          trailing: Text(amountToString(report.transparent, MAX_PRECISION))),
+          trailing: Text(amountToString2(report.transparent))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.saplingInput),
-          trailing: Text(amountToString(report.sapling, MAX_PRECISION))),
+          trailing: Text(amountToString2(report.sapling))),
       if (supportsUA)
         ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(s.orchardInput),
-            trailing: Text(amountToString(report.orchard, MAX_PRECISION))),
+            trailing: Text(amountToString2(report.orchard))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.netSapling),
-          trailing: Text(amountToString(report.netSapling, MAX_PRECISION))),
+          trailing: Text(amountToString2(report.netSapling))),
       if (supportsUA)
         ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(s.netOrchard),
-            trailing: Text(amountToString(report.netOrchard, MAX_PRECISION))),
+            trailing: Text(amountToString2(report.netOrchard))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.fee),
-          trailing: Text(amountToString(report.fee, MAX_PRECISION))),
+          trailing: Text(amountToString2(report.fee))),
       privacyToString(context, report.privacyLevel)!,
       if (invalidPrivacy)
         Padding(

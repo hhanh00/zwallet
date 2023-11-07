@@ -861,10 +861,12 @@ class NativeLibrary {
       _commit_unsaved_contacts_ptr.asFunction<_dart_commit_unsaved_contacts>();
 
   void mark_message_read(
+    int coin,
     int message,
     int read,
   ) {
     return _mark_message_read(
+      coin,
       message,
       read,
     );
@@ -876,9 +878,13 @@ class NativeLibrary {
       _mark_message_read_ptr.asFunction<_dart_mark_message_read>();
 
   void mark_all_messages_read(
+    int coin,
+    int account,
     int read,
   ) {
     return _mark_all_messages_read(
+      coin,
+      account,
       read,
     );
   }
@@ -2478,20 +2484,26 @@ typedef _dart_commit_unsaved_contacts = CResult_____c_char Function(
 );
 
 typedef _c_mark_message_read = ffi.Void Function(
+  ffi.Uint8 coin,
   ffi.Uint32 message,
   ffi.Int8 read,
 );
 
 typedef _dart_mark_message_read = void Function(
+  int coin,
   int message,
   int read,
 );
 
 typedef _c_mark_all_messages_read = ffi.Void Function(
+  ffi.Uint8 coin,
+  ffi.Uint32 account,
   ffi.Int8 read,
 );
 
 typedef _dart_mark_all_messages_read = void Function(
+  int coin,
+  int account,
   int read,
 );
 

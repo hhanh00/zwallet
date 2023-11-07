@@ -1,9 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
-import 'package:YWallet/accounts.dart';
-import 'package:YWallet/pages/utils.dart';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quick_actions/quick_actions.dart';
@@ -12,14 +12,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_protocol/url_protocol.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../accounts.dart';
+import 'utils.dart';
 import '../appsettings.dart';
 import '../coin/coin.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import '../init.dart';
-import '../main.dart';
 import '../settings.pb.dart';
-import '../store.dart';
 import '../store2.dart';
 
 class SplashPage extends StatefulWidget {
@@ -66,11 +66,6 @@ class _SplashState extends State<SplashPage> {
     _setProgress(0.1, "Settings loaded");
   }
 
-  Future<void> _setupMempool() async {
-    WarpApi.mempoolRun(unconfirmedBalancePort.sendPort.nativePort);
-    _setProgress(0.2, 'Mempool initialized');
-  }
-
   Future<void> _registerURLHandler() async {
     _setProgress(0.3, 'Register Payment URI handlers');
     await registerURLHandler(this.context);
@@ -92,15 +87,14 @@ class _SplashState extends State<SplashPage> {
     Future.microtask(() {
       final s = S.of(this.context);
       List<ShortcutItem> shortcuts = [];
-      for (var c in settings.coins) {
-        final coin = c.coin;
-        final ticker = c.def.ticker;
+      for (var c in coins) {
+        final ticker = c.ticker;
         shortcuts.add(ShortcutItem(
-            type: '$coin.receive',
+            type: '${c.coin}.receive',
             localizedTitle: s.receive(ticker),
             icon: 'receive'));
         shortcuts.add(ShortcutItem(
-            type: '$coin.send',
+            type: '${c.coin}.send',
             localizedTitle: s.sendCointicker(ticker),
             icon: 'send'));
       }
@@ -205,6 +199,48 @@ class _LoadProgressState extends State<LoadProgress> {
       _value = v;
       _message = message;
     });
+  }
+}
+
+StreamSubscription? subUniLinks;
+
+void handleUri(BuildContext context, Uri uri) {
+  final scheme = uri.scheme;
+  final coinDef = coins.firstWhere((c) => c.currency == scheme);
+  final coin = coinDef.coin;
+  final id = WarpApi.getActiveAccountId(coin);
+  setActiveAccount(coin, id);
+  GoRouter.of(context)
+      .pushNamed('/send_to_pay_uri', extra: uri.toString());
+}
+
+Future<void> registerURLHandler(BuildContext context) async {
+  if (Platform.isLinux) return;
+  final _appLinks = AppLinks();
+
+  final uri = await _appLinks.getInitialAppLink();
+  if (uri != null) {
+    handleUri(context, uri);
+  }
+
+  subUniLinks = _appLinks.uriLinkStream.listen((uri) {
+    handleUri(context, uri);
+  });
+}
+
+void handleQuickAction(BuildContext context, String type) {
+  final t = type.split(".");
+  final coin = int.parse(t[0]);
+  final shortcut = t[1];
+  final id = WarpApi.getActiveAccountId(coin);
+  setActiveAccount(coin, id);
+  switch (shortcut) {
+    case 'receive':
+      Navigator.of(context).pushNamed('/receive');
+      break;
+    case 'send':
+      Navigator.of(context).pushNamed('/send');
+      break;
   }
 }
 

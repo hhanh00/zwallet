@@ -8,11 +8,9 @@ import 'package:warp_api/data_fb_generated.dart' hide Quote;
 import 'appsettings.dart';
 import 'coin/coins.dart';
 import 'package:mobx/mobx.dart';
-import 'db.dart';
 import 'package:warp_api/warp_api.dart';
 
-import 'main.dart';
-import 'store.dart';
+import 'pages/utils.dart';
 
 part 'accounts.g.dart';
 

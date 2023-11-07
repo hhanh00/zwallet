@@ -4,8 +4,8 @@ import 'package:mustache_template/mustache.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../generated/intl/messages.dart';
-import '../../main.dart';
 import '../../src/version.dart';
+import '../utils.dart';
 
 class AboutPage extends StatelessWidget {
   final String contentTemplate;

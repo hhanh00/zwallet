@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../generated/intl/messages.dart';
-import '../main.dart';
+import 'utils.dart';
 
 class WelcomePage extends StatelessWidget {
   @override

@@ -8,7 +8,7 @@ import 'package:warp_api/warp_api.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
-import '../../main.dart';
+import '../utils.dart';
 
 class QRAddressWidget extends StatefulWidget {
   final int? amount;

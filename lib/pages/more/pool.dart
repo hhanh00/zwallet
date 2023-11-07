@@ -1,8 +1,5 @@
 import 'dart:math';
 
-import 'package:YWallet/appsettings.dart';
-import 'package:YWallet/main.dart';
-import 'package:YWallet/pages/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -11,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../appsettings.dart';
+import '../../pages/widgets.dart';
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
 import '../settings.dart';

@@ -1,4 +1,3 @@
-import 'package:YWallet/init.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -10,7 +9,7 @@ import 'package:warp_api/warp_api.dart';
 import '../../accounts.dart';
 import '../../appsettings.dart';
 import '../../generated/intl/messages.dart';
-import '../../main.dart';
+import '../../store2.dart';
 import '../scan.dart';
 import '../utils.dart';
 
@@ -37,7 +36,7 @@ class _ContactsState extends State<ContactsPage> {
               IconButton(onPressed: _edit, icon: Icon(Icons.edit)),
             if (idSelected != null)
               IconButton(onPressed: _delete, icon: Icon(Icons.delete)),
-            IconButton(onPressed: _save, icon: Icon(Icons.save)),
+            IconButton(onPressed: _save, icon: Icon(Icons.save)), // TODO: use coinsettings.contactsSaved flag
             IconButton(onPressed: _add, icon: Icon(Icons.add)),
           ],
         ),

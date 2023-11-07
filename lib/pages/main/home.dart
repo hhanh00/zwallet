@@ -1,9 +1,9 @@
-import 'package:YWallet/appsettings.dart';
-import 'package:YWallet/store2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../appsettings.dart';
+import '../../store2.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../utils.dart';

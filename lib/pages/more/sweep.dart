@@ -1,16 +1,13 @@
-import 'package:YWallet/appsettings.dart';
-import 'package:YWallet/pages/settings.dart';
-import 'package:YWallet/pages/widgets.dart';
-import 'package:YWallet/store2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../appsettings.dart';
+import '../settings.dart';
+import '../widgets.dart';
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
 import '../utils.dart';

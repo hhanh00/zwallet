@@ -7,7 +7,6 @@ import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
-import '../../main.dart';
 import '../utils.dart';
 import '../widgets.dart';
 

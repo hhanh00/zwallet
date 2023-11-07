@@ -70,6 +70,7 @@ const CoinSettings$json = {
     {'1': 'spam_filter', '3': 6, '4': 1, '5': 8, '10': 'spamFilter'},
     {'1': 'ua_type', '3': 7, '4': 1, '5': 13, '10': 'uaType'},
     {'1': 'reply_ua', '3': 8, '4': 1, '5': 13, '10': 'replyUa'},
+    {'1': 'contacts_saved', '3': 9, '4': 1, '5': 8, '10': 'contactsSaved'},
   ],
 };
 
@@ -79,7 +80,7 @@ final $typed_data.Uint8List coinSettingsDescriptor = $convert.base64Decode(
     '9yZXIYAyABKAsyDS5wYi5TZXJ2ZXJVUkxSCGV4cGxvcmVyEh0KCm1hbnVhbF9mZWUYBCABKAhS'
     'CW1hbnVhbEZlZRIQCgNmZWUYBSABKARSA2ZlZRIfCgtzcGFtX2ZpbHRlchgGIAEoCFIKc3BhbU'
     'ZpbHRlchIXCgd1YV90eXBlGAcgASgNUgZ1YVR5cGUSGQoIcmVwbHlfdWEYCCABKA1SB3JlcGx5'
-    'VWE=');
+    'VWESJQoOY29udGFjdHNfc2F2ZWQYCSABKAhSDWNvbnRhY3RzU2F2ZWQ=');
 
 @$core.Deprecated('Use serverURLDescriptor instead')
 const ServerURL$json = {

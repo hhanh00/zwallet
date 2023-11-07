@@ -367,6 +367,7 @@ class CoinSettings extends $pb.GeneratedMessage {
     $core.bool? spamFilter,
     $core.int? uaType,
     $core.int? replyUa,
+    $core.bool? contactsSaved,
   }) {
     final $result = create();
     if (lwd != null) {
@@ -390,6 +391,9 @@ class CoinSettings extends $pb.GeneratedMessage {
     if (replyUa != null) {
       $result.replyUa = replyUa;
     }
+    if (contactsSaved != null) {
+      $result.contactsSaved = contactsSaved;
+    }
     return $result;
   }
   CoinSettings._() : super();
@@ -404,6 +408,7 @@ class CoinSettings extends $pb.GeneratedMessage {
     ..aOB(6, _omitFieldNames ? '' : 'spamFilter')
     ..a<$core.int>(7, _omitFieldNames ? '' : 'uaType', $pb.PbFieldType.OU3)
     ..a<$core.int>(8, _omitFieldNames ? '' : 'replyUa', $pb.PbFieldType.OU3)
+    ..aOB(9, _omitFieldNames ? '' : 'contactsSaved')
     ..hasRequiredFields = false
   ;
 
@@ -494,6 +499,15 @@ class CoinSettings extends $pb.GeneratedMessage {
   $core.bool hasReplyUa() => $_has(6);
   @$pb.TagNumber(8)
   void clearReplyUa() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.bool get contactsSaved => $_getBF(7);
+  @$pb.TagNumber(9)
+  set contactsSaved($core.bool v) { $_setBool(7, v); }
+  @$pb.TagNumber(9)
+  $core.bool hasContactsSaved() => $_has(7);
+  @$pb.TagNumber(9)
+  void clearContactsSaved() => clearField(9);
 }
 
 class ServerURL extends $pb.GeneratedMessage {

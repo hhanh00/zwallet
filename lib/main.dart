@@ -5,7 +5,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:YWallet/pages/utils.dart';
+import 'package:YWallet/pages/utils.dart' hide TimeSeriesPoint;
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:app_links/app_links.dart';
 import 'package:camera/camera.dart';

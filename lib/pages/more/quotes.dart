@@ -3,7 +3,7 @@ import 'package:graphic/graphic.dart';
 
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
-import '../../store.dart';
+import '../utils.dart';
 import 'budget.dart';
 
 class MarketQuotes extends StatelessWidget {

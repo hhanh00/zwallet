@@ -318,7 +318,7 @@ abstract class _ActiveAccount with Store {
   @action
   void markMessageAsRead(int index) {
     if (!messages[index].read) {
-      WarpApi.markMessageAsRead(messages[index].id, true);
+      WarpApi.markMessageAsRead(active.coin, messages[index].id, true);
       messages[index] = messages[index].withRead(true);
       unread = unread - 1;
     }
@@ -326,7 +326,7 @@ abstract class _ActiveAccount with Store {
 
   @action
   void markAllMessagesAsRead() {
-    WarpApi.markAllMessagesAsRead(true);
+    WarpApi.markAllMessagesAsRead(active.coin, active.id, true);
     for (var i = 0; i < messages.length; i++) {
       messages[i] = messages[i].withRead(true);
     }

@@ -435,12 +435,12 @@ class WarpApi {
         coin, anchorOffset, toNativeBytes(fee2), fee2.lengthInBytes));
   }
 
-  static void markMessageAsRead(int messageId, bool read) {
-    warp_api_lib.mark_message_read(messageId, read ? 1 : 0);
+  static void markMessageAsRead(int coin, int messageId, bool read) {
+    warp_api_lib.mark_message_read(coin, messageId, read ? 1 : 0);
   }
 
-  static void markAllMessagesAsRead(bool read) {
-    warp_api_lib.mark_all_messages_read(read ? 1 : 0);
+  static void markAllMessagesAsRead(int coin, int account, bool read) {
+    warp_api_lib.mark_all_messages_read(coin, account, read ? 1 : 0);
   }
 
   static void truncateData() {

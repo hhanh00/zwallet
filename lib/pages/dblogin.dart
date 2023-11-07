@@ -5,7 +5,7 @@ import 'package:warp_api/warp_api.dart';
 
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
-import '../main.dart';
+import '../store2.dart';
 
 class DbLoginPage extends StatefulWidget {
   @override

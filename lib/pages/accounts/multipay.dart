@@ -1,12 +1,11 @@
-import 'package:YWallet/appsettings.dart';
-import 'package:YWallet/main.dart';
-import 'package:YWallet/pages/utils.dart';
-import 'package:YWallet/pages/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../appsettings.dart';
+import '../utils.dart';
+import '../widgets.dart';
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
 

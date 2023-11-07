@@ -5,9 +5,9 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../generated/intl/messages.dart';
-import '../../main.dart';
 import '../../router.dart';
 import '../scan.dart';
+import '../utils.dart';
 import '../widgets.dart';
 
 class ColdStoragePage extends StatelessWidget {
