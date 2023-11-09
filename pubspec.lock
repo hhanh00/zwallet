@@ -580,10 +580,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_foreground_task
-      sha256: "5eb81adfd98c77f4d4803ae80d7e0573fd35f706fce6aaa7376656a15ba2d1e0"
+      sha256: e48d2d810a2d643362e64de41146ed8e95d4dd282bae6abbb32309d9f0bf5d67
       url: "https://pub.dev"
     source: hosted
-    version: "3.10.0"
+    version: "6.1.2"
   flutter_form_builder:
     dependency: "direct main"
     description:
