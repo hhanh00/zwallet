@@ -1,68 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'main.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
+import 'appsettings.dart';
 import 'generated/intl/messages.dart';
+import 'pages/widgets.dart';
 
-typedef OnThemeSaved(Color primary, Color primaryAccent, Color secondary, Color secondaryAccent);
-
-class ThemeEditorPage extends StatefulWidget {
-  final OnThemeSaved? onSaved;
-
-  ThemeEditorPage({this.onSaved});
-  ThemeEditorState createState() => ThemeEditorState();
-}
-
-class ThemeEditorState extends State<ThemeEditorPage> {
-  Color _primary = Colors.black;
-  Color _primaryVariant = Colors.black;
-  Color _secondary = Colors.black;
-  Color _secondaryVariant = Colors.black;
+class ThemeEditorTab extends StatefulWidget {
+  final void Function(Color primary, Color primaryAccent, Color secondary,
+      Color secondaryAccent)? onSaved;
+  ThemeEditorTab({this.onSaved});
 
   @override
-  void initState() {
-    super.initState();
+  State<StatefulWidget> createState() => _ThemeEditorState();
+}
 
-    _primary = Color(settings.primaryColorValue);
-    _primaryVariant = Color(settings.primaryVariantColorValue);
-    _secondary = Color(settings.secondaryColorValue);
-    _secondaryVariant = Color(settings.secondaryVariantColorValue);
-  }
+class _ThemeEditorState extends State<ThemeEditorTab>
+    with AutomaticKeepAliveClientMixin {
+  late Color _primary = Color(appSettings.palette.primary);
+  late Color _primaryVariant = Color(appSettings.palette.primaryVariant);
+  late Color _secondary = Color(appSettings.palette.secondary);
+  late Color _secondaryVariant = Color(appSettings.palette.secondaryVariant);
+  final formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    super.build(context);
     final s = S.of(context);
-    return Scaffold(
-        appBar: AppBar(title: Text(s.themeEditor)),
-        body: Padding(padding: EdgeInsets.all(8), child: Form(
-          child: Column(children: [
-            Text(s.primary, style: theme.textTheme.titleLarge),
-            Padding(padding: EdgeInsets.all(4)),
-            Card(
-              shape: RoundedRectangleBorder(
-                side: BorderSide(color: theme.dividerColor, width: 1)
-              ),
+    return FormBuilder(
+        key: formKey,
+        child: Column(children: [
+          Gap(8),
+          Panel(s.primary,
               child: Column(children: [
-                ListTile(title: Text(s.color), trailing: ColorSwatch(_primary, (c) => setState(() { _primary = c; }))),
-                ListTile(title: Text(s.accentColor), trailing: ColorSwatch(_primaryVariant, (c) => setState(() { _primaryVariant = c; }))),
-            ])),
-            Padding(padding: EdgeInsets.all(8)),
-            Text(s.secondary, style: theme.textTheme.titleLarge),
-            Padding(padding: EdgeInsets.all(4)),
-            Card(
-                child: Column(children: [
-                  ListTile(title: Text(s.color), trailing: ColorSwatch(_secondary, (c) => setState(() { _secondary = c; }))),
-                  ListTile(title: Text(s.accentColor), trailing: ColorSwatch(_secondaryVariant, (c) => setState(() { _secondaryVariant = c; }))),
-                ])),
-            ButtonBar(children: confirmButtons(context, _ok))
-        ]))));
+                ListTile(
+                  title: Text(s.color),
+                  trailing: ColorSwatch(
+                      _primary, (c) => setState(() => _primary = c)),
+                ),
+                ListTile(
+                  title: Text(s.accentColor),
+                  trailing: ColorSwatch(_primaryVariant,
+                      (c) => setState(() => _primaryVariant = c)),
+                ),
+              ])),
+          Gap(16),
+          Panel(s.secondary,
+              child: Column(children: [
+                ListTile(
+                  title: Text(s.color),
+                  trailing: ColorSwatch(
+                      _secondary, (c) => setState(() => _secondary = c)),
+                ),
+                ListTile(
+                  title: Text(s.accentColor),
+                  trailing: ColorSwatch(_secondaryVariant,
+                      (c) => setState(() => _secondaryVariant = c)),
+                ),
+              ])),
+        ]));
   }
 
-  _ok() {
-    widget.onSaved?.call(_primary, _primaryVariant, _secondary, _secondaryVariant);
-    Navigator.of(context).pop();
+  ok() {
+    widget.onSaved
+        ?.call(_primary, _primaryVariant, _secondary, _secondaryVariant);
+    GoRouter.of(context).pop();
   }
+
+  bool get wantKeepAlive => true;
 }
 
 class ColorSwatch extends StatelessWidget {
@@ -74,20 +81,19 @@ class ColorSwatch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _openColorPicker(context),
-      child: SizedBox(width: 32, height: 32, child: Container(color: color)));
+        onTap: () => _openColorPicker(context),
+        child: SizedBox(width: 32, height: 32, child: Container(color: color)));
   }
 
   _openColorPicker(BuildContext context) async {
+    final s = S.of(context);
     await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Pick a color'),
-        content: SingleChildScrollView(
-          child: ColorPicker(
-            pickerColor: color,
-            onColorChanged: onColorChanged),
-      ))
-    );
+        context: context,
+        builder: (context) => AlertDialog(
+            title: Text(s.pickColor),
+            content: SingleChildScrollView(
+              child: ColorPicker(
+                  pickerColor: color, onColorChanged: onColorChanged),
+            )));
   }
 }

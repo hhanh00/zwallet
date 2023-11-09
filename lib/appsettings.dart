@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:YWallet/settings.pb.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
@@ -17,6 +18,17 @@ extension AppSettingsExtension on AppSettings {
     if (!hasDeveloperMode()) developerMode = 5;
     if (!hasCurrency()) currency = 'USD';
     if (!hasAutoHide()) autoHide = 1;
+    if (!hasPalette()) {
+      final s = FlexScheme.mandyRed;
+      final t = FlexThemeData.dark(scheme: s);
+      final sch = t.colorScheme;
+      palette = ColorPalette(
+        primary: sch.primary.value,
+        secondary: sch.secondary.value,
+        primaryVariant: sch.primaryContainer.value,
+        secondaryVariant: sch.secondaryContainer.value,
+      );
+    }
   }
 
   static AppSettings load(SharedPreferences prefs) {

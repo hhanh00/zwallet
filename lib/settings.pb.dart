@@ -38,6 +38,7 @@ class AppSettings extends $pb.GeneratedMessage {
     $core.String? dbPasswd,
     $core.bool? advanced,
     $core.String? memo,
+    ColorPalette? palette,
   }) {
     final $result = create();
     if (anchorOffset != null) {
@@ -106,6 +107,9 @@ class AppSettings extends $pb.GeneratedMessage {
     if (memo != null) {
       $result.memo = memo;
     }
+    if (palette != null) {
+      $result.palette = palette;
+    }
     return $result;
   }
   AppSettings._() : super();
@@ -135,6 +139,7 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOS(21, _omitFieldNames ? '' : 'dbPasswd')
     ..aOB(22, _omitFieldNames ? '' : 'advanced')
     ..aOS(24, _omitFieldNames ? '' : 'memo')
+    ..aOM<ColorPalette>(25, _omitFieldNames ? '' : 'palette', subBuilder: ColorPalette.create)
     ..hasRequiredFields = false
   ;
 
@@ -356,6 +361,17 @@ class AppSettings extends $pb.GeneratedMessage {
   $core.bool hasMemo() => $_has(21);
   @$pb.TagNumber(24)
   void clearMemo() => clearField(24);
+
+  @$pb.TagNumber(25)
+  ColorPalette get palette => $_getN(22);
+  @$pb.TagNumber(25)
+  set palette(ColorPalette v) { setField(25, v); }
+  @$pb.TagNumber(25)
+  $core.bool hasPalette() => $_has(22);
+  @$pb.TagNumber(25)
+  void clearPalette() => clearField(25);
+  @$pb.TagNumber(25)
+  ColorPalette ensurePalette() => $_ensure(22);
 }
 
 class CoinSettings extends $pb.GeneratedMessage {
@@ -572,6 +588,98 @@ class ServerURL extends $pb.GeneratedMessage {
   $core.bool hasCustomURL() => $_has(1);
   @$pb.TagNumber(2)
   void clearCustomURL() => clearField(2);
+}
+
+class ColorPalette extends $pb.GeneratedMessage {
+  factory ColorPalette({
+    $core.int? primary,
+    $core.int? secondary,
+    $core.int? primaryVariant,
+    $core.int? secondaryVariant,
+  }) {
+    final $result = create();
+    if (primary != null) {
+      $result.primary = primary;
+    }
+    if (secondary != null) {
+      $result.secondary = secondary;
+    }
+    if (primaryVariant != null) {
+      $result.primaryVariant = primaryVariant;
+    }
+    if (secondaryVariant != null) {
+      $result.secondaryVariant = secondaryVariant;
+    }
+    return $result;
+  }
+  ColorPalette._() : super();
+  factory ColorPalette.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ColorPalette.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ColorPalette', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'primary', $pb.PbFieldType.OU3)
+    ..a<$core.int>(2, _omitFieldNames ? '' : 'secondary', $pb.PbFieldType.OU3)
+    ..a<$core.int>(3, _omitFieldNames ? '' : 'primaryVariant', $pb.PbFieldType.OU3, protoName: 'primaryVariant')
+    ..a<$core.int>(4, _omitFieldNames ? '' : 'secondaryVariant', $pb.PbFieldType.OU3, protoName: 'secondaryVariant')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ColorPalette clone() => ColorPalette()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ColorPalette copyWith(void Function(ColorPalette) updates) => super.copyWith((message) => updates(message as ColorPalette)) as ColorPalette;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ColorPalette create() => ColorPalette._();
+  ColorPalette createEmptyInstance() => create();
+  static $pb.PbList<ColorPalette> createRepeated() => $pb.PbList<ColorPalette>();
+  @$core.pragma('dart2js:noInline')
+  static ColorPalette getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ColorPalette>(create);
+  static ColorPalette? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get primary => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set primary($core.int v) { $_setUnsignedInt32(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasPrimary() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPrimary() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get secondary => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set secondary($core.int v) { $_setUnsignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasSecondary() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearSecondary() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get primaryVariant => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set primaryVariant($core.int v) { $_setUnsignedInt32(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasPrimaryVariant() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPrimaryVariant() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get secondaryVariant => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set secondaryVariant($core.int v) { $_setUnsignedInt32(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasSecondaryVariant() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearSecondaryVariant() => clearField(4);
 }
 
 

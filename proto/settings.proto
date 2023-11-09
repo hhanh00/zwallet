@@ -24,6 +24,7 @@ message AppSettings {
     string db_passwd = 21;
     bool advanced = 22;
     string memo = 24;
+    ColorPalette palette = 25;
 }
 
 message CoinSettings {
@@ -40,4 +41,11 @@ message CoinSettings {
 message ServerURL {
     sint32 index = 1;
     string custom_URL = 2;
+}
+
+message ColorPalette {
+    uint32 primary = 1;
+    uint32 secondary = 2;
+    uint32 primaryVariant = 3;
+    uint32 secondaryVariant = 4;
 }

@@ -39,6 +39,7 @@ const AppSettings$json = {
     {'1': 'db_passwd', '3': 21, '4': 1, '5': 9, '10': 'dbPasswd'},
     {'1': 'advanced', '3': 22, '4': 1, '5': 8, '10': 'advanced'},
     {'1': 'memo', '3': 24, '4': 1, '5': 9, '10': 'memo'},
+    {'1': 'palette', '3': 25, '4': 1, '5': 11, '6': '.pb.ColorPalette', '10': 'palette'},
   ],
 };
 
@@ -57,7 +58,8 @@ final $typed_data.Uint8List appSettingsDescriptor = $convert.base64Decode(
     'Cg5kZXZlbG9wZXJfbW9kZRgSIAEoDVINZGV2ZWxvcGVyTW9kZRIqChFtaW5fcHJpdmFjeV9sZX'
     'ZlbBgTIAEoDVIPbWluUHJpdmFjeUxldmVsEhQKBXNvdW5kGBQgASgIUgVzb3VuZBIbCglkYl9w'
     'YXNzd2QYFSABKAlSCGRiUGFzc3dkEhoKCGFkdmFuY2VkGBYgASgIUghhZHZhbmNlZBISCgRtZW'
-    '1vGBggASgJUgRtZW1v');
+    '1vGBggASgJUgRtZW1vEioKB3BhbGV0dGUYGSABKAsyEC5wYi5Db2xvclBhbGV0dGVSB3BhbGV0'
+    'dGU=');
 
 @$core.Deprecated('Use coinSettingsDescriptor instead')
 const CoinSettings$json = {
@@ -95,4 +97,21 @@ const ServerURL$json = {
 final $typed_data.Uint8List serverURLDescriptor = $convert.base64Decode(
     'CglTZXJ2ZXJVUkwSFAoFaW5kZXgYASABKBFSBWluZGV4Eh0KCmN1c3RvbV9VUkwYAiABKAlSCW'
     'N1c3RvbVVSTA==');
+
+@$core.Deprecated('Use colorPaletteDescriptor instead')
+const ColorPalette$json = {
+  '1': 'ColorPalette',
+  '2': [
+    {'1': 'primary', '3': 1, '4': 1, '5': 13, '10': 'primary'},
+    {'1': 'secondary', '3': 2, '4': 1, '5': 13, '10': 'secondary'},
+    {'1': 'primaryVariant', '3': 3, '4': 1, '5': 13, '10': 'primaryVariant'},
+    {'1': 'secondaryVariant', '3': 4, '4': 1, '5': 13, '10': 'secondaryVariant'},
+  ],
+};
+
+/// Descriptor for `ColorPalette`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List colorPaletteDescriptor = $convert.base64Decode(
+    'CgxDb2xvclBhbGV0dGUSGAoHcHJpbWFyeRgBIAEoDVIHcHJpbWFyeRIcCglzZWNvbmRhcnkYAi'
+    'ABKA1SCXNlY29uZGFyeRImCg5wcmltYXJ5VmFyaWFudBgDIAEoDVIOcHJpbWFyeVZhcmlhbnQS'
+    'KgoQc2Vjb25kYXJ5VmFyaWFudBgEIAEoDVIQc2Vjb25kYXJ5VmFyaWFudA==');
 

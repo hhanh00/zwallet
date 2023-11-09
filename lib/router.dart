@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:YWallet/pages/more/cold.dart';
+import 'package:YWallet/theme_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -118,7 +119,8 @@ final router = GoRouter(
                 ),
                 GoRoute(
                   path: 'send_to_pay_uri',
-                  builder: (context, state) => PlaceHolderPage('send_to_pay_uri'),
+                  builder: (context, state) =>
+                      PlaceHolderPage('send_to_pay_uri'),
                 ),
                 GoRoute(
                   path: 'pay_uri',
@@ -189,8 +191,7 @@ final router = GoRouter(
                         ),
                         GoRoute(
                           path: 'broadcast',
-                          builder: (context, state) =>
-                              BroadcastTxPage(),
+                          builder: (context, state) => BroadcastTxPage(),
                         ),
                       ]),
                   GoRoute(
@@ -264,14 +265,19 @@ final router = GoRouter(
       builder: (context, state) => NewImportAccountPage(first: true),
     ),
     GoRoute(
-      path: '/settings',
-      parentNavigatorKey: rootNavigatorKey,
-      builder: (context, state) {
-        final coin =
-            state.uri.queryParameters['coin']?.let(int.parse) ?? aa.coin;
-        return SettingsPage(coin: coin);
-      },
-    ),
+        path: '/settings',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          final coin =
+              state.uri.queryParameters['coin']?.let(int.parse) ?? aa.coin;
+          return SettingsPage(coin: coin);
+        },
+        routes: [
+          GoRoute(
+            path: 'theme',
+            builder: (context, state) => ThemeEditorTab(),
+          ),
+        ]),
     GoRoute(
       path: '/encrypt_db',
       builder: (context, state) => EncryptDbPage(),

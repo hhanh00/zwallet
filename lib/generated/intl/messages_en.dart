@@ -1184,4 +1184,7 @@ class SEn extends S {
 
   @override
   String get scanSignedTx => 'Scan the Signed Tx QR codes';
+
+  @override
+  String get pickColor => 'Pick a Color';
 }

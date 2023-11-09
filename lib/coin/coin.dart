@@ -1,10 +1,9 @@
 import 'dart:io';
 
+import 'package:YWallet/pages/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
-
-import '../main.dart';
 
 class LWInstance {
   String name;
@@ -41,7 +40,8 @@ abstract class CoinBase {
 
   Future<bool> tryImport(PlatformFile file) async {
     if (file.name == dbName) {
-      final dest = p.join(settings.tempDir, dbName);
+      final tempDir = await getTempPath();
+      final dest = p.join(tempDir, dbName);
       await File(file.path!).copy(dest); // save to temporary directory
       return true;
     }
@@ -49,7 +49,8 @@ abstract class CoinBase {
   }
 
   Future<void> importFromTemp() async {
-    final src = File(p.join(settings.tempDir, dbName));
+    final tempDir = await getTempPath();
+    final src = File(p.join(tempDir, dbName));
     print("Import from ${src.path}");
     if (await src.exists()) {
       print("copied to $dbFullPath");
@@ -57,15 +58,6 @@ abstract class CoinBase {
       await src.copy(dbFullPath);
       await src.delete();
     }
-  }
-
-  Future<void> export(BuildContext context, String dbPath) async {
-    final path = _getFullPath(dbPath);
-    // db = await openDatabase(path, onConfigure: (db) async {
-    //   await db.rawQuery("PRAGMA journal_mode=off");
-    // });
-    // await db.close();
-    await exportFile(context, path, dbName);
   }
 
   Future<void> delete() async {

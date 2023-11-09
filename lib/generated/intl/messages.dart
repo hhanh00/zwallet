@@ -2356,6 +2356,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Scan the Signed Tx QR codes'**
   String get scanSignedTx;
+
+  /// No description provided for @pickColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a Color'**
+  String get pickColor;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

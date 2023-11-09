@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:YWallet/accounts.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -9,10 +10,12 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
 import 'main.dart';
+import 'pages/utils.dart';
 import 'router.dart';
 
 Future<void> initCoins() async {
@@ -104,10 +107,6 @@ void initForegroundTask() {
   FlutterForegroundTask.setOnLockScreenVisibility(false);
 }
 
-Future<void> loadThemeSettings() async {
-  await settings.restoreThemeSetting();
-}
-
 class App extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _AppState();
@@ -117,11 +116,13 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      final theme = settings.themeData.copyWith(
+      aaSequence.settingsSeqno;
+      final baseTheme = FlexThemeData.dark(scheme: FlexScheme.mandyRed);
+      final theme = baseTheme.copyWith(
         useMaterial3: true,
         dataTableTheme: DataTableThemeData(
           headingRowColor: MaterialStateColor.resolveWith(
-            (_) => settings.themeData.highlightColor,
+            (_) => baseTheme.highlightColor,
           ),
         ),
       );

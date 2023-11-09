@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:YWallet/theme_editor.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:collection/collection.dart';
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
@@ -30,7 +31,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsState extends State<SettingsPage>
     with SingleTickerProviderStateMixin {
-  late final tabController = TabController(length: 4, vsync: this);
+  late final tabController = TabController(length: 5, vsync: this);
   final generalKey = GlobalKey<_GeneralState>();
   final privacyKey = GlobalKey<_PrivacyState>();
   final viewKey = GlobalKey<_ViewState>();
@@ -61,6 +62,7 @@ class _SettingsState extends State<SettingsPage>
           Tab(text: s.priv),
           Tab(text: s.views),
           Tab(text: c.name),
+          Tab(text: s.themeEditor),
         ]),
         actions: [
           ElevatedButton.icon(
@@ -82,10 +84,25 @@ class _SettingsState extends State<SettingsPage>
                 child: PrivacyTab(appSettings, key: privacyKey)),
             SingleChildScrollView(child: ViewTab(appSettings, key: viewKey)),
             SingleChildScrollView(child: CoinTab(widget.coin, key: coinKey)),
+            SingleChildScrollView(
+                child: ThemeEditorTab(
+              onSaved: _updateTheme,
+            )),
           ],
         ),
       ),
     );
+  }
+
+  _updateTheme(Color primary, Color primaryAccent, Color secondary,
+      Color secondaryAccent) {
+    final p = ColorPalette(
+      primary: primary.value,
+      primaryVariant: primaryAccent.value,
+      secondary: secondary.value,
+      secondaryVariant: secondaryAccent.value,
+    );
+    appSettings.palette = p;
   }
 
   _ok() async {
@@ -313,10 +330,11 @@ class _PrivacyState extends State<PrivacyTab>
             },
           ),
           Divider(),
-          if (!isMobile()) ElevatedButton.icon(
-              onPressed: encryptDb,
-              icon: Icon(Icons.enhanced_encryption),
-              label: Text(s.encryptDatabase))
+          if (!isMobile())
+            ElevatedButton.icon(
+                onPressed: encryptDb,
+                icon: Icon(Icons.enhanced_encryption),
+                label: Text(s.encryptDatabase))
         ]),
       ),
     );
