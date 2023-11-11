@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -124,7 +125,7 @@ class TxItem extends StatelessWidget {
         child: Row(
           children: [
             av,
-            SizedBox(width: 15),
+            Gap(15),
             Expanded(
               child: MessageContentWidget(
                   tx.contact ?? tx.address ?? '', message, tx.memo ?? ''),
@@ -174,21 +175,21 @@ class TransactionState extends State<TransactionPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 16),
+            Gap(16),
             Panel(s.txID, text: tx.fullTxId),
-            SizedBox(height: 8),
+            Gap(8),
             Panel(s.height, text: tx.height.toString()),
-            SizedBox(height: 8),
+            Gap(8),
             Panel(s.confs, text: tx.confirmations.toString()),
-            SizedBox(height: 8),
+            Gap(8),
             Panel(s.timestamp, text: noteDateFormat.format(tx.timestamp)),
-            SizedBox(height: 8),
+            Gap(8),
             Panel(s.amount, text: tx.value.toDoubleStringAsPrecised(length: MAX_PRECISION)),
-            SizedBox(height: 8),
+            Gap(8),
             Panel(s.address, text: tx.address ?? ''),
-            SizedBox(height: 8),
+            Gap(8),
             Panel(s.contactName, text: tx.contact ?? ''), // Add Contact button
-            SizedBox(height: 8),
+            Gap(8),
             Panel(s.memo, text: tx.memo ?? ''),
           ],
         ),

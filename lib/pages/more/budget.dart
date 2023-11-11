@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:gap/gap.dart';
 import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -142,7 +143,7 @@ class Section extends StatelessWidget {
       child: Column(
         children: [
           Text(title, style: t.textTheme.bodyLarge),
-          SizedBox(height: 16),
+          Gap(16),
           if (child != null) child!,
         ],
       ),

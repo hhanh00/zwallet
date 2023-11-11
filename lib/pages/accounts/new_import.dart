@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
@@ -23,6 +24,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
   final formKey = GlobalKey<FormBuilderState>();
   final nameController = TextEditingController();
   final keyController = TextEditingController();
+  final accountIndexController = TextEditingController(text: '0');
   late List<FormBuilderFieldOption<int>> options;
   bool _restore = false;
 
@@ -90,21 +92,30 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                   },
                 ),
                 if (_restore)
-                  Row(
-                    children: [
-                      Expanded(
-                        child: FormBuilderTextField(
-                          name: 'key',
-                          decoration: InputDecoration(
-                              labelText: s.key, hintText: s.enterSeed),
-                          minLines: 4,
-                          maxLines: 4,
-                          controller: keyController,
-                          validator: _checkKey,
+                  Column(children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: FormBuilderTextField(
+                            name: 'key',
+                            decoration: InputDecoration(
+                                labelText: s.key, hintText: s.enterSeed),
+                            minLines: 4,
+                            maxLines: 4,
+                            controller: keyController,
+                            validator: _checkKey,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                    Gap(8),
+                    FormBuilderTextField(
+                      name: 'account_index',
+                      decoration: InputDecoration(label: Text(s.accountIndex)),
+                      controller: accountIndexController,
+                      keyboardType: TextInputType.number,
+                    )
+                  ]),
                 // TODO: Ledger
                 // if (_restore && coins[coin].supportsLedger && !isMobile())
                 //   Padding(
@@ -127,8 +138,9 @@ class _NewImportAccountState extends State<NewImportAccountPage>
     final form = formKey.currentState!;
     if (form.validate()) {
       await load(() async {
+        final index = int.parse(accountIndexController.text);
         final account = await WarpApi.newAccount(
-            coin, nameController.text, keyController.text, 0);
+            coin, nameController.text, keyController.text, index);
         if (account < 0)
           form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
         else {

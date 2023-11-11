@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:warp_api/warp_api.dart';
@@ -60,7 +61,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Jumbotron(txId!, title: s.txID),
-                    SizedBox(height: 16),
+                    Gap(16),
                     OutlinedButton(
                         onPressed: _openTx, child: Text(s.openInExplorer))
                   ],

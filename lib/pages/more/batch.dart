@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,7 +34,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 16),
+            Gap(16),
             InputDecorator(
               decoration: InputDecoration(
                   label: Text(s.fullBackup), border: OutlineInputBorder()),
@@ -46,7 +47,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
                       decoration: InputDecoration(label: Text(s.publicKey)),
                       controller: backupKeyController,
                     ),
-                    SizedBox(height: 8),
+                    Gap(8),
                     ButtonBar(
                       children: [
                         ElevatedButton.icon(
@@ -60,7 +61,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            Gap(16),
             InputDecorator(
               decoration: InputDecoration(
                   label: Text(s.fullRestore), border: OutlineInputBorder()),
@@ -73,7 +74,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
                       decoration: InputDecoration(label: Text(s.secretKey)),
                       controller: restoreKeyController,
                     ),
-                    SizedBox(height: 8),
+                    Gap(8),
                     ButtonBar(
                       children: [
                         ElevatedButton.icon(

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -65,9 +66,9 @@ class _PoolTransferState extends State<PoolTransferPage> {
                     onChanged: (v) => setState(() {
                           to = v!;
                         })),
-                SizedBox(height: 16),
+                Gap(16),
                 AmountPicker(amount, spendable: spendable, onChanged: (v) => setState(() => amount = v!),),
-                SizedBox(height: 16),
+                Gap(16),
                 FormBuilderTextField(
                   name: 'memo',
                   decoration: InputDecoration(label: Text(s.memo)),

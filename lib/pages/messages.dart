@@ -2,6 +2,7 @@ import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -43,7 +44,8 @@ class TableListMessageMetadata extends TableListItemMetadata<ZMessage> {
   void inverseSelection() {}
 
   @override
-  Widget toListTile(BuildContext context, int index, ZMessage message, {void Function(void Function())? setState}) {
+  Widget toListTile(BuildContext context, int index, ZMessage message,
+      {void Function(void Function())? setState}) {
     return MessageBubble(message, index: index);
   }
 
@@ -85,7 +87,7 @@ class TableListMessageMetadata extends TableListItemMetadata<ZMessage> {
     aa.messages.setSortOrder(field);
     return aa.messages.order;
   }
-  
+
   @override
   Widget? header(BuildContext context) => null;
 }
@@ -118,7 +120,7 @@ class MessageBubble extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: Text(date, style: t.textTheme.labelMedium)),
             ]),
-            SizedBox(height: 8),
+            Gap(8),
             Text(
               message.body,
             ),
@@ -154,16 +156,12 @@ class MessageTile extends StatelessWidget {
     final body = Column(
       children: [
         Text(message.fromto(), style: unreadStyle(textTheme.bodySmall)),
-        SizedBox(
-          height: 4.0,
-        ),
+        Gap(4),
         if (message.subject.isNotEmpty)
           Text(message.subject,
               style: unreadStyle(textTheme.titleMedium),
               overflow: TextOverflow.ellipsis),
-        SizedBox(
-          height: 6.0,
-        ),
+        Gap(6),
         Text(
           message.body,
           softWrap: true,
@@ -184,7 +182,7 @@ class MessageTile extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 8),
           child: Row(children: [
             av,
-            SizedBox(width: 15),
+            Gap(15),
             Expanded(child: body),
             SizedBox(
                 width: 80, child: Text(dateString, textAlign: TextAlign.right)),
@@ -232,23 +230,22 @@ class _MessageItemState extends State<MessageItemPage> {
         IconButton(
             onPressed: idx < n - 1 ? next : null,
             icon: Icon(Icons.chevron_right)),
-        IconButton(
-            onPressed: nextInThread, icon: Icon(Icons.arrow_right)),
+        IconButton(onPressed: nextInThread, icon: Icon(Icons.arrow_right)),
         IconButton(onPressed: open, icon: Icon(Icons.open_in_browser)),
       ]),
       body: SingleChildScrollView(
         child: Column(children: [
-          SizedBox(height: 16),
+          Gap(16),
           Panel(s.datetime, text: ts),
-          SizedBox(height: 8),
+          Gap(8),
           Panel(s.sender, text: message.sender ?? ''),
-          SizedBox(height: 8),
+          Gap(8),
           Panel(s.recipient, text: message.recipient),
-          SizedBox(height: 8),
+          Gap(8),
           Panel(s.subject, text: message.subject),
-          SizedBox(height: 8),
+          Gap(8),
           Panel(s.body, child: SelectableText(message.body, maxLines: 20)),
-          SizedBox(height: 16),
+          Gap(16),
           FormBuilder(
               child: Row(
             children: [

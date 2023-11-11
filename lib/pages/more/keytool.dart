@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:gap/gap.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -116,11 +117,11 @@ class TableListKeyMetadata extends TableListItemMetadata<KeyPackT> {
               ? Column(
                   children: [
                     Panel(s.index, text: idx.toString()),
-                    SizedBox(height: 8),
+                    Gap(8),
                     Panel(s.derpath, text: derPath),
-                    SizedBox(height: 8),
+                    Gap(8),
                     Panel(s.address, text: address),
-                    SizedBox(height: 8),
+                    Gap(8),
                     Panel(s.key, text: key),
                   ],
                 )

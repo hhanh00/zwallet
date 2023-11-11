@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -33,7 +34,7 @@ class _DbLoginState extends State<DbLoginPage> {
                   controller: passwordController,
                   obscureText: true,
                 ),
-                SizedBox(height: 16),
+                Gap(16),
                 ElevatedButton.icon(
                   onPressed: _ok,
                   icon: Icon(Icons.password),
