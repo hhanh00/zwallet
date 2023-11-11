@@ -66,7 +66,7 @@ class _PoolTransferState extends State<PoolTransferPage> {
                           to = v!;
                         })),
                 SizedBox(height: 16),
-                AmountPicker(amount, spendable: spendable),
+                AmountPicker(amount, spendable: spendable, onChanged: (v) => setState(() => amount = v!),),
                 SizedBox(height: 16),
                 FormBuilderTextField(
                   name: 'memo',

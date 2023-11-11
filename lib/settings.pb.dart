@@ -592,23 +592,15 @@ class ServerURL extends $pb.GeneratedMessage {
 
 class ColorPalette extends $pb.GeneratedMessage {
   factory ColorPalette({
-    $core.int? primary,
-    $core.int? secondary,
-    $core.int? primaryVariant,
-    $core.int? secondaryVariant,
+    $core.String? name,
+    $core.bool? dark,
   }) {
     final $result = create();
-    if (primary != null) {
-      $result.primary = primary;
+    if (name != null) {
+      $result.name = name;
     }
-    if (secondary != null) {
-      $result.secondary = secondary;
-    }
-    if (primaryVariant != null) {
-      $result.primaryVariant = primaryVariant;
-    }
-    if (secondaryVariant != null) {
-      $result.secondaryVariant = secondaryVariant;
+    if (dark != null) {
+      $result.dark = dark;
     }
     return $result;
   }
@@ -617,10 +609,8 @@ class ColorPalette extends $pb.GeneratedMessage {
   factory ColorPalette.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ColorPalette', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'primary', $pb.PbFieldType.OU3)
-    ..a<$core.int>(2, _omitFieldNames ? '' : 'secondary', $pb.PbFieldType.OU3)
-    ..a<$core.int>(3, _omitFieldNames ? '' : 'primaryVariant', $pb.PbFieldType.OU3, protoName: 'primaryVariant')
-    ..a<$core.int>(4, _omitFieldNames ? '' : 'secondaryVariant', $pb.PbFieldType.OU3, protoName: 'secondaryVariant')
+    ..aOS(1, _omitFieldNames ? '' : 'name')
+    ..aOB(2, _omitFieldNames ? '' : 'dark')
     ..hasRequiredFields = false
   ;
 
@@ -646,40 +636,22 @@ class ColorPalette extends $pb.GeneratedMessage {
   static ColorPalette? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.int get primary => $_getIZ(0);
+  $core.String get name => $_getSZ(0);
   @$pb.TagNumber(1)
-  set primary($core.int v) { $_setUnsignedInt32(0, v); }
+  set name($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasPrimary() => $_has(0);
+  $core.bool hasName() => $_has(0);
   @$pb.TagNumber(1)
-  void clearPrimary() => clearField(1);
+  void clearName() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.int get secondary => $_getIZ(1);
+  $core.bool get dark => $_getBF(1);
   @$pb.TagNumber(2)
-  set secondary($core.int v) { $_setUnsignedInt32(1, v); }
+  set dark($core.bool v) { $_setBool(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasSecondary() => $_has(1);
+  $core.bool hasDark() => $_has(1);
   @$pb.TagNumber(2)
-  void clearSecondary() => clearField(2);
-
-  @$pb.TagNumber(3)
-  $core.int get primaryVariant => $_getIZ(2);
-  @$pb.TagNumber(3)
-  set primaryVariant($core.int v) { $_setUnsignedInt32(2, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasPrimaryVariant() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearPrimaryVariant() => clearField(3);
-
-  @$pb.TagNumber(4)
-  $core.int get secondaryVariant => $_getIZ(3);
-  @$pb.TagNumber(4)
-  set secondaryVariant($core.int v) { $_setUnsignedInt32(3, v); }
-  @$pb.TagNumber(4)
-  $core.bool hasSecondaryVariant() => $_has(3);
-  @$pb.TagNumber(4)
-  void clearSecondaryVariant() => clearField(4);
+  void clearDark() => clearField(2);
 }
 
 

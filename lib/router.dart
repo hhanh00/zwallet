@@ -238,6 +238,11 @@ final router = GoRouter(
                       path: 'about',
                       builder: (context, state) =>
                           AboutPage(state.extra as String)),
+                  GoRoute(
+                    path: 'submit_tx',
+                    builder: (context, state) =>
+                        SubmitTxPage(txPlan: state.extra as String),
+                  ),
                 ]),
           ],
         ),
@@ -265,19 +270,14 @@ final router = GoRouter(
       builder: (context, state) => NewImportAccountPage(first: true),
     ),
     GoRoute(
-        path: '/settings',
-        parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) {
-          final coin =
-              state.uri.queryParameters['coin']?.let(int.parse) ?? aa.coin;
-          return SettingsPage(coin: coin);
-        },
-        routes: [
-          GoRoute(
-            path: 'theme',
-            builder: (context, state) => ThemeEditorTab(),
-          ),
-        ]),
+      path: '/settings',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) {
+        final coin =
+            state.uri.queryParameters['coin']?.let(int.parse) ?? aa.coin;
+        return SettingsPage(coin: coin);
+      },
+    ),
     GoRoute(
       path: '/encrypt_db',
       builder: (context, state) => EncryptDbPage(),

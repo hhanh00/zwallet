@@ -2362,6 +2362,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Pick a Color'**
   String get pickColor;
+
+  /// No description provided for @qr.
+  ///
+  /// In en, this message translates to:
+  /// **'QR Code'**
+  String get qr;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

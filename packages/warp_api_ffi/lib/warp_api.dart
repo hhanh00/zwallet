@@ -466,15 +466,9 @@ class WarpApi {
     return unwrapResultString(uri);
   }
 
-  static String parsePaymentURI(String uri) {
-    final json =
-        warp_api_lib.parse_payment_uri(uri.toNativeUtf8().cast<Int8>());
-    return unwrapResultString(json);
-  }
-
-  static PaymentUri decodePaymentURI(String uri) {
+  static PaymentUri decodePaymentURI(int coin, String uri) {
     final data =
-        unwrapResultBytes(warp_api_lib.decode_payment_uri(toNative(uri)));
+        unwrapResultBytes(warp_api_lib.decode_payment_uri(coin, toNative(uri)));
     return PaymentUri(data);
   }
 

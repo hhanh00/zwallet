@@ -229,7 +229,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     final s = S.of(context);
     await scanQRCode(context, validator: (uri) {
       try {
-        final p = WarpApi.decodePaymentURI(uri!);
+        final p = WarpApi.decodePaymentURI(aa.coin, uri!);
         address = p.address!;
         amount = p.amount;
         memo = MemoData(false, '', p.memo!);

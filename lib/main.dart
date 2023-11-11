@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 
+import 'appsettings.dart';
 import 'main.reflectable.dart';
 import 'coin/coins.dart';
 
@@ -24,6 +25,7 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initializeReflectable();
+  await restoreSettings();
   await initCoins();
   await restoreWindow();
   initNotifications();
@@ -33,6 +35,11 @@ void main() async {
   print("db path $dbPath");
   await recoverDb(prefs, dbPath);
   runApp(App());
+}
+
+Future<void> restoreSettings() async {
+  final prefs = await SharedPreferences.getInstance();
+  appSettings = AppSettingsExtension.load(prefs);
 }
 
 Future<void> recoverDb(SharedPreferences prefs, String dbPath) async {

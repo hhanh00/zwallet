@@ -44,8 +44,6 @@ message ServerURL {
 }
 
 message ColorPalette {
-    uint32 primary = 1;
-    uint32 secondary = 2;
-    uint32 primaryVariant = 3;
-    uint32 secondaryVariant = 4;
+    string name = 1;
+    bool dark = 2;
 }

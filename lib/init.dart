@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:YWallet/accounts.dart';
+import 'package:YWallet/appsettings.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -117,7 +118,9 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       aaSequence.settingsSeqno;
-      final baseTheme = FlexThemeData.dark(scheme: FlexScheme.mandyRed);
+      final scheme = FlexScheme.values.byName(appSettings.palette.name);
+      final baseTheme = appSettings.palette.dark ? FlexThemeData.dark(scheme: scheme)
+      : FlexThemeData.light(scheme: scheme);
       final theme = baseTheme.copyWith(
         useMaterial3: true,
         dataTableTheme: DataTableThemeData(

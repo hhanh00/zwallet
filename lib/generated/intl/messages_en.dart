@@ -1187,4 +1187,7 @@ class SEn extends S {
 
   @override
   String get pickColor => 'Pick a Color';
+
+  @override
+  String get qr => 'QR Code';
 }

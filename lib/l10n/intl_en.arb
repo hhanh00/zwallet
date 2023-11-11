@@ -376,5 +376,6 @@
   "destination": "Destination",
   "scanRawTx": "Scan the Unsigned Tx QR codes",
   "scanSignedTx": "Scan the Signed Tx QR codes",
-  "pickColor": "Pick a Color"
+  "pickColor": "Pick a Color",
+  "qr": "QR Code"
 }

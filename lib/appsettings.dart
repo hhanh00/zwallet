@@ -19,14 +19,9 @@ extension AppSettingsExtension on AppSettings {
     if (!hasCurrency()) currency = 'USD';
     if (!hasAutoHide()) autoHide = 1;
     if (!hasPalette()) {
-      final s = FlexScheme.mandyRed;
-      final t = FlexThemeData.dark(scheme: s);
-      final sch = t.colorScheme;
       palette = ColorPalette(
-        primary: sch.primary.value,
-        secondary: sch.secondary.value,
-        primaryVariant: sch.primaryContainer.value,
-        secondaryVariant: sch.secondaryContainer.value,
+        name: 'mandyRed',
+        dark: true,
       );
     }
   }

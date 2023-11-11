@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:mobx/mobx.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -166,12 +165,6 @@ abstract class _SyncStatus2 with Store {
     WarpApi.rescanFrom(height);
     _updateSyncedHeight();
     await sync(true);
-  }
-
-  @action
-  Future<void> setSyncedToLatestHeight() async {
-    await compute((_) => WarpApi.skipToLastHeight(aa.coin), null);
-    _updateSyncedHeight();
   }
 
   @action

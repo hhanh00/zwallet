@@ -35,7 +35,6 @@ class _SplashState extends State<SplashPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future(() async {
-        await _restoreSettings();
         // await _setupMempool();
         await _registerURLHandler();
         await _registerQuickActions();
@@ -57,12 +56,6 @@ class _SplashState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return LoadProgress(key: progressKey);
-  }
-
-  Future<void> _restoreSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    appSettings = AppSettingsExtension.load(prefs);
-    _setProgress(0.1, "Settings loaded");
   }
 
   Future<void> _registerURLHandler() async {

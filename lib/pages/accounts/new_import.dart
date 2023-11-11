@@ -8,7 +8,6 @@ import '../utils.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
-import '../../store2.dart';
 
 class NewImportAccountPage extends StatefulWidget {
   final bool first;
@@ -137,8 +136,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           final prefs = await SharedPreferences.getInstance();
           await aa.save(prefs);
           if (widget.first) {
-            await syncStatus2
-                .setSyncedToLatestHeight(); // first account is synced
+            WarpApi.skipToLastHeight(coin); // first account is synced
             if (keyController.text.isNotEmpty)
               GoRouter.of(context).go('/account/rescan');
             else

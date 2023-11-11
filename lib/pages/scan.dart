@@ -29,7 +29,10 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Scaffold(
-        appBar: AppBar(title: Text(s.scanQrCode)),
+        appBar: AppBar(title: Text(s.scanQrCode),
+        actions: [
+          IconButton(onPressed: _ok, icon: Icon(Icons.check))
+        ]),
         body: FormBuilder(
             key: formKey,
             child: Column(children: [
@@ -37,7 +40,7 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
               Gap(16),
               FormBuilderTextField(
                   name: 'qr',
-                  readOnly: true,
+                  decoration: InputDecoration(label: Text(s.qr)),
                   controller: controller,
                   validator: widget.validator),
             ])));
@@ -50,6 +53,12 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
     final form = formKey.currentState!;
     if (form.validate()) {
       if (widget.onCode(text)) GoRouter.of(context).pop();
+    }
+  }
+
+  _ok() {
+    if (formKey.currentState!.validate()) {
+      if (widget.onCode(controller.text)) GoRouter.of(context).pop();
     }
   }
 }

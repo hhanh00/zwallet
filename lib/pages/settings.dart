@@ -85,24 +85,12 @@ class _SettingsState extends State<SettingsPage>
             SingleChildScrollView(child: ViewTab(appSettings, key: viewKey)),
             SingleChildScrollView(child: CoinTab(widget.coin, key: coinKey)),
             SingleChildScrollView(
-                child: ThemeEditorTab(
-              onSaved: _updateTheme,
+                child: ThemeEditorTab(appSettings
             )),
           ],
         ),
       ),
     );
-  }
-
-  _updateTheme(Color primary, Color primaryAccent, Color secondary,
-      Color secondaryAccent) {
-    final p = ColorPalette(
-      primary: primary.value,
-      primaryVariant: primaryAccent.value,
-      secondary: secondary.value,
-      secondaryVariant: secondaryAccent.value,
-    );
-    appSettings.palette = p;
   }
 
   _ok() async {

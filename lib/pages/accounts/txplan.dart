@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -16,7 +17,7 @@ class TxPlanPage extends StatefulWidget {
   final String plan;
   final String tab;
   TxPlanPage(this.plan, {required this.tab, this.signOnly = false});
-  
+
   @override
   State<StatefulWidget> createState() => _TxPlanState();
 }
@@ -25,7 +26,9 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final txplan = TxPlanWidget.fromPlan(widget.plan, signOnly: widget.signOnly);
+    final report = WarpApi.transactionReport(aa.coin, widget.plan);
+    final txplan = TxPlanWidget(widget.plan, report,
+        signOnly: widget.signOnly, onSend: sendOrSign);
     return Scaffold(
         appBar: AppBar(
           title: Text(s.txPlan),
@@ -34,22 +37,28 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
               onPressed: () => exportRaw(context),
               icon: Icon(MdiIcons.snowflake),
             ),
-            IconButton(
-              onPressed: () => widget.signOnly ? sign(context) : send(context),
-              icon: widget.signOnly ? FaIcon(FontAwesomeIcons.signature) : Icon(Icons.send),
-            )
+            if (!txplan.invalidPrivacy)
+              IconButton(
+                onPressed: () => sendOrSign(context),
+                icon: widget.signOnly
+                    ? FaIcon(FontAwesomeIcons.signature)
+                    : Icon(Icons.send),
+              )
           ],
         ),
         body: wrapWithLoading(SingleChildScrollView(child: txplan)));
   }
 
   send(BuildContext context) {
-      GoRouter.of(context).go('/${widget.tab}/submit_tx', extra: widget.plan);
+    GoRouter.of(context).go('/${widget.tab}/submit_tx', extra: widget.plan);
   }
 
   exportRaw(BuildContext context) {
-      GoRouter.of(context).go('/account/export_raw_tx', extra: widget.plan);
+    GoRouter.of(context).go('/account/export_raw_tx', extra: widget.plan);
   }
+
+  Future<void> sendOrSign(BuildContext context) async =>
+      widget.signOnly ? sign(context) : await send(context);
 
   sign(BuildContext context) async {
     await load(() async {
@@ -63,13 +72,16 @@ class TxPlanWidget extends StatelessWidget {
   final String plan;
   final TxReport report;
   final bool signOnly;
+  final Future<void> Function(BuildContext context)? onSend;
 
-  TxPlanWidget(this.plan, this.report, {required this.signOnly});
+  TxPlanWidget(this.plan, this.report, {required this.signOnly, this.onSend});
 
-  factory TxPlanWidget.fromPlan(String plan, {bool signOnly = false}) {
-    final report = WarpApi.transactionReport(aa.coin, plan);
-    return TxPlanWidget(plan, report, signOnly: signOnly);
-  }
+  // factory TxPlanWidget.fromPlan(String plan, {bool signOnly = false}) {
+  //   final report = WarpApi.transactionReport(aa.coin, plan);
+  //   return TxPlanWidget(plan, report, signOnly: signOnly);
+  // }
+
+  get invalidPrivacy => report.privacyLevel < appSettings.minPrivacyLevel;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +96,6 @@ class TxPlanWidget extends StatelessWidget {
               DataCell(Text('${amountToString2(e.amount)}')),
             ]))
         .toList();
-    final invalidPrivacy = report.privacyLevel < appSettings.minPrivacyLevel;
 
     return Column(children: [
       Row(children: [
@@ -130,11 +141,10 @@ class TxPlanWidget extends StatelessWidget {
           visualDensity: VisualDensity.compact,
           title: Text(s.fee),
           trailing: Text(amountToString2(report.fee))),
-      privacyToString(context, report.privacyLevel)!,
+      privacyToString(context, report.privacyLevel, onSend: onSend)!,
+      Gap(16),
       if (invalidPrivacy)
-        Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: Text(s.privacyLevelTooLow, style: t.textTheme.bodyLarge)),
+        Text(s.privacyLevelTooLow, style: t.textTheme.bodyLarge),
     ]);
   }
 }
@@ -149,31 +159,24 @@ String poolToString(S s, int pool) {
   return s.orchard;
 }
 
-Widget? privacyToString(BuildContext context, int privacyLevel) {
+Widget? privacyToString(BuildContext context, int privacyLevel,
+    {Future<void> Function(BuildContext context)? onSend}) {
   final m = S
       .of(context)
       .privacy(getPrivacyLevel(context, privacyLevel).toUpperCase());
-  switch (privacyLevel) {
-    case 0:
-      return getColoredButton(m, Colors.red);
-    case 1:
-      return getColoredButton(m, Colors.orange);
-    case 2:
-      return getColoredButton(m, Colors.yellow);
-    case 3:
-      return getColoredButton(m, Colors.green);
-  }
-  return null;
+  final colors = [Colors.red, Colors.orange, Colors.yellow, Colors.green];
+  return getColoredButton(context, m, colors[privacyLevel], onSend: onSend);
 }
 
-ElevatedButton getColoredButton(String text, Color color) {
+ElevatedButton getColoredButton(BuildContext context, String text, Color color,
+    {Future<void> Function(BuildContext context)? onSend}) {
   var foregroundColor =
       color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
 
   return ElevatedButton(
+      onLongPress: onSend != null ? () => onSend(context) : null,
       onPressed: null,
       child: Text(text),
       style: ElevatedButton.styleFrom(
-          disabledBackgroundColor: color,
-          disabledForegroundColor: foregroundColor));
+          backgroundColor: color, foregroundColor: foregroundColor));
 }

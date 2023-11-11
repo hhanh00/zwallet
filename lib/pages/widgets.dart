@@ -141,7 +141,7 @@ class MosaicWidget extends StatelessWidget {
               },
               icon: kv.value.icon,
               type: GFButtonType.solid,
-              textStyle: t.textTheme.bodyLarge,
+              textStyle: t.textTheme.bodyLarge!.copyWith(color: t.colorScheme.onPrimary),
               child: Text(kv.value.text!,
                   maxLines: 2, overflow: TextOverflow.fade),
               color: palette.colors[kv.key].toColor(),
@@ -252,6 +252,7 @@ class _PoolSelectionState extends State<PoolSelection> {
       if (p & 1 != 0) initialPools.add(i);
       p ~/= 2;
     }
+    final c = coins[aa.coin];
 
     return FormBuilderFilterChip<int>(
       name: 'pool_select',
@@ -277,7 +278,7 @@ class _PoolSelectionState extends State<PoolSelection> {
               '${amountToString2(widget.balances.sapling)}',
               style: TextStyle(color: Colors.orange),
             )),
-        FormBuilderChipOption(
+        if (c.supportsUA) FormBuilderChipOption(
             value: 2,
             child: Text(
               '${amountToString2(widget.balances.orchard)}',

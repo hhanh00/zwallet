@@ -962,23 +962,12 @@ class NativeLibrary {
   late final _dart_make_payment_uri _make_payment_uri =
       _make_payment_uri_ptr.asFunction<_dart_make_payment_uri>();
 
-  CResult_____c_char parse_payment_uri(
-    ffi.Pointer<ffi.Int8> uri,
-  ) {
-    return _parse_payment_uri(
-      uri,
-    );
-  }
-
-  late final _parse_payment_uri_ptr =
-      _lookup<ffi.NativeFunction<_c_parse_payment_uri>>('parse_payment_uri');
-  late final _dart_parse_payment_uri _parse_payment_uri =
-      _parse_payment_uri_ptr.asFunction<_dart_parse_payment_uri>();
-
   CResult______u8 decode_payment_uri(
+    int coin,
     ffi.Pointer<ffi.Int8> uri,
   ) {
     return _decode_payment_uri(
+      coin,
       uri,
     );
   }
@@ -2549,19 +2538,13 @@ typedef _dart_make_payment_uri = CResult_____c_char Function(
   ffi.Pointer<ffi.Int8> memo,
 );
 
-typedef _c_parse_payment_uri = CResult_____c_char Function(
-  ffi.Pointer<ffi.Int8> uri,
-);
-
-typedef _dart_parse_payment_uri = CResult_____c_char Function(
-  ffi.Pointer<ffi.Int8> uri,
-);
-
 typedef _c_decode_payment_uri = CResult______u8 Function(
+  ffi.Uint8 coin,
   ffi.Pointer<ffi.Int8> uri,
 );
 
 typedef _dart_decode_payment_uri = CResult______u8 Function(
+  int coin,
   ffi.Pointer<ffi.Int8> uri,
 );
 
