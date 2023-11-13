@@ -55,7 +55,7 @@ ic_launcher.png
 Icon-App-*.png
 *.apk
 
-Cargo.lock
+#Cargo.lock
 .flatpak-builder/
 build-dir/
 lib/src/version.dart
