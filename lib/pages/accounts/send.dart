@@ -51,7 +51,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
   int receivers = 0;
   int pools = 7;
   int amount = 0;
-  MemoData memo = MemoData(false, '', '');
+  MemoData memo = MemoData(false, '', appSettings.memo);
   int? contactIndex;
   late final accounts = WarpApi.getAccountList(aa.coin);
   late final contacts = WarpApi.getContacts(aa.coin);
@@ -61,13 +61,15 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final t = Theme.of(context);
 
+    final background = t.colorScheme.onPrimary;
     final icons = [
-      Icon(Icons.label),
-      Icon(Icons.alternate_email),
-      Icon(Icons.pool),
-      Icon(Icons.paid),
-      Icon(Icons.description),
+      Icon(Icons.label, color: background),
+      Icon(Icons.alternate_email, color: background),
+      Icon(Icons.pool, color: background),
+      Icon(Icons.paid, color: background),
+      Icon(Icons.description, color: background),
       // Icon(Icons.confirmation_number),
     ];
 
@@ -168,6 +170,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
           child: Column(
             children: [
               IconStepper(
+                stepColor: t.colorScheme.primary,
                 icons: icons,
                 activeStep: activeStep,
                 enableNextPreviousButtons: false,
@@ -299,7 +302,7 @@ class SendAddressTypeState extends State<SendAddressType> {
     return FormBuilder(
       key: formKey,
       child: Column(children: [
-        SendStepTitle(s.recipient),
+        MediumTitle(s.recipient),
         Gap(16),
         FormBuilderRadioGroup(
           name: 'type',
@@ -432,7 +435,7 @@ class SendPoolState extends State<SendPool> {
       key: formKey,
       child: Column(
         children: [
-          SendStepTitle(s.pools),
+          MediumTitle(s.pools),
           Gap(16),
           PoolSelection(
             _pools,
@@ -467,7 +470,7 @@ class SendAmountState extends State<SendAmount> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Column(children: [
-      SendStepTitle(s.amount),
+      MediumTitle(s.amount),
       Gap(16),
       FormBuilder(
         key: formKey,
@@ -507,7 +510,7 @@ class SendMemoState extends State<SendMemo> {
     return FormBuilder(
         key: formKey,
         child: Column(children: [
-          SendStepTitle(s.memo),
+          MediumTitle(s.memo),
           Gap(16),
           FormBuilderCheckbox(
             name: 'reply',
@@ -539,22 +542,6 @@ class SendMemoState extends State<SendMemo> {
   MemoData? get memo {
     if (!formKey.currentState!.validate()) return null;
     return MemoData(reply, subjectController.text, memoController.text);
-  }
-}
-
-class SendStepTitle extends StatelessWidget {
-  final String title;
-  SendStepTitle(this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    final t = Theme.of(context);
-    return Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: t.colorScheme.primary),
-        child: Text(title, style: t.textTheme.bodyLarge));
   }
 }
 

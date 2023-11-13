@@ -62,7 +62,7 @@ class _SettingsState extends State<SettingsPage>
           Tab(text: s.priv),
           Tab(text: s.views),
           Tab(text: c.name),
-          Tab(text: s.themeEditor),
+          Tab(text: s.theme),
         ]),
         actions: [
           ElevatedButton.icon(

@@ -159,8 +159,8 @@ class WarpApi {
         path.toNativeUtf8().cast<Int8>());
   }
 
-  static void skipToLastHeight(int coin) {
-    warp_api_lib.skip_to_last_height(coin);
+  static Future<void> skipToLastHeight(int coin) async {
+    await compute((_) => warp_api_lib.skip_to_last_height(coin), null);
   }
 
   static int rewindTo(int coin, int height) {

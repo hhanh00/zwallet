@@ -290,8 +290,8 @@ Future<bool> showConfirmDialog(
             title: Text(title),
             content: Text(body),
             actions: [
-              ElevatedButton.icon(onPressed: () => close(true), icon: Icon(Icons.cancel), label: Text(s.cancel)),
-              ElevatedButton.icon(onPressed: () => close(false), icon: Icon(Icons.check), label: Text(s.ok)),
+              ElevatedButton.icon(onPressed: () => close(false), icon: Icon(Icons.cancel), label: Text(s.cancel)),
+              ElevatedButton.icon(onPressed: () => close(true), icon: Icon(Icons.check), label: Text(s.ok)),
             ]
       )) ??
       false;

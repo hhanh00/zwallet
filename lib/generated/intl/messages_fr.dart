@@ -104,7 +104,7 @@ class SFr extends S {
   }
 
   @override
-  String get doYouWantToDeleteTheSecretKeyAndConvert => 'Voulez-vous SUPPRIMER la clé secrète et convertir ce compte en un compte d\'observation ? Vous ne pourrez plus dépenser depuis cet appareil. Cette opération n\'est PAS réversible.';
+  String get confirmWatchOnly => 'Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.';
 
   @override
   String get delete => 'SUPPRIMER';
@@ -1027,7 +1027,7 @@ class SFr extends S {
   String get or => 'or';
 
   @override
-  String get marketPrice => 'Historical Prices';
+  String get marketPrice => 'Mkt Prices';
 
   @override
   String get txPlan => 'Transaction Plan';
@@ -1190,4 +1190,10 @@ class SFr extends S {
 
   @override
   String get qr => 'QR Code';
+
+  @override
+  String get rescanWarning => 'RESCAN resets all your accounts. You may want to consider using REWIND instead';
+
+  @override
+  String get cannotUseTKey => 'Cannot import transparent private key. Use SWEEP instead';
 }

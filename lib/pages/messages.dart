@@ -245,20 +245,20 @@ class _MessageItemState extends State<MessageItemPage> {
           Panel(s.subject, text: message.subject),
           Gap(8),
           Panel(s.body, child: SelectableText(message.body, maxLines: 20)),
-          Gap(16),
-          FormBuilder(
-              child: Row(
-            children: [
-              Expanded(
-                  child: FormBuilderTextField(
-                name: 'reply',
-                decoration: InputDecoration(label: Text(s.reply)),
-                controller: replyController,
-                maxLines: 10,
-              )),
-              IconButton.outlined(onPressed: null, icon: Icon(Icons.send)),
-            ],
-          )),
+          // Gap(16),
+          // FormBuilder(
+          //     child: Row(
+          //   children: [
+          //     Expanded(
+          //         child: FormBuilderTextField(
+          //       name: 'reply',
+          //       decoration: InputDecoration(label: Text(s.reply)),
+          //       controller: replyController,
+          //       maxLines: 10,
+          //     )),
+          //     IconButton.outlined(onPressed: null, icon: Icon(Icons.send)),
+          //   ],
+          // )),
         ]),
       ),
     );

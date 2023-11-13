@@ -66,6 +66,7 @@ dependencies:
   im_stepper: ^1.0.1
   loading_animation_widget: ^1.2.0
   animated_toggle_switch: ^0.8.0
+  get_it: ^7.6.4
   rxdart: ^0.27.7
   bubble: ^1.2.1
   grouped_list: ^4.1.0
@@ -125,7 +126,7 @@ dev_dependencies:
   change_app_package_name: any
   flutter_native_splash: ^2.1.3+1
   intl_utils: ^2.8.1
-  msix: ^3.5.1
+  msix: ^3.7.0
 
 flutter_app_name:
   name: "YWallet"
@@ -200,6 +201,6 @@ msix_config:
   publisher_display_name: Parallax Scroll
   identity_name: 38664ParallaxScroll.Ywallet
   publisher: CN=DF596492-B1AD-4B42-9ECB-4E6208B6D8CD
-  logo_path: assets\icon.png
+  #logo_path: assets\icon.png
   store: true
   capabilities: internetClient

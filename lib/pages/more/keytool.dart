@@ -35,7 +35,7 @@ class _KeyToolState extends State<KeyToolPage> {
         ]),
         body: TableListPage(
           key: UniqueKey(),
-          view: appSettings.txView,
+          view: 2,
           items: keys,
           metadata: TableListKeyMetadata(
               shielded: shielded,

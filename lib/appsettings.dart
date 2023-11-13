@@ -1,18 +1,22 @@
 import 'dart:convert';
 
 import 'package:YWallet/settings.pb.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'coin/coins.dart';
+import 'generated/intl/messages.dart';
+import 'pages/utils.dart';
 
 var appSettings = AppSettings();
 var coinSettings = CoinSettings();
 
 extension AppSettingsExtension on AppSettings {
   void defaults() {
+    final s = GetIt.I.get<S>();
     if (!hasAnchorOffset()) anchorOffset = 3;
     if (!hasRowsPerPage()) rowsPerPage = 10;
     if (!hasDeveloperMode()) developerMode = 5;
@@ -24,6 +28,10 @@ extension AppSettingsExtension on AppSettings {
         dark: true,
       );
     }
+    if (!hasMemo()) memo = s.sendFrom(APP_NAME);
+    if (!hasNoteView()) noteView = 2;
+    if (!hasTxView()) txView = 2;
+    if (!hasMessageView()) messageView = 2;
   }
 
   static AppSettings load(SharedPreferences prefs) {

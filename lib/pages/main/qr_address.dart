@@ -32,13 +32,14 @@ class QRAddressWidget extends StatefulWidget {
 
 class _QRAddressState extends State<QRAddressWidget> {
   int addressMode = 0;
-  late int availableMode;
+  int availableMode = 0;
 
   @override
   void initState() {
     super.initState();
     addressMode = coins[aa.coin].defaultAddrMode;
-    availableMode = WarpApi.getAvailableAddrs(aa.coin, aa.id);
+    if (aa.id != 0)
+      availableMode = WarpApi.getAvailableAddrs(aa.coin, aa.id);
   }
 
   @override
@@ -114,6 +115,7 @@ class _QRAddressState extends State<QRAddressWidget> {
   }
 
   String get address {
+    if (aa.id == 0) return '';
     final uaType;
     switch (addressMode) {
       case 0:

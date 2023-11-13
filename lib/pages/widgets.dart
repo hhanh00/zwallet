@@ -51,13 +51,14 @@ class LoadingWrapper extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return Stack(
       children: [
+        Container(height: size.height, width: size.width, color: t.colorScheme.background),
         Opacity(opacity: 0.4, child: child),
         Container(
           height: size.height - 200,
           child: Align(
               alignment: Alignment.center,
               child: LoadingAnimationWidget.hexagonDots(
-                  color: t.primaryColor, size: 100)),
+                  color: t.colorScheme.primary, size: 100)),
         )
       ],
     );
@@ -172,9 +173,9 @@ class MosaicButton {
       this.onPressed});
 }
 
-class Title extends StatelessWidget {
+class MediumTitle extends StatelessWidget {
   final String title;
-  Title(this.title);
+  MediumTitle(this.title);
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +185,8 @@ class Title extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: t.colorScheme.primary),
-        child: Text(title, style: t.textTheme.bodyLarge));
+        child: Text(title, style: 
+        t.textTheme.bodyLarge!.copyWith(color: t.colorScheme.background)));
   }
 }
 
@@ -467,6 +469,7 @@ class Jumbotron extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
+    final cs = t.colorScheme;
     final Color color;
     switch (severity) {
       case Severity.Error:
@@ -476,7 +479,7 @@ class Jumbotron extends StatelessWidget {
         color = Colors.orange;
         break;
       default:
-        color = t.colorScheme.primary;
+        color = cs.primary;
         break;
     }
     return Stack(
@@ -486,11 +489,11 @@ class Jumbotron extends StatelessWidget {
             padding: EdgeInsets.all(16),
             margin: EdgeInsetsDirectional.all(15),
             decoration: BoxDecoration(
+                color: cs.primary,
                 border: Border.all(color: color, width: 4),
                 borderRadius: BorderRadius.all(Radius.circular(32))),
             child: SelectableText(message,
-                style: t.textTheme.headlineMedium
-                    ?.apply(color: t.appBarTheme.foregroundColor)),
+                style: t.textTheme.headlineMedium!.copyWith(color: cs.onPrimary)),
           ),
         ),
         if (title != null)
@@ -499,7 +502,7 @@ class Jumbotron extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                   border: Border.all(color: color, width: 4), color: color),
-              child: Padding(padding: EdgeInsets.all(8), child: Text(title!)),
+              child: Padding(padding: EdgeInsets.all(8), child: Text(title!, style: TextStyle(color: cs.onPrimary))),
             ),
           )
       ],

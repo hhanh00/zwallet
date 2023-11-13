@@ -116,7 +116,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
 
   cold() async {
     final confirmed =
-        await showConfirmDialog(context, s.convertToWatchonly, s.pleaseConfirm);
+        await showConfirmDialog(context, s.convertToWatchonly, s.confirmWatchOnly);
     if (!confirmed) return;
     WarpApi.convertToWatchOnly(aa.coin, aa.id);
     reset();

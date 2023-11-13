@@ -281,11 +281,11 @@ abstract class S {
   /// **'Rescan Requested from {height}...'**
   String rescanRequested(Object height);
 
-  /// No description provided for @doYouWantToDeleteTheSecretKeyAndConvert.
+  /// No description provided for @confirmWatchOnly.
   ///
   /// In en, this message translates to:
   /// **'Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.'**
-  String get doYouWantToDeleteTheSecretKeyAndConvert;
+  String get confirmWatchOnly;
 
   /// No description provided for @delete.
   ///
@@ -2042,7 +2042,7 @@ abstract class S {
   /// No description provided for @marketPrice.
   ///
   /// In en, this message translates to:
-  /// **'Historical Prices'**
+  /// **'Mkt Prices'**
   String get marketPrice;
 
   /// No description provided for @txPlan.
@@ -2368,6 +2368,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'QR Code'**
   String get qr;
+
+  /// No description provided for @rescanWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'RESCAN resets all your accounts. You may want to consider using REWIND instead'**
+  String get rescanWarning;
+
+  /// No description provided for @cannotUseTKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot import transparent private key. Use SWEEP instead'**
+  String get cannotUseTKey;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

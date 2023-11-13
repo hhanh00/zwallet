@@ -29,6 +29,6 @@ class WelcomePage extends StatelessWidget {
   }
 
   _onNew(BuildContext context) {
-    GoRouter.of(context).go('/first_account');
+    GoRouter.of(context).push('/first_account');
   }
 }

@@ -30,7 +30,7 @@
   "rescanFrom": "Rescan from...",
   "cancel": "Cancel",
   "rescanRequested": "Rescan Requested from {height}...",
-  "doYouWantToDeleteTheSecretKeyAndConvert": "Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.",
+  "confirmWatchOnly": "Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.",
   "delete": "DELETE",
   "confs": "Confs",
   "height": "Height",
@@ -323,7 +323,7 @@
   "rewind": "Rewind",
   "more": "More",
   "or": "or",
-  "marketPrice": "Historical Prices",
+  "marketPrice": "Mkt Prices",
   "txPlan": "Transaction Plan",
   "pool": "Pool",
   "transparentInput": "Transparent Input",
@@ -377,5 +377,7 @@
   "scanRawTx": "Scan the Unsigned Tx QR codes",
   "scanSignedTx": "Scan the Signed Tx QR codes",
   "pickColor": "Pick a Color",
-  "qr": "QR Code"
+  "qr": "QR Code",
+  "rescanWarning": "RESCAN resets all your accounts. You may want to consider using REWIND instead",
+  "cannotUseTKey": "Cannot import transparent private key. Use SWEEP instead"
 }

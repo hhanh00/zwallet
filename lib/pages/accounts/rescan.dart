@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
@@ -27,6 +28,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final t = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(s.rescan),
@@ -49,6 +51,11 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
               keyboardType: TextInputType.number,
               controller: heightController,
             ),
+            Gap(16),
+            DecoratedBox(
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.red, width: 2)),
+                child: Padding(padding: EdgeInsets.all(8), child: Text(s.rescanWarning, style: t.textTheme.titleLarge)))
           ],
         ),
       )),
@@ -86,7 +93,8 @@ class _RewindState extends State<RewindPage> {
     final s = S.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(s.rewind), actions: [
-        if (selected != null) IconButton(onPressed: rewind, icon: Icon(Icons.check)),
+        if (selected != null)
+          IconButton(onPressed: rewind, icon: Icon(Icons.check)),
       ]),
       body: ListView.separated(
           itemBuilder: (context, index) {
@@ -97,7 +105,8 @@ class _RewindState extends State<RewindPage> {
               selected: index == selected,
               title: Text(time),
               trailing: Text(cp.height.toString()),
-              onTap: () => setState(() => selected = index != selected ? index : null),
+              onTap: () =>
+                  setState(() => selected = index != selected ? index : null),
             );
           },
           separatorBuilder: (context, index) => Divider(),

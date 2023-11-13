@@ -118,12 +118,14 @@ abstract class _ActiveAccount2 with Store {
 
   @action
   void updateDivisified() {
+    if (id == 0) return;
     diversifiedAddress = WarpApi.getDiversifiedAddress(coin, id,
         coinSettings.uaType, DateTime.now().millisecondsSinceEpoch ~/ 1000);
   }
 
   @action
   void update(int? newHeight) {
+    if (id == 0) return;
     updateDivisified();
     updatePoolBalances();
 

@@ -104,7 +104,7 @@ class SEs extends S {
   }
 
   @override
-  String get doYouWantToDeleteTheSecretKeyAndConvert => '¿Quiere BORRAR la clave secreta y convertir esta cuenta a solo lectura? Ya no podrá gastar desde este dispositivo. Esta operación NO es reversible.';
+  String get confirmWatchOnly => 'Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.';
 
   @override
   String get delete => 'ELIMINAR';
@@ -1027,7 +1027,7 @@ class SEs extends S {
   String get or => 'or';
 
   @override
-  String get marketPrice => 'Historical Prices';
+  String get marketPrice => 'Mkt Prices';
 
   @override
   String get txPlan => 'Transaction Plan';
@@ -1190,4 +1190,10 @@ class SEs extends S {
 
   @override
   String get qr => 'QR Code';
+
+  @override
+  String get rescanWarning => 'RESCAN resets all your accounts. You may want to consider using REWIND instead';
+
+  @override
+  String get cannotUseTKey => 'Cannot import transparent private key. Use SWEEP instead';
 }

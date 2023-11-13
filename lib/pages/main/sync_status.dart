@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -17,7 +16,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
   @override
   void initState() {
     super.initState();
-    Future(() async { 
+    Future(() async {
       await syncStatus2.update();
       startAutoSync();
     });
@@ -25,15 +24,12 @@ class SyncStatusState extends State<SyncStatusWidget> {
 
   String getSyncText(int syncedHeight) {
     final s = S.of(context);
-    if (!syncStatus2.syncing) 
-      return syncedHeight.toString();
-    if (syncStatus2.paused) 
-      return s.syncPaused;
+    if (!syncStatus2.syncing) return syncedHeight.toString();
+    if (syncStatus2.paused) return s.syncPaused;
 
     final latestHeight = syncStatus2.latestHeight;
 
-    if (latestHeight == null)
-      return s.disconnected;
+    if (latestHeight == null) return s.disconnected;
 
     final timestamp = syncStatus2.timestamp?.let(timeago.format) ?? s.na;
     final downloadedSize = syncStatus2.downloadedSize;
@@ -41,8 +37,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
 
     final remaining = syncStatus2.eta.remaining;
     final percent = syncStatus2.eta.progress;
-    final downloadedSize2 =
-        NumberFormat.compact().format(downloadedSize);
+    final downloadedSize2 = NumberFormat.compact().format(downloadedSize);
     final trialDecryptionCount2 =
         NumberFormat.compact().format(trialDecryptionCount);
 
@@ -73,19 +68,26 @@ class SyncStatusState extends State<SyncStatusWidget> {
     final syncedHeight = syncStatus2.syncedHeight;
     final text = getSyncText(syncedHeight);
     final syncing = syncStatus2.syncing;
-    final syncStyle = syncing ? t.textTheme.bodySmall!
-    : t.textTheme.bodyMedium!.apply(color: t.primaryColor);
-    final Widget inner = GestureDetector(onTap: _onSync, child: Text(text, style: syncStyle));
+    final syncStyle = syncing
+        ? t.textTheme.bodySmall!
+        : t.textTheme.bodyMedium!.apply(color: t.primaryColor);
+    final Widget inner = GestureDetector(
+        onTap: _onSync,
+        child: Container(
+            color: t.colorScheme.background,
+            padding: EdgeInsets.all(8),
+            child: Text(text, style: syncStyle)));
     final value = syncStatus2.eta.progress?.let((x) => x.toDouble() / 100.0);
     return SizedBox(
       height: 50,
       child: Stack(
         children: <Widget>[
-          if (value != null) SizedBox.expand(
-            child: LinearProgressIndicator(
-              value: value,
+          if (value != null)
+            SizedBox.expand(
+              child: LinearProgressIndicator(
+                value: value,
+              ),
             ),
-          ),
           Center(child: inner),
         ],
       ),
@@ -97,11 +99,9 @@ class SyncStatusState extends State<SyncStatusWidget> {
       setState(() {
         display = (display + 1) % 7;
       });
-    }
-    else if (syncStatus2.paused)
+    } else if (syncStatus2.paused)
       syncStatus2.setPause(false);
-    else 
+    else
       Future(() => syncStatus2.sync(false));
   }
 }
-

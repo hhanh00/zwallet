@@ -20,6 +20,7 @@ class NewImportAccountPage extends StatefulWidget {
 
 class _NewImportAccountState extends State<NewImportAccountPage>
     with WithLoadingAnimation {
+  late final s = S.of(context);    
   int coin = 0;
   final formKey = GlobalKey<FormBuilderState>();
   final nameController = TextEditingController();
@@ -44,7 +45,6 @@ class _NewImportAccountState extends State<NewImportAccountPage>
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     return wrapWithLoading(Scaffold(
       appBar: AppBar(
         title: Text(s.newAccount),
@@ -82,7 +82,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                   },
                   options: options,
                 ),
-                FormBuilderCheckbox(
+                FormBuilderSwitch(
                   name: 'restore',
                   title: Text(s.restoreAnAccount),
                   onChanged: (v) {
@@ -134,7 +134,6 @@ class _NewImportAccountState extends State<NewImportAccountPage>
   }
 
   _onOK() async {
-    final s = S.of(context);
     final form = formKey.currentState!;
     if (form.validate()) {
       await load(() async {
@@ -148,7 +147,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           final prefs = await SharedPreferences.getInstance();
           await aa.save(prefs);
           if (widget.first) {
-            WarpApi.skipToLastHeight(coin); // first account is synced
+            await WarpApi.skipToLastHeight(coin); // first account is synced
             if (keyController.text.isNotEmpty)
               GoRouter.of(context).go('/account/rescan');
             else
@@ -167,8 +166,9 @@ class _NewImportAccountState extends State<NewImportAccountPage>
   String? _checkKey(String? v) {
     final key = keyController.text;
     if (key == "") return null;
+    if (WarpApi.isValidTransparentKey(key)) return s.cannotUseTKey;
     final keyType = WarpApi.validKey(coin, key);
-    if (keyType < 0) return S.of(context).invalidKey;
+    if (keyType < 0) return s.invalidKey;
     return null;
   }
 
