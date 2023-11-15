@@ -84,7 +84,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_foreground_task: ^6.1.2
-  awesome_notifications: ^0.7.2
+  awesome_notifications: ^0.8.1
   flutter_ringtone_player: ^3.2.0
 
   # The following adds the Cupertino Icons font to your application.

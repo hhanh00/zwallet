@@ -3,22 +3,22 @@ PODS:
     - Flutter
   - audioplayers_darwin (0.0.1):
     - Flutter
-  - awesome_notifications (0.0.5):
+  - awesome_notifications (0.8.1):
     - Flutter
-    - IosAwnCore (= 0.7.3)
+    - IosAwnCore (~> 0.8.0)
   - camera_avfoundation (0.0.1):
     - Flutter
   - connectivity_plus (0.0.1):
     - Flutter
     - ReachabilitySwift
-  - DKImagePickerController/Core (4.3.4):
+  - DKImagePickerController/Core (4.3.5):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
-  - DKImagePickerController/ImageDataManager (4.3.4)
-  - DKImagePickerController/PhotoGallery (4.3.4):
+  - DKImagePickerController/ImageDataManager (4.3.5)
+  - DKImagePickerController/PhotoGallery (4.3.5):
     - DKImagePickerController/Core
     - DKPhotoGallery
-  - DKImagePickerController/Resource (4.3.4)
+  - DKImagePickerController/Resource (4.3.5)
   - DKPhotoGallery (0.0.17):
     - DKPhotoGallery/Core (= 0.0.17)
     - DKPhotoGallery/Model (= 0.0.17)
@@ -56,7 +56,7 @@ PODS:
     - Flutter
   - flutter_zxing (0.0.1):
     - Flutter
-  - IosAwnCore (0.7.3)
+  - IosAwnCore (0.8.0)
   - local_auth_ios (0.0.1):
     - Flutter
   - network_info_plus (0.0.1):
@@ -67,9 +67,9 @@ PODS:
   - quick_actions_ios (0.0.1):
     - Flutter
   - ReachabilitySwift (5.0.0)
-  - SDWebImage (5.14.3):
-    - SDWebImage/Core (= 5.14.3)
-  - SDWebImage/Core (5.14.3)
+  - SDWebImage (5.18.3):
+    - SDWebImage/Core (= 5.18.3)
+  - SDWebImage/Core (5.18.3)
   - sensors_plus (0.0.1):
     - Flutter
   - share_plus (0.0.1):
@@ -79,7 +79,7 @@ PODS:
     - FlutterMacOS
   - shared_preferences_ios (0.0.1):
     - Flutter
-  - SwiftyGif (5.4.3)
+  - SwiftyGif (5.4.4)
   - url_launcher_ios (0.0.1):
     - Flutter
   - warp_api (0.0.1):
@@ -168,16 +168,16 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   DKImagePickerController:
-    :commit: 080352f0d38becc342610e9e99d0e9b66c01a0fe
+    :commit: d979978f5afa15829c55daa8deb6bb815776e4ff
     :git: https://github.com/zhangao0086/DKImagePickerController.git
 
 SPEC CHECKSUMS:
   app_links: 5ef33d0d295a89d9d16bb81b0e3b0d5f70d6c875
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
-  awesome_notifications: d63d9a25f126860f9a600850d99772237895b3ba
+  awesome_notifications: db394d2e061e4583ba0f738ddea611e3986cc3fb
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
-  DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
+  DKImagePickerController: 58430605240b65448b42e8444365a9686ff9c60c
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
@@ -186,21 +186,21 @@ SPEC CHECKSUMS:
   flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
   flutter_ringtone_player: 15eba85187230b87b2512f0e1b92225618bc03e7
   flutter_zxing: 19a866d17c8a87ee1026d68521c69d2f008635f6
-  IosAwnCore: 6494e0e174d49f04f513e8a002187be226889a37
+  IosAwnCore: ed1b2b6d84962a758354dbacd9ce525c72ce28a9
   local_auth_ios: c6cf091ded637a88f24f86a8875d8b0f526e2605
   network_info_plus: b78876159360f5580608c2cea620d6ceffabd0ad
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   quick_actions_ios: 5ec8f5f1ae81512ac803fe10c197ebb875767a9e
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  SDWebImage: 9c36e66c8ce4620b41a7407698dda44211a96764
-  sensors_plus: 5717760720f7e6acd96fdbd75b7428f5ad755ec2
+  SDWebImage: 96e0c18ef14010b7485210e92fac888587ebb958
+  sensors_plus: 4ee32bc7d61a055f27f88d3215ad6b6fb96a2b8e
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
-  SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
-  url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
+  SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
+  url_launcher_ios: 68d46cc9766d0c41dbdc884310529557e3cd7a86
   warp_api: 37e81d0816f7c75c4f635e1e4f1b42c5949d5df1
 
-PODFILE CHECKSUM: e1af8a78652670a5b7b8de8c5f3641ce5c737641
+PODFILE CHECKSUM: 7586eb3597ae4867d5812dce45343e5615a0bf73
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.11.2
