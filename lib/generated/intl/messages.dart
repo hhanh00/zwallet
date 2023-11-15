@@ -2380,6 +2380,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Cannot import transparent private key. Use SWEEP instead'**
   String get cannotUseTKey;
+
+  /// No description provided for @noDbPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Database must be encrypted to protect open/spend'**
+  String get noDbPassword;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

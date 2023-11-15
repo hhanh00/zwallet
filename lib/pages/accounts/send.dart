@@ -89,12 +89,12 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
               if (activeStep == 0 && type == 4) {
                 _latestPayment();
                 return;
-              } else {
-                if (activeStep < icons.length - 1) {
-                  setState(() {
-                    activeStep++;
-                  });
-                }
+              }
+              if (activeStep == 1 && !widget.single)
+                setState(
+                    () => activeStep += 2); // skip pool selection when multipay
+              else if (activeStep < icons.length - 1) {
+                setState(() => activeStep++);
               }
             },
           )
@@ -103,10 +103,10 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     final previousButton = IconButton(
       icon: Icon(Icons.chevron_left_rounded, size: 32),
       onPressed: () {
-        if (activeStep > 0) {
-          setState(() {
-            activeStep--;
-          });
+        if (activeStep == 3 && !widget.single)
+          setState(() => activeStep -= 2);
+        else if (activeStep > 0) {
+          setState(() => activeStep--);
         }
       },
     );

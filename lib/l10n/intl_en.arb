@@ -379,5 +379,6 @@
   "pickColor": "Pick a Color",
   "qr": "QR Code",
   "rescanWarning": "RESCAN resets all your accounts. You may want to consider using REWIND instead",
-  "cannotUseTKey": "Cannot import transparent private key. Use SWEEP instead"
+  "cannotUseTKey": "Cannot import transparent private key. Use SWEEP instead",
+  "noDbPassword": "Database must be encrypted to protect open/spend"
 }

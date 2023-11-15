@@ -34,8 +34,7 @@ class MorePage extends StatelessWidget {
       MosaicButton(
           url: '/more/budget',
           icon: FaIcon(FontAwesomeIcons.scaleBalanced),
-          text: s.budget,
-          secured: true),
+          text: s.budget),
       MosaicButton(
           url: '/more/market',
           icon: FaIcon(FontAwesomeIcons.arrowTrendUp),
@@ -64,7 +63,8 @@ class MorePage extends StatelessWidget {
       MosaicButton(
           url: '/more/keytool',
           icon: FaIcon(FontAwesomeIcons.key),
-          text: s.keyTool),
+          text: s.keyTool,
+          secured: true),
       MosaicButton(
           url: '/more/sweep',
           icon: FaIcon(FontAwesomeIcons.broom),

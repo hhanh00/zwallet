@@ -166,6 +166,7 @@ Future<bool> authenticate(BuildContext context, String reason) async {
                                 ? s.invalidPassword
                                 : null,
                           ]),
+                          obscureText: true,
                         ))),
                 actions: [
                   IconButton(

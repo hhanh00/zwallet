@@ -84,9 +84,7 @@ class _SettingsState extends State<SettingsPage>
                 child: PrivacyTab(appSettings, key: privacyKey)),
             SingleChildScrollView(child: ViewTab(appSettings, key: viewKey)),
             SingleChildScrollView(child: CoinTab(widget.coin, key: coinKey)),
-            SingleChildScrollView(
-                child: ThemeEditorTab(appSettings
-            )),
+            SingleChildScrollView(child: ThemeEditorTab(appSettings)),
           ],
         ),
       ),
@@ -202,6 +200,7 @@ class PrivacyTab extends StatefulWidget {
 
 class _PrivacyState extends State<PrivacyTab>
     with AutomaticKeepAliveClientMixin {
+  late final s = S.of(context);
   final formKey = GlobalKey<FormBuilderState>();
 
   final anchorController = TextEditingController();
@@ -210,7 +209,6 @@ class _PrivacyState extends State<PrivacyTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final s = S.of(context);
     final t = Theme.of(context);
     final levels = [s.veryLow, s.low, s.medium, s.high];
     return FormBuilder(
@@ -224,6 +222,8 @@ class _PrivacyState extends State<PrivacyTab>
             onChanged: (v) {
               widget.appSettings.protectOpen = v!;
             },
+            validator: validatePassword,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
           FormBuilderSwitch(
             name: 'p_send',
@@ -232,6 +232,8 @@ class _PrivacyState extends State<PrivacyTab>
             onChanged: (v) {
               widget.appSettings.protectSend = v!;
             },
+            validator: validatePassword,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
           FormBuilderField<int>(
             name: 'privacy',
@@ -326,6 +328,11 @@ class _PrivacyState extends State<PrivacyTab>
         ]),
       ),
     );
+  }
+
+  String? validatePassword(bool? v) {
+    if (v! && !isMobile() && appStore.dbPassword.isEmpty) return s.noDbPassword;
+    return null;
   }
 
   encryptDb() {

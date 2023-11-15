@@ -1196,4 +1196,7 @@ class SFr extends S {
 
   @override
   String get cannotUseTKey => 'Cannot import transparent private key. Use SWEEP instead';
+
+  @override
+  String get noDbPassword => 'Database must be encrypted to protect open/spend';
 }
