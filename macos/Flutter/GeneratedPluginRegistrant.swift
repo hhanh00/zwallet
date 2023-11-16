@@ -12,7 +12,7 @@ import connectivity_plus_macos
 import network_info_plus_macos
 import path_provider_foundation
 import screen_retriever
-import share_plus_macos
+import share_plus
 import shared_preferences_foundation
 import url_launcher_macos
 import window_manager

@@ -10,6 +10,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   local_auth_windows
   network_info_plus_windows
   screen_retriever
+  share_plus
   url_launcher_windows
   window_manager
 )
