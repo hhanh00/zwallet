@@ -4,13 +4,13 @@ version: 0.0.1
 homepage:
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.20.0"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  ffi: 1.1.2
+  ffi: ^2.0.1
   convert: ^3.0.1
   protobuf: ^2.0.0
   json_annotation: ^4.1.0
@@ -19,7 +19,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  ffigen: 2.4.2
+  ffigen: ^9.0.0
   build_runner: ^2.1.2
   json_serializable: ^6.1.5
 

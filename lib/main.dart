@@ -25,7 +25,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_protocol/url_protocol.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:quick_actions/quick_actions.dart';
@@ -430,11 +429,11 @@ class ZWalletAppState extends State<ZWalletApp> {
         _setProgress(0.8, 'Register URL Protocol Handlers');
         await registerURLHandler(this.context);
 
-        if (Platform.isWindows) {
-          for (var c in coins) {
-            registerProtocolHandler(c.currency, arguments: ['%s']);
-          }
-        }
+        // if (Platform.isWindows) {
+        //   for (var c in coins) {
+        //     registerProtocolHandler(c.currency, arguments: ['%s']);
+        //   }
+        // }
 
         if (isMobile()) {
           _setProgress(0.9, 'Setting Dashboard Shortcuts');
