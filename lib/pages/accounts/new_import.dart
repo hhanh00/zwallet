@@ -1,3 +1,4 @@
+import 'package:YWallet/pages/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
@@ -20,11 +21,11 @@ class NewImportAccountPage extends StatefulWidget {
 
 class _NewImportAccountState extends State<NewImportAccountPage>
     with WithLoadingAnimation {
-  late final s = S.of(context);    
+  late final s = S.of(context);
   int coin = 0;
   final formKey = GlobalKey<FormBuilderState>();
   final nameController = TextEditingController();
-  final keyController = TextEditingController();
+  String _key = '';
   final accountIndexController = TextEditingController(text: '0');
   late List<FormBuilderFieldOption<int>> options;
   bool _restore = false;
@@ -93,20 +94,12 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 ),
                 if (_restore)
                   Column(children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: FormBuilderTextField(
-                            name: 'key',
-                            decoration: InputDecoration(
-                                labelText: s.key, hintText: s.enterSeed),
-                            minLines: 4,
-                            maxLines: 4,
-                            controller: keyController,
-                            validator: _checkKey,
-                          ),
-                        ),
-                      ],
+                    InputTextQR(
+                      _key,
+                      label: s.key,
+                      lines: 4,
+                      onSaved: (v) => setState(() => _key = v!),
+                      validator: _checkKey,
                     ),
                     Gap(8),
                     FormBuilderTextField(
@@ -139,7 +132,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
       await load(() async {
         final index = int.parse(accountIndexController.text);
         final account = await WarpApi.newAccount(
-            coin, nameController.text, keyController.text, index);
+            coin, nameController.text, _key, index);
         if (account < 0)
           form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
         else {
@@ -148,7 +141,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           await aa.save(prefs);
           if (widget.first) {
             await WarpApi.skipToLastHeight(coin); // first account is synced
-            if (keyController.text.isNotEmpty)
+            if (_key.isNotEmpty)
               GoRouter.of(context).go('/account/rescan');
             else
               GoRouter.of(context).go('/account');
@@ -164,10 +157,9 @@ class _NewImportAccountState extends State<NewImportAccountPage>
   }
 
   String? _checkKey(String? v) {
-    final key = keyController.text;
-    if (key == "") return null;
-    if (WarpApi.isValidTransparentKey(key)) return s.cannotUseTKey;
-    final keyType = WarpApi.validKey(coin, key);
+    if (v == null || v.isEmpty) return null;
+    if (WarpApi.isValidTransparentKey(v)) return s.cannotUseTKey;
+    final keyType = WarpApi.validKey(coin, v);
     if (keyType < 0) return s.invalidKey;
     return null;
   }

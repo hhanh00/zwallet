@@ -84,7 +84,7 @@ class _SweepState extends State<SweepPage>
                   Text(s.destination, style: t.textTheme.titleLarge),
                   Gap(16),
                   FieldUARadio(0, name: 'pool', label: s.pool, onChanged: (v) => setState(() => _pool = v),),
-                  if (_pool == null) InputAddress('', onSaved: (v) => setState(() => _address = v)),
+                  if (_pool == null) InputTextQR('', onSaved: (v) => setState(() => _address = v)),
                 ]),
               ),
             )));

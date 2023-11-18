@@ -344,9 +344,14 @@ class SendAddressState extends State<SendAddress> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return FormBuilder(
       key: formKey,
-      child: InputAddress(widget.address, onSaved: (v) => _address = v!),
+      child: InputTextQR(widget.address,
+          label: s.address,
+          lines: 4,
+          validator: addressValidator,
+          onSaved: (v) => _address = v!),
     );
   }
 
@@ -581,7 +586,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
               key: formKey,
               child: Column(
                 children: [
-                  InputAddress(_address,
+                  InputTextQR(_address,
                       onSaved: (v) => setState(() => _address = v!)),
                   PoolSelection(
                     _pools,

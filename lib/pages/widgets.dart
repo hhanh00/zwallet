@@ -190,28 +190,36 @@ class MediumTitle extends StatelessWidget {
   }
 }
 
-class InputAddress extends StatelessWidget {
+class InputTextQR extends StatefulWidget {
   final String initialValue;
+  final String? label;
   final void Function(String?)? onSaved;
-  InputAddress(this.initialValue, {this.onSaved});
+  final String? Function(String?)? validator;
+  final int? lines;
+  InputTextQR(this.initialValue, {this.label, this.onSaved, this.validator, this.lines});
 
-  late final addressController = TextEditingController(text: initialValue);
+  @override
+  State<StatefulWidget> createState() => _InputTextQRState();
+}
+
+class _InputTextQRState extends State<InputTextQR> {
+  late final textController = TextEditingController(text: widget.initialValue);
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     return FormBuilderField(
       name: 'address',
-      validator: addressValidator,
-      onSaved: onSaved,
+      validator: widget.validator,
+      onSaved: widget.onSaved,
       builder: (FormFieldState<dynamic> field) {
         return Row(children: [
           Expanded(
             child: TextField(
-              controller: addressController,
-              maxLines: 4,
+              controller: textController,
+              minLines: widget.lines,
+              maxLines: widget.lines,
               decoration: InputDecoration(
-                label: Text(s.address),
+                label: widget.label?.let((label) => Text(label)),
                 errorText: field.errorText,
               ),
               onChanged: (v) => field.didChange(v),
@@ -231,8 +239,8 @@ class InputAddress extends StatelessWidget {
   }
 
   qr(BuildContext context) async {
-    addressController.text =
-        await scanQRCode(context, validator: addressValidator);
+    textController.text =
+        await scanQRCode(context, validator: widget.validator);
   }
 }
 
