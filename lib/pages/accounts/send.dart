@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:im_stepper/stepper.dart';
@@ -586,8 +587,12 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
               key: formKey,
               child: Column(
                 children: [
-                  InputTextQR(_address,
-                      onSaved: (v) => setState(() => _address = v!)),
+                  InputTextQR(
+                    _address,
+                    lines: 4,
+                    onSaved: (v) => setState(() => _address = v!),
+                    buttonsBuilder: _extraAddressButtons,
+                  ),
                   PoolSelection(
                     _pools,
                     balances: aa.poolBalances,
@@ -608,6 +613,21 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
             ),
           ),
         ));
+  }
+
+  List<Widget> _extraAddressButtons(BuildContext context) {
+    return [
+      IconButton.outlined(onPressed: () async {
+        final c = await GoRouter.of(context).push<Contact>('/more/contacts?selectable=1');
+        c?.let((c) => setState(() => _address = c.address!));
+      }, icon: FaIcon(FontAwesomeIcons.addressBook)),
+      Gap(8),
+      IconButton.outlined(onPressed: () async {
+        final a = await GoRouter.of(context).push<Account>('/account/account_manager');
+        a?.let((a) => setState(() => _address = a.address!));
+
+      }, icon: FaIcon(FontAwesomeIcons.users)),
+    ];
   }
 
   send() async {

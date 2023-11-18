@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:YWallet/pages/more/cold.dart';
-import 'package:YWallet/theme_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -164,7 +163,7 @@ final router = GoRouter(
                 routes: [
                   GoRoute(
                       path: 'contacts',
-                      builder: (context, state) => ContactsPage(),
+                      builder: (context, state) => ContactsPage(selectable: state.uri.queryParameters['selectable'] != null),
                       routes: [
                         GoRoute(
                           path: 'add',

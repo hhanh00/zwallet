@@ -51,7 +51,10 @@ class LoadingWrapper extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return Stack(
       children: [
-        Container(height: size.height, width: size.width, color: t.colorScheme.background),
+        Container(
+            height: size.height,
+            width: size.width,
+            color: t.colorScheme.background),
         Opacity(opacity: 0.4, child: child),
         Container(
           height: size.height - 200,
@@ -142,7 +145,8 @@ class MosaicWidget extends StatelessWidget {
               },
               icon: kv.value.icon,
               type: GFButtonType.solid,
-              textStyle: t.textTheme.bodyLarge!.copyWith(color: t.colorScheme.onPrimary),
+              textStyle: t.textTheme.bodyLarge!
+                  .copyWith(color: t.colorScheme.onPrimary),
               child: Text(kv.value.text!,
                   maxLines: 2, overflow: TextOverflow.fade),
               color: palette.colors[kv.key].toColor(),
@@ -185,8 +189,9 @@ class MediumTitle extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: t.colorScheme.primary),
-        child: Text(title, style: 
-        t.textTheme.bodyLarge!.copyWith(color: t.colorScheme.background)));
+        child: Text(title,
+            style: t.textTheme.bodyLarge!
+                .copyWith(color: t.colorScheme.background)));
   }
 }
 
@@ -196,26 +201,34 @@ class InputTextQR extends StatefulWidget {
   final void Function(String?)? onSaved;
   final String? Function(String?)? validator;
   final int? lines;
-  InputTextQR(this.initialValue, {this.label, this.onSaved, this.validator, this.lines});
+  final List<Widget> Function(BuildContext context)? buttonsBuilder;
+
+  InputTextQR(this.initialValue,
+      {this.label,
+      this.onSaved,
+      this.validator,
+      this.lines,
+      this.buttonsBuilder});
 
   @override
   State<StatefulWidget> createState() => _InputTextQRState();
 }
 
 class _InputTextQRState extends State<InputTextQR> {
-  late final textController = TextEditingController(text: widget.initialValue);
-
   @override
   Widget build(BuildContext context) {
-    return FormBuilderField(
-      name: 'address',
+    final buttons = widget.buttonsBuilder?.call(context) ?? [];
+    final controller = TextEditingController(text: widget.initialValue);
+    return FormBuilderField<String>(
+      name: 'text',
       validator: widget.validator,
       onSaved: widget.onSaved,
-      builder: (FormFieldState<dynamic> field) {
+      builder: (field) {
+        // print('FV ${widget.initialValue} ${field.value}');
         return Row(children: [
           Expanded(
-            child: TextField(
-              controller: textController,
+            child: TextFormField(
+              controller: controller,
               minLines: widget.lines,
               maxLines: widget.lines,
               decoration: InputDecoration(
@@ -228,19 +241,23 @@ class _InputTextQRState extends State<InputTextQR> {
           Gap(16),
           Container(
             width: 80,
-            child: IconButton.outlined(
-              onPressed: () => qr(context),
-              icon: Icon(Icons.qr_code),
-            ),
+            child: Column(children: [
+              IconButton.outlined(
+                onPressed: () => qr(context, field),
+                icon: Icon(Icons.qr_code),
+              ),
+              Gap(8),
+              ...buttons,
+            ]),
           ),
         ]);
       },
     );
   }
 
-  qr(BuildContext context) async {
-    textController.text =
-        await scanQRCode(context, validator: widget.validator);
+  qr(BuildContext context, FormFieldState<String> field) async {
+    final text = await scanQRCode(context, validator: widget.validator);
+    field.didChange(text);
   }
 }
 
@@ -288,12 +305,13 @@ class _PoolSelectionState extends State<PoolSelection> {
               '${amountToString2(widget.balances.sapling)}',
               style: TextStyle(color: Colors.orange),
             )),
-        if (c.supportsUA) FormBuilderChipOption(
-            value: 2,
-            child: Text(
-              '${amountToString2(widget.balances.orchard)}',
-              style: TextStyle(color: Colors.green),
-            )),
+        if (c.supportsUA)
+          FormBuilderChipOption(
+              value: 2,
+              child: Text(
+                '${amountToString2(widget.balances.orchard)}',
+                style: TextStyle(color: Colors.green),
+              )),
       ],
     );
   }
@@ -320,7 +338,7 @@ class _AmountPickerState extends State<AmountPicker> {
   double? fxRate;
   int _amount = 0;
   double _sliderValue = 0;
-  final amountController = TextEditingController();
+  late final amountController = TextEditingController(text: nformat.format(0.0));
   final fiatController = TextEditingController();
   final nformat = NumberFormat.decimalPatternDigits(
       decimalDigits: decimalDigits(appSettings.fullPrec));
@@ -501,7 +519,8 @@ class Jumbotron extends StatelessWidget {
                 border: Border.all(color: color, width: 4),
                 borderRadius: BorderRadius.all(Radius.circular(32))),
             child: SelectableText(message,
-                style: t.textTheme.headlineMedium!.copyWith(color: cs.onPrimary)),
+                style:
+                    t.textTheme.headlineMedium!.copyWith(color: cs.onPrimary)),
           ),
         ),
         if (title != null)
@@ -510,7 +529,9 @@ class Jumbotron extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                   border: Border.all(color: color, width: 4), color: color),
-              child: Padding(padding: EdgeInsets.all(8), child: Text(title!, style: TextStyle(color: cs.onPrimary))),
+              child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text(title!, style: TextStyle(color: cs.onPrimary))),
             ),
           )
       ],
@@ -589,7 +610,7 @@ class HorizontalBarChart extends StatelessWidget {
   final List<double> values;
   final double height;
 
-  HorizontalBarChart(this.values, { this.height = 32 });
+  HorizontalBarChart(this.values, {this.height = 32});
 
   @override
   Widget build(BuildContext context) {
@@ -601,14 +622,20 @@ class HorizontalBarChart extends StatelessWidget {
       final color = palette[i];
       final v = NumberFormat.compact().format(values[i]);
       final flex = sum != 0 ? max((values[i] / sum * 100).round(), 1) : 1;
-      return Flexible(child: Container(child:
-        Center(child: Text(v, textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
-        color: color, height: height), flex: flex);
+      return Flexible(
+          child: Container(
+              child: Center(
+                  child: Text(v,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white))),
+              color: color,
+              height: height),
+          flex: flex);
     }).toList();
 
     return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch, children: stacks));
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch, children: stacks));
   }
 }
 

@@ -14,7 +14,8 @@ import '../scan.dart';
 import '../utils.dart';
 
 class ContactsPage extends StatefulWidget {
-  ContactsPage() {
+  final bool selectable;
+  ContactsPage({this.selectable = false}) {
     contacts.fetchContacts();
   }
 
@@ -38,6 +39,8 @@ class _ContactsState extends State<ContactsPage> {
               IconButton(onPressed: _delete, icon: Icon(Icons.delete)),
             IconButton(onPressed: _save, icon: Icon(Icons.save)), // TODO: use coinsettings.contactsSaved flag
             IconButton(onPressed: _add, icon: Icon(Icons.add)),
+            if (widget.selectable && idSelected != null)
+              IconButton(onPressed: _select, icon: Icon(Icons.check)),
           ],
         ),
         body: Observer(builder: (context) {
@@ -51,6 +54,11 @@ class _ContactsState extends State<ContactsPage> {
             itemCount: c.length,
           );
         }));
+  }
+
+  _select() {
+    final c = contacts.contacts.firstWhere((c) => c.id == idSelected!);
+    GoRouter.of(context).pop(c);
   }
 
   _save() async {

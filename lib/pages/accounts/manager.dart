@@ -94,7 +94,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
       await aa.save(prefs);
     });
     aa.update(null);
-    GoRouter.of(context).pop();
+    GoRouter.of(context).pop<Account>(a);
   }
 
   delete() async {

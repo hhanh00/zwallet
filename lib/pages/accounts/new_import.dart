@@ -129,6 +129,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
   _onOK() async {
     final form = formKey.currentState!;
     if (form.validate()) {
+      form.save();
       await load(() async {
         final index = int.parse(accountIndexController.text);
         final account = await WarpApi.newAccount(
