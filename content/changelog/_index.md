@@ -4,6 +4,11 @@ weight: 80
 icon: wrench
 ---
 
+# 1.4.5
+
+- [Fix issue with QR Scanner on iOS](https://github.com/hhanh00/zwallet/issues/80)
+- [Fix crash on Android 14](https://github.com/hhanh00/zwallet/issues/120)
+
 # 1.4.4
 
 - [Disable sounds on Linux](https://github.com/hhanh00/zwallet/issues/104)
