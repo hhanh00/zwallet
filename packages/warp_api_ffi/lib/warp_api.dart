@@ -196,6 +196,10 @@ class WarpApi {
         (_) => unwrapResultU32(warp_api_lib.get_latest_height(coin)), null);
   }
 
+  static bool validSeed(int coin, String seed) {
+    return warp_api_lib.is_valid_seed(coin, seed.toNativeUtf8().cast<Int8>()) != 0;
+  }
+
   static int validKey(int coin, String key) {
     return warp_api_lib.is_valid_key(coin, key.toNativeUtf8().cast<Int8>());
   }
@@ -472,8 +476,8 @@ class WarpApi {
     return PaymentUri(data);
   }
 
-  static Agekeys generateKey() {
-    final keys = unwrapResultBytes(warp_api_lib.generate_key());
+  static Future<Agekeys> generateKey() async {
+    final keys = await compute((_) => unwrapResultBytes(warp_api_lib.generate_key()), null);
     final ageKeys = Agekeys(keys);
     return ageKeys;
   }
@@ -518,15 +522,15 @@ class WarpApi {
     return bestServer;
   }
 
-  static KeyPack deriveZip32(int coin, int idAccount, int accountIndex,
-      int externalIndex, int? addressIndex) {
-    final res = unwrapResultBytes(warp_api_lib.derive_zip32(
+  static Future<KeyPack> deriveZip32(int coin, int idAccount, int accountIndex,
+      int externalIndex, int? addressIndex) async {
+    final res = await compute((_) => unwrapResultBytes(warp_api_lib.derive_zip32(
         coin,
         idAccount,
         accountIndex,
         externalIndex,
         addressIndex != null ? 1 : 0,
-        addressIndex ?? 0));
+        addressIndex ?? 0)), null);
     final kp = KeyPack(res);
     return kp;
   }

@@ -163,7 +163,9 @@ final router = GoRouter(
                 routes: [
                   GoRoute(
                       path: 'contacts',
-                      builder: (context, state) => ContactsPage(selectable: state.uri.queryParameters['selectable'] != null),
+                      builder: (context, state) => ContactsPage(
+                          selectable:
+                              state.uri.queryParameters['selectable'] != null),
                       routes: [
                         GoRoute(
                           path: 'add',
@@ -204,6 +206,12 @@ final router = GoRouter(
                   GoRoute(
                     path: 'backup',
                     builder: (context, state) => BackupPage(),
+                    routes: [
+                      GoRoute(
+                        path: 'keygen',
+                        builder: (context, state) => KeygenPage(),
+                      ),
+                    ],
                   ),
                   GoRoute(
                     path: 'rescan',

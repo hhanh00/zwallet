@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../appsettings.dart';
@@ -51,6 +52,7 @@ class _SweepState extends State<SweepPage>
                         name: 'seed',
                         decoration: InputDecoration(label: Text(s.seed)),
                         controller: seedController,
+                        validator: _validSeed,
                       ),
                       FormBuilderTextField(
                         name: 'index',
@@ -78,13 +80,21 @@ class _SweepState extends State<SweepPage>
                       child: FormBuilderTextField(
                         name: 'sk',
                         controller: privateKeyController,
+                        validator: _validTKey,
                       )),
                   Divider(),
                   Gap(8),
                   Text(s.destination, style: t.textTheme.titleLarge),
                   Gap(16),
-                  FieldUARadio(0, name: 'pool', label: s.pool, onChanged: (v) => setState(() => _pool = v),),
-                  if (_pool == null) InputTextQR('', onSaved: (v) => setState(() => _address = v)),
+                  FieldUARadio(
+                    0,
+                    name: 'pool',
+                    label: s.pool,
+                    onChanged: (v) => setState(() => _pool = v),
+                  ),
+                  if (_pool == null)
+                    InputTextQR('',
+                        onSaved: (v) => setState(() => _address = v)),
                 ]),
               ),
             )));
@@ -96,27 +106,57 @@ class _SweepState extends State<SweepPage>
     final sk = privateKeyController.text;
 
     if (!form.validate()) return;
+    if (seed.isEmpty && sk.isEmpty) {
+      form.fields['seed']!.invalidate(s.seedOrKeyRequired);
+      form.fields['sk']!.invalidate(s.seedOrKeyRequired);
+      return;
+    }
+    form.save();
 
     final latestHeight = await WarpApi.getLatestHeight(aa.coin);
 
-    try {
-      if (seed.isNotEmpty) {
-        load(() async {
-          final txPlan = await WarpApi.sweepTransparentSeed(aa.coin, aa.id,
-              latestHeight, seed, _pool ?? 0, _address ?? '', 0, 30, coinSettings.feeT);
+    if (seed.isNotEmpty) {
+      load(() async {
+        try {
+          final txPlan = await WarpApi.sweepTransparentSeed(
+              aa.coin,
+              aa.id,
+              latestHeight,
+              seed,
+              _pool ?? 0,
+              _address ?? '',
+              0,
+              30,
+              coinSettings.feeT);
           GoRouter.of(context).push('/account/txplan?tab=more', extra: txPlan);
-        });
-      }
-
-      if (sk.isNotEmpty) {
-        await load(() async {
-          final txPlan = await WarpApi.sweepTransparent(
-              aa.coin, aa.id, latestHeight, sk, _pool ?? 0, _address ?? '', coinSettings.feeT);
-          GoRouter.of(context).push('/account/txplan?tab=more', extra: txPlan);
-        });
-      }
-    } on String catch (e) {
-      form.fields['sk']!.invalidate(e);
+        } on String catch (e) {
+          form.fields['seed']!.invalidate(e);
+        }
+      });
     }
+
+    if (sk.isNotEmpty) {
+      await load(() async {
+        try {
+          final txPlan = await WarpApi.sweepTransparent(aa.coin, aa.id,
+              latestHeight, sk, _pool ?? 0, _address ?? '', coinSettings.feeT);
+          GoRouter.of(context).push('/account/txplan?tab=more', extra: txPlan);
+        } on String catch (e) {
+          form.fields['sk']!.invalidate(e);
+        }
+      });
+    }
+  }
+
+  String? _validSeed(String? v) {
+    if (v == null) return null;
+    if (v.isNotEmpty && !WarpApi.validSeed(aa.coin, v)) return s.invalidKey;
+    return null;
+  }
+
+  String? _validTKey(String? v) {
+    if (v == null) return null;
+    if (v.isNotEmpty && !WarpApi.isValidTransparentKey(v)) return s.invalidKey;
+    return null;
   }
 }

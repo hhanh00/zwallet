@@ -2386,6 +2386,30 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Database must be encrypted to protect open/spend'**
   String get noDbPassword;
+
+  /// No description provided for @seedOrKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Seed or Private Key required'**
+  String get seedOrKeyRequired;
+
+  /// No description provided for @keygen.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Keygen'**
+  String get keygen;
+
+  /// No description provided for @keygenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Full backups use the AGE encryption system. The encryption key is used to encrypt the backup but CANNOT decrypt it. The SECRET key is needed to restore the backup.\nThe app will not store the keys. Every time this keygen will produce a DIFFERENT pair of keys.\n\nYou MUST save BOTH keys that you use'**
+  String get keygenHelp;
+
+  /// No description provided for @confirmSaveKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Have you saved your keys?'**
+  String get confirmSaveKeys;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

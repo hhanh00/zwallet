@@ -21,20 +21,31 @@ import '../appsettings.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import 'scan.dart';
+import 'showqr.dart';
 import 'utils.dart';
 
 class Panel extends StatelessWidget {
   final String title;
   final String? text;
   final Widget? child;
-  Panel(this.title, {this.text, this.child});
+  final bool save;
+  Panel(this.title, {this.text, this.child, this.save = false});
 
   @override
   Widget build(BuildContext context) {
     return InputDecorator(
         decoration:
             InputDecoration(label: Text(title), border: OutlineInputBorder()),
-        child: text != null ? SelectableText(text!) : child);
+        child: text != null
+            ? Row(children: [
+                Expanded(child: SelectableText(text!)),
+                SizedBox(width: 40, child: IconButton(onPressed: () => _save(context), icon: Icon(Icons.save))),
+              ])
+            : child);
+  }
+
+  _save(BuildContext context) {
+    GoRouter.of(context).push('/showqr?title=$title', extra: text!);
   }
 }
 
@@ -338,7 +349,8 @@ class _AmountPickerState extends State<AmountPicker> {
   double? fxRate;
   int _amount = 0;
   double _sliderValue = 0;
-  late final amountController = TextEditingController(text: nformat.format(0.0));
+  late final amountController =
+      TextEditingController(text: nformat.format(0.0));
   final fiatController = TextEditingController();
   final nformat = NumberFormat.decimalPatternDigits(
       decimalDigits: decimalDigits(appSettings.fullPrec));

@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
@@ -12,6 +13,7 @@ import 'package:cross_file/cross_file.dart';
 
 import '../../generated/intl/messages.dart';
 import '../utils.dart';
+import '../widgets.dart';
 
 class BatchBackupPage extends StatefulWidget {
   @override
@@ -94,10 +96,10 @@ class _BatchBackupState extends State<BatchBackupPage> {
     );
   }
 
-  key() {
-    final keys = WarpApi.generateKey();
-    backupKeyController.text = keys.pk!;
-    restoreKeyController.text = keys.sk!;
+  key() async {
+    final keys =
+        await GoRouter.of(context).push<Agekeys>('/more/backup/keygen');
+    keys?.let((keys) => backupKeyController.text = keys.pk!);
   }
 
   save() async {
@@ -124,7 +126,9 @@ class _BatchBackupState extends State<BatchBackupPage> {
           WarpApi.decryptBackup(restoreKeyController.text, file.path!, dbDir);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('backup', zipFile);
-      await showMessageBox2(context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow, dismissable: false);
+      await showMessageBox2(
+          context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow,
+          dismissable: false);
       GoRouter.of(context).pop();
     }
   }
@@ -144,3 +148,54 @@ Future<void> shareFile(BuildContext context, String path,
       sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2));
 }
 
+class KeygenPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _KeygenState();
+}
+
+class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
+  late final s = S.of(context);
+  Agekeys? _keys;
+
+  @override
+  void initState() {
+    super.initState();
+    Future(_keygen);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(s.keygen),
+        actions: [
+          IconButton(onPressed: _keygen, icon: Icon(Icons.refresh)),
+          IconButton(onPressed: _ok, icon: Icon(Icons.check)),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Gap(16),
+            Panel(s.help, child: Text(s.keygenHelp, style: t.textTheme.titleSmall)),
+            Gap(16),
+            Panel(s.encryptionKey, text: _keys?.pk, save: true),
+            Gap(16),
+            Panel(s.secretKey, text: _keys?.sk, save: true),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _keygen() async {
+    final keys = await load(() => WarpApi.generateKey());
+    setState(() => _keys = keys);
+  }
+
+  _ok() async {
+    final confirm = await showConfirmDialog(context, s.keygen, s.confirmSaveKeys);
+    if (confirm) GoRouter.of(context).pop(_keys);
+  }
+}

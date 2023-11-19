@@ -1199,4 +1199,16 @@ class SEs extends S {
 
   @override
   String get noDbPassword => 'Database must be encrypted to protect open/spend';
+
+  @override
+  String get seedOrKeyRequired => 'Seed or Private Key required';
+
+  @override
+  String get keygen => 'Backup Keygen';
+
+  @override
+  String get keygenHelp => 'Full backups use the AGE encryption system. The encryption key is used to encrypt the backup but CANNOT decrypt it. The SECRET key is needed to restore the backup.\nThe app will not store the keys. Every time this keygen will produce a DIFFERENT pair of keys.\n\nYou MUST save BOTH keys that you use';
+
+  @override
+  String get confirmSaveKeys => 'Have you saved your keys?';
 }

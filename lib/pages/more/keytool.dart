@@ -1,3 +1,5 @@
+import 'package:YWallet/pages/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -7,7 +9,6 @@ import 'package:warp_api/warp_api.dart';
 
 import '../../router.dart';
 import '../../accounts.dart';
-import '../../appsettings.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../../tablelist.dart';
@@ -18,7 +19,7 @@ class KeyToolPage extends StatefulWidget {
   State<StatefulWidget> createState() => _KeyToolState();
 }
 
-class _KeyToolState extends State<KeyToolPage> {
+class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
   List<KeyPackT> keys = [];
   final formKey = GlobalKey<FormBuilderState>();
   bool shielded = false;
@@ -33,7 +34,7 @@ class _KeyToolState extends State<KeyToolPage> {
         appBar: AppBar(title: Text(s.keyTool), actions: [
           IconButton(onPressed: refresh, icon: Icon(Icons.refresh))
         ]),
-        body: TableListPage(
+        body: wrapWithLoading(TableListPage(
           key: UniqueKey(),
           view: 2,
           items: keys,
@@ -43,7 +44,7 @@ class _KeyToolState extends State<KeyToolPage> {
               external: external,
               addressIndex: address,
               formKey: formKey),
-        ));
+        )));
   }
 
   void refresh() {
@@ -56,21 +57,25 @@ class _KeyToolState extends State<KeyToolPage> {
       shielded = form.fields['shielded']?.value as bool;
       final ext = external ? 0 : 1; // only used by taddr
 
-      print('$account $external $address');
-
+      final coin = aa.coin;
+      final id = aa.id;
       keys.clear();
-      for (var a = 0; a < 100; a++) {
-        final zkp =
-            WarpApi.deriveZip32(aa.coin, aa.id, account + a, 0, null).unpack();
-        final tkp =
-            WarpApi.deriveZip32(aa.coin, aa.id, account, ext, address + a)
-                .unpack();
-        final kp = KeyPackT(
-            tAddr: tkp.tAddr, tKey: tkp.tKey, zAddr: zkp.zAddr, zKey: zkp.zKey);
-        keys.add(kp);
-      }
+      load(() => _computeKeys(coin, id, account, ext));
     }
     setState(() {});
+  }
+
+  Future<void> _computeKeys(int coin, int id, int account, int ext) async {
+    for (int a = 0; a < 100; a++) {
+      final zkp =
+          (await WarpApi.deriveZip32(coin, id, account + a, 0, null)).unpack();
+      final tkp =
+          (await WarpApi.deriveZip32(coin, id, account, ext, address + a))
+              .unpack();
+      final kp = KeyPackT(
+          tAddr: tkp.tAddr, tKey: tkp.tKey, zAddr: zkp.zAddr, zKey: zkp.zKey);
+      keys.add(kp);
+    }
   }
 }
 

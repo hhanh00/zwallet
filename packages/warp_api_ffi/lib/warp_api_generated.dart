@@ -369,6 +369,21 @@ class NativeLibrary {
   late final _warp_ptr = _lookup<ffi.NativeFunction<_c_warp>>('warp');
   late final _dart_warp _warp = _warp_ptr.asFunction<_dart_warp>();
 
+  int is_valid_seed(
+    int coin,
+    ffi.Pointer<ffi.Int8> seed,
+  ) {
+    return _is_valid_seed(
+      coin,
+      seed,
+    );
+  }
+
+  late final _is_valid_seed_ptr =
+      _lookup<ffi.NativeFunction<_c_is_valid_seed>>('is_valid_seed');
+  late final _dart_is_valid_seed _is_valid_seed =
+      _is_valid_seed_ptr.asFunction<_dart_is_valid_seed>();
+
   int is_valid_key(
     int coin,
     ffi.Pointer<ffi.Int8> key,
@@ -2126,6 +2141,16 @@ typedef _dart_warp = CResult_u8 Function(
   int anchor_offset,
   int max_cost,
   int port,
+);
+
+typedef _c_is_valid_seed = ffi.Int8 Function(
+  ffi.Uint8 coin,
+  ffi.Pointer<ffi.Int8> seed,
+);
+
+typedef _dart_is_valid_seed = int Function(
+  int coin,
+  ffi.Pointer<ffi.Int8> seed,
 );
 
 typedef _c_is_valid_key = ffi.Int8 Function(
