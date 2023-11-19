@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../appsettings.dart';
+import '../../generated/intl/messages.dart';
 import '../../store2.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
@@ -21,17 +22,21 @@ class BalanceState extends State<BalanceWidget> {
     Future(marketPrice.update);
   }
 
-  String _formatFiat(double x) => decimalFormat(x, 2, symbol: appSettings.currency);
+  String _formatFiat(double x) =>
+      decimalFormat(x, 2, symbol: appSettings.currency);
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final t = Theme.of(context);
     final mode = widget.mode;
 
-    final color =
-      mode == 0 ? t.colorScheme.secondary :
-        mode == 1 ? t.colorScheme.primaryContainer : t.colorScheme.primary;
-    
+    final color = mode == 0
+        ? t.colorScheme.secondary
+        : mode == 1
+            ? t.colorScheme.primaryContainer
+            : t.colorScheme.primary;
+
     return Observer(builder: (context) {
       aaSequence.settingsSeqno;
       aa.height;
@@ -49,21 +54,32 @@ class BalanceState extends State<BalanceWidget> {
       final txtFiat = fiat?.let(_formatFiat);
       final txtBalFiat = balFiat?.let(_formatFiat);
 
+      final balanceWidget = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        textBaseline: TextBaseline.alphabetic,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        children: [
+          Text(c.symbol, style: t.textTheme.bodyLarge),
+          Text(balHi, style: t.textTheme.displayMedium?.apply(color: color)),
+          Text(balLo, style: t.textTheme.bodyMedium)
+        ],
+      );
+      final ob = otherBalance;
+
       return Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            textBaseline: TextBaseline.alphabetic,
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            children: [
-              Text(c.symbol, style: t.textTheme.bodyLarge),
-              Text(balHi,
-                  style: t.textTheme.displayMedium?.apply(color: color)),
-              Text(balLo, style: t.textTheme.bodyMedium)
-            ],
-          ),
+          ob > 0
+              ? InputDecorator(
+                  decoration: InputDecoration(
+                      label: Text('+ ${amountToString2(ob)}'),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(color: t.primaryColor),
+                          borderRadius: BorderRadius.circular(8))),
+                  child: balanceWidget)
+              : balanceWidget,
           Padding(padding: EdgeInsets.all(4)),
-          if (txtBalFiat != null) Text(txtBalFiat, style: t.textTheme.titleLarge),
+          if (txtBalFiat != null)
+            Text(txtBalFiat, style: t.textTheme.titleLarge),
           if (txtFiat != null) Text('1 ${c.ticker} = $txtFiat'),
         ],
       );
@@ -72,9 +88,12 @@ class BalanceState extends State<BalanceWidget> {
 
   bool hide(bool flat) {
     switch (appSettings.autoHide) {
-      case 0: return true;
-      case 1: return flat;
-      default: return false;
+      case 0:
+        return true;
+      case 1:
+        return flat;
+      default:
+        return false;
     }
   }
 
@@ -91,5 +110,14 @@ class BalanceState extends State<BalanceWidget> {
         return aa.poolBalances.orchard;
     }
     throw 'Unreachable';
+  }
+
+  int get otherBalance {
+    switch (widget.mode) {
+      case 1:
+        return aa.poolBalances.sapling + aa.poolBalances.orchard;
+      default:
+        return aa.poolBalances.transparent;
+    }
   }
 }

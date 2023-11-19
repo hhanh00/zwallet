@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../appsettings.dart';
@@ -59,9 +60,10 @@ class _HomeState extends State<HomePageInner> {
                 return Column(
                   children: [
                     SyncStatusWidget(),
-                    Padding(padding: EdgeInsets.all(8)),
+                    Gap(8),
                     QRAddressWidget(
                         uaType: coinSettings.uaType, onMode: _onMode),
+                    Gap(8),
                     BalanceWidget(addressMode, key: key),
                   ],
                 );

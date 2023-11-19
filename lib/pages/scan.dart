@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
@@ -10,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../generated/intl/messages.dart';
+import 'utils.dart';
 
 class ScanQRCodePage extends StatefulWidget {
   final bool Function(String code) onCode;
@@ -31,7 +33,8 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
     return Scaffold(
         appBar: AppBar(title: Text(s.scanQrCode),
         actions: [
-          IconButton(onPressed: _ok, icon: Icon(Icons.check))
+          IconButton(onPressed: _open, icon: Icon(Icons.open_in_new)),
+          IconButton(onPressed: _ok, icon: Icon(Icons.check)),
         ]),
         body: FormBuilder(
             key: formKey,
@@ -53,6 +56,16 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
     final form = formKey.currentState!;
     if (form.validate()) {
       if (widget.onCode(text)) GoRouter.of(context).pop();
+    }
+  }
+
+  _open() async {
+    final file = await pickFile();
+    if (file != null) {
+      final path = file.files[0].path!;
+      final xfile = XFile(path);
+      final code = await zx.readBarcodeImagePath(xfile);
+      code?.let((code) => _onScan(code));
     }
   }
 
