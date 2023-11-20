@@ -5,32 +5,31 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>Synchronization :: YWallet</title>
-<link href=/css/nucleus.css?1700439682 rel=stylesheet>
-<link href=/css/fontawesome-all.min.css?1700439682 rel=stylesheet>
-<link href=/css/hybrid.css?1700439682 rel=stylesheet>
-<link href=/css/featherlight.min.css?1700439682 rel=stylesheet>
-<link href=/css/perfect-scrollbar.min.css?1700439682 rel=stylesheet>
-<link href=/css/auto-complete.css?1700439682 rel=stylesheet>
-<link href=/css/atom-one-dark-reasonable.css?1700439682 rel=stylesheet>
-<link href=/css/theme.css?1700439682 rel=stylesheet>
-<link href=/css/tabs.css?1700439682 rel=stylesheet>
-<link href=/css/hugo-theme.css?1700439682 rel=stylesheet>
-<link href=/css/theme-blue.css?1700439682 rel=stylesheet>
-<link href=/common.css?1700439682 rel=stylesheet>
-<script src=/js/jquery-3.3.1.min.js?1700439682></script>
+<title>Why is the synchronization so slow? :: YWallet</title>
+<link href=/css/nucleus.css?1700439681 rel=stylesheet>
+<link href=/css/fontawesome-all.min.css?1700439681 rel=stylesheet>
+<link href=/css/hybrid.css?1700439681 rel=stylesheet>
+<link href=/css/featherlight.min.css?1700439681 rel=stylesheet>
+<link href=/css/perfect-scrollbar.min.css?1700439681 rel=stylesheet>
+<link href=/css/auto-complete.css?1700439681 rel=stylesheet>
+<link href=/css/atom-one-dark-reasonable.css?1700439681 rel=stylesheet>
+<link href=/css/theme.css?1700439681 rel=stylesheet>
+<link href=/css/tabs.css?1700439681 rel=stylesheet>
+<link href=/css/hugo-theme.css?1700439681 rel=stylesheet>
+<link href=/css/theme-blue.css?1700439681 rel=stylesheet>
+<link href=/common.css?1700439681 rel=stylesheet>
+<script src=/js/jquery-3.3.1.min.js?1700439681></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
-<meta property="og:title" content="Synchronization">
-<meta property="og:description" content="Synchronization (Catchup) will automatically start when YWallet detects that it does not have the latest block data.
-Synchronization is complete when only the block height number is displayed above the QR code.
- You can also manually trigger a rescan through the application menu.
-Statistics During Rescan or Catchup, the blockheight will cycle between the following information:
- current height / latest height    synchronization % (CATCHUP for incremental sync and RESCAN for full scan)    number of blocks remaining to process    timestamp of latest block processed    ETA (Estimated Time Remaining to complete the scan)    Bytes downloaded from the server    Number of transaction outputs decrypted   Tapping on the display will alternate between cycling and a fixed display.">
+<meta property="og:title" content="Why is the synchronization so slow?">
+<meta property="og:description" content="Because of the SPAM, your synchronization time is 100 times slower.
+Zcash used to offer a fix fee for all shielded transactions regardless of their sizes: 0.00001 ZEC. That&rsquo;s very cheap. One day, someone started making transactions with 1000s of inputs/outputs for next to nothing.
+Thus, pretty much all the blocks got filled with garbage (most likely, it&rsquo;s shielded - we do not know what is inside).
+Eventually, fees were raised but that took one year, during which the SPAM went uncontrolled.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ywallet.app/getting-started/synchronization/"><meta property="article:section" content="getting-started">
+<meta property="og:url" content="https://ywallet.app/faq/spam/"><meta property="article:section" content="faq">
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
-<body data-url=/getting-started/synchronization/>
+<body data-url=/faq/spam/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -43,10 +42,10 @@ Statistics During Rescan or Catchup, the blockheight will cycle between the foll
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script type=text/javascript src=/js/lunr.min.js?1700439682></script>
-<script type=text/javascript src=/js/auto-complete.js?1700439682></script>
+<script type=text/javascript src=/js/lunr.min.js?1700439681></script>
+<script type=text/javascript src=/js/auto-complete.js?1700439681></script>
 <script type=text/javascript>var baseurl="https://ywallet.app/"</script>
-<script type=text/javascript src=/js/search.js?1700439682></script>
+<script type=text/javascript src=/js/search.js?1700439681></script>
 </div>
 <div class=highlightable>
 <ul class=topics>
@@ -62,8 +61,7 @@ Features
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/getting-started/ title="Getting Started" class="dd-item
-parent">
+<li data-nav-id=/getting-started/ title="Getting Started" class=dd-item>
 <a href=/getting-started/><svg class="icon"><use xlink:href="https://ywallet.app//sprite.svg#play"/></svg>
 Getting Started
 <i class="fas fa-check read-icon"></i>
@@ -87,7 +85,7 @@ Account summary
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/getting-started/synchronization/ title=Synchronization class="dd-item active">
+<li data-nav-id=/getting-started/synchronization/ title=Synchronization class=dd-item>
 <a href=/getting-started/synchronization/>
 Synchronization
 <i class="fas fa-check read-icon"></i>
@@ -451,13 +449,14 @@ Older versions
 </li>
 </ul>
 </li>
-<li data-nav-id=/faq/ title=FAQ class=dd-item>
+<li data-nav-id=/faq/ title=FAQ class="dd-item
+parent">
 <a href=/faq/><svg class="icon"><use xlink:href="https://ywallet.app//sprite.svg#question"/></svg>
 FAQ
 <i class="fas fa-check read-icon"></i>
 </a>
 <ul>
-<li data-nav-id=/faq/spam/ title="Why is the synchronization so slow?" class=dd-item>
+<li data-nav-id=/faq/spam/ title="Why is the synchronization so slow?" class="dd-item active">
 <a href=/faq/spam/>
 Why is the synchronization so slow?
 <i class="fas fa-check read-icon"></i>
@@ -490,20 +489,12 @@ Why is the synchronization so slow?
 </span>
 <span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > <a href=/getting-started/>Getting Started</a> > Synchronization
+<a href=/>YWallet</a> > <a href=/faq/>FAQ</a> > Why is the synchronization so slow?
 </span>
 </div>
 <div class=progress>
 <div class=wrapper>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#statistics>Statistics</a></li>
-<li><a href=#remarks>Remarks</a></li>
-<li><a href=#pauseresume>Pause/Resume</a></li>
-<li><a href=#background-sync>Background Sync</a></li>
-<li><a href=#local-notifications>Local Notifications</a></li>
-</ul>
-</nav>
+<nav id=TableOfContents></nav>
 </div>
 </div>
 </div>
@@ -512,131 +503,46 @@ Why is the synchronization so slow?
 </div>
 <div id=body-inner>
 <h1>
-Synchronization
+Why is the synchronization so slow?
 </h1>
-<div class=p-img>
-<img class=img src=../img/2022-07-22_16-18-02.png>
-</div>
-<p>Synchronization (Catchup) will automatically start when YWallet
-detects that it does not have the latest block data.</p>
-<div class="notices note"><p>Synchronization is complete when <em>only</em> the block height number is
-displayed above the QR code.</p>
-</div>
-<p>You can also manually trigger a rescan through the application menu.</p>
-<h2 id=statistics>Statistics</h2>
-<p>During Rescan or Catchup, the blockheight will cycle between
-the following information:</p>
-<ul>
-<li>current height / latest height</li>
-</ul>
-<div class=p-img>
-<img class=img src=../img/2022-09-29_21-06-18.png>
-</div>
-<ul>
-<li>synchronization % (CATCHUP for incremental
-sync and RESCAN for full scan)</li>
-</ul>
-<div class=p-img>
-<img class=img src=../img/2022-09-29_21-05-16.png>
-</div>
-<ul>
-<li>number of blocks remaining to process</li>
-</ul>
-<div class=p-img>
-<img class=img src=../img/2022-09-29_21-05-25.png>
-</div>
-<ul>
-<li>timestamp of latest block processed</li>
-</ul>
-<div class=p-img>
-<img class=img src=../img/2022-09-29_21-05-34.png>
-</div>
-<ul>
-<li>ETA (Estimated Time Remaining to complete the scan)</li>
-</ul>
-<div class=p-img>
-<img class=img src=../img/2022-09-29_21-05-43.png>
-</div>
-<ul>
-<li>Bytes downloaded from the server</li>
-</ul>
-<div class=p-img>
-<img class=img src=../img/2022-09-29_21-05-51.png>
-</div>
-<ul>
-<li>Number of transaction outputs decrypted</li>
-</ul>
-<div class=p-img>
-<img class=img src=../img/2022-09-29_21-05-59.png>
-</div>
-<div class="notices note"><p>Tapping on the display will alternate between cycling and
-a fixed display.</p>
-</div>
-<h2 id=remarks>Remarks</h2>
-<ul>
-<li>
-<p>You can use the &ldquo;Bytes downloaded from the server&rdquo; statistics
-to monitor the status of the remote server. If there is no
-progress for more than a minute, it is a good indication that
-the server is not responding.</p>
-</li>
-<li>
-<p>&ldquo;Number of transaction outputs decrypted&rdquo; shows how many
-trial decryption YWallet has done so far. Synchronization
-speed is significantly reduced by trial decryptions.</p>
-</li>
-<li>
-<p>If these two statistics reset to 0, the server has disconnected.
-YWallet will automatically reconnect but there may be some network
-issue.</p>
-</li>
-</ul>
-<h2 id=pauseresume>Pause/Resume</h2>
-<p>The synchronization can be canceled/paused through the Application Menu.
-When paused, automatic catchup is also disabled.
-To resume the scan, either tap on the message or choose the
-&ldquo;Resume Scan&rdquo; option in the application menu.</p>
-<div class=p-img>
-<img class=img src=../img/2022-07-22_16-32-42.png>
-</div>
-<div class="notices note"><p>Pausing the synchronization is not immediate. YWallet will not
-download more data from the server but will complete processing
-the data it currently has.</p>
-</div>
-<h2 id=background-sync>Background Sync</h2>
-<p>On <strong>Android</strong>,</p>
-<p>Starting from version 1.2.15, once started, synchronization
-continues as a service.</p>
-<p>You can switch to other apps or even lock your device, and
-YWallet will synchronize in the background.</p>
-<p>There will be a notification message in the notification tray
-with a progress indicator.</p>
-<ul>
-<li>Background Sync is only available on Android devices.</li>
-<li>On iOS, due to platform restrictions, the application must remain
-in the foreground.</li>
-<li>On desktop, Synchronization always happens concurrently with other programs.</li>
-</ul>
-<div class="notices warning"><p>Some Android manufacturers prefer battery life over proper
-functionality of your apps.
-Refer to <a href=https://dontkillmyapp.com/>Don’t kill app</a> for more information.</p>
-</div>
-<h2 id=local-notifications>Local Notifications</h2>
-<p>On <strong>Android</strong>,</p>
-<p>You&rsquo;ll receive a tray notification if the balance of your account changes
-as a result of new confirmed transaction. YWallet must be running but does
-not need to be in the foreground.</p>
-<link href=/youtube.css rel=stylesheet integrity>
-<script src=/youtube.js></script>
-<div class=youtube-player data-id=C_6VTUBhhBY></div>
-</div>
+<p>Because of the SPAM, your synchronization time is
+100 times slower.</p>
+<p>Zcash used to offer a fix fee for all shielded transactions
+regardless of their sizes: 0.00001 ZEC. That&rsquo;s very cheap.
+One day, someone started making transactions with 1000s of
+inputs/outputs for next to nothing.</p>
+<p>Thus, pretty much all the blocks got filled
+with garbage (most likely, it&rsquo;s shielded - we do not know
+what is inside).</p>
+<p>Eventually, fees were raised but that took one year, during
+which the SPAM went uncontrolled.</p>
+<p>The SPAM lasted from block height 1 700 000 to 2 200 000 (roughly).</p>
+<p>If you have to scan over that period, you will notice that the
+speed goes down to 1% of what it used to, as blocks are 100 times
+larger.</p>
+<p>The good news is:</p>
+<ol>
+<li>YWallet can still scan over this period, but it is <em>SLOW</em>.
+Every other wallet stopped working.</li>
+<li>You can activate the spam filter. It will not try to process
+the spam transactions but they still have to be downloaded. That&rsquo;s
+GB of data.</li>
+<li>The spam has ended. Fees are dynamic and the cost of large
+transactions are higher, making spamming cost prohibitive.</li>
+</ol>
+<p>The bad news is:</p>
+<ol>
+<li>As of Nov 23, only YWallet has been updated to compute the fees according
+to the new rules. The other wallets can
+make transactions that are considered spam by the network.</li>
+</ol>
 <footer class=footline>
 </footer>
 </div>
 </div>
 <div id=navigation>
-<a class="nav nav-prev" href=/getting-started/account-summary/ title="Account summary"> <i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=/getting-started/receive/ title="Receive coins" style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/faq/ title=FAQ> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/installation/ title=Install style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
