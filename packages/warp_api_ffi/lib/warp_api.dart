@@ -754,6 +754,7 @@ class WarpApi {
   }
 
   static int getAvailableAddrs(int coin, int account) {
+    if (account == 0) return 0;
     return unwrapResultU8(warp_api_lib.get_available_addrs(coin, account));
   }
 

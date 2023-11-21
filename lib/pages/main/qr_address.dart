@@ -6,18 +6,18 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
-import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../utils.dart';
 
 class QRAddressWidget extends StatefulWidget {
+  final int addressMode;
   final int? amount;
   final String? memo;
   final int uaType;
-  final void Function(int)? onMode;
+  final void Function()? onMode;
   final bool paymentURI;
 
-  QRAddressWidget({
+  QRAddressWidget(this.addressMode, {
     super.key,
     required this.uaType,
     this.amount,
@@ -31,17 +31,6 @@ class QRAddressWidget extends StatefulWidget {
 }
 
 class _QRAddressState extends State<QRAddressWidget> {
-  int addressMode = 0;
-  int availableMode = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    addressMode = coins[aa.coin].defaultAddrMode;
-    if (aa.id != 0)
-      availableMode = WarpApi.getAvailableAddrs(aa.coin, aa.id);
-  }
-
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
@@ -55,7 +44,7 @@ class _QRAddressState extends State<QRAddressWidget> {
           : address;
       return Column(children: [
         GestureDetector(
-          onTap: _nextAddressMode,
+          onTap: widget.onMode,
           child: QrImage(
             data: uri,
             version: QrVersions.auto,
@@ -79,28 +68,9 @@ class _QRAddressState extends State<QRAddressWidget> {
     });
   }
 
-  // Addr Modes
-  // 0: As chosen in settings
-  // 1: T
-  // 2: S
-  // 3: O
-  // 4: Diversified
-  _nextAddressMode() {
-    final c = coins[aa.coin];
-    while (true) {
-      addressMode = (addressMode - 1) % 5;
-      if (addressMode == 0 && !c.supportsUA) continue;
-      if (addressMode == c.defaultAddrMode) break;
-      if (addressMode == 4) break; // diversified address
-      if (availableMode & (1 << (addressMode - 1)) != 0) break;
-    }
-    widget.onMode?.call(addressMode);
-    setState(() {});
-  }
-
   String get addressType {
     final s = S.of(context);
-    switch (addressMode) {
+    switch (widget.addressMode) {
       case 1:
         return s.transparent;
       case 2:
@@ -117,14 +87,14 @@ class _QRAddressState extends State<QRAddressWidget> {
   String get address {
     if (aa.id == 0) return '';
     final uaType;
-    switch (addressMode) {
+    switch (widget.addressMode) {
       case 0:
         uaType = widget.uaType;
         break;
       case 4:
         return aa.diversifiedAddress;
       default:
-        uaType = 1 << (addressMode - 1);
+        uaType = 1 << (widget.addressMode - 1);
         break;
     }
     return WarpApi.getAddress(aa.coin, aa.id, uaType);

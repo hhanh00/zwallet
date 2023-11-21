@@ -10,7 +10,8 @@ import '../utils.dart';
 
 class BalanceWidget extends StatefulWidget {
   final int mode;
-  BalanceWidget(this.mode, {Key? key}) : super(key: key);
+  final void Function()? onMode;
+  BalanceWidget(this.mode, {this.onMode, super.key});
   @override
   State<StatefulWidget> createState() => BalanceState();
 }
@@ -27,7 +28,6 @@ class BalanceState extends State<BalanceWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     final t = Theme.of(context);
     final mode = widget.mode;
 
@@ -66,22 +66,25 @@ class BalanceState extends State<BalanceWidget> {
       );
       final ob = otherBalance;
 
-      return Column(
-        children: [
-          ob > 0
-              ? InputDecorator(
-                  decoration: InputDecoration(
-                      label: Text('+ ${amountToString2(ob)}'),
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: t.primaryColor),
-                          borderRadius: BorderRadius.circular(8))),
-                  child: balanceWidget)
-              : balanceWidget,
-          Padding(padding: EdgeInsets.all(4)),
-          if (txtBalFiat != null)
-            Text(txtBalFiat, style: t.textTheme.titleLarge),
-          if (txtFiat != null) Text('1 ${c.ticker} = $txtFiat'),
-        ],
+      return GestureDetector(
+        onTap: widget.onMode,
+        child: Column(
+          children: [
+            ob > 0
+                ? InputDecorator(
+                    decoration: InputDecoration(
+                        label: Text('+ ${amountToString2(ob)}'),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(color: t.primaryColor),
+                            borderRadius: BorderRadius.circular(8))),
+                    child: balanceWidget)
+                : balanceWidget,
+            Padding(padding: EdgeInsets.all(4)),
+            if (txtBalFiat != null)
+              Text(txtBalFiat, style: t.textTheme.titleLarge),
+            if (txtFiat != null) Text('1 ${c.ticker} = $txtFiat'),
+          ],
+        ),
       );
     });
   }
@@ -112,9 +115,10 @@ class BalanceState extends State<BalanceWidget> {
     throw 'Unreachable';
   }
 
-  int get totalBalance => aa.poolBalances.transparent +
-    aa.poolBalances.sapling +
-    aa.poolBalances.orchard;
+  int get totalBalance =>
+      aa.poolBalances.transparent +
+      aa.poolBalances.sapling +
+      aa.poolBalances.orchard;
 
   int get otherBalance => totalBalance - balance;
 }

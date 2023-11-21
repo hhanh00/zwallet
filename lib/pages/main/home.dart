@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:warp_api/warp_api.dart';
 
 import '../../appsettings.dart';
 import '../../store2.dart';
@@ -30,12 +31,12 @@ class HomePageInner extends StatefulWidget {
 
 class _HomeState extends State<HomePageInner> {
   final key = GlobalKey<BalanceState>();
-  late int addressMode;
+  final int availableMode = WarpApi.getAvailableAddrs(aa.coin, aa.id);
+  late int addressMode = coins[aa.coin].defaultAddrMode;
 
   @override
   void initState() {
     super.initState();
-    addressMode = coins[aa.coin].defaultAddrMode;
     syncStatus2.update();
   }
 
@@ -62,20 +63,22 @@ class _HomeState extends State<HomePageInner> {
                     SyncStatusWidget(),
                     Gap(8),
                     QRAddressWidget(
-                        uaType: coinSettings.uaType, onMode: _onMode),
+                      addressMode,
+                      uaType: coinSettings.uaType,
+                      onMode: _nextAddressMode,
+                    ),
                     Gap(8),
-                    BalanceWidget(addressMode, key: key),
+                    BalanceWidget(
+                      addressMode,
+                      key: key,
+                      onMode: _nextAddressMode,
+                    ),
                   ],
                 );
               },
             ),
           ),
         ));
-  }
-
-  _onMode(int mode) {
-    addressMode = mode;
-    setState(() {});
   }
 
   _send(bool quick) async {
@@ -89,4 +92,26 @@ class _HomeState extends State<HomePageInner> {
     else
       GoRouter.of(context).push('/account/send');
   }
+
+  // Addr Modes
+  // 0: As chosen in settings
+  // 1: T
+  // 2: S
+  // 3: O
+  // 4: Diversified
+  _nextAddressMode() {
+    setState(() => addressMode = nextAddressMode(addressMode, availableMode));
+  }
+}
+
+int nextAddressMode(int addressMode, int availableMode) {
+  final c = coins[aa.coin];
+  while (true) {
+    addressMode = (addressMode - 1) % 5;
+    if (addressMode == 0 && !c.supportsUA) continue;
+    if (addressMode == c.defaultAddrMode) break;
+    if (addressMode == 4) break; // diversified address
+    if (availableMode & (1 << (addressMode - 1)) != 0) break;
+  }
+  return addressMode;
 }
