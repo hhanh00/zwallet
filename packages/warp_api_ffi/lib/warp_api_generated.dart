@@ -392,6 +392,22 @@ class NativeLibrary {
   late final _warp =
       _warpPtr.asFunction<CResult_u8 Function(int, int, int, int, int)>();
 
+  int is_valid_seed(
+    int coin,
+    ffi.Pointer<ffi.Char> seed,
+  ) {
+    return _is_valid_seed(
+      coin,
+      seed,
+    );
+  }
+
+  late final _is_valid_seedPtr = _lookup<
+          ffi.NativeFunction<bool Function(ffi.Uint8, ffi.Pointer<ffi.Char>)>>(
+      'is_valid_seed');
+  late final _is_valid_seed =
+      _is_valid_seedPtr.asFunction<int Function(int, ffi.Pointer<ffi.Char>)>();
+
   int is_valid_key(
     int coin,
     ffi.Pointer<ffi.Char> key,
@@ -403,9 +419,8 @@ class NativeLibrary {
   }
 
   late final _is_valid_keyPtr = _lookup<
-          ffi
-          .NativeFunction<ffi.Int8 Function(ffi.Uint8, ffi.Pointer<ffi.Char>)>>(
-      'is_valid_key');
+      ffi.NativeFunction<
+          ffi.Int8 Function(ffi.Uint8, ffi.Pointer<ffi.Char>)>>('is_valid_key');
   late final _is_valid_key =
       _is_valid_keyPtr.asFunction<int Function(int, ffi.Pointer<ffi.Char>)>();
 
@@ -425,31 +440,57 @@ class NativeLibrary {
   late final _valid_address =
       _valid_addressPtr.asFunction<int Function(int, ffi.Pointer<ffi.Char>)>();
 
+  int receivers_of_address(
+    int coin,
+    ffi.Pointer<ffi.Char> address,
+  ) {
+    return _receivers_of_address(
+      coin,
+      address,
+    );
+  }
+
+  late final _receivers_of_addressPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Uint8 Function(
+              ffi.Uint8, ffi.Pointer<ffi.Char>)>>('receivers_of_address');
+  late final _receivers_of_address = _receivers_of_addressPtr
+      .asFunction<int Function(int, ffi.Pointer<ffi.Char>)>();
+
   CResult_____c_char get_diversified_address(
+    int coin,
+    int account,
     int ua_type,
     int time,
   ) {
     return _get_diversified_address(
+      coin,
+      account,
       ua_type,
       time,
     );
   }
 
   late final _get_diversified_addressPtr = _lookup<
-          ffi
-          .NativeFunction<CResult_____c_char Function(ffi.Uint8, ffi.Uint32)>>(
-      'get_diversified_address');
+      ffi.NativeFunction<
+          CResult_____c_char Function(ffi.Uint8, ffi.Uint32, ffi.Uint8,
+              ffi.Uint32)>>('get_diversified_address');
   late final _get_diversified_address = _get_diversified_addressPtr
-      .asFunction<CResult_____c_char Function(int, int)>();
+      .asFunction<CResult_____c_char Function(int, int, int, int)>();
 
-  CResult_u32 get_latest_height() {
-    return _get_latest_height();
+  CResult_u32 get_latest_height(
+    int coin,
+  ) {
+    return _get_latest_height(
+      coin,
+    );
   }
 
   late final _get_latest_heightPtr =
-      _lookup<ffi.NativeFunction<CResult_u32 Function()>>('get_latest_height');
+      _lookup<ffi.NativeFunction<CResult_u32 Function(ffi.Uint8)>>(
+          'get_latest_height');
   late final _get_latest_height =
-      _get_latest_heightPtr.asFunction<CResult_u32 Function()>();
+      _get_latest_heightPtr.asFunction<CResult_u32 Function(int)>();
 
   CResult_u8 ledger_build_keys() {
     return _ledger_build_keys();
@@ -499,17 +540,20 @@ class NativeLibrary {
       _skip_to_last_heightPtr.asFunction<void Function(int)>();
 
   CResult_u32 rewind_to(
+    int coin,
     int height,
   ) {
     return _rewind_to(
+      coin,
       height,
     );
   }
 
   late final _rewind_toPtr =
-      _lookup<ffi.NativeFunction<CResult_u32 Function(ffi.Uint32)>>(
+      _lookup<ffi.NativeFunction<CResult_u32 Function(ffi.Uint8, ffi.Uint32)>>(
           'rewind_to');
-  late final _rewind_to = _rewind_toPtr.asFunction<CResult_u32 Function(int)>();
+  late final _rewind_to =
+      _rewind_toPtr.asFunction<CResult_u32 Function(int, int)>();
 
   void rescan_from(
     int height,
@@ -635,6 +679,8 @@ class NativeLibrary {
     int account,
     ffi.Pointer<ffi.Uint8> recipients_bytes,
     int recipients_len,
+    int pools,
+    int sender_ua,
     int anchor_offset,
     ffi.Pointer<ffi.Uint8> fee_bytes,
     int fee_len,
@@ -644,6 +690,8 @@ class NativeLibrary {
       account,
       recipients_bytes,
       recipients_len,
+      pools,
+      sender_ua,
       anchor_offset,
       fee_bytes,
       fee_len,
@@ -657,12 +705,14 @@ class NativeLibrary {
               ffi.Uint32,
               ffi.Pointer<ffi.Uint8>,
               ffi.Uint64,
+              ffi.Uint8,
+              ffi.Uint8,
               ffi.Uint32,
               ffi.Pointer<ffi.Uint8>,
               ffi.Uint64)>>('prepare_multi_payment');
   late final _prepare_multi_payment = _prepare_multi_paymentPtr.asFunction<
       CResult_____c_char Function(int, int, ffi.Pointer<ffi.Uint8>, int, int,
-          ffi.Pointer<ffi.Uint8>, int)>();
+          int, int, ffi.Pointer<ffi.Uint8>, int)>();
 
   CResult______u8 transaction_report(
     int coin,
@@ -722,19 +772,21 @@ class NativeLibrary {
       CResult_____c_char Function(int, int, ffi.Pointer<ffi.Char>)>();
 
   CResult_____c_char broadcast_tx(
+    int coin,
     ffi.Pointer<ffi.Char> tx_str,
   ) {
     return _broadcast_tx(
+      coin,
       tx_str,
     );
   }
 
   late final _broadcast_txPtr = _lookup<
-          ffi
-          .NativeFunction<CResult_____c_char Function(ffi.Pointer<ffi.Char>)>>(
-      'broadcast_tx');
+      ffi.NativeFunction<
+          CResult_____c_char Function(
+              ffi.Uint8, ffi.Pointer<ffi.Char>)>>('broadcast_tx');
   late final _broadcast_tx = _broadcast_txPtr
-      .asFunction<CResult_____c_char Function(ffi.Pointer<ffi.Char>)>();
+      .asFunction<CResult_____c_char Function(int, ffi.Pointer<ffi.Char>)>();
 
   int is_valid_tkey(
     ffi.Pointer<ffi.Char> sk,
@@ -751,18 +803,22 @@ class NativeLibrary {
       _is_valid_tkeyPtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
 
   CResult_____c_char sweep_tkey(
+    int coin,
+    int account,
     int last_height,
     ffi.Pointer<ffi.Char> sk,
     int pool,
-    int confirmations,
+    ffi.Pointer<ffi.Char> address,
     ffi.Pointer<ffi.Uint8> fee_bytes,
     int fee_len,
   ) {
     return _sweep_tkey(
+      coin,
+      account,
       last_height,
       sk,
       pool,
-      confirmations,
+      address,
       fee_bytes,
       fee_len,
     );
@@ -771,15 +827,60 @@ class NativeLibrary {
   late final _sweep_tkeyPtr = _lookup<
       ffi.NativeFunction<
           CResult_____c_char Function(
+              ffi.Uint8,
+              ffi.Uint32,
               ffi.Uint32,
               ffi.Pointer<ffi.Char>,
               ffi.Uint8,
-              ffi.Uint32,
+              ffi.Pointer<ffi.Char>,
               ffi.Pointer<ffi.Uint8>,
               ffi.Uint64)>>('sweep_tkey');
   late final _sweep_tkey = _sweep_tkeyPtr.asFunction<
-      CResult_____c_char Function(
-          int, ffi.Pointer<ffi.Char>, int, int, ffi.Pointer<ffi.Uint8>, int)>();
+      CResult_____c_char Function(int, int, int, ffi.Pointer<ffi.Char>, int,
+          ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Uint8>, int)>();
+
+  CResult_____c_char sweep_tseed(
+    int coin,
+    int account,
+    int last_height,
+    ffi.Pointer<ffi.Char> seed,
+    int pool,
+    ffi.Pointer<ffi.Char> address,
+    int index,
+    int limit,
+    ffi.Pointer<ffi.Uint8> fee_bytes,
+    int fee_len,
+  ) {
+    return _sweep_tseed(
+      coin,
+      account,
+      last_height,
+      seed,
+      pool,
+      address,
+      index,
+      limit,
+      fee_bytes,
+      fee_len,
+    );
+  }
+
+  late final _sweep_tseedPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_____c_char Function(
+              ffi.Uint8,
+              ffi.Uint32,
+              ffi.Uint32,
+              ffi.Pointer<ffi.Char>,
+              ffi.Uint8,
+              ffi.Pointer<ffi.Char>,
+              ffi.Uint32,
+              ffi.Uint32,
+              ffi.Pointer<ffi.Uint8>,
+              ffi.Uint64)>>('sweep_tseed');
+  late final _sweep_tseed = _sweep_tseedPtr.asFunction<
+      CResult_____c_char Function(int, int, int, ffi.Pointer<ffi.Char>, int,
+          ffi.Pointer<ffi.Char>, int, int, ffi.Pointer<ffi.Uint8>, int)>();
 
   CResult_u32 get_activation_date() {
     return _get_activation_date();
@@ -792,25 +893,29 @@ class NativeLibrary {
       _get_activation_datePtr.asFunction<CResult_u32 Function()>();
 
   CResult_u32 get_block_by_time(
+    int coin,
     int time,
   ) {
     return _get_block_by_time(
+      coin,
       time,
     );
   }
 
   late final _get_block_by_timePtr =
-      _lookup<ffi.NativeFunction<CResult_u32 Function(ffi.Uint32)>>(
+      _lookup<ffi.NativeFunction<CResult_u32 Function(ffi.Uint8, ffi.Uint32)>>(
           'get_block_by_time');
   late final _get_block_by_time =
-      _get_block_by_timePtr.asFunction<CResult_u32 Function(int)>();
+      _get_block_by_timePtr.asFunction<CResult_u32 Function(int, int)>();
 
   CResult_u32 sync_historical_prices(
+    int coin,
     int now,
     int days,
     ffi.Pointer<ffi.Char> currency,
   ) {
     return _sync_historical_prices(
+      coin,
       now,
       days,
       currency,
@@ -819,10 +924,10 @@ class NativeLibrary {
 
   late final _sync_historical_pricesPtr = _lookup<
       ffi.NativeFunction<
-          CResult_u32 Function(ffi.Int64, ffi.Uint32,
+          CResult_u32 Function(ffi.Uint8, ffi.Int64, ffi.Uint32,
               ffi.Pointer<ffi.Char>)>>('sync_historical_prices');
   late final _sync_historical_prices = _sync_historical_pricesPtr
-      .asFunction<CResult_u32 Function(int, int, ffi.Pointer<ffi.Char>)>();
+      .asFunction<CResult_u32 Function(int, int, int, ffi.Pointer<ffi.Char>)>();
 
   void store_contact(
     int id,
@@ -846,11 +951,13 @@ class NativeLibrary {
       void Function(int, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
 
   CResult_____c_char commit_unsaved_contacts(
+    int coin,
     int anchor_offset,
     ffi.Pointer<ffi.Uint8> fee_bytes,
     int fee_len,
   ) {
     return _commit_unsaved_contacts(
+      coin,
       anchor_offset,
       fee_bytes,
       fee_len,
@@ -859,40 +966,46 @@ class NativeLibrary {
 
   late final _commit_unsaved_contactsPtr = _lookup<
       ffi.NativeFunction<
-          CResult_____c_char Function(ffi.Uint32, ffi.Pointer<ffi.Uint8>,
-              ffi.Uint64)>>('commit_unsaved_contacts');
+          CResult_____c_char Function(ffi.Uint8, ffi.Uint32,
+              ffi.Pointer<ffi.Uint8>, ffi.Uint64)>>('commit_unsaved_contacts');
   late final _commit_unsaved_contacts = _commit_unsaved_contactsPtr.asFunction<
-      CResult_____c_char Function(int, ffi.Pointer<ffi.Uint8>, int)>();
+      CResult_____c_char Function(int, int, ffi.Pointer<ffi.Uint8>, int)>();
 
   void mark_message_read(
+    int coin,
     int message,
     int read,
   ) {
     return _mark_message_read(
+      coin,
       message,
       read,
     );
   }
 
-  late final _mark_message_readPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Uint32, bool)>>(
-          'mark_message_read');
+  late final _mark_message_readPtr = _lookup<
+          ffi.NativeFunction<ffi.Void Function(ffi.Uint8, ffi.Uint32, bool)>>(
+      'mark_message_read');
   late final _mark_message_read =
-      _mark_message_readPtr.asFunction<void Function(int, int)>();
+      _mark_message_readPtr.asFunction<void Function(int, int, int)>();
 
   void mark_all_messages_read(
+    int coin,
+    int account,
     int read,
   ) {
     return _mark_all_messages_read(
+      coin,
+      account,
       read,
     );
   }
 
-  late final _mark_all_messages_readPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(bool)>>(
-          'mark_all_messages_read');
+  late final _mark_all_messages_readPtr = _lookup<
+          ffi.NativeFunction<ffi.Void Function(ffi.Uint8, ffi.Uint32, bool)>>(
+      'mark_all_messages_read');
   late final _mark_all_messages_read =
-      _mark_all_messages_readPtr.asFunction<void Function(int)>();
+      _mark_all_messages_readPtr.asFunction<void Function(int, int, int)>();
 
   void truncate_data() {
     return _truncate_data();
@@ -965,20 +1078,22 @@ class NativeLibrary {
       CResult_____c_char Function(
           int, ffi.Pointer<ffi.Char>, int, ffi.Pointer<ffi.Char>)>();
 
-  CResult_____c_char parse_payment_uri(
+  CResult______u8 decode_payment_uri(
+    int coin,
     ffi.Pointer<ffi.Char> uri,
   ) {
-    return _parse_payment_uri(
+    return _decode_payment_uri(
+      coin,
       uri,
     );
   }
 
-  late final _parse_payment_uriPtr = _lookup<
-          ffi
-          .NativeFunction<CResult_____c_char Function(ffi.Pointer<ffi.Char>)>>(
-      'parse_payment_uri');
-  late final _parse_payment_uri = _parse_payment_uriPtr
-      .asFunction<CResult_____c_char Function(ffi.Pointer<ffi.Char>)>();
+  late final _decode_payment_uriPtr = _lookup<
+      ffi.NativeFunction<
+          CResult______u8 Function(
+              ffi.Uint8, ffi.Pointer<ffi.Char>)>>('decode_payment_uri');
+  late final _decode_payment_uri = _decode_payment_uriPtr
+      .asFunction<CResult______u8 Function(int, ffi.Pointer<ffi.Char>)>();
 
   CResult______u8 generate_key() {
     return _generate_key();
@@ -991,40 +1106,78 @@ class NativeLibrary {
 
   CResult_u8 zip_backup(
     ffi.Pointer<ffi.Char> key,
-    ffi.Pointer<ffi.Char> dst_dir,
+    ffi.Pointer<ffi.Char> path,
+    ffi.Pointer<ffi.Char> temp_dir,
   ) {
     return _zip_backup(
       key,
-      dst_dir,
+      path,
+      temp_dir,
     );
   }
 
   late final _zip_backupPtr = _lookup<
       ffi.NativeFunction<
-          CResult_u8 Function(
-              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>>('zip_backup');
+          CResult_u8 Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('zip_backup');
   late final _zip_backup = _zip_backupPtr.asFunction<
-      CResult_u8 Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+      CResult_u8 Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>)>();
+
+  CResult_____c_char decrypt_backup(
+    ffi.Pointer<ffi.Char> key,
+    ffi.Pointer<ffi.Char> path,
+    ffi.Pointer<ffi.Char> temp_dir,
+  ) {
+    return _decrypt_backup(
+      key,
+      path,
+      temp_dir,
+    );
+  }
+
+  late final _decrypt_backupPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_____c_char Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>>('decrypt_backup');
+  late final _decrypt_backup = _decrypt_backupPtr.asFunction<
+      CResult_____c_char Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>)>();
 
   CResult_u8 unzip_backup(
-    ffi.Pointer<ffi.Char> key,
-    ffi.Pointer<ffi.Char> data_path,
-    ffi.Pointer<ffi.Char> dst_dir,
+    ffi.Pointer<ffi.Char> path,
+    ffi.Pointer<ffi.Char> db_dir,
   ) {
     return _unzip_backup(
-      key,
-      data_path,
-      dst_dir,
+      path,
+      db_dir,
     );
   }
 
   late final _unzip_backupPtr = _lookup<
       ffi.NativeFunction<
-          CResult_u8 Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>)>>('unzip_backup');
+          CResult_u8 Function(
+              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>>('unzip_backup');
   late final _unzip_backup = _unzip_backupPtr.asFunction<
-      CResult_u8 Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
-          ffi.Pointer<ffi.Char>)>();
+      CResult_u8 Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+
+  CResult_____c_char zip_dbs(
+    ffi.Pointer<ffi.Char> passwd,
+    ffi.Pointer<ffi.Char> temp_dir,
+  ) {
+    return _zip_dbs(
+      passwd,
+      temp_dir,
+    );
+  }
+
+  late final _zip_dbsPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_____c_char Function(
+              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>>('zip_dbs');
+  late final _zip_dbs = _zip_dbsPtr.asFunction<
+      CResult_____c_char Function(
+          ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
   CResult______u8 split_data(
     int id,
@@ -1052,9 +1205,8 @@ class NativeLibrary {
   }
 
   late final _merge_dataPtr = _lookup<
-          ffi
-          .NativeFunction<CResult_____c_char Function(ffi.Pointer<ffi.Char>)>>(
-      'merge_data');
+      ffi.NativeFunction<
+          CResult_____c_char Function(ffi.Pointer<ffi.Char>)>>('merge_data');
   late final _merge_data = _merge_dataPtr
       .asFunction<CResult_____c_char Function(ffi.Pointer<ffi.Char>)>();
 
@@ -1164,6 +1316,20 @@ class NativeLibrary {
   late final _get_account_list =
       _get_account_listPtr.asFunction<CResult______u8 Function(int)>();
 
+  CResult_u32 get_first_account(
+    int coin,
+  ) {
+    return _get_first_account(
+      coin,
+    );
+  }
+
+  late final _get_first_accountPtr =
+      _lookup<ffi.NativeFunction<CResult_u32 Function(ffi.Uint8)>>(
+          'get_first_account');
+  late final _get_first_account =
+      _get_first_accountPtr.asFunction<CResult_u32 Function(int)>();
+
   CResult_u32 get_active_account(
     int coin,
   ) {
@@ -1205,9 +1371,8 @@ class NativeLibrary {
   }
 
   late final _get_t_addrPtr = _lookup<
-          ffi
-          .NativeFunction<CResult_____c_char Function(ffi.Uint8, ffi.Uint32)>>(
-      'get_t_addr');
+      ffi.NativeFunction<
+          CResult_____c_char Function(ffi.Uint8, ffi.Uint32)>>('get_t_addr');
   late final _get_t_addr =
       _get_t_addrPtr.asFunction<CResult_____c_char Function(int, int)>();
 
@@ -1222,9 +1387,8 @@ class NativeLibrary {
   }
 
   late final _get_skPtr = _lookup<
-          ffi
-          .NativeFunction<CResult_____c_char Function(ffi.Uint8, ffi.Uint32)>>(
-      'get_sk');
+      ffi.NativeFunction<
+          CResult_____c_char Function(ffi.Uint8, ffi.Uint32)>>('get_sk');
   late final _get_sk =
       _get_skPtr.asFunction<CResult_____c_char Function(int, int)>();
 
@@ -1265,6 +1429,27 @@ class NativeLibrary {
               ffi.Uint8, ffi.Uint32, ffi.Uint32)>>('get_balances');
   late final _get_balances =
       _get_balancesPtr.asFunction<CResult______u8 Function(int, int, int)>();
+
+  CResult______u8 get_pool_balances(
+    int coin,
+    int id,
+    int confirmations,
+    int include_spent,
+  ) {
+    return _get_pool_balances(
+      coin,
+      id,
+      confirmations,
+      include_spent,
+    );
+  }
+
+  late final _get_pool_balancesPtr = _lookup<
+      ffi.NativeFunction<
+          CResult______u8 Function(
+              ffi.Uint8, ffi.Uint32, ffi.Uint32, bool)>>('get_pool_balances');
+  late final _get_pool_balances = _get_pool_balancesPtr
+      .asFunction<CResult______u8 Function(int, int, int, int)>();
 
   CResult______u8 get_db_height(
     int coin,
@@ -1411,6 +1596,22 @@ class NativeLibrary {
           'get_contacts');
   late final _get_contacts =
       _get_contactsPtr.asFunction<CResult______u8 Function(int)>();
+
+  CResult______u8 get_contact(
+    int coin,
+    int id,
+  ) {
+    return _get_contact(
+      coin,
+      id,
+    );
+  }
+
+  late final _get_contactPtr = _lookup<
+          ffi.NativeFunction<CResult______u8 Function(ffi.Uint8, ffi.Uint32)>>(
+      'get_contact');
+  late final _get_contact =
+      _get_contactPtr.asFunction<CResult______u8 Function(int, int)>();
 
   CResult______u8 get_pnl_txs(
     int coin,
@@ -1745,13 +1946,17 @@ const int MAX_ATTEMPTS = 10;
 
 const int N = 200000;
 
-const int Account_VT_ID = 4;
+const int Account_VT_COIN = 4;
 
-const int Account_VT_NAME = 6;
+const int Account_VT_ID = 6;
 
-const int Account_VT_KEY_TYPE = 8;
+const int Account_VT_NAME = 8;
 
-const int Account_VT_BALANCE = 10;
+const int Account_VT_KEY_TYPE = 10;
+
+const int Account_VT_BALANCE = 12;
+
+const int Account_VT_ADDRESS = 14;
 
 const int AccountVec_VT_ACCOUNTS = 4;
 
@@ -1767,6 +1972,8 @@ const int Balance_VT_SAPLING = 14;
 
 const int Balance_VT_ORCHARD = 16;
 
+const int PoolBalance_VT_TRANSPARENT = 4;
+
 const int Height_VT_HEIGHT = 4;
 
 const int Height_VT_TIMESTAMP = 6;
@@ -1780,8 +1987,6 @@ const int ShieldedNoteVec_VT_NOTES = 4;
 const int ShieldedTx_VT_TX_ID = 6;
 
 const int ShieldedTx_VT_SHORT_TX_ID = 10;
-
-const int ShieldedTx_VT_ADDRESS = 18;
 
 const int ShieldedTx_VT_MEMO = 20;
 
@@ -1841,6 +2046,8 @@ const int Backup_VT_FVK = 12;
 
 const int Backup_VT_UVK = 14;
 
+const int Backup_VT_TSK = 16;
+
 const int RaptorQDrops_VT_DROPS = 4;
 
 const int AGEKeys_VT_PK = 6;
@@ -1868,8 +2075,6 @@ const int UnsignedTxSummary_VT_RECIPIENTS = 4;
 const int TxOutput_VT_POOL = 10;
 
 const int TxReport_VT_OUTPUTS = 4;
-
-const int TxReport_VT_TRANSPARENT = 6;
 
 const int TxReport_VT_NET_SAPLING = 12;
 

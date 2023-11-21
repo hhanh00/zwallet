@@ -1,11 +1,11 @@
-flutter pub get
-flutter pub upgrade
-flutter pub run flutter_launcher_icons:main
+dart pub get
+dart pub upgrade
+dart run flutter_launcher_icons:main
 #flutter pub run flutter_app_name
 #flutter pub run change_app_package_name:main me.hanh.ywallet
 flutter gen-l10n
-flutter pub run build_runner build -d
+dart run build_runner build -d
 #flutter pub run flutter_native_splash:create
 
-(cd packages/warp_api_ffi; flutter pub get; flutter pub run build_runner build -d)
+(cd packages/warp_api_ffi; dart pub get; dart run build_runner build -d)
 

@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_protocol/url_protocol.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
@@ -62,11 +61,12 @@ class _SplashState extends State<SplashPage> {
     _setProgress(0.3, 'Register Payment URI handlers');
     await registerURLHandler(this.context);
 
-    if (Platform.isWindows) {
-      for (var c in coins) {
-        registerProtocolHandler(c.currency, arguments: ['%s']);
-      }
-    }
+    // TODO
+    // if (Platform.isWindows) {
+    //   for (var c in coins) {
+    //     registerProtocolHandler(c.currency, arguments: ['%s']);
+    //   }
+    // }
   }
 
   Future<void> _registerQuickActions() async {

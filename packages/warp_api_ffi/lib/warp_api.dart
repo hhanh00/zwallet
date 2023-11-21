@@ -7,7 +7,7 @@ import 'package:flat_buffers/flat_buffers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:ffi/ffi.dart';
-import 'warp_api_generated.dart';
+import 'warp_api_generated.dart' hide bool;
 import 'data_fb_generated.dart';
 
 typedef report_callback = Void Function(Int32);
@@ -24,8 +24,8 @@ NativeLibrary init() {
   return lib;
 }
 
-Pointer<Int8> toNative(String s) {
-  return s.toNativeUtf8().cast<Int8>();
+Pointer<Char> toNative(String s) {
+  return s.toNativeUtf8().cast<Char>();
 }
 
 Pointer<Uint8> toNativeBytes(Uint8List bytes) {
@@ -110,15 +110,15 @@ class WarpApi {
     return await compute(
         (_) => unwrapResultU32(warp_api_lib.new_account(
             coin,
-            name.toNativeUtf8().cast<Int8>(),
-            key.toNativeUtf8().cast<Int8>(),
+            toNative(name),
+            toNative(name),
             index)),
         null);
   }
 
   static void newSubAccount(String name, int index, int count) {
     warp_api_lib.new_sub_account(
-        name.toNativeUtf8().cast<Int8>(), index, count);
+        toNative(name), index, count);
   }
 
   static String ledgerGetFVK(int coin) {
@@ -146,17 +146,17 @@ class WarpApi {
 
   static void importTransparentPath(int coin, int id, String path) {
     warp_api_lib.import_transparent_key(
-        coin, id, path.toNativeUtf8().cast<Int8>());
+        coin, id, toNative(path));
   }
 
   static void importTransparentSecretKey(int coin, int id, String key) {
     warp_api_lib.import_transparent_secret_key(
-        coin, id, key.toNativeUtf8().cast<Int8>());
+        coin, id, toNative(key));
   }
 
   static void importFromZWL(int coin, String name, String path) {
-    warp_api_lib.import_from_zwl(coin, name.toNativeUtf8().cast<Int8>(),
-        path.toNativeUtf8().cast<Int8>());
+    warp_api_lib.import_from_zwl(coin, toNative(name),
+        toNative(path));
   }
 
   static Future<void> skipToLastHeight(int coin) async {
@@ -197,11 +197,11 @@ class WarpApi {
   }
 
   static bool validSeed(int coin, String seed) {
-    return warp_api_lib.is_valid_seed(coin, seed.toNativeUtf8().cast<Int8>()) != 0;
+    return warp_api_lib.is_valid_seed(coin, toNative(seed)) != 0;
   }
 
   static int validKey(int coin, String key) {
-    return warp_api_lib.is_valid_key(coin, key.toNativeUtf8().cast<Int8>());
+    return warp_api_lib.is_valid_key(coin, toNative(key));
   }
 
   static bool validAddress(int coin, String address) {
@@ -336,7 +336,7 @@ class WarpApi {
       int coin, int account, String plan) async {
     return await compute((_) {
       final txid = warp_api_lib.sign_and_broadcast(
-          coin, account, plan.toNativeUtf8().cast<Int8>());
+          coin, account, toNative(plan));
       return unwrapResultString(txid);
     }, null);
   }
@@ -358,7 +358,7 @@ class WarpApi {
 
   static String broadcast(int coin, String txStr) {
     final res =
-        warp_api_lib.broadcast_tx(coin, txStr.toNativeUtf8().cast<Int8>());
+        warp_api_lib.broadcast_tx(coin, toNative(txStr));
     return unwrapResultString(res);
   }
 
@@ -387,7 +387,7 @@ class WarpApi {
   }
 
   // static String ledgerSign(int coin, String txFilename) {
-  //   final res = warp_api_lib.ledger_sign(coin, txFilename.toNativeUtf8().cast<Int8>());
+  //   final res = warp_api_lib.ledger_sign(coin, toNative(txFilename));
   //   return res.cast<Utf8>().toDartString();
   // }
 
@@ -412,7 +412,7 @@ class WarpApi {
           coin,
           today.millisecondsSinceEpoch ~/ 1000,
           365,
-          currency.toNativeUtf8().cast<Int8>()));
+          toNative(currency)));
     }, null);
   }
 
@@ -421,7 +421,7 @@ class WarpApi {
   }
 
   static void updateLWD(int coin, String url) {
-    warp_api_lib.set_coin_lwd_url(coin, url.toNativeUtf8().cast<Int8>());
+    warp_api_lib.set_coin_lwd_url(coin, toNative(url));
   }
 
   static String getLWD(int coin) {
@@ -429,8 +429,8 @@ class WarpApi {
   }
 
   static void storeContact(int id, String name, String address, bool dirty) {
-    warp_api_lib.store_contact(id, name.toNativeUtf8().cast<Int8>(),
-        address.toNativeUtf8().cast<Int8>(), dirty ? 1 : 0);
+    warp_api_lib.store_contact(id, toNative(name),
+        toNative(address), dirty ? 1 : 0);
   }
 
   static String commitUnsavedContacts(int coin, int anchorOffset, FeeT fee) {
@@ -466,7 +466,7 @@ class WarpApi {
   static String makePaymentURI(
       int coin, String address, int amount, String memo) {
     final uri = warp_api_lib.make_payment_uri(
-        coin, toNative(address), amount, memo.toNativeUtf8().cast<Int8>());
+        coin, toNative(address), amount, toNative(memo));
     return unwrapResultString(uri);
   }
 
@@ -499,19 +499,19 @@ class WarpApi {
 
   static List<String> splitData(int id, String data) {
     final res = unwrapResultBytes(
-        warp_api_lib.split_data(id, data.toNativeUtf8().cast<Int8>()));
+        warp_api_lib.split_data(id, toNative(data)));
     final raptorq = RaptorQdrops(res);
     return raptorq.drops!;
   }
 
   static String mergeData(String drop) {
     return unwrapResultString(
-        warp_api_lib.merge_data(drop.toNativeUtf8().cast<Int8>()));
+        warp_api_lib.merge_data(toNative(drop)));
   }
 
   static String getTxSummary(String tx) {
     return unwrapResultString(
-        warp_api_lib.get_tx_summary(tx.toNativeUtf8().cast<Int8>()));
+        warp_api_lib.get_tx_summary(toNative(tx)));
   }
 
   static String getBestServer(List<String> urls) {
@@ -776,7 +776,7 @@ class WarpApi {
 
 String signOnlyIsolateFn(SignOnlyParams params) {
   final txIdRes = warp_api_lib.sign(params.coin, params.account,
-      params.tx.toNativeUtf8().cast<Int8>(), params.port.nativePort);
+      toNative(params.tx), params.port.nativePort);
   if (txIdRes.error != nullptr) throw convertCString(txIdRes.error);
   return convertCString(txIdRes.value);
 }
@@ -888,7 +888,7 @@ class BlockHeightByTimeParams {
   BlockHeightByTimeParams(this.time);
 }
 
-String convertCString(Pointer<Int8> s) {
+String convertCString(Pointer<Char> s) {
   final str = s.cast<Utf8>().toDartString();
   warp_api_lib.deallocate_str(s);
   return str;
