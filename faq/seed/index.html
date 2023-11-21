@@ -5,7 +5,7 @@
 <meta name=generator content="Hugo 0.91.2">
 <meta name=description content>
 <link rel=icon href=/images/favicon.png type=image/png>
-<title>Custom Derivation Path :: YWallet</title>
+<title>Why YWallet does not find my funds? :: YWallet</title>
 <link href=/css/nucleus.css?1700579218 rel=stylesheet>
 <link href=/css/fontawesome-all.min.css?1700579218 rel=stylesheet>
 <link href=/css/hybrid.css?1700579218 rel=stylesheet>
@@ -20,16 +20,15 @@
 <link href=/common.css?1700579218 rel=stylesheet>
 <script src=/js/jquery-3.3.1.min.js?1700579218></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}</style>
-<meta property="og:title" content="Custom Derivation Path">
-<meta property="og:description" content="For Transparent Addresses Only For a single account, it is easier to use the scan sub account feature.
- If you have funds in a legacy wallet (pre NU-5) that hasn&rsquo;t been upgraded to support transaction V5, your funds are inaccessible.
-However, you can create an account in YWallet using the same seed phrase and derivation path.
-The resulting secret key and address will be identical and you will be able to sweep your funds.">
+<meta property="og:title" content="Why YWallet does not find my funds?">
+<meta property="og:description" content="I have the right seed phrase but YWallet does not show the right balance. Where are the rest of my funds?
+Funds are located at addresses that derived from the seed phrase, but it is not a one to one mapping. In fact, from a given seed phrase, you have as many addresses as you want. You need to also know the derivation path.
+seed phrase + derivation path gives you a secret key and therefore an address.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ywallet.app/advanced/custom_path/"><meta property="article:section" content="advanced">
+<meta property="og:url" content="https://ywallet.app/faq/seed/"><meta property="article:section" content="faq">
 <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css integrity=sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs crossorigin=anonymous>
 </head>
-<body data-url=/advanced/custom_path/>
+<body data-url=/faq/seed/>
 <nav id=sidebar class=showVisitedLinks>
 <div id=header-wrapper>
 <div id=header>
@@ -263,8 +262,7 @@ Save to Blockchain
 </li>
 </ul>
 </li>
-<li data-nav-id=/advanced/ title="Advanced Usage" class="dd-item
-parent">
+<li data-nav-id=/advanced/ title="Advanced Usage" class=dd-item>
 <a href=/advanced/><svg class="icon"><use xlink:href="https://ywallet.app//sprite.svg#flask"/></svg>
 Advanced Usage
 <i class="fas fa-check read-icon"></i>
@@ -324,7 +322,7 @@ Sub-Account
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/advanced/custom_path/ title="Custom Derivation Path" class="dd-item active">
+<li data-nav-id=/advanced/custom_path/ title="Custom Derivation Path" class=dd-item>
 <a href=/advanced/custom_path/>
 Custom Derivation Path
 <i class="fas fa-check read-icon"></i>
@@ -450,7 +448,8 @@ Older versions
 </li>
 </ul>
 </li>
-<li data-nav-id=/faq/ title=FAQ class=dd-item>
+<li data-nav-id=/faq/ title=FAQ class="dd-item
+parent">
 <a href=/faq/><svg class="icon"><use xlink:href="https://ywallet.app//sprite.svg#question"/></svg>
 FAQ
 <i class="fas fa-check read-icon"></i>
@@ -462,7 +461,7 @@ Why is the synchronization so slow?
 <i class="fas fa-check read-icon"></i>
 </a>
 </li>
-<li data-nav-id=/faq/seed/ title="Why YWallet does not find my funds?" class=dd-item>
+<li data-nav-id=/faq/seed/ title="Why YWallet does not find my funds?" class="dd-item active">
 <a href=/faq/seed/>
 Why YWallet does not find my funds?
 <i class="fas fa-check read-icon"></i>
@@ -495,21 +494,17 @@ Why YWallet does not find my funds?
 </span>
 <span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-<a href=/>YWallet</a> > <a href=/advanced/>Advanced Usage</a> > Custom Derivation Path
+<a href=/>YWallet</a> > <a href=/faq/>FAQ</a> > Why YWallet does not find my funds?
 </span>
 </div>
 <div class=progress>
 <div class=wrapper>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#for-transparent-addresses-only>For Transparent Addresses Only</a></li>
-<li><a href=#ledger>Ledger</a></li>
-<li><a href=#path>Path</a></li>
-<li><a href=#private-key>Private Key</a></li>
-<li><a href=#how-to>How to</a></li>
-<li><a href=#sweep-funds>Sweep Funds</a></li>
-<li><a href=#demo>Demo</a></li>
-<li><a href=#disclaimer>Disclaimer</a></li>
+<li><a href=#well-couldnt-ywallet-also-scan-for-all-other-known-locations>Well, couldn&rsquo;t YWallet also scan for all other &ldquo;known&rdquo; locations?</a></li>
+<li><a href=#why-wasnt-that-a-problem-before>Why wasn&rsquo;t that a problem before?</a></li>
+<li><a href=#i-still-want-my-funds>I still want my funds</a></li>
+<li><a href=#what-about-ywallet>What about YWallet?</a></li>
 </ul>
 </nav>
 </div>
@@ -520,85 +515,60 @@ Why YWallet does not find my funds?
 </div>
 <div id=body-inner>
 <h1>
-Custom Derivation Path
+Why YWallet does not find my funds?
 </h1>
-<h2 id=for-transparent-addresses-only>For Transparent Addresses Only</h2>
-<div class="notices note"><p>For a single account, it is easier to use the
-scan sub account feature.</p>
+<p>I have the right seed phrase but YWallet does not show the
+right balance. Where are the rest of my funds?</p>
+<p>Funds are located at addresses that derived
+from the seed phrase, but it is not a one to one mapping.
+In fact, from a given seed phrase, you have as many
+addresses as you want. You need to also know the derivation
+path.</p>
+<div class="notices note"><p>seed phrase + derivation path gives you a secret key and therefore an address.</p>
 </div>
-<p>If you have funds in a legacy wallet (pre NU-5)
-that hasn&rsquo;t been upgraded to support transaction V5,
-your funds are inaccessible.</p>
-<p>However, you can create an account in YWallet using
-the same seed phrase and derivation path.</p>
-<p>The resulting secret key and address will be identical
-and you will be able to sweep your funds.</p>
-<h2 id=ledger>Ledger</h2>
-<p>For Ledger, the derivation path is <code>m/44'/133'/0'/0/0</code>
-For a second account in Ledger, the path is <code>m/44'/133'/1'/0/0</code>,
-and so on.</p>
-<p>If you have made several transactions, Ledger will have
-created additional addresses by incrementing the final number:
-<code>m/44'/133'/0'/0/1</code>, etc.</p>
-<div class="notices note"><p>The exact format of the path is important.
-<code>m/44'/133'/0'/0/1</code> is not the same as <code>m/44/133'/0'/0/1</code>
-Note the absence of <code>'</code> on 44.</p>
-</div>
-<p>You can use the website <a href=https://iancoleman.io/bip39/>Mnemonic Code Converter</a> to check your addresses. <em>Don&rsquo;t forget to switch the currency to ZEC</em>.</p>
-<h2 id=path>Path</h2>
-<p>Given <code>account_index</code> and <code>address_index</code>,
-the path is typically:</p>
-<p><code>m/44'/133'/account_index'/0/address_index</code></p>
-<p>for wallets that follow the BIP-44 spec.</p>
-<h2 id=private-key>Private Key</h2>
-<p>Alternatively, you can input a private key that
-follows the Bitcoin Wallet Import Format.</p>
-<h2 id=how-to>How to</h2>
+<p>There is a &ldquo;standard&rdquo; derivation that all shielded wallets use.
+<strong>But then some wallets decided to use additional derivation paths!</strong></p>
 <ul>
-<li>Import an account using the seed phrase</li>
-<li>Switch to the account transparent address</li>
-<li>Long press on the QR code</li>
-<li>Enter the custom derivation path</li>
-<li>Check that the new transparent address matches what you expect</li>
+<li>Whenever you create a new shielded address, Zecwallet Lite
+uses a new derivation path. This is because it does not support diversified addresses.</li>
+<li>Nighthawk, Edge and other ECC SDK 2.0 wallets use a separate
+derivation path for the change. It helps them distinguish incoming funds
+from change.</li>
 </ul>
-<p>This feature is not compatible with the autoscan feature.</p>
-<div class=p-img>
-<img class=img src=../img/2022-07-17_12-12-34.png>
+<p>In this case, only the original wallet knows what derivation paths
+they used and therefore only it knows where to look for the funds.</p>
+<p>
+<div class="notices warning"><p>Every derivation path impacts the synchronization time.</p>
 </div>
-<h2 id=sweep-funds>Sweep Funds</h2>
-<div class=p-img>
-<img class=img src=../img/2023-02-21_19-30-27.png>
-</div>
-<p>If you have a private key from an external account with funds that you want to bring to
-YWallet, you can sweep them without having to modify your current account.</p>
-<p>In fact, this is the recommended way for it leaves your account unchanged. The other methods
-replace the transparent key derived from your seed phrase.</p>
-<ul>
-<li>Choose &ldquo;Sweep&rdquo; in the Advanced Menu. Turn on Advanced Mode if you haven&rsquo;t done it already.</li>
-<li>Enter the private key</li>
-<li>Select the destination pool</li>
-<li>Press OK</li>
-</ul>
-<p>A transaction will be broadcast that transfers all the funds to the designated pool in your current account.</p>
-<h2 id=demo>Demo</h2>
-<div class=youtube-player data-id=LmIrVUA0tFM></div>
-</div>
-<h2 id=disclaimer>Disclaimer</h2>
-<div class="notices warning"><p>Be advised that using your seed phrase online or in a hot
-wallet compromises its security.
-YWallet does not upload any data but your device may
-be infected with malware that does.</p>
-</div>
-<p>To mitigate the risks, sweep all the other funds from your hardware wallet to a new seed phrase and never use the old one.</p>
-<link href=/youtube.css rel=stylesheet integrity>
-<script src=/youtube.js></script>
+2 addresses means 2 times the number of trial decryptions.
+3 addresses means 3 times, etc&mldr;</p>
+<h2 id=well-couldnt-ywallet-also-scan-for-all-other-known-locations>Well, couldn&rsquo;t YWallet also scan for all other &ldquo;known&rdquo; locations?</h2>
+<p>First of all, scanning an address is costly. Public blockchains
+do not have this problem because the scan is made once and for all
+by the remote server. Private blockchains MUST scan locally if they
+want to preserve the privacy of user.
+Secondly, YWallet is not in the business of emulating other wallets'
+behavior, especially when it has a massive performance impact.</p>
+<h2 id=why-wasnt-that-a-problem-before>Why wasn&rsquo;t that a problem before?</h2>
+<p>Before and after the SPAM (Jul 2022-Sep 2023), there were very
+few transactions per block. The SPAM increased that number 100 fold.
+What used to be acceptable became unusable. However, the problem
+was always there, and could very likely come back actually.</p>
+<h2 id=i-still-want-my-funds>I still want my funds</h2>
+<p>You can manually create an account for each shielded address
+that has funds, and rescan them all at once. YWallet supports
+importing from secret key.</p>
+<h2 id=what-about-ywallet>What about YWallet?</h2>
+<p>YWallet only uses the primary derivation path. Your funds
+will always be found by other wallets. However, the inverse
+is not necessarily true.</p>
 <footer class=footline>
 </footer>
 </div>
 </div>
 <div id=navigation>
-<a class="nav nav-prev" href=/advanced/sub-account/ title=Sub-Account> <i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=/advanced/batch-save/ title="Batch Save/Load" style=margin-right:0><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-prev" href=/faq/spam/ title="Why is the synchronization so slow?"> <i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=/faq/spam/ title="Why is the synchronization so slow?" style=margin-right:0><i class="fa fa-chevron-right"></i></a>
 </div>
 </section>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
