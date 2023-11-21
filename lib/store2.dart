@@ -43,8 +43,9 @@ void initSyncListener() {
 
 Timer? syncTimer;
 
-void startAutoSync() {
+Future<void> startAutoSync() async {
   if (syncTimer == null) {
+    await syncStatus2.sync(false, auto: true);
     syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
       syncStatus2.sync(false, auto: true);
       aa.updateDivisified();

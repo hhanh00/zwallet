@@ -4,8 +4,6 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
-import 'package:k_chart/extension/map_ext.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'appsettings.dart';
 import 'generated/intl/messages.dart';

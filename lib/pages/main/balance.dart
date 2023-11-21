@@ -112,12 +112,9 @@ class BalanceState extends State<BalanceWidget> {
     throw 'Unreachable';
   }
 
-  int get otherBalance {
-    switch (widget.mode) {
-      case 1:
-        return aa.poolBalances.sapling + aa.poolBalances.orchard;
-      default:
-        return aa.poolBalances.transparent;
-    }
-  }
+  int get totalBalance => aa.poolBalances.transparent +
+    aa.poolBalances.sapling +
+    aa.poolBalances.orchard;
+
+  int get otherBalance => totalBalance - balance;
 }

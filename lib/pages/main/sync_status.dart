@@ -18,7 +18,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
     super.initState();
     Future(() async {
       await syncStatus2.update();
-      startAutoSync();
+      await startAutoSync();
     });
   }
 
