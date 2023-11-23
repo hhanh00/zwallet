@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../appsettings.dart';
-import '../../generated/intl/messages.dart';
 import '../../store2.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
@@ -104,7 +103,7 @@ class BalanceState extends State<BalanceWidget> {
     switch (widget.mode) {
       case 0:
       case 4:
-        return aa.poolBalances.sapling + aa.poolBalances.orchard;
+        return totalBalance;
       case 1:
         return aa.poolBalances.transparent;
       case 2:
