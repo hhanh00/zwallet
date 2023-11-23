@@ -24,12 +24,11 @@ class SyncStatusState extends State<SyncStatusWidget> {
 
   String getSyncText(int syncedHeight) {
     final s = S.of(context);
+    final latestHeight = syncStatus2.latestHeight;
+    if (latestHeight == null) return s.connectionError;
+
     if (!syncStatus2.syncing) return syncedHeight.toString();
     if (syncStatus2.paused) return s.syncPaused;
-
-    final latestHeight = syncStatus2.latestHeight;
-
-    if (latestHeight == null) return s.disconnected;
 
     final timestamp = syncStatus2.timestamp?.let(timeago.format) ?? s.na;
     final downloadedSize = syncStatus2.downloadedSize;

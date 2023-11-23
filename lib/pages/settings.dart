@@ -10,8 +10,10 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:protobuf/protobuf.dart';
+import 'package:warp_api/warp_api.dart';
 
 import '../accounts.dart';
+import '../coin/coin.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import '../appsettings.dart' as app;
@@ -98,6 +100,8 @@ class _SettingsState extends State<SettingsPage>
       coinKey.currentState?.let((c) => c.coinSettings.save(aa.coin));
       app.appSettings = app.AppSettingsExtension.load(prefs);
       app.coinSettings = app.CoinSettingsExtension.load(aa.coin);
+      final serverUrl = resolveURL(coins[aa.coin], app.coinSettings);
+      WarpApi.updateLWD(aa.coin, serverUrl);
       aaSequence.settingsSeqno = DateTime.now().millisecondsSinceEpoch;
       Future(() async {
         await marketPrice.update();
@@ -669,3 +673,12 @@ Future<List<String>?> fetchCurrencies() async {
   } catch (_) {}
   return null;
 }
+
+String resolveURL(CoinBase c, CoinSettings settings) {
+  if (settings.lwd.index >= 0 && settings.lwd.index < c.lwd.length)
+    return c.lwd[settings.lwd.index].url;
+  else {
+    return settings.lwd.customURL;
+  }
+}
+

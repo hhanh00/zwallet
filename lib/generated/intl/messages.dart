@@ -2416,6 +2416,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Deduct fee from amount'**
   String get deductFee;
+
+  /// No description provided for @connectionError.
+  ///
+  /// In en, this message translates to:
+  /// **'CONNECTION ERROR'**
+  String get connectionError;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

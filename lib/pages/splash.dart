@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
+import 'settings.dart';
 import 'utils.dart';
 import '../appsettings.dart';
 import '../coin/coin.dart';
@@ -104,19 +105,11 @@ class _SplashState extends State<SplashPage> {
       final settings = p.isNotEmpty
           ? CoinSettings.fromBuffer(base64Decode(p))
           : CoinSettings();
-      final url = _resolveURL(c, settings);
+      final url = resolveURL(c, settings);
       WarpApi.updateLWD(coin, url);
       try {
         WarpApi.migrateData(c.coin);
       } catch (_) {} // do not fail on network exception
-    }
-  }
-
-  String _resolveURL(CoinBase c, CoinSettings settings) {
-    if (settings.lwd.index >= 0 && settings.lwd.index < c.lwd.length)
-      return c.lwd[settings.lwd.index].url;
-    else {
-      return settings.lwd.customURL;
     }
   }
 
