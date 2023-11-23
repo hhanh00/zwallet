@@ -1211,4 +1211,7 @@ class SEs extends S {
 
   @override
   String get confirmSaveKeys => 'Have you saved your keys?';
+
+  @override
+  String get deductFee => 'Deduct fee from amount';
 }

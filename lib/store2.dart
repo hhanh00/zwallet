@@ -45,6 +45,7 @@ Timer? syncTimer;
 
 Future<void> startAutoSync() async {
   if (syncTimer == null) {
+    await syncStatus2.update();
     await syncStatus2.sync(false, auto: true);
     syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
       syncStatus2.sync(false, auto: true);
@@ -108,7 +109,8 @@ abstract class _SyncStatus2 with Store {
   Future<void> update() async {
     try {
       latestHeight = await WarpApi.getLatestHeight(aa.coin);
-    } on String catch (_) {
+    } on String catch (e) {
+      print(e);
     }
     syncedHeight = WarpApi.getDbHeight(aa.coin).height;
   }
@@ -121,6 +123,7 @@ abstract class _SyncStatus2 with Store {
     if (syncing) return;
     await update();
     final lh = latestHeight;
+    if (lh == null) return;
     // don't auto sync more than 1 month of data
     if (!rescan && auto && lh != null && lh - syncedHeight > 30*24*60*4/5) return;
     if (isSynced) return;

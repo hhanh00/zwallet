@@ -5,7 +5,6 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:another_flushbar/flushbar_helper.dart';
-import 'package:cross_file/cross_file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,6 +44,14 @@ final DateFormat txDateFormat = DateFormat("MM-dd HH:mm");
 final DateFormat msgDateFormat = DateFormat("MM-dd HH:mm");
 final DateFormat msgDateFormatFull = DateFormat("yy-MM-dd HH:mm:ss");
 
+class Amount {
+  int value;
+  bool deductFee;
+  Amount(this.value, this.deductFee);
+
+  @override
+  String toString() => 'Amount($value, $deductFee)';
+}
 
 int decimalDigits(bool fullPrec) => fullPrec ? MAX_PRECISION : 3;
 String decimalFormat(double x, int decimalDigits, {String symbol = ''}) =>

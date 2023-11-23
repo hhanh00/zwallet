@@ -2410,6 +2410,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Have you saved your keys?'**
   String get confirmSaveKeys;
+
+  /// No description provided for @deductFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Deduct fee from amount'**
+  String get deductFee;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

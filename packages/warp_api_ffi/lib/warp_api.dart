@@ -97,10 +97,6 @@ class WarpApi {
     unwrapResultU8(warp_api_lib.init_wallet(coin, toNative(dbPath)));
   }
 
-  static void resetApp() {
-    warp_api_lib.reset_app();
-  }
-
   static void mempoolRun(int port) {
     compute(mempoolRunIsolateFn, port);
   }
@@ -217,12 +213,6 @@ class WarpApi {
     return account != 0 && warp_api_lib.check_account(coin, account) != 0;
   }
 
-  static void setActiveAccount(int coin, int account) {
-    warp_api_lib.set_active(coin);
-    warp_api_lib.set_active_account(coin, account);
-    // warp_api_lib.mempool_set_active(coin, account);
-  }
-
   // static Future<String> sendPayment(
   //     int coin,
   //     int account,
@@ -288,12 +278,6 @@ class WarpApi {
     final txPlan = warp_api_lib.shield_taddr(coin, account, amount,
         anchorOffset, toNativeBytes(fee2), fee2.lengthInBytes);
     return unwrapResultString(txPlan);
-  }
-
-  static Future<List<AddressBalance>> scanTransparentAccounts(
-      int coin, int account, int gapLimit) async {
-    return await compute(scanTransparentAccountsParamsIsolateFn,
-        {'coin': coin, 'account': account, 'gapLimit': gapLimit});
   }
 
   static Future<String> prepareTx(
@@ -514,14 +498,6 @@ class WarpApi {
         warp_api_lib.get_tx_summary(toNative(tx)));
   }
 
-  static String getBestServer(List<String> urls) {
-    final servers = ServersObjectBuilder(urls: urls);
-    final buffer = servers.toBytes();
-    final bestServer = unwrapResultString(
-        warp_api_lib.get_best_server(toNativeBytes(buffer), buffer.length));
-    return bestServer;
-  }
-
   static Future<KeyPack> deriveZip32(int coin, int idAccount, int accountIndex,
       int externalIndex, int? addressIndex) async {
     final res = await compute((_) => unwrapResultBytes(warp_api_lib.derive_zip32(
@@ -569,10 +545,6 @@ class WarpApi {
   static List<Account> getAccountList(int coin) {
     final r = unwrapResultBytes(warp_api_lib.get_account_list(coin));
     return AccountVec(r).accounts!;
-  }
-
-  static int getActiveAccountId(int coin) {
-    return unwrapResultU32(warp_api_lib.get_active_account(coin));
   }
 
   static void setActiveAccountId(int coin, int id) {
@@ -654,31 +626,31 @@ class WarpApi {
     return pn;
   }
 
-  static List<SendTemplateT> getSendTemplates(int coin) {
-    final r = unwrapResultBytes(warp_api_lib.get_templates(coin));
-    final templates = SendTemplateVec(r).unpack();
-    return templates.templates!;
-  }
+  // static List<SendTemplateT> getSendTemplates(int coin) {
+  //   final r = unwrapResultBytes(warp_api_lib.get_templates(coin));
+  //   final templates = SendTemplateVec(r).unpack();
+  //   return templates.templates!;
+  // }
 
-  static int saveSendTemplate(int coin, SendTemplateT t) {
-    final template = SendTemplateObjectBuilder(
-      id: t.id,
-      title: t.title,
-      address: t.address,
-      amount: t.amount,
-      feeIncluded: t.feeIncluded,
-      fiatAmount: t.fiatAmount,
-      fiat: t.fiat,
-      includeReplyTo: t.includeReplyTo,
-      subject: t.subject,
-      body: t.body,
-    ).toBytes();
-    print("templ $t");
-    final data = toNativeBytes(template);
+  // static int saveSendTemplate(int coin, SendTemplateT t) {
+  //   final template = SendTemplateObjectBuilder(
+  //     id: t.id,
+  //     title: t.title,
+  //     address: t.address,
+  //     amount: t.amount,
+  //     feeIncluded: t.feeIncluded,
+  //     fiatAmount: t.fiatAmount,
+  //     fiat: t.fiat,
+  //     includeReplyTo: t.includeReplyTo,
+  //     subject: t.subject,
+  //     body: t.body,
+  //   ).toBytes();
+  //   print("templ $t");
+  //   final data = toNativeBytes(template);
 
-    return unwrapResultU32(
-        warp_api_lib.save_send_template(coin, data, template.length));
-  }
+  //   return unwrapResultU32(
+  //       warp_api_lib.save_send_template(coin, data, template.length));
+  // }
 
   static void deleteSendTemplate(int coin, int id) {
     warp_api_lib.delete_send_template(coin, id);
@@ -802,16 +774,6 @@ String transferPoolsIsolateFn(TransferPoolsParams params) {
 int getTBalanceIsolateFn(GetTBalanceParams params) {
   return unwrapResultU64(
       warp_api_lib.get_taddr_balance(params.coin, params.account));
-}
-
-List<AddressBalance> scanTransparentAccountsParamsIsolateFn(
-    Map<String, Object> params) {
-  final r = unwrapResultBytes(warp_api_lib.scan_transparent_accounts(
-      params['coin'] as int,
-      params['account'] as int,
-      params['gapLimit'] as int));
-  final v = AddressBalanceVec(r);
-  return v.values!;
 }
 
 class SyncParams {

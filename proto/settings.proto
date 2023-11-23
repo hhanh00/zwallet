@@ -28,6 +28,7 @@ message AppSettings {
 }
 
 message CoinSettings {
+    uint32 account = 1;
     ServerURL lwd = 2;
     ServerURL explorer = 3;
     bool manual_fee = 4;

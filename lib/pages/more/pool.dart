@@ -67,7 +67,7 @@ class _PoolTransferState extends State<PoolTransferPage> {
                           to = v!;
                         })),
                 Gap(16),
-                AmountPicker(amount, spendable: spendable, onChanged: (v) => setState(() => amount = v!),),
+                AmountPicker(amount, spendable: spendable, onChanged: (a) => setState(() => amount = a!.value),),
                 Gap(16),
                 FormBuilderTextField(
                   name: 'memo',

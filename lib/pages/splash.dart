@@ -101,7 +101,9 @@ class _SplashState extends State<SplashPage> {
       WarpApi.setDbPasswd(coin, appStore.dbPassword);
       WarpApi.initWallet(coin, c.dbFullPath);
       final p = WarpApi.getProperty(coin, 'settings');
-      final settings = p.isNotEmpty ? CoinSettings.fromBuffer(base64Decode(p)) : CoinSettings();
+      final settings = p.isNotEmpty
+          ? CoinSettings.fromBuffer(base64Decode(p))
+          : CoinSettings();
       final url = _resolveURL(c, settings);
       WarpApi.updateLWD(coin, url);
       try {
@@ -113,15 +115,6 @@ class _SplashState extends State<SplashPage> {
   String _resolveURL(CoinBase c, CoinSettings settings) {
     if (settings.lwd.index >= 0 && settings.lwd.index < c.lwd.length)
       return c.lwd[settings.lwd.index].url;
-    else if (settings.lwd.index == -1) {
-      var servers = c.lwd.map((c) => c.url).toList();
-      servers.add(settings.lwd.customURL);
-      try {
-        return WarpApi.getBestServer(servers);
-      } catch (e) {
-        return c.lwd.first.url;
-      }
-    }
     else {
       return settings.lwd.customURL;
     }
@@ -138,8 +131,7 @@ class _SplashState extends State<SplashPage> {
   }
 
   _initForegroundTask() {
-    if (Platform.isAndroid)
-      initForegroundTask();
+    if (Platform.isAndroid) initForegroundTask();
     _setProgress(0.9, 'Initialize Foreground Service');
   }
 
@@ -196,14 +188,20 @@ class _LoadProgressState extends State<LoadProgress> {
 
 StreamSubscription? subUniLinks;
 
+bool setActiveAccountOf(int coin) {
+  final coinSettings = CoinSettingsExtension.load(coin);
+  final id = coinSettings.account;
+  if (id == 0) return false;
+  setActiveAccount(coin, id);
+  return true;
+}
+
 void handleUri(BuildContext context, Uri uri) {
   final scheme = uri.scheme;
   final coinDef = coins.firstWhere((c) => c.currency == scheme);
   final coin = coinDef.coin;
-  final id = WarpApi.getActiveAccountId(coin);
-  setActiveAccount(coin, id);
-  GoRouter.of(context)
-      .pushNamed('/send_to_pay_uri', extra: uri.toString());
+  if (setActiveAccountOf(coin))
+    GoRouter.of(context).pushNamed('/send_to_pay_uri', extra: uri.toString());
 }
 
 Future<void> registerURLHandler(BuildContext context) async {
@@ -224,8 +222,7 @@ void handleQuickAction(BuildContext context, String type) {
   final t = type.split(".");
   final coin = int.parse(t[0]);
   final shortcut = t[1];
-  final id = WarpApi.getActiveAccountId(coin);
-  setActiveAccount(coin, id);
+  setActiveAccountOf(coin);
   switch (shortcut) {
     case 'receive':
       Navigator.of(context).pushNamed('/receive');
@@ -235,4 +232,3 @@ void handleQuickAction(BuildContext context, String type) {
       break;
   }
 }
-

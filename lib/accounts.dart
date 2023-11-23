@@ -30,6 +30,8 @@ abstract class _AASequence with Store {
 void setActiveAccount(int coin, int id) {
   coinSettings = CoinSettingsExtension.load(coin);
   aa = ActiveAccount2.fromId(coin, id);
+  coinSettings.account = id;
+  coinSettings.save(coin);
   aa.updateDivisified();
   aaSequence.seqno = DateTime.now().microsecondsSinceEpoch;
 }

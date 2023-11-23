@@ -9,6 +9,7 @@ import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../main/home.dart';
 import '../main/qr_address.dart';
+import '../utils.dart';
 import '../widgets.dart';
 
 class PaymentURIPage extends StatefulWidget {
@@ -41,7 +42,7 @@ class _PaymentURIState extends State<PaymentURIPage> {
                 memo: memoController.text,
                 paymentURI: false,
               ),
-              AmountPicker(amount, onChanged: onAmount),
+              AmountPicker(amount, onChanged: onAmount, canDeductFee: false),
               FormBuilderTextField(
                 name: 'memo',
                 decoration: InputDecoration(label: Text(s.memo)),
@@ -56,9 +57,9 @@ class _PaymentURIState extends State<PaymentURIPage> {
     );
   }
 
-  onAmount(int? a) {
+  onAmount(Amount? a) {
     EasyDebounce.debounce('payment_uri', Duration(milliseconds: 500), () {
-      amount = a!;
+      amount = a!.value;
       setState(() {});
     });
   }

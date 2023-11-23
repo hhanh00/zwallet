@@ -376,6 +376,7 @@ class AppSettings extends $pb.GeneratedMessage {
 
 class CoinSettings extends $pb.GeneratedMessage {
   factory CoinSettings({
+    $core.int? account,
     ServerURL? lwd,
     ServerURL? explorer,
     $core.bool? manualFee,
@@ -386,6 +387,9 @@ class CoinSettings extends $pb.GeneratedMessage {
     $core.bool? contactsSaved,
   }) {
     final $result = create();
+    if (account != null) {
+      $result.account = account;
+    }
     if (lwd != null) {
       $result.lwd = lwd;
     }
@@ -417,6 +421,7 @@ class CoinSettings extends $pb.GeneratedMessage {
   factory CoinSettings.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'CoinSettings', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'account', $pb.PbFieldType.OU3)
     ..aOM<ServerURL>(2, _omitFieldNames ? '' : 'lwd', subBuilder: ServerURL.create)
     ..aOM<ServerURL>(3, _omitFieldNames ? '' : 'explorer', subBuilder: ServerURL.create)
     ..aOB(4, _omitFieldNames ? '' : 'manualFee')
@@ -449,79 +454,88 @@ class CoinSettings extends $pb.GeneratedMessage {
   static CoinSettings getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CoinSettings>(create);
   static CoinSettings? _defaultInstance;
 
+  @$pb.TagNumber(1)
+  $core.int get account => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set account($core.int v) { $_setUnsignedInt32(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasAccount() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAccount() => clearField(1);
+
   @$pb.TagNumber(2)
-  ServerURL get lwd => $_getN(0);
+  ServerURL get lwd => $_getN(1);
   @$pb.TagNumber(2)
   set lwd(ServerURL v) { setField(2, v); }
   @$pb.TagNumber(2)
-  $core.bool hasLwd() => $_has(0);
+  $core.bool hasLwd() => $_has(1);
   @$pb.TagNumber(2)
   void clearLwd() => clearField(2);
   @$pb.TagNumber(2)
-  ServerURL ensureLwd() => $_ensure(0);
+  ServerURL ensureLwd() => $_ensure(1);
 
   @$pb.TagNumber(3)
-  ServerURL get explorer => $_getN(1);
+  ServerURL get explorer => $_getN(2);
   @$pb.TagNumber(3)
   set explorer(ServerURL v) { setField(3, v); }
   @$pb.TagNumber(3)
-  $core.bool hasExplorer() => $_has(1);
+  $core.bool hasExplorer() => $_has(2);
   @$pb.TagNumber(3)
   void clearExplorer() => clearField(3);
   @$pb.TagNumber(3)
-  ServerURL ensureExplorer() => $_ensure(1);
+  ServerURL ensureExplorer() => $_ensure(2);
 
   @$pb.TagNumber(4)
-  $core.bool get manualFee => $_getBF(2);
+  $core.bool get manualFee => $_getBF(3);
   @$pb.TagNumber(4)
-  set manualFee($core.bool v) { $_setBool(2, v); }
+  set manualFee($core.bool v) { $_setBool(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasManualFee() => $_has(2);
+  $core.bool hasManualFee() => $_has(3);
   @$pb.TagNumber(4)
   void clearManualFee() => clearField(4);
 
   @$pb.TagNumber(5)
-  $fixnum.Int64 get fee => $_getI64(3);
+  $fixnum.Int64 get fee => $_getI64(4);
   @$pb.TagNumber(5)
-  set fee($fixnum.Int64 v) { $_setInt64(3, v); }
+  set fee($fixnum.Int64 v) { $_setInt64(4, v); }
   @$pb.TagNumber(5)
-  $core.bool hasFee() => $_has(3);
+  $core.bool hasFee() => $_has(4);
   @$pb.TagNumber(5)
   void clearFee() => clearField(5);
 
   @$pb.TagNumber(6)
-  $core.bool get spamFilter => $_getBF(4);
+  $core.bool get spamFilter => $_getBF(5);
   @$pb.TagNumber(6)
-  set spamFilter($core.bool v) { $_setBool(4, v); }
+  set spamFilter($core.bool v) { $_setBool(5, v); }
   @$pb.TagNumber(6)
-  $core.bool hasSpamFilter() => $_has(4);
+  $core.bool hasSpamFilter() => $_has(5);
   @$pb.TagNumber(6)
   void clearSpamFilter() => clearField(6);
 
   @$pb.TagNumber(7)
-  $core.int get uaType => $_getIZ(5);
+  $core.int get uaType => $_getIZ(6);
   @$pb.TagNumber(7)
-  set uaType($core.int v) { $_setUnsignedInt32(5, v); }
+  set uaType($core.int v) { $_setUnsignedInt32(6, v); }
   @$pb.TagNumber(7)
-  $core.bool hasUaType() => $_has(5);
+  $core.bool hasUaType() => $_has(6);
   @$pb.TagNumber(7)
   void clearUaType() => clearField(7);
 
   @$pb.TagNumber(8)
-  $core.int get replyUa => $_getIZ(6);
+  $core.int get replyUa => $_getIZ(7);
   @$pb.TagNumber(8)
-  set replyUa($core.int v) { $_setUnsignedInt32(6, v); }
+  set replyUa($core.int v) { $_setUnsignedInt32(7, v); }
   @$pb.TagNumber(8)
-  $core.bool hasReplyUa() => $_has(6);
+  $core.bool hasReplyUa() => $_has(7);
   @$pb.TagNumber(8)
   void clearReplyUa() => clearField(8);
 
   @$pb.TagNumber(9)
-  $core.bool get contactsSaved => $_getBF(7);
+  $core.bool get contactsSaved => $_getBF(8);
   @$pb.TagNumber(9)
-  set contactsSaved($core.bool v) { $_setBool(7, v); }
+  set contactsSaved($core.bool v) { $_setBool(8, v); }
   @$pb.TagNumber(9)
-  $core.bool hasContactsSaved() => $_has(7);
+  $core.bool hasContactsSaved() => $_has(8);
   @$pb.TagNumber(9)
   void clearContactsSaved() => clearField(9);
 }

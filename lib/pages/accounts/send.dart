@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:im_stepper/stepper.dart';
+import 'package:tuple/tuple.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -52,6 +53,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
   int receivers = 0;
   int pools = 7;
   int amount = 0;
+  bool deductFee = false;
   MemoData memo = MemoData(false, '', appSettings.memo);
   int? contactIndex;
   late final accounts = WarpApi.getAccountList(aa.coin);
@@ -152,7 +154,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
             key: poolKey,
             balances: balances,
           ),
-      () => SendAmount(amount, spendable: spendable, key: amountKey),
+      () => SendAmount(amount, spendable: spendable, key: amountKey, canDeductFee: widget.single,),
       () => SendMemo(memo, key: memoKey),
     ];
     final body = b[activeStep].call();
@@ -219,7 +221,8 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     if (activeStep == 3) {
       final v = amountKey.currentState!.amount;
       if (v == null) return false;
-      amount = v;
+      amount = v.item1;
+      deductFee = v.item2;
     }
     if (activeStep == 4) {
       final v = memoKey.currentState!.memo;
@@ -261,6 +264,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     final recipientBuilder = RecipientObjectBuilder(
       address: address,
       amount: amount,
+      feeIncluded: deductFee,
       replyTo: memo.reply,
       subject: memo.subject,
       memo: memo.memo,
@@ -462,7 +466,9 @@ class SendPoolState extends State<SendPool> {
 class SendAmount extends StatefulWidget {
   final int initialAmount;
   final int spendable;
-  SendAmount(this.initialAmount, {super.key, required this.spendable});
+  final bool canDeductFee;
+  SendAmount(this.initialAmount,
+      {super.key, required this.spendable, required this.canDeductFee});
 
   @override
   State<StatefulWidget> createState() => SendAmountState();
@@ -471,6 +477,7 @@ class SendAmount extends StatefulWidget {
 class SendAmountState extends State<SendAmount> {
   final formKey = GlobalKey<FormBuilderState>();
   late int _amount = widget.initialAmount;
+  bool _deductFee = false;
 
   @override
   Widget build(BuildContext context) {
@@ -483,15 +490,21 @@ class SendAmountState extends State<SendAmount> {
         child: AmountPicker(
           widget.initialAmount,
           spendable: widget.spendable,
-          onChanged: (v) => setState(() => _amount = v!),
+          onChanged: (a) => setState(
+            () {
+              _amount = a!.value;
+              _deductFee = a.deductFee;
+            },
+          ),
+          canDeductFee: widget.canDeductFee,
         ),
       ),
     ]);
   }
 
-  int? get amount {
+  Tuple2<int, bool>? get amount {
     if (!formKey.currentState!.validate()) return null;
-    return _amount;
+    return Tuple2(_amount, _deductFee);
   }
 }
 
@@ -566,6 +579,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   String _address = '';
   int _pools = 7;
   int _amount = 0;
+  bool _deductFee = false;
   MemoData? _memo;
 
   @override
@@ -590,7 +604,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                   InputTextQR(
                     _address,
                     lines: 4,
-                    onSaved: (v) => setState(() => _address = v!),
+                    onSaved: (v) => v?.let((v) => setState(() => _address = v)),
                     buttonsBuilder: _extraAddressButtons,
                   ),
                   PoolSelection(
@@ -601,7 +615,10 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                   AmountPicker(
                     _amount,
                     spendable: spendable,
-                    onChanged: (v) => setState(() => _amount = v!),
+                    onChanged: (a) => setState(() {
+                      _amount = a!.value;
+                      _deductFee = a.deductFee;
+                    }),
                   ),
                   InputMemo(
                     MemoData(
@@ -615,18 +632,25 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         ));
   }
 
-  List<Widget> _extraAddressButtons(BuildContext context) {
+  List<Widget> _extraAddressButtons(BuildContext context,
+      {Function(String)? onChanged}) {
     return [
-      IconButton.outlined(onPressed: () async {
-        final c = await GoRouter.of(context).push<Contact>('/more/contacts?selectable=1');
-        c?.let((c) => setState(() => _address = c.address!));
-      }, icon: FaIcon(FontAwesomeIcons.addressBook)),
+      IconButton.outlined(
+          onPressed: () async {
+            final c = await GoRouter.of(context)
+                .push<Contact>('/more/contacts?selectable=1');
+            c?.let((c) => onChanged?.call(c.address!));
+          },
+          icon: FaIcon(FontAwesomeIcons.addressBook)),
       Gap(8),
-      IconButton.outlined(onPressed: () async {
-        final a = await GoRouter.of(context).push<Account>('/account/account_manager');
-        a?.let((a) => setState(() => _address = a.address!));
-
-      }, icon: FaIcon(FontAwesomeIcons.users)),
+      IconButton.outlined(
+          onPressed: () async {
+            final a = await GoRouter.of(context)
+                .push<Account>('/account/account_manager');
+            print('${a?.address}');
+            a?.let((a) => onChanged?.call(a.address!));
+          },
+          icon: FaIcon(FontAwesomeIcons.users)),
     ];
   }
 
@@ -635,10 +659,11 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     if (form.validate()) {
       form.save();
       print(
-          '$_address $_amount $_pools ${_memo?.reply} ${_memo?.subject} ${_memo?.memo}');
+          'send $_address $_amount $_deductFee $_pools ${_memo?.reply} ${_memo?.subject} ${_memo?.memo}');
       final builder = RecipientObjectBuilder(
         address: _address,
         amount: _amount,
+        feeIncluded: _deductFee,
         replyTo: _memo?.reply ?? false,
         subject: _memo?.subject ?? '',
         memo: _memo?.memo ?? '',

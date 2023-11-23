@@ -119,18 +119,6 @@ class NativeLibrary {
   late final _migrate_data_db =
       _migrate_data_dbPtr.asFunction<CResult_u8 Function(int)>();
 
-  void set_active(
-    int active,
-  ) {
-    return _set_active(
-      active,
-    );
-  }
-
-  late final _set_activePtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Uint8)>>('set_active');
-  late final _set_active = _set_activePtr.asFunction<void Function(int)>();
-
   void set_coin_lwd_url(
     int coin,
     ffi.Pointer<ffi.Char> lwd_url,
@@ -178,14 +166,6 @@ class NativeLibrary {
       'set_coin_passwd');
   late final _set_coin_passwd = _set_coin_passwdPtr
       .asFunction<void Function(int, ffi.Pointer<ffi.Char>)>();
-
-  void reset_app() {
-    return _reset_app();
-  }
-
-  late final _reset_appPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function()>>('reset_app');
-  late final _reset_app = _reset_appPtr.asFunction<void Function()>();
 
   void mempool_run(
     int port,
@@ -654,25 +634,6 @@ class NativeLibrary {
   late final _shield_taddr = _shield_taddrPtr.asFunction<
       CResult_____c_char Function(
           int, int, int, int, ffi.Pointer<ffi.Uint8>, int)>();
-
-  CResult______u8 scan_transparent_accounts(
-    int coin,
-    int account,
-    int gap_limit,
-  ) {
-    return _scan_transparent_accounts(
-      coin,
-      account,
-      gap_limit,
-    );
-  }
-
-  late final _scan_transparent_accountsPtr = _lookup<
-      ffi.NativeFunction<
-          CResult______u8 Function(
-              ffi.Uint8, ffi.Uint32, ffi.Uint32)>>('scan_transparent_accounts');
-  late final _scan_transparent_accounts = _scan_transparent_accountsPtr
-      .asFunction<CResult______u8 Function(int, int, int)>();
 
   CResult_____c_char prepare_multi_payment(
     int coin,
@@ -1225,23 +1186,6 @@ class NativeLibrary {
   late final _get_tx_summary = _get_tx_summaryPtr
       .asFunction<CResult_____c_char Function(ffi.Pointer<ffi.Char>)>();
 
-  CResult_____c_char get_best_server(
-    ffi.Pointer<ffi.Uint8> servers,
-    int len,
-  ) {
-    return _get_best_server(
-      servers,
-      len,
-    );
-  }
-
-  late final _get_best_serverPtr = _lookup<
-      ffi.NativeFunction<
-          CResult_____c_char Function(
-              ffi.Pointer<ffi.Uint8>, ffi.Uint64)>>('get_best_server');
-  late final _get_best_server = _get_best_serverPtr
-      .asFunction<CResult_____c_char Function(ffi.Pointer<ffi.Uint8>, int)>();
-
   void import_from_zwl(
     int coin,
     ffi.Pointer<ffi.Char> name,
@@ -1329,20 +1273,6 @@ class NativeLibrary {
           'get_first_account');
   late final _get_first_account =
       _get_first_accountPtr.asFunction<CResult_u32 Function(int)>();
-
-  CResult_u32 get_active_account(
-    int coin,
-  ) {
-    return _get_active_account(
-      coin,
-    );
-  }
-
-  late final _get_active_accountPtr =
-      _lookup<ffi.NativeFunction<CResult_u32 Function(ffi.Uint8)>>(
-          'get_active_account');
-  late final _get_active_account =
-      _get_active_accountPtr.asFunction<CResult_u32 Function(int)>();
 
   CResult_u8 set_active_account(
     int coin,
@@ -1547,25 +1477,6 @@ class NativeLibrary {
           'get_templates');
   late final _get_templates =
       _get_templatesPtr.asFunction<CResult______u8 Function(int)>();
-
-  CResult_u32 save_send_template(
-    int coin,
-    ffi.Pointer<ffi.Uint8> template_,
-    int len,
-  ) {
-    return _save_send_template(
-      coin,
-      template_,
-      len,
-    );
-  }
-
-  late final _save_send_templatePtr = _lookup<
-      ffi.NativeFunction<
-          CResult_u32 Function(ffi.Uint8, ffi.Pointer<ffi.Uint8>,
-              ffi.Uint64)>>('save_send_template');
-  late final _save_send_template = _save_send_templatePtr
-      .asFunction<CResult_u32 Function(int, ffi.Pointer<ffi.Uint8>, int)>();
 
   CResult_u8 delete_send_template(
     int coin,
