@@ -261,11 +261,10 @@ class _InputTextQRState extends State<InputTextQR> {
           //   // controller.text = 'HAHA';
           //   print(controller.text);
           // }, child: Text('TEST')),
-          Gap(16),
           Container(
-            width: 80,
+            width: 40,
             child: Column(children: [
-              IconButton.outlined(
+              IconButton(
                 onPressed: () => qr(context, field),
                 icon: Icon(Icons.qr_code),
               ),

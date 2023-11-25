@@ -107,7 +107,7 @@ class WarpApi {
         (_) => unwrapResultU32(warp_api_lib.new_account(
             coin,
             toNative(name),
-            toNative(name),
+            toNative(key),
             index)),
         null);
   }
