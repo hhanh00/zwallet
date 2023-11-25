@@ -799,7 +799,7 @@ class SEn extends S {
   String get resumeScan => 'Resume Scan';
 
   @override
-  String get syncPaused => 'Sync Paused';
+  String get syncPaused => 'PAUSED - Tap to Resume';
 
   @override
   String get derivationPath => 'Derivation Path';

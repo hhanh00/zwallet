@@ -1610,7 +1610,7 @@ abstract class S {
   /// No description provided for @syncPaused.
   ///
   /// In en, this message translates to:
-  /// **'Sync Paused'**
+  /// **'PAUSED - Tap to Resume'**
   String get syncPaused;
 
   /// No description provided for @derivationPath.

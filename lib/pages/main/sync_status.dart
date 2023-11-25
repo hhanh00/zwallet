@@ -27,8 +27,8 @@ class SyncStatusState extends State<SyncStatusWidget> {
     final latestHeight = syncStatus2.latestHeight;
     if (latestHeight == null) return s.connectionError;
 
-    if (!syncStatus2.syncing) return syncedHeight.toString();
     if (syncStatus2.paused) return s.syncPaused;
+    if (!syncStatus2.syncing) return syncedHeight.toString();
 
     final timestamp = syncStatus2.timestamp?.let(timeago.format) ?? s.na;
     final downloadedSize = syncStatus2.downloadedSize;

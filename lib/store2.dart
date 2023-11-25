@@ -125,7 +125,10 @@ abstract class _SyncStatus2 with Store {
     final lh = latestHeight;
     if (lh == null) return;
     // don't auto sync more than 1 month of data
-    if (!rescan && auto && lh != null && lh - syncedHeight > 30*24*60*4/5) return;
+    if (!rescan && auto && lh - syncedHeight > 30*24*60*4/5) {
+      paused = true;
+      return;
+    }
     if (isSynced) return;
     try {
       syncing = true;
