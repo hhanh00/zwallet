@@ -54,38 +54,49 @@ class _PoolTransferState extends State<PoolTransferPage> {
             child: Column(
               children: [
                 HorizontalBarChart(balances),
-                FieldUARadio(from,
-                    name: 'from',
-                    label: s.fromPool,
-                    onChanged: (v) => setState(() {
-                          from = v!;
-                        })),
-                FieldUARadio(to,
-                    name: 'to',
-                    label: s.toPool,
-                    onChanged: (v) => setState(() {
-                          to = v!;
-                        })),
-                Gap(16),
-                AmountPicker(amount, spendable: spendable, onChanged: (a) => setState(() => amount = a!.value),),
-                Gap(16),
-                FormBuilderTextField(
-                  name: 'memo',
-                  decoration: InputDecoration(label: Text(s.memo)),
-                  controller: memoController,
-                  maxLines: 10,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      FieldUARadio(from,
+                          name: 'from',
+                          label: s.fromPool,
+                          onChanged: (v) => setState(() {
+                                from = v!;
+                              })),
+                      FieldUARadio(to,
+                          name: 'to',
+                          label: s.toPool,
+                          onChanged: (v) => setState(() {
+                                to = v!;
+                              })),
+                      Gap(16),
+                      AmountPicker(
+                        amount,
+                        spendable: spendable,
+                        onChanged: (a) => setState(() => amount = a!.value),
+                      ),
+                      Gap(16),
+                      FormBuilderTextField(
+                        name: 'memo',
+                        decoration: InputDecoration(label: Text(s.memo)),
+                        controller: memoController,
+                        maxLines: 10,
+                      ),
+                      FormBuilderTextField(
+                          name: 'split',
+                          decoration:
+                              InputDecoration(label: Text(s.maxAmountPerNote)),
+                          controller: splitController,
+                          keyboardType:
+                              TextInputType.numberWithOptions(decimal: true),
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.numeric(),
+                            FormBuilderValidators.min(0, inclusive: false),
+                          ]))
+                    ],
+                  ),
                 ),
-                FormBuilderTextField(
-                    name: 'split',
-                    decoration:
-                        InputDecoration(label: Text(s.maxAmountPerNote)),
-                    controller: splitController,
-                    keyboardType:
-                        TextInputType.numberWithOptions(decimal: true),
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.numeric(),
-                      FormBuilderValidators.min(0, inclusive: false),
-                    ]))
               ],
             ),
           ),
@@ -98,17 +109,17 @@ class _PoolTransferState extends State<PoolTransferPage> {
     final splitAmount = stringToAmount(splitController.text);
     _calc(true);
     final plan = await WarpApi.transferPools(
-          aa.coin,
-          aa.id,
-          1 << from,
-          1 << to,
-          amount,
-          false,
-          memoController.text,
-          splitAmount,
-          appSettings.anchorOffset,
-          coinSettings.feeT,
-        );
+      aa.coin,
+      aa.id,
+      1 << from,
+      1 << to,
+      amount,
+      false,
+      memoController.text,
+      splitAmount,
+      appSettings.anchorOffset,
+      coinSettings.feeT,
+    );
     _calc(false);
     GoRouter.of(context).push('/account/txplan?tab=more', extra: plan);
   }

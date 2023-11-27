@@ -1216,5 +1216,5 @@ class SEs extends S {
   String get deductFee => 'Deduct fee from amount';
 
   @override
-  String get connectionError => 'CONNECTION ERROR';
+  String get connectionError => 'DISCONNECTED';
 }

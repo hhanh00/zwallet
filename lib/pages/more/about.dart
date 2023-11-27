@@ -21,6 +21,7 @@ class AboutPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(s.about)),
       body: SingleChildScrollView(
+        child: Padding(padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
         child: Column(
           children: [
             MarkdownBody(data: content),
@@ -31,7 +32,7 @@ class AboutPage extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 
   openGithub(String commitId) {

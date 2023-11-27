@@ -9,7 +9,6 @@ import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
-import 'package:cross_file/cross_file.dart';
 
 import '../../generated/intl/messages.dart';
 import '../utils.dart';
@@ -34,63 +33,66 @@ class _BatchBackupState extends State<BatchBackupPage> {
           title: Text(s.backupAllAccounts),
           actions: [IconButton(onPressed: key, icon: Icon(Icons.key))]),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Gap(16),
-            InputDecorator(
-              decoration: InputDecoration(
-                  label: Text(s.fullBackup), border: OutlineInputBorder()),
-              child: Card(
-                child: FormBuilder(
-                  key: backupFormKey,
-                  child: Column(children: [
-                    FormBuilderTextField(
-                      name: 'backup',
-                      decoration: InputDecoration(label: Text(s.publicKey)),
-                      controller: backupKeyController,
-                    ),
-                    Gap(8),
-                    ButtonBar(
-                      children: [
-                        ElevatedButton.icon(
-                          onPressed: save,
-                          icon: Icon(Icons.save),
-                          label: Text(s.fullBackup),
-                        )
-                      ],
-                    )
-                  ]),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              Gap(16),
+              InputDecorator(
+                decoration: InputDecoration(
+                    label: Text(s.fullBackup), border: OutlineInputBorder()),
+                child: Card(
+                  child: FormBuilder(
+                    key: backupFormKey,
+                    child: Column(children: [
+                      FormBuilderTextField(
+                        name: 'backup',
+                        decoration: InputDecoration(label: Text(s.publicKey)),
+                        controller: backupKeyController,
+                      ),
+                      Gap(8),
+                      ButtonBar(
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: save,
+                            icon: Icon(Icons.save),
+                            label: Text(s.fullBackup),
+                          )
+                        ],
+                      )
+                    ]),
+                  ),
                 ),
               ),
-            ),
-            Gap(16),
-            InputDecorator(
-              decoration: InputDecoration(
-                  label: Text(s.fullRestore), border: OutlineInputBorder()),
-              child: Card(
-                child: FormBuilder(
-                  key: restoreFormKey,
-                  child: Column(children: [
-                    FormBuilderTextField(
-                      name: 'restore',
-                      decoration: InputDecoration(label: Text(s.secretKey)),
-                      controller: restoreKeyController,
-                    ),
-                    Gap(8),
-                    ButtonBar(
-                      children: [
-                        ElevatedButton.icon(
-                          onPressed: restore,
-                          icon: Icon(Icons.open_in_new),
-                          label: Text(s.fullRestore),
-                        )
-                      ],
-                    )
-                  ]),
+              Gap(16),
+              InputDecorator(
+                decoration: InputDecoration(
+                    label: Text(s.fullRestore), border: OutlineInputBorder()),
+                child: Card(
+                  child: FormBuilder(
+                    key: restoreFormKey,
+                    child: Column(children: [
+                      FormBuilderTextField(
+                        name: 'restore',
+                        decoration: InputDecoration(label: Text(s.secretKey)),
+                        controller: restoreKeyController,
+                      ),
+                      Gap(8),
+                      ButtonBar(
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: restore,
+                            icon: Icon(Icons.open_in_new),
+                            label: Text(s.fullRestore),
+                          )
+                        ],
+                      )
+                    ]),
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -178,7 +180,8 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
         child: Column(
           children: [
             Gap(16),
-            Panel(s.help, child: Text(s.keygenHelp, style: t.textTheme.titleSmall)),
+            Panel(s.help,
+                child: Text(s.keygenHelp, style: t.textTheme.titleSmall)),
             Gap(16),
             Panel(s.encryptionKey, text: _keys?.pk, save: true),
             Gap(16),
@@ -195,7 +198,8 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
   }
 
   _ok() async {
-    final confirm = await showConfirmDialog(context, s.keygen, s.confirmSaveKeys);
+    final confirm =
+        await showConfirmDialog(context, s.keygen, s.confirmSaveKeys);
     if (confirm) GoRouter.of(context).pop(_keys);
   }
 }

@@ -2420,7 +2420,7 @@ abstract class S {
   /// No description provided for @connectionError.
   ///
   /// In en, this message translates to:
-  /// **'CONNECTION ERROR'**
+  /// **'DISCONNECTED'**
   String get connectionError;
 }
 

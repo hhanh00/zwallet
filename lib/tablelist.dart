@@ -23,30 +23,35 @@ class TableListPage<U, T extends TableListItemMetadata<U>>
   final int view;
   final T metadata;
   final List<U> items;
+  final EdgeInsets? padding;
 
   TableListPage({
     Key? key,
     required this.view,
     required this.items,
     required this.metadata,
+    this.padding,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    switch (view) {
-      case 0:
-        return _TableView(items, metadata);
-      case 1:
-        return _ListView(items, metadata);
-      case 2:
-        return OrientationBuilder(builder: (context, orientation) {
-          if (orientation == Orientation.portrait)
-            return _ListView(items, metadata);
-          else
-            return _TableView(items, metadata);
-        });
-    }
-    throw 'Unreachable';
+    final inner = () {
+      switch (view) {
+        case 0:
+          return _TableView(items, metadata);
+        case 1:
+          return _ListView(items, metadata);
+        case 2:
+          return OrientationBuilder(builder: (context, orientation) {
+            if (orientation == Orientation.portrait)
+              return _ListView(items, metadata);
+            else
+              return _TableView(items, metadata);
+          });
+      }
+      throw 'Unreachable';
+    } ();
+    return padding != null ? Padding(padding: padding!, child: inner) : inner;
   }
 }
 
@@ -55,7 +60,8 @@ abstract class TableListItemMetadata<T> {
   Widget? header(BuildContext context);
   List<Widget>? actions(BuildContext context);
   List<ColumnDefinition> columns(BuildContext context);
-  Widget toListTile(BuildContext context, int index, T item, {void Function(void Function())? setState});
+  Widget toListTile(BuildContext context, int index, T item,
+      {void Function(void Function())? setState});
   DataRow toRow(BuildContext context, int index, T item);
   void inverseSelection();
   SortConfig2? sortBy(String field);
@@ -160,23 +166,25 @@ class ListViewState<U, T extends TableListItemMetadata<U>>
   Widget build(BuildContext context) {
     final headerText = widget.metadata.headerText(context);
     final Widget? headerTextWidget = headerText?.let((h) => ListTile(
-            onTap: _onInvert,
-            title: h,
-            trailing: Icon(Icons.select_all),
-          ));
+          onTap: _onInvert,
+          title: h,
+          trailing: Icon(Icons.select_all),
+        ));
     final header = headerTextWidget ?? widget.metadata.header(context);
     return CustomScrollView(
       key: UniqueKey(),
       semanticChildCount: widget.items.length,
       slivers: [
-        if (header != null) SliverToBoxAdapter(
-          child: header,
-        ),
+        if (header != null)
+          SliverToBoxAdapter(
+            child: header,
+          ),
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, index) => index.isEven
-                ? widget.metadata
-                    .toListTile(context, index ~/ 2, widget.items[index ~/ 2], setState: setState)
+                ? widget.metadata.toListTile(
+                    context, index ~/ 2, widget.items[index ~/ 2],
+                    setState: setState)
                 : Divider(),
             childCount: widget.items.length * 2 - 1,
             semanticIndexCallback: (Widget widget, int index) =>

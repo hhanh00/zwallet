@@ -64,6 +64,9 @@ abstract class _SyncStatus2 with Store {
   ETA eta = ETA();
 
   @observable
+  bool connected = true;
+
+  @observable
   int syncedHeight = 0;
 
   @observable
@@ -109,8 +112,10 @@ abstract class _SyncStatus2 with Store {
   Future<void> update() async {
     try {
       latestHeight = await WarpApi.getLatestHeight(aa.coin);
+      connected = true;
     } on String catch (e) {
-      print(e);
+      logger.d(e);
+      connected = false;
     }
     syncedHeight = WarpApi.getDbHeight(aa.coin).height;
   }

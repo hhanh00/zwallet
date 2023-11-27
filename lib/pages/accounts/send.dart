@@ -170,7 +170,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
           actions: actions,
         ),
         body: SingleChildScrollView(
-          child: Column(
+          child: Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Column(
             children: [
               IconStepper(
                 stepColor: t.colorScheme.primary,
@@ -187,7 +187,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
               wrapWithLoading(body),
             ],
           ),
-        ));
+        )));
   }
 
   bool validate() {
@@ -597,6 +597,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         ),
         body: wrapWithLoading(
           SingleChildScrollView(
+            child: Padding(padding: EdgeInsets.symmetric(horizontal: 16), 
             child: FormBuilder(
               key: formKey,
               child: Column(
@@ -629,13 +630,13 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
               ),
             ),
           ),
-        ));
+        )));
   }
 
   List<Widget> _extraAddressButtons(BuildContext context,
       {Function(String)? onChanged}) {
     return [
-      IconButton.outlined(
+      IconButton(
           onPressed: () async {
             final c = await GoRouter.of(context)
                 .push<Contact>('/more/contacts?selectable=1');
@@ -643,7 +644,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
           },
           icon: FaIcon(FontAwesomeIcons.addressBook)),
       Gap(8),
-      IconButton.outlined(
+      IconButton(
           onPressed: () async {
             final a = await GoRouter.of(context)
                 .push<Account>('/account/account_manager');

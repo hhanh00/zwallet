@@ -14,7 +14,6 @@ import '../../accounts.dart';
 import 'settings.dart';
 import 'utils.dart';
 import '../appsettings.dart';
-import '../coin/coin.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import '../init.dart';
@@ -39,7 +38,6 @@ class _SplashState extends State<SplashPage> {
         await _registerURLHandler();
         await _registerQuickActions();
         _initWallets();
-        await syncStatus2.update();
         await _restoreActive();
         initSyncListener();
         _initForegroundTask();

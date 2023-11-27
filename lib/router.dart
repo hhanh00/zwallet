@@ -338,8 +338,7 @@ class _ScaffoldBar extends State<ScaffoldBar> {
           widget.shell.goBranch(index);
         },
       ),
-      body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16), child: widget.shell),
+      body: widget.shell,
     );
   }
 

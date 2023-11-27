@@ -3,7 +3,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../appsettings.dart';
@@ -39,6 +38,7 @@ class _SweepState extends State<SweepPage>
         ),
         body: LoadingWrapper(loading,
             child: SingleChildScrollView(
+              child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
               child: FormBuilder(
                 key: formKey,
                 child: Column(children: [
@@ -97,7 +97,7 @@ class _SweepState extends State<SweepPage>
                         onSaved: (v) => setState(() => _address = v)),
                 ]),
               ),
-            )));
+            ))));
   }
 
   ok() async {

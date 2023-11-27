@@ -24,8 +24,9 @@ class SyncStatusState extends State<SyncStatusWidget> {
 
   String getSyncText(int syncedHeight) {
     final s = S.of(context);
+    if (!syncStatus2.connected) return s.connectionError;
     final latestHeight = syncStatus2.latestHeight;
-    if (latestHeight == null) return s.connectionError;
+    if (latestHeight == null) return '';
 
     if (syncStatus2.paused) return s.syncPaused;
     if (!syncStatus2.syncing) return syncedHeight.toString();
@@ -72,10 +73,12 @@ class SyncStatusState extends State<SyncStatusWidget> {
         : t.textTheme.bodyMedium!.apply(color: t.primaryColor);
     final Widget inner = GestureDetector(
         onTap: _onSync,
-        child: Container(
-            color: t.colorScheme.background,
-            padding: EdgeInsets.all(8),
-            child: Text(text, style: syncStyle)));
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+                color: t.colorScheme.background,
+                padding: EdgeInsets.all(8),
+                child: Text(text, style: syncStyle))));
     final value = syncStatus2.eta.progress?.let((x) => x.toDouble() / 100.0);
     return SizedBox(
       height: 50,

@@ -257,12 +257,8 @@ class _InputTextQRState extends State<InputTextQR> {
               onChanged: (v) { print('onChanged $v'); field.didChange(v); },
             ),
           ),
-          // ElevatedButton(onPressed: () {
-          //   // controller.text = 'HAHA';
-          //   print(controller.text);
-          // }, child: Text('TEST')),
           Container(
-            width: 40,
+            width: 44,
             child: Column(children: [
               IconButton(
                 onPressed: () => qr(context, field),

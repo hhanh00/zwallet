@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:key_guardmanager/key_guardmanager.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:reflectable/reflectable.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -33,6 +34,8 @@ import '../generated/intl/messages.dart';
 import '../router.dart';
 import '../store2.dart';
 import 'widgets.dart';
+
+var logger = Logger();
 
 const APP_NAME = "YWallet";
 const ZECUNIT = 100000000.0;

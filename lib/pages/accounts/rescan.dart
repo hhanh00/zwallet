@@ -37,15 +37,14 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
         ],
       ),
       body: wrapWithLoading(SingleChildScrollView(
-        child: Column(
+        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Column(
           children: [
             CalendarDatePicker(
                 initialDate: minDate,
                 firstDate: minDate,
                 lastDate: maxDate,
                 onDateChanged: _onDate),
-            Padding(
-                padding: EdgeInsets.symmetric(vertical: 8), child: Text(s.or)),
+            Gap(8),
             TextFormField(
               decoration: InputDecoration(labelText: s.height),
               keyboardType: TextInputType.number,
@@ -59,7 +58,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
           ],
         ),
       )),
-    );
+    ));
   }
 
   _onDate(date) {

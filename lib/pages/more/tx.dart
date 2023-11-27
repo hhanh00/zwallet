@@ -23,6 +23,7 @@ class TxPage extends StatelessWidget {
           aaSequence.seqno;
           aaSequence.settingsSeqno;
           return TableListPage(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
             view: appSettings.txView,
             items: aa.txs.items,
             metadata: TableListTxMetadata(),

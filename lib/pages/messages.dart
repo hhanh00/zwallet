@@ -1,6 +1,5 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -23,6 +22,7 @@ class MessagePage extends StatelessWidget {
           aaSequence.seqno;
           aaSequence.settingsSeqno;
           return TableListPage(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
             view: appSettings.messageView,
             items: aa.messages.items,
             metadata: TableListMessageMetadata(),

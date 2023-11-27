@@ -32,55 +32,62 @@ class _BudgetState extends State<BudgetPage> {
         appBar: AppBar(title: Text(s.budget)),
         body: Observer(builder: (context) {
           syncStatus2.syncedHeight;
-          return Column(
-            children: [
-              Section(
-                title: s.largestSpendingsByAddress,
-                color: t.colorScheme.primary,
-                child: Container(height: 130, child: BudgetChart()),
-              ),
-              Section(
-                  title: s.accountBalanceHistory,
-                  color: t.colorScheme.secondary,
-                  child: Container(
-                    height: height,
-                    child: Chart<TimeSeriesPoint<double>>(
-                        data: aa.accountBalances,
-                        variables: {
-                          'day': Variable<TimeSeriesPoint<double>, DateTime>(
-                              accessor: (data) =>
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                      data.day * DAY_MS),
-                              scale: TimeScale(
-                                  formatter: (dt) =>
-                                      chartDateFormat.format(dt))),
-                          'balance': Variable<TimeSeriesPoint<double>, double>(
-                              accessor: (data) => data.value),
-                        },
-                        marks: [
-                          LineMark(),
-                          AreaMark(
-                            shape: ShapeEncode(
-                                value: BasicAreaShape(smooth: true)),
-                            color: ColorEncode(
-                                value: Defaults.colors10.first.withAlpha(80)),
-                          ),
-                        ],
-                        axes: [Defaults.horizontalAxis, Defaults.verticalAxis],
-                        selections: {
-                          'touchMove': PointSelection(
-                            on: {
-                              GestureType.scaleUpdate,
-                              GestureType.tapDown,
-                              GestureType.longPressMoveUpdate
-                            },
-                            dim: Dim.x,
-                          )
-                        },
-                        tooltip: TooltipGuide(),
-                        crosshair: CrosshairGuide()),
-                  )),
-            ],
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                Section(
+                  title: s.largestSpendingsByAddress,
+                  color: t.colorScheme.primary,
+                  child: Container(height: 130, child: BudgetChart()),
+                ),
+                Section(
+                    title: s.accountBalanceHistory,
+                    color: t.colorScheme.secondary,
+                    child: Container(
+                      height: height,
+                      child: Chart<TimeSeriesPoint<double>>(
+                          data: aa.accountBalances,
+                          variables: {
+                            'day': Variable<TimeSeriesPoint<double>, DateTime>(
+                                accessor: (data) =>
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                        data.day * DAY_MS),
+                                scale: TimeScale(
+                                    formatter: (dt) =>
+                                        chartDateFormat.format(dt))),
+                            'balance':
+                                Variable<TimeSeriesPoint<double>, double>(
+                                    accessor: (data) => data.value),
+                          },
+                          marks: [
+                            LineMark(),
+                            AreaMark(
+                              shape: ShapeEncode(
+                                  value: BasicAreaShape(smooth: true)),
+                              color: ColorEncode(
+                                  value: Defaults.colors10.first.withAlpha(80)),
+                            ),
+                          ],
+                          axes: [
+                            Defaults.horizontalAxis,
+                            Defaults.verticalAxis
+                          ],
+                          selections: {
+                            'touchMove': PointSelection(
+                              on: {
+                                GestureType.scaleUpdate,
+                                GestureType.tapDown,
+                                GestureType.longPressMoveUpdate
+                              },
+                              dim: Dim.x,
+                            )
+                          },
+                          tooltip: TooltipGuide(),
+                          crosshair: CrosshairGuide()),
+                    )),
+              ],
+            ),
           );
         }));
   }
@@ -95,8 +102,7 @@ class _BudgetChartState extends State<BudgetChart> {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      HorizontalBarChart(
-          aa.spendings.map((s) => s.amount / ZECUNIT).toList()),
+      HorizontalBarChart(aa.spendings.map((s) => s.amount / ZECUNIT).toList()),
       BudgetTable(aa.spendings)
     ]);
   }

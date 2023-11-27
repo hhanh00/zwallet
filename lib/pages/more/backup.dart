@@ -38,11 +38,13 @@ class BackupPage extends StatelessWidget {
       style = small;
     }
     if (backup.sk != null) {
-      cards.add(BackupPanel(name, s.secretKey, backup.sk!, Icon(Icons.vpn_key), style: style));
+      cards.add(BackupPanel(name, s.secretKey, backup.sk!, Icon(Icons.vpn_key),
+          style: style));
       style = small;
     }
     if (backup.uvk != null) {
-      cards.add(BackupPanel(name, s.unifiedViewingKey, backup.uvk!, Icon(Icons.visibility),
+      cards.add(BackupPanel(
+          name, s.unifiedViewingKey, backup.uvk!, Icon(Icons.visibility),
           style: style));
       style = small;
     }
@@ -60,11 +62,14 @@ class BackupPage extends StatelessWidget {
     }
 
     return Scaffold(
-        appBar: AppBar(title: Text(s.backup)),
-        body: SingleChildScrollView(
-            child: Card(
+      appBar: AppBar(title: Text(s.backup)),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: Column(children: cards),
-        )));
+        ),
+      ),
+    );
   }
 }
 
