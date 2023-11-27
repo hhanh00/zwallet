@@ -61,6 +61,8 @@ class _NewImportAccountState extends State<NewImportAccountPage>
             key: formKey,
             child: Column(
               children: [
+                Image.asset('assets/icon.png', height: 128),
+                Gap(16),
                 FormBuilderTextField(
                   name: 'name',
                   decoration: InputDecoration(labelText: s.accountName),
