@@ -67,10 +67,9 @@ class _SettingsState extends State<SettingsPage>
           Tab(text: s.theme),
         ]),
         actions: [
-          ElevatedButton.icon(
+          IconButton(
             onPressed: _ok,
             icon: Icon(Icons.check),
-            label: Text(s.ok),
           )
         ],
       ),

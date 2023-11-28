@@ -37,7 +37,10 @@ class _ContactsState extends State<ContactsPage> {
               IconButton(onPressed: _edit, icon: Icon(Icons.edit)),
             if (idSelected != null)
               IconButton(onPressed: _delete, icon: Icon(Icons.delete)),
-            IconButton(onPressed: _save, icon: Icon(Icons.save)), // TODO: use coinsettings.contactsSaved flag
+            IconButton(
+                onPressed: _save,
+                icon: Icon(
+                    Icons.save)), // TODO: use coinsettings.contactsSaved flag
             IconButton(onPressed: _add, icon: Icon(Icons.add)),
             if (widget.selectable && idSelected != null)
               IconButton(onPressed: _select, icon: Icon(Icons.check)),
@@ -139,7 +142,9 @@ class _ContactEditState extends State<ContactEditPage> {
           title: Text(s.editContact),
           actions: [IconButton(onPressed: _save, icon: Icon(Icons.save))],
         ),
-        body: FormBuilder(
+        body: SingleChildScrollView(
+        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
+        child: FormBuilder(
             key: formKey,
             child: Column(children: [
               FormBuilderTextField(
@@ -152,7 +157,7 @@ class _ContactEditState extends State<ContactEditPage> {
                 controller: addressController,
                 maxLines: 10,
               ),
-            ])));
+            ])))));
   }
 
   _save() {
@@ -182,34 +187,38 @@ class _ContactAddState extends State<ContactAddPage> {
           IconButton(onPressed: add, icon: Icon(Icons.add)),
         ],
       ),
-      body: FormBuilder(
-        key: formKey,
-        child: Column(
-          children: [
-            FormBuilderTextField(
-              name: 'name',
-              decoration: InputDecoration(label: Text(s.name)),
-              controller: nameController,
-              validator: FormBuilderValidators.required(),
-            ),
-            Row(children: [
-              Expanded(
-                  child: FormBuilderTextField(
-                name: 'address',
-                decoration: InputDecoration(label: Text(s.address)),
-                controller: addressController,
-                validator: addressValidator,
-              )),
-              IconButton.outlined(onPressed: _qr, icon: Icon(Icons.qr_code)),
-            ]),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
+        child: FormBuilder(
+          key: formKey,
+          child: Column(
+            children: [
+              FormBuilderTextField(
+                name: 'name',
+                decoration: InputDecoration(label: Text(s.name)),
+                controller: nameController,
+                validator: FormBuilderValidators.required(),
+              ),
+              Row(children: [
+                Expanded(
+                    child: FormBuilderTextField(
+                  name: 'address',
+                  decoration: InputDecoration(label: Text(s.address)),
+                  controller: addressController,
+                  validator: addressValidator,
+                )),
+                IconButton.outlined(onPressed: _qr, icon: Icon(Icons.qr_code)),
+              ]),
+            ],
+          ),
         ),
       ),
-    );
+    ));
   }
 
   _qr() async {
-    addressController.text = await scanQRCode(context, validator: addressValidator);
+    addressController.text =
+        await scanQRCode(context, validator: addressValidator);
   }
 
   add() async {

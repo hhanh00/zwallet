@@ -174,6 +174,7 @@ class TransactionState extends State<TransactionPage> {
                 onPressed: open, icon: Icon(Icons.open_in_browser)),
       ]),
       body: SingleChildScrollView(
+        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             Gap(16),
@@ -195,7 +196,7 @@ class TransactionState extends State<TransactionPage> {
           ],
         ),
       ),
-    );
+    ));
   }
 
   open() {

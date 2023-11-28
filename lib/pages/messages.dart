@@ -234,6 +234,7 @@ class _MessageItemState extends State<MessageItemPage> {
         IconButton(onPressed: open, icon: Icon(Icons.open_in_browser)),
       ]),
       body: SingleChildScrollView(
+        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(children: [
           Gap(16),
           Panel(s.datetime, text: ts),
@@ -261,7 +262,7 @@ class _MessageItemState extends State<MessageItemPage> {
           // )),
         ]),
       ),
-    );
+    ));
   }
 
   prev() {

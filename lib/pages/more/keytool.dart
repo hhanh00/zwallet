@@ -33,17 +33,19 @@ class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
         appBar: AppBar(title: Text(s.keyTool), actions: [
           IconButton(onPressed: refresh, icon: Icon(Icons.refresh))
         ]),
-        body: wrapWithLoading(TableListPage(
-          key: UniqueKey(),
-          view: 2,
-          items: keys,
-          metadata: TableListKeyMetadata(
-              shielded: shielded,
-              accountIndex: account,
-              external: external,
-              addressIndex: address,
-              formKey: formKey),
-        )));
+        body: wrapWithLoading(Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: TableListPage(
+                  key: UniqueKey(),
+                  view: 2,
+                  items: keys,
+                  metadata: TableListKeyMetadata(
+                      shielded: shielded,
+                      accountIndex: account,
+                      external: external,
+                      addressIndex: address,
+                      formKey: formKey),
+                ))));
   }
 
   void refresh() {

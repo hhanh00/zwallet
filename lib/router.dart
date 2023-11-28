@@ -117,11 +117,6 @@ final router = GoRouter(
                   builder: (context, state) => QuickSendPage(),
                 ),
                 GoRoute(
-                  path: 'send_to_pay_uri',
-                  builder: (context, state) =>
-                      PlaceHolderPage('send_to_pay_uri'),
-                ),
-                GoRoute(
                   path: 'pay_uri',
                   builder: (context, state) => PaymentURIPage(),
                 ),

@@ -318,8 +318,10 @@ int stringToAmount(String? s) {
   return (parseNumber(s) * ZECUNIT_INT).toInt();
 }
 
-String amountToString2(int amount, {int decimalDigits = MAX_PRECISION}) =>
-    decimalFormat(amount / ZECUNIT, decimalDigits);
+String amountToString2(int amount, {int? digits}) {
+  final dd = digits ?? decimalDigits(appSettings.fullPrec);
+  return decimalFormat(amount / ZECUNIT, dd);
+}
 
 Future<void> saveFile(String data, String filename, String title) async {
   await saveFileBinary(utf8.encode(data), filename, title);

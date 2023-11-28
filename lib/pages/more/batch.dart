@@ -177,6 +177,7 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
         ],
       ),
       body: SingleChildScrollView(
+        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             Gap(16),
@@ -189,7 +190,7 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
           ],
         ),
       ),
-    );
+    ));
   }
 
   _keygen() async {

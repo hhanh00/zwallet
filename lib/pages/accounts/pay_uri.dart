@@ -33,6 +33,7 @@ class _PaymentURIState extends State<PaymentURIPage> {
       appBar: AppBar(title: Text(s.paymentURI)),
       body: SingleChildScrollView(
         child: FormBuilder(
+          child: Padding(padding: EdgeInsets.all(16),
           child: Column(
             children: [
               QRAddressWidget(
@@ -54,7 +55,7 @@ class _PaymentURIState extends State<PaymentURIPage> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   onAmount(Amount? a) {
