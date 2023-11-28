@@ -2452,6 +2452,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'I understand whoever has knowledge of my seed phrase can access my funds'**
   String get disclaimer_3;
+
+  /// No description provided for @confirmRescanFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to rescan from block {height}?'**
+  String confirmRescanFrom(Object height);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

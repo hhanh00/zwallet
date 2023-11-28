@@ -1232,4 +1232,9 @@ class SFr extends S {
 
   @override
   String get disclaimer_3 => 'I understand whoever has knowledge of my seed phrase can access my funds';
+
+  @override
+  String confirmRescanFrom(Object height) {
+    return 'Do you want to rescan from block $height?';
+  }
 }

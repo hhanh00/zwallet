@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -16,18 +19,13 @@ class RescanPage extends StatefulWidget {
 }
 
 class _RescanState extends State<RescanPage> with WithLoadingAnimation {
+  late final s = S.of(context);
+  final formKey = GlobalKey<FormBuilderState>();
   final minDate = activationDate;
   DateTime maxDate = DateTime.now();
-  late DateTime selectedDate;
-  var heightController = TextEditingController();
-
-  _RescanState() {
-    selectedDate = minDate;
-  }
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     final t = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -36,45 +34,63 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
           IconButton(onPressed: _rescan, icon: Icon(Icons.check)),
         ],
       ),
-      body: wrapWithLoading(SingleChildScrollView(
-        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Column(
-          children: [
-            CalendarDatePicker(
-                initialDate: minDate,
-                firstDate: minDate,
-                lastDate: maxDate,
-                onDateChanged: _onDate),
-            Gap(8),
-            TextFormField(
-              decoration: InputDecoration(labelText: s.height),
-              keyboardType: TextInputType.number,
-              controller: heightController,
+      body: wrapWithLoading(
+        SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: FormBuilder(
+              key: formKey,
+              child: Column(
+                children: [
+                  FormBuilderField<DateTime>(
+                      name: 'date',
+                      builder: (field) => CalendarDatePicker(
+                          initialDate: minDate,
+                          firstDate: minDate,
+                          lastDate: maxDate,
+                          onDateChanged: (v) => field.didChange(v))),
+                  Gap(8),
+                  FormBuilderTextField(
+                    name: 'height',
+                    decoration: InputDecoration(labelText: s.height),
+                    keyboardType: TextInputType.number,
+                    validator: (v) => (v.isEmptyOrNull
+                        ? null
+                        : FormBuilderValidators.integer()(v)),
+                  ),
+                  Gap(16),
+                  DecoratedBox(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.red, width: 2)),
+                      child: Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text(s.rescanWarning,
+                              style: t.textTheme.titleLarge)))
+                ],
+              ),
             ),
-            Gap(16),
-            DecoratedBox(
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.red, width: 2)),
-                child: Padding(padding: EdgeInsets.all(8), child: Text(s.rescanWarning, style: t.textTheme.titleLarge)))
-          ],
+          ),
         ),
-      )),
-    ));
-  }
-
-  _onDate(date) {
-    setState(() {
-      selectedDate = date;
-    });
+      ),
+    );
   }
 
   _rescan() async {
-    load(() async {
-      final height = int.tryParse(heightController.text) ??
-          await WarpApi.getBlockHeightByTime(aa.coin, selectedDate);
-      aa.reset(height);
-      Future(() => syncStatus2.rescan(height));
-      GoRouter.of(context).pop();
-    });
+    final form = formKey.currentState!;
+    if (form.validate()) {
+      form.save();
+      String? h = form.fields['height']!.value;
+      DateTime d = form.fields['date']!.value ?? minDate;
+      load(() async {
+        final height = h.isNotEmptyAndNotNull ? int.parse(h!) :
+            await WarpApi.getBlockHeightByTime(aa.coin, d);
+        final confirmed = await showConfirmDialog(context, s.rescan, s.confirmRescanFrom(height));
+        if (!confirmed) return;
+        aa.reset(height);
+        Future(() => syncStatus2.rescan(height));
+        GoRouter.of(context).pop();
+      });
+    }
   }
 }
 

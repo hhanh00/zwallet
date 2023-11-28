@@ -254,7 +254,7 @@ class _InputTextQRState extends State<InputTextQR> {
                 label: widget.label?.let((label) => Text(label)),
                 errorText: field.errorText,
               ),
-              onChanged: (v) { print('onChanged $v'); field.didChange(v); },
+              onChanged: (v) => field.didChange(v),
             ),
           ),
           Container(
