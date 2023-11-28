@@ -1217,4 +1217,19 @@ class SEs extends S {
 
   @override
   String get connectionError => 'DISCONNECTED';
+
+  @override
+  String get disclaimer => 'Disclaimer';
+
+  @override
+  String get disclaimerText => 'SELF-CUSTODY';
+
+  @override
+  String get disclaimer_1 => 'I understand I am responsible for securing my seed phrase';
+
+  @override
+  String get disclaimer_2 => 'I understand YWallet cannot recover my seed phrase';
+
+  @override
+  String get disclaimer_3 => 'I understand whoever has knowledge of my seed phrase can access my funds';
 }

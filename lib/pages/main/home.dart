@@ -62,6 +62,8 @@ class _HomeState extends State<HomePageInner> {
                   children: [
                     SyncStatusWidget(),
                     Gap(8),
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(children: [
                     QRAddressWidget(
                       addressMode,
                       uaType: coinSettings.uaType,
@@ -73,8 +75,8 @@ class _HomeState extends State<HomePageInner> {
                       key: key,
                       onMode: _nextAddressMode,
                     ),
-                  ],
-                );
+                  ])),
+                ],);
               },
             ),
           ),

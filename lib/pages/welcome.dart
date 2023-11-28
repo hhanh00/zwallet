@@ -1,3 +1,4 @@
+import 'package:YWallet/appsettings.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -30,6 +31,6 @@ class WelcomePage extends StatelessWidget {
   }
 
   _onNew(BuildContext context) {
-    GoRouter.of(context).push('/first_account');
+    GoRouter.of(context).push('/disclaimer');
   }
 }

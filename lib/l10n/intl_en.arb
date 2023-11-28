@@ -386,5 +386,10 @@
   "keygenHelp": "Full backups use the AGE encryption system. The encryption key is used to encrypt the backup but CANNOT decrypt it. The SECRET key is needed to restore the backup.\nThe app will not store the keys. Every time this keygen will produce a DIFFERENT pair of keys.\n\nYou MUST save BOTH keys that you use",
   "confirmSaveKeys": "Have you saved your keys?",
   "deductFee": "Deduct fee from amount",
-  "connectionError": "DISCONNECTED"
+  "connectionError": "DISCONNECTED",
+  "disclaimer": "Disclaimer",
+  "disclaimerText": "SELF-CUSTODY",
+  "disclaimer_1": "I understand I am responsible for securing my seed phrase",
+  "disclaimer_2": "I understand YWallet cannot recover my seed phrase",
+  "disclaimer_3": "I understand whoever has knowledge of my seed phrase can access my funds"
 }

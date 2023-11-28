@@ -93,7 +93,7 @@ class TxPlanWidget extends StatelessWidget {
         .map((e) => DataRow(cells: [
               DataCell(Text('...${trailing(e.address!, 12)}')),
               DataCell(Text('${poolToString(s, e.pool)}')),
-              DataCell(Text('${amountToString2(e.amount)}')),
+              DataCell(Text('${amountToString2(e.amount, digits: MAX_PRECISION)}')),
             ]))
         .toList();
 
@@ -118,29 +118,29 @@ class TxPlanWidget extends StatelessWidget {
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.transparentInput),
-          trailing: Text(amountToString2(report.transparent))),
+          trailing: Text(amountToString2(report.transparent, digits: MAX_PRECISION))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.saplingInput),
-          trailing: Text(amountToString2(report.sapling))),
+          trailing: Text(amountToString2(report.sapling, digits: MAX_PRECISION))),
       if (supportsUA)
         ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(s.orchardInput),
-            trailing: Text(amountToString2(report.orchard))),
+            trailing: Text(amountToString2(report.orchard, digits: MAX_PRECISION))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.netSapling),
-          trailing: Text(amountToString2(report.netSapling))),
+          trailing: Text(amountToString2(report.netSapling, digits: MAX_PRECISION))),
       if (supportsUA)
         ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(s.netOrchard),
-            trailing: Text(amountToString2(report.netOrchard))),
+            trailing: Text(amountToString2(report.netOrchard, digits: MAX_PRECISION))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.fee),
-          trailing: Text(amountToString2(report.fee))),
+          trailing: Text(amountToString2(report.fee, digits: MAX_PRECISION))),
       privacyToString(context, report.privacyLevel, onSend: onSend)!,
       Gap(16),
       if (invalidPrivacy)

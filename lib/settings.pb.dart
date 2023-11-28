@@ -39,6 +39,7 @@ class AppSettings extends $pb.GeneratedMessage {
     $core.bool? advanced,
     $core.String? memo,
     ColorPalette? palette,
+    $core.bool? disclaimer,
   }) {
     final $result = create();
     if (anchorOffset != null) {
@@ -110,6 +111,9 @@ class AppSettings extends $pb.GeneratedMessage {
     if (palette != null) {
       $result.palette = palette;
     }
+    if (disclaimer != null) {
+      $result.disclaimer = disclaimer;
+    }
     return $result;
   }
   AppSettings._() : super();
@@ -140,6 +144,7 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOB(22, _omitFieldNames ? '' : 'advanced')
     ..aOS(24, _omitFieldNames ? '' : 'memo')
     ..aOM<ColorPalette>(25, _omitFieldNames ? '' : 'palette', subBuilder: ColorPalette.create)
+    ..aOB(26, _omitFieldNames ? '' : 'disclaimer')
     ..hasRequiredFields = false
   ;
 
@@ -372,6 +377,15 @@ class AppSettings extends $pb.GeneratedMessage {
   void clearPalette() => clearField(25);
   @$pb.TagNumber(25)
   ColorPalette ensurePalette() => $_ensure(22);
+
+  @$pb.TagNumber(26)
+  $core.bool get disclaimer => $_getBF(23);
+  @$pb.TagNumber(26)
+  set disclaimer($core.bool v) { $_setBool(23, v); }
+  @$pb.TagNumber(26)
+  $core.bool hasDisclaimer() => $_has(23);
+  @$pb.TagNumber(26)
+  void clearDisclaimer() => clearField(26);
 }
 
 class CoinSettings extends $pb.GeneratedMessage {

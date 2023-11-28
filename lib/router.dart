@@ -251,6 +251,7 @@ final router = GoRouter(
       ],
     ),
     GoRoute(path: '/decrypt_db', builder: (context, state) => DbLoginPage()),
+    GoRoute(path: '/disclaimer', builder: (context, state) => DisclaimerPage()),
     GoRoute(
       path: '/splash',
       builder: (context, state) => SplashPage(),

@@ -2422,6 +2422,36 @@ abstract class S {
   /// In en, this message translates to:
   /// **'DISCONNECTED'**
   String get connectionError;
+
+  /// No description provided for @disclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Disclaimer'**
+  String get disclaimer;
+
+  /// No description provided for @disclaimerText.
+  ///
+  /// In en, this message translates to:
+  /// **'SELF-CUSTODY'**
+  String get disclaimerText;
+
+  /// No description provided for @disclaimer_1.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand I am responsible for securing my seed phrase'**
+  String get disclaimer_1;
+
+  /// No description provided for @disclaimer_2.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand YWallet cannot recover my seed phrase'**
+  String get disclaimer_2;
+
+  /// No description provided for @disclaimer_3.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand whoever has knowledge of my seed phrase can access my funds'**
+  String get disclaimer_3;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
