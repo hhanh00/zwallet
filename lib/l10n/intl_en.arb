@@ -393,5 +393,7 @@
   "disclaimer_2": "I understand YWallet cannot recover my seed phrase",
   "disclaimer_3": "I understand whoever knows my seed phrase can get my funds",
   "confirmRescanFrom": "Do you want to rescan from block {height}?",
-  "confirmRewind": "Do you want to rewind to block {height}?"
+  "confirmRewind": "Do you want to rewind to block {height}?",
+  "backupMissing": "BACKUP MISSING",
+  "noRemindBackup": "Do not remind me"
 }

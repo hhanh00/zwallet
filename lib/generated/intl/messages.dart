@@ -2450,7 +2450,7 @@ abstract class S {
   /// No description provided for @disclaimer_3.
   ///
   /// In en, this message translates to:
-  /// **'I understand whoever has knowledge of my seed phrase can access my funds'**
+  /// **'I understand whoever knows my seed phrase can get my funds'**
   String get disclaimer_3;
 
   /// No description provided for @confirmRescanFrom.
@@ -2464,6 +2464,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Do you want to rewind to block {height}?'**
   String confirmRewind(Object height);
+
+  /// No description provided for @backupMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'BACKUP MISSING'**
+  String get backupMissing;
+
+  /// No description provided for @noRemindBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not remind me'**
+  String get noRemindBackup;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

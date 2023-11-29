@@ -1231,7 +1231,7 @@ class SFr extends S {
   String get disclaimer_2 => 'I understand YWallet cannot recover my seed phrase';
 
   @override
-  String get disclaimer_3 => 'I understand whoever has knowledge of my seed phrase can access my funds';
+  String get disclaimer_3 => 'I understand whoever knows my seed phrase can get my funds';
 
   @override
   String confirmRescanFrom(Object height) {
@@ -1242,4 +1242,10 @@ class SFr extends S {
   String confirmRewind(Object height) {
     return 'Do you want to rewind to block $height?';
   }
+
+  @override
+  String get backupMissing => 'BACKUP MISSING';
+
+  @override
+  String get noRemindBackup => 'Do not remind me';
 }

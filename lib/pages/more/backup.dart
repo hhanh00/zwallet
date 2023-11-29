@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
@@ -66,10 +68,21 @@ class BackupPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-          child: Column(children: cards),
+          child: Column(children: [
+            ...cards,
+            Gap(8),
+            FormBuilderCheckbox(name: 'remind', title: Text(s.noRemindBackup),
+            initialValue: aa.saved,
+            onChanged: _remind)
+          ]),
         ),
       ),
     );
+  }
+
+  _remind(bool? v) {
+    WarpApi.setBackupReminder(aa.coin, aa.id, v!);
+    setActiveAccount(aa.coin, aa.id); // reload
   }
 }
 

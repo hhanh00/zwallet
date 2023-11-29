@@ -25,10 +25,11 @@ class Account {
   int get keyType => const fb.Uint8Reader().vTableGet(_bc, _bcOffset, 10, 0);
   int get balance => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 12, 0);
   String? get address => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 14);
+  bool get saved => const fb.BoolReader().vTableGet(_bc, _bcOffset, 16, false);
 
   @override
   String toString() {
-    return 'Account{coin: ${coin}, id: ${id}, name: ${name}, keyType: ${keyType}, balance: ${balance}, address: ${address}}';
+    return 'Account{coin: ${coin}, id: ${id}, name: ${name}, keyType: ${keyType}, balance: ${balance}, address: ${address}, saved: ${saved}}';
   }
 
   AccountT unpack() => AccountT(
@@ -37,7 +38,8 @@ class Account {
       name: name,
       keyType: keyType,
       balance: balance,
-      address: address);
+      address: address,
+      saved: saved);
 
   static int pack(fb.Builder fbBuilder, AccountT? object) {
     if (object == null) return 0;
@@ -52,6 +54,7 @@ class AccountT implements fb.Packable {
   int keyType;
   int balance;
   String? address;
+  bool saved;
 
   AccountT({
       this.coin = 0,
@@ -59,7 +62,8 @@ class AccountT implements fb.Packable {
       this.name,
       this.keyType = 0,
       this.balance = 0,
-      this.address});
+      this.address,
+      this.saved = false});
 
   @override
   int pack(fb.Builder fbBuilder) {
@@ -67,19 +71,20 @@ class AccountT implements fb.Packable {
         : fbBuilder.writeString(name!);
     final int? addressOffset = address == null ? null
         : fbBuilder.writeString(address!);
-    fbBuilder.startTable(6);
+    fbBuilder.startTable(7);
     fbBuilder.addUint8(0, coin);
     fbBuilder.addUint32(1, id);
     fbBuilder.addOffset(2, nameOffset);
     fbBuilder.addUint8(3, keyType);
     fbBuilder.addUint64(4, balance);
     fbBuilder.addOffset(5, addressOffset);
+    fbBuilder.addBool(6, saved);
     return fbBuilder.endTable();
   }
 
   @override
   String toString() {
-    return 'AccountT{coin: ${coin}, id: ${id}, name: ${name}, keyType: ${keyType}, balance: ${balance}, address: ${address}}';
+    return 'AccountT{coin: ${coin}, id: ${id}, name: ${name}, keyType: ${keyType}, balance: ${balance}, address: ${address}, saved: ${saved}}';
   }
 }
 
@@ -97,7 +102,7 @@ class AccountBuilder {
   final fb.Builder fbBuilder;
 
   void begin() {
-    fbBuilder.startTable(6);
+    fbBuilder.startTable(7);
   }
 
   int addCoin(int? coin) {
@@ -124,6 +129,10 @@ class AccountBuilder {
     fbBuilder.addOffset(5, offset);
     return fbBuilder.offset;
   }
+  int addSaved(bool? saved) {
+    fbBuilder.addBool(6, saved);
+    return fbBuilder.offset;
+  }
 
   int finish() {
     return fbBuilder.endTable();
@@ -137,6 +146,7 @@ class AccountObjectBuilder extends fb.ObjectBuilder {
   final int? _keyType;
   final int? _balance;
   final String? _address;
+  final bool? _saved;
 
   AccountObjectBuilder({
     int? coin,
@@ -145,13 +155,15 @@ class AccountObjectBuilder extends fb.ObjectBuilder {
     int? keyType,
     int? balance,
     String? address,
+    bool? saved,
   })
       : _coin = coin,
         _id = id,
         _name = name,
         _keyType = keyType,
         _balance = balance,
-        _address = address;
+        _address = address,
+        _saved = saved;
 
   /// Finish building, and store into the [fbBuilder].
   @override
@@ -160,13 +172,14 @@ class AccountObjectBuilder extends fb.ObjectBuilder {
         : fbBuilder.writeString(_name!);
     final int? addressOffset = _address == null ? null
         : fbBuilder.writeString(_address!);
-    fbBuilder.startTable(6);
+    fbBuilder.startTable(7);
     fbBuilder.addUint8(0, _coin);
     fbBuilder.addUint32(1, _id);
     fbBuilder.addOffset(2, nameOffset);
     fbBuilder.addUint8(3, _keyType);
     fbBuilder.addUint64(4, _balance);
     fbBuilder.addOffset(5, addressOffset);
+    fbBuilder.addBool(6, _saved);
     return fbBuilder.endTable();
   }
 
@@ -3413,10 +3426,11 @@ class Backup {
   String? get fvk => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 12);
   String? get uvk => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 14);
   String? get tsk => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 16);
+  bool get saved => const fb.BoolReader().vTableGet(_bc, _bcOffset, 18, false);
 
   @override
   String toString() {
-    return 'Backup{name: ${name}, seed: ${seed}, index: ${index}, sk: ${sk}, fvk: ${fvk}, uvk: ${uvk}, tsk: ${tsk}}';
+    return 'Backup{name: ${name}, seed: ${seed}, index: ${index}, sk: ${sk}, fvk: ${fvk}, uvk: ${uvk}, tsk: ${tsk}, saved: ${saved}}';
   }
 
   BackupT unpack() => BackupT(
@@ -3426,7 +3440,8 @@ class Backup {
       sk: sk,
       fvk: fvk,
       uvk: uvk,
-      tsk: tsk);
+      tsk: tsk,
+      saved: saved);
 
   static int pack(fb.Builder fbBuilder, BackupT? object) {
     if (object == null) return 0;
@@ -3442,6 +3457,7 @@ class BackupT implements fb.Packable {
   String? fvk;
   String? uvk;
   String? tsk;
+  bool saved;
 
   BackupT({
       this.name,
@@ -3450,7 +3466,8 @@ class BackupT implements fb.Packable {
       this.sk,
       this.fvk,
       this.uvk,
-      this.tsk});
+      this.tsk,
+      this.saved = false});
 
   @override
   int pack(fb.Builder fbBuilder) {
@@ -3466,7 +3483,7 @@ class BackupT implements fb.Packable {
         : fbBuilder.writeString(uvk!);
     final int? tskOffset = tsk == null ? null
         : fbBuilder.writeString(tsk!);
-    fbBuilder.startTable(7);
+    fbBuilder.startTable(8);
     fbBuilder.addOffset(0, nameOffset);
     fbBuilder.addOffset(1, seedOffset);
     fbBuilder.addUint32(2, index);
@@ -3474,12 +3491,13 @@ class BackupT implements fb.Packable {
     fbBuilder.addOffset(4, fvkOffset);
     fbBuilder.addOffset(5, uvkOffset);
     fbBuilder.addOffset(6, tskOffset);
+    fbBuilder.addBool(7, saved);
     return fbBuilder.endTable();
   }
 
   @override
   String toString() {
-    return 'BackupT{name: ${name}, seed: ${seed}, index: ${index}, sk: ${sk}, fvk: ${fvk}, uvk: ${uvk}, tsk: ${tsk}}';
+    return 'BackupT{name: ${name}, seed: ${seed}, index: ${index}, sk: ${sk}, fvk: ${fvk}, uvk: ${uvk}, tsk: ${tsk}, saved: ${saved}}';
   }
 }
 
@@ -3497,7 +3515,7 @@ class BackupBuilder {
   final fb.Builder fbBuilder;
 
   void begin() {
-    fbBuilder.startTable(7);
+    fbBuilder.startTable(8);
   }
 
   int addNameOffset(int? offset) {
@@ -3528,6 +3546,10 @@ class BackupBuilder {
     fbBuilder.addOffset(6, offset);
     return fbBuilder.offset;
   }
+  int addSaved(bool? saved) {
+    fbBuilder.addBool(7, saved);
+    return fbBuilder.offset;
+  }
 
   int finish() {
     return fbBuilder.endTable();
@@ -3542,6 +3564,7 @@ class BackupObjectBuilder extends fb.ObjectBuilder {
   final String? _fvk;
   final String? _uvk;
   final String? _tsk;
+  final bool? _saved;
 
   BackupObjectBuilder({
     String? name,
@@ -3551,6 +3574,7 @@ class BackupObjectBuilder extends fb.ObjectBuilder {
     String? fvk,
     String? uvk,
     String? tsk,
+    bool? saved,
   })
       : _name = name,
         _seed = seed,
@@ -3558,7 +3582,8 @@ class BackupObjectBuilder extends fb.ObjectBuilder {
         _sk = sk,
         _fvk = fvk,
         _uvk = uvk,
-        _tsk = tsk;
+        _tsk = tsk,
+        _saved = saved;
 
   /// Finish building, and store into the [fbBuilder].
   @override
@@ -3575,7 +3600,7 @@ class BackupObjectBuilder extends fb.ObjectBuilder {
         : fbBuilder.writeString(_uvk!);
     final int? tskOffset = _tsk == null ? null
         : fbBuilder.writeString(_tsk!);
-    fbBuilder.startTable(7);
+    fbBuilder.startTable(8);
     fbBuilder.addOffset(0, nameOffset);
     fbBuilder.addOffset(1, seedOffset);
     fbBuilder.addUint32(2, _index);
@@ -3583,6 +3608,7 @@ class BackupObjectBuilder extends fb.ObjectBuilder {
     fbBuilder.addOffset(4, fvkOffset);
     fbBuilder.addOffset(5, uvkOffset);
     fbBuilder.addOffset(6, tskOffset);
+    fbBuilder.addBool(7, _saved);
     return fbBuilder.endTable();
   }
 

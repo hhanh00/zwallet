@@ -1,3 +1,4 @@
+import 'package:YWallet/generated/intl/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
@@ -42,6 +43,7 @@ class _HomeState extends State<HomePageInner> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Scaffold(
         floatingActionButton: GestureDetector(
             onLongPress: () => _send(true),
@@ -76,6 +78,9 @@ class _HomeState extends State<HomePageInner> {
                       key: key,
                       onMode: _nextAddressMode,
                     ),
+                    Gap(16),
+                    if (!aa.saved)
+                      OutlinedButton(onPressed: _backup, child: Text(s.backupMissing))
                   ])),
                 ],);
               },
@@ -104,6 +109,10 @@ class _HomeState extends State<HomePageInner> {
   // 4: Diversified
   _nextAddressMode() {
     setState(() => addressMode = nextAddressMode(addressMode, availableMode));
+  }
+
+  _backup() {
+    GoRouter.of(context).push('/more/backup');
   }
 }
 

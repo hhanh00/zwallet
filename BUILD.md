@@ -206,3 +206,27 @@ $ vagrant plugin install vagrant-disksize vagrant-scp
 $ wget https://raw.githubusercontent.com/hhanh00/zwallet/main/misc/Vagrantfile
 $ wget https://raw.githubusercontent.com/hhanh00/zwallet/main/misc/vagrant-install.sh
 $ vagrant up
+
+## iOS Build notes
+
+After git clone & git submodule update --init --recursive
+- Run flutter_zxing/scripts/update_ios_macos_src.sh
+
+- Install 
+  - Rosetta
+  - Xcode
+  - flutter
+  - homebrew
+    cmake
+  - rbenv
+    rbenv install ruby-3
+    gem install cocoapods
+  - rust
+    target aarch64-apple-ios
+  - cargo install cargo-make
+- Open Xcode workspace
+  - Add signing account
+  - Select build to iOS any
+- Build
+  - cargo make --profile=release
+  - flutter build ipa

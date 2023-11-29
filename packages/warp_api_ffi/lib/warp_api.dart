@@ -131,6 +131,10 @@ class WarpApi {
     return backup;
   }
 
+  static void setBackupReminder(int coin, int id, bool v) {
+    warp_api_lib.set_backup_reminder(coin, id, v ? 1 : 0);
+  }
+
   static String getAddress(int coin, int id, int uaType) {
     final address = warp_api_lib.get_address(coin, id, uaType);
     return unwrapResultString(address);

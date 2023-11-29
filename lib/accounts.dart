@@ -14,7 +14,7 @@ import 'pages/utils.dart';
 
 part 'accounts.g.dart';
 
-ActiveAccount2 aa = ActiveAccount2(0, 0, "", false, false);
+ActiveAccount2 aa = ActiveAccount2(0, 0, "", false, false, false);
 
 AASequence aaSequence = AASequence();
 class AASequence = _AASequence with _$AASequence;
@@ -38,7 +38,7 @@ void setActiveAccount(int coin, int id) {
 
 class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
   ActiveAccount2(
-      super.coin, super.id, super.name, super.canPay, super.external);
+      super.coin, super.id, super.name, super.canPay, super.external, super.saved);
 
   static ActiveAccount2? fromPrefs(SharedPreferences prefs) {
     final coin = prefs.getInt('coin') ?? 0;
@@ -57,13 +57,13 @@ class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
   }
 
   factory ActiveAccount2.fromId(int coin, int id) {
-    if (id == 0) return ActiveAccount2(0, 0, "", false, false);
+    if (id == 0) return ActiveAccount2(0, 0, "", false, false, false);
     final c = coins[coin];
     final backup = WarpApi.getBackup(coin, id);
     final external =
         c.supportsLedger && !isMobile() && WarpApi.ledgerHasAccount(coin, id);
     final canPay = backup.sk != null || external;
-    return ActiveAccount2(coin, id, backup.name!, canPay, external);
+    return ActiveAccount2(coin, id, backup.name!, canPay, external, backup.saved);
   }
 
   bool get hasUA => coins[coin].supportsUA;
@@ -75,8 +75,9 @@ abstract class _ActiveAccount2 with Store {
   final String name;
   final bool canPay;
   final bool external;
+  final bool saved;
 
-  _ActiveAccount2(this.coin, this.id, this.name, this.canPay, this.external)
+  _ActiveAccount2(this.coin, this.id, this.name, this.canPay, this.external, this.saved)
       : notes = Notes(coin, id),
         txs = Txs(coin, id),
         messages = Messages(coin, id);

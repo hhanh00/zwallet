@@ -268,6 +268,24 @@ class NativeLibrary {
   late final _get_backup =
       _get_backupPtr.asFunction<CResult______u8 Function(int, int)>();
 
+  CResult_u8 set_backup_reminder(
+    int coin,
+    int id_account,
+    int v,
+  ) {
+    return _set_backup_reminder(
+      coin,
+      id_account,
+      v,
+    );
+  }
+
+  late final _set_backup_reminderPtr = _lookup<
+          ffi.NativeFunction<CResult_u8 Function(ffi.Uint8, ffi.Uint32, bool)>>(
+      'set_backup_reminder');
+  late final _set_backup_reminder =
+      _set_backup_reminderPtr.asFunction<CResult_u8 Function(int, int, int)>();
+
   CResult_u8 get_available_addrs(
     int coin,
     int account,
@@ -1868,6 +1886,8 @@ const int Account_VT_KEY_TYPE = 10;
 const int Account_VT_BALANCE = 12;
 
 const int Account_VT_ADDRESS = 14;
+
+const int Account_VT_SAVED = 16;
 
 const int AccountVec_VT_ACCOUNTS = 4;
 

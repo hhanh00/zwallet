@@ -7,6 +7,7 @@ table Account {
     key_type:uint8;
     balance:uint64;
     address:string;
+    saved:bool;
 }
 
 table AccountVec {
@@ -167,6 +168,7 @@ table Backup {
   fvk:string;
   uvk:string;
   tsk:string;
+  saved:bool;
 }
 
 table RaptorQDrops {
