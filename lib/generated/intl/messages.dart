@@ -2458,6 +2458,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Do you want to rescan from block {height}?'**
   String confirmRescanFrom(Object height);
+
+  /// No description provided for @confirmRewind.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to rewind to block {height}?'**
+  String confirmRewind(Object height);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

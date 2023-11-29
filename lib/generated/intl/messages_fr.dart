@@ -1237,4 +1237,9 @@ class SFr extends S {
   String confirmRescanFrom(Object height) {
     return 'Do you want to rescan from block $height?';
   }
+
+  @override
+  String confirmRewind(Object height) {
+    return 'Do you want to rewind to block $height?';
+  }
 }

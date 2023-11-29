@@ -168,8 +168,6 @@ abstract class _SyncStatus2 with Store {
       eta.end();
       if (Platform.isAndroid) await FlutterForegroundTask.stopService();
     }
-
-    print("SYNC COMPLETE $syncing");
   }
 
   @action
