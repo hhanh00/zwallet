@@ -391,7 +391,7 @@
   "disclaimerText": "SELF-CUSTODY",
   "disclaimer_1": "I understand I am responsible for securing my seed phrase",
   "disclaimer_2": "I understand YWallet cannot recover my seed phrase",
-  "disclaimer_3": "I understand whoever has knowledge of my seed phrase can access my funds",
+  "disclaimer_3": "I understand whoever knows my seed phrase can get my funds",
   "confirmRescanFrom": "Do you want to rescan from block {height}?",
   "confirmRewind": "Do you want to rewind to block {height}?"
 }

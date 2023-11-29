@@ -65,6 +65,8 @@ class _DisclaimerState extends State<DisclaimerPage> {
           padding: EdgeInsets.all(16),
           child: Column(
             children: [
+              Image.asset('assets/self-custody.png', fit: BoxFit.fill),
+              Gap(16),
               Text(s.disclaimerText, style: t.textTheme.headlineLarge),
               Gap(32),
               DisclaimerItem(
