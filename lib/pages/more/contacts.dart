@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -24,7 +23,8 @@ class ContactsPage extends StatefulWidget {
 }
 
 class _ContactsState extends State<ContactsPage> {
-  int? idSelected;
+  bool selected = false;
+  final listKey = GlobalKey<ContactListState>();
 
   @override
   Widget build(BuildContext context) {
@@ -33,35 +33,22 @@ class _ContactsState extends State<ContactsPage> {
         appBar: AppBar(
           title: Text(s.contacts),
           actions: [
-            if (idSelected != null)
+            if (selected)
               IconButton(onPressed: _edit, icon: Icon(Icons.edit)),
-            if (idSelected != null)
+            if (selected)
               IconButton(onPressed: _delete, icon: Icon(Icons.delete)),
-            IconButton(
-                onPressed: _save,
-                icon: Icon(
-                    Icons.save)), // TODO: use coinsettings.contactsSaved flag
+            // TODO: use coinsettings.contactsSaved flag
+            IconButton(onPressed: _save, icon: Icon(Icons.save)),
             IconButton(onPressed: _add, icon: Icon(Icons.add)),
-            if (widget.selectable && idSelected != null)
+            if (widget.selectable && selected)
               IconButton(onPressed: _select, icon: Icon(Icons.check)),
           ],
         ),
-        body: Observer(builder: (context) {
-          final c = contacts.contacts;
-          return ListView.separated(
-            itemBuilder: (context, index) => ContactItem(c[index].unpack(),
-                selected: idSelected == c[index].id,
-                onTap: () => setState(() => idSelected =
-                    idSelected != c[index].id ? c[index].id : null)),
-            separatorBuilder: (context, index) => Divider(),
-            itemCount: c.length,
-          );
-        }));
+        body: ContactList(key: listKey, onSelect: (v) => setState(() => selected = v != null)));
   }
 
   _select() {
-    final c = contacts.contacts.firstWhere((c) => c.id == idSelected!);
-    GoRouter.of(context).pop(c);
+    GoRouter.of(context).pop(listKey.currentState!.selectedContact);
   }
 
   _save() async {
@@ -82,7 +69,9 @@ class _ContactsState extends State<ContactsPage> {
   }
 
   _edit() {
-    GoRouter.of(context).push('/more/contacts/edit?id=${idSelected!}');
+    final c = listKey.currentState!.selectedContact!;
+    final id = c.id;
+    GoRouter.of(context).push('/more/contacts/edit?id=$id');
   }
 
   _delete() async {
@@ -93,6 +82,36 @@ class _ContactsState extends State<ContactsPage> {
     GoRouter.of(context).pop();
     contacts.fetchContacts();
   }
+}
+
+class ContactList extends StatefulWidget {
+  final int? initialSelect;
+  final void Function(int?)? onSelect;
+  ContactList({super.key, this.initialSelect, this.onSelect});
+
+  @override
+  State<StatefulWidget> createState() => ContactListState();
+}
+
+class ContactListState extends State<ContactList> {
+  late int? selected = widget.initialSelect;
+  @override
+  Widget build(BuildContext context) {
+    final c = contacts.contacts;
+    return ListView.separated(
+      itemBuilder: (context, index) => ContactItem(c[index].unpack(),
+          selected: selected == index, onTap: () {
+        final v = selected != index ? index : null;
+        widget.onSelect?.call(v);
+        selected = v;
+        setState(() {});
+      }),
+      separatorBuilder: (context, index) => Divider(),
+      itemCount: c.length,
+    );
+  }
+
+  Contact? get selectedContact => selected?.let((s) => contacts.contacts[s]);
 }
 
 class ContactItem extends StatelessWidget {
@@ -109,6 +128,7 @@ class ContactItem extends StatelessWidget {
       subtitle: Text(contact.address!),
       onTap: onTap,
       selected: selected ?? false,
+      selectedTileColor: t.colorScheme.inversePrimary,
     );
   }
 }
@@ -143,21 +163,22 @@ class _ContactEditState extends State<ContactEditPage> {
           actions: [IconButton(onPressed: _save, icon: Icon(Icons.save))],
         ),
         body: SingleChildScrollView(
-        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
-        child: FormBuilder(
-            key: formKey,
-            child: Column(children: [
-              FormBuilderTextField(
-                  name: 'name',
-                  decoration: InputDecoration(label: Text(s.name)),
-                  controller: nameController),
-              FormBuilderTextField(
-                name: 'address',
-                decoration: InputDecoration(label: Text(s.address)),
-                controller: addressController,
-                maxLines: 10,
-              ),
-            ])))));
+            child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: FormBuilder(
+                    key: formKey,
+                    child: Column(children: [
+                      FormBuilderTextField(
+                          name: 'name',
+                          decoration: InputDecoration(label: Text(s.name)),
+                          controller: nameController),
+                      FormBuilderTextField(
+                        name: 'address',
+                        decoration: InputDecoration(label: Text(s.address)),
+                        controller: addressController,
+                        maxLines: 10,
+                      ),
+                    ])))));
   }
 
   _save() {
@@ -181,39 +202,41 @@ class _ContactAddState extends State<ContactAddPage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(s.addContact),
-        actions: [
-          IconButton(onPressed: add, icon: Icon(Icons.add)),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
-        child: FormBuilder(
-          key: formKey,
-          child: Column(
-            children: [
-              FormBuilderTextField(
-                name: 'name',
-                decoration: InputDecoration(label: Text(s.name)),
-                controller: nameController,
-                validator: FormBuilderValidators.required(),
-              ),
-              Row(children: [
-                Expanded(
-                    child: FormBuilderTextField(
-                  name: 'address',
-                  decoration: InputDecoration(label: Text(s.address)),
-                  controller: addressController,
-                  validator: addressValidator,
-                )),
-                IconButton.outlined(onPressed: _qr, icon: Icon(Icons.qr_code)),
-              ]),
-            ],
-          ),
+        appBar: AppBar(
+          title: Text(s.addContact),
+          actions: [
+            IconButton(onPressed: add, icon: Icon(Icons.add)),
+          ],
         ),
-      ),
-    ));
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: FormBuilder(
+              key: formKey,
+              child: Column(
+                children: [
+                  FormBuilderTextField(
+                    name: 'name',
+                    decoration: InputDecoration(label: Text(s.name)),
+                    controller: nameController,
+                    validator: FormBuilderValidators.required(),
+                  ),
+                  Row(children: [
+                    Expanded(
+                        child: FormBuilderTextField(
+                      name: 'address',
+                      decoration: InputDecoration(label: Text(s.address)),
+                      controller: addressController,
+                      validator: addressValidator,
+                    )),
+                    IconButton.outlined(
+                        onPressed: _qr, icon: Icon(Icons.qr_code)),
+                  ]),
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 
   _qr() async {

@@ -13,9 +13,11 @@ import 'package:warp_api/warp_api.dart';
 import '../../accounts.dart';
 import '../../appsettings.dart';
 import '../../generated/intl/messages.dart';
+import '../more/contacts.dart';
 import '../scan.dart';
 import '../utils.dart';
 import '../widgets.dart';
+import 'manager.dart';
 
 class SendContext {
   final String address;
@@ -39,8 +41,8 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
   int activeStep = 0;
   final typeKey = GlobalKey<SendAddressTypeState>();
   final addressKey = GlobalKey<SendAddressState>();
-  final contactKey = GlobalKey<SendListState<Contact>>();
-  final accountKey = GlobalKey<SendListState<Account>>();
+  final contactKey = GlobalKey<ContactListState>();
+  final accountKey = GlobalKey<AccountListState>();
   final poolKey = GlobalKey<SendPoolState>();
   final amountKey = GlobalKey<SendAmountState>();
   final memoKey = GlobalKey<SendMemoState>();
@@ -126,25 +128,21 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
       () {
         switch (type) {
           case 2:
-            return SendList<Contact>(contacts, contactIndex, key: contactKey,
-                itemBuilder: (context, index, c, {onTap, selected = false}) {
-              return ListTile(
-                title: Text(c.name!),
-                selected: selected,
-                onTap: onTap,
-              );
-            });
+            final i = contacts.indexWhere((c) => c.address == address);
+            return Expanded(
+              child: ContactList(
+                key: contactKey,
+                initialSelect: i >= 0 ? i : null,
+              ),
+            );
           case 3:
-            return SendList<Account>(accounts, accountIndex, key: accountKey,
-                itemBuilder: (context, index, account,
-                    {onTap, selected = false}) {
-              final a = account.unpack();
-              return ListTile(
-                title: Text(a.name!),
-                selected: selected,
-                onTap: onTap,
-              );
-            });
+            final i = accounts.indexWhere((a) => a.address == address);
+            return Expanded(
+              child: AccountList(
+                key: accountKey,
+                initialSelect: i >= 0 ? i : null,
+              ),
+            );
           default:
             return SendAddress(address, key: addressKey);
         }
@@ -154,40 +152,52 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
             key: poolKey,
             balances: balances,
           ),
-      () => SendAmount(amount, spendable: spendable, key: amountKey, canDeductFee: widget.single,),
+      () => SendAmount(
+            amount,
+            spendable: spendable,
+            key: amountKey,
+            canDeductFee: widget.single,
+          ),
       () => SendMemo(memo, key: memoKey),
     ];
-    final body = b[activeStep].call();
+    final content = b[activeStep].call();
     receivers = WarpApi.receiversOfAddress(aa.coin, address);
     // print(address);
     // print(amount);
     // print(receivers);
     // print(memo);
 
+    final body = Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          IconStepper(
+            stepColor: t.colorScheme.primary,
+            icons: icons,
+            activeStep: activeStep,
+            enableNextPreviousButtons: false,
+            onStepReached: (index) {
+              setState(() {
+                activeStep = index;
+              });
+            },
+            enableStepTapping: false,
+          ),
+          wrapWithLoading(content),
+        ],
+      ),
+    );
+
+    // These already contain a scrollable list, we cannot have two
+    // scrollable widgets
+    final hasList = activeStep == 1 && (type == 2 || type == 3);
+
     return Scaffold(
         appBar: AppBar(
           title: Text(s.send),
           actions: actions,
         ),
-        body: SingleChildScrollView(
-          child: Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Column(
-            children: [
-              IconStepper(
-                stepColor: t.colorScheme.primary,
-                icons: icons,
-                activeStep: activeStep,
-                enableNextPreviousButtons: false,
-                onStepReached: (index) {
-                  setState(() {
-                    activeStep = index;
-                  });
-                },
-                enableStepTapping: false,
-              ),
-              wrapWithLoading(body),
-            ],
-          ),
-        )));
+        body: hasList ? body : SingleChildScrollView(child: body));
   }
 
   bool validate() {
@@ -202,12 +212,12 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
           break;
         // case 1 is payment URI
         case 2:
-          contactIndex = contactKey.currentState!.index;
-          v = contactIndex?.let((i) => contacts[i].address);
+          final c = contactKey.currentState!.selectedContact;
+          v = c?.let((c) => c.address!);
           break;
         case 3:
-          accountIndex = accountKey.currentState!.index;
-          v = accountIndex?.let((i) => accounts[i].address);
+          final a = accountKey.currentState!.selectedAccount;
+          v = a?.let((a) => a.address!);
           break;
       }
       if (v == null) return false;
@@ -365,63 +375,6 @@ class SendAddressState extends State<SendAddress> {
     if (!form.validate()) return null;
     form.save();
     return _address;
-  }
-}
-
-class SendList<T> extends StatefulWidget {
-  final List<T> items;
-  final int? index;
-  final Widget Function(BuildContext, int, T,
-      {bool selected, void Function()? onTap}) itemBuilder;
-  SendList(this.items, this.index, {super.key, required this.itemBuilder});
-  @override
-  State<StatefulWidget> createState() => SendListState<T>();
-}
-
-class SendListState<T> extends State<SendList<T>> {
-  final formKey = GlobalKey<FormBuilderState>();
-  late int? selectedIndex = widget.index;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    final cs = widget.items;
-    return FormBuilder(
-      key: formKey,
-      child: FormBuilderField(
-        builder: (field) => InputDecorator(
-            decoration: InputDecoration(
-                label: Text(s.accounts), errorText: field.errorText),
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemBuilder: (context, index) => widget.itemBuilder(
-                  context, index, widget.items[index],
-                  selected: index == selectedIndex,
-                  onTap: () => _select(index)),
-              separatorBuilder: (context, index) => Divider(),
-              itemCount: cs.length,
-            )),
-        name: 'value',
-      ),
-    );
-  }
-
-  _select(int index) {
-    if (selectedIndex == index)
-      selectedIndex = null;
-    else
-      selectedIndex = index;
-    setState(() {});
-  }
-
-  int? get index {
-    final s = S.of(context);
-    final form = formKey.currentState!;
-    if (selectedIndex == null) {
-      form.fields['value']!.invalidate(s.noSelection);
-      return null;
-    }
-    return selectedIndex;
   }
 }
 
@@ -595,9 +548,9 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
             )
           ],
         ),
-        body: wrapWithLoading(
-          SingleChildScrollView(
-            child: Padding(padding: EdgeInsets.symmetric(horizontal: 16), 
+        body: wrapWithLoading(SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: FormBuilder(
               key: formKey,
               child: Column(

@@ -538,7 +538,7 @@ Future<double?> getFxRate(String coin, String fiat) async {
       return (p is double) ? p : (p as int).toDouble();
     }
   } catch (e) {
-    print(e);
+    logger.e(e);
   }
   return null;
 }

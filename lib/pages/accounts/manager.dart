@@ -18,23 +18,9 @@ class AccountManagerPage extends StatefulWidget {
 
 class _AccountManagerState extends State<AccountManagerPage> {
   late final s = S.of(context);
-  List<Account> accounts = [];
   int? selected;
   bool editing = false;
-
-  @override
-  void initState() {
-    super.initState();
-    reset();
-  }
-
-  void reset() {
-    accounts.clear();
-    for (var c in coins) {
-      final accs = WarpApi.getAccountList(c.coin);
-      accounts.addAll(accs);
-    }
-  }
+  final accountsKey = GlobalKey<AccountListState>();
 
   @override
   Widget build(BuildContext context) {
@@ -51,25 +37,16 @@ class _AccountManagerState extends State<AccountManagerPage> {
           if (selected != null)
             IconButton(onPressed: select, icon: Icon(Icons.check)),
         ]),
-        body: ListView.separated(
-            itemBuilder: (context, index) {
-              final a = accounts[index];
-              return AccountTile(
-                a,
-                selected: index == selected,
-                editing: editing,
-                onTap: () => setState(() => 
-                  selected = selected != index ? index : null),
-                onEdit: onEdit,
-              );
-            },
-            separatorBuilder: (context, index) => Divider(),
-            itemCount: accounts.length));
+        body: AccountList(
+          key: accountsKey,
+          editing: editing,
+          onSelect: (v) => setState(() => selected = v),
+          onEdit: onEdit,
+        ));
   }
 
   add() async {
     await GoRouter.of(context).push('/account/account_manager/new');
-    reset();
     setState(() {});
   }
 
@@ -81,7 +58,6 @@ class _AccountManagerState extends State<AccountManagerPage> {
   onEdit(String name) {
     final a = accounts[selected!];
     WarpApi.updateAccountName(a.coin, a.id, name);
-    reset();
     editing = false;
     setState(() {});
   }
@@ -103,7 +79,6 @@ class _AccountManagerState extends State<AccountManagerPage> {
         await showConfirmDialog(context, s.delete, s.confirmDeleteAccount);
     if (confirmed) {
       WarpApi.deleteAccount(a.coin, a.id);
-      reset();
       final ac = accounts.firstOrNull;
       if (ac != null)
         setActiveAccount(ac.coin, ac.id);
@@ -115,13 +90,55 @@ class _AccountManagerState extends State<AccountManagerPage> {
   }
 
   cold() async {
-    final confirmed =
-        await showConfirmDialog(context, s.convertToWatchonly, s.confirmWatchOnly);
+    final confirmed = await showConfirmDialog(
+        context, s.convertToWatchonly, s.confirmWatchOnly);
     if (!confirmed) return;
     WarpApi.convertToWatchOnly(aa.coin, aa.id);
-    reset();
     setState(() {});
   }
+
+  List<Account> get accounts => accountsKey.currentState!.widget.accounts;
+}
+
+class AccountList extends StatefulWidget {
+  final int? initialSelect;
+  final bool editing;
+  final void Function(int?)? onSelect;
+  final void Function(String)? onEdit;
+  late final List<Account> accounts = _getAllAccounts().toList();
+  AccountList({super.key, this.initialSelect, this.onSelect, this.editing = false, this.onEdit});
+
+  @override
+  State<StatefulWidget> createState() => AccountListState();
+
+  _getAllAccounts() => coins.expand((c) => WarpApi.getAccountList(c.coin));
+}
+
+class AccountListState extends State<AccountList> {
+  late int? selected = widget.initialSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+        itemBuilder: (context, index) {
+          final a = widget.accounts[index];
+          return AccountTile(
+            a,
+            selected: index == selected,
+            editing: widget.editing,
+            onTap: () {
+              final v = selected != index ? index : null;
+              widget.onSelect?.call(v);
+              setState(() => selected = v);
+            },
+            onEdit: widget.onEdit,
+          );
+        },
+        separatorBuilder: (context, index) => Divider(),
+        itemCount: widget.accounts.length);
+  }
+
+  Account? get selectedAccount => selected?.let((s) => widget.accounts[s]);
 }
 
 class AccountTile extends StatelessWidget {
@@ -129,13 +146,10 @@ class AccountTile extends StatelessWidget {
   final void Function()? onTap;
   final bool selected;
   final bool editing;
-  final void Function(String) onEdit;
+  final void Function(String)? onEdit;
   late final nameController = TextEditingController(text: a.name);
   AccountTile(this.a,
-      {this.onTap,
-      required this.selected,
-      required this.editing,
-      required this.onEdit});
+      {this.onTap, required this.selected, required this.editing, this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -166,16 +180,10 @@ class AccountTile extends StatelessWidget {
           ? TextField(
               controller: nameController,
               autofocus: true,
-              onEditingComplete: () => onEdit(nameController.text))
+              onEditingComplete: () => onEdit?.call(nameController.text))
           : RichText(
               text: TextSpan(children: [
-              TextSpan(
-                  text: a.name,
-                  style: t.textTheme.headlineSmall!.apply(
-                    color: a.coin == 0
-                        ? t.colorScheme.primary
-                        : t.colorScheme.secondary,
-                  )),
+              TextSpan(text: a.name, style: t.textTheme.headlineSmall),
               if (icon != null)
                 WidgetSpan(
                     child: Padding(
@@ -185,6 +193,7 @@ class AccountTile extends StatelessWidget {
             ])),
       trailing: Text(amountToString2(a.balance)),
       onTap: onTap,
+      selectedTileColor: t.colorScheme.inversePrimary,
     );
   }
 }
