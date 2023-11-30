@@ -101,7 +101,7 @@ class BackupPanel extends StatelessWidget {
       onTap: () => showQR(context, value, qrLabel),
       child: Card(
         elevation: 2,
-        child: InputDecorator(
+        child: Padding(padding: EdgeInsets.all(8), child: InputDecorator(
           decoration: InputDecoration(
               label: Text(label), icon: icon, border: OutlineInputBorder()),
           child: Text(
@@ -111,7 +111,7 @@ class BackupPanel extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 
   showQR(BuildContext context, String value, String title) {
