@@ -236,6 +236,7 @@ class _InputTextQRState extends State<InputTextQR> {
   Widget build(BuildContext context) {
     return FormBuilderField<String>(
       name: 'text',
+      initialValue: widget.initialValue,
       validator: widget.validator,
       onSaved: widget.onSaved,
       builder: (field) {

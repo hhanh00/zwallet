@@ -70,19 +70,22 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
 
     final background = t.colorScheme.onPrimary;
     final icons = [
-      Icon(Icons.label, color: background),
-      Icon(Icons.alternate_email, color: background),
-      Icon(Icons.pool, color: background),
-      Icon(Icons.paid, color: background),
-      Icon(Icons.description, color: background),
+      Icon(Icons.label, color: background), // type
+      Icon(Icons.alternate_email, color: background), // address
+      Icon(Icons.pool, color: background), // pools
+      Icon(Icons.paid, color: background), // amount
+      Icon(Icons.description, color: background), // memo
       // Icon(Icons.confirmation_number),
     ];
 
     if (activeStep == icons.length - 1)
       SendContext.instance = SendContext(address, pools, amount, memo);
 
+    final isTransparent = WarpApi.receiversOfAddress(aa.coin, address) == 1;
+    // skip memo if recipient is transparent address
+    final lastStep = activeStep == icons.length - 1 || (isTransparent && activeStep == 3);
     final hasContacts = contacts.isNotEmpty;
-    final nextButton = activeStep < icons.length - 1
+    final nextButton = !lastStep
         ? IconButton(
             icon: Icon(Icons.chevron_right_rounded, size: 32),
             onPressed: () {
