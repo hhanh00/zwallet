@@ -1248,4 +1248,7 @@ class SEs extends S {
 
   @override
   String get noRemindBackup => 'Do not remind me';
+
+  @override
+  String get copiedToClipboard => 'Copy to Clipboard';
 }

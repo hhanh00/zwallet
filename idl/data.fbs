@@ -70,6 +70,7 @@ table Message {
     id_tx:uint32;
     height:uint32;
     timestamp:uint32;
+    sender:string;
     from:string;
     to:string;
     subject:string;
@@ -249,4 +250,13 @@ table PaymentURI {
   address:string;
   amount:uint64;
   memo:string;
+}
+
+table AccountAddress {
+  id:uint32;
+  name:string;
+  transparent:string;
+  sapling:string;
+  orchard:string;
+  address:string;
 }

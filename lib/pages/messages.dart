@@ -1,8 +1,10 @@
+import 'package:YWallet/pages/accounts/send.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../accounts.dart';
@@ -231,6 +233,7 @@ class _MessageItemState extends State<MessageItemPage> {
             onPressed: idx < n - 1 ? next : null,
             icon: Icon(Icons.chevron_right)),
         IconButton(onPressed: nextInThread, icon: Icon(Icons.arrow_right)),
+        if (message.fromAddress.isNotEmptyAndNotNull) IconButton(onPressed: reply, icon: Icon(Icons.reply)),
         IconButton(onPressed: open, icon: Icon(Icons.open_in_browser)),
       ]),
       body: SingleChildScrollView(
@@ -245,21 +248,7 @@ class _MessageItemState extends State<MessageItemPage> {
           Gap(8),
           Panel(s.subject, text: message.subject),
           Gap(8),
-          Panel(s.body, child: SelectableText(message.body, maxLines: 20)),
-          // Gap(16),
-          // FormBuilder(
-          //     child: Row(
-          //   children: [
-          //     Expanded(
-          //         child: FormBuilderTextField(
-          //       name: 'reply',
-          //       decoration: InputDecoration(label: Text(s.reply)),
-          //       controller: replyController,
-          //       maxLines: 10,
-          //     )),
-          //     IconButton.outlined(onPressed: null, icon: Icon(Icons.send)),
-          //   ],
-          // )),
+          Panel(s.body, text: message.body, maxLines: 20),
         ]),
       ),
     ));
@@ -289,6 +278,12 @@ class _MessageItemState extends State<MessageItemPage> {
     final id = pn.next;
     if (id != 0) idx = aa.messages.items.indexWhere((m) => m.id == id);
     setState(() {});
+  }
+
+  reply() async {
+    final memo = MemoData(true, message.subject, '');
+    final sc = SendContext(message.fromAddress!, 7, 0, false, memo);
+    GoRouter.of(context).go('/account/quick_send', extra: sc);
   }
 
   open() {

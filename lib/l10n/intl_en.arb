@@ -395,5 +395,6 @@
   "confirmRescanFrom": "Do you want to rescan from block {height}?",
   "confirmRewind": "Do you want to rewind to block {height}?",
   "backupMissing": "BACKUP MISSING",
-  "noRemindBackup": "Do not remind me"
+  "noRemindBackup": "Do not remind me",
+  "copiedToClipboard": "Copy to Clipboard"
 }

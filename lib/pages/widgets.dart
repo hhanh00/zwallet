@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -27,9 +28,10 @@ import 'utils.dart';
 class Panel extends StatelessWidget {
   final String title;
   final String? text;
+  final int? maxLines;
   final Widget? child;
   final bool save;
-  Panel(this.title, {this.text, this.child, this.save = false});
+  Panel(this.title, {this.text, this.maxLines, this.child, this.save = false});
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +40,25 @@ class Panel extends StatelessWidget {
             InputDecoration(label: Text(title), border: OutlineInputBorder()),
         child: text != null
             ? Row(children: [
-                Expanded(child: SelectableText(text!)),
+                Expanded(child: SelectableText(text!, maxLines: maxLines)),
                 SizedBox(
+                    width: 40,
+                    child: IconButton(
+                        onPressed: () => _copy(context),
+                        icon: Icon(Icons.copy))),
+                if (save) SizedBox(
                     width: 40,
                     child: IconButton(
                         onPressed: () => _save(context),
                         icon: Icon(Icons.save))),
               ])
             : child);
+  }
+
+  _copy(BuildContext context) {
+    final s = S.of(context);
+    Clipboard.setData(ClipboardData(text: text!));
+    showSnackBar(s.copiedToClipboard);
   }
 
   _save(BuildContext context) {
@@ -93,6 +106,7 @@ class RecipientWidget extends StatelessWidget {
       0,
       false,
       '',
+      recipient.address!,
       recipient.address!,
       recipient.subject!,
       recipient.memo!,

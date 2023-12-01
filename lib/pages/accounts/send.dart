@@ -23,8 +23,9 @@ class SendContext {
   final String address;
   final int pools;
   final int amount;
+  final bool deductFee;
   final MemoData? memo;
-  SendContext(this.address, this.pools, this.amount, this.memo);
+  SendContext(this.address, this.pools, this.amount, this.deductFee, this.memo);
 
   static SendContext? instance;
 }
@@ -79,11 +80,13 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     ];
 
     if (activeStep == icons.length - 1)
-      SendContext.instance = SendContext(address, pools, amount, memo);
+      SendContext.instance =
+          SendContext(address, pools, amount, deductFee, memo);
 
     final isTransparent = WarpApi.receiversOfAddress(aa.coin, address) == 1;
     // skip memo if recipient is transparent address
-    final lastStep = activeStep == icons.length - 1 || (isTransparent && activeStep == 3);
+    final lastStep =
+        activeStep == icons.length - 1 || (isTransparent && activeStep == 3);
     final hasContacts = contacts.isNotEmpty;
     final nextButton = !lastStep
         ? IconButton(
@@ -521,6 +524,9 @@ class SendMemoState extends State<SendMemo> {
 }
 
 class QuickSendPage extends StatefulWidget {
+  final SendContext? sendContext;
+  QuickSendPage({this.sendContext});
+
   @override
   State<StatefulWidget> createState() => _QuickSendState();
 }
@@ -532,11 +538,12 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   late final balances =
       WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset, false)
           .unpack();
-  String _address = '';
-  int _pools = 7;
-  int _amount = 0;
-  bool _deductFee = false;
-  MemoData? _memo;
+  late String _address = widget.sendContext?.address ?? '';
+  late int _pools = widget.sendContext?.pools ?? 7;
+  late int _amount = widget.sendContext?.amount ?? 0;
+  late bool _deductFee = widget.sendContext?.deductFee ?? false;
+  late MemoData _memo = widget.sendContext?.memo ??
+      MemoData(appSettings.includeReplyTo != 0, '', appSettings.memo);
 
   @override
   Widget build(BuildContext context) {
@@ -578,8 +585,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                     }),
                   ),
                   InputMemo(
-                    MemoData(
-                        appSettings.includeReplyTo != 0, '', appSettings.memo),
+                    _memo,
                     onSaved: (v) => setState(() => _memo = v!),
                   ),
                 ],
@@ -626,7 +632,8 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         memo: _memo?.memo ?? '',
       );
       final recipient = Recipient(builder.toBytes());
-      SendContext.instance = SendContext(_address, _pools, _amount, _memo);
+      SendContext.instance =
+          SendContext(_address, _pools, _amount, _deductFee, _memo);
       try {
         final plan = await load(() => WarpApi.prepareTx(
             aa.coin,

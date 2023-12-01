@@ -60,6 +60,7 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
     final s = S.of(context);
     return [
       ColumnDefinition(field: 'height', label: s.height, numeric: true),
+      ColumnDefinition(field: 'confirmations', label: s.confs, numeric: true),
       ColumnDefinition(field: 'timestamp', label: s.datetime),
       ColumnDefinition(field: 'value', label: s.amount),
       ColumnDefinition(field: 'fullTxId', label: s.txID),
@@ -81,6 +82,7 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
         index: index,
         cells: [
           DataCell(Text("${tx.height}")),
+          DataCell(Text("${tx.confirmations}")),
           DataCell(Text("${txDateFormat.format(tx.timestamp)}")),
           DataCell(Text(decimalFormat(tx.value, 8),
               style: style, textAlign: TextAlign.left)),

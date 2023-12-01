@@ -114,7 +114,7 @@ final router = GoRouter(
                 ),
                 GoRoute(
                   path: 'quick_send',
-                  builder: (context, state) => QuickSendPage(),
+                  builder: (context, state) => QuickSendPage(sendContext: state.extra as SendContext?),
                 ),
                 GoRoute(
                   path: 'pay_uri',

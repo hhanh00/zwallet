@@ -2476,6 +2476,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Do not remind me'**
   String get noRemindBackup;
+
+  /// No description provided for @copiedToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to Clipboard'**
+  String get copiedToClipboard;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

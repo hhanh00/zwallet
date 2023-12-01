@@ -288,6 +288,7 @@ abstract class _Messages with Store {
             m.idMsg,
             m.idTx,
             m.incoming,
+            m.sender,
             m.from,
             m.to!,
             m.subject!,

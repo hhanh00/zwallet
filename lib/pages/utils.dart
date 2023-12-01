@@ -447,6 +447,7 @@ class ZMessage extends HasHeight {
   final int id;
   final int txId;
   final bool incoming;
+  final String? fromAddress;
   final String? sender;
   final String recipient;
   final String subject;
@@ -455,11 +456,11 @@ class ZMessage extends HasHeight {
   final int height;
   final bool read;
 
-  ZMessage(this.id, this.txId, this.incoming, this.sender, this.recipient,
+  ZMessage(this.id, this.txId, this.incoming, this.fromAddress, this.sender, this.recipient,
       this.subject, this.body, this.timestamp, this.height, this.read);
 
   ZMessage withRead(bool v) {
-    return ZMessage(id, txId, incoming, sender, recipient, subject, body,
+    return ZMessage(id, txId, incoming, fromAddress, sender, recipient, subject, body,
         timestamp, height, v);
   }
 
