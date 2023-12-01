@@ -487,7 +487,7 @@ class SendMemoState extends State<SendMemo> {
         child: Column(children: [
           MediumTitle(s.memo),
           Gap(16),
-          FormBuilderCheckbox(
+          FormBuilderSwitch(
             name: 'reply',
             initialValue: widget.memo.reply,
             title: Text(s.includeReplyTo),

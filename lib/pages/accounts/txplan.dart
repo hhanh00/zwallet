@@ -89,13 +89,14 @@ class TxPlanWidget extends StatelessWidget {
     final t = Theme.of(context);
     final c = coins[aa.coin];
     final supportsUA = c.supportsUA;
-    final rows = report.outputs!
-        .map((e) => DataRow(cells: [
-              DataCell(Text('...${trailing(e.address!, 12)}')),
-              DataCell(Text('${poolToString(s, e.pool)}')),
-              DataCell(Text('${amountToString2(e.amount, digits: MAX_PRECISION)}')),
-            ]))
-        .toList();
+    final rows = report.outputs!.map((e) {
+      final style = _styleOfAddress(e.address!, t);
+      return DataRow(cells: [
+        DataCell(Text('...${trailing(e.address!, 12)}', style: style)),
+        DataCell(Text('${poolToString(s, e.pool)}', style: style)),
+        DataCell(Text('${amountToString2(e.amount, digits: MAX_PRECISION)}', style: style)),
+      ]);
+    }).toList();
 
     return Column(children: [
       Row(children: [
@@ -118,34 +119,45 @@ class TxPlanWidget extends StatelessWidget {
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.transparentInput),
-          trailing: Text(amountToString2(report.transparent, digits: MAX_PRECISION))),
+          trailing:
+              Text(amountToString2(report.transparent, digits: MAX_PRECISION),
+              style: TextStyle(color: t.primaryColor))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.saplingInput),
-          trailing: Text(amountToString2(report.sapling, digits: MAX_PRECISION))),
+          trailing:
+              Text(amountToString2(report.sapling, digits: MAX_PRECISION))),
       if (supportsUA)
         ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(s.orchardInput),
-            trailing: Text(amountToString2(report.orchard, digits: MAX_PRECISION))),
+            trailing:
+                Text(amountToString2(report.orchard, digits: MAX_PRECISION))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.netSapling),
-          trailing: Text(amountToString2(report.netSapling, digits: MAX_PRECISION))),
+          trailing:
+              Text(amountToString2(report.netSapling, digits: MAX_PRECISION), style: TextStyle(color: t.primaryColor))),
       if (supportsUA)
         ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(s.netOrchard),
-            trailing: Text(amountToString2(report.netOrchard, digits: MAX_PRECISION))),
+            trailing: Text(
+                amountToString2(report.netOrchard, digits: MAX_PRECISION), style: TextStyle(color: t.primaryColor))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.fee),
-          trailing: Text(amountToString2(report.fee, digits: MAX_PRECISION))),
+          trailing: Text(amountToString2(report.fee, digits: MAX_PRECISION), style: TextStyle(color: t.primaryColor))),
       privacyToString(context, report.privacyLevel, onSend: onSend)!,
       Gap(16),
       if (invalidPrivacy)
         Text(s.privacyLevelTooLow, style: t.textTheme.bodyLarge),
     ]);
+  }
+
+  TextStyle? _styleOfAddress(String address, ThemeData t) {
+    final a = WarpApi.receiversOfAddress(aa.coin, address);
+    return a == 1 ? TextStyle(color: t.primaryColor) : null;
   }
 }
 
