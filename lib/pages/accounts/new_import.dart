@@ -100,7 +100,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                       _key,
                       label: s.key,
                       lines: 4,
-                      onSaved: (v) => setState(() => _key = v!),
+                      onChanged: (v) => setState(() => _key = v!),
                       validator: _checkKey,
                     ),
                     Gap(8),

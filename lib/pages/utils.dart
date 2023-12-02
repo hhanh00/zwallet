@@ -5,6 +5,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:another_flushbar/flushbar_helper.dart';
+import 'package:decimal/decimal.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +22,7 @@ import 'package:reflectable/reflectable.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:path/path.dart' as p;
@@ -31,6 +33,7 @@ import '../accounts.dart';
 import '../appsettings.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
+import '../main.dart';
 import '../router.dart';
 import '../store2.dart';
 import 'widgets.dart';
@@ -117,6 +120,13 @@ String? addressValidator(String? v) {
   if (v == null || v.isEmpty) return s.addressIsEmpty;
   final valid = WarpApi.validAddress(aa.coin, v);
   if (!valid) return s.invalidAddress;
+  return null;
+}
+
+String? paymentURIValidator(String? v) {
+  final s = S.of(rootNavigatorKey.currentContext!);
+  if (v.isEmptyOrNull) return s.required;
+  if (WarpApi.decodePaymentURI(aa.coin, v!) == null) return s.invalidPaymentURI;
   return null;
 }
 
@@ -295,27 +305,33 @@ Future<bool> showConfirmDialog(
   }
 
   final confirmation = await showDialog<bool>(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-            title: Text(title),
-            content: Text(body),
-            actions: [
-              ElevatedButton.icon(onPressed: () => close(false), icon: Icon(Icons.cancel), label: Text(s.cancel)),
-              ElevatedButton.icon(onPressed: () => close(true), icon: Icon(Icons.check), label: Text(s.ok)),
-            ]
-      )) ??
+          context: context,
+          barrierDismissible: false,
+          builder: (context) =>
+              AlertDialog(title: Text(title), content: Text(body), actions: [
+                ElevatedButton.icon(
+                    onPressed: () => close(false),
+                    icon: Icon(Icons.cancel),
+                    label: Text(s.cancel)),
+                ElevatedButton.icon(
+                    onPressed: () => close(true),
+                    icon: Icon(Icons.check),
+                    label: Text(s.ok)),
+              ])) ??
       false;
   return confirmation;
 }
 
-num parseNumber(String? s) {
-  if (s == null || s.isEmpty) return 0;
-  return NumberFormat.currency().parse(s);
+Decimal parseNumber(String? s) {
+  if (s == null || s.isEmpty) return Decimal.zero;
+  // There is no API to parse directly from intl string
+  final v = NumberFormat.currency().parse(s);
+  return Decimal.parse(v.toStringAsFixed(8));
 }
 
 int stringToAmount(String? s) {
-  return (parseNumber(s) * ZECUNIT_INT).toInt();
+  final v = parseNumber(s);
+  return (ZECUNIT_DECIMAL * v).toBigInt().toInt();
 }
 
 String amountToString2(int amount, {int? digits}) {
@@ -327,7 +343,7 @@ Future<void> saveFile(String data, String filename, String title) async {
   await saveFileBinary(utf8.encode(data), filename, title);
 }
 
-String centerTrim(String v, {int length = 16}) { 
+String centerTrim(String v, {int length = 16}) {
   if (v.length <= length) return v;
   final s = length ~/ 2;
   final e = v.length - length + s;
@@ -456,12 +472,22 @@ class ZMessage extends HasHeight {
   final int height;
   final bool read;
 
-  ZMessage(this.id, this.txId, this.incoming, this.fromAddress, this.sender, this.recipient,
-      this.subject, this.body, this.timestamp, this.height, this.read);
+  ZMessage(
+      this.id,
+      this.txId,
+      this.incoming,
+      this.fromAddress,
+      this.sender,
+      this.recipient,
+      this.subject,
+      this.body,
+      this.timestamp,
+      this.height,
+      this.read);
 
   ZMessage withRead(bool v) {
-    return ZMessage(id, txId, incoming, fromAddress, sender, recipient, subject, body,
-        timestamp, height, v);
+    return ZMessage(id, txId, incoming, fromAddress, sender, recipient, subject,
+        body, timestamp, height, v);
   }
 
   String fromto() => incoming
@@ -608,5 +634,14 @@ class Trade {
   Trade(this.dt, this.qty);
 }
 
-
-
+FormFieldValidator<T> composeOr<T>(List<FormFieldValidator<T>> validators) {
+  return (v) {
+    String? first;
+    for (var validator in validators) {
+      final res = validator.call(v);
+      if (res == null) return null;
+      if (first == null) first = res;
+    }
+    return first;
+  };
+}

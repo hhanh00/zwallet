@@ -21,8 +21,6 @@ const ZECUNIT = 100000000.0;
 var ZECUNIT_DECIMAL = Decimal.parse('100000000');
 const mZECUNIT = 100000;
 
-var appStore = AppStore();
-
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() async {

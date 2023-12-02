@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:im_stepper/stepper.dart';
@@ -251,15 +252,14 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
   _paymentURI() async {
     final s = S.of(context);
     await scanQRCode(context, validator: (uri) {
-      try {
-        final p = WarpApi.decodePaymentURI(aa.coin, uri!);
-        address = p.address!;
-        amount = p.amount;
-        memo = MemoData(false, '', p.memo!);
-        return null;
-      } on String {
-        return s.invalidPaymentURI;
-      }
+      final p = WarpApi.decodePaymentURI(aa.coin, uri!);
+      if (p == null) return s.invalidPaymentURI;
+      address = p.address!;
+      amount = p.amount;
+      memo = MemoData(false, '', p.memo!);
+      SendContext.instance =
+          SendContext(address, pools, amount, deductFee, memo);
+      return null;
     });
     await calcPlan();
   }
@@ -372,7 +372,7 @@ class SendAddressState extends State<SendAddress> {
           label: s.address,
           lines: 4,
           validator: addressValidator,
-          onSaved: (v) => _address = v!),
+          onChanged: (v) => _address = v!),
     );
   }
 
@@ -535,6 +535,9 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   late final s = S.of(context);
   late final t = Theme.of(context);
   final formKey = GlobalKey<FormBuilderState>();
+  final addressKey = GlobalKey<InputTextQRState>();
+  final amountKey = GlobalKey<AmountPickerState>();
+  final memoKey = GlobalKey<InputMemoState>();
   late final balances =
       WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset, false)
           .unpack();
@@ -567,26 +570,30 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                 children: [
                   InputTextQR(
                     _address,
+                    key: addressKey,
                     lines: 4,
-                    onSaved: (v) => v?.let((v) => setState(() => _address = v)),
+                    onChanged: _onAddress,
+                    validator: composeOr([addressValidator, paymentURIValidator]),
                     buttonsBuilder: _extraAddressButtons,
                   ),
                   PoolSelection(
                     _pools,
                     balances: aa.poolBalances,
-                    onChanged: (v) => setState(() => _pools = v!),
+                    onChanged: (v) => _pools = v!,
                   ),
                   AmountPicker(
                     _amount,
+                    key: amountKey,
                     spendable: spendable,
-                    onChanged: (a) => setState(() {
+                    onChanged: (a) {
                       _amount = a!.value;
                       _deductFee = a.deductFee;
-                    }),
+                    },
                   ),
                   InputMemo(
                     _memo,
-                    onSaved: (v) => setState(() => _memo = v!),
+                    key: memoKey,
+                    onChanged: (v) => _memo = v!,
                   ),
                 ],
               ),
@@ -621,15 +628,15 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     final form = formKey.currentState!;
     if (form.validate()) {
       form.save();
-      print(
-          'send $_address $_amount $_deductFee $_pools ${_memo?.reply} ${_memo?.subject} ${_memo?.memo}');
+      logger.d(
+          'send $_address $_amount $_deductFee $_pools ${_memo.reply} ${_memo.subject} ${_memo.memo}');
       final builder = RecipientObjectBuilder(
         address: _address,
         amount: _amount,
         feeIncluded: _deductFee,
-        replyTo: _memo?.reply ?? false,
-        subject: _memo?.subject ?? '',
-        memo: _memo?.memo ?? '',
+        replyTo: _memo.reply,
+        subject: _memo.subject,
+        memo: _memo.memo,
       );
       final recipient = Recipient(builder.toBytes());
       SendContext.instance =
@@ -648,5 +655,17 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         showMessageBox2(context, s.error, e);
       }
     }
+  }
+
+  _onAddress(String? v) {
+    if (v == null) return;
+    final puri = WarpApi.decodePaymentURI(aa.coin, v);
+    if (puri != null) {
+      addressKey.currentState!.setValue(puri.address!);
+      amountKey.currentState!.setAmount(puri.amount);
+      memoKey.currentState!.setMemoBody(puri.memo!);
+    }
+    else 
+      _address = v;
   }
 }

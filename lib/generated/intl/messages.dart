@@ -2482,6 +2482,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Copy to Clipboard'**
   String get copiedToClipboard;
+
+  /// No description provided for @required.
+  ///
+  /// In en, this message translates to:
+  /// **'Value Required'**
+  String get required;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -453,10 +453,15 @@ class WarpApi {
     return unwrapResultString(uri);
   }
 
-  static PaymentUri decodePaymentURI(int coin, String uri) {
-    final data =
-        unwrapResultBytes(warp_api_lib.decode_payment_uri(coin, toNative(uri)));
-    return PaymentUri(data);
+  static PaymentUri? decodePaymentURI(int coin, String uri) {
+    try {
+      final data =
+          unwrapResultBytes(warp_api_lib.decode_payment_uri(coin, toNative(uri)));
+      return PaymentUri(data);
+    }
+    catch (_) {
+      return null;
+    }
   }
 
   static Future<Agekeys> generateKey() async {

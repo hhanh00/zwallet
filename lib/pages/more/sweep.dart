@@ -94,7 +94,7 @@ class _SweepState extends State<SweepPage>
                   ),
                   if (_pool == null)
                     InputTextQR('',
-                        onSaved: (v) => setState(() => _address = v)),
+                        onChanged: (v) => setState(() => _address = v)),
                 ]),
               ),
             ))));

@@ -396,5 +396,6 @@
   "confirmRewind": "Do you want to rewind to block {height}?",
   "backupMissing": "BACKUP MISSING",
   "noRemindBackup": "Do not remind me",
-  "copiedToClipboard": "Copy to Clipboard"
+  "copiedToClipboard": "Copy to Clipboard",
+  "required": "Value Required"
 }
