@@ -217,25 +217,6 @@ class NativeLibrary {
       CResult_u32 Function(
           int, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
 
-  void new_sub_account(
-    ffi.Pointer<ffi.Char> name,
-    int index,
-    int count,
-  ) {
-    return _new_sub_account(
-      name,
-      index,
-      count,
-    );
-  }
-
-  late final _new_sub_accountPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<ffi.Char>, ffi.Int32,
-              ffi.Uint32)>>('new_sub_account');
-  late final _new_sub_account = _new_sub_accountPtr
-      .asFunction<void Function(ffi.Pointer<ffi.Char>, int, int)>();
-
   CResult_u8 convert_to_watchonly(
     int coin,
     int id_account,
@@ -931,12 +912,14 @@ class NativeLibrary {
 
   CResult_____c_char commit_unsaved_contacts(
     int coin,
+    int account,
     int anchor_offset,
     ffi.Pointer<ffi.Uint8> fee_bytes,
     int fee_len,
   ) {
     return _commit_unsaved_contacts(
       coin,
+      account,
       anchor_offset,
       fee_bytes,
       fee_len,
@@ -945,10 +928,11 @@ class NativeLibrary {
 
   late final _commit_unsaved_contactsPtr = _lookup<
       ffi.NativeFunction<
-          CResult_____c_char Function(ffi.Uint8, ffi.Uint32,
+          CResult_____c_char Function(ffi.Uint8, ffi.Uint32, ffi.Uint32,
               ffi.Pointer<ffi.Uint8>, ffi.Uint64)>>('commit_unsaved_contacts');
   late final _commit_unsaved_contacts = _commit_unsaved_contactsPtr.asFunction<
-      CResult_____c_char Function(int, int, ffi.Pointer<ffi.Uint8>, int)>();
+      CResult_____c_char Function(
+          int, int, int, ffi.Pointer<ffi.Uint8>, int)>();
 
   void mark_message_read(
     int coin,
@@ -1291,22 +1275,6 @@ class NativeLibrary {
           'get_first_account');
   late final _get_first_account =
       _get_first_accountPtr.asFunction<CResult_u32 Function(int)>();
-
-  CResult_u8 set_active_account(
-    int coin,
-    int id,
-  ) {
-    return _set_active_account(
-      coin,
-      id,
-    );
-  }
-
-  late final _set_active_accountPtr =
-      _lookup<ffi.NativeFunction<CResult_u8 Function(ffi.Uint8, ffi.Uint32)>>(
-          'set_active_account');
-  late final _set_active_account =
-      _set_active_accountPtr.asFunction<CResult_u8 Function(int, int)>();
 
   CResult_____c_char get_t_addr(
     int coin,
@@ -1927,17 +1895,19 @@ const int Message_VT_ID_MSG = 4;
 
 const int Message_VT_ID_TX = 6;
 
-const int Message_VT_FROM = 12;
+const int Message_VT_SENDER = 12;
 
-const int Message_VT_TO = 14;
+const int Message_VT_FROM = 14;
 
-const int Message_VT_SUBJECT = 16;
+const int Message_VT_TO = 16;
 
-const int Message_VT_BODY = 18;
+const int Message_VT_SUBJECT = 18;
 
-const int Message_VT_READ = 20;
+const int Message_VT_BODY = 20;
 
-const int Message_VT_INCOMING = 22;
+const int Message_VT_READ = 22;
+
+const int Message_VT_INCOMING = 24;
 
 const int MessageVec_VT_MESSAGES = 4;
 

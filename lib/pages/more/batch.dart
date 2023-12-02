@@ -20,8 +20,8 @@ class BatchBackupPage extends StatefulWidget {
 }
 
 class _BatchBackupState extends State<BatchBackupPage> {
-  final backupFormKey = GlobalKey<FormBuilderFieldState>();
-  final restoreFormKey = GlobalKey<FormBuilderFieldState>();
+  final backupFormKey = GlobalKey<FormBuilderState>();
+  final restoreFormKey = GlobalKey<FormBuilderState>();
   final backupKeyController = TextEditingController();
   final restoreKeyController = TextEditingController();
 
@@ -124,6 +124,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
     if (r != null) {
       final file = r.files.first;
       final dbDir = await getDbPath();
+      try {
       final zipFile =
           WarpApi.decryptBackup(restoreKeyController.text, file.path!, dbDir);
       final prefs = await SharedPreferences.getInstance();
@@ -132,6 +133,10 @@ class _BatchBackupState extends State<BatchBackupPage> {
           context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow,
           dismissable: false);
       GoRouter.of(context).pop();
+      }
+      on String catch (e) {
+        restoreFormKey.currentState!.fields['restore']!.invalidate(e);
+      }
     }
   }
 }

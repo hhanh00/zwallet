@@ -225,14 +225,14 @@ class _MessageItemState extends State<MessageItemPage> {
     return Scaffold(
       appBar: AppBar(title: Text(message.subject), actions: [
         IconButton(
-            onPressed: prevInThread,
+            onPressed: nextInThread,
             icon: Icon(Icons.arrow_left)), // because the sorting is desc
         IconButton(
             onPressed: idx > 0 ? prev : null, icon: Icon(Icons.chevron_left)),
         IconButton(
             onPressed: idx < n - 1 ? next : null,
             icon: Icon(Icons.chevron_right)),
-        IconButton(onPressed: nextInThread, icon: Icon(Icons.arrow_right)),
+        IconButton(onPressed: prevInThread, icon: Icon(Icons.arrow_right)),
         if (message.fromAddress.isNotEmptyAndNotNull) IconButton(onPressed: reply, icon: Icon(Icons.reply)),
         IconButton(onPressed: open, icon: Icon(Icons.open_in_browser)),
       ]),

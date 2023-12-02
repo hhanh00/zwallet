@@ -112,11 +112,6 @@ class WarpApi {
         null);
   }
 
-  static void newSubAccount(String name, int index, int count) {
-    warp_api_lib.new_sub_account(
-        toNative(name), index, count);
-  }
-
   static String ledgerGetFVK(int coin) {
     return unwrapResultString(warp_api_lib.ledger_get_fvk(coin));
   }
@@ -421,10 +416,10 @@ class WarpApi {
         toNative(address), dirty ? 1 : 0);
   }
 
-  static String commitUnsavedContacts(int coin, int anchorOffset, FeeT fee) {
+  static String commitUnsavedContacts(int coin, int account, int anchorOffset, FeeT fee) {
     final fee2 = encodeFee(fee);
     return unwrapResultString(warp_api_lib.commit_unsaved_contacts(
-        coin, anchorOffset, toNativeBytes(fee2), fee2.lengthInBytes));
+        coin, account, anchorOffset, toNativeBytes(fee2), fee2.lengthInBytes));
   }
 
   static void markMessageAsRead(int coin, int messageId, bool read) {
@@ -549,10 +544,6 @@ class WarpApi {
   static List<Account> getAccountList(int coin) {
     final r = unwrapResultBytes(warp_api_lib.get_account_list(coin));
     return AccountVec(r).accounts!;
-  }
-
-  static void setActiveAccountId(int coin, int id) {
-    unwrapResultU8(warp_api_lib.set_active_account(coin, id));
   }
 
   static String getTAddr(int coin, int id) {

@@ -59,7 +59,7 @@ class _ContactsState extends State<ContactsPage> {
         await showConfirmDialog(context, s.save, s.confirmSaveContacts);
     if (!confirmed) return;
     final txPlan =
-        WarpApi.commitUnsavedContacts(aa.coin, appSettings.anchorOffset, fee);
+        WarpApi.commitUnsavedContacts(aa.coin, aa.id, appSettings.anchorOffset, fee);
     GoRouter.of(context)
         .pushReplacement('/account/txplan?tab=more', extra: txPlan);
   }
@@ -228,6 +228,8 @@ class _ContactAddState extends State<ContactAddPage> {
                       decoration: InputDecoration(label: Text(s.address)),
                       controller: addressController,
                       validator: addressValidator,
+                      minLines: 5,
+                      maxLines: 5,
                     )),
                     IconButton.outlined(
                         onPressed: _qr, icon: Icon(Icons.qr_code)),
