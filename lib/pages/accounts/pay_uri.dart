@@ -43,7 +43,7 @@ class _PaymentURIState extends State<PaymentURIPage> {
                 memo: memoController.text,
                 paymentURI: false,
               ),
-              AmountPicker(amount, onChanged: onAmount, canDeductFee: false),
+              AmountPicker(Amount(amount, false), onChanged: onAmount, canDeductFee: false),
               FormBuilderTextField(
                 name: 'memo',
                 decoration: InputDecoration(label: Text(s.memo)),

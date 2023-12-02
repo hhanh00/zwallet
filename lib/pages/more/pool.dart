@@ -72,7 +72,7 @@ class _PoolTransferState extends State<PoolTransferPage> {
                               })),
                       Gap(16),
                       AmountPicker(
-                        amount,
+                        Amount(amount, false),
                         spendable: spendable,
                         onChanged: (a) => setState(() => amount = a!.value),
                       ),

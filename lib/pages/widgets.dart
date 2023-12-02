@@ -377,7 +377,7 @@ enum AmountSource {
 
 class AmountPicker extends StatefulWidget {
   final int? spendable;
-  final int initialAmount;
+  final Amount initialAmount;
   final bool canDeductFee;
   final void Function(Amount?)? onChanged;
   AmountPicker(this.initialAmount,
@@ -393,7 +393,7 @@ class AmountPickerState extends State<AmountPicker> {
   double? fxRate;
   double _sliderValue = 0;
   late final amountController =
-      TextEditingController(text: amountToString2(widget.initialAmount));
+      TextEditingController(text: amountToString2(widget.initialAmount.value));
   late final fiatController = TextEditingController(text: nformat.format(0.0));
   final nformat = NumberFormat.decimalPatternDigits(
       decimalDigits: decimalDigits(appSettings.fullPrec));
@@ -415,6 +415,7 @@ class AmountPickerState extends State<AmountPicker> {
     return FormBuilderField<Amount>(
       key: fieldKey,
       name: 'amount_form',
+      initialValue: widget.initialAmount,
       onChanged: widget.onChanged,
       validator: FormBuilderValidators.compose([
         (a) => a!.value <= 0 ? s.amountMustBePositive : null,
@@ -422,7 +423,6 @@ class AmountPickerState extends State<AmountPicker> {
           (a) => a!.value > spendable ? s.notEnoughBalance : null,
       ]),
       builder: (field) {
-        final a = field.value;
         return FormBuilder(
           key: formKey,
           child: Column(
@@ -489,7 +489,7 @@ class AmountPickerState extends State<AmountPicker> {
               if (widget.canDeductFee)
                 FormBuilderSwitch(
                   name: 'deduct_fee',
-                  initialValue: widget.canDeductFee,
+                  initialValue: widget.initialAmount.deductFee,
                   title: Text(s.deductFee),
                   onChanged: (v) {
                     var a = field.value!;
@@ -566,16 +566,6 @@ class InputMemoState extends State<InputMemo> {
   late final memoController = TextEditingController(text: widget.memo.memo);
 
   @override
-  void didUpdateWidget(InputMemo oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      value = widget.memo.clone();
-      subjectController.text = widget.memo.subject;
-      memoController.text = widget.memo.memo;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     return FormBuilderField<MemoData>(
@@ -630,6 +620,8 @@ class InputMemoState extends State<InputMemo> {
   void setMemoBody(String body) {
     final m = MemoData(false, '', body);
     formKey.currentState!.fields['reply']!.setValue(false);
+    subjectController.text = m.subject;
+    memoController.text = m.memo;
     fieldKey.currentState!.didChange(m);
   }
 }

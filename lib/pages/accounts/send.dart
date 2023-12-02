@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:im_stepper/stepper.dart';
-import 'package:tuple/tuple.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -23,10 +21,9 @@ import 'manager.dart';
 class SendContext {
   final String address;
   final int pools;
-  final int amount;
-  final bool deductFee;
+  final Amount amount;
   final MemoData? memo;
-  SendContext(this.address, this.pools, this.amount, this.deductFee, this.memo);
+  SendContext(this.address, this.pools, this.amount, this.memo);
 
   static SendContext? instance;
 }
@@ -56,8 +53,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
   String address = '';
   int receivers = 0;
   int pools = 7;
-  int amount = 0;
-  bool deductFee = false;
+  Amount amount = Amount(0, false);
   MemoData memo = MemoData(false, '', appSettings.memo);
   int? contactIndex;
   late final accounts = WarpApi.getAccountList(aa.coin);
@@ -82,7 +78,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
 
     if (activeStep == icons.length - 1)
       SendContext.instance =
-          SendContext(address, pools, amount, deductFee, memo);
+          SendContext(address, pools, amount, memo);
 
     final isTransparent = WarpApi.receiversOfAddress(aa.coin, address) == 1;
     // skip memo if recipient is transparent address
@@ -238,8 +234,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     if (activeStep == 3) {
       final v = amountKey.currentState!.amount;
       if (v == null) return false;
-      amount = v.item1;
-      deductFee = v.item2;
+      amount = v;
     }
     if (activeStep == 4) {
       final v = memoKey.currentState!.memo;
@@ -255,10 +250,10 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
       final p = WarpApi.decodePaymentURI(aa.coin, uri!);
       if (p == null) return s.invalidPaymentURI;
       address = p.address!;
-      amount = p.amount;
+      amount = Amount(p.amount, false);
       memo = MemoData(false, '', p.memo!);
       SendContext.instance =
-          SendContext(address, pools, amount, deductFee, memo);
+          SendContext(address, pools, amount, memo);
       return null;
     });
     await calcPlan();
@@ -279,8 +274,8 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     if (!validate()) return;
     final recipientBuilder = RecipientObjectBuilder(
       address: address,
-      amount: amount,
-      feeIncluded: deductFee,
+      amount: amount.value,
+      feeIncluded: amount.deductFee,
       replyTo: memo.reply,
       subject: memo.subject,
       memo: memo.memo,
@@ -423,7 +418,7 @@ class SendPoolState extends State<SendPool> {
 }
 
 class SendAmount extends StatefulWidget {
-  final int initialAmount;
+  final Amount initialAmount;
   final int spendable;
   final bool canDeductFee;
   SendAmount(this.initialAmount,
@@ -435,8 +430,7 @@ class SendAmount extends StatefulWidget {
 
 class SendAmountState extends State<SendAmount> {
   final formKey = GlobalKey<FormBuilderState>();
-  late int _amount = widget.initialAmount;
-  bool _deductFee = false;
+  late Amount _amount = widget.initialAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -449,21 +443,16 @@ class SendAmountState extends State<SendAmount> {
         child: AmountPicker(
           widget.initialAmount,
           spendable: widget.spendable,
-          onChanged: (a) => setState(
-            () {
-              _amount = a!.value;
-              _deductFee = a.deductFee;
-            },
-          ),
+          onChanged: (a) => setState(() => _amount = a!),
           canDeductFee: widget.canDeductFee,
         ),
       ),
     ]);
   }
 
-  Tuple2<int, bool>? get amount {
+  Amount? get amount {
     if (!formKey.currentState!.validate()) return null;
-    return Tuple2(_amount, _deductFee);
+    return _amount;
   }
 }
 
@@ -543,8 +532,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
           .unpack();
   late String _address = widget.sendContext?.address ?? '';
   late int _pools = widget.sendContext?.pools ?? 7;
-  late int _amount = widget.sendContext?.amount ?? 0;
-  late bool _deductFee = widget.sendContext?.deductFee ?? false;
+  late Amount _amount = widget.sendContext?.amount ?? Amount(0, false);
   late MemoData _memo = widget.sendContext?.memo ??
       MemoData(appSettings.includeReplyTo != 0, '', appSettings.memo);
 
@@ -585,10 +573,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                     _amount,
                     key: amountKey,
                     spendable: spendable,
-                    onChanged: (a) {
-                      _amount = a!.value;
-                      _deductFee = a.deductFee;
-                    },
+                    onChanged: (a) => _amount = a!,
                   ),
                   InputMemo(
                     _memo,
@@ -629,18 +614,18 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     if (form.validate()) {
       form.save();
       logger.d(
-          'send $_address $_amount $_deductFee $_pools ${_memo.reply} ${_memo.subject} ${_memo.memo}');
+          'send $_address $_amount $_pools ${_memo.reply} ${_memo.subject} ${_memo.memo}');
       final builder = RecipientObjectBuilder(
         address: _address,
-        amount: _amount,
-        feeIncluded: _deductFee,
+        amount: _amount.value,
+        feeIncluded: _amount.deductFee,
         replyTo: _memo.reply,
         subject: _memo.subject,
         memo: _memo.memo,
       );
       final recipient = Recipient(builder.toBytes());
       SendContext.instance =
-          SendContext(_address, _pools, _amount, _deductFee, _memo);
+          SendContext(_address, _pools, _amount, _memo);
       try {
         final plan = await load(() => WarpApi.prepareTx(
             aa.coin,
@@ -661,11 +646,12 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     if (v == null) return;
     final puri = WarpApi.decodePaymentURI(aa.coin, v);
     if (puri != null) {
+      logger.d('$puri');
       addressKey.currentState!.setValue(puri.address!);
       amountKey.currentState!.setAmount(puri.amount);
       memoKey.currentState!.setMemoBody(puri.memo!);
     }
-    else 
+    else
       _address = v;
   }
 }
