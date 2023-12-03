@@ -161,6 +161,14 @@ class _GeneralState extends State<GeneralTab>
               widget.appSettings.sound = v!;
             },
           ),
+          FormBuilderSwitch(
+            name: 'quick_send',
+            title: Text(s.quickSend),
+            initialValue: widget.appSettings.quickSend,
+            onChanged: (v) {
+              widget.appSettings.quickSend = v!;
+            },
+          ),
           FormBuilderDropdown<String>(
             name: 'currency',
             decoration: InputDecoration(label: Text(s.currency)),

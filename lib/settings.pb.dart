@@ -40,6 +40,7 @@ class AppSettings extends $pb.GeneratedMessage {
     $core.String? memo,
     ColorPalette? palette,
     $core.bool? disclaimer,
+    $core.bool? quickSend,
   }) {
     final $result = create();
     if (anchorOffset != null) {
@@ -114,6 +115,9 @@ class AppSettings extends $pb.GeneratedMessage {
     if (disclaimer != null) {
       $result.disclaimer = disclaimer;
     }
+    if (quickSend != null) {
+      $result.quickSend = quickSend;
+    }
     return $result;
   }
   AppSettings._() : super();
@@ -145,6 +149,7 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOS(24, _omitFieldNames ? '' : 'memo')
     ..aOM<ColorPalette>(25, _omitFieldNames ? '' : 'palette', subBuilder: ColorPalette.create)
     ..aOB(26, _omitFieldNames ? '' : 'disclaimer')
+    ..aOB(27, _omitFieldNames ? '' : 'quickSend')
     ..hasRequiredFields = false
   ;
 
@@ -386,6 +391,15 @@ class AppSettings extends $pb.GeneratedMessage {
   $core.bool hasDisclaimer() => $_has(23);
   @$pb.TagNumber(26)
   void clearDisclaimer() => clearField(26);
+
+  @$pb.TagNumber(27)
+  $core.bool get quickSend => $_getBF(24);
+  @$pb.TagNumber(27)
+  set quickSend($core.bool v) { $_setBool(24, v); }
+  @$pb.TagNumber(27)
+  $core.bool hasQuickSend() => $_has(24);
+  @$pb.TagNumber(27)
+  void clearQuickSend() => clearField(27);
 }
 
 class CoinSettings extends $pb.GeneratedMessage {

@@ -26,6 +26,7 @@ message AppSettings {
     string memo = 24;
     ColorPalette palette = 25;
     bool disclaimer = 26;
+    bool quick_send = 27;
 }
 
 message CoinSettings {

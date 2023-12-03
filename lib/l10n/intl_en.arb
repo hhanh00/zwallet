@@ -398,5 +398,6 @@
   "noRemindBackup": "Do not remind me",
   "copiedToClipboard": "Copy to Clipboard",
   "required": "Value Required",
-  "cannotDeleteActive": "Cannot delete the active account unless it is the last one"
+  "cannotDeleteActive": "Cannot delete the active account unless it is the last one",
+  "quickSend": "Quick Send"
 }

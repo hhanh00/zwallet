@@ -1257,4 +1257,7 @@ class SEs extends S {
 
   @override
   String get cannotDeleteActive => 'Cannot delete the active account unless it is the last one';
+
+  @override
+  String get quickSend => 'Quick Send';
 }

@@ -2494,6 +2494,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Cannot delete the active account unless it is the last one'**
   String get cannotDeleteActive;
+
+  /// No description provided for @quickSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Send'**
+  String get quickSend;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

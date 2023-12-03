@@ -90,6 +90,7 @@ class _HomeState extends State<HomePageInner> {
   }
 
   _send(bool quick) async {
+    quick ^= appSettings.quickSend;
     final protectSend = appSettings.protectSend;
     if (protectSend) {
       final authed = await authBarrier(context, dismissable: true);
