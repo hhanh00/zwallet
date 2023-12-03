@@ -36,7 +36,7 @@ class _SplashState extends State<SplashPage> {
       Future(() async {
         // await _setupMempool();
         await _registerURLHandler();
-        await _registerQuickActions();
+        final quickAction = await _registerQuickActions();
         _initWallets();
         await _restoreActive();
         initSyncListener();
@@ -46,7 +46,11 @@ class _SplashState extends State<SplashPage> {
         if (protectOpen) {
           await authBarrier(context);
         }
-        GoRouter.of(context).go('/account');
+        logger.d('launchPage $quickAction');
+        if (quickAction != null) 
+          handleQuickAction(context, quickAction);
+        else 
+          GoRouter.of(context).go('/account');
       });
     });
   }
@@ -68,29 +72,32 @@ class _SplashState extends State<SplashPage> {
     // }
   }
 
-  Future<void> _registerQuickActions() async {
+  Future<String?> _registerQuickActions() async {
     _setProgress(0.4, 'Register App Launcher actions');
-    if (!isMobile()) return;
-    final quickActions = QuickActions();
-    quickActions.initialize((type) {
-      handleQuickAction(this.context, type);
-    });
-    Future.microtask(() {
-      final s = S.of(this.context);
-      List<ShortcutItem> shortcuts = [];
-      for (var c in coins) {
-        final ticker = c.ticker;
-        shortcuts.add(ShortcutItem(
-            type: '${c.coin}.receive',
-            localizedTitle: s.receive(ticker),
-            icon: 'receive'));
-        shortcuts.add(ShortcutItem(
-            type: '${c.coin}.send',
-            localizedTitle: s.sendCointicker(ticker),
-            icon: 'send'));
-      }
-      quickActions.setShortcutItems(shortcuts);
-    });
+    String? launchPage;
+    if (isMobile()) {
+      final quickActions = QuickActions();
+      await quickActions.initialize((quick_action) {
+        launchPage = quick_action;
+      });
+      Future.microtask(() {
+        final s = S.of(this.context);
+        List<ShortcutItem> shortcuts = [];
+        for (var c in coins) {
+          final ticker = c.ticker;
+          shortcuts.add(ShortcutItem(
+              type: '${c.coin}.receive',
+              localizedTitle: s.receive(ticker),
+              icon: 'receive'));
+          shortcuts.add(ShortcutItem(
+              type: '${c.coin}.send',
+              localizedTitle: s.sendCointicker(ticker),
+              icon: 'send'));
+        }
+        quickActions.setShortcutItems(shortcuts);
+      });
+    }
+    return launchPage;
   }
 
   void _initWallets() {
@@ -209,17 +216,18 @@ Future<void> registerURLHandler(BuildContext context) async {
   });
 }
 
-void handleQuickAction(BuildContext context, String type) {
-  final t = type.split(".");
+void handleQuickAction(BuildContext context, String quickAction) {
+  logger.d('handleQuickAction $quickAction');
+  final t = quickAction.split(".");
   final coin = int.parse(t[0]);
   final shortcut = t[1];
+  logger.d('handleQuickAction $coin $shortcut');
   setActiveAccountOf(coin);
+  logger.d('handleQuickAction');
   switch (shortcut) {
     case 'receive':
-      Navigator.of(context).pushNamed('/receive');
-      break;
+      GoRouter.of(context).go('/account/pay_uri');
     case 'send':
-      Navigator.of(context).pushNamed('/send');
-      break;
+      GoRouter.of(context).go('/account/quick_send');
   }
 }
