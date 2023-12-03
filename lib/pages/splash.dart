@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
+import 'accounts/send.dart';
 import 'settings.dart';
 import 'utils.dart';
 import '../appsettings.dart';
@@ -35,7 +36,7 @@ class _SplashState extends State<SplashPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future(() async {
         // await _setupMempool();
-        await _registerURLHandler();
+        final applinkUri = await _registerURLHandler();
         final quickAction = await _registerQuickActions();
         _initWallets();
         await _restoreActive();
@@ -46,7 +47,9 @@ class _SplashState extends State<SplashPage> {
         if (protectOpen) {
           await authBarrier(context);
         }
-        if (quickAction != null) 
+        if (applinkUri != null)
+          handleUri(context, applinkUri);
+        else if (quickAction != null) 
           handleQuickAction(context, quickAction);
         else 
           GoRouter.of(context).go('/account');
@@ -59,9 +62,9 @@ class _SplashState extends State<SplashPage> {
     return LoadProgress(key: progressKey);
   }
 
-  Future<void> _registerURLHandler() async {
+  Future<Uri?> _registerURLHandler() async {
     _setProgress(0.3, 'Register Payment URI handlers');
-    await registerURLHandler(this.context);
+    return await registerURLHandler(this.context);
 
     // TODO
     // if (Platform.isWindows) {
@@ -197,22 +200,25 @@ void handleUri(BuildContext context, Uri uri) {
   final scheme = uri.scheme;
   final coinDef = coins.firstWhere((c) => c.currency == scheme);
   final coin = coinDef.coin;
-  if (setActiveAccountOf(coin))
-    GoRouter.of(context).pushNamed('/send_to_pay_uri', extra: uri.toString());
+  if (setActiveAccountOf(coin)) {
+    SendContext? sc = SendContext.fromPaymentURI(uri.toString());
+    GoRouter.of(context).go('/account/quick_send', extra: sc);
+  }
 }
 
-Future<void> registerURLHandler(BuildContext context) async {
-  if (Platform.isLinux) return;
+Future<Uri?> registerURLHandler(BuildContext context) async {
+  if (Platform.isLinux) return null;
   final _appLinks = AppLinks();
-
-  final uri = await _appLinks.getInitialAppLink();
-  if (uri != null) {
-    handleUri(context, uri);
-  }
 
   subUniLinks = _appLinks.uriLinkStream.listen((uri) {
     handleUri(context, uri);
   });
+
+  final uri = await _appLinks.getInitialAppLink();
+  // if (uri != null) {
+  //   handleUri(context, uri);
+  // }
+  return uri;
 }
 
 void handleQuickAction(BuildContext context, String quickAction) {

@@ -6,6 +6,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
+import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../utils.dart';
 
@@ -35,6 +36,7 @@ class _QRAddressState extends State<QRAddressWidget> {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     final a = widget.amount ?? 0;
+    final image = coins[aa.coin].image;
 
     return Observer(builder: (context) {
       aa.diversifiedAddress;
@@ -50,6 +52,7 @@ class _QRAddressState extends State<QRAddressWidget> {
             version: QrVersions.auto,
             size: 200.0,
             backgroundColor: Colors.white,
+            embeddedImage: image,
           ),
         ),
         Padding(padding: EdgeInsets.all(8)),

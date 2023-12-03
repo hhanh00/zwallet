@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:YWallet/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,6 +25,12 @@ class SendContext {
   final Amount amount;
   final MemoData? memo;
   SendContext(this.address, this.pools, this.amount, this.memo);
+  static SendContext? fromPaymentURI(String puri) {
+    final p = WarpApi.decodePaymentURI(aa.coin, puri);
+    if (p == null) throw S.of(navigatorKey.currentContext!).invalidPaymentURI;
+    return SendContext(p.address!, 7, Amount(p.amount, false),
+      MemoData(false, '', p.memo!));
+  }
 
   static SendContext? instance;
 }

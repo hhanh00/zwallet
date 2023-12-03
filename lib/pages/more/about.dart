@@ -67,8 +67,8 @@ class _DisclaimerState extends State<DisclaimerPage> {
             children: [
               Image.asset('assets/self-custody.png', fit: BoxFit.fill),
               Gap(16),
-              Text(s.disclaimerText, style: t.textTheme.headlineLarge),
-              Gap(32),
+              Text(s.disclaimerText, style: t.textTheme.headlineMedium),
+              Gap(16),
               DisclaimerItem(
                 accepted[0],
                 name: 'd1',
