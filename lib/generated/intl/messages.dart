@@ -2488,6 +2488,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Value Required'**
   String get required;
+
+  /// No description provided for @cannotDeleteActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot delete the active account unless it is the last one'**
+  String get cannotDeleteActive;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

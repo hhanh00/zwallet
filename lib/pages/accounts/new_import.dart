@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../utils.dart';
@@ -142,13 +143,18 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           setActiveAccount(coin, account);
           final prefs = await SharedPreferences.getInstance();
           await aa.save(prefs);
+          final count = WarpApi.countAccounts(coin);
+          if (count == 1) {
+            // First account of a coin is synced
+            await WarpApi.skipToLastHeight(coin);
+          } 
           if (widget.first) {
-            await WarpApi.skipToLastHeight(coin); // first account is synced
             if (_key.isNotEmpty)
               GoRouter.of(context).go('/account/rescan');
             else
               GoRouter.of(context).go('/account');
-          } else
+          }
+          else
             GoRouter.of(context).pop();
         }
       });

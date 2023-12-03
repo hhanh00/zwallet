@@ -46,7 +46,6 @@ class _SplashState extends State<SplashPage> {
         if (protectOpen) {
           await authBarrier(context);
         }
-        logger.d('launchPage $quickAction');
         if (quickAction != null) 
           handleQuickAction(context, quickAction);
         else 

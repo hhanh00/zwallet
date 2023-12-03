@@ -1262,6 +1262,20 @@ class NativeLibrary {
   late final _get_account_list =
       _get_account_listPtr.asFunction<CResult______u8 Function(int)>();
 
+  CResult_u32 count_accounts(
+    int coin,
+  ) {
+    return _count_accounts(
+      coin,
+    );
+  }
+
+  late final _count_accountsPtr =
+      _lookup<ffi.NativeFunction<CResult_u32 Function(ffi.Uint8)>>(
+          'count_accounts');
+  late final _count_accounts =
+      _count_accountsPtr.asFunction<CResult_u32 Function(int)>();
+
   CResult_u32 get_first_account(
     int coin,
   ) {

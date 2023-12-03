@@ -1254,4 +1254,7 @@ class SEs extends S {
 
   @override
   String get required => 'Value Required';
+
+  @override
+  String get cannotDeleteActive => 'Cannot delete the active account unless it is the last one';
 }

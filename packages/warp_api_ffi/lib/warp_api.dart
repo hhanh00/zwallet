@@ -551,6 +551,11 @@ class WarpApi {
     return AccountVec(r).accounts!;
   }
 
+  static int countAccounts(int coin) {
+    final r = unwrapResultU32(warp_api_lib.count_accounts(coin));
+    return r;
+  }
+
   static String getTAddr(int coin, int id) {
     return unwrapResultString(warp_api_lib.get_t_addr(coin, id));
   }

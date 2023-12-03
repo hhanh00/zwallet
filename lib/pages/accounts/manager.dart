@@ -75,17 +75,23 @@ class _AccountManagerState extends State<AccountManagerPage> {
 
   delete() async {
     final a = accounts[selected!];
+    final count = accounts.length;
+    if (count > 1 && a.coin == aa.coin && a.id == aa.id) {
+      await showMessageBox2(context, s.delete, s.cannotDeleteActive);
+      return;
+    }
+
     final confirmed =
         await showConfirmDialog(context, s.delete, s.confirmDeleteAccount);
     if (confirmed) {
       WarpApi.deleteAccount(a.coin, a.id);
-      final ac = accounts.firstOrNull;
-      if (ac != null)
-        setActiveAccount(ac.coin, ac.id);
-      else
+      if (count == 1) {
         setActiveAccount(0, 0);
-      selected = null;
-      setState(() {});
+        GoRouter.of(context).go('/account');
+      } else {
+        accountsKey.currentState!.clearSelection();
+        setState(() {});
+      }
     }
   }
 
@@ -106,7 +112,12 @@ class AccountList extends StatefulWidget {
   final void Function(int?)? onSelect;
   final void Function(String)? onEdit;
   late final List<Account> accounts = _getAllAccounts().toList();
-  AccountList({super.key, this.initialSelect, this.onSelect, this.editing = false, this.onEdit});
+  AccountList(
+      {super.key,
+      this.initialSelect,
+      this.onSelect,
+      this.editing = false,
+      this.onEdit});
 
   @override
   State<StatefulWidget> createState() => AccountListState();
@@ -136,6 +147,12 @@ class AccountListState extends State<AccountList> {
         },
         separatorBuilder: (context, index) => Divider(),
         itemCount: widget.accounts.length);
+  }
+
+  void clearSelection() {
+    selected = null;
+    widget.onSelect?.call(null);
+    setState(() {});
   }
 
   Account? get selectedAccount => selected?.let((s) => widget.accounts[s]);
