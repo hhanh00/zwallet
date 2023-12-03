@@ -21,14 +21,15 @@ class PoolTransferPage extends StatefulWidget {
   State<StatefulWidget> createState() => _PoolTransferState();
 }
 
-class _PoolTransferState extends State<PoolTransferPage> {
+class _PoolTransferState extends State<PoolTransferPage>
+    with WithLoadingAnimation {
+  late final s = S.of(context);
   final memoController = TextEditingController(text: appSettings.memo);
   final splitController = TextEditingController(text: amountToString2(0));
   late final List<double> balances;
   int amount = 0;
   int from = 0;
   int to = 1;
-  bool calculatingPlan = false;
 
   @override
   void initState() {
@@ -41,15 +42,13 @@ class _PoolTransferState extends State<PoolTransferPage> {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     final spendable = aa.poolBalances.get(from);
     return Scaffold(
       appBar: AppBar(
           title: Text(s.poolTransfer),
           actions: [IconButton(onPressed: ok, icon: Icon(Icons.check))]),
-      body: SingleChildScrollView(
-        child: LoadingWrapper(
-          calculatingPlan,
+      body: wrapWithLoading(
+        SingleChildScrollView(
           child: FormBuilder(
             child: Column(
               children: [
@@ -107,24 +106,26 @@ class _PoolTransferState extends State<PoolTransferPage> {
 
   ok() async {
     final splitAmount = stringToAmount(splitController.text);
-    _calc(true);
-    final plan = await WarpApi.transferPools(
-      aa.coin,
-      aa.id,
-      1 << from,
-      1 << to,
-      amount,
-      false,
-      memoController.text,
-      splitAmount,
-      appSettings.anchorOffset,
-      coinSettings.feeT,
-    );
-    _calc(false);
-    GoRouter.of(context).push('/account/txplan?tab=more', extra: plan);
+    load(() async {
+      try {
+        final plan = await WarpApi.transferPools(
+          aa.coin,
+          aa.id,
+          1 << from,
+          1 << to,
+          amount,
+          false,
+          memoController.text,
+          splitAmount,
+          appSettings.anchorOffset,
+          coinSettings.feeT,
+        );
+        GoRouter.of(context).push('/account/txplan?tab=more', extra: plan);
+      } on String catch (e) {
+        await showMessageBox2(context, s.error, e);
+      }
+    });
   }
-
-  _calc(bool v) => setState(() => calculatingPlan = v);
 }
 
 class HorizontalBarChart extends StatelessWidget {
