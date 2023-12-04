@@ -71,7 +71,7 @@ class BackupPage extends StatelessWidget {
           child: Column(children: [
             ...cards,
             Gap(8),
-            FormBuilderCheckbox(name: 'remind', title: Text(s.noRemindBackup),
+            FormBuilderSwitch(name: 'remind', title: Text(s.noRemindBackup),
             initialValue: aa.saved,
             onChanged: _remind)
           ]),

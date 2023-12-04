@@ -295,7 +295,7 @@ abstract class _MarketPrice with Store {
         lastChartUpdateTime = now;
       }
     } on String catch (msg) {
-      print(msg);
+      logger.e(msg);
     }
   }
 }

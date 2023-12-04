@@ -28,8 +28,8 @@ class SendContext {
   static SendContext? fromPaymentURI(String puri) {
     final p = WarpApi.decodePaymentURI(aa.coin, puri);
     if (p == null) throw S.of(navigatorKey.currentContext!).invalidPaymentURI;
-    return SendContext(p.address!, 7, Amount(p.amount, false),
-      MemoData(false, '', p.memo!));
+    return SendContext(
+        p.address!, 7, Amount(p.amount, false), MemoData(false, '', p.memo!));
   }
 
   static SendContext? instance;
@@ -84,8 +84,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     ];
 
     if (activeStep == icons.length - 1)
-      SendContext.instance =
-          SendContext(address, pools, amount, memo);
+      SendContext.instance = SendContext(address, pools, amount, memo);
 
     final isTransparent = WarpApi.receiversOfAddress(aa.coin, address) == 1;
     // skip memo if recipient is transparent address
@@ -259,8 +258,7 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
       address = p.address!;
       amount = Amount(p.amount, false);
       memo = MemoData(false, '', p.memo!);
-      SendContext.instance =
-          SendContext(address, pools, amount, memo);
+      SendContext.instance = SendContext(address, pools, amount, memo);
       return null;
     });
     await calcPlan();
@@ -521,7 +519,8 @@ class SendMemoState extends State<SendMemo> {
 
 class QuickSendPage extends StatefulWidget {
   final SendContext? sendContext;
-  QuickSendPage({this.sendContext});
+  final bool single;
+  QuickSendPage({this.sendContext, this.single = true});
 
   @override
   State<StatefulWidget> createState() => _QuickSendState();
@@ -552,7 +551,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
           actions: [
             IconButton(
               onPressed: send,
-              icon: Icon(Icons.send),
+              icon: Icon(widget.single ? Icons.send : Icons.add),
             )
           ],
         ),
@@ -568,19 +567,22 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                     key: addressKey,
                     lines: 4,
                     onChanged: _onAddress,
-                    validator: composeOr([addressValidator, paymentURIValidator]),
+                    validator:
+                        composeOr([addressValidator, paymentURIValidator]),
                     buttonsBuilder: _extraAddressButtons,
                   ),
-                  PoolSelection(
-                    _pools,
-                    balances: aa.poolBalances,
-                    onChanged: (v) => _pools = v!,
-                  ),
+                  if (widget.single)
+                    PoolSelection(
+                      _pools,
+                      balances: aa.poolBalances,
+                      onChanged: (v) => _pools = v!,
+                    ),
                   AmountPicker(
                     _amount,
                     key: amountKey,
                     spendable: spendable,
                     onChanged: (a) => _amount = a!,
+                    canDeductFee: widget.single,
                   ),
                   InputMemo(
                     _memo,
@@ -609,7 +611,6 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
           onPressed: () async {
             final a = await GoRouter.of(context)
                 .push<Account>('/account/account_manager');
-            print('${a?.address}');
             a?.let((a) => onChanged?.call(a.address!));
           },
           icon: FaIcon(FontAwesomeIcons.users)),
@@ -622,6 +623,9 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       form.save();
       logger.d(
           'send $_address $_amount $_pools ${_memo.reply} ${_memo.subject} ${_memo.memo}');
+      final sc = SendContext(_address, _pools, _amount, _memo);
+      ;
+      SendContext.instance = sc;
       final builder = RecipientObjectBuilder(
         address: _address,
         amount: _amount.value,
@@ -631,20 +635,22 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         memo: _memo.memo,
       );
       final recipient = Recipient(builder.toBytes());
-      SendContext.instance =
-          SendContext(_address, _pools, _amount, _memo);
-      try {
-        final plan = await load(() => WarpApi.prepareTx(
-            aa.coin,
-            aa.id,
-            [recipient],
-            _pools,
-            coinSettings.replyUa,
-            appSettings.anchorOffset,
-            coinSettings.feeT));
-        GoRouter.of(context).push('/account/txplan?tab=account', extra: plan);
-      } on String catch (e) {
-        showMessageBox2(context, s.error, e);
+      if (widget.single) {
+        try {
+          final plan = await load(() => WarpApi.prepareTx(
+              aa.coin,
+              aa.id,
+              [recipient],
+              _pools,
+              coinSettings.replyUa,
+              appSettings.anchorOffset,
+              coinSettings.feeT));
+          GoRouter.of(context).push('/account/txplan?tab=account', extra: plan);
+        } on String catch (e) {
+          showMessageBox2(context, s.error, e);
+        }
+      } else {
+        GoRouter.of(context).pop(recipient);
       }
     }
   }
@@ -657,8 +663,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       addressKey.currentState!.setValue(puri.address!);
       amountKey.currentState!.setAmount(puri.amount);
       memoKey.currentState!.setMemoBody(puri.memo!);
-    }
-    else
+    } else
       _address = v;
   }
 }

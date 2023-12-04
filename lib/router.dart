@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:YWallet/appsettings.dart';
 import 'package:YWallet/pages/more/cold.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -79,7 +80,8 @@ final router = GoRouter(
                     routes: [
                       GoRoute(
                           path: 'new',
-                          builder: (context, state) => SendPage(single: false)),
+                          builder: (context, state) => 
+                            appSettings.quickSend ? QuickSendPage(single: false) : SendPage(single: false)),
                     ]),
                 GoRoute(
                   path: 'txplan',
