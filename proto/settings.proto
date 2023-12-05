@@ -20,7 +20,6 @@ message AppSettings {
     string backup_enc_key = 17;
     uint32 developer_mode = 18;
     uint32 min_privacy_level = 19;
-    bool sound = 20;
     string db_passwd = 21;
     bool advanced = 22;
     string memo = 24;

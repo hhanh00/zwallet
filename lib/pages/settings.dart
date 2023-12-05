@@ -154,14 +154,6 @@ class _GeneralState extends State<GeneralTab>
             },
           ),
           FormBuilderSwitch(
-            name: 'sound',
-            title: Text(s.playSound),
-            initialValue: widget.appSettings.sound,
-            onChanged: (v) {
-              widget.appSettings.sound = v!;
-            },
-          ),
-          FormBuilderSwitch(
             name: 'quick_send',
             title: Text(s.quickSend),
             initialValue: widget.appSettings.quickSend,

@@ -5,3 +5,4 @@ output-dir: lib/generated/intl
 synthetic-package: false
 output-class: S
 nullable-getter: false
+untranslated-messages-file: missing.arb

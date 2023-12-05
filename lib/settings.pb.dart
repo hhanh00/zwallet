@@ -34,7 +34,6 @@ class AppSettings extends $pb.GeneratedMessage {
     $core.String? backupEncKey,
     $core.int? developerMode,
     $core.int? minPrivacyLevel,
-    $core.bool? sound,
     $core.String? dbPasswd,
     $core.bool? advanced,
     $core.String? memo,
@@ -97,9 +96,6 @@ class AppSettings extends $pb.GeneratedMessage {
     if (minPrivacyLevel != null) {
       $result.minPrivacyLevel = minPrivacyLevel;
     }
-    if (sound != null) {
-      $result.sound = sound;
-    }
     if (dbPasswd != null) {
       $result.dbPasswd = dbPasswd;
     }
@@ -143,7 +139,6 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOS(17, _omitFieldNames ? '' : 'backupEncKey')
     ..a<$core.int>(18, _omitFieldNames ? '' : 'developerMode', $pb.PbFieldType.OU3)
     ..a<$core.int>(19, _omitFieldNames ? '' : 'minPrivacyLevel', $pb.PbFieldType.OU3)
-    ..aOB(20, _omitFieldNames ? '' : 'sound')
     ..aOS(21, _omitFieldNames ? '' : 'dbPasswd')
     ..aOB(22, _omitFieldNames ? '' : 'advanced')
     ..aOS(24, _omitFieldNames ? '' : 'memo')
@@ -336,68 +331,59 @@ class AppSettings extends $pb.GeneratedMessage {
   @$pb.TagNumber(19)
   void clearMinPrivacyLevel() => clearField(19);
 
-  @$pb.TagNumber(20)
-  $core.bool get sound => $_getBF(18);
-  @$pb.TagNumber(20)
-  set sound($core.bool v) { $_setBool(18, v); }
-  @$pb.TagNumber(20)
-  $core.bool hasSound() => $_has(18);
-  @$pb.TagNumber(20)
-  void clearSound() => clearField(20);
-
   @$pb.TagNumber(21)
-  $core.String get dbPasswd => $_getSZ(19);
+  $core.String get dbPasswd => $_getSZ(18);
   @$pb.TagNumber(21)
-  set dbPasswd($core.String v) { $_setString(19, v); }
+  set dbPasswd($core.String v) { $_setString(18, v); }
   @$pb.TagNumber(21)
-  $core.bool hasDbPasswd() => $_has(19);
+  $core.bool hasDbPasswd() => $_has(18);
   @$pb.TagNumber(21)
   void clearDbPasswd() => clearField(21);
 
   @$pb.TagNumber(22)
-  $core.bool get advanced => $_getBF(20);
+  $core.bool get advanced => $_getBF(19);
   @$pb.TagNumber(22)
-  set advanced($core.bool v) { $_setBool(20, v); }
+  set advanced($core.bool v) { $_setBool(19, v); }
   @$pb.TagNumber(22)
-  $core.bool hasAdvanced() => $_has(20);
+  $core.bool hasAdvanced() => $_has(19);
   @$pb.TagNumber(22)
   void clearAdvanced() => clearField(22);
 
   @$pb.TagNumber(24)
-  $core.String get memo => $_getSZ(21);
+  $core.String get memo => $_getSZ(20);
   @$pb.TagNumber(24)
-  set memo($core.String v) { $_setString(21, v); }
+  set memo($core.String v) { $_setString(20, v); }
   @$pb.TagNumber(24)
-  $core.bool hasMemo() => $_has(21);
+  $core.bool hasMemo() => $_has(20);
   @$pb.TagNumber(24)
   void clearMemo() => clearField(24);
 
   @$pb.TagNumber(25)
-  ColorPalette get palette => $_getN(22);
+  ColorPalette get palette => $_getN(21);
   @$pb.TagNumber(25)
   set palette(ColorPalette v) { setField(25, v); }
   @$pb.TagNumber(25)
-  $core.bool hasPalette() => $_has(22);
+  $core.bool hasPalette() => $_has(21);
   @$pb.TagNumber(25)
   void clearPalette() => clearField(25);
   @$pb.TagNumber(25)
-  ColorPalette ensurePalette() => $_ensure(22);
+  ColorPalette ensurePalette() => $_ensure(21);
 
   @$pb.TagNumber(26)
-  $core.bool get disclaimer => $_getBF(23);
+  $core.bool get disclaimer => $_getBF(22);
   @$pb.TagNumber(26)
-  set disclaimer($core.bool v) { $_setBool(23, v); }
+  set disclaimer($core.bool v) { $_setBool(22, v); }
   @$pb.TagNumber(26)
-  $core.bool hasDisclaimer() => $_has(23);
+  $core.bool hasDisclaimer() => $_has(22);
   @$pb.TagNumber(26)
   void clearDisclaimer() => clearField(26);
 
   @$pb.TagNumber(27)
-  $core.bool get quickSend => $_getBF(24);
+  $core.bool get quickSend => $_getBF(23);
   @$pb.TagNumber(27)
-  set quickSend($core.bool v) { $_setBool(24, v); }
+  set quickSend($core.bool v) { $_setBool(23, v); }
   @$pb.TagNumber(27)
-  $core.bool hasQuickSend() => $_has(24);
+  $core.bool hasQuickSend() => $_has(23);
   @$pb.TagNumber(27)
   void clearQuickSend() => clearField(27);
 }
