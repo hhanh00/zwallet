@@ -41,3 +41,8 @@ jobs:
             ./ywallet.flatpak
             ./zwallet.tgz
             ./libwarp_api_ffi.so
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: AppImage
+          path: ./misc/Ywallet-latest-x86_64.AppImage
