@@ -1263,4 +1263,7 @@ class SEs extends S {
 
   @override
   String get showSubKeys => 'Show Sub Keys';
+
+  @override
+  String get interval => 'Interval';
 }

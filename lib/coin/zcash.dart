@@ -11,6 +11,7 @@ class ZcashCoin extends CoinBase {
   int coinIndex = 133;
   String ticker = "ZEC";
   String dbName = "zec.db";
+  String? marketTicker = "ZECUSDT";
   AssetImage image = AssetImage('assets/zcash.png');
   List<LWInstance> lwd = [
     LWInstance("Lightwalletd", "https://mainnet.lightwalletd.com:9067"),

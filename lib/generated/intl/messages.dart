@@ -2506,6 +2506,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Show Sub Keys'**
   String get showSubKeys;
+
+  /// No description provided for @interval.
+  ///
+  /// In en, this message translates to:
+  /// **'Interval'**
+  String get interval;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

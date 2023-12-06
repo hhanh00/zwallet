@@ -400,5 +400,6 @@
   "required": "Value Required",
   "cannotDeleteActive": "Cannot delete the active account unless it is the last one",
   "quickSend": "Quick Send",
-  "showSubKeys": "Show Sub Keys"
+  "showSubKeys": "Show Sub Keys",
+  "interval": "Interval"
 }

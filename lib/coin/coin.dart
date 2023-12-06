@@ -20,6 +20,7 @@ abstract class CoinBase {
   String get currency;
   String get ticker;
   int get coinIndex;
+  String? get marketTicker;
   AssetImage get image;
   String get dbName;
   late String dbDir;
