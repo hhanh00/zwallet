@@ -2500,6 +2500,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Quick Send'**
   String get quickSend;
+
+  /// No description provided for @showSubKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Sub Keys'**
+  String get showSubKeys;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

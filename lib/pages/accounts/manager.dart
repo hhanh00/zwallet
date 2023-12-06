@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -186,8 +185,11 @@ class AccountTile extends StatelessWidget {
         break;
       case 2: // ledger
         icon = WidgetSpan(
-            child: SvgPicture.asset("assets/ledger.svg",
-                height: 20, color: t.colorScheme.secondary));
+            child: Image.asset(
+          "assets/ledger.png",
+          height: 20,
+          color: t.colorScheme.secondary,
+        ));
         break;
     }
     return ListTile(

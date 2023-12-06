@@ -1260,4 +1260,7 @@ class SEn extends S {
 
   @override
   String get quickSend => 'Quick Send';
+
+  @override
+  String get showSubKeys => 'Show Sub Keys';
 }

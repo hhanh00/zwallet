@@ -8,7 +8,7 @@ import 'package:warp_api/warp_api.dart';
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
 
-class BackupPage extends StatelessWidget {
+class BackupPage extends StatefulWidget {
   late final Backup backup;
   late final String primary;
 
@@ -25,43 +25,51 @@ class BackupPage extends StatelessWidget {
     else
       throw 'Account has no key';
   }
+  
+  @override
+  State<StatefulWidget> createState() => _BackupState();
+}
+
+class _BackupState extends State<BackupPage> {
+  bool showSubKeys = false;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     final t = Theme.of(context);
-    final name = backup.name!;
+    final name = widget.backup.name!;
     final small = t.textTheme.bodySmall!;
 
     List<Widget> cards = [];
     TextStyle? style;
-    if (backup.seed != null) {
-      cards.add(BackupPanel(name, s.seed, backup.seed!, Icon(Icons.save)));
+    if (widget.backup.seed != null) {
+      cards.add(BackupPanel(name, s.seed, widget.backup.seed!, Icon(Icons.save)));
       style = small;
     }
-    if (backup.sk != null) {
-      cards.add(BackupPanel(name, s.secretKey, backup.sk!, Icon(Icons.vpn_key),
+    if (widget.backup.sk != null) {
+      cards.add(BackupPanel(name, s.secretKey, widget.backup.sk!, Icon(Icons.vpn_key),
           style: style));
       style = small;
     }
-    if (backup.uvk != null) {
+    if (widget.backup.uvk != null) {
       cards.add(BackupPanel(
-          name, s.unifiedViewingKey, backup.uvk!, Icon(Icons.visibility),
+          name, s.unifiedViewingKey, widget.backup.uvk!, Icon(Icons.visibility),
           style: style));
       style = small;
     }
-    if (backup.fvk != null) {
+    if (widget.backup.fvk != null) {
       cards.add(BackupPanel(
-          name, s.viewingKey, backup.fvk!, Icon(Icons.visibility_outlined),
+          name, s.viewingKey, widget.backup.fvk!, Icon(Icons.visibility_outlined),
           style: style));
       style = small;
     }
-    if (backup.tsk != null) {
+    if (widget.backup.tsk != null) {
       cards.add(BackupPanel(
-          name, s.transparentKey, backup.tsk!, Icon(Icons.key),
+          name, s.transparentKey, widget.backup.tsk!, Icon(Icons.key),
           style: style));
       style = small;
     }
+    final subKeys = cards.sublist(1);
 
     return Scaffold(
       appBar: AppBar(title: Text(s.backup)),
@@ -69,11 +77,20 @@ class BackupPage extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: Column(children: [
-            ...cards,
+            cards[0],
+            FormBuilderSwitch(
+              name: 'subkeys',
+              title: Text(s.showSubKeys),
+              initialValue: showSubKeys,
+              onChanged: (v) => setState(() => showSubKeys = v!),
+            ),
+            if (showSubKeys) ...subKeys,
             Gap(8),
-            FormBuilderSwitch(name: 'remind', title: Text(s.noRemindBackup),
-            initialValue: aa.saved,
-            onChanged: _remind)
+            FormBuilderSwitch(
+                name: 'remind',
+                title: Text(s.noRemindBackup),
+                initialValue: aa.saved,
+                onChanged: _remind)
           ]),
         ),
       ),
@@ -98,20 +115,22 @@ class BackupPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final qrLabel = '$label of $name';
     return GestureDetector(
-      onTap: () => showQR(context, value, qrLabel),
-      child: Card(
-        elevation: 2,
-        child: Padding(padding: EdgeInsets.all(8), child: InputDecorator(
-          decoration: InputDecoration(
-              label: Text(label), icon: icon, border: OutlineInputBorder()),
-          child: Text(
-            value,
-            style: style,
-            maxLines: 6,
+        onTap: () => showQR(context, value, qrLabel),
+        child: Card(
+          elevation: 2,
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: InputDecorator(
+              decoration: InputDecoration(
+                  label: Text(label), icon: icon, border: OutlineInputBorder()),
+              child: Text(
+                value,
+                style: style,
+                maxLines: 6,
+              ),
+            ),
           ),
-        ),
-      ),
-    ));
+        ));
   }
 
   showQR(BuildContext context, String value, String title) {

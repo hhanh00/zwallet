@@ -14,7 +14,6 @@ import 'main.reflectable.dart';
 import 'coin/coins.dart';
 
 import 'init.dart';
-import 'store2.dart';
 
 const ZECUNIT = 100000000.0;
 // ignore: non_constant_identifier_names
