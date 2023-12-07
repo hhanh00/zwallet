@@ -2351,7 +2351,7 @@ class TxTimeValue {
   final int _bcOffset;
 
   int get timestamp => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 4, 0);
-  int get value => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 6, 0);
+  int get value => const fb.Int64Reader().vTableGet(_bc, _bcOffset, 6, 0);
 
   @override
   String toString() {
@@ -2380,7 +2380,7 @@ class TxTimeValueT implements fb.Packable {
   int pack(fb.Builder fbBuilder) {
     fbBuilder.startTable(2);
     fbBuilder.addUint32(0, timestamp);
-    fbBuilder.addUint64(1, value);
+    fbBuilder.addInt64(1, value);
     return fbBuilder.endTable();
   }
 
@@ -2412,7 +2412,7 @@ class TxTimeValueBuilder {
     return fbBuilder.offset;
   }
   int addValue(int? value) {
-    fbBuilder.addUint64(1, value);
+    fbBuilder.addInt64(1, value);
     return fbBuilder.offset;
   }
 
@@ -2437,7 +2437,7 @@ class TxTimeValueObjectBuilder extends fb.ObjectBuilder {
   int finish(fb.Builder fbBuilder) {
     fbBuilder.startTable(2);
     fbBuilder.addUint32(0, _timestamp);
-    fbBuilder.addUint64(1, _value);
+    fbBuilder.addInt64(1, _value);
     return fbBuilder.endTable();
   }
 
@@ -2777,7 +2777,7 @@ class Spending {
   final int _bcOffset;
 
   String? get recipient => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
-  int get amount => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 6, 0);
+  int get amount => const fb.Int64Reader().vTableGet(_bc, _bcOffset, 6, 0);
 
   @override
   String toString() {
@@ -2808,7 +2808,7 @@ class SpendingT implements fb.Packable {
         : fbBuilder.writeString(recipient!);
     fbBuilder.startTable(2);
     fbBuilder.addOffset(0, recipientOffset);
-    fbBuilder.addUint64(1, amount);
+    fbBuilder.addInt64(1, amount);
     return fbBuilder.endTable();
   }
 
@@ -2840,7 +2840,7 @@ class SpendingBuilder {
     return fbBuilder.offset;
   }
   int addAmount(int? amount) {
-    fbBuilder.addUint64(1, amount);
+    fbBuilder.addInt64(1, amount);
     return fbBuilder.offset;
   }
 
@@ -2867,7 +2867,7 @@ class SpendingObjectBuilder extends fb.ObjectBuilder {
         : fbBuilder.writeString(_recipient!);
     fbBuilder.startTable(2);
     fbBuilder.addOffset(0, recipientOffset);
-    fbBuilder.addUint64(1, _amount);
+    fbBuilder.addInt64(1, _amount);
     return fbBuilder.endTable();
   }
 

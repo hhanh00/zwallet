@@ -99,7 +99,6 @@ abstract class _ActiveAccount2 with Store {
 
   List<Spending> spendings = [];
   List<TimeSeriesPoint<double>> accountBalances = [];
-  List<PnL> pnls = [];
 
   @action
   void reset(int resetHeight) {
@@ -109,7 +108,6 @@ abstract class _ActiveAccount2 with Store {
     messages.clear();
     spendings = [];
     accountBalances = [];
-    pnls = [];
     WarpApi.rewindTo(aa.coin, resetHeight);
     height = resetHeight;
   }
@@ -167,16 +165,6 @@ abstract class _ActiveAccount2 with Store {
         (AccountBalance ab) => ab.balance,
         (acc, v) => v,
         0.0);
-
-    final pnlTxs = WarpApi.getPnLTxs(coin, id, start);
-    final quotes =
-        WarpApi.getQuotes(coin, start, appSettings.currency).map((q) {
-      final dt = DateTime.fromMillisecondsSinceEpoch(q.timestamp * 1000);
-      final price = q.price;
-      return Quote(dt, price);
-    });
-
-    pnls = getPNL(start, end, pnlTxs, quotes);
 
     if (newHeight != null) height = newHeight;
   }

@@ -387,18 +387,6 @@ class WarpApi {
     return unwrapResultU32(res);
   }
 
-  static Future<int> syncHistoricalPrices(int coin, String currency) async {
-    return await compute((_) {
-      final now = DateTime.now();
-      final today = DateTime.utc(now.year, now.month, now.day);
-      return unwrapResultU32(warp_api_lib.sync_historical_prices(
-          coin,
-          today.millisecondsSinceEpoch ~/ 1000,
-          365,
-          toNative(currency)));
-    }, null);
-  }
-
   static void setDbPasswd(int coin, String passwd) {
     warp_api_lib.set_coin_passwd(coin, toNative(passwd));
   }
@@ -677,13 +665,6 @@ class WarpApi {
     final r = unwrapResultBytes(warp_api_lib.get_pnl_txs(coin, id, timestamp));
     final txs = TxTimeValueVec(r);
     return txs.values!;
-  }
-
-  static List<Quote> getQuotes(int coin, int timestamp, String currency) {
-    final r = unwrapResultBytes(warp_api_lib.get_historical_prices(
-        coin, timestamp, toNative(currency)));
-    final quotes = QuoteVec(r);
-    return quotes.values!;
   }
 
   static List<Spending> getSpendings(int coin, int id, int timestamp) {

@@ -117,7 +117,7 @@ table ContactVec {
 
 table TxTimeValue {
     timestamp:uint32;
-    value:uint64;
+    value:int64;
 }
 
 table TxTimeValueVec {
@@ -135,7 +135,7 @@ table QuoteVec {
 
 table Spending {
     recipient:string;
-    amount:uint64;
+    amount:int64;
 }
 
 table SpendingVec {

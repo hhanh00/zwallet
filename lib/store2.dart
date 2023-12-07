@@ -160,7 +160,6 @@ abstract class _SyncStatus2 with Store {
       aa.update(latestHeight);
       contacts.fetchContacts();
       marketPrice.update();
-      marketPrice.updateHistoricalPrices();
     } on String catch (e) {
       showSnackBar(e);
     } finally {
@@ -283,21 +282,6 @@ abstract class _MarketPrice with Store {
   }
 
   int? lastChartUpdateTime;
-  
-  Future<void> updateHistoricalPrices({bool? force}) async {
-    final f = force ?? false;
-    try {
-      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      if (f ||
-          lastChartUpdateTime == null ||
-          now > lastChartUpdateTime! + 5 * 60) {
-        await WarpApi.syncHistoricalPrices(aa.coin, appSettings.currency);
-        lastChartUpdateTime = now;
-      }
-    } on String catch (msg) {
-      logger.e(msg);
-    }
-  }
 }
 
 var contacts = ContactStore();

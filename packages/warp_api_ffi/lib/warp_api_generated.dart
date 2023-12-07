@@ -868,27 +868,6 @@ class NativeLibrary {
   late final _get_block_by_time =
       _get_block_by_timePtr.asFunction<CResult_u32 Function(int, int)>();
 
-  CResult_u32 sync_historical_prices(
-    int coin,
-    int now,
-    int days,
-    ffi.Pointer<ffi.Char> currency,
-  ) {
-    return _sync_historical_prices(
-      coin,
-      now,
-      days,
-      currency,
-    );
-  }
-
-  late final _sync_historical_pricesPtr = _lookup<
-      ffi.NativeFunction<
-          CResult_u32 Function(ffi.Uint8, ffi.Int64, ffi.Uint32,
-              ffi.Pointer<ffi.Char>)>>('sync_historical_prices');
-  late final _sync_historical_prices = _sync_historical_pricesPtr
-      .asFunction<CResult_u32 Function(int, int, int, ffi.Pointer<ffi.Char>)>();
-
   void store_contact(
     int id,
     ffi.Pointer<ffi.Char> name,
@@ -1542,25 +1521,6 @@ class NativeLibrary {
               ffi.Uint8, ffi.Uint32, ffi.Uint32)>>('get_pnl_txs');
   late final _get_pnl_txs =
       _get_pnl_txsPtr.asFunction<CResult______u8 Function(int, int, int)>();
-
-  CResult______u8 get_historical_prices(
-    int coin,
-    int timestamp,
-    ffi.Pointer<ffi.Char> currency,
-  ) {
-    return _get_historical_prices(
-      coin,
-      timestamp,
-      currency,
-    );
-  }
-
-  late final _get_historical_pricesPtr = _lookup<
-      ffi.NativeFunction<
-          CResult______u8 Function(ffi.Uint8, ffi.Uint32,
-              ffi.Pointer<ffi.Char>)>>('get_historical_prices');
-  late final _get_historical_prices = _get_historical_pricesPtr
-      .asFunction<CResult______u8 Function(int, int, ffi.Pointer<ffi.Char>)>();
 
   CResult______u8 get_spendings(
     int coin,
