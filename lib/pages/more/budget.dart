@@ -14,7 +14,7 @@ import '../../generated/intl/messages.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
-final DateFormat chartDateFormat = DateFormat("MM-dd HH:mm");
+final DateFormat chartDateFormat = DateFormat("yy-MM-dd HH:mm");
 
 class BudgetPage extends StatefulWidget {
   @override
