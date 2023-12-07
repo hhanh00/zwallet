@@ -108,6 +108,8 @@ class _MarketQuotesState extends State<MarketQuotes> with WithLoadingAnimation {
             },
             tooltip: TooltipGuide(),
             crosshair: CrosshairGuide(),
+            coord: RectCoord(
+                horizontalRangeUpdater: Defaults.horizontalRangeEvent),
           ),
           FormBuilderDropdown(
             name: 'interval',
@@ -133,7 +135,7 @@ class _MarketQuotesState extends State<MarketQuotes> with WithLoadingAnimation {
     final ticker = coins[aa.coin].marketTicker;
     if (ticker == null) return;
     final rep = await http.get(Uri.parse(
-        'https://api.binance.com/api/v3/uiKlines?symbol=$ticker&interval=$interval&limit=100'));
+        'https://api.binance.com/api/v3/uiKlines?symbol=$ticker&interval=$interval'));
     final data = rep.body;
     final rows = jsonDecode(data) as List<dynamic>;
 
