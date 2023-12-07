@@ -125,7 +125,7 @@ dev_dependencies:
   flutter_launcher_icons: any
   flutter_native_splash: ^2.2.16
   intl_utils: ^2.8.1
-  msix: ^3.7.0
+  msix: ^3.16.7
 
 flutter_icons:
   android: true

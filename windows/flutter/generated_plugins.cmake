@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   app_links
   awesome_notifications
   connectivity_plus_windows
+  file_selector_windows
   local_auth_windows
   network_info_plus_windows
   screen_retriever
