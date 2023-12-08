@@ -8,6 +8,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../generated/intl/messages.dart';
@@ -31,8 +32,7 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Scaffold(
-        appBar: AppBar(title: Text(s.scanQrCode),
-        actions: [
+        appBar: AppBar(title: Text(s.scanQrCode), actions: [
           IconButton(onPressed: _open, icon: Icon(Icons.open_in_new)),
           IconButton(onPressed: _ok, icon: Icon(Icons.check)),
         ]),
@@ -65,7 +65,7 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
       final path = file.files[0].path!;
       final xfile = XFile(path);
       final code = await zx.readBarcodeImagePath(xfile);
-      code?.let((code) => _onScan(code));
+      if (code.isValid) _onScan(code);
     }
   }
 
@@ -85,9 +85,16 @@ class MultiQRReader extends StatefulWidget {
 
 class _MultiQRReaderState extends State<MultiQRReader> {
   final Set<String> fragments = {};
+  double value = 0.0;
+
   @override
   Widget build(BuildContext context) {
-    return ReaderWidget(onScan: _onScan);
+    return Column(
+      children: [
+        LinearProgressIndicator(value: value, minHeight: 40),
+        Expanded(child: ReaderWidget(onScan: _onScan)),
+      ],
+    );
   }
 
   _onScan(Code code) {
@@ -96,8 +103,14 @@ class _MultiQRReaderState extends State<MultiQRReader> {
     if (!fragments.contains(text)) {
       fragments.add(text);
       final res = WarpApi.mergeData(text);
-      if (res.isNotEmpty) {
-        final decoded = utf8.decode(ZLibCodec().decode(base64Decode(res)));
+      if (res.data.isEmptyOrNull) {
+        logger.d('${res.progress} ${res.total}');
+        setState(() {
+          value = res.progress / res.total;
+        });
+      } else {
+        final decoded =
+            utf8.decode(ZLibCodec().decode(base64Decode(res.data!)));
         widget.onChanged?.call(decoded);
       }
     }

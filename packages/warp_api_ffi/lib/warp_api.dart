@@ -480,9 +480,11 @@ class WarpApi {
     return raptorq.drops!;
   }
 
-  static String mergeData(String drop) {
-    return unwrapResultString(
+  static RaptorQresultT mergeData(String drop) {
+    final res = unwrapResultBytes(
         warp_api_lib.merge_data(toNative(drop)));
+    final raptorqResult = RaptorQresult(res);
+    return raptorqResult.unpack();
   }
 
   static String getTxSummary(String tx) {

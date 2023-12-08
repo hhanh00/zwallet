@@ -3739,6 +3739,134 @@ class RaptorQdropsObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+class RaptorQresult {
+  RaptorQresult._(this._bc, this._bcOffset);
+  factory RaptorQresult(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<RaptorQresult> reader = _RaptorQresultReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  int get progress => const fb.Uint8Reader().vTableGet(_bc, _bcOffset, 4, 0);
+  int get total => const fb.Uint8Reader().vTableGet(_bc, _bcOffset, 6, 0);
+  String? get data => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 8);
+
+  @override
+  String toString() {
+    return 'RaptorQresult{progress: ${progress}, total: ${total}, data: ${data}}';
+  }
+
+  RaptorQresultT unpack() => RaptorQresultT(
+      progress: progress,
+      total: total,
+      data: data);
+
+  static int pack(fb.Builder fbBuilder, RaptorQresultT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class RaptorQresultT implements fb.Packable {
+  int progress;
+  int total;
+  String? data;
+
+  RaptorQresultT({
+      this.progress = 0,
+      this.total = 0,
+      this.data});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? dataOffset = data == null ? null
+        : fbBuilder.writeString(data!);
+    fbBuilder.startTable(3);
+    fbBuilder.addUint8(0, progress);
+    fbBuilder.addUint8(1, total);
+    fbBuilder.addOffset(2, dataOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'RaptorQresultT{progress: ${progress}, total: ${total}, data: ${data}}';
+  }
+}
+
+class _RaptorQresultReader extends fb.TableReader<RaptorQresult> {
+  const _RaptorQresultReader();
+
+  @override
+  RaptorQresult createObject(fb.BufferContext bc, int offset) => 
+    RaptorQresult._(bc, offset);
+}
+
+class RaptorQresultBuilder {
+  RaptorQresultBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(3);
+  }
+
+  int addProgress(int? progress) {
+    fbBuilder.addUint8(0, progress);
+    return fbBuilder.offset;
+  }
+  int addTotal(int? total) {
+    fbBuilder.addUint8(1, total);
+    return fbBuilder.offset;
+  }
+  int addDataOffset(int? offset) {
+    fbBuilder.addOffset(2, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class RaptorQresultObjectBuilder extends fb.ObjectBuilder {
+  final int? _progress;
+  final int? _total;
+  final String? _data;
+
+  RaptorQresultObjectBuilder({
+    int? progress,
+    int? total,
+    String? data,
+  })
+      : _progress = progress,
+        _total = total,
+        _data = data;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? dataOffset = _data == null ? null
+        : fbBuilder.writeString(_data!);
+    fbBuilder.startTable(3);
+    fbBuilder.addUint8(0, _progress);
+    fbBuilder.addUint8(1, _total);
+    fbBuilder.addOffset(2, dataOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
 class Agekeys {
   Agekeys._(this._bc, this._bcOffset);
   factory Agekeys(List<int> bytes) {

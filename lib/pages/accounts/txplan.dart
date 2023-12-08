@@ -23,9 +23,10 @@ class TxPlanPage extends StatefulWidget {
 }
 
 class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
+  late final s = S.of(context);
+
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     final report = WarpApi.transactionReport(aa.coin, widget.plan);
     final txplan = TxPlanWidget(widget.plan, report,
         signOnly: widget.signOnly, onSend: sendOrSign);
@@ -37,7 +38,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
               onPressed: () => exportRaw(context),
               icon: Icon(MdiIcons.snowflake),
             ),
-            if (!txplan.invalidPrivacy)
+            if (aa.canPay && !txplan.invalidPrivacy)
               IconButton(
                 onPressed: () => sendOrSign(context),
                 icon: widget.signOnly
@@ -61,10 +62,14 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
       widget.signOnly ? sign(context) : await send(context);
 
   sign(BuildContext context) async {
-    await load(() async {
-      final txBin = await WarpApi.signOnly(aa.coin, aa.id, widget.plan);
-      GoRouter.of(context).go('/more/cold/signed', extra: txBin);
-    });
+    try {
+      await load(() async {
+        final txBin = await WarpApi.signOnly(aa.coin, aa.id, widget.plan);
+        GoRouter.of(context).go('/more/cold/signed', extra: txBin);
+      });
+    } on String catch (error) {
+      await showMessageBox2(context, s.error, error);
+    }
   }
 }
 
@@ -94,7 +99,8 @@ class TxPlanWidget extends StatelessWidget {
       return DataRow(cells: [
         DataCell(Text('...${trailing(e.address!, 12)}', style: style)),
         DataCell(Text('${poolToString(s, e.pool)}', style: style)),
-        DataCell(Text('${amountToString2(e.amount, digits: MAX_PRECISION)}', style: style)),
+        DataCell(Text('${amountToString2(e.amount, digits: MAX_PRECISION)}',
+            style: style)),
       ]);
     }).toList();
 
@@ -119,8 +125,8 @@ class TxPlanWidget extends StatelessWidget {
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.transparentInput),
-          trailing:
-              Text(amountToString2(report.transparent, digits: MAX_PRECISION),
+          trailing: Text(
+              amountToString2(report.transparent, digits: MAX_PRECISION),
               style: TextStyle(color: t.primaryColor))),
       ListTile(
           visualDensity: VisualDensity.compact,
@@ -136,18 +142,21 @@ class TxPlanWidget extends StatelessWidget {
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.netSapling),
-          trailing:
-              Text(amountToString2(report.netSapling, digits: MAX_PRECISION), style: TextStyle(color: t.primaryColor))),
+          trailing: Text(
+              amountToString2(report.netSapling, digits: MAX_PRECISION),
+              style: TextStyle(color: t.primaryColor))),
       if (supportsUA)
         ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(s.netOrchard),
             trailing: Text(
-                amountToString2(report.netOrchard, digits: MAX_PRECISION), style: TextStyle(color: t.primaryColor))),
+                amountToString2(report.netOrchard, digits: MAX_PRECISION),
+                style: TextStyle(color: t.primaryColor))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.fee),
-          trailing: Text(amountToString2(report.fee, digits: MAX_PRECISION), style: TextStyle(color: t.primaryColor))),
+          trailing: Text(amountToString2(report.fee, digits: MAX_PRECISION),
+              style: TextStyle(color: t.primaryColor))),
       privacyToString(context, report.privacyLevel, onSend: onSend)!,
       Gap(16),
       if (invalidPrivacy)

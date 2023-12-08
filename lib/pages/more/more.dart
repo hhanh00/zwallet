@@ -18,7 +18,8 @@ class MorePage extends StatelessWidget {
       MosaicButton(
           url: '/more/batch_backup',
           icon: FaIcon(FontAwesomeIcons.database),
-          text: s.fullBackup),
+          text: s.fullBackup,
+          secured: true),
       MosaicButton(
           url: '/more/coins',
           icon: FaIcon(FontAwesomeIcons.moneyBill),

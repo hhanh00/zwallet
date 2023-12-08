@@ -1138,7 +1138,7 @@ class NativeLibrary {
   late final _split_data = _split_dataPtr
       .asFunction<CResult______u8 Function(int, ffi.Pointer<ffi.Char>)>();
 
-  CResult_____c_char merge_data(
+  CResult______u8 merge_data(
     ffi.Pointer<ffi.Char> drop,
   ) {
     return _merge_data(
@@ -1147,10 +1147,10 @@ class NativeLibrary {
   }
 
   late final _merge_dataPtr = _lookup<
-      ffi.NativeFunction<
-          CResult_____c_char Function(ffi.Pointer<ffi.Char>)>>('merge_data');
+          ffi.NativeFunction<CResult______u8 Function(ffi.Pointer<ffi.Char>)>>(
+      'merge_data');
   late final _merge_data = _merge_dataPtr
-      .asFunction<CResult_____c_char Function(ffi.Pointer<ffi.Char>)>();
+      .asFunction<CResult______u8 Function(ffi.Pointer<ffi.Char>)>();
 
   CResult_____c_char get_tx_summary(
     ffi.Pointer<ffi.Char> tx,
@@ -1924,6 +1924,12 @@ const int Backup_VT_UVK = 14;
 const int Backup_VT_TSK = 16;
 
 const int RaptorQDrops_VT_DROPS = 4;
+
+const int RaptorQResult_VT_PROGRESS = 4;
+
+const int RaptorQResult_VT_TOTAL = 6;
+
+const int RaptorQResult_VT_DATA = 8;
 
 const int AGEKeys_VT_PK = 6;
 

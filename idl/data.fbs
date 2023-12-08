@@ -176,6 +176,12 @@ table RaptorQDrops {
   drops:[string];
 }
 
+table RaptorQResult {
+  progress:uint8;
+  total:uint8;
+  data:string;
+}
+
 table AGEKeys {
   sk:string;
   pk:string;
