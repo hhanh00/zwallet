@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:YWallet/theme_editor.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:collection/collection.dart';
-import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:protobuf/protobuf.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../accounts.dart';
@@ -149,26 +149,20 @@ class _GeneralState extends State<GeneralTab>
             name: 'full_prec',
             title: Text(s.useZats),
             initialValue: widget.appSettings.fullPrec,
-            onChanged: (v) {
-              widget.appSettings.fullPrec = v!;
-            },
+            onChanged: (v) => widget.appSettings.fullPrec = v!,
           ),
           FormBuilderSwitch(
             name: 'quick_send',
             title: Text(s.quickSend),
             initialValue: widget.appSettings.quickSend,
-            onChanged: (v) {
-              widget.appSettings.quickSend = v!;
-            },
+            onChanged: (v) => widget.appSettings.quickSend = v!,
           ),
           FormBuilderDropdown<String>(
             name: 'currency',
             decoration: InputDecoration(label: Text(s.currency)),
             initialValue: widget.appSettings.currency,
             items: currencyOptions,
-            onChanged: (v) {
-              widget.appSettings.currency = v!;
-            },
+            onChanged: (v) => widget.appSettings.currency = v!,
           ),
           FormBuilderTextField(
             name: 'memo',
@@ -177,9 +171,7 @@ class _GeneralState extends State<GeneralTab>
             ),
             maxLines: 10,
             initialValue: widget.appSettings.memo,
-            onChanged: (v) {
-              widget.appSettings.memo = v!;
-            },
+            onChanged: (v) => widget.appSettings.memo = v!,
           )
         ],
       ),
@@ -222,9 +214,7 @@ class _PrivacyState extends State<PrivacyTab>
             name: 'p_open',
             title: Text(s.protectOpen),
             initialValue: widget.appSettings.protectOpen,
-            onChanged: (v) {
-              widget.appSettings.protectOpen = v!;
-            },
+            onChanged: (v) => widget.appSettings.protectOpen = v!,
             validator: validatePassword,
             autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
@@ -232,85 +222,64 @@ class _PrivacyState extends State<PrivacyTab>
             name: 'p_send',
             title: Text(s.protectSend),
             initialValue: widget.appSettings.protectSend,
-            onChanged: (v) {
-              widget.appSettings.protectSend = v!;
-            },
+            onChanged: (v) => widget.appSettings.protectSend = v!,
             validator: validatePassword,
             autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
           FormBuilderField<int>(
             name: 'privacy',
             initialValue: widget.appSettings.minPrivacyLevel,
-            builder: (field) => ListTile(
-              contentPadding:
-                  EdgeInsetsDirectional.symmetric(horizontal: 14, vertical: 8),
-              title: Text(s.minPrivacy, style: t.textTheme.bodyMedium),
-              trailing: AnimatedToggleSwitch<int>.size(
-                current: field.value ?? 0,
-                values: [0, 1, 2, 3],
-                style: ToggleStyle(
-                    indicatorColor: t.primaryColor,
-                    borderRadius: BorderRadius.circular(10),
-                    borderColor: t.disabledColor),
-                styleBuilder: (i) {
-                  final colors = [
-                    Colors.red,
-                    Colors.orange,
-                    Colors.yellow,
-                    Colors.green
-                  ];
-                  return ToggleStyle(indicatorColor: colors[i]);
-                },
-                customIconBuilder: (context, local, g) {
-                  return Center(
-                      child: Text(levels[local.index],
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: t.sliderTheme.activeTrackColor)));
-                },
-                onChanged: (v) {
-                  field.didChange(v);
-                },
-              ),
-            ),
-            onChanged: (v) {
-              widget.appSettings.minPrivacyLevel = v!;
-            },
+            builder: (field) => InputDecorator(
+                decoration: InputDecoration(
+                  label: Text(s.minPrivacy),
+                ),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: ToggleSwitch(
+                    totalSwitches: 4,
+                    initialLabelIndex: field.value,
+                    labels: levels,
+                    activeBgColors: [
+                      [Colors.red],
+                      [Colors.orange],
+                      [Colors.yellow],
+                      [Colors.green],
+                    ],
+                    // minWidth: 80,
+                    // multiLineText: true,
+                    onToggle: (v) => field.didChange(v),
+                  ),
+                )),
+            onChanged: (v) => widget.appSettings.minPrivacyLevel = v!,
           ),
           FormBuilderSwitch(
             name: 'gettx',
             title: Text(s.retrieveTransactionDetails),
             initialValue: !widget.appSettings.nogetTx,
-            onChanged: (v) {
-              widget.appSettings.nogetTx = v!;
-            },
+            onChanged: (v) => widget.appSettings.nogetTx = v!,
           ),
           FormBuilderField<int>(
             name: 'hide',
             initialValue: widget.appSettings.autoHide,
-            builder: (field) => ListTile(
-              contentPadding:
-                  EdgeInsetsDirectional.symmetric(horizontal: 14, vertical: 8),
-              title: Text(s.autoHideBalance, style: t.textTheme.bodyMedium),
-              trailing: AnimatedToggleSwitch<int>.size(
-                current: field.value!,
-                values: [0, 1, 2],
-                style: ToggleStyle(
-                    indicatorColor: t.primaryColor,
-                    borderColor: t.disabledColor),
-                iconList: [
-                  Icon(Icons.visibility_off),
-                  Icon(Icons.brightness_auto),
-                  Icon(Icons.visibility),
-                ],
-                onChanged: (v) {
-                  field.didChange(v);
-                },
+            builder: (field) => InputDecorator(
+              decoration: InputDecoration(
+                label: Text(s.autoHideBalance),
+              ),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: ToggleSwitch(
+                  totalSwitches: 3,
+                  initialLabelIndex: field.value,
+                  icons: [
+                    Icons.visibility_off,
+                    Icons.brightness_auto,
+                    Icons.visibility,
+                  ],
+                  onToggle: (v) => field.didChange(v),
+                ),
               ),
             ),
-            onChanged: (v) {
-              widget.appSettings.autoHide = v!;
-            },
+            onChanged: (v) => widget.appSettings.autoHide = v!,
           ),
           Divider(),
           FormBuilderTextField(
@@ -318,9 +287,8 @@ class _PrivacyState extends State<PrivacyTab>
             decoration: InputDecoration(
                 label: Text(s.confirmations, style: t.textTheme.bodyMedium)),
             initialValue: widget.appSettings.anchorOffset.toString(),
-            onChanged: (v) {
-              widget.appSettings.anchorOffset = int.tryParse(v!) ?? 0;
-            },
+            onChanged: (v) =>
+                widget.appSettings.anchorOffset = int.tryParse(v!) ?? 0,
           ),
           Divider(),
           if (!isMobile())
@@ -371,25 +339,19 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
             widget.appSettings.messageView,
             name: 'messages',
             label: s.messages,
-            onChanged: (v) {
-              widget.appSettings.messageView = v!;
-            },
+            onChanged: (v) => widget.appSettings.messageView = v!,
           ),
           FieldView(
             widget.appSettings.txView,
             name: 'transactions',
             label: s.transactionHistory,
-            onChanged: (v) {
-              widget.appSettings.txView = v!;
-            },
+            onChanged: (v) => widget.appSettings.txView = v!,
           ),
           FieldView(
             widget.appSettings.noteView,
             name: 'notes',
             label: s.notes,
-            onChanged: (v) {
-              widget.appSettings.noteView = v!;
-            },
+            onChanged: (v) => widget.appSettings.noteView = v!,
           ),
         ]));
   }
@@ -450,15 +412,14 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
               name: 'spam',
               initialValue: coinSettings.spamFilter,
               title: Text(s.antispamFilter),
-              onChanged: (v) {
-                coinSettings.spamFilter = v!;
-              },
+              onChanged: (v) => coinSettings.spamFilter = v!,
             ),
           FormBuilderSwitch(
             name: 'auto_fee',
             initialValue: !coinSettings.manualFee,
             title: Text(s.autoFee),
             onChanged: (v) => setState(() {
+              // need rebuild
               coinSettings.manualFee = !v!;
             }),
           ),
@@ -468,18 +429,14 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
               decoration: InputDecoration(label: Text(s.fee)),
               initialValue: fee,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onChanged: (v) {
-                coinSettings.fee = Int64(stringToAmount(v!));
-              },
+              onChanged: (v) => coinSettings.fee = Int64(stringToAmount(v!)),
             ),
           FormBuilderRadioGroup<int>(
             name: 'server',
             orientation: OptionsOrientation.vertical,
             decoration: InputDecoration(label: Text(s.server)),
             initialValue: coinSettings.lwd.index,
-            onChanged: (v) {
-              coinSettings.lwd.index = v!;
-            },
+            onChanged: (v) => coinSettings.lwd.index = v!,
             options: [
               ...servers,
               FormBuilderFieldOption(
@@ -487,9 +444,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
                   child: FormBuilderTextField(
                     name: 'server_custom',
                     initialValue: coinSettings.lwd.customURL,
-                    onChanged: (v) {
-                      coinSettings.lwd.customURL = v!;
-                    },
+                    onChanged: (v) => coinSettings.lwd.customURL = v!,
                     style: t.textTheme.bodyMedium,
                   )),
             ],
@@ -499,9 +454,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
             orientation: OptionsOrientation.vertical,
             decoration: InputDecoration(label: Text(s.blockExplorer)),
             initialValue: coinSettings.explorer.index,
-            onChanged: (v) {
-              coinSettings.explorer.index = v!;
-            },
+            onChanged: (v) => coinSettings.explorer.index = v!,
             options: [
               ...explorers,
               FormBuilderFieldOption(
@@ -509,9 +462,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
                   child: FormBuilderTextField(
                     name: 'explorer_custom',
                     initialValue: coinSettings.explorer.customURL,
-                    onChanged: (v) {
-                      coinSettings.explorer.customURL = v!;
-                    },
+                    onChanged: (v) => coinSettings.explorer.customURL = v!,
                     style: t.textTheme.bodyMedium,
                   )),
             ],
@@ -521,18 +472,31 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
               coinSettings.uaType,
               label: s.mainUA,
               name: 'main_address',
-              onChanged: (v) {
-                coinSettings.uaType = v?.sum ?? 0;
-              },
+              onChanged: (v) => coinSettings.uaType = v?.sum ?? 0,
             ),
           FieldUA(
             coinSettings.replyUa,
             label: s.replyUA,
             name: 'reply_address',
-            onChanged: (v) {
-              coinSettings.replyUa = v!;
-            },
+            onChanged: (v) => coinSettings.replyUa = v!,
           ),
+          if (aa.hasUA)
+            FormBuilderField(
+              name: 'z_factor',
+              initialValue: coinSettings.zFactor,
+              builder: (field) => InputDecorator(
+                  decoration: InputDecoration(label: Text(s.zFactor)),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: ToggleSwitch(
+                      totalSwitches: 3,
+                      initialLabelIndex: field.value,
+                      labels: [s.sapling, s.orchard, s.optimized],
+                      onToggle: (index) => field.didChange(index),
+                    ),
+                  )),
+              onChanged: (v) => coinSettings.zFactor = v!,
+            )
         ]));
   }
 
@@ -643,16 +607,21 @@ class FieldView extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
 
-    return FormBuilderChoiceChip(
+    return FormBuilderField<int>(
       name: name,
-      decoration: InputDecoration(label: Text(label)),
       initialValue: initialView,
-      spacing: 4,
-      options: [
-        FormBuilderChipOption(value: 0, child: Text(s.table)),
-        FormBuilderChipOption(value: 1, child: Text(s.list)),
-        FormBuilderChipOption(value: 2, child: Text(s.autoView)),
-      ],
+      builder: (field) => InputDecorator(
+        decoration: InputDecoration(label: Text(label)),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: ToggleSwitch(
+            totalSwitches: 3,
+            initialLabelIndex: field.value,
+            labels: [s.table, s.list, s.autoView],
+            onToggle: (index) => field.didChange(index),
+          ),
+        ),
+      ),
       onChanged: onChanged,
     );
   }
@@ -680,4 +649,3 @@ String resolveURL(CoinBase c, CoinSettings settings) {
     return settings.lwd.customURL;
   }
 }
-

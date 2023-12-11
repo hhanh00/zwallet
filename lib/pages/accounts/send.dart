@@ -290,13 +290,15 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     try {
       await load(() async {
         final plan = await WarpApi.prepareTx(
-            aa.coin,
-            aa.id,
-            [recipient],
-            pools,
-            coinSettings.replyUa,
-            appSettings.anchorOffset,
-            CoinSettingsExtension.load(aa.coin).feeT);
+          aa.coin,
+          aa.id,
+          [recipient],
+          pools,
+          coinSettings.replyUa,
+          appSettings.anchorOffset,
+          coinSettings.feeT,
+          coinSettings.zFactor,
+        );
         GoRouter.of(context).push('/account/txplan?tab=account', extra: plan);
       });
     } on String catch (e) {
@@ -610,7 +612,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       IconButton(
           onPressed: () async {
             final a = await GoRouter.of(context)
-                .push<Account>('/account/account_manager');
+                .push<Account>('/account/account_manager?main=0');
             a?.let((a) => onChanged?.call(a.address!));
           },
           icon: FaIcon(FontAwesomeIcons.users)),
@@ -638,13 +640,15 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       if (widget.single) {
         try {
           final plan = await load(() => WarpApi.prepareTx(
-              aa.coin,
-              aa.id,
-              [recipient],
-              _pools,
-              coinSettings.replyUa,
-              appSettings.anchorOffset,
-              coinSettings.feeT));
+                aa.coin,
+                aa.id,
+                [recipient],
+                _pools,
+                coinSettings.replyUa,
+                appSettings.anchorOffset,
+                coinSettings.feeT,
+                coinSettings.zFactor,
+              ));
           GoRouter.of(context).push('/account/txplan?tab=account', extra: plan);
         } on String catch (e) {
           showMessageBox2(context, s.error, e);

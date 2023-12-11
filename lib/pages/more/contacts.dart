@@ -33,8 +33,7 @@ class _ContactsState extends State<ContactsPage> {
         appBar: AppBar(
           title: Text(s.contacts),
           actions: [
-            if (selected)
-              IconButton(onPressed: _edit, icon: Icon(Icons.edit)),
+            if (selected) IconButton(onPressed: _edit, icon: Icon(Icons.edit)),
             if (selected)
               IconButton(onPressed: _delete, icon: Icon(Icons.delete)),
             // TODO: use coinsettings.contactsSaved flag
@@ -44,7 +43,9 @@ class _ContactsState extends State<ContactsPage> {
               IconButton(onPressed: _select, icon: Icon(Icons.check)),
           ],
         ),
-        body: ContactList(key: listKey, onSelect: (v) => setState(() => selected = v != null)));
+        body: ContactList(
+            key: listKey,
+            onSelect: (v) => setState(() => selected = v != null)));
   }
 
   _select() {
@@ -58,8 +59,8 @@ class _ContactsState extends State<ContactsPage> {
     final confirmed =
         await showConfirmDialog(context, s.save, s.confirmSaveContacts);
     if (!confirmed) return;
-    final txPlan =
-        WarpApi.commitUnsavedContacts(aa.coin, aa.id, appSettings.anchorOffset, fee);
+    final txPlan = WarpApi.commitUnsavedContacts(
+        aa.coin, aa.id, appSettings.anchorOffset, fee, coinSettings.zFactor);
     GoRouter.of(context)
         .pushReplacement('/account/txplan?tab=more', extra: txPlan);
   }

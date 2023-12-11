@@ -41,6 +41,7 @@ class _PaymentURIState extends State<PaymentURIPage> {
                 uaType: coinSettings.uaType,
                 amount: amount,
                 memo: memoController.text,
+                onMode: onMode,
                 paymentURI: false,
               ),
               AmountPicker(Amount(amount, false), onChanged: onAmount, canDeductFee: false),

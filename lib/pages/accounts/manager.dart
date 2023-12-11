@@ -11,6 +11,8 @@ import '../../generated/intl/messages.dart';
 import '../utils.dart';
 
 class AccountManagerPage extends StatefulWidget {
+  final bool main;
+  AccountManagerPage({required this.main});
   @override
   State<StatefulWidget> createState() => _AccountManagerState();
 }
@@ -63,12 +65,14 @@ class _AccountManagerState extends State<AccountManagerPage> {
 
   select() {
     final a = accounts[selected!];
-    setActiveAccount(a.coin, a.id);
-    Future(() async {
-      final prefs = await SharedPreferences.getInstance();
-      await aa.save(prefs);
-    });
-    aa.update(null);
+    if (widget.main) {
+      setActiveAccount(a.coin, a.id);
+      Future(() async {
+        final prefs = await SharedPreferences.getInstance();
+        await aa.save(prefs);
+      });
+      aa.update(null);
+    }
     GoRouter.of(context).pop<Account>(a);
   }
 

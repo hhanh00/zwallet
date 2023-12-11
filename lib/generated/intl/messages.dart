@@ -2512,6 +2512,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Interval'**
   String get interval;
+
+  /// No description provided for @zFactor.
+  ///
+  /// In en, this message translates to:
+  /// **'Pool Selection'**
+  String get zFactor;
+
+  /// No description provided for @optimized.
+  ///
+  /// In en, this message translates to:
+  /// **'Optimized'**
+  String get optimized;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

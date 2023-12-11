@@ -54,6 +54,7 @@ extension CoinSettingsExtension on CoinSettings {
     if (!hasUaType()) uaType = defaultUAType;
     if (!hasReplyUa()) replyUa = defaultUAType;
     if (!hasSpamFilter()) spamFilter = true;
+    if (!hasZFactor()) zFactor = 2;
   }
 
   static CoinSettings load(int coin) {

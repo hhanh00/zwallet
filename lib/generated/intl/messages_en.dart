@@ -1266,4 +1266,10 @@ class SEn extends S {
 
   @override
   String get interval => 'Interval';
+
+  @override
+  String get zFactor => 'Pool Selection';
+
+  @override
+  String get optimized => 'Optimized';
 }

@@ -399,6 +399,7 @@ class CoinSettings extends $pb.GeneratedMessage {
     $core.int? uaType,
     $core.int? replyUa,
     $core.bool? contactsSaved,
+    $core.int? zFactor,
   }) {
     final $result = create();
     if (account != null) {
@@ -428,6 +429,9 @@ class CoinSettings extends $pb.GeneratedMessage {
     if (contactsSaved != null) {
       $result.contactsSaved = contactsSaved;
     }
+    if (zFactor != null) {
+      $result.zFactor = zFactor;
+    }
     return $result;
   }
   CoinSettings._() : super();
@@ -444,6 +448,7 @@ class CoinSettings extends $pb.GeneratedMessage {
     ..a<$core.int>(7, _omitFieldNames ? '' : 'uaType', $pb.PbFieldType.OU3)
     ..a<$core.int>(8, _omitFieldNames ? '' : 'replyUa', $pb.PbFieldType.OU3)
     ..aOB(9, _omitFieldNames ? '' : 'contactsSaved')
+    ..a<$core.int>(10, _omitFieldNames ? '' : 'zFactor', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
   ;
 
@@ -552,6 +557,15 @@ class CoinSettings extends $pb.GeneratedMessage {
   $core.bool hasContactsSaved() => $_has(8);
   @$pb.TagNumber(9)
   void clearContactsSaved() => clearField(9);
+
+  @$pb.TagNumber(10)
+  $core.int get zFactor => $_getIZ(9);
+  @$pb.TagNumber(10)
+  set zFactor($core.int v) { $_setUnsignedInt32(9, v); }
+  @$pb.TagNumber(10)
+  $core.bool hasZFactor() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearZFactor() => clearField(10);
 }
 
 class ServerURL extends $pb.GeneratedMessage {

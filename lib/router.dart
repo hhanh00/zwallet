@@ -67,7 +67,8 @@ final router = GoRouter(
               routes: [
                 GoRoute(
                     path: 'account_manager',
-                    builder: (context, state) => AccountManagerPage(),
+                    builder: (context, state) => 
+                    AccountManagerPage(main: (state.uri.queryParameters['main'] ?? '1') != '0'),
                     routes: [
                       GoRoute(
                           path: 'new',

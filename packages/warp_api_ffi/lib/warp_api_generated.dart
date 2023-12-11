@@ -608,32 +608,6 @@ class NativeLibrary {
       CResult_____c_char Function(int, int, int, int, int, int,
           ffi.Pointer<ffi.Char>, int, int, ffi.Pointer<ffi.Uint8>, int)>();
 
-  CResult_____c_char shield_taddr(
-    int coin,
-    int account,
-    int amount,
-    int confirmations,
-    ffi.Pointer<ffi.Uint8> fee_bytes,
-    int fee_len,
-  ) {
-    return _shield_taddr(
-      coin,
-      account,
-      amount,
-      confirmations,
-      fee_bytes,
-      fee_len,
-    );
-  }
-
-  late final _shield_taddrPtr = _lookup<
-      ffi.NativeFunction<
-          CResult_____c_char Function(ffi.Uint8, ffi.Uint32, ffi.Uint64,
-              ffi.Uint32, ffi.Pointer<ffi.Uint8>, ffi.Uint64)>>('shield_taddr');
-  late final _shield_taddr = _shield_taddrPtr.asFunction<
-      CResult_____c_char Function(
-          int, int, int, int, ffi.Pointer<ffi.Uint8>, int)>();
-
   CResult_____c_char prepare_multi_payment(
     int coin,
     int account,
@@ -644,6 +618,7 @@ class NativeLibrary {
     int anchor_offset,
     ffi.Pointer<ffi.Uint8> fee_bytes,
     int fee_len,
+    int z_factor,
   ) {
     return _prepare_multi_payment(
       coin,
@@ -655,6 +630,7 @@ class NativeLibrary {
       anchor_offset,
       fee_bytes,
       fee_len,
+      z_factor,
     );
   }
 
@@ -669,10 +645,11 @@ class NativeLibrary {
               ffi.Uint8,
               ffi.Uint32,
               ffi.Pointer<ffi.Uint8>,
-              ffi.Uint64)>>('prepare_multi_payment');
+              ffi.Uint64,
+              ffi.Uint32)>>('prepare_multi_payment');
   late final _prepare_multi_payment = _prepare_multi_paymentPtr.asFunction<
       CResult_____c_char Function(int, int, ffi.Pointer<ffi.Uint8>, int, int,
-          int, int, ffi.Pointer<ffi.Uint8>, int)>();
+          int, int, ffi.Pointer<ffi.Uint8>, int, int)>();
 
   CResult______u8 transaction_report(
     int coin,
@@ -895,6 +872,7 @@ class NativeLibrary {
     int anchor_offset,
     ffi.Pointer<ffi.Uint8> fee_bytes,
     int fee_len,
+    int z_factor,
   ) {
     return _commit_unsaved_contacts(
       coin,
@@ -902,16 +880,22 @@ class NativeLibrary {
       anchor_offset,
       fee_bytes,
       fee_len,
+      z_factor,
     );
   }
 
   late final _commit_unsaved_contactsPtr = _lookup<
       ffi.NativeFunction<
-          CResult_____c_char Function(ffi.Uint8, ffi.Uint32, ffi.Uint32,
-              ffi.Pointer<ffi.Uint8>, ffi.Uint64)>>('commit_unsaved_contacts');
+          CResult_____c_char Function(
+              ffi.Uint8,
+              ffi.Uint32,
+              ffi.Uint32,
+              ffi.Pointer<ffi.Uint8>,
+              ffi.Uint64,
+              ffi.Uint32)>>('commit_unsaved_contacts');
   late final _commit_unsaved_contacts = _commit_unsaved_contactsPtr.asFunction<
       CResult_____c_char Function(
-          int, int, int, ffi.Pointer<ffi.Uint8>, int)>();
+          int, int, int, ffi.Pointer<ffi.Uint8>, int, int)>();
 
   void mark_message_read(
     int coin,

@@ -66,7 +66,7 @@ dependencies:
   graphic: ^2.2.1
   im_stepper: ^1.0.1
   loading_animation_widget: ^1.2.0
-  animated_toggle_switch: ^0.8.0
+  toggle_switch: ^2.1.0
   get_it: ^7.6.4
   rxdart: ^0.27.7
   bubble: ^1.2.1

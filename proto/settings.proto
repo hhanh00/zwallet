@@ -38,6 +38,7 @@ message CoinSettings {
     uint32 ua_type = 7;
     uint32 reply_ua = 8;
     bool contacts_saved = 9;
+    uint32 z_factor = 10;
 }
 
 message ServerURL {

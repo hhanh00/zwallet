@@ -254,9 +254,9 @@ script = [
     elseif ${is_ios}
       crate_type = set "staticlib"
     else
-      crate_type = set "rlib"
+      crate_type = set "cdylib"
     end
-    val = replace ${toml} "rlib" ${crate_type}
+    val = replace ${toml} "cdylib" ${crate_type}
     result = writefile ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/native/${CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER}/Cargo.toml ${val}
     assert ${result}
     """,
@@ -277,9 +277,9 @@ script = [
     elseif ${is_ios}
       crate_type = set "staticlib"
     else
-      crate_type = set "rlib"
+      crate_type = set "cdylib"
     end
-    val = replace ${toml} ${crate_type} "rlib"
+    val = replace ${toml} ${crate_type} "cdylib"
     result = writefile ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/native/${CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER}/Cargo.toml ${val}
     assert ${result}
     """,
