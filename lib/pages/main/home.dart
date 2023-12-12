@@ -57,9 +57,7 @@ class _HomeState extends State<HomePageInner> {
               builder: (context) {
                 aaSequence.seqno;
                 aa.poolBalances;
-                syncStatus2.syncedHeight;
-                syncStatus2.syncing;
-                syncStatus2.paused;
+                syncStatus2.changed;
 
                 return Column(
                   children: [

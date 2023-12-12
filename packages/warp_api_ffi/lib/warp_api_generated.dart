@@ -534,17 +534,21 @@ class NativeLibrary {
   late final _rewind_to =
       _rewind_toPtr.asFunction<CResult_u32 Function(int, int)>();
 
-  void rescan_from(
+  CResult_u32 rescan_from(
+    int coin,
     int height,
   ) {
     return _rescan_from(
+      coin,
       height,
     );
   }
 
   late final _rescan_fromPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Uint32)>>('rescan_from');
-  late final _rescan_from = _rescan_fromPtr.asFunction<void Function(int)>();
+      _lookup<ffi.NativeFunction<CResult_u32 Function(ffi.Uint8, ffi.Uint32)>>(
+          'rescan_from');
+  late final _rescan_from =
+      _rescan_fromPtr.asFunction<CResult_u32 Function(int, int)>();
 
   CResult_u64 get_taddr_balance(
     int coin,

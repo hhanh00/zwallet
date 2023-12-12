@@ -108,7 +108,6 @@ abstract class _ActiveAccount2 with Store {
     messages.clear();
     spendings = [];
     accountBalances = [];
-    WarpApi.rewindTo(aa.coin, resetHeight);
     height = resetHeight;
   }
 

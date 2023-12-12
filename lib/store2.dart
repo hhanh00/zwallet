@@ -87,6 +87,16 @@ abstract class _SyncStatus2 with Store {
   @observable
   int trialDecryptionCount = 0;
 
+  @computed
+  int get changed {
+    connected;
+    syncedHeight;
+    latestHeight;
+    syncing;
+    paused;
+    return DateTime.now().microsecondsSinceEpoch;
+  }
+
   bool get isSynced {
     final sh = syncedHeight;
     final lh = latestHeight;
@@ -122,6 +132,7 @@ abstract class _SyncStatus2 with Store {
 
   @action
   Future<void> sync(bool rescan, {bool auto = false}) async {
+    // logger.d('$rescan $auto $paused $syncing');
     final context = rootNavigatorKey.currentContext!;
     final s = S.of(context);
     if (paused) return;
@@ -161,6 +172,7 @@ abstract class _SyncStatus2 with Store {
       contacts.fetchContacts();
       marketPrice.update();
     } on String catch (e) {
+      logger.d(e);
       showSnackBar(e);
     } finally {
       syncing = false;
@@ -171,8 +183,9 @@ abstract class _SyncStatus2 with Store {
 
   @action
   Future<void> rescan(int height) async {
-    WarpApi.rescanFrom(height);
+    WarpApi.rescanFrom(aa.coin, height);
     _updateSyncedHeight();
+    paused = false;
     await sync(true);
   }
 

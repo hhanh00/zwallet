@@ -101,9 +101,10 @@ class SyncStatusState extends State<SyncStatusWidget> {
       setState(() {
         display = (display + 1) % 7;
       });
-    } else if (syncStatus2.paused)
-      syncStatus2.setPause(false);
-    else
+    } else {
+      if (syncStatus2.paused)
+        syncStatus2.setPause(false);
       Future(() => syncStatus2.sync(false));
+    }
   }
 }

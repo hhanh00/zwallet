@@ -156,8 +156,8 @@ class WarpApi {
     return unwrapResultU32(warp_api_lib.rewind_to(coin, height));
   }
 
-  static void rescanFrom(int height) {
-    warp_api_lib.rescan_from(height);
+  static int rescanFrom(int coin, int height) {
+    return unwrapResultU32(warp_api_lib.rescan_from(coin, height));
   }
 
   static int warpSync(SyncParams params) {
