@@ -577,7 +577,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                     PoolSelection(
                       _pools,
                       balances: aa.poolBalances,
-                      onChanged: (v) => _pools = v!,
+                      onChanged: (v) => setState(() => _pools = v!),
                     ),
                   AmountPicker(
                     _amount,

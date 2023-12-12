@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -247,7 +248,8 @@ class InputTextQR extends StatefulWidget {
 }
 
 class InputTextQRState extends State<InputTextQR> {
-  final fieldKey = GlobalKey<FormBuilderFieldState<FormBuilderField<String>, String>>();
+  final fieldKey =
+      GlobalKey<FormBuilderFieldState<FormBuilderField<String>, String>>();
   late final controller = TextEditingController(text: widget.initialValue);
 
   @override
@@ -294,14 +296,12 @@ class InputTextQRState extends State<InputTextQR> {
     );
   }
 
-  qr(BuildContext context,
-      FormFieldState<String> field) async {
+  qr(BuildContext context, FormFieldState<String> field) async {
     final text = await scanQRCode(context, validator: widget.validator);
     _onChanged(text, field);
   }
 
-  _onChanged(String v,
-      FormFieldState<String> field) {
+  _onChanged(String v, FormFieldState<String> field) {
     controller.text = v;
     field.didChange(v);
   }
@@ -323,46 +323,45 @@ class PoolSelection extends StatefulWidget {
 class _PoolSelectionState extends State<PoolSelection> {
   @override
   Widget build(BuildContext context) {
-    List<int> initialPools = [];
-    var p = widget.initialValue;
-    for (var i = 0; i < 3; i++) {
-      if (p & 1 != 0) initialPools.add(i);
-      p ~/= 2;
-    }
-    final c = coins[aa.coin];
+    final t = Theme.of(context);
+    final txtStyle = t.textTheme.labelLarge!;
 
-    return FormBuilderFilterChip<int>(
+    final initialPools = List.generate(3,
+            (index) => widget.initialValue & (1 << index) != 0 ? index : null)
+        .whereNotNull()
+        .toSet();
+
+    return FormBuilderField(
       name: 'pool_select',
-      initialValue: initialPools,
-      onChanged: (values) {
-        int pools = 0;
-        for (var v in values!) {
-          pools |= 1 << v;
-        }
-        widget.onChanged?.call(pools);
-      },
-      spacing: 8,
-      options: [
-        FormBuilderChipOption(
-            value: 0,
-            child: Text(
-              '${amountToString2(widget.balances.transparent)}',
-              style: TextStyle(color: Colors.red),
-            )),
-        FormBuilderChipOption(
-            value: 1,
-            child: Text(
-              '${amountToString2(widget.balances.sapling)}',
-              style: TextStyle(color: Colors.orange),
-            )),
-        if (c.supportsUA)
-          FormBuilderChipOption(
-              value: 2,
-              child: Text(
-                '${amountToString2(widget.balances.orchard)}',
-                style: TextStyle(color: Colors.green),
+      initialValue: initialPools.toSet(),
+      onChanged: (v) => widget.onChanged?.call(v!.map((p) => 1 << p).sum),
+      builder: (field) => SegmentedButton<int>(
+        segments: [
+          ButtonSegment(
+              value: 0,
+              label: Text(
+                '${amountToString2(widget.balances.transparent)}',
+                style: txtStyle.apply(color: Colors.red),
               )),
-      ],
+          ButtonSegment(
+              value: 1,
+              label: Text(
+                '${amountToString2(widget.balances.sapling)}',
+                style: txtStyle.apply(color: Colors.orange),
+              )),
+          if (aa.hasUA)
+            ButtonSegment(
+                value: 2,
+                label: Text(
+                  '${amountToString2(widget.balances.orchard)}',
+                  style: txtStyle.apply(color: Colors.green),
+                )),
+        ],
+        selected: field.value!,
+        onSelectionChanged: (v) => field.didChange(v),
+        multiSelectionEnabled: true,
+        showSelectedIcon: false,
+      ),
     );
   }
 }
@@ -388,7 +387,8 @@ class AmountPicker extends StatefulWidget {
 
 class AmountPickerState extends State<AmountPicker> {
   late final s = S.of(context);
-  final fieldKey = GlobalKey<FormBuilderFieldState<FormBuilderField<Amount>, Amount>>();
+  final fieldKey =
+      GlobalKey<FormBuilderFieldState<FormBuilderField<Amount>, Amount>>();
   final formKey = GlobalKey<FormBuilderState>();
   double? fxRate;
   double _sliderValue = 0;
@@ -430,6 +430,7 @@ class AmountPickerState extends State<AmountPicker> {
               Gap(16),
               if (spendable != null)
                 Text('${s.spendable}  ${amountToString2(spendable)}'),
+              Gap(8),
               Row(
                 children: [
                   Expanded(
@@ -488,15 +489,14 @@ class AmountPickerState extends State<AmountPicker> {
                 ),
               if (widget.canDeductFee)
                 FormBuilderSwitch(
-                  name: 'deduct_fee',
-                  initialValue: widget.initialAmount.deductFee,
-                  title: Text(s.deductFee),
-                  onChanged: (v) {
-                    var a = field.value!;
-                    a.deductFee = v!;
-                    field.didChange(a);
-                  }
-                ),
+                    name: 'deduct_fee',
+                    initialValue: widget.initialAmount.deductFee,
+                    title: Text(s.deductFee),
+                    onChanged: (v) {
+                      var a = field.value!;
+                      a.deductFee = v!;
+                      field.didChange(a);
+                    }),
             ],
           ),
         );
@@ -558,7 +558,8 @@ class InputMemo extends StatefulWidget {
 }
 
 class InputMemoState extends State<InputMemo> {
-  final fieldKey = GlobalKey<FormBuilderFieldState<FormBuilderField<MemoData>, MemoData>>();
+  final fieldKey =
+      GlobalKey<FormBuilderFieldState<FormBuilderField<MemoData>, MemoData>>();
   final formKey = GlobalKey<FormBuilderState>();
   late MemoData value = widget.memo.clone();
   late final subjectController =
@@ -569,7 +570,7 @@ class InputMemoState extends State<InputMemo> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return FormBuilderField<MemoData>(
-      key: fieldKey,
+        key: fieldKey,
         name: 'memo',
         initialValue: value,
         validator: (MemoData? v) {
