@@ -57,18 +57,24 @@ class _PoolTransferState extends State<PoolTransferPage>
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-                      FieldUARadio(from,
-                          name: 'from',
-                          label: s.fromPool,
-                          onChanged: (v) => setState(() {
-                                from = v!;
-                              })),
-                      FieldUARadio(to,
-                          name: 'to',
-                          label: s.toPool,
-                          onChanged: (v) => setState(() {
-                                to = v!;
-                              })),
+                      FieldUA(
+                        from,
+                        name: 'from',
+                        label: s.fromPool,
+                        onChanged: (v) => setState(() {
+                          from = v!;
+                        }),
+                        radio: true,
+                      ),
+                      FieldUA(
+                        to,
+                        name: 'to',
+                        label: s.toPool,
+                        onChanged: (v) => setState(() {
+                          to = v!;
+                        }),
+                        radio: true,
+                      ),
                       Gap(16),
                       AmountPicker(
                         Amount(amount, false),

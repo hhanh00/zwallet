@@ -26,7 +26,7 @@ class _SweepState extends State<SweepPage>
   final privateKeyController = TextEditingController();
   final indexController = TextEditingController(text: '0');
   final gapController = TextEditingController(text: '40');
-  int? _pool = 0;
+  int _pool = 0;
   String? _address;
 
   @override
@@ -86,13 +86,15 @@ class _SweepState extends State<SweepPage>
                   Gap(8),
                   Text(s.destination, style: t.textTheme.titleLarge),
                   Gap(16),
-                  FieldUARadio(
-                    0,
+                  FieldUA(
+                    _pool,
                     name: 'pool',
                     label: s.pool,
-                    onChanged: (v) => setState(() => _pool = v),
+                    onChanged: (v) => setState(() => _pool = v!),
+                    radio: true,
+                    emptySelectionAllowed: true,
                   ),
-                  if (_pool == null)
+                  if (_pool == 0)
                     InputTextQR('',
                         onChanged: (v) => setState(() => _address = v)),
                 ]),

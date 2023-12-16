@@ -232,28 +232,34 @@ class _PrivacyState extends State<PrivacyTab>
                 decoration: InputDecoration(
                   label: Text(s.minPrivacy),
                 ),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: SegmentedButton(
-                    segments: [
-                      ButtonSegment(
-                          value: 0,
-                          label: Text(s.veryLow, style: small.apply(color: Colors.red))),
-                      ButtonSegment(
-                          value: 1,
-                          label: Text(s.low, style: small.apply(color: Colors.orange))),
-                      ButtonSegment(
-                          value: 2,
-                          label: Text(s.medium, style: small.apply(color: Colors.yellow))),
-                      ButtonSegment(
-                          value: 3,
-                          label: Text(s.high, style: small.apply(color: Colors.green))),
-                    ],
-                    selected: {field.value!},
-                    onSelectionChanged: (v) => field.didChange(v.first),
-                    showSelectedIcon: false,
-                  ),
-                )),
+                child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: SegmentedButton(
+                        segments: [
+                          ButtonSegment(
+                              value: 0,
+                              label: Text(s.veryLow,
+                                  style: small.apply(color: Colors.red))),
+                          ButtonSegment(
+                              value: 1,
+                              label: Text(s.low,
+                                  style: small.apply(color: Colors.orange))),
+                          ButtonSegment(
+                              value: 2,
+                              label: Text(s.medium,
+                                  style: small.apply(color: Colors.yellow))),
+                          ButtonSegment(
+                              value: 3,
+                              label: Text(s.high,
+                                  style: small.apply(color: Colors.green))),
+                        ],
+                        selected: {field.value!},
+                        onSelectionChanged: (v) => field.didChange(v.first),
+                        showSelectedIcon: false,
+                      ),
+                    ))),
             onChanged: (v) => widget.appSettings.minPrivacyLevel = v!,
           ),
           FormBuilderSwitch(
@@ -266,23 +272,27 @@ class _PrivacyState extends State<PrivacyTab>
             name: 'hide',
             initialValue: widget.appSettings.autoHide,
             builder: (field) => InputDecorator(
-              decoration: InputDecoration(
-                label: Text(s.autoHideBalance),
-              ),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: SegmentedButton(
-                  segments: [
-                    ButtonSegment(value: 0, icon: Icon(Icons.visibility_off)),
-                    ButtonSegment(value: 1, icon: Icon(Icons.brightness_auto)),
-                    ButtonSegment(value: 2, icon: Icon(Icons.visibility)),
-                  ],
-                  selected: {field.value},
-                  onSelectionChanged: (v) => field.didChange(v.first),
-                  showSelectedIcon: false,
+                decoration: InputDecoration(
+                  label: Text(s.autoHideBalance),
                 ),
-              ),
-            ),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: SegmentedButton(
+                      segments: [
+                        ButtonSegment(
+                            value: 0, icon: Icon(Icons.visibility_off)),
+                        ButtonSegment(
+                            value: 1, icon: Icon(Icons.brightness_auto)),
+                        ButtonSegment(value: 2, icon: Icon(Icons.visibility)),
+                      ],
+                      selected: {field.value},
+                      onSelectionChanged: (v) => field.didChange(v.first),
+                      showSelectedIcon: false,
+                    ),
+                  ),
+                )),
             onChanged: (v) => widget.appSettings.autoHide = v!,
           ),
           Divider(),
@@ -478,12 +488,14 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
               label: s.mainUA,
               name: 'main_address',
               onChanged: (v) => coinSettings.uaType = v!,
+              radio: false,
             ),
           FieldUA(
             coinSettings.replyUa,
             label: s.replyUA,
             name: 'reply_address',
             onChanged: (v) => coinSettings.replyUa = v!,
+            radio: !aa.hasUA,
           ),
           if (aa.hasUA)
             FormBuilderField(
@@ -491,19 +503,25 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
               initialValue: coinSettings.zFactor,
               builder: (field) => InputDecorator(
                   decoration: InputDecoration(label: Text(s.zFactor)),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: SegmentedButton(
-                      segments: [
-                        ButtonSegment(value: 0, label: Text(s.sapling, style: small)),
-                        ButtonSegment(value: 1, label: Text(s.orchard, style: small)),
-                        ButtonSegment(value: 2, label: Text(s.optimized, style: small)),
-                      ],
-                      selected: {field.value},
-                      onSelectionChanged: (v) => field.didChange(v.first),
-                      showSelectedIcon: false,
-                    ),
-                  )),
+                  child: Padding(
+                      padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: SegmentedButton(
+                          segments: [
+                            ButtonSegment(
+                                value: 0, label: Text(s.sapling, style: small)),
+                            ButtonSegment(
+                                value: 1, label: Text(s.orchard, style: small)),
+                            ButtonSegment(
+                                value: 2,
+                                label: Text(s.optimized, style: small)),
+                          ],
+                          selected: {field.value},
+                          onSelectionChanged: (v) => field.didChange(v.first),
+                          showSelectedIcon: false,
+                        ),
+                      ))),
               onChanged: (v) => coinSettings.zFactor = v!,
             )
         ]));
@@ -517,39 +535,21 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
 }
 
-// class FieldUA2 extends StatelessWidget {
-//   final String name;
-//   final String label;
-//   final int value;
-//   final void Function(int?) onChanged;
-//   FieldUA2(
-//     this.value, {
-//     required this.onChanged,
-//     required this.name,
-//     required this.label,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return aa.hasUA
-//         ? FieldUACheckbox(value, name: name, label: label, onChanged: (v) {
-//             final value = v?.sum;
-//             onChanged(value);
-//           })
-//         : FieldUARadio(poolOf(value), name: name, label: label, onChanged: (v) {
-//             final value = 1 << (v ?? 0);
-//             onChanged(value);
-//           });
-//   }
-// }
-
 class FieldUA extends StatelessWidget {
   final String name;
   final String label;
   late final Set<int> initialValues;
   final void Function(int?)? onChanged;
-  FieldUA(int initialValue,
-      {required this.name, required this.label, this.onChanged}) {
+  final bool radio;
+  final bool emptySelectionAllowed;
+  FieldUA(
+    int initialValue, {
+    required this.name,
+    required this.label,
+    this.onChanged,
+    this.emptySelectionAllowed = false,
+    required this.radio,
+  }) {
     initialValues = List.generate(
             3, (index) => initialValue & (1 << index) != 0 ? index : null)
         .whereNotNull()
@@ -566,55 +566,32 @@ class FieldUA extends StatelessWidget {
       initialValue: initialValues,
       onChanged: (v) => onChanged?.call(v!.map((index) => 1 << index).sum),
       builder: (field) => InputDecorator(
-        decoration: InputDecoration(label: Text(label)),
-        child: SegmentedButton(
-          segments: [
-            ButtonSegment(
-                value: 0,
-                label: Text(s.transparent,
-                    overflow: TextOverflow.ellipsis, style: small)),
-            ButtonSegment(
-                value: 1,
-                label: Text(s.sapling,
-                    overflow: TextOverflow.ellipsis, style: small)),
-            if (aa.hasUA)
-              ButtonSegment(
-                  value: 2,
-                  label: Text(s.orchard,
-                      overflow: TextOverflow.ellipsis, style: small)),
-          ],
-          selected: field.value!,
-          onSelectionChanged: (v) => field.didChange(v),
-          multiSelectionEnabled: aa.hasUA,
-          showSelectedIcon: false,
-        ),
-      ),
-    );
-  }
-}
-
-class FieldUARadio extends StatelessWidget {
-  final int initialValue;
-  final String name;
-  final String label;
-  final void Function(int?)? onChanged;
-  FieldUARadio(this.initialValue,
-      {required this.name, required this.label, this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    return FormBuilderChoiceChip(
-      name: name,
-      decoration: InputDecoration(label: Text(label)),
-      initialValue: initialValue,
-      spacing: 4,
-      options: [
-        FormBuilderChipOption(value: 0, child: Text(s.transparent)),
-        FormBuilderChipOption(value: 1, child: Text(s.sapling)),
-        if (aa.hasUA) FormBuilderChipOption(value: 2, child: Text(s.orchard)),
-      ],
-      onChanged: onChanged,
+          decoration: InputDecoration(label: Text(label)),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+            child: SegmentedButton(
+              segments: [
+                ButtonSegment(
+                    value: 0,
+                    label: Text(s.transparent,
+                        overflow: TextOverflow.ellipsis, style: small)),
+                ButtonSegment(
+                    value: 1,
+                    label: Text(s.sapling,
+                        overflow: TextOverflow.ellipsis, style: small)),
+                if (aa.hasUA)
+                  ButtonSegment(
+                      value: 2,
+                      label: Text(s.orchard,
+                          overflow: TextOverflow.ellipsis, style: small)),
+              ],
+              selected: field.value!,
+              onSelectionChanged: (v) => field.didChange(v),
+              multiSelectionEnabled: !radio,
+              emptySelectionAllowed: emptySelectionAllowed,
+              showSelectedIcon: false,
+            ),
+          )),
     );
   }
 }
@@ -637,21 +614,24 @@ class FieldView extends StatelessWidget {
       name: name,
       initialValue: initialView,
       builder: (field) => InputDecorator(
-        decoration: InputDecoration(label: Text(label)),
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: SegmentedButton(
-            segments: [
-              ButtonSegment(value: 0, label: Text(s.table, style: small)),
-              ButtonSegment(value: 1, label: Text(s.list, style: small)),
-              ButtonSegment(value: 2, label: Text(s.autoView, style: small)),
-            ],
-            selected: {field.value},
-            onSelectionChanged: (index) => field.didChange(index.first),
-            showSelectedIcon: false,
-          ),
-        ),
-      ),
+          decoration: InputDecoration(label: Text(label)),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: SegmentedButton(
+                segments: [
+                  ButtonSegment(value: 0, label: Text(s.table, style: small)),
+                  ButtonSegment(value: 1, label: Text(s.list, style: small)),
+                  ButtonSegment(
+                      value: 2, label: Text(s.autoView, style: small)),
+                ],
+                selected: {field.value},
+                onSelectionChanged: (index) => field.didChange(index.first),
+                showSelectedIcon: false,
+              ),
+            ),
+          )),
       onChanged: onChanged,
     );
   }
