@@ -28,8 +28,8 @@ class _PoolTransferState extends State<PoolTransferPage>
   final splitController = TextEditingController(text: amountToString2(0));
   late final List<double> balances;
   int amount = 0;
-  int from = 0;
-  int to = 1;
+  int from = 1;
+  int to = 2;
 
   @override
   void initState() {
@@ -117,8 +117,8 @@ class _PoolTransferState extends State<PoolTransferPage>
         final plan = await WarpApi.transferPools(
           aa.coin,
           aa.id,
-          1 << from,
-          1 << to,
+          from,
+          to,
           amount,
           false,
           memoController.text,
@@ -170,11 +170,11 @@ class HorizontalBarChart extends StatelessWidget {
 extension PoolBalanceExtension on PoolBalanceT {
   int get(int p) {
     switch (p) {
-      case 0:
-        return transparent;
       case 1:
-        return sapling;
+        return transparent;
       case 2:
+        return sapling;
+      case 4:
         return orchard;
     }
     throw 'Invalid pool';

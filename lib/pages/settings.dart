@@ -549,12 +549,7 @@ class FieldUA extends StatelessWidget {
     this.onChanged,
     this.emptySelectionAllowed = false,
     required this.radio,
-  }) {
-    initialValues = List.generate(
-            3, (index) => initialValue & (1 << index) != 0 ? index : null)
-        .whereNotNull()
-        .toSet();
-  }
+  }): initialValues = PoolBitSet.toSet(initialValue);
 
   @override
   Widget build(BuildContext context) {
@@ -564,7 +559,7 @@ class FieldUA extends StatelessWidget {
     return FormBuilderField(
       name: name,
       initialValue: initialValues,
-      onChanged: (v) => onChanged?.call(v!.map((index) => 1 << index).sum),
+      onChanged: (v) => onChanged?.call(PoolBitSet.fromSet(v!)),
       builder: (field) => InputDecorator(
           decoration: InputDecoration(label: Text(label)),
           child: Padding(

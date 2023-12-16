@@ -326,15 +326,12 @@ class _PoolSelectionState extends State<PoolSelection> {
     final t = Theme.of(context);
     final txtStyle = t.textTheme.labelLarge!;
 
-    final initialPools = List.generate(3,
-            (index) => widget.initialValue & (1 << index) != 0 ? index : null)
-        .whereNotNull()
-        .toSet();
+    final initialPools = PoolBitSet.toSet(widget.initialValue);
 
     return FormBuilderField(
       name: 'pool_select',
       initialValue: initialPools.toSet(),
-      onChanged: (v) => widget.onChanged?.call(v!.map((p) => 1 << p).sum),
+      onChanged: (v) => widget.onChanged?.call(PoolBitSet.fromSet(v!)),
       builder: (field) => SegmentedButton<int>(
         segments: [
           ButtonSegment(

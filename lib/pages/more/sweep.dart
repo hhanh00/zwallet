@@ -125,7 +125,7 @@ class _SweepState extends State<SweepPage>
               aa.id,
               latestHeight,
               seed,
-              _pool ?? 0,
+              _pool,
               _address ?? '',
               0,
               30,

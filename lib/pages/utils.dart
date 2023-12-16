@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:decimal/decimal.dart';
 import 'package:file_picker/file_picker.dart';
@@ -22,7 +23,7 @@ import 'package:reflectable/reflectable.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:velocity_x/velocity_x.dart';
+import 'package:velocity_x/velocity_x.dart' show VxNullableStringIsEmptyOrNullExtension;
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:path/path.dart' as p;
@@ -644,4 +645,16 @@ FormFieldValidator<T> composeOr<T>(List<FormFieldValidator<T>> validators) {
     }
     return first;
   };
+}
+
+class PoolBitSet {
+  static Set<int> toSet(int pools) {
+    return List.generate(3,
+            (index) => pools & (1 << index) != 0 ? index : null)
+        .whereNotNull()
+        .toSet();
+  }
+
+  static int fromSet(Set<int> poolSet) =>
+    poolSet.map((p) => 1 << p).sum;
 }

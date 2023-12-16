@@ -260,10 +260,22 @@ class WarpApi {
       int splitAmount,
       int anchorOffset,
       FeeT fee) async {
-    final txId = await compute(
-        transferPoolsIsolateFn,
-        TransferPoolsParams(coin, account, fromPool, toPool, amount, includeFee,
-            memo, splitAmount, anchorOffset, fee));
+    final txId = await compute((_) {
+      final fee2 = encodeFee(fee);
+      final txId = warp_api_lib.transfer_pools(
+          coin,
+          account,
+          fromPool,
+          toPool,
+          amount,
+          includeFee ? 1 : 0,
+          toNative(memo),
+          splitAmount,
+          anchorOffset,
+          toNativeBytes(fee2),
+          fee2.lengthInBytes);
+      return unwrapResultString(txId);
+    }, null);
     return txId;
   }
 
@@ -427,11 +439,14 @@ class WarpApi {
   }
 
   static String commitUnsavedContacts(
-      int coin, int account, int anchorOffset, FeeT fee,
-      int zFactor) {
+      int coin, int account, int anchorOffset, FeeT fee, int zFactor) {
     final fee2 = encodeFee(fee);
     return unwrapResultString(warp_api_lib.commit_unsaved_contacts(
-        coin, account, anchorOffset, toNativeBytes(fee2), fee2.lengthInBytes,
+        coin,
+        account,
+        anchorOffset,
+        toNativeBytes(fee2),
+        fee2.lengthInBytes,
         zFactor));
   }
 
@@ -766,23 +781,6 @@ String signOnlyIsolateFn(SignOnlyParams params) {
       params.coin, params.account, toNative(params.tx), params.port.nativePort);
   if (txIdRes.error != nullptr) throw convertCString(txIdRes.error);
   return convertCString(txIdRes.value);
-}
-
-String transferPoolsIsolateFn(TransferPoolsParams params) {
-  final fee2 = encodeFee(params.fee);
-  final txId = warp_api_lib.transfer_pools(
-      params.coin,
-      params.account,
-      params.fromPool,
-      params.toPool,
-      params.amount,
-      params.takeFee ? 1 : 0,
-      toNative(params.memo),
-      params.splitAmount,
-      params.anchorOffset,
-      toNativeBytes(fee2),
-      fee2.lengthInBytes);
-  return unwrapResultString(txId);
 }
 
 int getTBalanceIsolateFn(GetTBalanceParams params) {
