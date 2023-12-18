@@ -1,4 +1,5 @@
 set -x
+export BUILD_DIR=$PWD
 pushd $HOME
 
 if [ -z "$GITHUB_ACTIONS" ]
@@ -26,7 +27,7 @@ export ANDROID_NDK_HOME=$ANDROID_NDK_ROOT
 mkdir -p .zcash-params
 curl https://download.z.cash/downloads/sapling-output.params --output .zcash-params/sapling-output.params
 curl https://download.z.cash/downloads/sapling-spend.params --output .zcash-params/sapling-spend.params
-cp .zcash-params/* assets/
+cp $HOME/.zcash-params/* $BUILD_DIR/assets/
 
 git clone -b $FLUTTER_VERSION --depth 1 https://github.com/flutter/flutter.git flutter
 export PATH=$PATH:$HOME/flutter/bin

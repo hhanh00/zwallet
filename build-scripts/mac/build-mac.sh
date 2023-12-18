@@ -1,8 +1,9 @@
+export BUILD_DIR=$PWD
 pushd $HOME
 mkdir .zcash-params
 curl https://download.z.cash/downloads/sapling-output.params --output .zcash-params/sapling-output.params
 curl https://download.z.cash/downloads/sapling-spend.params --output .zcash-params/sapling-spend.params
-cp .zcash-params/* assets/
+cp .zcash-params/* $BUILD_DIR/assets/
 
 rustup target add aarch64-apple-darwin
 popd
