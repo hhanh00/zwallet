@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -35,6 +36,7 @@ class _SplashState extends State<SplashPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future(() async {
+        _initProver();
         // await _setupMempool();
         final applinkUri = await _registerURLHandler();
         final quickAction = await _registerQuickActions();
@@ -100,6 +102,13 @@ class _SplashState extends State<SplashPage> {
       });
     }
     return launchPage;
+  }
+
+  void _initProver() async {
+    _setProgress(0.1, 'Initialize ZK Prover');
+    final spend = await rootBundle.load('assets/sapling-spend.params');
+    final output = await rootBundle.load('assets/sapling-output.params');
+    WarpApi.initProver(spend.buffer.asUint8List(), output.buffer.asUint8List());
   }
 
   void _initWallets() {

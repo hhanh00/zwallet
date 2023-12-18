@@ -3,12 +3,10 @@ FLUTTER_VERSION=$1
 mkdir -p $HOME/.zcash-params
 curl https://download.z.cash/downloads/sapling-output.params --output $HOME/.zcash-params/sapling-output.params
 curl https://download.z.cash/downloads/sapling-spend.params --output $HOME/.zcash-params/sapling-spend.params
+cp .zcash-params/* assets/
 
 git clone -b "$FLUTTER_VERSION" --depth 1 https://github.com/flutter/flutter.git flutter
 flutter doctor -v
-
-sed -e 's/rlib/cdylib/' < native/zcash-sync/Cargo.toml >/tmp/out.toml
-mv /tmp/out.toml native/zcash-sync/Cargo.toml
 
 sudo apt-get update
 sudo apt-get install -y libunwind-dev libudev-dev pkg-config

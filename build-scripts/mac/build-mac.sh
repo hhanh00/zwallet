@@ -2,15 +2,13 @@ pushd $HOME
 mkdir .zcash-params
 curl https://download.z.cash/downloads/sapling-output.params --output .zcash-params/sapling-output.params
 curl https://download.z.cash/downloads/sapling-spend.params --output .zcash-params/sapling-spend.params
+cp .zcash-params/* assets/
 
 rustup target add aarch64-apple-darwin
 popd
 
 git clone -b "$1" --depth 1 https://github.com/flutter/flutter.git flutter
 flutter doctor -v
-
-sed -e 's/rlib/cdylib/' < native/zcash-sync/Cargo.toml >/tmp/out.toml
-mv /tmp/out.toml native/zcash-sync/Cargo.toml
 
 cargo b -r --target=x86_64-apple-darwin --features=dart_ffi,sqlcipher,ledger
 cargo b -r --target=aarch64-apple-darwin --features=dart_ffi,sqlcipher,ledger

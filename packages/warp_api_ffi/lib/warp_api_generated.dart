@@ -72,6 +72,28 @@ class NativeLibrary {
   late final _deallocate_bytes = _deallocate_bytesPtr
       .asFunction<void Function(ffi.Pointer<ffi.Uint8>, int)>();
 
+  CResult_u8 init_prover(
+    ffi.Pointer<ffi.Uint8> spend_bytes,
+    int spend_len,
+    ffi.Pointer<ffi.Uint8> output_bytes,
+    int output_len,
+  ) {
+    return _init_prover(
+      spend_bytes,
+      spend_len,
+      output_bytes,
+      output_len,
+    );
+  }
+
+  late final _init_proverPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_u8 Function(ffi.Pointer<ffi.Uint8>, ffi.Uint64,
+              ffi.Pointer<ffi.Uint8>, ffi.Uint64)>>('init_prover');
+  late final _init_prover = _init_proverPtr.asFunction<
+      CResult_u8 Function(
+          ffi.Pointer<ffi.Uint8>, int, ffi.Pointer<ffi.Uint8>, int)>();
+
   CResult_u8 init_wallet(
     int coin,
     ffi.Pointer<ffi.Char> db_path,

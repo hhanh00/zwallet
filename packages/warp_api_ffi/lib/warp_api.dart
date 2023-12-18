@@ -93,6 +93,13 @@ class WarpApi {
     unwrapResultU8(warp_api_lib.migrate_data_db(coin));
   }
 
+  static void initProver(Uint8List spend, Uint8List output) {
+    unwrapResultU8(warp_api_lib.init_prover(
+      toNativeBytes(spend), spend.lengthInBytes,
+      toNativeBytes(output), output.lengthInBytes,
+    ));
+  }
+
   static void initWallet(int coin, String dbPath) {
     unwrapResultU8(warp_api_lib.init_wallet(coin, toNative(dbPath)));
   }
