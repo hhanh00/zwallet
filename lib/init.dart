@@ -61,6 +61,7 @@ class _OnWindow extends WindowListener {
 
   @override
   void onWindowClose() async {
+    logger.d('Shutdown');
     WarpApi.cancelSync();
   }
 }

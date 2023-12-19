@@ -51,9 +51,9 @@ class _SplashState extends State<SplashPage> {
         }
         if (applinkUri != null)
           handleUri(context, applinkUri);
-        else if (quickAction != null) 
+        else if (quickAction != null)
           handleQuickAction(context, quickAction);
-        else 
+        else
           GoRouter.of(context).go('/account');
       });
     });

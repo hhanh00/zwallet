@@ -6068,6 +6068,7 @@ dependencies = [
  "tiny-hderive",
  "tokio",
  "tokio-stream",
+ "tokio-util",
  "tonic",
  "tonic-build 0.7.2",
  "ureq",
