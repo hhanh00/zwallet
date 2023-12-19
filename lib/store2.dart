@@ -132,7 +132,7 @@ abstract class _SyncStatus2 with Store {
 
   @action
   Future<void> sync(bool rescan, {bool auto = false}) async {
-    // logger.d('$rescan $auto $paused $syncing');
+    logger.d('R/A/P/S $rescan $auto $paused $syncing');
     final context = rootNavigatorKey.currentContext!;
     final s = S.of(context);
     if (paused) return;
