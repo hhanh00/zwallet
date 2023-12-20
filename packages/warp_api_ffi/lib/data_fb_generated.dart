@@ -4101,16 +4101,18 @@ class Progress {
   final int _bcOffset;
 
   int get height => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 4, 0);
-  int get trialDecryptions => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 6, 0);
-  int get downloaded => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 8, 0);
+  int get timestamp => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 6, 0);
+  int get trialDecryptions => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 8, 0);
+  int get downloaded => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 10, 0);
 
   @override
   String toString() {
-    return 'Progress{height: ${height}, trialDecryptions: ${trialDecryptions}, downloaded: ${downloaded}}';
+    return 'Progress{height: ${height}, timestamp: ${timestamp}, trialDecryptions: ${trialDecryptions}, downloaded: ${downloaded}}';
   }
 
   ProgressT unpack() => ProgressT(
       height: height,
+      timestamp: timestamp,
       trialDecryptions: trialDecryptions,
       downloaded: downloaded);
 
@@ -4122,26 +4124,29 @@ class Progress {
 
 class ProgressT implements fb.Packable {
   int height;
+  int timestamp;
   int trialDecryptions;
   int downloaded;
 
   ProgressT({
       this.height = 0,
+      this.timestamp = 0,
       this.trialDecryptions = 0,
       this.downloaded = 0});
 
   @override
   int pack(fb.Builder fbBuilder) {
-    fbBuilder.startTable(3);
+    fbBuilder.startTable(4);
     fbBuilder.addUint32(0, height);
-    fbBuilder.addUint64(1, trialDecryptions);
-    fbBuilder.addUint64(2, downloaded);
+    fbBuilder.addUint32(1, timestamp);
+    fbBuilder.addUint64(2, trialDecryptions);
+    fbBuilder.addUint64(3, downloaded);
     return fbBuilder.endTable();
   }
 
   @override
   String toString() {
-    return 'ProgressT{height: ${height}, trialDecryptions: ${trialDecryptions}, downloaded: ${downloaded}}';
+    return 'ProgressT{height: ${height}, timestamp: ${timestamp}, trialDecryptions: ${trialDecryptions}, downloaded: ${downloaded}}';
   }
 }
 
@@ -4159,19 +4164,23 @@ class ProgressBuilder {
   final fb.Builder fbBuilder;
 
   void begin() {
-    fbBuilder.startTable(3);
+    fbBuilder.startTable(4);
   }
 
   int addHeight(int? height) {
     fbBuilder.addUint32(0, height);
     return fbBuilder.offset;
   }
+  int addTimestamp(int? timestamp) {
+    fbBuilder.addUint32(1, timestamp);
+    return fbBuilder.offset;
+  }
   int addTrialDecryptions(int? trialDecryptions) {
-    fbBuilder.addUint64(1, trialDecryptions);
+    fbBuilder.addUint64(2, trialDecryptions);
     return fbBuilder.offset;
   }
   int addDownloaded(int? downloaded) {
-    fbBuilder.addUint64(2, downloaded);
+    fbBuilder.addUint64(3, downloaded);
     return fbBuilder.offset;
   }
 
@@ -4182,25 +4191,29 @@ class ProgressBuilder {
 
 class ProgressObjectBuilder extends fb.ObjectBuilder {
   final int? _height;
+  final int? _timestamp;
   final int? _trialDecryptions;
   final int? _downloaded;
 
   ProgressObjectBuilder({
     int? height,
+    int? timestamp,
     int? trialDecryptions,
     int? downloaded,
   })
       : _height = height,
+        _timestamp = timestamp,
         _trialDecryptions = trialDecryptions,
         _downloaded = downloaded;
 
   /// Finish building, and store into the [fbBuilder].
   @override
   int finish(fb.Builder fbBuilder) {
-    fbBuilder.startTable(3);
+    fbBuilder.startTable(4);
     fbBuilder.addUint32(0, _height);
-    fbBuilder.addUint64(1, _trialDecryptions);
-    fbBuilder.addUint64(2, _downloaded);
+    fbBuilder.addUint32(1, _timestamp);
+    fbBuilder.addUint64(2, _trialDecryptions);
+    fbBuilder.addUint64(3, _downloaded);
     return fbBuilder.endTable();
   }
 

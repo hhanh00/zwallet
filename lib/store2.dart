@@ -199,6 +199,7 @@ abstract class _SyncStatus2 with Store {
     trialDecryptionCount = progress.trialDecryptions;
     syncedHeight = progress.height;
     downloadedSize = progress.downloaded;
+    timestamp =  DateTime.fromMillisecondsSinceEpoch(progress.timestamp * 1000);
     eta.checkpoint(syncedHeight, DateTime.now());
   }
 

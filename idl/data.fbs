@@ -193,6 +193,7 @@ table Servers {
 
 table Progress {
   height:uint32;
+  timestamp:uint32;
   trial_decryptions:uint64;
   downloaded:uint64;
 }
