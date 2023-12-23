@@ -31,13 +31,13 @@ extension AppSettingsExtension on AppSettings {
     if (!hasNoteView()) noteView = 2;
     if (!hasTxView()) txView = 2;
     if (!hasMessageView()) messageView = 2;
-    if (!hasQuickSendSettings()) 
+    if (!hasQuickSendSettings())
       quickSendSettings = QuickSendSettings()..defaults();
   }
 
   static AppSettings load(SharedPreferences prefs) {
     final setting = prefs.getString('settings') ?? '';
-    final settingBytes  = base64Decode(setting);
+    final settingBytes = base64Decode(setting);
     return AppSettings.fromBuffer(settingBytes)..defaults();
   }
 
@@ -81,17 +81,16 @@ extension CoinSettingsExtension on CoinSettings {
 }
 
 extension QuickSendSettingsExtension on QuickSendSettings {
-  QuickSendSettings defaults() =>
-    QuickSendSettings(
-      contacts: true,
-      accounts: true,
-      pools: true,
-      amountCurrency: true,
-      amountSlider: true,
-      max: true,
-      deductFee: true,
-      replyAddress: true,
-      memoSubject: true,
-      memo: true,
-      );
+  void defaults() {
+    contacts = true;
+    accounts = true;
+    pools = true;
+    amountCurrency = true;
+    amountSlider = true;
+    max = true;
+    deductFee = true;
+    replyAddress = true;
+    memoSubject = true;
+    memo = true;
+  }
 }

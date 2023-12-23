@@ -26,7 +26,7 @@ class MorePage extends StatelessWidget {
           text: s.notes),
       MosaicButton(
           url: '/more/transfer',
-          icon: Icon(Icons.pool),
+          icon: FaIcon(FontAwesomeIcons.personSwimming),
           text: s.pools),
       MosaicButton(
           url: '/more/contacts',
@@ -54,9 +54,13 @@ class MorePage extends StatelessWidget {
           icon: FaIcon(FontAwesomeIcons.arrowRotateLeft),
           text: s.rewind),
       MosaicButton(
-          url: '/more/cold',
-          icon: FaIcon(FontAwesomeIcons.snowflake),
-          text: s.coldStorage),
+          url: '/more/cold/sign',
+          icon: FaIcon(FontAwesomeIcons.signature),
+          text: s.signOffline),
+      MosaicButton(
+          url: '/more/cold/broadcast',
+          icon: FaIcon(FontAwesomeIcons.towerBroadcast),
+          text: s.broadcast),
       MosaicButton(
           url: '/account/multi_pay',
           icon: FaIcon(FontAwesomeIcons.peopleArrows),

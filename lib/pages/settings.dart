@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:YWallet/theme_editor.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
@@ -20,7 +19,6 @@ import '../appsettings.dart' as app;
 import '../settings.pb.dart';
 import '../store2.dart';
 import 'utils.dart';
-import 'widgets.dart';
 
 List<String>? currencies;
 
@@ -348,7 +346,6 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     final s = S.of(context);
-    final quickSendSettings = widget.appSettings.quickSendSettings;
     return FormBuilder(
         key: formKey,
         child: Column(children: [
@@ -371,74 +368,27 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
             onChanged: (v) => widget.appSettings.noteView = v!,
           ),
           Gap(16),
-          Panel(s.quickSendSettings,
-              child: Column(children: [
-                FormBuilderSwitch(
-                  name: 'contacts',
-                  initialValue: quickSendSettings.contacts,
-                  onChanged: (v) => quickSendSettings.contacts = v!,
-                  title: Text(s.contacts),
-                ),
-                FormBuilderSwitch(
-                  name: 'accounts',
-                  initialValue: quickSendSettings.accounts,
-                  onChanged: (v) => quickSendSettings.accounts = v!,
-                  title: Text(s.accounts),
-                ),
-                FormBuilderSwitch(
-                  name: 'pools',
-                  initialValue: quickSendSettings.pools,
-                  onChanged: (v) => quickSendSettings.pools = v!,
-                  title: Text(s.pools),
-                ),
-                FormBuilderSwitch(
-                  name: 'amountCurrency',
-                  initialValue: quickSendSettings.amountCurrency,
-                  onChanged: (v) => quickSendSettings.amountCurrency = v!,
-                  title: Text(s.amountCurrency),
-                ),
-                FormBuilderSwitch(
-                  name: 'amountSlider',
-                  initialValue: quickSendSettings.amountSlider,
-                  onChanged: (v) => quickSendSettings.amountSlider = v!,
-                  title: Text(s.amountSlider),
-                ),
-                FormBuilderSwitch(
-                  name: 'max',
-                  initialValue: quickSendSettings.max,
-                  onChanged: (v) => quickSendSettings.max = v!,
-                  title: Text(s.max),
-                ),
-                FormBuilderSwitch(
-                  name: 'deductFee',
-                  initialValue: quickSendSettings.deductFee,
-                  onChanged: (v) => quickSendSettings.deductFee = v!,
-                  title: Text(s.deductFee),
-                ),
-                FormBuilderSwitch(
-                  name: 'replyAddress',
-                  initialValue: quickSendSettings.replyAddress,
-                  onChanged: (v) => quickSendSettings.replyAddress = v!,
-                  title: Text(s.includeReplyTo),
-                ),
-                FormBuilderSwitch(
-                  name: 'memoSubject',
-                  initialValue: quickSendSettings.memoSubject,
-                  onChanged: (v) => quickSendSettings.memoSubject = v!,
-                  title: Text(s.subject),
-                ),
-                FormBuilderSwitch(
-                  name: 'memo',
-                  initialValue: quickSendSettings.memo,
-                  onChanged: (v) => quickSendSettings.memo = v!,
-                  title: Text(s.memo),
-                ),
-              ])),
+          InputDecorator(
+              decoration: InputDecoration(label: Text(s.quickSend)),
+              child: Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                      onPressed: _quickSendSettings,
+                      child: Text(s.configure)))),
         ]));
   }
 
   bool validate() {
     return formKey.currentState!.validate();
+  }
+
+  _quickSendSettings() async {
+    final quickSendSettings = widget.appSettings.quickSendSettings;
+    final quickSendSettingsUpdated = await GoRouter.of(context)
+        .push<QuickSendSettings>('/quick_send', extra: quickSendSettings);
+    if (quickSendSettingsUpdated != null) {
+      widget.appSettings.quickSendSettings = quickSendSettingsUpdated;
+    }
   }
 
   @override
@@ -600,6 +550,106 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class QuickSendSettingsPage extends StatefulWidget {
+  final QuickSendSettings quickSendSettings;
+  QuickSendSettingsPage(this.quickSendSettings);
+
+  @override
+  State<StatefulWidget> createState() => _QuickSendSettingsState();
+}
+
+class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
+  final formKey = GlobalKey<FormBuilderState>();
+  late final s = S.of(context);
+  late QuickSendSettings quickSendSettings =
+      widget.quickSendSettings.deepCopy();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(s.quickSendSettings), actions: [
+        IconButton(
+            onPressed: () {
+              GoRouter.of(context).pop(quickSendSettings);
+            },
+            icon: Icon(Icons.check))
+      ]),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: FormBuilder(
+            key: formKey,
+            child: Column(
+              children: [
+                FormBuilderSwitch(
+                  name: 'contacts',
+                  initialValue: quickSendSettings.contacts,
+                  onChanged: (v) => quickSendSettings.contacts = v!,
+                  title: Text(s.contacts),
+                ),
+                FormBuilderSwitch(
+                  name: 'accounts',
+                  initialValue: quickSendSettings.accounts,
+                  onChanged: (v) => quickSendSettings.accounts = v!,
+                  title: Text(s.accounts),
+                ),
+                FormBuilderSwitch(
+                  name: 'pools',
+                  initialValue: quickSendSettings.pools,
+                  onChanged: (v) => quickSendSettings.pools = v!,
+                  title: Text(s.pools),
+                ),
+                FormBuilderSwitch(
+                  name: 'amountCurrency',
+                  initialValue: quickSendSettings.amountCurrency,
+                  onChanged: (v) => quickSendSettings.amountCurrency = v!,
+                  title: Text(s.amountCurrency),
+                ),
+                FormBuilderSwitch(
+                  name: 'amountSlider',
+                  initialValue: quickSendSettings.amountSlider,
+                  onChanged: (v) => quickSendSettings.amountSlider = v!,
+                  title: Text(s.amountSlider),
+                ),
+                FormBuilderSwitch(
+                  name: 'max',
+                  initialValue: quickSendSettings.max,
+                  onChanged: (v) => quickSendSettings.max = v!,
+                  title: Text(s.max),
+                ),
+                FormBuilderSwitch(
+                  name: 'deductFee',
+                  initialValue: quickSendSettings.deductFee,
+                  onChanged: (v) => quickSendSettings.deductFee = v!,
+                  title: Text(s.deductFee),
+                ),
+                FormBuilderSwitch(
+                  name: 'replyAddress',
+                  initialValue: quickSendSettings.replyAddress,
+                  onChanged: (v) => quickSendSettings.replyAddress = v!,
+                  title: Text(s.includeReplyTo),
+                ),
+                FormBuilderSwitch(
+                  name: 'memoSubject',
+                  initialValue: quickSendSettings.memoSubject,
+                  onChanged: (v) => quickSendSettings.memoSubject = v!,
+                  title: Text(s.subject),
+                ),
+                FormBuilderSwitch(
+                  name: 'memo',
+                  initialValue: quickSendSettings.memo,
+                  onChanged: (v) => quickSendSettings.memo = v!,
+                  title: Text(s.memo),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class FieldUA extends StatelessWidget {

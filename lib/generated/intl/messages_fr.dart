@@ -1281,4 +1281,7 @@ class SFr extends S {
 
   @override
   String get amountSlider => 'Amount Slider';
+
+  @override
+  String get configure => 'Configure';
 }

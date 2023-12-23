@@ -2542,6 +2542,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Amount Slider'**
   String get amountSlider;
+
+  /// No description provided for @configure.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure'**
+  String get configure;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

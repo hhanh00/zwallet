@@ -406,5 +406,6 @@
   "optimized": "Optimized",
   "quickSendSettings": "Quick Send Settings",
   "amountCurrency": "Amount in Fiat",
-  "amountSlider": "Amount Slider"
+  "amountSlider": "Amount Slider",
+  "configure": "Configure"
 }

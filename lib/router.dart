@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:YWallet/appsettings.dart';
 import 'package:YWallet/pages/more/cold.dart';
+import 'package:YWallet/settings.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -177,7 +178,7 @@ final router = GoRouter(
                       ]),
                   GoRoute(
                       path: 'cold',
-                      builder: (context, state) => ColdStoragePage(),
+                      builder: (context, state) => PlaceHolderPage('Cold'),
                       routes: [
                         GoRoute(
                           path: 'sign',
@@ -283,6 +284,11 @@ final router = GoRouter(
             state.uri.queryParameters['coin']?.let(int.parse) ?? aa.coin;
         return SettingsPage(coin: coin);
       },
+    ),
+    GoRoute(
+      path: '/quick_send',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => QuickSendSettingsPage(state.extra as QuickSendSettings),
     ),
     GoRoute(
       path: '/encrypt_db',

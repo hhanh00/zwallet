@@ -5,13 +5,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -148,48 +146,62 @@ class MosaicWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     final t = Theme.of(context);
-    final palette = getPalette(t.primaryColor, buttons.length);
-    return GridView.count(
-      primary: true,
-      padding: const EdgeInsets.all(8),
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      crossAxisCount: 2,
-      children: buttons
-          .asMap()
-          .entries
-          .map(
-            (kv) => GFButton(
-              onPressed: () async {
-                final onPressed = kv.value.onPressed;
-                if (onPressed != null) {
-                  await onPressed();
-                } else {
-                  if (kv.value.secured) {
-                    final auth = await authenticate(context, s.secured);
-                    if (!auth) return;
-                  }
-                  GoRouter.of(context).push(kv.value.url);
-                }
-              },
-              icon: kv.value.icon,
-              type: GFButtonType.solid,
-              textStyle: t.textTheme.bodyLarge!
-                  .copyWith(color: t.colorScheme.onPrimary),
-              child: Text(kv.value.text!,
-                  maxLines: 2, overflow: TextOverflow.fade),
-              color: palette.colors[kv.key].toColor(),
-              borderShape: RoundedRectangleBorder(
-                borderRadius: BorderRadiusDirectional.all(
-                  Radius.circular(32),
-                ),
-              ),
-            ),
-          )
-          .toList(),
-    );
+    final palette = getPalette(t.colorScheme.inversePrimary, buttons.length);
+    return ListView.builder(itemBuilder: (BuildContext context, int index) {
+      final button = buttons[index];
+      return ListTile(
+        leading: SizedBox(width: 40, child: button.icon),
+        title: Text(button.text!, style: t.textTheme.headlineSmall),
+        tileColor: palette.colors[index].toColor(),
+        trailing: Icon(Icons.chevron_right),
+        onTap: () => _onMenu(context, button),
+      );
+    }, itemCount: buttons.length);
+
+    // return GridView.count(
+    //   primary: true,
+    //   padding: const EdgeInsets.all(8),
+    //   mainAxisSpacing: 8,
+    //   crossAxisSpacing: 8,
+    //   crossAxisCount: 2,
+    //   children: buttons
+    //       .asMap()
+    //       .entries
+    //       .map(
+    //         (kv) => 
+    //         GFButton(
+    //           onPressed: () => _onMenu(context, kv.value),
+    //           icon: kv.value.icon,
+    //           type: GFButtonType.solid,
+    //           textStyle: t.textTheme.bodyLarge!
+    //               .copyWith(color: t.colorScheme.onPrimary),
+    //           child: Text(kv.value.text!,
+    //               maxLines: 2, overflow: TextOverflow.fade),
+    //           color: palette.colors[kv.key].toColor(),
+    //           borderShape: RoundedRectangleBorder(
+    //             borderRadius: BorderRadiusDirectional.all(
+    //               Radius.circular(32),
+    //             ),
+    //           ),
+    //         ),
+    //       )
+    //       .toList(),
+    // );
+  }
+
+  _onMenu(BuildContext context, MosaicButton button) async {
+    final onPressed = button.onPressed;
+    if (onPressed != null) {
+      await onPressed();
+    } else {
+      if (button.secured) {
+        final s = S.of(context);
+        final auth = await authenticate(context, s.secured);
+        if (!auth) return;
+      }
+      GoRouter.of(context).push(button.url);
+    }
   }
 }
 

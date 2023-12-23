@@ -128,7 +128,7 @@ class TableListKeyMetadata extends TableListItemMetadata<KeyPackT> {
                     Gap(8),
                     Panel(s.address, text: address),
                     Gap(8),
-                    Panel(s.key, text: key),
+                    Panel(s.secretKey, text: key),
                   ],
                 )
               : ListTile(leading: Text(idx.toString()), title: Text(address))),
