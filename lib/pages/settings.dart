@@ -5,6 +5,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -19,6 +20,7 @@ import '../appsettings.dart' as app;
 import '../settings.pb.dart';
 import '../store2.dart';
 import 'utils.dart';
+import 'widgets.dart';
 
 List<String>? currencies;
 
@@ -346,6 +348,7 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     final s = S.of(context);
+    final quickSendSettings = widget.appSettings.quickSendSettings;
     return FormBuilder(
         key: formKey,
         child: Column(children: [
@@ -367,6 +370,70 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
             label: s.notes,
             onChanged: (v) => widget.appSettings.noteView = v!,
           ),
+          Gap(16),
+          Panel(s.quickSendSettings,
+              child: Column(children: [
+                FormBuilderSwitch(
+                  name: 'contacts',
+                  initialValue: quickSendSettings.contacts,
+                  onChanged: (v) => quickSendSettings.contacts = v!,
+                  title: Text(s.contacts),
+                ),
+                FormBuilderSwitch(
+                  name: 'accounts',
+                  initialValue: quickSendSettings.accounts,
+                  onChanged: (v) => quickSendSettings.accounts = v!,
+                  title: Text(s.accounts),
+                ),
+                FormBuilderSwitch(
+                  name: 'pools',
+                  initialValue: quickSendSettings.pools,
+                  onChanged: (v) => quickSendSettings.pools = v!,
+                  title: Text(s.pools),
+                ),
+                FormBuilderSwitch(
+                  name: 'amountCurrency',
+                  initialValue: quickSendSettings.amountCurrency,
+                  onChanged: (v) => quickSendSettings.amountCurrency = v!,
+                  title: Text(s.amountCurrency),
+                ),
+                FormBuilderSwitch(
+                  name: 'amountSlider',
+                  initialValue: quickSendSettings.amountSlider,
+                  onChanged: (v) => quickSendSettings.amountSlider = v!,
+                  title: Text(s.amountSlider),
+                ),
+                FormBuilderSwitch(
+                  name: 'max',
+                  initialValue: quickSendSettings.max,
+                  onChanged: (v) => quickSendSettings.max = v!,
+                  title: Text(s.max),
+                ),
+                FormBuilderSwitch(
+                  name: 'deductFee',
+                  initialValue: quickSendSettings.deductFee,
+                  onChanged: (v) => quickSendSettings.deductFee = v!,
+                  title: Text(s.deductFee),
+                ),
+                FormBuilderSwitch(
+                  name: 'replyAddress',
+                  initialValue: quickSendSettings.replyAddress,
+                  onChanged: (v) => quickSendSettings.replyAddress = v!,
+                  title: Text(s.includeReplyTo),
+                ),
+                FormBuilderSwitch(
+                  name: 'memoSubject',
+                  initialValue: quickSendSettings.memoSubject,
+                  onChanged: (v) => quickSendSettings.memoSubject = v!,
+                  title: Text(s.subject),
+                ),
+                FormBuilderSwitch(
+                  name: 'memo',
+                  initialValue: quickSendSettings.memo,
+                  onChanged: (v) => quickSendSettings.memo = v!,
+                  title: Text(s.memo),
+                ),
+              ])),
         ]));
   }
 
@@ -549,7 +616,7 @@ class FieldUA extends StatelessWidget {
     this.onChanged,
     this.emptySelectionAllowed = false,
     required this.radio,
-  }): initialValues = PoolBitSet.toSet(initialValue);
+  }) : initialValues = PoolBitSet.toSet(initialValue);
 
   @override
   Widget build(BuildContext context) {

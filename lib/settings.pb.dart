@@ -40,6 +40,7 @@ class AppSettings extends $pb.GeneratedMessage {
     ColorPalette? palette,
     $core.bool? disclaimer,
     $core.bool? quickSend,
+    QuickSendSettings? quickSendSettings,
   }) {
     final $result = create();
     if (anchorOffset != null) {
@@ -114,6 +115,9 @@ class AppSettings extends $pb.GeneratedMessage {
     if (quickSend != null) {
       $result.quickSend = quickSend;
     }
+    if (quickSendSettings != null) {
+      $result.quickSendSettings = quickSendSettings;
+    }
     return $result;
   }
   AppSettings._() : super();
@@ -145,6 +149,7 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOM<ColorPalette>(25, _omitFieldNames ? '' : 'palette', subBuilder: ColorPalette.create)
     ..aOB(26, _omitFieldNames ? '' : 'disclaimer')
     ..aOB(27, _omitFieldNames ? '' : 'quickSend')
+    ..aOM<QuickSendSettings>(28, _omitFieldNames ? '' : 'quickSendSettings', subBuilder: QuickSendSettings.create)
     ..hasRequiredFields = false
   ;
 
@@ -386,6 +391,17 @@ class AppSettings extends $pb.GeneratedMessage {
   $core.bool hasQuickSend() => $_has(23);
   @$pb.TagNumber(27)
   void clearQuickSend() => clearField(27);
+
+  @$pb.TagNumber(28)
+  QuickSendSettings get quickSendSettings => $_getN(24);
+  @$pb.TagNumber(28)
+  set quickSendSettings(QuickSendSettings v) { setField(28, v); }
+  @$pb.TagNumber(28)
+  $core.bool hasQuickSendSettings() => $_has(24);
+  @$pb.TagNumber(28)
+  void clearQuickSendSettings() => clearField(28);
+  @$pb.TagNumber(28)
+  QuickSendSettings ensureQuickSendSettings() => $_ensure(24);
 }
 
 class CoinSettings extends $pb.GeneratedMessage {
@@ -694,6 +710,182 @@ class ColorPalette extends $pb.GeneratedMessage {
   $core.bool hasDark() => $_has(1);
   @$pb.TagNumber(2)
   void clearDark() => clearField(2);
+}
+
+class QuickSendSettings extends $pb.GeneratedMessage {
+  factory QuickSendSettings({
+    $core.bool? contacts,
+    $core.bool? accounts,
+    $core.bool? pools,
+    $core.bool? amountCurrency,
+    $core.bool? amountSlider,
+    $core.bool? max,
+    $core.bool? deductFee,
+    $core.bool? replyAddress,
+    $core.bool? memoSubject,
+    $core.bool? memo,
+  }) {
+    final $result = create();
+    if (contacts != null) {
+      $result.contacts = contacts;
+    }
+    if (accounts != null) {
+      $result.accounts = accounts;
+    }
+    if (pools != null) {
+      $result.pools = pools;
+    }
+    if (amountCurrency != null) {
+      $result.amountCurrency = amountCurrency;
+    }
+    if (amountSlider != null) {
+      $result.amountSlider = amountSlider;
+    }
+    if (max != null) {
+      $result.max = max;
+    }
+    if (deductFee != null) {
+      $result.deductFee = deductFee;
+    }
+    if (replyAddress != null) {
+      $result.replyAddress = replyAddress;
+    }
+    if (memoSubject != null) {
+      $result.memoSubject = memoSubject;
+    }
+    if (memo != null) {
+      $result.memo = memo;
+    }
+    return $result;
+  }
+  QuickSendSettings._() : super();
+  factory QuickSendSettings.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory QuickSendSettings.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'QuickSendSettings', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'contacts')
+    ..aOB(2, _omitFieldNames ? '' : 'accounts')
+    ..aOB(3, _omitFieldNames ? '' : 'pools')
+    ..aOB(4, _omitFieldNames ? '' : 'amountCurrency', protoName: 'amountCurrency')
+    ..aOB(5, _omitFieldNames ? '' : 'amountSlider', protoName: 'amountSlider')
+    ..aOB(6, _omitFieldNames ? '' : 'max')
+    ..aOB(7, _omitFieldNames ? '' : 'deductFee', protoName: 'deductFee')
+    ..aOB(8, _omitFieldNames ? '' : 'replyAddress', protoName: 'replyAddress')
+    ..aOB(9, _omitFieldNames ? '' : 'memoSubject', protoName: 'memoSubject')
+    ..aOB(10, _omitFieldNames ? '' : 'memo')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  QuickSendSettings clone() => QuickSendSettings()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  QuickSendSettings copyWith(void Function(QuickSendSettings) updates) => super.copyWith((message) => updates(message as QuickSendSettings)) as QuickSendSettings;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static QuickSendSettings create() => QuickSendSettings._();
+  QuickSendSettings createEmptyInstance() => create();
+  static $pb.PbList<QuickSendSettings> createRepeated() => $pb.PbList<QuickSendSettings>();
+  @$core.pragma('dart2js:noInline')
+  static QuickSendSettings getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<QuickSendSettings>(create);
+  static QuickSendSettings? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get contacts => $_getBF(0);
+  @$pb.TagNumber(1)
+  set contacts($core.bool v) { $_setBool(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasContacts() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearContacts() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.bool get accounts => $_getBF(1);
+  @$pb.TagNumber(2)
+  set accounts($core.bool v) { $_setBool(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasAccounts() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAccounts() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.bool get pools => $_getBF(2);
+  @$pb.TagNumber(3)
+  set pools($core.bool v) { $_setBool(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasPools() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPools() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.bool get amountCurrency => $_getBF(3);
+  @$pb.TagNumber(4)
+  set amountCurrency($core.bool v) { $_setBool(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasAmountCurrency() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearAmountCurrency() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.bool get amountSlider => $_getBF(4);
+  @$pb.TagNumber(5)
+  set amountSlider($core.bool v) { $_setBool(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasAmountSlider() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearAmountSlider() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.bool get max => $_getBF(5);
+  @$pb.TagNumber(6)
+  set max($core.bool v) { $_setBool(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasMax() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearMax() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.bool get deductFee => $_getBF(6);
+  @$pb.TagNumber(7)
+  set deductFee($core.bool v) { $_setBool(6, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasDeductFee() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearDeductFee() => clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.bool get replyAddress => $_getBF(7);
+  @$pb.TagNumber(8)
+  set replyAddress($core.bool v) { $_setBool(7, v); }
+  @$pb.TagNumber(8)
+  $core.bool hasReplyAddress() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearReplyAddress() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.bool get memoSubject => $_getBF(8);
+  @$pb.TagNumber(9)
+  set memoSubject($core.bool v) { $_setBool(8, v); }
+  @$pb.TagNumber(9)
+  $core.bool hasMemoSubject() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearMemoSubject() => clearField(9);
+
+  @$pb.TagNumber(10)
+  $core.bool get memo => $_getBF(9);
+  @$pb.TagNumber(10)
+  set memo($core.bool v) { $_setBool(9, v); }
+  @$pb.TagNumber(10)
+  $core.bool hasMemo() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearMemo() => clearField(10);
 }
 
 

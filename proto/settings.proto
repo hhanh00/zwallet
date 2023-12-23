@@ -26,6 +26,7 @@ message AppSettings {
     ColorPalette palette = 25;
     bool disclaimer = 26;
     bool quick_send = 27;
+    QuickSendSettings quick_send_settings = 28;
 }
 
 message CoinSettings {
@@ -49,4 +50,17 @@ message ServerURL {
 message ColorPalette {
     string name = 1;
     bool dark = 2;
+}
+
+message QuickSendSettings {
+    bool contacts = 1;
+    bool accounts = 2;
+    bool pools = 3;
+    bool amountCurrency = 4;
+    bool amountSlider = 5;
+    bool max = 6;
+    bool deductFee = 7;
+    bool replyAddress = 8;
+    bool memoSubject = 9;
+    bool memo = 10;
 }

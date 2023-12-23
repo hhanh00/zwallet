@@ -80,7 +80,7 @@
   "scanStartingMomentarily": "Scan starting momentarily",
   "key": "Seed, Secret Key or View Key (optional)",
   "sendCointicker": "Send {ticker}",
-  "max": "MAX",
+  "max": "Max",
   "advancedOptions": "Advanced Options",
   "memo": "Memo",
   "roundToMillis": "Round to millis",
@@ -403,5 +403,8 @@
   "showSubKeys": "Show Sub Keys",
   "interval": "Interval",
   "zFactor": "Pool Selection",
-  "optimized": "Optimized"
+  "optimized": "Optimized",
+  "quickSendSettings": "Quick Send Settings",
+  "amountCurrency": "Amount in Fiat",
+  "amountSlider": "Amount Slider"
 }

@@ -1272,4 +1272,13 @@ class SEs extends S {
 
   @override
   String get optimized => 'Optimized';
+
+  @override
+  String get quickSendSettings => 'Quick Send Settings';
+
+  @override
+  String get amountCurrency => 'Amount in Fiat';
+
+  @override
+  String get amountSlider => 'Amount Slider';
 }

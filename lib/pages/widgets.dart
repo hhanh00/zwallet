@@ -407,6 +407,7 @@ class AmountPickerState extends State<AmountPicker> {
 
   @override
   Widget build(BuildContext context) {
+    final quickSendSettings = appSettings.quickSendSettings;
     final c = coins[aa.coin];
     final spendable = widget.spendable;
     return FormBuilderField<Amount>(
@@ -449,14 +450,14 @@ class AmountPickerState extends State<AmountPicker> {
                       },
                     ),
                   ),
-                  if (widget.canDeductFee && spendable != null)
+                  if (widget.canDeductFee && spendable != null && quickSendSettings.max)
                     IconButton(
                       onPressed: () => _max(field),
                       icon: FaIcon(FontAwesomeIcons.maximize),
                     ),
                 ],
               ),
-              FormBuilderTextField(
+              if (quickSendSettings.amountCurrency) FormBuilderTextField(
                 name: 'fiat',
                 decoration: InputDecoration(label: Text(appSettings.currency)),
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -472,7 +473,7 @@ class AmountPickerState extends State<AmountPicker> {
                   } on FormatException {}
                 },
               ),
-              if (spendable != null)
+              if (spendable != null && quickSendSettings.amountSlider)
                 Slider(
                   value: _sliderValue,
                   min: 0,
@@ -484,7 +485,7 @@ class AmountPickerState extends State<AmountPicker> {
                     _update(field, value, AmountSource.Slider);
                   },
                 ),
-              if (widget.canDeductFee)
+              if (widget.canDeductFee && quickSendSettings.deductFee)
                 FormBuilderSwitch(
                     name: 'deduct_fee',
                     initialValue: widget.initialAmount.deductFee,
@@ -566,6 +567,7 @@ class InputMemoState extends State<InputMemo> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final quickSendSettings = appSettings.quickSendSettings;
     return FormBuilderField<MemoData>(
         key: fieldKey,
         name: 'memo',
@@ -581,7 +583,7 @@ class InputMemoState extends State<InputMemo> {
             key: formKey,
             child: Column(
               children: [
-                FormBuilderSwitch(
+                if (quickSendSettings.replyAddress) FormBuilderSwitch(
                   name: 'reply',
                   title: Text(s.includeReplyTo),
                   initialValue: value.reply,
@@ -590,7 +592,7 @@ class InputMemoState extends State<InputMemo> {
                     field.didChange(value);
                   },
                 ),
-                FormBuilderTextField(
+                if (quickSendSettings.memoSubject) FormBuilderTextField(
                   name: 'subject',
                   controller: subjectController,
                   decoration: InputDecoration(label: Text(s.subject)),

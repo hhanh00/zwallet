@@ -584,7 +584,7 @@ abstract class S {
   /// No description provided for @max.
   ///
   /// In en, this message translates to:
-  /// **'MAX'**
+  /// **'Max'**
   String get max;
 
   /// No description provided for @advancedOptions.
@@ -2524,6 +2524,24 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Optimized'**
   String get optimized;
+
+  /// No description provided for @quickSendSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Send Settings'**
+  String get quickSendSettings;
+
+  /// No description provided for @amountCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount in Fiat'**
+  String get amountCurrency;
+
+  /// No description provided for @amountSlider.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount Slider'**
+  String get amountSlider;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

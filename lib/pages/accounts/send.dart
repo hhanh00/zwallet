@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:im_stepper/stepper.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -546,6 +547,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
 
   @override
   Widget build(BuildContext context) {
+    final quickSendSettings = appSettings.quickSendSettings;
     final spendable = getSpendable(_pools, balances);
     return Scaffold(
         appBar: AppBar(
@@ -567,18 +569,21 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                   InputTextQR(
                     _address,
                     key: addressKey,
+                    label: s.address,
                     lines: 4,
                     onChanged: _onAddress,
                     validator:
                         composeOr([addressValidator, paymentURIValidator]),
                     buttonsBuilder: _extraAddressButtons,
                   ),
-                  if (widget.single)
+                  Gap(8),
+                  if (widget.single && quickSendSettings.pools)
                     PoolSelection(
                       _pools,
                       balances: aa.poolBalances,
                       onChanged: (v) => setState(() => _pools = v!),
                     ),
+                  Gap(8),
                   AmountPicker(
                     _amount,
                     key: amountKey,
@@ -586,7 +591,8 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                     onChanged: (a) => _amount = a!,
                     canDeductFee: widget.single,
                   ),
-                  InputMemo(
+                  Gap(8),
+                  if (isShielded && quickSendSettings.memo) InputMemo(
                     _memo,
                     key: memoKey,
                     onChanged: (v) => _memo = v!,
@@ -600,8 +606,9 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
 
   List<Widget> _extraAddressButtons(BuildContext context,
       {Function(String)? onChanged}) {
+    final quickSendSettings = appSettings.quickSendSettings;
     return [
-      IconButton(
+      if (quickSendSettings.contacts) IconButton(
           onPressed: () async {
             final c = await GoRouter.of(context)
                 .push<Contact>('/more/contacts?selectable=1');
@@ -609,7 +616,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
           },
           icon: FaIcon(FontAwesomeIcons.addressBook)),
       Gap(8),
-      IconButton(
+      if (quickSendSettings.accounts) IconButton(
           onPressed: () async {
             final a = await GoRouter.of(context)
                 .push<Account>('/account/account_manager?main=0');
@@ -626,7 +633,6 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       logger.d(
           'send $_address $_amount $_pools ${_memo.reply} ${_memo.subject} ${_memo.memo}');
       final sc = SendContext(_address, _pools, _amount, _memo);
-      ;
       SendContext.instance = sc;
       final builder = RecipientObjectBuilder(
         address: _address,
@@ -669,5 +675,12 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       memoKey.currentState!.setMemoBody(puri.memo!);
     } else
       _address = v;
+    setState(() {});
+  }
+
+  bool get isShielded {
+    final address = addressKey.currentState?.controller.text;
+    return address.isNotEmptyAndNotNull && 
+      WarpApi.receiversOfAddress(aa.coin, address!) != 1;
   }
 }
