@@ -2548,6 +2548,24 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Configure'**
   String get configure;
+
+  /// No description provided for @market.
+  ///
+  /// In en, this message translates to:
+  /// **'Market'**
+  String get market;
+
+  /// No description provided for @sync.
+  ///
+  /// In en, this message translates to:
+  /// **'Synchronization'**
+  String get sync;
+
+  /// No description provided for @tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get tools;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

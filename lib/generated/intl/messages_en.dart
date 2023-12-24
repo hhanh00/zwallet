@@ -1284,4 +1284,13 @@ class SEn extends S {
 
   @override
   String get configure => 'Configure';
+
+  @override
+  String get market => 'Market';
+
+  @override
+  String get sync => 'Synchronization';
+
+  @override
+  String get tools => 'Tools';
 }

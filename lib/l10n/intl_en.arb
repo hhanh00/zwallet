@@ -407,5 +407,8 @@
   "quickSendSettings": "Quick Send Settings",
   "amountCurrency": "Amount in Fiat",
   "amountSlider": "Amount Slider",
-  "configure": "Configure"
+  "configure": "Configure",
+  "market": "Market",
+  "sync": "Synchronization",
+  "tools": "Tools"
 }

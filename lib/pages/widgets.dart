@@ -141,7 +141,7 @@ class RecipientWidget extends StatelessWidget {
 }
 
 class MosaicWidget extends StatelessWidget {
-  final List<MosaicButton> buttons;
+  final List<MoreTile> buttons;
   MosaicWidget(this.buttons);
 
   @override
@@ -190,7 +190,7 @@ class MosaicWidget extends StatelessWidget {
     // );
   }
 
-  _onMenu(BuildContext context, MosaicButton button) async {
+  _onMenu(BuildContext context, MoreTile button) async {
     final onPressed = button.onPressed;
     if (onPressed != null) {
       await onPressed();
@@ -205,14 +205,23 @@ class MosaicWidget extends StatelessWidget {
   }
 }
 
-class MosaicButton {
+class MoreSection {
+  final Widget title;
+  final List<MoreTile> tiles;
+  MoreSection({
+    required this.title,
+    required this.tiles,
+  });
+}
+
+class MoreTile {
   final String url;
-  final String? text;
-  final Widget? icon;
+  final String text;
+  final Widget icon;
   final bool secured;
   final Future<void> Function()? onPressed;
 
-  MosaicButton(
+  MoreTile(
       {required this.url,
       required this.text,
       required this.icon,
