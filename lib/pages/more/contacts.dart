@@ -39,17 +39,17 @@ class _ContactsState extends State<ContactsPage> {
             // TODO: use coinsettings.contactsSaved flag
             IconButton(onPressed: _save, icon: Icon(Icons.save)),
             IconButton(onPressed: _add, icon: Icon(Icons.add)),
-            if (widget.selectable && selected)
-              IconButton(onPressed: _select, icon: Icon(Icons.check)),
           ],
         ),
         body: ContactList(
             key: listKey,
-            onSelect: (v) => setState(() => selected = v != null)));
+            onSelect: widget.selectable ? (v) => _select(v!) : null,
+            onLongSelect: (v) => setState(() => selected = v != null)));
   }
 
-  _select() {
-    GoRouter.of(context).pop(listKey.currentState!.selectedContact);
+  _select(int v) {
+    final c = contacts.contacts[v];
+    GoRouter.of(context).pop(c);
   }
 
   _save() async {
@@ -88,7 +88,9 @@ class _ContactsState extends State<ContactsPage> {
 class ContactList extends StatefulWidget {
   final int? initialSelect;
   final void Function(int?)? onSelect;
-  ContactList({super.key, this.initialSelect, this.onSelect});
+  final void Function(int?)? onLongSelect;
+  ContactList(
+      {super.key, this.initialSelect, this.onSelect, this.onLongSelect});
 
   @override
   State<StatefulWidget> createState() => ContactListState();
@@ -100,13 +102,17 @@ class ContactListState extends State<ContactList> {
   Widget build(BuildContext context) {
     final c = contacts.contacts;
     return ListView.separated(
-      itemBuilder: (context, index) => ContactItem(c[index].unpack(),
-          selected: selected == index, onTap: () {
-        final v = selected != index ? index : null;
-        widget.onSelect?.call(v);
-        selected = v;
-        setState(() {});
-      }),
+      itemBuilder: (context, index) => ContactItem(
+        c[index].unpack(),
+        selected: selected == index,
+        onLongPress: () {
+          final v = selected != index ? index : null;
+          widget.onSelect?.call(v);
+          selected = v;
+          setState(() {});
+        },
+        onPress: () => widget.onSelect?.call(index),
+      ),
       separatorBuilder: (context, index) => Divider(),
       itemCount: c.length,
     );
@@ -118,8 +124,9 @@ class ContactListState extends State<ContactList> {
 class ContactItem extends StatelessWidget {
   final ContactT contact;
   final bool? selected;
-  final void Function()? onTap;
-  ContactItem(this.contact, {this.selected, this.onTap});
+  final void Function()? onPress;
+  final void Function()? onLongPress;
+  ContactItem(this.contact, {this.selected, this.onPress, this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +134,8 @@ class ContactItem extends StatelessWidget {
     return ListTile(
       title: Text(contact.name!, style: t.textTheme.headlineSmall),
       subtitle: Text(contact.address!),
-      onTap: onTap,
+      onTap: onPress,
+      onLongPress: onLongPress,
       selected: selected ?? false,
       selectedTileColor: t.colorScheme.inversePrimary,
     );

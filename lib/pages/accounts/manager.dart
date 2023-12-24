@@ -35,13 +35,12 @@ class _AccountManagerState extends State<AccountManagerPage> {
             IconButton(onPressed: cold, icon: Icon(MdiIcons.snowflake)),
           if (selected == null)
             IconButton(onPressed: add, icon: Icon(Icons.add)),
-          if (selected != null)
-            IconButton(onPressed: select, icon: Icon(Icons.check)),
         ]),
         body: AccountList(
           key: accountsKey,
           editing: editing,
-          onSelect: (v) => setState(() => selected = v),
+          onSelect: (v) => select(v!),
+          onLongSelect: (v) => setState(() => selected = v),
           onEdit: onEdit,
         ));
   }
@@ -63,8 +62,8 @@ class _AccountManagerState extends State<AccountManagerPage> {
     setState(() {});
   }
 
-  select() {
-    final a = accounts[selected!];
+  select(int index) {
+    final a = accounts[index];
     if (widget.main) {
       setActiveAccount(a.coin, a.id);
       Future(() async {
@@ -113,12 +112,14 @@ class AccountList extends StatefulWidget {
   final int? initialSelect;
   final bool editing;
   final void Function(int?)? onSelect;
+  final void Function(int?)? onLongSelect;
   final void Function(String)? onEdit;
   late final List<Account> accounts = _getAllAccounts().toList();
   AccountList(
       {super.key,
       this.initialSelect,
       this.onSelect,
+      this.onLongSelect,
       this.editing = false,
       this.onEdit});
 
@@ -140,9 +141,10 @@ class AccountListState extends State<AccountList> {
             a,
             selected: index == selected,
             editing: widget.editing,
-            onTap: () {
+            onPress: () => widget.onSelect?.call(index),
+            onLongPress: () {
               final v = selected != index ? index : null;
-              widget.onSelect?.call(v);
+              widget.onLongSelect?.call(v);
               setState(() => selected = v);
             },
             onEdit: widget.onEdit,
@@ -163,13 +165,15 @@ class AccountListState extends State<AccountList> {
 
 class AccountTile extends StatelessWidget {
   final Account a;
-  final void Function()? onTap;
+  final void Function()? onPress;
+  final void Function()? onLongPress;
   final bool selected;
   final bool editing;
   final void Function(String)? onEdit;
   late final nameController = TextEditingController(text: a.name);
   AccountTile(this.a,
-      {this.onTap, required this.selected, required this.editing, this.onEdit});
+      {this.onPress, this.onLongPress,
+      required this.selected, required this.editing, this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +219,8 @@ class AccountTile extends StatelessWidget {
               if (icon != null) icon,
             ])),
       trailing: Text(amountToString2(a.balance)),
-      onTap: onTap,
+      onTap: onPress,
+      onLongPress: onLongPress,
       selectedTileColor: t.colorScheme.inversePrimary,
     );
   }

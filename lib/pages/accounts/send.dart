@@ -612,6 +612,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
           onPressed: () async {
             final c = await GoRouter.of(context)
                 .push<Contact>('/more/contacts?selectable=1');
+            logger.d('$c');
             c?.let((c) => onChanged?.call(c.address!));
           },
           icon: FaIcon(FontAwesomeIcons.addressBook)),

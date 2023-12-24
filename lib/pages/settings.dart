@@ -210,7 +210,7 @@ class _PrivacyState extends State<PrivacyTab>
       key: formKey,
       child: SingleChildScrollView(
         child: Column(children: [
-          FormBuilderSwitch(
+          if (isMobile()) FormBuilderSwitch(
             name: 'p_open',
             title: Text(s.protectOpen),
             initialValue: widget.appSettings.protectOpen,
