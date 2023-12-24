@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:protobuf/protobuf.dart';
@@ -568,6 +569,8 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = Theme.of(context);
+    final cs = t.colorScheme;
     return Scaffold(
       appBar: AppBar(title: Text(s.quickSendSettings), actions: [
         IconButton(
@@ -576,77 +579,88 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
             },
             icon: Icon(Icons.check))
       ]),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: FormBuilder(
-            key: formKey,
-            child: Column(
-              children: [
-                FormBuilderSwitch(
-                  name: 'contacts',
-                  initialValue: quickSendSettings.contacts,
-                  onChanged: (v) => quickSendSettings.contacts = v!,
-                  title: Text(s.contacts),
-                ),
-                FormBuilderSwitch(
-                  name: 'accounts',
-                  initialValue: quickSendSettings.accounts,
-                  onChanged: (v) => quickSendSettings.accounts = v!,
-                  title: Text(s.accounts),
-                ),
-                FormBuilderSwitch(
-                  name: 'pools',
-                  initialValue: quickSendSettings.pools,
-                  onChanged: (v) => quickSendSettings.pools = v!,
-                  title: Text(s.pools),
-                ),
-                FormBuilderSwitch(
-                  name: 'amountCurrency',
-                  initialValue: quickSendSettings.amountCurrency,
-                  onChanged: (v) => quickSendSettings.amountCurrency = v!,
-                  title: Text(s.amountCurrency),
-                ),
-                FormBuilderSwitch(
-                  name: 'amountSlider',
-                  initialValue: quickSendSettings.amountSlider,
-                  onChanged: (v) => quickSendSettings.amountSlider = v!,
-                  title: Text(s.amountSlider),
-                ),
-                FormBuilderSwitch(
-                  name: 'max',
-                  initialValue: quickSendSettings.max,
-                  onChanged: (v) => quickSendSettings.max = v!,
-                  title: Text(s.max),
-                ),
-                FormBuilderSwitch(
-                  name: 'deductFee',
-                  initialValue: quickSendSettings.deductFee,
-                  onChanged: (v) => quickSendSettings.deductFee = v!,
-                  title: Text(s.deductFee),
-                ),
-                FormBuilderSwitch(
-                  name: 'replyAddress',
-                  initialValue: quickSendSettings.replyAddress,
-                  onChanged: (v) => quickSendSettings.replyAddress = v!,
-                  title: Text(s.includeReplyTo),
-                ),
-                FormBuilderSwitch(
-                  name: 'memoSubject',
-                  initialValue: quickSendSettings.memoSubject,
-                  onChanged: (v) => quickSendSettings.memoSubject = v!,
-                  title: Text(s.subject),
-                ),
-                FormBuilderSwitch(
-                  name: 'memo',
-                  initialValue: quickSendSettings.memo,
-                  onChanged: (v) => quickSendSettings.memo = v!,
-                  title: Text(s.memo),
-                ),
-              ],
-            ),
+      body: SettingsList(
+        sections: [
+          SettingsSection(
+            title: Text(s.address),
+            tiles: [
+              SettingsTile.switchTile(
+                title: Text(s.contacts),
+                initialValue: quickSendSettings.contacts,
+                onToggle: (v) => setState(() => quickSendSettings.contacts = v),
+                activeSwitchColor: cs.primary,
+              ),
+              SettingsTile.switchTile(
+                title: Text(s.accounts),
+                initialValue: quickSendSettings.accounts,
+                onToggle: (v) => setState(() => quickSendSettings.accounts = v),
+                activeSwitchColor: cs.primary,
+              ),
+            ],
           ),
-        ),
+          SettingsSection(
+            tiles: [
+              SettingsTile.switchTile(
+                title: Text(s.pools),
+                initialValue: quickSendSettings.pools,
+                onToggle: (v) => setState(() => quickSendSettings.pools = v),
+                activeSwitchColor: cs.primary,
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: Text(s.amount),
+            tiles: [
+              SettingsTile.switchTile(
+                title: Text(s.max),
+                initialValue: quickSendSettings.max,
+                onToggle: (v) => setState(() => quickSendSettings.max = v),
+                activeSwitchColor: cs.primary,
+              ),
+              SettingsTile.switchTile(
+                title: Text(s.amountCurrency),
+                initialValue: quickSendSettings.amountCurrency,
+                onToggle: (v) => setState(() => quickSendSettings.amountCurrency = v),
+                activeSwitchColor: cs.primary,
+              ),
+              SettingsTile.switchTile(
+                title: Text(s.amountSlider),
+                initialValue: quickSendSettings.amountSlider,
+                onToggle: (v) => setState(() => quickSendSettings.amountSlider = v),
+                activeSwitchColor: cs.primary,
+              ),
+              SettingsTile.switchTile(
+                title: Text(s.deductFee),
+                initialValue: quickSendSettings.deductFee,
+                onToggle: (v) => setState(() => quickSendSettings.deductFee = v),
+                activeSwitchColor: cs.primary,
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: Text(s.memo),
+            tiles: [
+              SettingsTile.switchTile(
+                title: Text(s.includeReplyTo),
+                initialValue: quickSendSettings.replyAddress,
+                onToggle: (v) => setState(() => quickSendSettings.replyAddress = v),
+                activeSwitchColor: cs.primary,
+              ),
+              SettingsTile.switchTile(
+                title: Text(s.subject),
+                initialValue: quickSendSettings.memoSubject,
+                onToggle: (v) => setState(() => quickSendSettings.memoSubject = v),
+                activeSwitchColor: cs.primary,
+              ),
+              SettingsTile.switchTile(
+                title: Text(s.memo),
+                initialValue: quickSendSettings.memo,
+                onToggle: (v) => setState(() => quickSendSettings.memo = v),
+                activeSwitchColor: cs.primary,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
