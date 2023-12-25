@@ -1,3 +1,4 @@
+import 'package:YWallet/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -73,6 +74,8 @@ class _AccountManagerState extends State<AccountManagerPage> {
       aa.update(null);
     }
     GoRouter.of(context).pop<Account>(a);
+    if (widget.main)
+      GoRouter.of(context).go('/account');
   }
 
   delete() async {

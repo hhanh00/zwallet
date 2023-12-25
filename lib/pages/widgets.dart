@@ -158,36 +158,6 @@ class MosaicWidget extends StatelessWidget {
         onTap: () => _onMenu(context, button),
       );
     }, itemCount: buttons.length);
-
-    // return GridView.count(
-    //   primary: true,
-    //   padding: const EdgeInsets.all(8),
-    //   mainAxisSpacing: 8,
-    //   crossAxisSpacing: 8,
-    //   crossAxisCount: 2,
-    //   children: buttons
-    //       .asMap()
-    //       .entries
-    //       .map(
-    //         (kv) => 
-    //         GFButton(
-    //           onPressed: () => _onMenu(context, kv.value),
-    //           icon: kv.value.icon,
-    //           type: GFButtonType.solid,
-    //           textStyle: t.textTheme.bodyLarge!
-    //               .copyWith(color: t.colorScheme.onPrimary),
-    //           child: Text(kv.value.text!,
-    //               maxLines: 2, overflow: TextOverflow.fade),
-    //           color: palette.colors[kv.key].toColor(),
-    //           borderShape: RoundedRectangleBorder(
-    //             borderRadius: BorderRadiusDirectional.all(
-    //               Radius.circular(32),
-    //             ),
-    //           ),
-    //         ),
-    //       )
-    //       .toList(),
-    // );
   }
 
   _onMenu(BuildContext context, MoreTile button) async {

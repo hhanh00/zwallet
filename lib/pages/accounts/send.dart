@@ -143,6 +143,10 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
               child: ContactList(
                 key: contactKey,
                 initialSelect: i >= 0 ? i : null,
+                onSelect: (v) => setState(() {
+                  address = contacts[v!].address!;
+                  activeStep++;
+                }),
               ),
             );
           case 3:
@@ -151,6 +155,10 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
               child: AccountList(
                 key: accountKey,
                 initialSelect: i >= 0 ? i : null,
+                onSelect: (v) => setState(() {
+                  address = accounts[v!].address!;
+                  activeStep++;
+                }),
               ),
             );
           default:
@@ -214,22 +222,8 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
     if (activeStep == 0) {
       type = typeKey.currentState!.type;
     }
-    if (activeStep == 1) {
-      String? v;
-      switch (type) {
-        case 0:
-          v = addressKey.currentState!.address;
-          break;
-        // case 1 is payment URI
-        case 2:
-          final c = contactKey.currentState!.selectedContact;
-          v = c?.let((c) => c.address!);
-          break;
-        case 3:
-          final a = accountKey.currentState!.selectedAccount;
-          v = a?.let((a) => a.address!);
-          break;
-      }
+    if (activeStep == 1 && type == 0) {
+      final v = addressKey.currentState!.address;
       if (v == null) return false;
       address = v;
     }
