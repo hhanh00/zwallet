@@ -49,7 +49,6 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
   final typeKey = GlobalKey<SendAddressTypeState>();
   final addressKey = GlobalKey<SendAddressState>();
   final contactKey = GlobalKey<ContactListState>();
-  final accountKey = GlobalKey<AccountListState>();
   final poolKey = GlobalKey<SendPoolState>();
   final amountKey = GlobalKey<SendAmountState>();
   final memoKey = GlobalKey<SendMemoState>();
@@ -138,11 +137,9 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
       () {
         switch (type) {
           case 2:
-            final i = contacts.indexWhere((c) => c.address == address);
             return Expanded(
               child: ContactList(
                 key: contactKey,
-                initialSelect: i >= 0 ? i : null,
                 onSelect: (v) => setState(() {
                   address = contacts[v!].address!;
                   activeStep++;
@@ -150,11 +147,9 @@ class _SendState extends State<SendPage> with WithLoadingAnimation {
               ),
             );
           case 3:
-            final i = accounts.indexWhere((a) => a.address == address);
             return Expanded(
               child: AccountList(
-                key: accountKey,
-                initialSelect: i >= 0 ? i : null,
+                accounts: getAllAccounts(),
                 onSelect: (v) => setState(() {
                   address = accounts[v!].address!;
                   activeStep++;

@@ -444,7 +444,9 @@ class SEs extends S {
   String get accountHasSomeBalanceAreYouSureYouWantTo => 'La cuenta tiene un saldo. ¿Estás seguro de que quieres eliminarlo?';
 
   @override
-  String get deleteAccount => 'Borrar Cuenta';
+  String deleteAccount(Object name) {
+    return 'Borrar Cuenta';
+  }
 
   @override
   String get gold => 'Oro';

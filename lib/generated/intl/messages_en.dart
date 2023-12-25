@@ -444,7 +444,9 @@ class SEn extends S {
   String get accountHasSomeBalanceAreYouSureYouWantTo => 'Account has some BALANCE. Are you sure you want to delete it?';
 
   @override
-  String get deleteAccount => 'Delete Account';
+  String deleteAccount(Object name) {
+    return 'Delete Account $name';
+  }
 
   @override
   String get gold => 'Gold';

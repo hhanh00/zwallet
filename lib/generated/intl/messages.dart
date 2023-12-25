@@ -932,8 +932,8 @@ abstract class S {
   /// No description provided for @deleteAccount.
   ///
   /// In en, this message translates to:
-  /// **'Delete Account'**
-  String get deleteAccount;
+  /// **'Delete Account {name}'**
+  String deleteAccount(Object name);
 
   /// No description provided for @gold.
   ///

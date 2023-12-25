@@ -410,5 +410,6 @@
   "configure": "Configure",
   "market": "Market",
   "sync": "Synchronization",
-  "tools": "Tools"
+  "tools": "Tools",
+  "deleteAccount": "Delete Account {name}"
 }

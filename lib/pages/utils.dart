@@ -658,3 +658,5 @@ class PoolBitSet {
   static int fromSet(Set<int> poolSet) =>
     poolSet.map((p) => 1 << p).sum;
 }
+
+List<Account> getAllAccounts() => coins.expand((c) => WarpApi.getAccountList(c.coin)).toList();

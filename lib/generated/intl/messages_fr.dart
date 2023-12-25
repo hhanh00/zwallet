@@ -444,7 +444,9 @@ class SFr extends S {
   String get accountHasSomeBalanceAreYouSureYouWantTo => 'Ce compte a un solde. Voulez vous l\'effacer?';
 
   @override
-  String get deleteAccount => 'Effacer un compte';
+  String deleteAccount(Object name) {
+    return 'Effacer un compte';
+  }
 
   @override
   String get gold => 'Or';
