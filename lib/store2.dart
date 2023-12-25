@@ -132,21 +132,21 @@ abstract class _SyncStatus2 with Store {
 
   @action
   Future<void> sync(bool rescan, {bool auto = false}) async {
-    logger.d('R/A/P/S $rescan $auto $paused $syncing');
-    final context = rootNavigatorKey.currentContext!;
-    final s = S.of(context);
-    if (paused) return;
-    if (syncing) return;
-    await update();
-    final lh = latestHeight;
-    if (lh == null) return;
-    // don't auto sync more than 1 month of data
-    if (!rescan && auto && lh - syncedHeight > 30*24*60*4/5) {
-      paused = true;
-      return;
-    }
-    if (isSynced) return;
     try {
+      logger.d('R/A/P/S $rescan $auto $paused $syncing');
+      final context = rootNavigatorKey.currentContext!;
+      final s = S.of(context);
+      if (paused) return;
+      if (syncing) return;
+      await update();
+      final lh = latestHeight;
+      if (lh == null) return;
+      // don't auto sync more than 1 month of data
+      if (!rescan && auto && lh - syncedHeight > 30 * 24 * 60 * 4 / 5) {
+        paused = true;
+        return;
+      }
+      if (isSynced) return;
       syncing = true;
       isRescan = rescan;
       _updateSyncedHeight();
@@ -199,15 +199,16 @@ abstract class _SyncStatus2 with Store {
     trialDecryptionCount = progress.trialDecryptions;
     syncedHeight = progress.height;
     downloadedSize = progress.downloaded;
-    timestamp =  DateTime.fromMillisecondsSinceEpoch(progress.timestamp * 1000);
+    timestamp = DateTime.fromMillisecondsSinceEpoch(progress.timestamp * 1000);
     eta.checkpoint(syncedHeight, DateTime.now());
   }
 
   void _updateSyncedHeight() {
     final h = WarpApi.getDbHeight(aa.coin);
     syncedHeight = h.height;
-    timestamp = (h.timestamp != 0) ?
-      DateTime.fromMillisecondsSinceEpoch(h.timestamp * 1000) : null;
+    timestamp = (h.timestamp != 0)
+        ? DateTime.fromMillisecondsSinceEpoch(h.timestamp * 1000)
+        : null;
   }
 }
 
@@ -231,8 +232,7 @@ class ETA {
   void checkpoint(int height, DateTime timestamp) {
     prev = current;
     current = ETACheckpoint(height, timestamp);
-    if (start == null)
-      start = current;
+    if (start == null) start = current;
   }
 
   @computed
@@ -268,8 +268,7 @@ class ETA {
     final sh = start!.height;
     final ch = current!.height;
     final total = endHeight - sh;
-    final percent =
-        total > 0 ? 100 * (ch - sh) ~/ total : 0;
+    final percent = total > 0 ? 100 * (ch - sh) ~/ total : 0;
     return percent;
   }
 }

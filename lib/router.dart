@@ -32,7 +32,7 @@ import 'pages/more/keytool.dart';
 import 'pages/more/more.dart';
 import 'pages/more/pool.dart';
 import 'pages/more/sweep.dart';
-import 'pages/more/tx.dart';
+import 'pages/tx.dart';
 import 'pages/more/quotes.dart';
 import 'pages/scan.dart';
 import 'pages/showqr.dart';

@@ -6,13 +6,14 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../../accounts.dart';
-import '../../generated/intl/messages.dart';
-import '../../appsettings.dart';
-import '../../tablelist.dart';
-import '../avatar.dart';
-import '../utils.dart';
-import '../widgets.dart';
+import '../accounts.dart';
+import '../generated/intl/messages.dart';
+import '../appsettings.dart';
+import '../store2.dart';
+import '../tablelist.dart';
+import 'avatar.dart';
+import 'utils.dart';
+import 'widgets.dart';
 
 class TxPage extends StatelessWidget {
   @override
@@ -22,6 +23,7 @@ class TxPage extends StatelessWidget {
         builder: (context) {
           aaSequence.seqno;
           aaSequence.settingsSeqno;
+          syncStatus2.changed;
           return TableListPage(
             padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
             view: appSettings.txView,

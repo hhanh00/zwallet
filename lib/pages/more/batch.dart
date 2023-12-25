@@ -111,9 +111,13 @@ class _BatchBackupState extends State<BatchBackupPage> {
         ? await getTemporaryPath('YWallet.age')
         : await FilePicker.platform.saveFile(dialogTitle: s.fullBackup);
     if (path != null) {
-      WarpApi.zipBackup(backupKeyController.text, path, tempDir.path);
-      if (isMobile()) {
-        await shareFile(context, path, title: s.fullBackup);
+      try {
+        WarpApi.zipBackup(backupKeyController.text, path, tempDir.path);
+        if (isMobile()) {
+          await shareFile(context, path, title: s.fullBackup);
+        }
+      } on String catch (e) {
+        await showMessageBox2(context, s.error, e);
       }
     }
   }
@@ -125,16 +129,15 @@ class _BatchBackupState extends State<BatchBackupPage> {
       final file = r.files.first;
       final dbDir = await getDbPath();
       try {
-      final zipFile =
-          WarpApi.decryptBackup(restoreKeyController.text, file.path!, dbDir);
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('backup', zipFile);
-      await showMessageBox2(
-          context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow,
-          dismissable: false);
-      GoRouter.of(context).pop();
-      }
-      on String catch (e) {
+        final zipFile =
+            WarpApi.decryptBackup(restoreKeyController.text, file.path!, dbDir);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('backup', zipFile);
+        await showMessageBox2(
+            context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow,
+            dismissable: false);
+        GoRouter.of(context).pop();
+      } on String catch (e) {
         restoreFormKey.currentState!.fields['restore']!.invalidate(e);
       }
     }
@@ -174,28 +177,29 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(s.keygen),
-        actions: [
-          IconButton(onPressed: _keygen, icon: Icon(Icons.refresh)),
-          IconButton(onPressed: _ok, icon: Icon(Icons.check)),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            Gap(16),
-            Panel(s.help,
-                child: Text(s.keygenHelp, style: t.textTheme.titleSmall)),
-            Gap(16),
-            Panel(s.encryptionKey, text: _keys?.pk, save: true),
-            Gap(16),
-            Panel(s.secretKey, text: _keys?.sk, save: true),
+        appBar: AppBar(
+          title: Text(s.keygen),
+          actions: [
+            IconButton(onPressed: _keygen, icon: Icon(Icons.refresh)),
+            IconButton(onPressed: _ok, icon: Icon(Icons.check)),
           ],
         ),
-      ),
-    ));
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                Gap(16),
+                Panel(s.help,
+                    child: Text(s.keygenHelp, style: t.textTheme.titleSmall)),
+                Gap(16),
+                Panel(s.encryptionKey, text: _keys?.pk, save: true),
+                Gap(16),
+                Panel(s.secretKey, text: _keys?.sk, save: true),
+              ],
+            ),
+          ),
+        ));
   }
 
   _keygen() async {

@@ -1,4 +1,5 @@
 import 'package:YWallet/pages/accounts/send.dart';
+import 'package:YWallet/store2.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -23,6 +24,7 @@ class MessagePage extends StatelessWidget {
         builder: (context) {
           aaSequence.seqno;
           aaSequence.settingsSeqno;
+          syncStatus2.changed;
           return TableListPage(
             padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
             view: appSettings.messageView,
