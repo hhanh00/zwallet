@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:YWallet/pages/utils.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -12,6 +11,7 @@ import 'appsettings.dart';
 import 'generated/intl/messages.dart';
 import 'main.reflectable.dart';
 import 'coin/coins.dart';
+import './pages/utils.dart';
 
 import 'init.dart';
 

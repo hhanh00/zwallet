@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:YWallet/accounts.dart';
-import 'package:YWallet/appsettings.dart';
+import 'accounts.dart';
+import 'appsettings.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';

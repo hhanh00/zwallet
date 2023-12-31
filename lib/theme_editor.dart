@@ -1,5 +1,5 @@
-import 'package:YWallet/accounts.dart';
-import 'package:YWallet/settings.pb.dart';
+import 'accounts.dart';
+import 'settings.pb.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';

@@ -1,4 +1,3 @@
-import 'package:YWallet/appsettings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -11,6 +10,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../generated/intl/messages.dart';
 import '../../src/version.dart';
+import '../../appsettings.dart';
 import '../utils.dart';
 
 class AboutPage extends StatelessWidget {

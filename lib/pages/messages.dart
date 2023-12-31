@@ -1,5 +1,3 @@
-import 'package:YWallet/pages/accounts/send.dart';
-import 'package:YWallet/store2.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -8,10 +6,12 @@ import 'package:go_router/go_router.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../store2.dart';
 import '../accounts.dart';
 import '../appsettings.dart';
 import '../generated/intl/messages.dart';
 import '../tablelist.dart';
+import '../../pages/accounts/send.dart';
 import 'avatar.dart';
 import 'utils.dart';
 import 'widgets.dart';

@@ -1,10 +1,10 @@
-import 'package:YWallet/generated/intl/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../generated/intl/messages.dart';
 import '../../appsettings.dart';
 import '../../store2.dart';
 import '../../accounts.dart';

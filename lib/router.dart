@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:YWallet/appsettings.dart';
-import 'package:YWallet/pages/more/cold.dart';
-import 'package:YWallet/settings.pb.dart';
+import 'appsettings.dart';
+import 'pages/more/cold.dart';
+import 'settings.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';

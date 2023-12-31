@@ -1,0 +1,78 @@
+name: "Build iOS app"
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: macos-13
+    steps:
+      - name: select Xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.1'
+      - name: check Xcode version
+        run: /usr/bin/xcodebuild -version
+      - name: checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Build vars
+        run: |
+          cat build.env >> $GITHUB_ENV
+      - name: Build Rust
+        run: |
+          mkdir -p $HOME/.zcash-params
+          curl https://download.z.cash/downloads/sapling-output.params --output $HOME/.zcash-params/sapling-output.params
+          curl https://download.z.cash/downloads/sapling-spend.params --output $HOME/.zcash-params/sapling-spend.params
+          ln -s $HOME/.zcash-params/* assets/
+          rustup target add aarch64-apple-ios
+          cargo install cargo-lipo
+          sed -e 's/cdylib/staticlib/' < native/zcash-sync/Cargo.toml >/tmp/out.toml
+          mv /tmp/out.toml native/zcash-sync/Cargo.toml
+          cargo lipo --release --features=dart_ffi --targets=aarch64-apple-ios
+          mv target/aarch64-apple-ios/release/libwarp_api_ffi.a packages/warp_api_ffi/ios
+          cp native/zcash-sync/binding.h packages/warp_api_ffi/ios/Classes
+      - name: Install the Apple certificate and provisioning profile
+        env:
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          security create-keychain -p R5qx5GGokNBm $HOME/build.keychain
+          security set-keychain-settings -ut 7200 $HOME/build.keychain
+          security default-keychain -s $HOME/build.keychain
+          security unlock-keychain -p R5qx5GGokNBm $HOME/build.keychain
+          security import ./ios/certs/Certificates.p12 -P $KEY_PASSWORD -A -t cert -f pkcs12 -k $HOME/build.keychain
+          security list-keychain -d user -s $HOME/build.keychain
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          cp ./ios/certs/YWallet_AppStore.mobileprovision "$HOME/Library/MobileDevice/Provisioning Profiles"
+      - name: Build flutter
+        run: |
+          export PATH=$PATH:$HOME/flutter/bin
+          (cd $HOME; git clone --branch $FLUTTER_VERSION --depth 1 https://github.com/flutter/flutter.git)
+          (cd flutter_zxing/scripts; bash update_ios_macos_src.sh)
+          flutter precache --ios
+          flutter pub get
+          dart run build_runner build -d
+          (cd packages/warp_api_ffi; flutter pub get)
+          flutter build -v ipa
+      - name: Upload xcarchive
+        uses: actions/upload-artifact@v3
+        with:
+          name: YWallet.xcarchive
+          path: ./build/ios/archive/Runner.xcarchive
+          retention-days: 3
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: 'zip'
+          directory: ./build/ios/archive
+          filename: 'ywallet.xcarchive.zip'
+          path: Runner.xcarchive
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: ./build/ios/archive/ywallet.xcarchive.zip

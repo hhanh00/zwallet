@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:YWallet/theme_editor.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -13,6 +12,7 @@ import 'package:protobuf/protobuf.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../accounts.dart';
+import '../theme_editor.dart';
 import '../coin/coin.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
