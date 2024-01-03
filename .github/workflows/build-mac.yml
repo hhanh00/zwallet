@@ -56,3 +56,4 @@ jobs:
         with:
           name: DMG
           path: ./ywallet-universal.dmg
+          retention-days: 3

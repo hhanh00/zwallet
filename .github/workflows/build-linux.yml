@@ -46,3 +46,4 @@ jobs:
         with:
           name: AppImage
           path: ./misc/Ywallet-latest-x86_64.AppImage
+          retention-days: 3
