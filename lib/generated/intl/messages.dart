@@ -2495,11 +2495,11 @@ abstract class S {
   /// **'Cannot delete the active account unless it is the last one'**
   String get cannotDeleteActive;
 
-  /// No description provided for @quickSend.
+  /// No description provided for @customSend.
   ///
   /// In en, this message translates to:
-  /// **'Quick Send'**
-  String get quickSend;
+  /// **'Use Custom Send'**
+  String get customSend;
 
   /// No description provided for @showSubKeys.
   ///
@@ -2525,11 +2525,11 @@ abstract class S {
   /// **'Optimized'**
   String get optimized;
 
-  /// No description provided for @quickSendSettings.
+  /// No description provided for @customSendSettings.
   ///
   /// In en, this message translates to:
-  /// **'Quick Send Settings'**
-  String get quickSendSettings;
+  /// **'Custom Send Settings'**
+  String get customSendSettings;
 
   /// No description provided for @amountCurrency.
   ///

@@ -39,8 +39,8 @@ class AppSettings extends $pb.GeneratedMessage {
     $core.String? memo,
     ColorPalette? palette,
     $core.bool? disclaimer,
-    $core.bool? quickSend,
-    QuickSendSettings? quickSendSettings,
+    $core.bool? customSend,
+    CustomSendSettings? customSendSettings,
   }) {
     final $result = create();
     if (anchorOffset != null) {
@@ -112,11 +112,11 @@ class AppSettings extends $pb.GeneratedMessage {
     if (disclaimer != null) {
       $result.disclaimer = disclaimer;
     }
-    if (quickSend != null) {
-      $result.quickSend = quickSend;
+    if (customSend != null) {
+      $result.customSend = customSend;
     }
-    if (quickSendSettings != null) {
-      $result.quickSendSettings = quickSendSettings;
+    if (customSendSettings != null) {
+      $result.customSendSettings = customSendSettings;
     }
     return $result;
   }
@@ -148,8 +148,8 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOS(24, _omitFieldNames ? '' : 'memo')
     ..aOM<ColorPalette>(25, _omitFieldNames ? '' : 'palette', subBuilder: ColorPalette.create)
     ..aOB(26, _omitFieldNames ? '' : 'disclaimer')
-    ..aOB(27, _omitFieldNames ? '' : 'quickSend')
-    ..aOM<QuickSendSettings>(28, _omitFieldNames ? '' : 'quickSendSettings', subBuilder: QuickSendSettings.create)
+    ..aOB(27, _omitFieldNames ? '' : 'customSend')
+    ..aOM<CustomSendSettings>(28, _omitFieldNames ? '' : 'customSendSettings', subBuilder: CustomSendSettings.create)
     ..hasRequiredFields = false
   ;
 
@@ -384,24 +384,24 @@ class AppSettings extends $pb.GeneratedMessage {
   void clearDisclaimer() => clearField(26);
 
   @$pb.TagNumber(27)
-  $core.bool get quickSend => $_getBF(23);
+  $core.bool get customSend => $_getBF(23);
   @$pb.TagNumber(27)
-  set quickSend($core.bool v) { $_setBool(23, v); }
+  set customSend($core.bool v) { $_setBool(23, v); }
   @$pb.TagNumber(27)
-  $core.bool hasQuickSend() => $_has(23);
+  $core.bool hasCustomSend() => $_has(23);
   @$pb.TagNumber(27)
-  void clearQuickSend() => clearField(27);
+  void clearCustomSend() => clearField(27);
 
   @$pb.TagNumber(28)
-  QuickSendSettings get quickSendSettings => $_getN(24);
+  CustomSendSettings get customSendSettings => $_getN(24);
   @$pb.TagNumber(28)
-  set quickSendSettings(QuickSendSettings v) { setField(28, v); }
+  set customSendSettings(CustomSendSettings v) { setField(28, v); }
   @$pb.TagNumber(28)
-  $core.bool hasQuickSendSettings() => $_has(24);
+  $core.bool hasCustomSendSettings() => $_has(24);
   @$pb.TagNumber(28)
-  void clearQuickSendSettings() => clearField(28);
+  void clearCustomSendSettings() => clearField(28);
   @$pb.TagNumber(28)
-  QuickSendSettings ensureQuickSendSettings() => $_ensure(24);
+  CustomSendSettings ensureCustomSendSettings() => $_ensure(24);
 }
 
 class CoinSettings extends $pb.GeneratedMessage {
@@ -712,8 +712,8 @@ class ColorPalette extends $pb.GeneratedMessage {
   void clearDark() => clearField(2);
 }
 
-class QuickSendSettings extends $pb.GeneratedMessage {
-  factory QuickSendSettings({
+class CustomSendSettings extends $pb.GeneratedMessage {
+  factory CustomSendSettings({
     $core.bool? contacts,
     $core.bool? accounts,
     $core.bool? pools,
@@ -758,11 +758,11 @@ class QuickSendSettings extends $pb.GeneratedMessage {
     }
     return $result;
   }
-  QuickSendSettings._() : super();
-  factory QuickSendSettings.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory QuickSendSettings.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  CustomSendSettings._() : super();
+  factory CustomSendSettings.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CustomSendSettings.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'QuickSendSettings', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'CustomSendSettings', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
     ..aOB(1, _omitFieldNames ? '' : 'contacts')
     ..aOB(2, _omitFieldNames ? '' : 'accounts')
     ..aOB(3, _omitFieldNames ? '' : 'pools')
@@ -780,22 +780,22 @@ class QuickSendSettings extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  QuickSendSettings clone() => QuickSendSettings()..mergeFromMessage(this);
+  CustomSendSettings clone() => CustomSendSettings()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  QuickSendSettings copyWith(void Function(QuickSendSettings) updates) => super.copyWith((message) => updates(message as QuickSendSettings)) as QuickSendSettings;
+  CustomSendSettings copyWith(void Function(CustomSendSettings) updates) => super.copyWith((message) => updates(message as CustomSendSettings)) as CustomSendSettings;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static QuickSendSettings create() => QuickSendSettings._();
-  QuickSendSettings createEmptyInstance() => create();
-  static $pb.PbList<QuickSendSettings> createRepeated() => $pb.PbList<QuickSendSettings>();
+  static CustomSendSettings create() => CustomSendSettings._();
+  CustomSendSettings createEmptyInstance() => create();
+  static $pb.PbList<CustomSendSettings> createRepeated() => $pb.PbList<CustomSendSettings>();
   @$core.pragma('dart2js:noInline')
-  static QuickSendSettings getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<QuickSendSettings>(create);
-  static QuickSendSettings? _defaultInstance;
+  static CustomSendSettings getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CustomSendSettings>(create);
+  static CustomSendSettings? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.bool get contacts => $_getBF(0);

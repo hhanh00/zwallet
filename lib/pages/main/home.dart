@@ -87,17 +87,15 @@ class _HomeState extends State<HomePageInner> {
         ));
   }
 
-  _send(bool quick) async {
-    quick ^= appSettings.quickSend;
+  _send(bool custom) async {
+    custom ^= appSettings.customSend;
     final protectSend = appSettings.protectSend;
     if (protectSend) {
       final authed = await authBarrier(context, dismissable: true);
       if (!authed) return;
     }
-    if (quick)
-      GoRouter.of(context).push('/account/quick_send');
-    else
-      GoRouter.of(context).push('/account/send');
+    final c = custom ? 1 : 0;
+    GoRouter.of(context).push('/account/quick_send?custom=$c');
   }
 
   // Addr Modes

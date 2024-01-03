@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'appsettings.dart';
 import 'pages/more/cold.dart';
 import 'settings.pb.dart';
 import 'package:flutter/material.dart';
@@ -82,8 +81,7 @@ final router = GoRouter(
                     routes: [
                       GoRoute(
                           path: 'new',
-                          builder: (context, state) => 
-                            appSettings.quickSend ? QuickSendPage(single: false) : SendPage(single: false)),
+                          builder: (context, state) => QuickSendPage(single: false)),
                     ]),
                 GoRoute(
                   path: 'txplan',
@@ -113,12 +111,11 @@ final router = GoRouter(
                   builder: (context, state) => RescanPage(),
                 ),
                 GoRoute(
-                  path: 'send',
-                  builder: (context, state) => SendPage(single: true),
-                ),
-                GoRoute(
                   path: 'quick_send',
-                  builder: (context, state) => QuickSendPage(sendContext: state.extra as SendContext?),
+                  builder: (context, state) => QuickSendPage(
+                    custom: state.uri.queryParameters['custom'] == '1',
+                    single: true, 
+                    sendContext: state.extra as SendContext?),
                 ),
                 GoRoute(
                   path: 'pay_uri',
@@ -286,9 +283,9 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/quick_send',
+      path: '/quick_send_settings',
       parentNavigatorKey: rootNavigatorKey,
-      builder: (context, state) => QuickSendSettingsPage(state.extra as QuickSendSettings),
+      builder: (context, state) => QuickSendSettingsPage(state.extra as CustomSendSettings),
     ),
     GoRoute(
       path: '/encrypt_db',

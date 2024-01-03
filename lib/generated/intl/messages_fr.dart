@@ -1261,7 +1261,7 @@ class SFr extends S {
   String get cannotDeleteActive => 'Cannot delete the active account unless it is the last one';
 
   @override
-  String get quickSend => 'Quick Send';
+  String get customSend => 'Use Custom Send';
 
   @override
   String get showSubKeys => 'Show Sub Keys';
@@ -1276,7 +1276,7 @@ class SFr extends S {
   String get optimized => 'Optimized';
 
   @override
-  String get quickSendSettings => 'Quick Send Settings';
+  String get customSendSettings => 'Custom Send Settings';
 
   @override
   String get amountCurrency => 'Amount in Fiat';

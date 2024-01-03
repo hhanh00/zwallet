@@ -152,10 +152,10 @@ class _GeneralState extends State<GeneralTab>
             onChanged: (v) => widget.appSettings.fullPrec = v!,
           ),
           FormBuilderSwitch(
-            name: 'quick_send',
-            title: Text(s.quickSend),
-            initialValue: widget.appSettings.quickSend,
-            onChanged: (v) => widget.appSettings.quickSend = v!,
+            name: 'custom_send',
+            title: Text(s.customSend),
+            initialValue: widget.appSettings.customSend,
+            onChanged: (v) => widget.appSettings.customSend = v!,
           ),
           FormBuilderDropdown<String>(
             name: 'currency',
@@ -370,11 +370,11 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
           ),
           Gap(16),
           InputDecorator(
-              decoration: InputDecoration(label: Text(s.quickSend)),
+              decoration: InputDecoration(label: Text(s.customSend)),
               child: Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
-                      onPressed: _quickSendSettings,
+                      onPressed: _customSendSettings,
                       child: Text(s.configure)))),
         ]));
   }
@@ -383,12 +383,12 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
     return formKey.currentState!.validate();
   }
 
-  _quickSendSettings() async {
-    final quickSendSettings = widget.appSettings.quickSendSettings;
-    final quickSendSettingsUpdated = await GoRouter.of(context)
-        .push<QuickSendSettings>('/quick_send', extra: quickSendSettings);
-    if (quickSendSettingsUpdated != null) {
-      widget.appSettings.quickSendSettings = quickSendSettingsUpdated;
+  _customSendSettings() async {
+    final customSendSettings = widget.appSettings.customSendSettings;
+    final customSendSettingsUpdated = await GoRouter.of(context)
+        .push<CustomSendSettings>('/quick_send_settings', extra: customSendSettings);
+    if (customSendSettingsUpdated != null) {
+      widget.appSettings.customSendSettings = customSendSettingsUpdated;
     }
   }
 
@@ -554,8 +554,8 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
 }
 
 class QuickSendSettingsPage extends StatefulWidget {
-  final QuickSendSettings quickSendSettings;
-  QuickSendSettingsPage(this.quickSendSettings);
+  final CustomSendSettings customSendSettings;
+  QuickSendSettingsPage(this.customSendSettings);
 
   @override
   State<StatefulWidget> createState() => _QuickSendSettingsState();
@@ -564,18 +564,18 @@ class QuickSendSettingsPage extends StatefulWidget {
 class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
   final formKey = GlobalKey<FormBuilderState>();
   late final s = S.of(context);
-  late QuickSendSettings quickSendSettings =
-      widget.quickSendSettings.deepCopy();
+  late CustomSendSettings customSendSettings =
+      widget.customSendSettings.deepCopy();
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     final cs = t.colorScheme;
     return Scaffold(
-      appBar: AppBar(title: Text(s.quickSendSettings), actions: [
+      appBar: AppBar(title: Text(s.customSendSettings), actions: [
         IconButton(
             onPressed: () {
-              GoRouter.of(context).pop(quickSendSettings);
+              GoRouter.of(context).pop(customSendSettings);
             },
             icon: Icon(Icons.check))
       ]),
@@ -586,14 +586,14 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
             tiles: [
               SettingsTile.switchTile(
                 title: Text(s.contacts),
-                initialValue: quickSendSettings.contacts,
-                onToggle: (v) => setState(() => quickSendSettings.contacts = v),
+                initialValue: customSendSettings.contacts,
+                onToggle: (v) => setState(() => customSendSettings.contacts = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.accounts),
-                initialValue: quickSendSettings.accounts,
-                onToggle: (v) => setState(() => quickSendSettings.accounts = v),
+                initialValue: customSendSettings.accounts,
+                onToggle: (v) => setState(() => customSendSettings.accounts = v),
                 activeSwitchColor: cs.primary,
               ),
             ],
@@ -602,8 +602,8 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
             tiles: [
               SettingsTile.switchTile(
                 title: Text(s.pools),
-                initialValue: quickSendSettings.pools,
-                onToggle: (v) => setState(() => quickSendSettings.pools = v),
+                initialValue: customSendSettings.pools,
+                onToggle: (v) => setState(() => customSendSettings.pools = v),
                 activeSwitchColor: cs.primary,
               ),
             ],
@@ -613,26 +613,26 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
             tiles: [
               SettingsTile.switchTile(
                 title: Text(s.max),
-                initialValue: quickSendSettings.max,
-                onToggle: (v) => setState(() => quickSendSettings.max = v),
+                initialValue: customSendSettings.max,
+                onToggle: (v) => setState(() => customSendSettings.max = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.amountCurrency),
-                initialValue: quickSendSettings.amountCurrency,
-                onToggle: (v) => setState(() => quickSendSettings.amountCurrency = v),
+                initialValue: customSendSettings.amountCurrency,
+                onToggle: (v) => setState(() => customSendSettings.amountCurrency = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.amountSlider),
-                initialValue: quickSendSettings.amountSlider,
-                onToggle: (v) => setState(() => quickSendSettings.amountSlider = v),
+                initialValue: customSendSettings.amountSlider,
+                onToggle: (v) => setState(() => customSendSettings.amountSlider = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.deductFee),
-                initialValue: quickSendSettings.deductFee,
-                onToggle: (v) => setState(() => quickSendSettings.deductFee = v),
+                initialValue: customSendSettings.deductFee,
+                onToggle: (v) => setState(() => customSendSettings.deductFee = v),
                 activeSwitchColor: cs.primary,
               ),
             ],
@@ -642,20 +642,20 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
             tiles: [
               SettingsTile.switchTile(
                 title: Text(s.includeReplyTo),
-                initialValue: quickSendSettings.replyAddress,
-                onToggle: (v) => setState(() => quickSendSettings.replyAddress = v),
+                initialValue: customSendSettings.replyAddress,
+                onToggle: (v) => setState(() => customSendSettings.replyAddress = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.subject),
-                initialValue: quickSendSettings.memoSubject,
-                onToggle: (v) => setState(() => quickSendSettings.memoSubject = v),
+                initialValue: customSendSettings.memoSubject,
+                onToggle: (v) => setState(() => customSendSettings.memoSubject = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.memo),
-                initialValue: quickSendSettings.memo,
-                onToggle: (v) => setState(() => quickSendSettings.memo = v),
+                initialValue: customSendSettings.memo,
+                onToggle: (v) => setState(() => customSendSettings.memo = v),
                 activeSwitchColor: cs.primary,
               ),
             ],

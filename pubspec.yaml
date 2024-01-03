@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.5.1+492
+version: 1.5.1+493
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -65,7 +65,6 @@ dependencies:
 #      url: https://github.com/hhanh00/k_chart.git
 #      ref: 821f81681f8ee819cd721498f7b28d290f4ebe38
   graphic: ^2.2.1
-  im_stepper: ^1.0.1
   loading_animation_widget: ^1.2.0
   #toggle_switch: ^2.1.0
   get_it: ^7.6.4

@@ -31,8 +31,8 @@ extension AppSettingsExtension on AppSettings {
     if (!hasNoteView()) noteView = 2;
     if (!hasTxView()) txView = 2;
     if (!hasMessageView()) messageView = 2;
-    if (!hasQuickSendSettings())
-      quickSendSettings = QuickSendSettings()..defaults();
+    if (!hasCustomSendSettings())
+      customSendSettings = CustomSendSettings()..defaults();
   }
 
   static AppSettings load(SharedPreferences prefs) {
@@ -80,7 +80,7 @@ extension CoinSettingsExtension on CoinSettings {
   }
 }
 
-extension QuickSendSettingsExtension on QuickSendSettings {
+extension CustomSendSettingsExtension on CustomSendSettings {
   void defaults() {
     contacts = true;
     accounts = true;

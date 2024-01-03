@@ -25,8 +25,8 @@ message AppSettings {
     string memo = 24;
     ColorPalette palette = 25;
     bool disclaimer = 26;
-    bool quick_send = 27;
-    QuickSendSettings quick_send_settings = 28;
+    bool custom_send = 27;
+    CustomSendSettings custom_send_settings = 28;
 }
 
 message CoinSettings {
@@ -52,7 +52,7 @@ message ColorPalette {
     bool dark = 2;
 }
 
-message QuickSendSettings {
+message CustomSendSettings {
     bool contacts = 1;
     bool accounts = 2;
     bool pools = 3;

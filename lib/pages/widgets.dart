@@ -148,16 +148,18 @@ class MosaicWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     final palette = getPalette(t.colorScheme.inversePrimary, buttons.length);
-    return ListView.builder(itemBuilder: (BuildContext context, int index) {
-      final button = buttons[index];
-      return ListTile(
-        leading: SizedBox(width: 40, child: button.icon),
-        title: Text(button.text!, style: t.textTheme.headlineSmall),
-        tileColor: palette.colors[index].toColor(),
-        trailing: Icon(Icons.chevron_right),
-        onTap: () => _onMenu(context, button),
-      );
-    }, itemCount: buttons.length);
+    return ListView.builder(
+        itemBuilder: (BuildContext context, int index) {
+          final button = buttons[index];
+          return ListTile(
+            leading: SizedBox(width: 40, child: button.icon),
+            title: Text(button.text, style: t.textTheme.headlineSmall),
+            tileColor: palette.colors[index].toColor(),
+            trailing: Icon(Icons.chevron_right),
+            onTap: () => _onMenu(context, button),
+          );
+        },
+        itemCount: buttons.length);
   }
 
   _onMenu(BuildContext context, MoreTile button) async {
@@ -367,8 +369,15 @@ class AmountPicker extends StatefulWidget {
   final Amount initialAmount;
   final bool canDeductFee;
   final void Function(Amount?)? onChanged;
-  AmountPicker(this.initialAmount,
-      {super.key, this.spendable, this.canDeductFee = true, this.onChanged});
+  final bool custom;
+  AmountPicker(
+    this.initialAmount, {
+    super.key,
+    this.spendable,
+    this.canDeductFee = true,
+    this.onChanged,
+    this.custom = false,
+  });
   @override
   State<StatefulWidget> createState() => AmountPickerState();
 }
@@ -398,7 +407,7 @@ class AmountPickerState extends State<AmountPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final quickSendSettings = appSettings.quickSendSettings;
+    final customSendSettings = appSettings.customSendSettings;
     final c = coins[aa.coin];
     final spendable = widget.spendable;
     return FormBuilderField<Amount>(
@@ -441,30 +450,34 @@ class AmountPickerState extends State<AmountPicker> {
                       },
                     ),
                   ),
-                  if (widget.canDeductFee && spendable != null && quickSendSettings.max)
+                  if (widget.canDeductFee &&
+                      spendable != null &&
+                      widget.custom && customSendSettings.max)
                     IconButton(
                       onPressed: () => _max(field),
                       icon: FaIcon(FontAwesomeIcons.maximize),
                     ),
                 ],
               ),
-              if (quickSendSettings.amountCurrency) FormBuilderTextField(
-                name: 'fiat',
-                decoration: InputDecoration(label: Text(appSettings.currency)),
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                enabled: fxRate != null,
-                controller: fiatController,
-                onChanged: (v0) {
-                  final v = v0 == null || v0.isEmpty ? '0' : v0;
-                  try {
-                    final fiat = nformat.parse(v).toDouble();
-                    final zec = fiat / fxRate!;
-                    final value = (zec * ZECUNIT).toInt();
-                    _update(field, value, AmountSource.Fiat);
-                  } on FormatException {}
-                },
-              ),
-              if (spendable != null && quickSendSettings.amountSlider)
+              if (!widget.custom || customSendSettings.amountCurrency)
+                FormBuilderTextField(
+                  name: 'fiat',
+                  decoration:
+                      InputDecoration(label: Text(appSettings.currency)),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  enabled: fxRate != null,
+                  controller: fiatController,
+                  onChanged: (v0) {
+                    final v = v0 == null || v0.isEmpty ? '0' : v0;
+                    try {
+                      final fiat = nformat.parse(v).toDouble();
+                      final zec = fiat / fxRate!;
+                      final value = (zec * ZECUNIT).toInt();
+                      _update(field, value, AmountSource.Fiat);
+                    } on FormatException {}
+                  },
+                ),
+              if (spendable != null && widget.custom && customSendSettings.amountSlider)
                 Slider(
                   value: _sliderValue,
                   min: 0,
@@ -476,7 +489,7 @@ class AmountPickerState extends State<AmountPicker> {
                     _update(field, value, AmountSource.Slider);
                   },
                 ),
-              if (widget.canDeductFee && quickSendSettings.deductFee)
+              if (widget.canDeductFee && widget.custom && customSendSettings.deductFee)
                 FormBuilderSwitch(
                     name: 'deduct_fee',
                     initialValue: widget.initialAmount.deductFee,
@@ -540,7 +553,8 @@ class AmountPickerState extends State<AmountPicker> {
 class InputMemo extends StatefulWidget {
   final MemoData memo;
   final void Function(MemoData?)? onChanged;
-  InputMemo(this.memo, {super.key, this.onChanged});
+  final bool custom;
+  InputMemo(this.memo, {super.key, this.onChanged, this.custom = false});
 
   @override
   State<StatefulWidget> createState() => InputMemoState();
@@ -558,7 +572,7 @@ class InputMemoState extends State<InputMemo> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final quickSendSettings = appSettings.quickSendSettings;
+    final customSendSettings = appSettings.customSendSettings;
     return FormBuilderField<MemoData>(
         key: fieldKey,
         name: 'memo',
@@ -574,24 +588,26 @@ class InputMemoState extends State<InputMemo> {
             key: formKey,
             child: Column(
               children: [
-                if (quickSendSettings.replyAddress) FormBuilderSwitch(
-                  name: 'reply',
-                  title: Text(s.includeReplyTo),
-                  initialValue: value.reply,
-                  onChanged: (v) {
-                    value.reply = v!;
-                    field.didChange(value);
-                  },
-                ),
-                if (quickSendSettings.memoSubject) FormBuilderTextField(
-                  name: 'subject',
-                  controller: subjectController,
-                  decoration: InputDecoration(label: Text(s.subject)),
-                  onChanged: (v) {
-                    value.subject = v!;
-                    field.didChange(value);
-                  },
-                ),
+                if (widget.custom && customSendSettings.replyAddress)
+                  FormBuilderSwitch(
+                    name: 'reply',
+                    title: Text(s.includeReplyTo),
+                    initialValue: value.reply,
+                    onChanged: (v) {
+                      value.reply = v!;
+                      field.didChange(value);
+                    },
+                  ),
+                if (widget.custom && customSendSettings.memoSubject)
+                  FormBuilderTextField(
+                    name: 'subject',
+                    controller: subjectController,
+                    decoration: InputDecoration(label: Text(s.subject)),
+                    onChanged: (v) {
+                      value.subject = v!;
+                      field.didChange(value);
+                    },
+                  ),
                 FormBuilderTextField(
                   name: 'body',
                   controller: memoController,
