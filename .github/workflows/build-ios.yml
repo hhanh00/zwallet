@@ -1,0 +1,4 @@
+name: "Build iOS app"
+
+on:
+  workflow_dispatch:
