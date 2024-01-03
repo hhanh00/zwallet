@@ -7,53 +7,124 @@ on:
       - "v*"
 
 jobs:
-  build_mac:
+  build-x86_64:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: checkout repository
+        uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Download params
+        run: |
+          mkdir -p $HOME/.zcash-params
+          curl https://download.z.cash/downloads/sapling-output.params --output $HOME/.zcash-params/sapling-output.params
+          curl https://download.z.cash/downloads/sapling-spend.params --output $HOME/.zcash-params/sapling-spend.params
+      - name: Build Rust
+        run: |
+          cargo b -r --target=x86_64-apple-darwin --features=dart_ffi,sqlcipher,ledger
+      - name: Cache rust library
+        uses: actions/cache/save@v3
+        with:
+          path: target/x86_64-apple-darwin/release/libwarp_api_ffi.dylib
+          key: warp_x86_64-${{ github.sha }}
 
-      - name: env
+  build-aarch64:
+    runs-on: macos-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Download params
+        run: |
+          mkdir -p $HOME/.zcash-params
+          curl https://download.z.cash/downloads/sapling-output.params --output $HOME/.zcash-params/sapling-output.params
+          curl https://download.z.cash/downloads/sapling-spend.params --output $HOME/.zcash-params/sapling-spend.params
+      - name: Build Rust
+        run: |
+          rustup target add aarch64-apple-darwin
+          cargo b -r --target=aarch64-apple-darwin --features=dart_ffi,sqlcipher,ledger
+      - name: Cache rust library
+        uses: actions/cache/save@v3
+        with:
+          path: target/aarch64-apple-darwin/release/libwarp_api_ffi.dylib
+          key: warp_aarch64-${{ github.sha }}
+
+  build_flutter:
+    runs-on: macos-latest
+    needs: [build-x86_64, build-aarch64]
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Build vars
         run: |
           cat build.env >> $GITHUB_ENV
-          echo $PWD/flutter/bin >> $GITHUB_PATH
-
+      - name: Download params
+        run: |
+          mkdir -p $HOME/.zcash-params
+          curl https://download.z.cash/downloads/sapling-output.params --output assets/sapling-output.params
+          curl https://download.z.cash/downloads/sapling-spend.params --output assets/sapling-spend.params
+      - name: Cache x86_64 rust library
+        uses: actions/cache/restore@v3
+        with:
+          path: target/x86_64-apple-darwin/release/libwarp_api_ffi.dylib
+          key: warp_x86_64-${{ github.sha }}
+      - name: Cache aarch64 rust library
+        uses: actions/cache/restore@v3
+        with:
+          path: target/aarch64-apple-darwin/release/libwarp_api_ffi.dylib
+          key: warp_aarch64-${{ github.sha }}
+      - name: Merge rust library
+        run: |
+          mkdir -p target/universal/release
+          lipo target/x86_64-apple-darwin/release/libwarp_api_ffi.dylib target/aarch64-apple-darwin/release/libwarp_api_ffi.dylib -output target/universal/release/libwarp_api_ffi.dylib -create
+          cp native/zcash-sync/binding.h packages/warp_api_ffi/ios/Classes/binding.h
+      - name: Build
+        run: |
+          export PATH=$PATH:$HOME/flutter/bin
+          (cd $HOME; git clone --branch $FLUTTER_VERSION --depth 1 https://github.com/flutter/flutter.git)
+          flutter pub get
+          dart run build_runner build -d
+          (cd packages/warp_api_ffi; flutter pub get)
+          flutter build -v macos
+      - name: Codesign
+        env:
+          CERT_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        run: |
+          security create-keychain -p R5qx5GGokNBm $HOME/build.keychain
+          security set-keychain-settings -ut 7200 $HOME/build.keychain
+          security default-keychain -s $HOME/build.keychain
+          security unlock-keychain -p R5qx5GGokNBm $HOME/build.keychain
+          security import ./macos/certs/codesign.p12 -k $HOME/build.keychain -P $CERT_PWD -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k R5qx5GGokNBm $HOME/build.keychain
+          /usr/bin/codesign --force -s "Developer ID Application: Ycash Foundation (8VSA3BX4D8)" --deep --options runtime build/macos/Build/Products/Release/ywallet.app -v
+      - name: Notarize
+        env:
+          NOTARIZATION_PWD: ${{ secrets.MACOS_NOTARIZATION_PWD }}
+        run: |
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id "foundation@ycash.xyz" --team-id "8VSA3BX4D8" --password "$NOTARIZATION_PWD"
+          ditto -c -k --keepParent "build/macos/Build/Products/Release/ywallet.app" "notarization.zip"
+          xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
+          xcrun stapler staple "build/macos/Build/Products/Release/ywallet.app"
       - name: Install python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
-      - name: build
-        run: ./build-scripts/mac/build-mac.sh "$FLUTTER_VERSION"
-
-      - name: codesign
-        env:
-          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
-          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-          MACOS_CI_KEYCHAIN_PWD: ${{ secrets.MACOS_CI_KEYCHAIN_PWD }}
-          MACOS_CERTIFICATE_ID: ${{ secrets.MACOS_CERTIFICATE_ID }}
-        run: ./build-scripts/mac/codesign-mac.sh "$MACOS_CERTIFICATE" "$MACOS_CERTIFICATE_PWD" "$MACOS_CI_KEYCHAIN_PWD" "$MACOS_CERTIFICATE_ID"
-
-      - name: notarize
-        env:
-          MACOS_NOTARIZATION_APPLE_ID: ${{ secrets.MACOS_NOTARIZATION_APPLE_ID }}
-          MACOS_NOTARIZATION_TEAM_ID: ${{ secrets.MACOS_NOTARIZATION_TEAM_ID }}
-          MACOS_NOTARIZATION_PWD: ${{ secrets.MACOS_NOTARIZATION_PWD }}
-        run: ./build-scripts/mac/notarize-mac.sh "$MACOS_NOTARIZATION_APPLE_ID" "$MACOS_NOTARIZATION_TEAM_ID" "$MACOS_NOTARIZATION_PWD"
-
-      - name: package
-        run: ./build-scripts/mac/pkg-mac.sh
-
+      - name: Package
+        run: |
+          python3 -m pip install packaging
+          npm install -g appdmg
+          (cd misc; appdmg app.json ../ywallet-universal.dmg)
+      - name: Upload dmg
+        uses: actions/upload-artifact@v3
+        with:
+          name: YWallet.dmg
+          path: ywallet-universal.dmg
+          retention-days: 3
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/v')
         with:
-          files: |
-            ./ywallet-universal.dmg
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: DMG
-          path: ./ywallet-universal.dmg
-          retention-days: 3
+          files: ywallet-universal.dmg
