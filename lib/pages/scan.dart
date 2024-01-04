@@ -39,7 +39,7 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
         body: FormBuilder(
             key: formKey,
             child: Column(children: [
-              Expanded(child: ReaderWidget(onScan: _onScan)),
+              Expanded(child: ReaderWidget(showGallery: false, onScan: _onScan)),
               Gap(16),
               FormBuilderTextField(
                   name: 'qr',
