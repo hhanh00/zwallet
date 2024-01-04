@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
@@ -25,10 +26,10 @@ class ContactsPage extends StatefulWidget {
 class _ContactsState extends State<ContactsPage> {
   bool selected = false;
   final listKey = GlobalKey<ContactListState>();
+  late final s = S.of(context);
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     return Scaffold(
         appBar: AppBar(
           title: Text(s.contacts),
@@ -43,13 +44,19 @@ class _ContactsState extends State<ContactsPage> {
         ),
         body: ContactList(
             key: listKey,
-            onSelect: widget.selectable ? (v) => _select(v!) : null,
+            onSelect: widget.selectable ? (v) => _select(v!) : _copyToClipboard,
             onLongSelect: (v) => setState(() => selected = v != null)));
   }
 
   _select(int v) {
     final c = contacts.contacts[v];
     GoRouter.of(context).pop(c);
+  }
+
+  _copyToClipboard(int? v) {
+    final c = contacts.contacts[v!];
+    Clipboard.setData(ClipboardData(text: c.address!));
+    showSnackBar(s.addressCopiedToClipboard);
   }
 
   _save() async {
