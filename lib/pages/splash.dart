@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:YWallet/router.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,7 +54,7 @@ class _SplashState extends State<SplashPage> {
           await authBarrier(context);
         }
         if (applinkUri != null)
-          handleUri(context, applinkUri);
+          handleUri(applinkUri);
         else if (quickAction != null)
           handleQuickAction(context, quickAction);
         else
@@ -69,7 +70,7 @@ class _SplashState extends State<SplashPage> {
 
   Future<Uri?> _registerURLHandler() async {
     _setProgress(0.3, 'Register Payment URI handlers');
-    return await registerURLHandler(this.context);
+    return await registerURLHandler();
 
     // TODO
     // if (Platform.isWindows) {
@@ -208,22 +209,24 @@ bool setActiveAccountOf(int coin) {
   return true;
 }
 
-void handleUri(BuildContext context, Uri uri) {
+void handleUri(Uri uri) {
   final scheme = uri.scheme;
   final coinDef = coins.firstWhere((c) => c.currency == scheme);
   final coin = coinDef.coin;
   if (setActiveAccountOf(coin)) {
     SendContext? sc = SendContext.fromPaymentURI(uri.toString());
+    final context = rootNavigatorKey.currentContext!;
     GoRouter.of(context).go('/account/quick_send', extra: sc);
   }
 }
 
-Future<Uri?> registerURLHandler(BuildContext context) async {
+Future<Uri?> registerURLHandler() async {
   if (Platform.isLinux) return null;
   final _appLinks = AppLinks();
 
   subUniLinks = _appLinks.uriLinkStream.listen((uri) {
-    handleUri(context, uri);
+    logger.d(uri);
+    handleUri(uri);
   });
 
   final uri = await _appLinks.getInitialAppLink();
