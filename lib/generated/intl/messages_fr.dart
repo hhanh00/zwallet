@@ -1295,4 +1295,10 @@ class SFr extends S {
 
   @override
   String get tools => 'Tools';
+
+  @override
+  String get appData => 'App Data';
+
+  @override
+  String get seedKeys => 'Seed & Keys';
 }

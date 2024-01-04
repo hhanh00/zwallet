@@ -411,5 +411,7 @@
   "market": "Market",
   "sync": "Synchronization",
   "tools": "Tools",
-  "deleteAccount": "Delete Account {name}"
+  "deleteAccount": "Delete Account {name}",
+  "appData": "App Data",
+  "seedKeys": "Seed & Keys"
 }

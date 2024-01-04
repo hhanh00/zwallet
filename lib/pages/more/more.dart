@@ -41,12 +41,12 @@ class MorePage extends StatelessWidget {
         MoreTile(
             url: '/more/backup',
             icon: FaIcon(FontAwesomeIcons.seedling),
-            text: s.backup,
+            text: s.seedKeys,
             secured: true),
         MoreTile(
             url: '/more/batch_backup',
             icon: FaIcon(FontAwesomeIcons.database),
-            text: s.fullBackup,
+            text: s.appData,
             secured: true),
       ]),
       MoreSection(title: Text(s.market), tiles: [

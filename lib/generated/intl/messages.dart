@@ -2566,6 +2566,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Tools'**
   String get tools;
+
+  /// No description provided for @appData.
+  ///
+  /// In en, this message translates to:
+  /// **'App Data'**
+  String get appData;
+
+  /// No description provided for @seedKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Seed & Keys'**
+  String get seedKeys;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
