@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -36,6 +37,8 @@ class _SplashState extends State<SplashPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future(() async {
+        GetIt.I.registerSingleton<S>(S.of(context));
+        if (!appSettings.hasMemo()) appSettings.memo = s.sendFrom(APP_NAME);
         _initProver();
         // await _setupMempool();
         final applinkUri = await _registerURLHandler();

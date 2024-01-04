@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:key_guardmanager/key_guardmanager.dart';
@@ -23,7 +24,8 @@ import 'package:reflectable/reflectable.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:velocity_x/velocity_x.dart' show VxNullableStringIsEmptyOrNullExtension;
+import 'package:velocity_x/velocity_x.dart'
+    show VxNullableStringIsEmptyOrNullExtension;
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:path/path.dart' as p;
@@ -61,10 +63,15 @@ class Amount {
 }
 
 int decimalDigits(bool fullPrec) => fullPrec ? MAX_PRECISION : 3;
-String decimalFormat(double x, int decimalDigits, {String symbol = ''}) =>
-    NumberFormat.currency(decimalDigits: decimalDigits, symbol: symbol)
-        .format(x)
-        .trimRight();
+String decimalFormat(double x, int decimalDigits, {String symbol = ''}) {
+  final s = GetIt.I.get<S>();
+  return NumberFormat.currency(
+    locale: s.localeName,
+    decimalDigits: decimalDigits,
+    symbol: symbol,
+  ).format(x).trimRight();
+}
+String decimalToString(double x) => decimalFormat(x, decimalDigits(appSettings.fullPrec));
 
 Future<bool> showMessageBox2(BuildContext context, String title, String content,
     {String? label, bool dismissable = true}) async {
@@ -323,10 +330,11 @@ Future<bool> showConfirmDialog(
   return confirmation;
 }
 
-Decimal parseNumber(String? s) {
-  if (s == null || s.isEmpty) return Decimal.zero;
+Decimal parseNumber(String? sn) {
+  if (sn == null || sn.isEmpty) return Decimal.zero;
+  final s = GetIt.I.get<S>();
   // There is no API to parse directly from intl string
-  final v = NumberFormat.currency().parse(s);
+  final v = NumberFormat.currency(locale: s.localeName).parse(sn);
   return Decimal.parse(v.toStringAsFixed(8));
 }
 
@@ -649,14 +657,13 @@ FormFieldValidator<T> composeOr<T>(List<FormFieldValidator<T>> validators) {
 
 class PoolBitSet {
   static Set<int> toSet(int pools) {
-    return List.generate(3,
-            (index) => pools & (1 << index) != 0 ? index : null)
+    return List.generate(3, (index) => pools & (1 << index) != 0 ? index : null)
         .whereNotNull()
         .toSet();
   }
 
-  static int fromSet(Set<int> poolSet) =>
-    poolSet.map((p) => 1 << p).sum;
+  static int fromSet(Set<int> poolSet) => poolSet.map((p) => 1 << p).sum;
 }
 
-List<Account> getAllAccounts() => coins.expand((c) => WarpApi.getAccountList(c.coin)).toList();
+List<Account> getAllAccounts() =>
+    coins.expand((c) => WarpApi.getAccountList(c.coin)).toList();

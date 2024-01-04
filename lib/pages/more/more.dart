@@ -1,3 +1,4 @@
+import 'package:YWallet/appsettings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -29,7 +30,8 @@ class MorePage extends StatelessWidget {
         MoreTile(
             url: '/account/multi_pay',
             icon: FaIcon(FontAwesomeIcons.peopleArrows),
-            text: s.multiPay),
+            text: s.multiPay,
+            secured: appSettings.protectSend),
         MoreTile(
             url: '/more/contacts',
             icon: FaIcon(FontAwesomeIcons.addressBook),

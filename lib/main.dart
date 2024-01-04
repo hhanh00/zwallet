@@ -2,13 +2,10 @@ import 'dart:async';
 
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'appsettings.dart';
-import 'generated/intl/messages.dart';
 import 'main.reflectable.dart';
 import 'coin/coins.dart';
 import './pages/utils.dart';
@@ -24,10 +21,6 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final parts = Intl.getCurrentLocale().split('_');
-  final locale = Locale(parts.first, parts.last);
-  final s = await S.delegate.load(locale);
-  GetIt.I.registerSingleton<S>(s);
   initializeReflectable();
   await restoreSettings();
   await initCoins();

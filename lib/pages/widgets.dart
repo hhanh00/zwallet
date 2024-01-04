@@ -391,9 +391,9 @@ class AmountPickerState extends State<AmountPicker> {
   double _sliderValue = 0;
   late final amountController =
       TextEditingController(text: amountToString2(widget.initialAmount.value));
+  late final nformat = NumberFormat.decimalPatternDigits(
+      locale: s.localeName, decimalDigits: decimalDigits(appSettings.fullPrec));
   late final fiatController = TextEditingController(text: nformat.format(0.0));
-  final nformat = NumberFormat.decimalPatternDigits(
-      decimalDigits: decimalDigits(appSettings.fullPrec));
 
   @override
   void initState() {
@@ -452,7 +452,8 @@ class AmountPickerState extends State<AmountPicker> {
                   ),
                   if (widget.canDeductFee &&
                       spendable != null &&
-                      widget.custom && customSendSettings.max)
+                      widget.custom &&
+                      customSendSettings.max)
                     IconButton(
                       onPressed: () => _max(field),
                       icon: FaIcon(FontAwesomeIcons.maximize),
@@ -477,7 +478,9 @@ class AmountPickerState extends State<AmountPicker> {
                     } on FormatException {}
                   },
                 ),
-              if (spendable != null && widget.custom && customSendSettings.amountSlider)
+              if (spendable != null &&
+                  widget.custom &&
+                  customSendSettings.amountSlider)
                 Slider(
                   value: _sliderValue,
                   min: 0,
@@ -489,7 +492,9 @@ class AmountPickerState extends State<AmountPicker> {
                     _update(field, value, AmountSource.Slider);
                   },
                 ),
-              if (widget.canDeductFee && widget.custom && customSendSettings.deductFee)
+              if (widget.canDeductFee &&
+                  widget.custom &&
+                  customSendSettings.deductFee)
                 FormBuilderSwitch(
                     name: 'deduct_fee',
                     initialValue: widget.initialAmount.deductFee,

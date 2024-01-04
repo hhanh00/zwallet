@@ -15,7 +15,6 @@ var coinSettings = CoinSettings();
 
 extension AppSettingsExtension on AppSettings {
   void defaults() {
-    final s = GetIt.I.get<S>();
     if (!hasAnchorOffset()) anchorOffset = 3;
     if (!hasRowsPerPage()) rowsPerPage = 10;
     if (!hasDeveloperMode()) developerMode = 5;
@@ -27,7 +26,7 @@ extension AppSettingsExtension on AppSettings {
         dark: true,
       );
     }
-    if (!hasMemo()) memo = s.sendFrom(APP_NAME);
+    // memo is initialized later because we don't have S yet
     if (!hasNoteView()) noteView = 2;
     if (!hasTxView()) txView = 2;
     if (!hasMessageView()) messageView = 2;

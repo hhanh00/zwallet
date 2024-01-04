@@ -86,7 +86,7 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
           DataCell(Text("${tx.height}")),
           DataCell(Text("${tx.confirmations}")),
           DataCell(Text("${txDateFormat.format(tx.timestamp)}")),
-          DataCell(Text(decimalFormat(tx.value, 8),
+          DataCell(Text(decimalToString(tx.value),
               style: style, textAlign: TextAlign.left)),
           DataCell(Text("${tx.txId}")),
           DataCell(Text("$a")),
@@ -120,7 +120,7 @@ class TxItem extends StatelessWidget {
 
     final av = avatar(initial);
     final dateString = Text(humanizeDateTime(context, tx.timestamp));
-    final value = Text('${tx.value.toDoubleStringAsPrecised()}',
+    final value = Text('${decimalToString(tx.value)}',
         style: theme.textTheme.titleLarge!.apply(color: color));
     final trailing = Column(children: [dateString, value]);
 
@@ -190,7 +190,7 @@ class TransactionState extends State<TransactionPage> {
             Gap(8),
             Panel(s.timestamp, text: noteDateFormat.format(tx.timestamp)),
             Gap(8),
-            Panel(s.amount, text: tx.value.toDoubleStringAsPrecised(length: MAX_PRECISION)),
+            Panel(s.amount, text: decimalToString(tx.value)),
             Gap(8),
             Panel(s.address, text: tx.address ?? ''),
             Gap(8),
