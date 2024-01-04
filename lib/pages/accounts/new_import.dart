@@ -50,7 +50,6 @@ class _NewImportAccountState extends State<NewImportAccountPage>
       appBar: AppBar(
         title: Text(s.newAccount),
         actions: [
-          IconButton(onPressed: _settings, icon: Icon(Icons.settings)),
           IconButton(onPressed: _onOK, icon: Icon(Icons.add)),
         ],
       ),
@@ -67,6 +66,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                   name: 'name',
                   decoration: InputDecoration(labelText: s.accountName),
                   controller: nameController,
+                  enableSuggestions: true,
                   validator: (String? name) {
                     if (name == null || name.isEmpty)
                       return s.accountNameIsRequired;

@@ -542,7 +542,7 @@ class AmountPickerState extends State<AmountPicker> {
 
   _max(FormFieldState<Amount> field) {
     final value = widget.spendable!;
-    formKey.currentState!.fields['deduct_fee']!.setValue(true);
+    formKey.currentState!.fields['deduct_fee']?.setValue(true);
     var amount = field.value!;
     amount.value = value;
     amount.deductFee = true;
@@ -608,6 +608,7 @@ class InputMemoState extends State<InputMemo> {
                     name: 'subject',
                     controller: subjectController,
                     decoration: InputDecoration(label: Text(s.subject)),
+                    enableSuggestions: true,
                     onChanged: (v) {
                       value.subject = v!;
                       field.didChange(value);
@@ -618,6 +619,7 @@ class InputMemoState extends State<InputMemo> {
                   controller: memoController,
                   decoration: InputDecoration(label: Text(s.memo)),
                   maxLines: 10,
+                  enableSuggestions: true,
                   onChanged: (v) {
                     value.memo = v!;
                     field.didChange(value);

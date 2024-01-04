@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'appsettings.dart';
 import 'pages/more/cold.dart';
 import 'settings.pb.dart';
 import 'package:flutter/material.dart';
@@ -67,8 +68,9 @@ final router = GoRouter(
               routes: [
                 GoRoute(
                     path: 'account_manager',
-                    builder: (context, state) => 
-                    AccountManagerPage(main: (state.uri.queryParameters['main'] ?? '1') != '0'),
+                    builder: (context, state) => AccountManagerPage(
+                        main:
+                            (state.uri.queryParameters['main'] ?? '1') != '0'),
                     routes: [
                       GoRoute(
                           path: 'new',
@@ -81,7 +83,8 @@ final router = GoRouter(
                     routes: [
                       GoRoute(
                           path: 'new',
-                          builder: (context, state) => QuickSendPage(single: false)),
+                          builder: (context, state) =>
+                              QuickSendPage(single: false)),
                     ]),
                 GoRoute(
                   path: 'txplan',
@@ -111,12 +114,16 @@ final router = GoRouter(
                   builder: (context, state) => RescanPage(),
                 ),
                 GoRoute(
-                  path: 'quick_send',
-                  builder: (context, state) => QuickSendPage(
-                    custom: state.uri.queryParameters['custom'] == '1',
-                    single: true, 
-                    sendContext: state.extra as SendContext?),
-                ),
+                    path: 'quick_send',
+                    builder: (context, state) {
+                      bool custom = state.uri.queryParameters['custom'] == '1';
+                      custom ^= appSettings.customSend;
+                      return QuickSendPage(
+                        custom: custom,
+                        single: true,
+                        sendContext: state.extra as SendContext?,
+                      );
+                    }),
                 GoRoute(
                   path: 'pay_uri',
                   builder: (context, state) => PaymentURIPage(),
@@ -285,7 +292,8 @@ final router = GoRouter(
     GoRoute(
       path: '/quick_send_settings',
       parentNavigatorKey: rootNavigatorKey,
-      builder: (context, state) => QuickSendSettingsPage(state.extra as CustomSendSettings),
+      builder: (context, state) =>
+          QuickSendSettingsPage(state.extra as CustomSendSettings),
     ),
     GoRoute(
       path: '/encrypt_db',

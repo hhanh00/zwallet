@@ -49,6 +49,7 @@ class _PaymentURIState extends State<PaymentURIPage> {
                 name: 'memo',
                 decoration: InputDecoration(label: Text(s.memo)),
                 controller: memoController,
+                enableSuggestions: true,
                 onChanged: (_) => onMemo(),
                 maxLines: 10,
               ),

@@ -170,6 +170,7 @@ class _GeneralState extends State<GeneralTab>
               label: Text(s.defaultMemo),
             ),
             maxLines: 10,
+            enableSuggestions: true,
             initialValue: widget.appSettings.memo,
             onChanged: (v) => widget.appSettings.memo = v!,
           )

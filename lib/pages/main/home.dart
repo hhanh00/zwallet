@@ -88,7 +88,6 @@ class _HomeState extends State<HomePageInner> {
   }
 
   _send(bool custom) async {
-    custom ^= appSettings.customSend;
     final protectSend = appSettings.protectSend;
     if (protectSend) {
       final authed = await authBarrier(context, dismissable: true);
