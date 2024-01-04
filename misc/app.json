@@ -1,6 +1,6 @@
 {
   "title": "YWallet",
-  "icon": "../assets/ycash.png",
+  "icon": "../assets/icon.png",
   "contents": [
     { "x": 448, "y": 128, "type": "link", "path": "/Applications" },
     { "x": 192, "y": 128, "type": "file", "path": "../build/macos/Build/Products/Release/ywallet.app" }
