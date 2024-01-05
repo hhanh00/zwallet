@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -31,21 +32,23 @@ class _ContactsState extends State<ContactsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(s.contacts),
-          actions: [
-            if (selected) IconButton(onPressed: _edit, icon: Icon(Icons.edit)),
-            if (selected)
-              IconButton(onPressed: _delete, icon: Icon(Icons.delete)),
-            // TODO: use coinsettings.contactsSaved flag
-            IconButton(onPressed: _save, icon: Icon(Icons.save)),
-            IconButton(onPressed: _add, icon: Icon(Icons.add)),
-          ],
-        ),
-        body: ContactList(
-            key: listKey,
-            onSelect: widget.selectable ? (v) => _select(v!) : _copyToClipboard,
-            onLongSelect: (v) => setState(() => selected = v != null)));
+      appBar: AppBar(
+        title: Text(s.contacts),
+        actions: [
+          if (selected) IconButton(onPressed: _edit, icon: Icon(Icons.edit)),
+          if (selected)
+            IconButton(onPressed: _delete, icon: Icon(Icons.delete)),
+          // TODO: use coinsettings.contactsSaved flag
+          IconButton(onPressed: _save, icon: Icon(Icons.save)),
+          IconButton(onPressed: _add, icon: Icon(Icons.add)),
+        ],
+      ),
+      body: ContactList(
+        key: listKey,
+        onSelect: widget.selectable ? (v) => _select(v!) : _copyToClipboard,
+        onLongSelect: (v) => setState(() => selected = v != null),
+      ),
+    );
   }
 
   _select(int v) {
@@ -87,7 +90,8 @@ class _ContactsState extends State<ContactsPage> {
     final confirmed =
         await showConfirmDialog(context, s.delete, s.confirmDeleteContact);
     if (!confirmed) return;
-    GoRouter.of(context).pop();
+    final c = listKey.currentState!.selectedContact!;
+    WarpApi.storeContact(c.id, c.name!, '', true);
     contacts.fetchContacts();
   }
 }
@@ -107,22 +111,24 @@ class ContactListState extends State<ContactList> {
   late int? selected = widget.initialSelect;
   @override
   Widget build(BuildContext context) {
-    final c = contacts.contacts;
-    return ListView.separated(
-      itemBuilder: (context, index) => ContactItem(
-        c[index].unpack(),
-        selected: selected == index,
-        onLongPress: () {
-          final v = selected != index ? index : null;
-          widget.onSelect?.call(v);
-          selected = v;
-          setState(() {});
-        },
-        onPress: () => widget.onSelect?.call(index),
-      ),
-      separatorBuilder: (context, index) => Divider(),
-      itemCount: c.length,
-    );
+    return Observer(builder: (context) {
+      final c = contacts.contacts;
+      return ListView.separated(
+        itemBuilder: (context, index) => ContactItem(
+          c[index].unpack(),
+          selected: selected == index,
+          onLongPress: () {
+            final v = selected != index ? index : null;
+            widget.onLongSelect?.call(v);
+            selected = v;
+            setState(() {});
+          },
+          onPress: () => widget.onSelect?.call(index),
+        ),
+        separatorBuilder: (context, index) => Divider(),
+        itemCount: c.length,
+      );
+    });
   }
 
   Contact? get selectedContact => selected?.let((s) => contacts.contacts[s]);
@@ -176,7 +182,7 @@ class _ContactEditState extends State<ContactEditPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(s.editContact),
-          actions: [IconButton(onPressed: _save, icon: Icon(Icons.save))],
+          actions: [IconButton(onPressed: _save, icon: Icon(Icons.check))],
         ),
         body: SingleChildScrollView(
             child: Padding(
