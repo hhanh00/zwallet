@@ -207,6 +207,7 @@ class _ContactEditState extends State<ContactEditPage> {
     WarpApi.storeContact(
         widget.id, nameController.text, addressController.text, true);
     contacts.fetchContacts();
+    GoRouter.of(context).pop();
   }
 }
 
