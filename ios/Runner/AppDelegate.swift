@@ -13,6 +13,7 @@ import Flutter
     if #available(iOS 10.0, *) {
         UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
     }
+    WorkmanagerPlugin.registerTask(withIdentifier: "background-sync")
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

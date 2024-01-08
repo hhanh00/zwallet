@@ -27,6 +27,7 @@ message AppSettings {
     bool disclaimer = 26;
     bool custom_send = 27;
     CustomSendSettings custom_send_settings = 28;
+    bool background_sync = 29;
 }
 
 message CoinSettings {

@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:ffi';
-import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:mobx/mobx.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
@@ -23,6 +21,7 @@ var appStore = AppStore();
 class AppStore = _AppStore with _$AppStore;
 
 abstract class _AppStore with Store {
+  bool initialized = false;
   String dbPassword = '';
 
   @observable
@@ -151,12 +150,6 @@ abstract class _SyncStatus2 with Store {
       isRescan = rescan;
       _updateSyncedHeight();
       startSyncedHeight = syncedHeight;
-      if (Platform.isAndroid) {
-        await FlutterForegroundTask.startService(
-          notificationTitle: s.synchronizationInProgress,
-          notificationText: '',
-        );
-      }
       eta.begin(latestHeight!);
       eta.checkpoint(syncedHeight, DateTime.now());
 
@@ -177,7 +170,6 @@ abstract class _SyncStatus2 with Store {
     } finally {
       syncing = false;
       eta.end();
-      if (Platform.isAndroid) await FlutterForegroundTask.stopService();
     }
   }
 

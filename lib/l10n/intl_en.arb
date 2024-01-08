@@ -413,5 +413,6 @@
   "tools": "Tools",
   "deleteAccount": "Delete Account {name}",
   "appData": "App Data",
-  "seedKeys": "Seed & Keys"
+  "seedKeys": "Seed & Keys",
+  "backgroundSync": "Background Sync"
 }

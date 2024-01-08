@@ -1301,4 +1301,7 @@ class SEn extends S {
 
   @override
   String get seedKeys => 'Seed & Keys';
+
+  @override
+  String get backgroundSync => 'Background Sync';
 }

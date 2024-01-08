@@ -1,14 +1,11 @@
 import 'dart:convert';
 
-import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'settings.pb.dart';
 import 'coin/coins.dart';
-import 'generated/intl/messages.dart';
-import 'pages/utils.dart';
 
 var appSettings = AppSettings();
 var coinSettings = CoinSettings();
@@ -32,6 +29,7 @@ extension AppSettingsExtension on AppSettings {
     if (!hasMessageView()) messageView = 2;
     if (!hasCustomSendSettings())
       customSendSettings = CustomSendSettings()..defaults();
+    if (!hasBackgroundSync()) backgroundSync = true;
   }
 
   static AppSettings load(SharedPreferences prefs) {

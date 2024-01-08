@@ -12,6 +12,7 @@ import 'package:quick_actions/quick_actions.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
+import 'package:workmanager/workmanager.dart';
 
 import '../../accounts.dart';
 import 'accounts/send.dart';
@@ -20,7 +21,6 @@ import 'utils.dart';
 import '../appsettings.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
-import '../init.dart';
 import '../settings.pb.dart';
 import '../store2.dart';
 
@@ -47,12 +47,14 @@ class _SplashState extends State<SplashPage> {
         _initWallets();
         await _restoreActive();
         initSyncListener();
-        _initForegroundTask();
+        // _initForegroundTask();
+        _initBackgroundSync();
         _initAccel();
         final protectOpen = appSettings.protectOpen;
         if (protectOpen) {
           await authBarrier(context);
         }
+        appStore.initialized = true;
         if (applinkUri != null)
           handleUri(applinkUri);
         else if (quickAction != null)
@@ -143,9 +145,24 @@ class _SplashState extends State<SplashPage> {
     });
   }
 
-  _initForegroundTask() {
-    if (Platform.isAndroid) initForegroundTask();
-    _setProgress(0.9, 'Initialize Foreground Service');
+  _initBackgroundSync() {
+    if (!isMobile()) return;
+    logger.d('${appSettings.backgroundSync}');
+
+    Workmanager().initialize(
+      backgroundSyncDispatcher,
+    );
+    if (appSettings.backgroundSync)
+      Workmanager().registerPeriodicTask(
+        'sync', 'background-sync',
+        // constraints: Constraints(
+        //   networkType: NetworkType.unmetered,
+        //   requiresCharging: true,
+        //   requiresDeviceIdle: true,
+        // ),
+      );
+    else
+      Workmanager().cancelAll();
   }
 
   _initAccel() {
@@ -230,24 +247,28 @@ Future<Uri?> registerURLHandler() async {
   });
 
   final uri = await _appLinks.getInitialAppLink();
-  // if (uri != null) {
-  //   handleUri(context, uri);
-  // }
   return uri;
 }
 
 void handleQuickAction(BuildContext context, String quickAction) {
-  logger.d('handleQuickAction $quickAction');
   final t = quickAction.split(".");
   final coin = int.parse(t[0]);
   final shortcut = t[1];
-  logger.d('handleQuickAction $coin $shortcut');
   setActiveAccountOf(coin);
-  logger.d('handleQuickAction');
   switch (shortcut) {
     case 'receive':
       GoRouter.of(context).go('/account/pay_uri');
     case 'send':
       GoRouter.of(context).go('/account/quick_send');
   }
+}
+
+@pragma('vm:entry-point')
+void backgroundSyncDispatcher() {
+  if (!appStore.initialized) return;
+  Workmanager().executeTask((task, inputData) async {
+    logger.i("Native called background task: $task");
+    await syncStatus2.sync(false, auto: true);
+    return true;
+  });
 }

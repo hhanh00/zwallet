@@ -4,7 +4,6 @@ import 'accounts.dart';
 import 'appsettings.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -79,34 +78,6 @@ void initNotifications() {
         )
       ],
       debug: false);
-}
-
-void initForegroundTask() {
-  FlutterForegroundTask.init(
-    androidNotificationOptions: AndroidNotificationOptions(
-      channelId: '$APP_NAME Sync',
-      channelName: '$APP_NAME Foreground Notification',
-      channelDescription: 'YWallet Synchronization',
-      channelImportance: NotificationChannelImportance.LOW,
-      priority: NotificationPriority.HIGH,
-      iconData: const NotificationIconData(
-        resType: ResourceType.drawable,
-        resPrefix: ResourcePrefix.ic,
-        name: 'notification',
-      ),
-    ),
-    iosNotificationOptions: const IOSNotificationOptions(
-      showNotification: true,
-      playSound: false,
-    ),
-    foregroundTaskOptions: const ForegroundTaskOptions(
-      isOnceEvent: true,
-      autoRunOnBoot: false,
-      allowWakeLock: true,
-      allowWifiLock: true,
-    ),
-  );
-  FlutterForegroundTask.setOnLockScreenVisibility(false);
 }
 
 class App extends StatefulWidget {

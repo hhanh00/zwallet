@@ -157,6 +157,12 @@ class _GeneralState extends State<GeneralTab>
             initialValue: widget.appSettings.customSend,
             onChanged: (v) => widget.appSettings.customSend = v!,
           ),
+          FormBuilderSwitch(
+            name: 'background_sync',
+            title: Text(s.backgroundSync),
+            initialValue: widget.appSettings.backgroundSync,
+            onChanged: (v) => widget.appSettings.backgroundSync = v!,
+          ),
           FormBuilderDropdown<String>(
             name: 'currency',
             decoration: InputDecoration(label: Text(s.currency)),

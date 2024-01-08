@@ -2578,6 +2578,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Seed & Keys'**
   String get seedKeys;
+
+  /// No description provided for @backgroundSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Sync'**
+  String get backgroundSync;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
