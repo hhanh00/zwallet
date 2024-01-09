@@ -325,31 +325,44 @@ class _ScaffoldBar extends State<ScaffoldBar> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(aa.name),
-        centerTitle: true,
-        actions: [
-          IconButton(onPressed: help, icon: Icon(Icons.help)),
-          IconButton(onPressed: settings, icon: Icon(Icons.settings)),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance), label: s.balance),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: s.messages),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: s.history),
-          BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: s.more),
-        ],
-        currentIndex: widget.shell.currentIndex,
-        onTap: (index) {
-          widget.shell.goBranch(index);
-        },
-      ),
-      body: widget.shell,
-    );
+    final router = GoRouter.of(context);
+    final RouteMatch lastMatch =
+        router.routerDelegate.currentConfiguration.last;
+    final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
+        ? lastMatch.matches
+        : router.routerDelegate.currentConfiguration;
+    final String location = matchList.uri.toString();
+
+    return PopScope(
+        canPop: location == '/account',
+        onPopInvoked: _onPop,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(aa.name),
+            centerTitle: true,
+            actions: [
+              IconButton(onPressed: help, icon: Icon(Icons.help)),
+              IconButton(onPressed: settings, icon: Icon(Icons.settings)),
+            ],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.account_balance), label: s.balance),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.message), label: s.messages),
+              BottomNavigationBarItem(icon: Icon(Icons.list), label: s.history),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.more_horiz), label: s.more),
+            ],
+            currentIndex: widget.shell.currentIndex,
+            onTap: (index) {
+              widget.shell.goBranch(index);
+            },
+          ),
+          body: widget.shell,
+        ));
   }
 
   help() {
@@ -358,6 +371,10 @@ class _ScaffoldBar extends State<ScaffoldBar> {
 
   settings() {
     GoRouter.of(context).push('/settings');
+  }
+
+  _onPop(bool didPop) {
+      router.go('/account');
   }
 }
 
