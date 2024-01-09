@@ -92,7 +92,7 @@ class _MultiQRReaderState extends State<MultiQRReader> {
     return Column(
       children: [
         LinearProgressIndicator(value: value, minHeight: 40),
-        Expanded(child: ReaderWidget(onScan: _onScan)),
+        Expanded(child: ReaderWidget(showGallery: false, onScan: _onScan)),
       ],
     );
   }
