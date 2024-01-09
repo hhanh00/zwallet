@@ -155,11 +155,11 @@ class _SplashState extends State<SplashPage> {
     if (appSettings.backgroundSync)
       Workmanager().registerPeriodicTask(
         'sync', 'background-sync',
-        // constraints: Constraints(
-        //   networkType: NetworkType.unmetered,
-        //   requiresCharging: true,
-        //   requiresDeviceIdle: true,
-        // ),
+        constraints: Constraints(
+          networkType: NetworkType.unmetered,
+          // requiresCharging: true,
+          // requiresDeviceIdle: true,
+        ),
       );
     else
       Workmanager().cancelAll();
