@@ -47,7 +47,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
   }
 
   add() async {
-    await GoRouter.of(context).push('/account/account_manager/new');
+    await GoRouter.of(context).push('/more/account_manager/new');
     _refresh();
     setState(() {});
   }
