@@ -414,5 +414,8 @@
   "deleteAccount": "Delete Account {name}",
   "appData": "App Data",
   "seedKeys": "Seed & Keys",
-  "backgroundSync": "Background Sync"
+  "backgroundSync": "Background Sync",
+  "off": "Off",
+  "wifi": "WiFi",
+  "any": "Any"
 }

@@ -29,7 +29,7 @@ extension AppSettingsExtension on AppSettings {
     if (!hasMessageView()) messageView = 2;
     if (!hasCustomSendSettings())
       customSendSettings = CustomSendSettings()..defaults();
-    if (!hasBackgroundSync()) backgroundSync = true;
+    if (!hasBackgroundSync()) backgroundSync = 1;
   }
 
   static AppSettings load(SharedPreferences prefs) {

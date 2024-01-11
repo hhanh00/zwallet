@@ -157,11 +157,40 @@ class _GeneralState extends State<GeneralTab>
             initialValue: widget.appSettings.customSend,
             onChanged: (v) => widget.appSettings.customSend = v!,
           ),
-          FormBuilderSwitch(
+          if (isMobile()) FormBuilderField(
             name: 'background_sync',
-            title: Text(s.backgroundSync),
-            initialValue: widget.appSettings.backgroundSync,
-            onChanged: (v) => widget.appSettings.backgroundSync = v!,
+            initialValue: Set.of([widget.appSettings.backgroundSync]),
+            onChanged: (v) => widget.appSettings.backgroundSync = v!.first,
+            builder: (field) => InputDecorator(
+              decoration: InputDecoration(
+                label: Text(s.backgroundSync),
+              ),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: SegmentedButton<int>(
+                    selected: field.value!,
+                    showSelectedIcon: false,
+                    onSelectionChanged: (v) => field.didChange(v),
+                    segments: [
+                      ButtonSegment(
+                        value: 0,
+                        label: Text(s.off),
+                      ),
+                      ButtonSegment(
+                        value: 1,
+                        label: Text(s.wifi),
+                      ),
+                      ButtonSegment(
+                        value: 2,
+                        label: Text(s.any),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
           FormBuilderDropdown<String>(
             name: 'currency',
@@ -217,14 +246,15 @@ class _PrivacyState extends State<PrivacyTab>
       key: formKey,
       child: SingleChildScrollView(
         child: Column(children: [
-          if (isMobile()) FormBuilderSwitch(
-            name: 'p_open',
-            title: Text(s.protectOpen),
-            initialValue: widget.appSettings.protectOpen,
-            onChanged: (v) => widget.appSettings.protectOpen = v!,
-            validator: validatePassword,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-          ),
+          if (isMobile())
+            FormBuilderSwitch(
+              name: 'p_open',
+              title: Text(s.protectOpen),
+              initialValue: widget.appSettings.protectOpen,
+              onChanged: (v) => widget.appSettings.protectOpen = v!,
+              validator: validatePassword,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+            ),
           FormBuilderSwitch(
             name: 'p_send',
             title: Text(s.protectSend),
@@ -393,7 +423,8 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
   _customSendSettings() async {
     final customSendSettings = widget.appSettings.customSendSettings;
     final customSendSettingsUpdated = await GoRouter.of(context)
-        .push<CustomSendSettings>('/quick_send_settings', extra: customSendSettings);
+        .push<CustomSendSettings>('/quick_send_settings',
+            extra: customSendSettings);
     if (customSendSettingsUpdated != null) {
       widget.appSettings.customSendSettings = customSendSettingsUpdated;
     }
@@ -594,13 +625,15 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
               SettingsTile.switchTile(
                 title: Text(s.contacts),
                 initialValue: customSendSettings.contacts,
-                onToggle: (v) => setState(() => customSendSettings.contacts = v),
+                onToggle: (v) =>
+                    setState(() => customSendSettings.contacts = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.accounts),
                 initialValue: customSendSettings.accounts,
-                onToggle: (v) => setState(() => customSendSettings.accounts = v),
+                onToggle: (v) =>
+                    setState(() => customSendSettings.accounts = v),
                 activeSwitchColor: cs.primary,
               ),
             ],
@@ -627,19 +660,22 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
               SettingsTile.switchTile(
                 title: Text(s.amountCurrency),
                 initialValue: customSendSettings.amountCurrency,
-                onToggle: (v) => setState(() => customSendSettings.amountCurrency = v),
+                onToggle: (v) =>
+                    setState(() => customSendSettings.amountCurrency = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.amountSlider),
                 initialValue: customSendSettings.amountSlider,
-                onToggle: (v) => setState(() => customSendSettings.amountSlider = v),
+                onToggle: (v) =>
+                    setState(() => customSendSettings.amountSlider = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.deductFee),
                 initialValue: customSendSettings.deductFee,
-                onToggle: (v) => setState(() => customSendSettings.deductFee = v),
+                onToggle: (v) =>
+                    setState(() => customSendSettings.deductFee = v),
                 activeSwitchColor: cs.primary,
               ),
             ],
@@ -650,13 +686,15 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
               SettingsTile.switchTile(
                 title: Text(s.includeReplyTo),
                 initialValue: customSendSettings.replyAddress,
-                onToggle: (v) => setState(() => customSendSettings.replyAddress = v),
+                onToggle: (v) =>
+                    setState(() => customSendSettings.replyAddress = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.subject),
                 initialValue: customSendSettings.memoSubject,
-                onToggle: (v) => setState(() => customSendSettings.memoSubject = v),
+                onToggle: (v) =>
+                    setState(() => customSendSettings.memoSubject = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(

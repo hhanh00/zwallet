@@ -1304,4 +1304,13 @@ class SEs extends S {
 
   @override
   String get backgroundSync => 'Background Sync';
+
+  @override
+  String get off => 'Off';
+
+  @override
+  String get wifi => 'WiFi';
+
+  @override
+  String get any => 'Any';
 }

@@ -41,7 +41,7 @@ class AppSettings extends $pb.GeneratedMessage {
     $core.bool? disclaimer,
     $core.bool? customSend,
     CustomSendSettings? customSendSettings,
-    $core.bool? backgroundSync,
+    $core.int? backgroundSync,
   }) {
     final $result = create();
     if (anchorOffset != null) {
@@ -154,7 +154,7 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOB(26, _omitFieldNames ? '' : 'disclaimer')
     ..aOB(27, _omitFieldNames ? '' : 'customSend')
     ..aOM<CustomSendSettings>(28, _omitFieldNames ? '' : 'customSendSettings', subBuilder: CustomSendSettings.create)
-    ..aOB(29, _omitFieldNames ? '' : 'backgroundSync')
+    ..a<$core.int>(30, _omitFieldNames ? '' : 'backgroundSync', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
   ;
 
@@ -408,14 +408,14 @@ class AppSettings extends $pb.GeneratedMessage {
   @$pb.TagNumber(28)
   CustomSendSettings ensureCustomSendSettings() => $_ensure(24);
 
-  @$pb.TagNumber(29)
-  $core.bool get backgroundSync => $_getBF(25);
-  @$pb.TagNumber(29)
-  set backgroundSync($core.bool v) { $_setBool(25, v); }
-  @$pb.TagNumber(29)
+  @$pb.TagNumber(30)
+  $core.int get backgroundSync => $_getIZ(25);
+  @$pb.TagNumber(30)
+  set backgroundSync($core.int v) { $_setUnsignedInt32(25, v); }
+  @$pb.TagNumber(30)
   $core.bool hasBackgroundSync() => $_has(25);
-  @$pb.TagNumber(29)
-  void clearBackgroundSync() => clearField(29);
+  @$pb.TagNumber(30)
+  void clearBackgroundSync() => clearField(30);
 }
 
 class CoinSettings extends $pb.GeneratedMessage {

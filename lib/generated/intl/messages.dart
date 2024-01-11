@@ -2584,6 +2584,24 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Background Sync'**
   String get backgroundSync;
+
+  /// No description provided for @off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get off;
+
+  /// No description provided for @wifi.
+  ///
+  /// In en, this message translates to:
+  /// **'WiFi'**
+  String get wifi;
+
+  /// No description provided for @any.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get any;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

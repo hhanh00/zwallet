@@ -145,26 +145,6 @@ class _SplashState extends State<SplashPage> {
     });
   }
 
-  _initBackgroundSync() {
-    if (!isMobile()) return;
-    logger.d('${appSettings.backgroundSync}');
-
-    Workmanager().initialize(
-      backgroundSyncDispatcher,
-    );
-    if (appSettings.backgroundSync)
-      Workmanager().registerPeriodicTask(
-        'sync', 'background-sync',
-        constraints: Constraints(
-          networkType: NetworkType.unmetered,
-          // requiresCharging: true,
-          // requiresDeviceIdle: true,
-        ),
-      );
-    else
-      Workmanager().cancelAll();
-  }
-
   _initAccel() {
     if (isMobile()) accelerometerEvents.listen(handleAccel);
   }
@@ -172,6 +152,27 @@ class _SplashState extends State<SplashPage> {
   void _setProgress(double progress, String message) {
     print("$progress $message");
     progressKey.currentState!.setValue(progress, message);
+  }
+
+  _initBackgroundSync() {
+    if (!isMobile()) return;
+    logger.d('${appSettings.backgroundSync}');
+
+    Workmanager().initialize(
+      backgroundSyncDispatcher,
+    );
+    if (appSettings.backgroundSync != 0)
+      Workmanager().registerPeriodicTask(
+        'sync',
+        'background-sync',
+        constraints: Constraints(
+          networkType: appSettings.backgroundSync == 1
+              ? NetworkType.unmetered
+              : NetworkType.connected,
+        ),
+      );
+    else
+      Workmanager().cancelAll();
   }
 }
 
