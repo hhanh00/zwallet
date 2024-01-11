@@ -15,8 +15,8 @@ import '../scan.dart';
 import '../utils.dart';
 
 class ContactsPage extends StatefulWidget {
-  final bool selectable;
-  ContactsPage({this.selectable = false}) {
+  final bool editable;
+  ContactsPage({this.editable = false}) {
     contacts.fetchContacts();
   }
 
@@ -45,7 +45,7 @@ class _ContactsState extends State<ContactsPage> {
       ),
       body: ContactList(
         key: listKey,
-        onSelect: widget.selectable ? (v) => _select(v!) : _copyToClipboard,
+        onSelect: widget.editable ? (v) => _select(v!) : _copyToClipboard,
         onLongSelect: (v) => setState(() => selected = v != null),
       ),
     );

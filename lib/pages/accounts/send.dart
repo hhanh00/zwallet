@@ -131,7 +131,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         IconButton(
             onPressed: () async {
               final c = await GoRouter.of(context)
-                  .push<Contact>('/more/contacts?selectable=1');
+                  .push<Contact>('/account/quick_send/contacts');
               logger.d('$c');
               c?.let((c) => onChanged?.call(c.address!));
             },
@@ -141,7 +141,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         IconButton(
             onPressed: () async {
               final a = await GoRouter.of(context)
-                  .push<Account>('/account/account_manager?main=0');
+                  .push<Account>('/account/quick_send/accounts');
               a?.let((a) => onChanged?.call(a.address!));
             },
             icon: FaIcon(FontAwesomeIcons.users)),

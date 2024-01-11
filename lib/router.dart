@@ -67,17 +67,6 @@ final router = GoRouter(
               },
               routes: [
                 GoRoute(
-                    path: 'account_manager',
-                    builder: (context, state) => AccountManagerPage(
-                        main:
-                            (state.uri.queryParameters['main'] ?? '1') != '0'),
-                    routes: [
-                      GoRoute(
-                          path: 'new',
-                          builder: (context, state) =>
-                              NewImportAccountPage(first: false)),
-                    ]),
-                GoRoute(
                     path: 'multi_pay',
                     builder: (context, state) => MultiPayPage(),
                     routes: [
@@ -114,16 +103,28 @@ final router = GoRouter(
                   builder: (context, state) => RescanPage(),
                 ),
                 GoRoute(
-                    path: 'quick_send',
-                    builder: (context, state) {
-                      bool custom = state.uri.queryParameters['custom'] == '1';
-                      custom ^= appSettings.customSend;
-                      return QuickSendPage(
-                        custom: custom,
-                        single: true,
-                        sendContext: state.extra as SendContext?,
-                      );
-                    }),
+                  path: 'quick_send',
+                  builder: (context, state) {
+                    bool custom = state.uri.queryParameters['custom'] == '1';
+                    custom ^= appSettings.customSend;
+                    return QuickSendPage(
+                      custom: custom,
+                      single: true,
+                      sendContext: state.extra as SendContext?,
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'contacts',
+                      builder: (context, state) => ContactsPage(editable: true),
+                    ),
+                    GoRoute(
+                      path: 'accounts',
+                      builder: (context, state) =>
+                          AccountManagerPage(editable: true),
+                    ),
+                  ],
+                ),
                 GoRoute(
                   path: 'pay_uri',
                   builder: (context, state) => PaymentURIPage(),
@@ -165,10 +166,18 @@ final router = GoRouter(
                 builder: (context, state) => MorePage(),
                 routes: [
                   GoRoute(
+                      path: 'account_manager',
+                      builder: (context, state) =>
+                          AccountManagerPage(editable: true),
+                      routes: [
+                        GoRoute(
+                            path: 'new',
+                            builder: (context, state) =>
+                                NewImportAccountPage(first: false)),
+                      ]),
+                  GoRoute(
                       path: 'contacts',
-                      builder: (context, state) => ContactsPage(
-                          selectable:
-                              state.uri.queryParameters['selectable'] != null),
+                      builder: (context, state) => ContactsPage(editable: true),
                       routes: [
                         GoRoute(
                           path: 'add',
@@ -374,7 +383,7 @@ class _ScaffoldBar extends State<ScaffoldBar> {
   }
 
   _onPop(bool didPop) {
-      router.go('/account');
+    router.go('/account');
   }
 }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:YWallet/appsettings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +18,7 @@ class MorePage extends StatelessWidget {
     final moreSections = [
       MoreSection(title: Text(s.account), tiles: [
         MoreTile(
-            url: '/account/account_manager',
+            url: '/more/account_manager',
             icon: FaIcon(FontAwesomeIcons.users),
             text: s.accounts),
         MoreTile(
@@ -105,16 +107,16 @@ class MorePage extends StatelessWidget {
       )
     ];
 
-    final sections = moreSections.map((s) => 
-      SettingsSection(
-        title: s.title,
-        tiles: s.tiles.map((t) => 
-          SettingsTile.navigation(
-            leading: SizedBox(width: 32, child: t.icon),
-            onPressed: (context) => onNav(context, t),
-            title: Text(t.text))
-        ).toList())
-    ).toList();
+    final sections = moreSections
+        .map((s) => SettingsSection(
+            title: s.title,
+            tiles: s.tiles
+                .map((t) => SettingsTile.navigation(
+                    leading: SizedBox(width: 32, child: t.icon),
+                    onPressed: (context) => onNav(context, t),
+                    title: Text(t.text)))
+                .toList()))
+        .toList();
 
     return SettingsList(sections: sections);
   }
@@ -129,7 +131,12 @@ class MorePage extends StatelessWidget {
         final auth = await authenticate(context, s.secured);
         if (!auth) return;
       }
-      GoRouter.of(context).push(tile.url);
+      final router = GoRouter.of(context);
+      await router.push(tile.url);
+      if (tile.url == '/more/account_manager')
+        Timer(Durations.short1, () {
+          router.go('/account');
+        });
     }
   }
 }
