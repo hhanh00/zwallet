@@ -365,7 +365,7 @@ class _ScaffoldBar extends State<ScaffoldBar> {
                   icon: Icon(Icons.account_balance), label: s.balance),
               BottomNavigationBarItem(
                   icon: Icon(Icons.message), label: s.messages),
-              BottomNavigationBarItem(icon: Icon(Icons.list), label: s.history),
+              BottomNavigationBarItem(icon: Icon(Icons.view_list), label: s.history),
               BottomNavigationBarItem(
                   icon: Icon(Icons.contacts), label: s.contacts),
               BottomNavigationBarItem(

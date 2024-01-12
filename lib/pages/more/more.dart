@@ -128,8 +128,8 @@ class MorePage extends StatelessWidget {
         if (!auth) return;
       }
       final router = GoRouter.of(context);
-      await router.push(tile.url);
-      if (tile.url == '/more/account_manager')
+      final res = await router.push(tile.url);
+      if (tile.url == '/more/account_manager' && res != null)
         Timer(Durations.short1, () {
           router.go('/account');
         });
