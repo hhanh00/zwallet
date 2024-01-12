@@ -11,8 +11,8 @@ import '../../generated/intl/messages.dart';
 import '../utils.dart';
 
 class AccountManagerPage extends StatefulWidget {
-  final bool editable;
-  AccountManagerPage({required this.editable});
+  final bool main;
+  AccountManagerPage({required this.main});
   @override
   State<StatefulWidget> createState() => _AccountManagerState();
 }
@@ -67,7 +67,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
 
   select(int index) {
     final a = accounts[index];
-    if (widget.editable) {
+    if (widget.main) {
       setActiveAccount(a.coin, a.id);
       Future(() async {
         final prefs = await SharedPreferences.getInstance();

@@ -34,10 +34,6 @@ class MorePage extends StatelessWidget {
             icon: FaIcon(FontAwesomeIcons.peopleArrows),
             text: s.multiPay,
             secured: appSettings.protectSend),
-        MoreTile(
-            url: '/more/contacts',
-            icon: FaIcon(FontAwesomeIcons.addressBook),
-            text: s.contacts),
       ]),
       MoreSection(title: Text(s.backup), tiles: [
         MoreTile(

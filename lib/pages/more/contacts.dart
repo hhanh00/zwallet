@@ -15,8 +15,8 @@ import '../scan.dart';
 import '../utils.dart';
 
 class ContactsPage extends StatefulWidget {
-  final bool editable;
-  ContactsPage({this.editable = false}) {
+  final bool main;
+  ContactsPage({this.main = false}) {
     contacts.fetchContacts();
   }
 
@@ -45,7 +45,7 @@ class _ContactsState extends State<ContactsPage> {
       ),
       body: ContactList(
         key: listKey,
-        onSelect: widget.editable ? (v) => _select(v!) : _copyToClipboard,
+        onSelect: widget.main ? _copyToClipboard : (v) => _select(v!),
         onLongSelect: (v) => setState(() => selected = v != null),
       ),
     );
@@ -53,7 +53,8 @@ class _ContactsState extends State<ContactsPage> {
 
   _select(int v) {
     final c = contacts.contacts[v];
-    GoRouter.of(context).pop(c);
+    if (!widget.main)
+      GoRouter.of(context).pop(c);
   }
 
   _copyToClipboard(int? v) {
@@ -76,13 +77,13 @@ class _ContactsState extends State<ContactsPage> {
   }
 
   _add() {
-    GoRouter.of(context).push('/more/contacts/add');
+    GoRouter.of(context).push('/contacts/add');
   }
 
   _edit() {
     final c = listKey.currentState!.selectedContact!;
     final id = c.id;
-    GoRouter.of(context).push('/more/contacts/edit?id=$id');
+    GoRouter.of(context).push('/contacts/edit?id=$id');
   }
 
   _delete() async {

@@ -116,12 +116,12 @@ final router = GoRouter(
                   routes: [
                     GoRoute(
                       path: 'contacts',
-                      builder: (context, state) => ContactsPage(editable: true),
+                      builder: (context, state) => ContactsPage(main: false),
                     ),
                     GoRoute(
                       path: 'accounts',
                       builder: (context, state) =>
-                          AccountManagerPage(editable: true),
+                          AccountManagerPage(main: false),
                     ),
                   ],
                 ),
@@ -162,32 +162,36 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
+                path: '/contacts',
+                builder: (context, state) => ContactsPage(main: true),
+                routes: [
+                  GoRoute(
+                    path: 'add',
+                    builder: (context, state) => ContactAddPage(),
+                  ),
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) => ContactEditPage(
+                        int.parse(state.uri.queryParameters['id']!)),
+                  ),
+                ]),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
                 path: '/more',
                 builder: (context, state) => MorePage(),
                 routes: [
                   GoRoute(
                       path: 'account_manager',
                       builder: (context, state) =>
-                          AccountManagerPage(editable: true),
+                          AccountManagerPage(main: true),
                       routes: [
                         GoRoute(
                             path: 'new',
                             builder: (context, state) =>
                                 NewImportAccountPage(first: false)),
-                      ]),
-                  GoRoute(
-                      path: 'contacts',
-                      builder: (context, state) => ContactsPage(editable: true),
-                      routes: [
-                        GoRoute(
-                          path: 'add',
-                          builder: (context, state) => ContactAddPage(),
-                        ),
-                        GoRoute(
-                          path: 'edit',
-                          builder: (context, state) => ContactEditPage(
-                              int.parse(state.uri.queryParameters['id']!)),
-                        ),
                       ]),
                   GoRoute(
                       path: 'cold',
@@ -362,6 +366,8 @@ class _ScaffoldBar extends State<ScaffoldBar> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.message), label: s.messages),
               BottomNavigationBarItem(icon: Icon(Icons.list), label: s.history),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.contacts), label: s.contacts),
               BottomNavigationBarItem(
                   icon: Icon(Icons.more_horiz), label: s.more),
             ],
