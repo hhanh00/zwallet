@@ -251,7 +251,7 @@ void handleAccel(AccelerometerEvent event) {
 
 double getScreenSize(BuildContext context) {
   final size = MediaQuery.of(context).size;
-  return min(size.height, size.width);
+  return min(size.height - 200, size.width);
 }
 
 Future<FilePickerResult?> pickFile() async {

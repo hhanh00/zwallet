@@ -35,7 +35,7 @@ class ShowQRPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             LayoutBuilder(builder: (context, constraints) {
-              final size = getScreenSize(context) * 0.5;
+              final size = getScreenSize(context) * 0.8;
               return Align(
                   child: QrImage(
                       data: text, backgroundColor: Colors.white, size: size));

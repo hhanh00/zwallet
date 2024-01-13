@@ -743,7 +743,7 @@ class _AnimatedQRState extends State<AnimatedQR> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final idx = index % widget.chunks.length;
-    final qrSize = getScreenSize(context) - 250;
+    final qrSize = getScreenSize(context) * 0.8;
     return Center(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
