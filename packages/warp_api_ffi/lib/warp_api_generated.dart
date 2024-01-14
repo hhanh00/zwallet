@@ -526,6 +526,28 @@ class NativeLibrary {
   late final _ledger_get_address =
       _ledger_get_addressPtr.asFunction<CResult_____c_char Function()>();
 
+  CResult_____c_char convert_t2_address(
+    int coin,
+    ffi.Pointer<ffi.Char> address,
+    ffi.Pointer<ffi.Char> prefix,
+    int from,
+  ) {
+    return _convert_t2_address(
+      coin,
+      address,
+      prefix,
+      from,
+    );
+  }
+
+  late final _convert_t2_addressPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_____c_char Function(ffi.Uint8, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>, bool)>>('convert_t2_address');
+  late final _convert_t2_address = _convert_t2_addressPtr.asFunction<
+      CResult_____c_char Function(
+          int, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
+
   void skip_to_last_height(
     int coin,
   ) {
@@ -1671,6 +1693,47 @@ class NativeLibrary {
   late final _set_property = _set_propertyPtr.asFunction<
       CResult_u8 Function(int, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
+  CResult_____c_char get_account_property(
+    int coin,
+    int account,
+    ffi.Pointer<ffi.Char> name,
+  ) {
+    return _get_account_property(
+      coin,
+      account,
+      name,
+    );
+  }
+
+  late final _get_account_propertyPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_____c_char Function(ffi.Uint8, ffi.Uint32,
+              ffi.Pointer<ffi.Char>)>>('get_account_property');
+  late final _get_account_property = _get_account_propertyPtr.asFunction<
+      CResult_____c_char Function(int, int, ffi.Pointer<ffi.Char>)>();
+
+  CResult_u8 set_account_property(
+    int coin,
+    int account,
+    ffi.Pointer<ffi.Char> name,
+    ffi.Pointer<ffi.Char> value,
+  ) {
+    return _set_account_property(
+      coin,
+      account,
+      name,
+      value,
+    );
+  }
+
+  late final _set_account_propertyPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_u8 Function(ffi.Uint8, ffi.Uint32, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('set_account_property');
+  late final _set_account_property = _set_account_propertyPtr.asFunction<
+      CResult_u8 Function(
+          int, int, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+
   CResult_____c_char ledger_send(
     int coin,
     ffi.Pointer<ffi.Char> tx_plan,
@@ -1945,9 +2008,9 @@ const int AGEKeys_VT_PK = 6;
 
 const int Servers_VT_URLS = 4;
 
-const int Progress_VT_TRIAL_DECRYPTIONS = 6;
+const int Progress_VT_TRIAL_DECRYPTIONS = 8;
 
-const int Progress_VT_DOWNLOADED = 8;
+const int Progress_VT_DOWNLOADED = 10;
 
 const int KeyPack_VT_T_ADDR = 4;
 

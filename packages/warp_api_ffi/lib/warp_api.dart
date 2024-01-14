@@ -759,6 +759,15 @@ class WarpApi {
         warp_api_lib.set_property(coin, toNative(name), toNative(value)));
   }
 
+  static String getAccountProperty(int coin, int account, String name) {
+    return unwrapResultString(warp_api_lib.get_account_property(coin, account, toNative(name)));
+  }
+
+  static void setAccountProperty(int coin, int account, String name, String value) {
+    unwrapResultU8(
+        warp_api_lib.set_account_property(coin, account, toNative(name), toNative(value)));
+  }
+
   static int getAvailableAddrs(int coin, int account) {
     if (account == 0) return 0;
     return unwrapResultU8(warp_api_lib.get_available_addrs(coin, account));
