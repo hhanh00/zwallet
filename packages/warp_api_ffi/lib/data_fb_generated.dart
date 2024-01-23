@@ -4391,20 +4391,22 @@ class Recipient {
   final int _bcOffset;
 
   String? get address => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
-  int get amount => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 6, 0);
-  bool get feeIncluded => const fb.BoolReader().vTableGet(_bc, _bcOffset, 8, false);
-  bool get replyTo => const fb.BoolReader().vTableGet(_bc, _bcOffset, 10, false);
-  String? get subject => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 12);
-  String? get memo => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 14);
-  int get maxAmountPerNote => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 16, 0);
+  int get pools => const fb.Uint8Reader().vTableGet(_bc, _bcOffset, 6, 0);
+  int get amount => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 8, 0);
+  bool get feeIncluded => const fb.BoolReader().vTableGet(_bc, _bcOffset, 10, false);
+  bool get replyTo => const fb.BoolReader().vTableGet(_bc, _bcOffset, 12, false);
+  String? get subject => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 14);
+  String? get memo => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 16);
+  int get maxAmountPerNote => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 18, 0);
 
   @override
   String toString() {
-    return 'Recipient{address: ${address}, amount: ${amount}, feeIncluded: ${feeIncluded}, replyTo: ${replyTo}, subject: ${subject}, memo: ${memo}, maxAmountPerNote: ${maxAmountPerNote}}';
+    return 'Recipient{address: ${address}, pools: ${pools}, amount: ${amount}, feeIncluded: ${feeIncluded}, replyTo: ${replyTo}, subject: ${subject}, memo: ${memo}, maxAmountPerNote: ${maxAmountPerNote}}';
   }
 
   RecipientT unpack() => RecipientT(
       address: address,
+      pools: pools,
       amount: amount,
       feeIncluded: feeIncluded,
       replyTo: replyTo,
@@ -4420,6 +4422,7 @@ class Recipient {
 
 class RecipientT implements fb.Packable {
   String? address;
+  int pools;
   int amount;
   bool feeIncluded;
   bool replyTo;
@@ -4429,6 +4432,7 @@ class RecipientT implements fb.Packable {
 
   RecipientT({
       this.address,
+      this.pools = 0,
       this.amount = 0,
       this.feeIncluded = false,
       this.replyTo = false,
@@ -4444,20 +4448,21 @@ class RecipientT implements fb.Packable {
         : fbBuilder.writeString(subject!);
     final int? memoOffset = memo == null ? null
         : fbBuilder.writeString(memo!);
-    fbBuilder.startTable(7);
+    fbBuilder.startTable(8);
     fbBuilder.addOffset(0, addressOffset);
-    fbBuilder.addUint64(1, amount);
-    fbBuilder.addBool(2, feeIncluded);
-    fbBuilder.addBool(3, replyTo);
-    fbBuilder.addOffset(4, subjectOffset);
-    fbBuilder.addOffset(5, memoOffset);
-    fbBuilder.addUint64(6, maxAmountPerNote);
+    fbBuilder.addUint8(1, pools);
+    fbBuilder.addUint64(2, amount);
+    fbBuilder.addBool(3, feeIncluded);
+    fbBuilder.addBool(4, replyTo);
+    fbBuilder.addOffset(5, subjectOffset);
+    fbBuilder.addOffset(6, memoOffset);
+    fbBuilder.addUint64(7, maxAmountPerNote);
     return fbBuilder.endTable();
   }
 
   @override
   String toString() {
-    return 'RecipientT{address: ${address}, amount: ${amount}, feeIncluded: ${feeIncluded}, replyTo: ${replyTo}, subject: ${subject}, memo: ${memo}, maxAmountPerNote: ${maxAmountPerNote}}';
+    return 'RecipientT{address: ${address}, pools: ${pools}, amount: ${amount}, feeIncluded: ${feeIncluded}, replyTo: ${replyTo}, subject: ${subject}, memo: ${memo}, maxAmountPerNote: ${maxAmountPerNote}}';
   }
 }
 
@@ -4475,35 +4480,39 @@ class RecipientBuilder {
   final fb.Builder fbBuilder;
 
   void begin() {
-    fbBuilder.startTable(7);
+    fbBuilder.startTable(8);
   }
 
   int addAddressOffset(int? offset) {
     fbBuilder.addOffset(0, offset);
     return fbBuilder.offset;
   }
+  int addPools(int? pools) {
+    fbBuilder.addUint8(1, pools);
+    return fbBuilder.offset;
+  }
   int addAmount(int? amount) {
-    fbBuilder.addUint64(1, amount);
+    fbBuilder.addUint64(2, amount);
     return fbBuilder.offset;
   }
   int addFeeIncluded(bool? feeIncluded) {
-    fbBuilder.addBool(2, feeIncluded);
+    fbBuilder.addBool(3, feeIncluded);
     return fbBuilder.offset;
   }
   int addReplyTo(bool? replyTo) {
-    fbBuilder.addBool(3, replyTo);
+    fbBuilder.addBool(4, replyTo);
     return fbBuilder.offset;
   }
   int addSubjectOffset(int? offset) {
-    fbBuilder.addOffset(4, offset);
-    return fbBuilder.offset;
-  }
-  int addMemoOffset(int? offset) {
     fbBuilder.addOffset(5, offset);
     return fbBuilder.offset;
   }
+  int addMemoOffset(int? offset) {
+    fbBuilder.addOffset(6, offset);
+    return fbBuilder.offset;
+  }
   int addMaxAmountPerNote(int? maxAmountPerNote) {
-    fbBuilder.addUint64(6, maxAmountPerNote);
+    fbBuilder.addUint64(7, maxAmountPerNote);
     return fbBuilder.offset;
   }
 
@@ -4514,6 +4523,7 @@ class RecipientBuilder {
 
 class RecipientObjectBuilder extends fb.ObjectBuilder {
   final String? _address;
+  final int? _pools;
   final int? _amount;
   final bool? _feeIncluded;
   final bool? _replyTo;
@@ -4523,6 +4533,7 @@ class RecipientObjectBuilder extends fb.ObjectBuilder {
 
   RecipientObjectBuilder({
     String? address,
+    int? pools,
     int? amount,
     bool? feeIncluded,
     bool? replyTo,
@@ -4531,6 +4542,7 @@ class RecipientObjectBuilder extends fb.ObjectBuilder {
     int? maxAmountPerNote,
   })
       : _address = address,
+        _pools = pools,
         _amount = amount,
         _feeIncluded = feeIncluded,
         _replyTo = replyTo,
@@ -4547,14 +4559,15 @@ class RecipientObjectBuilder extends fb.ObjectBuilder {
         : fbBuilder.writeString(_subject!);
     final int? memoOffset = _memo == null ? null
         : fbBuilder.writeString(_memo!);
-    fbBuilder.startTable(7);
+    fbBuilder.startTable(8);
     fbBuilder.addOffset(0, addressOffset);
-    fbBuilder.addUint64(1, _amount);
-    fbBuilder.addBool(2, _feeIncluded);
-    fbBuilder.addBool(3, _replyTo);
-    fbBuilder.addOffset(4, subjectOffset);
-    fbBuilder.addOffset(5, memoOffset);
-    fbBuilder.addUint64(6, _maxAmountPerNote);
+    fbBuilder.addUint8(1, _pools);
+    fbBuilder.addUint64(2, _amount);
+    fbBuilder.addBool(3, _feeIncluded);
+    fbBuilder.addBool(4, _replyTo);
+    fbBuilder.addOffset(5, subjectOffset);
+    fbBuilder.addOffset(6, memoOffset);
+    fbBuilder.addUint64(7, _maxAmountPerNote);
     return fbBuilder.endTable();
   }
 

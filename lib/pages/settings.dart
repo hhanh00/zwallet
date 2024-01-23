@@ -38,11 +38,15 @@ class _SettingsState extends State<SettingsPage>
   final privacyKey = GlobalKey<_PrivacyState>();
   final viewKey = GlobalKey<_ViewState>();
   final coinKey = GlobalKey<_CoinState>();
-  final AppSettings appSettings = app.appSettings.deepCopy();
+  final appSettings = app.appSettings.deepCopy();
+  final coinSettings = app.coinSettings.deepCopy();
 
   @override
   void initState() {
     super.initState();
+    coinSettings.lwd =
+        coinSettings.lwd.deepCopy(); // otherwise they cannot be edited
+    coinSettings.explorer = coinSettings.explorer.deepCopy();
     if (currencies == null) {
       currencies = [];
       Future(() async {
@@ -84,7 +88,8 @@ class _SettingsState extends State<SettingsPage>
             SingleChildScrollView(
                 child: PrivacyTab(appSettings, key: privacyKey)),
             SingleChildScrollView(child: ViewTab(appSettings, key: viewKey)),
-            SingleChildScrollView(child: CoinTab(widget.coin, key: coinKey)),
+            SingleChildScrollView(
+                child: CoinTab(widget.coin, coinSettings, key: coinKey)),
             SingleChildScrollView(child: ThemeEditorTab(appSettings)),
           ],
         ),
@@ -96,7 +101,7 @@ class _SettingsState extends State<SettingsPage>
     if (validate()) {
       final prefs = await SharedPreferences.getInstance();
       await appSettings.save(prefs);
-      coinKey.currentState?.let((c) => c.coinSettings.save(aa.coin));
+      coinKey.currentState?.let((c) => coinSettings.save(aa.coin));
       app.appSettings = app.AppSettingsExtension.load(prefs);
       app.coinSettings = app.CoinSettingsExtension.load(aa.coin);
       final serverUrl = resolveURL(coins[aa.coin], app.coinSettings);
@@ -157,41 +162,42 @@ class _GeneralState extends State<GeneralTab>
             initialValue: widget.appSettings.customSend,
             onChanged: (v) => widget.appSettings.customSend = v!,
           ),
-          if (isMobile()) FormBuilderField(
-            name: 'background_sync',
-            initialValue: Set.of([widget.appSettings.backgroundSync]),
-            onChanged: (v) => widget.appSettings.backgroundSync = v!.first,
-            builder: (field) => InputDecorator(
-              decoration: InputDecoration(
-                label: Text(s.backgroundSync),
-              ),
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: SegmentedButton<int>(
-                    selected: field.value!,
-                    showSelectedIcon: false,
-                    onSelectionChanged: (v) => field.didChange(v),
-                    segments: [
-                      ButtonSegment(
-                        value: 0,
-                        label: Text(s.off),
-                      ),
-                      ButtonSegment(
-                        value: 1,
-                        label: Text(s.wifi),
-                      ),
-                      ButtonSegment(
-                        value: 2,
-                        label: Text(s.any),
-                      ),
-                    ],
+          if (isMobile())
+            FormBuilderField(
+              name: 'background_sync',
+              initialValue: Set.of([widget.appSettings.backgroundSync]),
+              onChanged: (v) => widget.appSettings.backgroundSync = v!.first,
+              builder: (field) => InputDecorator(
+                decoration: InputDecoration(
+                  label: Text(s.backgroundSync),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: SegmentedButton<int>(
+                      selected: field.value!,
+                      showSelectedIcon: false,
+                      onSelectionChanged: (v) => field.didChange(v),
+                      segments: [
+                        ButtonSegment(
+                          value: 0,
+                          label: Text(s.off),
+                        ),
+                        ButtonSegment(
+                          value: 1,
+                          label: Text(s.wifi),
+                        ),
+                        ButtonSegment(
+                          value: 2,
+                          label: Text(s.any),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
           FormBuilderDropdown<String>(
             name: 'currency',
             decoration: InputDecoration(label: Text(s.currency)),
@@ -422,12 +428,8 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
 
   _customSendSettings() async {
     final customSendSettings = widget.appSettings.customSendSettings;
-    final customSendSettingsUpdated = await GoRouter.of(context)
-        .push<CustomSendSettings>('/quick_send_settings',
-            extra: customSendSettings);
-    if (customSendSettingsUpdated != null) {
-      widget.appSettings.customSendSettings = customSendSettingsUpdated;
-    }
+    await GoRouter.of(context)
+        .push('/quick_send_settings', extra: customSendSettings);
   }
 
   @override
@@ -436,30 +438,20 @@ class _ViewState extends State<ViewTab> with AutomaticKeepAliveClientMixin {
 
 class CoinTab extends StatefulWidget {
   final int coin;
-  CoinTab(this.coin, {super.key});
+  final CoinSettings coinSettings;
+  CoinTab(this.coin, this.coinSettings, {super.key});
   @override
   State<StatefulWidget> createState() => _CoinState();
 }
 
 class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
   final formKey = GlobalKey<FormBuilderState>();
-  late final CoinSettings coinSettings;
-
-  @override
-  void initState() {
-    super.initState();
-    coinSettings = app.CoinSettingsExtension.load(aa.coin);
-    coinSettings.lwd =
-        coinSettings.lwd.deepCopy(); // otherwise they cannot be edited
-    coinSettings.explorer = coinSettings.explorer.deepCopy();
-  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final s = S.of(context);
     final t = Theme.of(context);
-    final small = t.textTheme.labelMedium!;
     final c = coins[widget.coin];
     final servers = c.lwd
         .asMap()
@@ -473,7 +465,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
         .map((kv) =>
             FormBuilderFieldOption(value: kv.key, child: Text(kv.value)))
         .toList();
-    final fee = amountToString2(coinSettings.fee.toInt());
+    final fee = amountToString2(widget.coinSettings.fee.toInt());
 
     return FormBuilder(
         key: formKey,
@@ -481,41 +473,42 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
           if (aa.hasUA)
             FormBuilderSwitch(
               name: 'spam',
-              initialValue: coinSettings.spamFilter,
               title: Text(s.antispamFilter),
-              onChanged: (v) => coinSettings.spamFilter = v!,
+              initialValue: widget.coinSettings.spamFilter,
+              onChanged: (v) => widget.coinSettings.spamFilter = v!,
             ),
           FormBuilderSwitch(
             name: 'auto_fee',
-            initialValue: !coinSettings.manualFee,
             title: Text(s.autoFee),
+            initialValue: !widget.coinSettings.manualFee,
             onChanged: (v) => setState(() {
               // need rebuild
-              coinSettings.manualFee = !v!;
+              widget.coinSettings.manualFee = !v!;
             }),
           ),
-          if (coinSettings.manualFee)
+          if (widget.coinSettings.manualFee)
             FormBuilderTextField(
               name: 'custom_fee',
               decoration: InputDecoration(label: Text(s.fee)),
               initialValue: fee,
+              onChanged: (v) =>
+                  widget.coinSettings.fee = Int64(stringToAmount(v!)),
               keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onChanged: (v) => coinSettings.fee = Int64(stringToAmount(v!)),
             ),
           FormBuilderRadioGroup<int>(
             name: 'server',
             orientation: OptionsOrientation.vertical,
             decoration: InputDecoration(label: Text(s.server)),
-            initialValue: coinSettings.lwd.index,
-            onChanged: (v) => coinSettings.lwd.index = v!,
+            initialValue: widget.coinSettings.lwd.index,
+            onChanged: (v) => widget.coinSettings.lwd.index = v!,
             options: [
               ...servers,
               FormBuilderFieldOption(
                   value: -1,
                   child: FormBuilderTextField(
                     name: 'server_custom',
-                    initialValue: coinSettings.lwd.customURL,
-                    onChanged: (v) => coinSettings.lwd.customURL = v!,
+                    initialValue: widget.coinSettings.lwd.customURL,
+                    onChanged: (v) => widget.coinSettings.lwd.customURL = v!,
                     style: t.textTheme.bodyMedium,
                   )),
             ],
@@ -524,62 +517,44 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
             name: 'explorer',
             orientation: OptionsOrientation.vertical,
             decoration: InputDecoration(label: Text(s.blockExplorer)),
-            initialValue: coinSettings.explorer.index,
-            onChanged: (v) => coinSettings.explorer.index = v!,
+            initialValue: widget.coinSettings.explorer.index,
+            onChanged: (v) => widget.coinSettings.explorer.index = v!,
             options: [
               ...explorers,
               FormBuilderFieldOption(
                   value: -1,
                   child: FormBuilderTextField(
                     name: 'explorer_custom',
-                    initialValue: coinSettings.explorer.customURL,
-                    onChanged: (v) => coinSettings.explorer.customURL = v!,
+                    initialValue: widget.coinSettings.explorer.customURL,
+                    onChanged: (v) =>
+                        widget.coinSettings.explorer.customURL = v!,
                     style: t.textTheme.bodyMedium,
                   )),
             ],
           ),
           if (aa.hasUA)
             FieldUA(
-              coinSettings.uaType,
+              widget.coinSettings.uaType,
+              onChanged: (v) => widget.coinSettings.uaType = v!,
               label: s.mainUA,
               name: 'main_address',
-              onChanged: (v) => coinSettings.uaType = v!,
               radio: false,
             ),
           FieldUA(
-            coinSettings.replyUa,
+            widget.coinSettings.replyUa,
+            onChanged: (v) => widget.coinSettings.replyUa = v!,
             label: s.replyUA,
             name: 'reply_address',
-            onChanged: (v) => coinSettings.replyUa = v!,
             radio: !aa.hasUA,
           ),
           if (aa.hasUA)
-            FormBuilderField(
-              name: 'z_factor',
-              initialValue: coinSettings.zFactor,
-              builder: (field) => InputDecorator(
-                  decoration: InputDecoration(label: Text(s.zFactor)),
-                  child: Padding(
-                      padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: SegmentedButton(
-                          segments: [
-                            ButtonSegment(
-                                value: 0, label: Text(s.sapling, style: small)),
-                            ButtonSegment(
-                                value: 1, label: Text(s.orchard, style: small)),
-                            ButtonSegment(
-                                value: 2,
-                                label: Text(s.optimized, style: small)),
-                          ],
-                          selected: {field.value},
-                          onSelectionChanged: (v) => field.didChange(v.first),
-                          showSelectedIcon: false,
-                        ),
-                      ))),
-              onChanged: (v) => coinSettings.zFactor = v!,
-            )
+            FieldUA(
+              widget.coinSettings.receipientPools,
+              onChanged: (v) => widget.coinSettings.receipientPools = v!,
+              label: s.receivers,
+              name: 'recipient_pools',
+              radio: false,
+            ),
         ]));
   }
 
@@ -602,21 +577,13 @@ class QuickSendSettingsPage extends StatefulWidget {
 class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
   final formKey = GlobalKey<FormBuilderState>();
   late final s = S.of(context);
-  late CustomSendSettings customSendSettings =
-      widget.customSendSettings.deepCopy();
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     final cs = t.colorScheme;
     return Scaffold(
-      appBar: AppBar(title: Text(s.customSendSettings), actions: [
-        IconButton(
-            onPressed: () {
-              GoRouter.of(context).pop(customSendSettings);
-            },
-            icon: Icon(Icons.check))
-      ]),
+      appBar: AppBar(title: Text(s.customSendSettings)),
       body: SettingsList(
         sections: [
           SettingsSection(
@@ -624,26 +591,33 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
             tiles: [
               SettingsTile.switchTile(
                 title: Text(s.contacts),
-                initialValue: customSendSettings.contacts,
+                initialValue: widget.customSendSettings.contacts,
                 onToggle: (v) =>
-                    setState(() => customSendSettings.contacts = v),
+                    setState(() => widget.customSendSettings.contacts = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.accounts),
-                initialValue: customSendSettings.accounts,
+                initialValue: widget.customSendSettings.accounts,
                 onToggle: (v) =>
-                    setState(() => customSendSettings.accounts = v),
+                    setState(() => widget.customSendSettings.accounts = v),
                 activeSwitchColor: cs.primary,
               ),
             ],
           ),
           SettingsSection(
+            title: Text(s.pools),
             tiles: [
               SettingsTile.switchTile(
-                title: Text(s.pools),
-                initialValue: customSendSettings.pools,
-                onToggle: (v) => setState(() => customSendSettings.pools = v),
+                title: Text(s.source),
+                initialValue: widget.customSendSettings.pools,
+                onToggle: (v) => setState(() => widget.customSendSettings.pools = v),
+                activeSwitchColor: cs.primary,
+              ),
+              SettingsTile.switchTile(
+                title: Text(s.receivers),
+                initialValue: widget.customSendSettings.recipientPools,
+                onToggle: (v) => setState(() => widget.customSendSettings.recipientPools = v),
                 activeSwitchColor: cs.primary,
               ),
             ],
@@ -653,29 +627,29 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
             tiles: [
               SettingsTile.switchTile(
                 title: Text(s.max),
-                initialValue: customSendSettings.max,
-                onToggle: (v) => setState(() => customSendSettings.max = v),
+                initialValue: widget.customSendSettings.max,
+                onToggle: (v) => setState(() => widget.customSendSettings.max = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.amountCurrency),
-                initialValue: customSendSettings.amountCurrency,
+                initialValue: widget.customSendSettings.amountCurrency,
                 onToggle: (v) =>
-                    setState(() => customSendSettings.amountCurrency = v),
+                    setState(() => widget.customSendSettings.amountCurrency = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.amountSlider),
-                initialValue: customSendSettings.amountSlider,
+                initialValue: widget.customSendSettings.amountSlider,
                 onToggle: (v) =>
-                    setState(() => customSendSettings.amountSlider = v),
+                    setState(() => widget.customSendSettings.amountSlider = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.deductFee),
-                initialValue: customSendSettings.deductFee,
+                initialValue: widget.customSendSettings.deductFee,
                 onToggle: (v) =>
-                    setState(() => customSendSettings.deductFee = v),
+                    setState(() => widget.customSendSettings.deductFee = v),
                 activeSwitchColor: cs.primary,
               ),
             ],
@@ -685,22 +659,22 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
             tiles: [
               SettingsTile.switchTile(
                 title: Text(s.includeReplyTo),
-                initialValue: customSendSettings.replyAddress,
+                initialValue: widget.customSendSettings.replyAddress,
                 onToggle: (v) =>
-                    setState(() => customSendSettings.replyAddress = v),
+                    setState(() => widget.customSendSettings.replyAddress = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.subject),
-                initialValue: customSendSettings.memoSubject,
+                initialValue: widget.customSendSettings.memoSubject,
                 onToggle: (v) =>
-                    setState(() => customSendSettings.memoSubject = v),
+                    setState(() => widget.customSendSettings.memoSubject = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.memo),
-                initialValue: customSendSettings.memo,
-                onToggle: (v) => setState(() => customSendSettings.memo = v),
+                initialValue: widget.customSendSettings.memo,
+                onToggle: (v) => setState(() => widget.customSendSettings.memo = v),
                 activeSwitchColor: cs.primary,
               ),
             ],
@@ -718,6 +692,7 @@ class FieldUA extends StatelessWidget {
   final void Function(int?)? onChanged;
   final bool radio;
   final bool emptySelectionAllowed;
+  final int pools;
   FieldUA(
     int initialValue, {
     required this.name,
@@ -725,6 +700,7 @@ class FieldUA extends StatelessWidget {
     this.onChanged,
     this.emptySelectionAllowed = false,
     required this.radio,
+    this.pools = 7,
   }) : initialValues = PoolBitSet.toSet(initialValue);
 
   @override
@@ -742,15 +718,15 @@ class FieldUA extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
             child: SegmentedButton(
               segments: [
-                ButtonSegment(
+                if (pools & 1 != 0) ButtonSegment(
                     value: 0,
                     label: Text(s.transparent,
                         overflow: TextOverflow.ellipsis, style: small)),
-                ButtonSegment(
+                if (pools & 2 != 0) ButtonSegment(
                     value: 1,
                     label: Text(s.sapling,
                         overflow: TextOverflow.ellipsis, style: small)),
-                if (aa.hasUA)
+                if (aa.hasUA && pools & 4 != 0)
                   ButtonSegment(
                       value: 2,
                       label: Text(s.orchard,

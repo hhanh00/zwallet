@@ -207,6 +207,7 @@ table KeyPack {
 
 table Recipient {
   address:string;
+  pools:uint8;
   amount:uint64;
   fee_included:bool;
   reply_to:bool;

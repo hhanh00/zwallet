@@ -302,7 +302,6 @@ class WarpApi {
     int senderUAType,
     int anchorOffset,
     FeeT fee,
-    int zFactor,
   ) async {
     final builder = Builder();
     final rs = recipients.map((r) => r.unpack()).toList();
@@ -319,8 +318,7 @@ class WarpApi {
           senderUAType,
           anchorOffset,
           toNativeBytes(fee2),
-          fee2.lengthInBytes,
-          zFactor);
+          fee2.lengthInBytes);
       final json = unwrapResultString(res);
       return json;
     }, null);
@@ -446,15 +444,14 @@ class WarpApi {
   }
 
   static String commitUnsavedContacts(
-      int coin, int account, int anchorOffset, FeeT fee, int zFactor) {
+      int coin, int account, int anchorOffset, FeeT fee) {
     final fee2 = encodeFee(fee);
     return unwrapResultString(warp_api_lib.commit_unsaved_contacts(
         coin,
         account,
         anchorOffset,
         toNativeBytes(fee2),
-        fee2.lengthInBytes,
-        zFactor));
+        fee2.lengthInBytes));
   }
 
   static void markMessageAsRead(int coin, int messageId, bool read) {

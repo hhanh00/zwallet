@@ -11,6 +11,7 @@ import '../../main.dart';
 import '../../accounts.dart';
 import '../../appsettings.dart';
 import '../../generated/intl/messages.dart';
+import '../settings.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
@@ -55,11 +56,16 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   late Amount _amount = widget.sendContext?.amount ?? Amount(0, false);
   late MemoData _memo = widget.sendContext?.memo ??
       MemoData(appSettings.includeReplyTo != 0, '', appSettings.memo);
+  bool isShielded = false;
+  int addressPools = 0;
+  int rp = 0;
 
   @override
   Widget build(BuildContext context) {
     final customSendSettings = appSettings.customSendSettings;
     final spendable = getSpendable(_pools, balances);
+    final numReceivers = numPoolsOf(addressPools);
+
     return Scaffold(
         appBar: AppBar(
           title: Text(s.send),
@@ -92,6 +98,15 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                       onChanged: onChanged,
                     ),
                   ),
+                  Gap(8),
+                  if (numReceivers > 1 && widget.custom && customSendSettings.recipientPools)
+                    FieldUA(
+                      rp,
+                      name: 'recipient_pools',
+                      label: s.receivers,
+                      onChanged: (v) => setState(() => rp = v!),
+                      radio: false,
+                      pools: addressPools),
                   Gap(8),
                   if (widget.single && widget.custom && customSendSettings.pools)
                     PoolSelection(
@@ -152,11 +167,12 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     if (form.validate()) {
       form.save();
       logger.d(
-          'send $_address $_amount $_pools ${_memo.reply} ${_memo.subject} ${_memo.memo}');
+          'send $_address $rp $_amount $_pools ${_memo.reply} ${_memo.subject} ${_memo.memo}');
       final sc = SendContext(_address, _pools, _amount, _memo);
       SendContext.instance = sc;
       final builder = RecipientObjectBuilder(
         address: _address,
+        pools: rp,
         amount: _amount.value,
         feeIncluded: _amount.deductFee,
         replyTo: _memo.reply,
@@ -174,7 +190,6 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                 coinSettings.replyUa,
                 appSettings.anchorOffset,
                 coinSettings.feeT,
-                coinSettings.zFactor,
               ));
           GoRouter.of(context).push('/account/txplan?tab=account', extra: plan);
         } on String catch (e) {
@@ -196,12 +211,12 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       memoKey.currentState!.setMemoBody(puri.memo!);
     } else
       _address = v;
-    setState(() {});
-  }
-
-  bool get isShielded {
     final address = addressKey.currentState?.controller.text;
-    return address.isNotEmptyAndNotNull &&
-        WarpApi.receiversOfAddress(aa.coin, address!) != 1;
+    final receivers = address.isNotEmptyAndNotNull ?
+        WarpApi.receiversOfAddress(aa.coin, address!) : 0;
+    isShielded = receivers != 1;
+    addressPools = receivers & coinSettings.receipientPools;
+    rp = addressPools;
+    setState(() {});
   }
 }

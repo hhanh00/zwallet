@@ -89,6 +89,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  binary:
+    dependency: "direct main"
+    description:
+      name: binary
+      sha256: e40eff285745e241c25b21a464b1437cbf56bad99c681de3783ff36fad52b707
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -953,6 +961,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.1.1"
+  matan:
+    dependency: transitive
+    description:
+      name: matan
+      sha256: "41e73fe0cd0e20ff22f4cdfdb66b1a02149e80b918fc43f3dc453ca5fb67830c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   matcher:
     dependency: transitive
     description:

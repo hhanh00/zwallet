@@ -53,7 +53,7 @@ extension CoinSettingsExtension on CoinSettings {
     if (!hasUaType()) uaType = defaultUAType;
     if (!hasReplyUa()) replyUa = defaultUAType;
     if (!hasSpamFilter()) spamFilter = true;
-    if (!hasZFactor()) zFactor = 2;
+    if (!hasReceipientPools()) receipientPools = 7;
   }
 
   static CoinSettings load(int coin) {
@@ -82,6 +82,7 @@ extension CustomSendSettingsExtension on CustomSendSettings {
     contacts = true;
     accounts = true;
     pools = true;
+    recipientPools = true;
     amountCurrency = true;
     amountSlider = true;
     max = true;

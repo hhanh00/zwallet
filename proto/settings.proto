@@ -27,7 +27,7 @@ message AppSettings {
     bool disclaimer = 26;
     bool custom_send = 27;
     CustomSendSettings custom_send_settings = 28;
-    bool background_sync = 29;
+    uint32 background_sync = 30;
 }
 
 message CoinSettings {
@@ -40,7 +40,7 @@ message CoinSettings {
     uint32 ua_type = 7;
     uint32 reply_ua = 8;
     bool contacts_saved = 9;
-    uint32 z_factor = 10;
+    uint32 receipient_pools = 11;
 }
 
 message ServerURL {
@@ -64,4 +64,5 @@ message CustomSendSettings {
     bool replyAddress = 8;
     bool memoSubject = 9;
     bool memo = 10;
+    bool recipientPools = 11;
 }

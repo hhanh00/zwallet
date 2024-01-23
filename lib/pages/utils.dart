@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:binary/binary.dart';
 import 'package:collection/collection.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:decimal/decimal.dart';
@@ -146,7 +147,9 @@ ColorPalette getPalette(Color color, int n) => ColorPalette.polyad(
       brightnessVariability: 10,
     );
 
-int poolOf(v) {
+int numPoolsOf(int v) => Uint8(v).bitsSet;
+
+int poolOf(int v) {
   switch (v) {
     case 1:
       return 0;

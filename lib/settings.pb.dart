@@ -429,7 +429,7 @@ class CoinSettings extends $pb.GeneratedMessage {
     $core.int? uaType,
     $core.int? replyUa,
     $core.bool? contactsSaved,
-    $core.int? zFactor,
+    $core.int? receipientPools,
   }) {
     final $result = create();
     if (account != null) {
@@ -459,8 +459,8 @@ class CoinSettings extends $pb.GeneratedMessage {
     if (contactsSaved != null) {
       $result.contactsSaved = contactsSaved;
     }
-    if (zFactor != null) {
-      $result.zFactor = zFactor;
+    if (receipientPools != null) {
+      $result.receipientPools = receipientPools;
     }
     return $result;
   }
@@ -478,7 +478,7 @@ class CoinSettings extends $pb.GeneratedMessage {
     ..a<$core.int>(7, _omitFieldNames ? '' : 'uaType', $pb.PbFieldType.OU3)
     ..a<$core.int>(8, _omitFieldNames ? '' : 'replyUa', $pb.PbFieldType.OU3)
     ..aOB(9, _omitFieldNames ? '' : 'contactsSaved')
-    ..a<$core.int>(10, _omitFieldNames ? '' : 'zFactor', $pb.PbFieldType.OU3)
+    ..a<$core.int>(11, _omitFieldNames ? '' : 'receipientPools', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
   ;
 
@@ -588,14 +588,14 @@ class CoinSettings extends $pb.GeneratedMessage {
   @$pb.TagNumber(9)
   void clearContactsSaved() => clearField(9);
 
-  @$pb.TagNumber(10)
-  $core.int get zFactor => $_getIZ(9);
-  @$pb.TagNumber(10)
-  set zFactor($core.int v) { $_setUnsignedInt32(9, v); }
-  @$pb.TagNumber(10)
-  $core.bool hasZFactor() => $_has(9);
-  @$pb.TagNumber(10)
-  void clearZFactor() => clearField(10);
+  @$pb.TagNumber(11)
+  $core.int get receipientPools => $_getIZ(9);
+  @$pb.TagNumber(11)
+  set receipientPools($core.int v) { $_setUnsignedInt32(9, v); }
+  @$pb.TagNumber(11)
+  $core.bool hasReceipientPools() => $_has(9);
+  @$pb.TagNumber(11)
+  void clearReceipientPools() => clearField(11);
 }
 
 class ServerURL extends $pb.GeneratedMessage {
@@ -738,6 +738,7 @@ class CustomSendSettings extends $pb.GeneratedMessage {
     $core.bool? replyAddress,
     $core.bool? memoSubject,
     $core.bool? memo,
+    $core.bool? recipientPools,
   }) {
     final $result = create();
     if (contacts != null) {
@@ -770,6 +771,9 @@ class CustomSendSettings extends $pb.GeneratedMessage {
     if (memo != null) {
       $result.memo = memo;
     }
+    if (recipientPools != null) {
+      $result.recipientPools = recipientPools;
+    }
     return $result;
   }
   CustomSendSettings._() : super();
@@ -787,6 +791,7 @@ class CustomSendSettings extends $pb.GeneratedMessage {
     ..aOB(8, _omitFieldNames ? '' : 'replyAddress', protoName: 'replyAddress')
     ..aOB(9, _omitFieldNames ? '' : 'memoSubject', protoName: 'memoSubject')
     ..aOB(10, _omitFieldNames ? '' : 'memo')
+    ..aOB(11, _omitFieldNames ? '' : 'recipientPools', protoName: 'recipientPools')
     ..hasRequiredFields = false
   ;
 
@@ -900,6 +905,15 @@ class CustomSendSettings extends $pb.GeneratedMessage {
   $core.bool hasMemo() => $_has(9);
   @$pb.TagNumber(10)
   void clearMemo() => clearField(10);
+
+  @$pb.TagNumber(11)
+  $core.bool get recipientPools => $_getBF(10);
+  @$pb.TagNumber(11)
+  set recipientPools($core.bool v) { $_setBool(10, v); }
+  @$pb.TagNumber(11)
+  $core.bool hasRecipientPools() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearRecipientPools() => clearField(11);
 }
 
 

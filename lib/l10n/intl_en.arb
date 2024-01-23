@@ -417,5 +417,6 @@
   "backgroundSync": "Background Sync",
   "off": "Off",
   "wifi": "WiFi",
-  "any": "Any"
+  "any": "Any",
+  "receivers": "Receivers"
 }
