@@ -62,6 +62,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
 
   @override
   Widget build(BuildContext context) {
+    final custom = widget.custom ^ appSettings.customSend;
     final customSendSettings = appSettings.customSendSettings;
     final spendable = getSpendable(_pools, balances);
     final numReceivers = numPoolsOf(addressPools);
@@ -94,12 +95,12 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                     buttonsBuilder: (context, {Function(String)? onChanged}) =>
                         _extraAddressButtons(
                       context,
-                      widget.custom,
+                      custom,
                       onChanged: onChanged,
                     ),
                   ),
                   Gap(8),
-                  if (numReceivers > 1 && widget.custom && customSendSettings.recipientPools)
+                  if (numReceivers > 1 && custom && customSendSettings.recipientPools)
                     FieldUA(
                       rp,
                       name: 'recipient_pools',
@@ -108,7 +109,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                       radio: false,
                       pools: addressPools),
                   Gap(8),
-                  if (widget.single && widget.custom && customSendSettings.pools)
+                  if (widget.single && custom && customSendSettings.pools)
                     PoolSelection(
                       _pools,
                       balances: aa.poolBalances,
@@ -121,7 +122,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                     spendable: spendable,
                     onChanged: (a) => _amount = a!,
                     canDeductFee: widget.single,
-                    custom: widget.custom,
+                    custom: custom,
                   ),
                   Gap(8),
                   if (isShielded && customSendSettings.memo)
@@ -129,7 +130,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                       _memo,
                       key: memoKey,
                       onChanged: (v) => _memo = v!,
-                      custom: widget.custom,
+                      custom: custom,
                     ),
                 ],
               ),

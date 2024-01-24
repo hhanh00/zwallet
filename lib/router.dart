@@ -106,7 +106,6 @@ final router = GoRouter(
                   path: 'quick_send',
                   builder: (context, state) {
                     bool custom = state.uri.queryParameters['custom'] == '1';
-                    custom ^= appSettings.customSend;
                     return QuickSendPage(
                       custom: custom,
                       single: true,

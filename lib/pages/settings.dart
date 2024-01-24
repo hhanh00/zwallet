@@ -310,7 +310,7 @@ class _PrivacyState extends State<PrivacyTab>
             name: 'gettx',
             title: Text(s.retrieveTransactionDetails),
             initialValue: !widget.appSettings.nogetTx,
-            onChanged: (v) => widget.appSettings.nogetTx = v!,
+            onChanged: (v) => widget.appSettings.nogetTx = !v!,
           ),
           FormBuilderField<int>(
             name: 'hide',
