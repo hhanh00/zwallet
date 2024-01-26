@@ -99,11 +99,14 @@ dependencies:
     sdk: flutter
   #flutter_foreground_task: ^6.1.2
   workmanager: ^0.5.2
-  awesome_notifications: ^0.8.1
+  awesome_notifications_core: ^0.9.0
+  awesome_notifications: ^0.9.0
   #flutter_ringtone_player: ^3.2.0
   font_awesome_flutter: ^10.5.0
   getwidget: ^2.0.4
   reflectable: ^4.0.5
+  freezed: ^2.4.6
+  freezed_annotation: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

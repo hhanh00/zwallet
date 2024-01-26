@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:isolate';
 import 'dart:math';
 
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
@@ -12,7 +13,6 @@ import 'pages/utils.dart';
 import 'accounts.dart';
 import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
-import 'router.dart';
 
 part 'store2.g.dart';
 
@@ -132,8 +132,6 @@ abstract class _SyncStatus2 with Store {
   @action
   Future<void> sync(bool rescan, {bool auto = false}) async {
     logger.d('R/A/P/S $rescan $auto $paused $syncing');
-    final context = rootNavigatorKey.currentContext!;
-    final s = S.of(context);
     if (paused) return;
     if (syncing) return;
     try {
@@ -153,6 +151,8 @@ abstract class _SyncStatus2 with Store {
       eta.begin(latestHeight!);
       eta.checkpoint(syncedHeight, DateTime.now());
 
+      final preBalance = AccountBalanceSnapshot(
+          coin: aa.coin, id: aa.id, balance: aa.poolBalances.total);
       // This may take a long time
       await WarpApi.warpSync2(
           aa.coin,
@@ -164,6 +164,30 @@ abstract class _SyncStatus2 with Store {
       aa.update(latestHeight);
       contacts.fetchContacts();
       marketPrice.update();
+      final postBalance = AccountBalanceSnapshot(
+          coin: aa.coin, id: aa.id, balance: aa.poolBalances.total);
+      if (preBalance.sameAccount(postBalance) &&
+          preBalance.balance != postBalance.balance) {
+        final s = GetIt.I.get<S>();
+        final ticker = coins[aa.coin].ticker;
+        if (preBalance.balance < postBalance.balance) {
+          final amount =
+              amountToString2(postBalance.balance - preBalance.balance);
+          showLocalNotification(
+            id: latestHeight!,
+            title: s.incomingFunds,
+            body: s.received(amount, ticker),
+          );
+        } else {
+          final amount =
+              amountToString2(preBalance.balance - postBalance.balance);
+          showLocalNotification(
+            id: latestHeight!,
+            title: s.paymentMade,
+            body: s.spent(amount, ticker),
+          );
+        }
+      }
     } on String catch (e) {
       logger.d(e);
       showSnackBar(e);
@@ -323,4 +347,21 @@ abstract class _ContactStore with Store {
     coinSettings.contactsSaved = true;
     coinSettings.save(coin);
   }
+}
+
+class AccountBalanceSnapshot {
+  final int coin;
+  final int id;
+  final int balance;
+  AccountBalanceSnapshot({
+    required this.coin,
+    required this.id,
+    required this.balance,
+  });
+
+  bool sameAccount(AccountBalanceSnapshot other) =>
+      coin == other.coin && id == other.id;
+
+  @override
+  String toString() => '($coin, $id, $balance)';
 }

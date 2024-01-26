@@ -38,6 +38,11 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    ################  Awesome Notifications pod modification 1 ###################
+    awesome_pod_file = File.expand_path(File.join('plugins', 'awesome_notifications', 'ios', 'Scripts', 'AwesomePodFile'), '.symlinks')
+    require awesome_pod_file
+    update_awesome_pod_build_settings(installer)
+    ################  Awesome Notifications pod modification 1 ###################
     target.build_configurations.each do |config|
       xcconfig_path = config.base_configuration_reference.real_path
       xcconfig = File.read(xcconfig_path)
@@ -46,3 +51,9 @@ post_install do |installer|
       end
   end
 end
+
+################  Awesome Notifications pod modification 2 ###################
+awesome_pod_file = File.expand_path(File.join('plugins', 'awesome_notifications', 'ios', 'Scripts', 'AwesomePodFile'), '.symlinks')
+require awesome_pod_file
+update_awesome_main_target_settings('Runner', File.dirname(File.realpath(__FILE__)), flutter_root)
+################  Awesome Notifications pod modification 2 ###################

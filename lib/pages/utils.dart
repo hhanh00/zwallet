@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:binary/binary.dart';
 import 'package:collection/collection.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
@@ -72,7 +73,9 @@ String decimalFormat(double x, int decimalDigits, {String symbol = ''}) {
     symbol: symbol,
   ).format(x).trimRight();
 }
-String decimalToString(double x) => decimalFormat(x, decimalDigits(appSettings.fullPrec));
+
+String decimalToString(double x) =>
+    decimalFormat(x, decimalDigits(appSettings.fullPrec));
 
 Future<bool> showMessageBox2(BuildContext context, String title, String content,
     {String? label, bool dismissable = true}) async {
@@ -670,3 +673,17 @@ class PoolBitSet {
 
 List<Account> getAllAccounts() =>
     coins.expand((c) => WarpApi.getAccountList(c.coin)).toList();
+
+void showLocalNotification({required int id, String? title, String? body}) {
+  AwesomeNotifications().createNotification(
+      content: NotificationContent(
+    channelKey: APP_NAME,
+    id: id,
+    title: title,
+    body: body,
+  ));
+}
+
+extension PoolBalanceExtension on PoolBalanceT {
+  int get total => transparent + sapling + orchard;
+}
