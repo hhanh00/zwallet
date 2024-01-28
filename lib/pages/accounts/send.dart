@@ -28,6 +28,10 @@ class SendContext {
         p.address!, 7, Amount(p.amount, false), MemoData(false, '', p.memo!));
   }
 
+  @override String toString() {
+    return 'SendContext($address, $pools, ${amount.value}, ${memo?.memo})';
+  }
+
   static SendContext? instance;
 }
 
@@ -51,14 +55,24 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   late final balances =
       WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset, false)
           .unpack();
-  late String _address = widget.sendContext?.address ?? '';
-  late int _pools = widget.sendContext?.pools ?? 7;
-  late Amount _amount = widget.sendContext?.amount ?? Amount(0, false);
-  late MemoData _memo = widget.sendContext?.memo ??
-      MemoData(appSettings.includeReplyTo != 0, '', appSettings.memo);
+  String _address = '';
+  int _pools = 7;
+  Amount _amount = Amount(0, false);
+  MemoData _memo = MemoData(appSettings.includeReplyTo != 0, '', appSettings.memo);
   bool isShielded = false;
   int addressPools = 0;
   int rp = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _didUpdateSendContext(widget.sendContext);
+  }
+
+  @override void didUpdateWidget(QuickSendPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _didUpdateSendContext(widget.sendContext);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,18 +220,34 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     if (v == null) return;
     final puri = WarpApi.decodePaymentURI(aa.coin, v);
     if (puri != null) {
-      logger.d('$puri');
       addressKey.currentState!.setValue(puri.address!);
       amountKey.currentState!.setAmount(puri.amount);
       memoKey.currentState!.setMemoBody(puri.memo!);
     } else
       _address = v;
     final address = addressKey.currentState?.controller.text;
+    _didUpdateAddress(address!);
+    setState(() {});
+  }
+
+  void _didUpdateSendContext(SendContext? sendContext) {
+    if (sendContext == null) return;
+    _address = sendContext.address;
+    _pools = sendContext.pools;
+    _amount = sendContext.amount;
+    _memo = sendContext.memo ??
+        MemoData(appSettings.includeReplyTo != 0, '', appSettings.memo);
+    addressKey.currentState?.setValue(sendContext.address);
+    amountKey.currentState?.setAmount(_amount.value);
+    memoKey.currentState?.setMemoBody(_memo.memo);
+    _didUpdateAddress(_address);
+  }
+
+  _didUpdateAddress(String? address) {
     final receivers = address.isNotEmptyAndNotNull ?
         WarpApi.receiversOfAddress(aa.coin, address!) : 0;
     isShielded = receivers != 1;
     addressPools = receivers & coinSettings.receipientPools;
     rp = addressPools;
-    setState(() {});
   }
 }
