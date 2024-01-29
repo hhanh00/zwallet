@@ -8,7 +8,6 @@
 
 #include <awesome_notifications/awesome_notifications_plugin.h>
 #include <awesome_notifications_core/awesome_notifications_core_plugin.h>
-#include <file_selector_linux/file_selector_plugin.h>
 #include <gtk/gtk_plugin.h>
 #include <screen_retriever/screen_retriever_plugin.h>
 #include <url_launcher_linux/url_launcher_plugin.h>
@@ -21,9 +20,6 @@ void fl_register_plugins(FlPluginRegistry* registry) {
   g_autoptr(FlPluginRegistrar) awesome_notifications_core_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "AwesomeNotificationsCorePlugin");
   awesome_notifications_core_plugin_register_with_registrar(awesome_notifications_core_registrar);
-  g_autoptr(FlPluginRegistrar) file_selector_linux_registrar =
-      fl_plugin_registry_get_registrar_for_plugin(registry, "FileSelectorPlugin");
-  file_selector_plugin_register_with_registrar(file_selector_linux_registrar);
   g_autoptr(FlPluginRegistrar) gtk_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "GtkPlugin");
   gtk_plugin_register_with_registrar(gtk_registrar);

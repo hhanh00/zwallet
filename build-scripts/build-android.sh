@@ -2,6 +2,7 @@ set -x
 export BUILD_DIR=$PWD
 pushd $HOME
 
+
 if [ -z "$GITHUB_ACTIONS" ]
 then
     mkdir -p Android/sdk
@@ -16,6 +17,8 @@ then
     popd
     export ANDROID_SDK_ROOT=$HOME/Android/sdk
 else
+    export JAVA_HOME=$JAVA_HOME_17_X64
+    export PATH=$JAVA_HOME/bin:$PATH
     pushd /usr/local/lib/android/sdk/cmdline-tools/latest/bin
     yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "ndk;25.1.8937393"
     popd

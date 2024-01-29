@@ -79,10 +79,11 @@ dependencies:
   cross_file: ^0.3.3
   mustache_template: ^2.0.0
   flutter_palette: ^1.1.0+1
+  mobile_scanner: ^4.0.0
   #flutter_svg: ^1.0.3
   #flutter_typeahead: ^3.2.0
-  flutter_zxing:
-    path: flutter_zxing
+  # flutter_zxing:
+  #   path: flutter_zxing
   #flutter_speed_dial: ^5.0.0
   #currency_text_input_formatter: ^2.1.2
   sensors_plus: ^4.0.0
@@ -113,11 +114,11 @@ dependencies:
   cupertino_icons: ^1.0.3
 
 dependency_overrides:
-  camera_android:
-    git:
-      url: https://github.com/elmar001/plugins.git
-      path: packages/camera/camera_android
-      ref: 5172b44088a4082ff0899594614c5380457d341b
+  # camera_android:
+  #   git:
+  #     url: https://github.com/elmar001/plugins.git
+  #     path: packages/camera/camera_android
+  #     ref: 5172b44088a4082ff0899594614c5380457d341b
   intl: ^0.18.0
 
 dev_dependencies:

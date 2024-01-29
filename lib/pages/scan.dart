@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_zxing/flutter_zxing.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -27,19 +26,31 @@ class ScanQRCodePage extends StatefulWidget {
 class _ScanQRCodeState extends State<ScanQRCodePage> {
   final formKey = GlobalKey<FormBuilderState>();
   final controller = TextEditingController();
+  StreamSubscription<BarcodeCapture>? ss;
+
+  @override
+  void dispose() {
+    ss?.cancel();
+    ss = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Scaffold(
         appBar: AppBar(title: Text(s.scanQrCode), actions: [
-          IconButton(onPressed: _open, icon: Icon(Icons.open_in_new)),
+          if (isMobile()) IconButton(onPressed: _open, icon: Icon(Icons.open_in_new)),
           IconButton(onPressed: _ok, icon: Icon(Icons.check)),
         ]),
         body: FormBuilder(
             key: formKey,
             child: Column(children: [
-              Expanded(child: ReaderWidget(showGallery: false, onScan: _onScan)),
+              Expanded(
+                child: MobileScanner(
+                  onDetect: _onScan,
+                ),
+              ),
               Gap(16),
               FormBuilderTextField(
                   name: 'qr',
@@ -49,23 +60,30 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
             ])));
   }
 
-  _onScan(Code code) {
-    final text = code.text;
-    if (text == null) return;
-    controller.text = text;
-    final form = formKey.currentState!;
-    if (form.validate()) {
-      if (widget.onCode(text)) GoRouter.of(context).pop();
+  _onScan(BarcodeCapture capture) {
+    final List<Barcode> barcodes = capture.barcodes;
+    for (final barcode in barcodes) {
+      final text = barcode.rawValue;
+      if (text != null) {
+        controller.text = text;
+        final form = formKey.currentState!;
+        if (form.validate()) {
+          if (widget.onCode(text)) GoRouter.of(context).pop();
+          return;
+        }
+      }
     }
   }
 
   _open() async {
     final file = await pickFile();
+    logger.d('open');
     if (file != null) {
       final path = file.files[0].path!;
-      final xfile = XFile(path);
-      final code = await zx.readBarcodeImagePath(xfile);
-      if (code.isValid) _onScan(code);
+      logger.d('$path');
+      final c = MobileScannerController();
+      c.analyzeImage(path);
+      ss = c.barcodes.listen(_onScan);
     }
   }
 
@@ -92,26 +110,33 @@ class _MultiQRReaderState extends State<MultiQRReader> {
     return Column(
       children: [
         LinearProgressIndicator(value: value, minHeight: 40),
-        Expanded(child: ReaderWidget(showGallery: false, onScan: _onScan)),
+        Expanded(
+          child: MobileScanner(
+            onDetect: _onScan,
+          ),
+        ),
       ],
     );
   }
 
-  _onScan(Code code) {
-    final text = code.text;
-    if (text == null) return;
-    if (!fragments.contains(text)) {
-      fragments.add(text);
-      final res = WarpApi.mergeData(text);
-      if (res.data.isEmptyOrNull) {
-        logger.d('${res.progress} ${res.total}');
-        setState(() {
-          value = res.progress / res.total;
-        });
-      } else {
-        final decoded =
-            utf8.decode(ZLibCodec().decode(base64Decode(res.data!)));
-        widget.onChanged?.call(decoded);
+  _onScan(BarcodeCapture capture) {
+    final List<Barcode> barcodes = capture.barcodes;
+    for (final barcode in barcodes) {
+      final text = barcode.rawValue;
+      if (text == null) return;
+      if (!fragments.contains(text)) {
+        fragments.add(text);
+        final res = WarpApi.mergeData(text);
+        if (res.data.isEmptyOrNull) {
+          logger.d('${res.progress} ${res.total}');
+          setState(() {
+            value = res.progress / res.total;
+          });
+        } else {
+          final decoded =
+              utf8.decode(ZLibCodec().decode(base64Decode(res.data!)));
+          widget.onChanged?.call(decoded);
+        }
       }
     }
   }
