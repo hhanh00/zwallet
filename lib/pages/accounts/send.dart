@@ -220,13 +220,13 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     if (v == null) return;
     final puri = WarpApi.decodePaymentURI(aa.coin, v);
     if (puri != null) {
-      addressKey.currentState!.setValue(puri.address!);
-      amountKey.currentState!.setAmount(puri.amount);
-      memoKey.currentState!.setMemoBody(puri.memo!);
-    } else
-      _address = v;
-    final address = addressKey.currentState?.controller.text;
-    _didUpdateAddress(address!);
+      final sc = SendContext(puri.address!, _pools,
+        Amount(puri.amount, false),
+        MemoData(false, '', puri.memo!));
+      _didUpdateSendContext(sc);
+    } else {
+      _didUpdateAddress(v);
+    }
     setState(() {});
   }
 

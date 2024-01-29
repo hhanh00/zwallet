@@ -26,6 +26,7 @@ class ScanQRCodePage extends StatefulWidget {
 class _ScanQRCodeState extends State<ScanQRCodePage> {
   final formKey = GlobalKey<FormBuilderState>();
   final controller = TextEditingController();
+  var scanned = false;
   StreamSubscription<BarcodeCapture>? ss;
 
   @override
@@ -61,6 +62,7 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
   }
 
   _onScan(BarcodeCapture capture) {
+    if (scanned) return;
     final List<Barcode> barcodes = capture.barcodes;
     for (final barcode in barcodes) {
       final text = barcode.rawValue;
@@ -68,6 +70,7 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
         controller.text = text;
         final form = formKey.currentState!;
         if (form.validate()) {
+          scanned = true;
           if (widget.onCode(text)) GoRouter.of(context).pop();
           return;
         }
@@ -80,7 +83,6 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
     logger.d('open');
     if (file != null) {
       final path = file.files[0].path!;
-      logger.d('$path');
       final c = MobileScannerController();
       c.analyzeImage(path);
       ss = c.barcodes.listen(_onScan);

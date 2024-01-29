@@ -633,7 +633,7 @@ class InputMemoState extends State<InputMemo> {
 
   void setMemoBody(String body) {
     final m = MemoData(false, '', body);
-    formKey.currentState!.fields['reply']!.setValue(false);
+    formKey.currentState!.fields['reply']?.setValue(false);
     subjectController.text = m.subject;
     memoController.text = m.memo;
     fieldKey.currentState!.didChange(m);

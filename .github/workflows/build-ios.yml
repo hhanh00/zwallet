@@ -52,7 +52,6 @@ jobs:
         run: |
           export PATH=$PATH:$HOME/flutter/bin
           (cd $HOME; git clone --branch $FLUTTER_VERSION --depth 1 https://github.com/flutter/flutter.git)
-          (cd flutter_zxing/scripts; bash update_ios_macos_src.sh)
           flutter precache --ios
           flutter pub get
           dart run build_runner build -d
