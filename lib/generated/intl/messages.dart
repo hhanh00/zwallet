@@ -2602,6 +2602,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Any'**
   String get any;
+
+  /// No description provided for @ping.
+  ///
+  /// In en, this message translates to:
+  /// **'Ping Test'**
+  String get ping;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

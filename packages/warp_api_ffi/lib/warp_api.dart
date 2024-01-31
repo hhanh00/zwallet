@@ -761,6 +761,12 @@ class WarpApi {
     return unwrapResultU8(warp_api_lib.get_available_addrs(coin, account));
   }
 
+  static Future<int> ping(String server) async {
+    return await compute((_) {
+      return unwrapResultU32(warp_api_lib.ping(toNative(server)));
+    }, null);
+  }
+
   static Future<int> importFromLedger(int coin, String name) async {
     return await compute((_) {
       return unwrapResultU32(

@@ -418,5 +418,6 @@
   "off": "Off",
   "wifi": "WiFi",
   "any": "Any",
-  "receivers": "Receivers"
+  "receivers": "Receivers",
+  "ping": "Ping Test"
 }

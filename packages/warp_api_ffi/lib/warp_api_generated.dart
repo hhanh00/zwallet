@@ -1724,6 +1724,20 @@ class NativeLibrary {
       CResult_u8 Function(
           int, int, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
+  CResult_u32 ping(
+    ffi.Pointer<ffi.Char> lwd_url,
+  ) {
+    return _ping(
+      lwd_url,
+    );
+  }
+
+  late final _pingPtr =
+      _lookup<ffi.NativeFunction<CResult_u32 Function(ffi.Pointer<ffi.Char>)>>(
+          'ping');
+  late final _ping =
+      _pingPtr.asFunction<CResult_u32 Function(ffi.Pointer<ffi.Char>)>();
+
   CResult_____c_char ledger_send(
     int coin,
     ffi.Pointer<ffi.Char> tx_plan,

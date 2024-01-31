@@ -1313,4 +1313,7 @@ class SEs extends S {
 
   @override
   String get any => 'Any';
+
+  @override
+  String get ping => 'Ping Test';
 }

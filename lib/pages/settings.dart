@@ -446,6 +446,8 @@ class CoinTab extends StatefulWidget {
 
 class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
   final formKey = GlobalKey<FormBuilderState>();
+  late List<int?> pings =
+      List.generate(coins[widget.coin].lwd.length, (i) => null);
 
   @override
   Widget build(BuildContext context) {
@@ -456,14 +458,20 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
     final servers = c.lwd
         .asMap()
         .entries
-        .map((kv) =>
-            FormBuilderFieldOption(value: kv.key, child: Text(kv.value.name)))
+        .map(
+          (kv) => FormBuilderFieldOption(
+              value: kv.key,
+              child: Text(
+                  kv.value.name + (pings[kv.key]?.let((v) => ' [$v ms]') ?? ''))),
+        )
         .toList();
     final explorers = c.blockExplorers
         .asMap()
         .entries
-        .map((kv) =>
-            FormBuilderFieldOption(value: kv.key, child: Text(kv.value)))
+        .map((kv) => FormBuilderFieldOption(
+              value: kv.key,
+              child: Text(kv.value),
+            ))
         .toList();
     final fee = amountToString2(widget.coinSettings.fee.toInt());
 
@@ -513,6 +521,9 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
                   )),
             ],
           ),
+          Gap(8),
+          ElevatedButton(onPressed: ping, child: Text(s.ping)),
+          Gap(8),
           FormBuilderRadioGroup<int>(
             name: 'explorer',
             orientation: OptionsOrientation.vertical,
@@ -560,6 +571,18 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
 
   bool validate() {
     return formKey.currentState!.validate();
+  }
+
+  void ping() {
+    for (var i = 0; i < pings.length; i++) {
+      final c = coins[widget.coin];
+      final server = c.lwd[i].url;
+      Future(() async {
+        final ping = await WarpApi.ping(server);
+        pings[i] = ping;
+        setState(() {});
+      });
+    }
   }
 
   @override
@@ -611,13 +634,15 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
               SettingsTile.switchTile(
                 title: Text(s.source),
                 initialValue: widget.customSendSettings.pools,
-                onToggle: (v) => setState(() => widget.customSendSettings.pools = v),
+                onToggle: (v) =>
+                    setState(() => widget.customSendSettings.pools = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.receivers),
                 initialValue: widget.customSendSettings.recipientPools,
-                onToggle: (v) => setState(() => widget.customSendSettings.recipientPools = v),
+                onToggle: (v) => setState(
+                    () => widget.customSendSettings.recipientPools = v),
                 activeSwitchColor: cs.primary,
               ),
             ],
@@ -628,14 +653,15 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
               SettingsTile.switchTile(
                 title: Text(s.max),
                 initialValue: widget.customSendSettings.max,
-                onToggle: (v) => setState(() => widget.customSendSettings.max = v),
+                onToggle: (v) =>
+                    setState(() => widget.customSendSettings.max = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
                 title: Text(s.amountCurrency),
                 initialValue: widget.customSendSettings.amountCurrency,
-                onToggle: (v) =>
-                    setState(() => widget.customSendSettings.amountCurrency = v),
+                onToggle: (v) => setState(
+                    () => widget.customSendSettings.amountCurrency = v),
                 activeSwitchColor: cs.primary,
               ),
               SettingsTile.switchTile(
@@ -674,7 +700,8 @@ class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
               SettingsTile.switchTile(
                 title: Text(s.memo),
                 initialValue: widget.customSendSettings.memo,
-                onToggle: (v) => setState(() => widget.customSendSettings.memo = v),
+                onToggle: (v) =>
+                    setState(() => widget.customSendSettings.memo = v),
                 activeSwitchColor: cs.primary,
               ),
             ],
@@ -718,14 +745,16 @@ class FieldUA extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
             child: SegmentedButton(
               segments: [
-                if (pools & 1 != 0) ButtonSegment(
-                    value: 0,
-                    label: Text(s.transparent,
-                        overflow: TextOverflow.ellipsis, style: small)),
-                if (pools & 2 != 0) ButtonSegment(
-                    value: 1,
-                    label: Text(s.sapling,
-                        overflow: TextOverflow.ellipsis, style: small)),
+                if (pools & 1 != 0)
+                  ButtonSegment(
+                      value: 0,
+                      label: Text(s.transparent,
+                          overflow: TextOverflow.ellipsis, style: small)),
+                if (pools & 2 != 0)
+                  ButtonSegment(
+                      value: 1,
+                      label: Text(s.sapling,
+                          overflow: TextOverflow.ellipsis, style: small)),
                 if (aa.hasUA && pools & 4 != 0)
                   ButtonSegment(
                       value: 2,
