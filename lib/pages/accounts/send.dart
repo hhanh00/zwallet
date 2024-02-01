@@ -225,6 +225,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         MemoData(false, '', puri.memo!));
       _didUpdateSendContext(sc);
     } else {
+      _address = v;
       _didUpdateAddress(v);
     }
     setState(() {});
