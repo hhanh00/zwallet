@@ -160,7 +160,7 @@ class _RewindState extends State<RewindPage> {
     final height = checkpoints[selected!].height;
     final confirmed = await showConfirmDialog(context, s.rewind, s.confirmRewind(height));
     if (!confirmed) return;
-    WarpApi.rescanFrom(aa.coin, height);
+    WarpApi.rewindTo(aa.coin, height);
     Future(() async {
       syncStatus2.sync(true);
     });
