@@ -167,18 +167,11 @@ class WarpApi {
     return unwrapResultU32(warp_api_lib.rescan_from(coin, height));
   }
 
-  static int warpSync(SyncParams params) {
-    final res = warp_api_lib.warp(params.coin, params.getTx ? 1 : 0,
-        params.anchorOffset, params.maxCost, params.port!.nativePort);
-    params.port!.send(null);
-    return unwrapResultU8(res);
-  }
-
-  static Future<int> warpSync2(
-      int coin, bool getTx, int anchorOffset, int maxCost, int port) async {
+  static Future<int> warpSync(
+      int coin, int account, bool getTx, int anchorOffset, int maxCost, int port) async {
     final res = await compute(
         (_) =>
-            warp_api_lib.warp(coin, getTx ? 1 : 0, anchorOffset, maxCost, port),
+            warp_api_lib.warp(coin, account, getTx ? 1 : 0, anchorOffset, maxCost, port),
         null);
     return unwrapResultU8(res);
   }

@@ -196,6 +196,7 @@ table Progress {
   timestamp:uint32;
   trial_decryptions:uint64;
   downloaded:uint64;
+  balances:PoolBalance;
 }
 
 table KeyPack {

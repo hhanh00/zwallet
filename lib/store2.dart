@@ -36,6 +36,10 @@ void initSyncListener() {
     if (e is List<int>) {
       final progress = Progress(e);
       syncStatus2.setProgress(progress);
+      final b = progress.balances?.unpack();
+      if (b != null)
+        aa.poolBalances = b;
+      logger.d(progress.balances);
     }
   });
 }
@@ -154,8 +158,9 @@ abstract class _SyncStatus2 with Store {
       final preBalance = AccountBalanceSnapshot(
           coin: aa.coin, id: aa.id, balance: aa.poolBalances.total);
       // This may take a long time
-      await WarpApi.warpSync2(
+      await WarpApi.warpSync(
           aa.coin,
+          aa.id,
           !appSettings.nogetTx,
           appSettings.anchorOffset,
           coinSettings.spamFilter ? 50 : 1000000,
@@ -215,7 +220,8 @@ abstract class _SyncStatus2 with Store {
     trialDecryptionCount = progress.trialDecryptions;
     syncedHeight = progress.height;
     downloadedSize = progress.downloaded;
-    timestamp = DateTime.fromMillisecondsSinceEpoch(progress.timestamp * 1000);
+    if (progress.timestamp > 0)
+      timestamp = DateTime.fromMillisecondsSinceEpoch(progress.timestamp * 1000);
     eta.checkpoint(syncedHeight, DateTime.now());
   }
 

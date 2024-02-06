@@ -372,6 +372,7 @@ class NativeLibrary {
 
   CResult_u8 warp(
     int coin,
+    int account,
     int get_tx,
     int anchor_offset,
     int max_cost,
@@ -379,6 +380,7 @@ class NativeLibrary {
   ) {
     return _warp(
       coin,
+      account,
       get_tx,
       anchor_offset,
       max_cost,
@@ -388,10 +390,10 @@ class NativeLibrary {
 
   late final _warpPtr = _lookup<
       ffi.NativeFunction<
-          CResult_u8 Function(
-              ffi.Uint8, bool, ffi.Uint32, ffi.Uint32, ffi.Int64)>>('warp');
+          CResult_u8 Function(ffi.Uint8, ffi.Uint32, bool, ffi.Uint32,
+              ffi.Uint32, ffi.Int64)>>('warp');
   late final _warp =
-      _warpPtr.asFunction<CResult_u8 Function(int, int, int, int, int)>();
+      _warpPtr.asFunction<CResult_u8 Function(int, int, int, int, int, int)>();
 
   int is_valid_seed(
     int coin,
@@ -2015,6 +2017,8 @@ const int Servers_VT_URLS = 4;
 const int Progress_VT_TRIAL_DECRYPTIONS = 8;
 
 const int Progress_VT_DOWNLOADED = 10;
+
+const int Progress_VT_BALANCES = 12;
 
 const int KeyPack_VT_T_ADDR = 4;
 
