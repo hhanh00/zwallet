@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,11 +68,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                   decoration: InputDecoration(labelText: s.accountName),
                   controller: nameController,
                   enableSuggestions: true,
-                  validator: (String? name) {
-                    if (name == null || name.isEmpty)
-                      return s.accountNameIsRequired;
-                    return null;
-                  },
+                  validator: FormBuilderValidators.required()
                 ),
                 FormBuilderRadioGroup<int>(
                   decoration: InputDecoration(labelText: s.crypto),
@@ -158,10 +155,6 @@ class _NewImportAccountState extends State<NewImportAccountPage>
         }
       });
     }
-  }
-
-  _settings() {
-    GoRouter.of(context).push('/settings?coin=$coin');
   }
 
   String? _checkKey(String? v) {
