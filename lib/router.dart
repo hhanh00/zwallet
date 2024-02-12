@@ -190,7 +190,7 @@ final router = GoRouter(
                         GoRoute(
                             path: 'new',
                             builder: (context, state) =>
-                                NewImportAccountPage(first: false)),
+                                NewImportAccountPage(first: false, seedInfo: state.extra as SeedInfo?)),
                       ]),
                   GoRoute(
                       path: 'cold',

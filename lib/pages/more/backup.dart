@@ -43,7 +43,10 @@ class _BackupState extends State<BackupPage> {
     List<Widget> cards = [];
     TextStyle? style;
     if (widget.backup.seed != null) {
-      cards.add(BackupPanel(name, s.seed, widget.backup.seed!, Icon(Icons.save)));
+      var seed = widget.backup.seed!;
+      if (widget.backup.index != 0)
+        seed += ' [${widget.backup.index}]';
+      cards.add(BackupPanel(name, s.seed, seed, Icon(Icons.save)));
       style = small;
     }
     if (widget.backup.sk != null) {

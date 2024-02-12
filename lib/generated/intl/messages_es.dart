@@ -5,31 +5,31 @@ class SEs extends S {
   SEs([String locale = 'es']) : super(locale);
 
   @override
-  String get about => 'Acerca';
+  String get about => 'Acerca de';
 
   @override
   String get account => 'Cuenta';
 
   @override
-  String get accountBalanceHistory => 'Historial de la cuenta';
+  String get accountBalanceHistory => 'Historial de saldo de cuenta';
 
   @override
   String get accountIndex => 'Índice de cuenta';
 
   @override
-  String get accountManager => 'Account Manager';
+  String get accountManager => 'Gestor de cuentas';
 
   @override
-  String get accountName => 'Nombre de la cuenta';
+  String get accountName => 'Nombre de cuenta';
 
   @override
   String get accounts => 'Cuentas';
 
   @override
-  String get add => 'Agregar';
+  String get add => 'Añadir';
 
   @override
-  String get addContact => 'Agregar Contacto';
+  String get addContact => 'Añadir contacto';
 
   @override
   String get address => 'Dirección';
@@ -38,70 +38,70 @@ class SEs extends S {
   String get addressCopiedToClipboard => 'Dirección copiada al portapapeles';
 
   @override
-  String get addressIndex => 'Address Index';
+  String get addressIndex => 'Índice de dirección';
 
   @override
-  String get addressIsEmpty => 'La Dirección está vacía';
+  String get addressIsEmpty => 'La dirección está vacía';
 
   @override
-  String get advanced => 'Advanced';
+  String get advanced => 'Avanzado';
 
   @override
-  String get amount => 'Monto';
+  String get amount => 'Cantidad';
 
   @override
-  String get amountCurrency => 'Amount in Fiat';
+  String get amountCurrency => 'Cantidad en Fiat';
 
   @override
   String get amountMustBePositive => 'La cantidad debe ser positiva';
 
   @override
-  String get amountSlider => 'Amount Slider';
+  String get amountSlider => 'Monto deslizador';
 
   @override
-  String get antispamFilter => 'Anti-Spam Filter';
+  String get antispamFilter => 'Filtro Antispam';
 
   @override
-  String get any => 'Any';
+  String get any => 'Cualquier';
 
   @override
-  String get appData => 'App Data';
+  String get appData => 'Datos de App';
 
   @override
   String get auto => 'Auto';
 
   @override
-  String get autoFee => 'Automatic Fee';
+  String get autoFee => 'Tarifa automática';
 
   @override
-  String get autoHide => 'Auto Hide';
+  String get autoHide => 'Auto Ocultar';
 
   @override
   String get autoHideBalance => 'Ocultar saldo';
 
   @override
-  String get autoView => 'Orientation';
+  String get autoView => 'Orientación';
 
   @override
-  String get backgroundSync => 'Background Sync';
+  String get backgroundSync => 'Sincronización de fondo';
 
   @override
-  String get backup => 'Copia de seguridad';
+  String get backup => 'Respaldo';
 
   @override
-  String get backupAllAccounts => 'Copia de seguridad completa';
+  String get backupAllAccounts => 'Copia de seguridad de todas las cuentas';
 
   @override
-  String get backupMissing => 'BACKUP MISSING';
+  String get backupMissing => 'FALLO DE BACKUP';
 
   @override
   String get balance => 'Saldo';
 
   @override
-  String get barcode => 'Código de barras';
+  String get barcode => 'Barcode';
 
   @override
-  String get blockExplorer => 'Block Explorer';
+  String get blockExplorer => 'Explorador de bloques';
 
   @override
   String get body => 'Cuerpo';
@@ -110,80 +110,80 @@ class SEs extends S {
   String get broadcast => 'Transmisión';
 
   @override
-  String get budget => 'Presupuesto';
+  String get budget => 'Presupuestario';
 
   @override
   String get cancel => 'Cancelar';
 
   @override
-  String get cannotDeleteActive => 'Cannot delete the active account unless it is the last one';
+  String get cannotDeleteActive => 'No se puede eliminar la cuenta activa a menos que sea la última';
 
   @override
-  String get cannotUseTKey => 'Cannot import transparent private key. Use SWEEP instead';
+  String get cannotUseTKey => 'No se puede importar la clave privada transparente. Utilice SWEEP en su lugar';
 
   @override
-  String get catchup => 'Catch up';
+  String get catchup => 'Poner al día';
 
   @override
   String get close => 'Cerrar';
 
   @override
-  String get coldStorage => 'Billetera fría';
+  String get coldStorage => 'Almacenamiento frío';
 
   @override
-  String get configure => 'Configure';
+  String get configure => 'Configurar';
 
   @override
-  String get confirmDeleteAccount => '¿Está SEGURO de que desea BORRAR esta cuenta? DEBE tener una COPIA DE SEGURIDAD para recuperarla. Esta operación NO es reversible.';
+  String get confirmDeleteAccount => '¿Estás seguro de que quieres eliminar esta cuenta? DEBES tener un BACKUP para recuperarla. Esta operación no es reversible.';
 
   @override
-  String get confirmDeleteContact => 'Are you SURE you want to DELETE this contact?';
+  String get confirmDeleteContact => '¿Estás seguro de que quieres ELIMINAR este contacto?';
 
   @override
   String confirmRescanFrom(Object height) {
-    return 'Do you want to rescan from block $height?';
+    return '¿Quieres volver a escanear del bloque $height?';
   }
 
   @override
   String confirmRewind(Object height) {
-    return 'Do you want to rewind to block $height?';
+    return '¿Quieres rebobinar para bloquear la $height?';
   }
 
   @override
-  String get confirmSaveContacts => 'Are you sure you want to save your contacts?';
+  String get confirmSaveContacts => '¿Estás seguro de que quieres guardar tus contactos?';
 
   @override
-  String get confirmSaveKeys => 'Have you saved your keys?';
+  String get confirmSaveKeys => '¿Ha guardado sus llaves?';
 
   @override
-  String get confirmWatchOnly => 'Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.';
+  String get confirmWatchOnly => '¿Quiere ELIMINAR la clave secreta y convertir esta cuenta en una cuenta de sólo reloj? Ya no podrás gastar desde este dispositivo. Esta operación NO es reversible.';
 
   @override
-  String get confirmations => 'Min. Confirmations';
+  String get confirmations => 'Mínimo de confirmaciones';
 
   @override
-  String get confs => 'Confir';
+  String get confs => 'Confos';
 
   @override
-  String get connectionError => 'DISCONNECTED';
+  String get connectionError => 'DISCONECTADO';
 
   @override
-  String get contactName => 'Nombre del contacto';
+  String get contactName => 'Nombre de contacto';
 
   @override
   String get contacts => 'Contactos';
 
   @override
-  String get convertToWatchonly => 'Convertir en solo vista';
+  String get convertToWatchonly => 'Sólo a Watch';
 
   @override
-  String get copiedToClipboard => 'Copy to Clipboard';
+  String get copiedToClipboard => 'Copiar al portapapeles';
 
   @override
   String get copy => 'Copiar';
 
   @override
-  String get count => 'Cuenta';
+  String get count => 'Contador';
 
   @override
   String get crypto => 'Crypto';
@@ -192,105 +192,105 @@ class SEs extends S {
   String get currency => 'Moneda';
 
   @override
-  String get currentPassword => 'Current password';
+  String get currentPassword => 'Contraseña actual';
 
   @override
   String get custom => 'Personalizado';
 
   @override
-  String get customSend => 'Use Custom Send';
+  String get customSend => 'Usar envío personalizado';
 
   @override
-  String get customSendSettings => 'Custom Send Settings';
+  String get customSendSettings => 'Configuración de envío personalizada';
 
   @override
-  String get dark => 'Noche';
+  String get dark => 'Oscuro';
 
   @override
-  String get databasePassword => 'Database Password';
+  String get databasePassword => 'Contraseña de la base de datos';
 
   @override
-  String get databaseRestored => 'Database Restored';
+  String get databaseRestored => 'Base de datos restaurada';
 
   @override
   String get date => 'Fecha';
 
   @override
-  String get datetime => 'Fecha/Hora';
+  String get datetime => 'Fecha/hora';
 
   @override
-  String get deductFee => 'Deduct fee from amount';
+  String get deductFee => 'Deducir comisión del monto';
 
   @override
-  String get defaultMemo => 'Nota';
+  String get defaultMemo => 'Memo por defecto';
 
   @override
-  String get delete => 'ELIMINAR';
+  String get delete => 'BORRAR';
 
   @override
   String deleteAccount(Object name) {
-    return 'Borrar Cuenta';
+    return 'Eliminar cuenta $name';
   }
 
   @override
-  String get deletePayment => 'Are you sure you want to delete this recipient';
+  String get deletePayment => '¿Está seguro de que desea eliminar este destinatario';
 
   @override
-  String get derpath => 'Derivation Path';
+  String get derpath => 'Ruta de derivación';
 
   @override
-  String get destination => 'Destination';
+  String get destination => 'Destino';
 
   @override
-  String get disclaimer => 'Disclaimer';
+  String get disclaimer => 'Descargo de responsabilidad';
 
   @override
-  String get disclaimerText => 'SELF-CUSTODY';
+  String get disclaimerText => 'SELF-CLIENTE';
 
   @override
-  String get disclaimer_1 => 'I understand I am responsible for securing my seed phrase';
+  String get disclaimer_1 => 'Entiendo que soy responsable de asegurar mi frase de semilla';
 
   @override
-  String get disclaimer_2 => 'I understand YWallet cannot recover my seed phrase';
+  String get disclaimer_2 => 'Entiendo que YWallet no puede recuperar mi frase de semilla';
 
   @override
-  String get disclaimer_3 => 'I understand whoever knows my seed phrase can get my funds';
+  String get disclaimer_3 => 'Entiendo a quien conozca mi frase de semilla puede obtener mis fondos';
 
   @override
-  String get diversified => 'Diversified';
+  String get diversified => 'Diversificado';
 
   @override
   String get editContact => 'Editar contacto';
 
   @override
-  String get encryptDatabase => 'Encrypt Database';
+  String get encryptDatabase => 'Cifrar base de datos';
 
   @override
-  String get encryptionKey => 'Clave de encriptación';
+  String get encryptionKey => 'Clave de cifrado';
 
   @override
   String get error => 'ERROR';
 
   @override
-  String get external => 'External';
+  String get external => 'Externo';
 
   @override
-  String get fee => 'Fee';
+  String get fee => 'Cuota';
 
   @override
-  String get fromPool => 'Del Suministro';
+  String get fromPool => 'Desde Pool';
 
   @override
-  String get fromto => 'Rem/Dest.';
+  String get fromto => 'Desde/Hasta';
 
   @override
-  String get fullBackup => 'Copia completa';
+  String get fullBackup => 'Copia de seguridad';
 
   @override
-  String get fullRestore => 'Restauración de la copia de seguridad completada';
+  String get fullRestore => 'Restauración completa';
 
   @override
-  String get gapLimit => 'Brecha';
+  String get gapLimit => 'Límite de brechas';
 
   @override
   String get general => 'General';
@@ -305,7 +305,7 @@ class SEs extends S {
   String get hidden => 'Hidden';
 
   @override
-  String get high => 'Alto';
+  String get high => 'Alta';
 
   @override
   String get history => 'Historial';
@@ -314,73 +314,73 @@ class SEs extends S {
   String get import => 'Importar';
 
   @override
-  String get includeReplyTo => 'Incluir mi dirección en el memo';
+  String get includeReplyTo => 'Incluye mi dirección en la nota';
 
   @override
-  String get incomingFunds => 'Pago recibido';
+  String get incomingFunds => 'Fondos entrantes';
 
   @override
-  String get index => 'Index';
+  String get index => 'Índice';
 
   @override
-  String get interval => 'Interval';
+  String get interval => 'Intervalo';
 
   @override
-  String get invalidAddress => 'La Dirección no es válida';
+  String get invalidAddress => 'Dirección inválida';
 
   @override
-  String get invalidKey => 'Tecla inválida';
+  String get invalidKey => 'Clave inválida';
 
   @override
-  String get invalidPassword => 'Invalid Password';
+  String get invalidPassword => 'Contraseña no válida';
 
   @override
   String get invalidPaymentURI => 'Invalid Payment URI';
 
   @override
-  String get key => 'Clave';
+  String get key => 'Semilla, Clave secreta o Clave de vista (opcional)';
 
   @override
-  String get keyTool => 'Clave Utilidad';
+  String get keyTool => 'Herramienta de clave';
 
   @override
-  String get keygen => 'Backup Keygen';
+  String get keygen => 'Respaldar Keygen';
 
   @override
   String get keygenHelp => 'Full backups use the AGE encryption system. The encryption key is used to encrypt the backup but CANNOT decrypt it. The SECRET key is needed to restore the backup.\nThe app will not store the keys. Every time this keygen will produce a DIFFERENT pair of keys.\n\nYou MUST save BOTH keys that you use';
 
   @override
-  String get largestSpendingsByAddress => 'Pagos más grandes por dirección';
+  String get largestSpendingsByAddress => 'Mayor gasto por dirección';
 
   @override
-  String get ledger => 'Ledger';
+  String get ledger => 'Libro';
 
   @override
-  String get light => 'Día';
+  String get light => 'Claro';
 
   @override
-  String get list => 'List';
+  String get list => 'Lista';
 
   @override
   String get loading => 'Cargando...';
 
   @override
-  String get low => 'Bajo';
+  String get low => 'Baja';
 
   @override
-  String get mainUA => 'Main UA Receivers';
+  String get mainUA => 'Destinatarios principales de UA';
 
   @override
-  String get market => 'Market';
+  String get market => 'Mercado';
 
   @override
-  String get marketPrice => 'Mkt Prices';
+  String get marketPrice => 'Precios Mkt';
 
   @override
-  String get max => 'MAX';
+  String get max => 'Máx';
 
   @override
-  String get maxAmountPerNote => 'Monto máximo por nota';
+  String get maxAmountPerNote => 'Cantidad máxima por nota';
 
   @override
   String get medium => 'Medio';
@@ -389,7 +389,7 @@ class SEs extends S {
   String get memo => 'Nota';
 
   @override
-  String get memoTooLong => 'Memo too long';
+  String get memoTooLong => 'Memo demasiado largo';
 
   @override
   String get message => 'Mensaje';
@@ -398,16 +398,16 @@ class SEs extends S {
   String get messages => 'Mensajes';
 
   @override
-  String get minPrivacy => 'Privacidad Mínima';
+  String get minPrivacy => 'Privacidad mínima';
 
   @override
-  String get mode => 'Advanced Mode';
+  String get mode => 'Modo avanzado';
 
   @override
-  String get more => 'More';
+  String get more => 'Más';
 
   @override
-  String get multiPay => 'Multi-Pagos';
+  String get multiPay => 'Pago múltiple';
 
   @override
   String get na => 'N/A';
@@ -416,37 +416,37 @@ class SEs extends S {
   String get name => 'Nombre';
 
   @override
-  String get nan => 'Not a number';
+  String get nan => 'No un número';
 
   @override
-  String get netOrchard => 'Net Orchard Change';
+  String get netOrchard => 'Cambio neto de Orchard';
 
   @override
-  String get netSapling => 'Net Sapling Change';
+  String get netSapling => 'Cambio de Brote Neto';
 
   @override
   String get newAccount => 'Nueva cuenta';
 
   @override
-  String get newPassword => 'New Password';
+  String get newPassword => 'Nueva contraseña';
 
   @override
-  String get newPasswordsDoNotMatch => 'New passwords do not match';
+  String get newPasswordsDoNotMatch => 'Las nuevas contraseñas no coinciden';
 
   @override
-  String get next => 'Next';
+  String get next => 'Siguiente';
 
   @override
-  String get noAuthenticationMethod => 'Sin método de autenticación';
+  String get noAuthenticationMethod => 'Sin Método de Autenticación';
 
   @override
-  String get noDbPassword => 'Database must be encrypted to protect open/spend';
+  String get noDbPassword => 'La base de datos debe ser cifrada para proteger abrir/gastar';
 
   @override
-  String get noRemindBackup => 'Do not remind me';
+  String get noRemindBackup => 'No me lo recuerde';
 
   @override
-  String get notEnoughBalance => 'Saldo insuficiente';
+  String get notEnoughBalance => 'No hay suficiente saldo';
 
   @override
   String get notes => 'Notas';
@@ -455,78 +455,78 @@ class SEs extends S {
   String get now => 'Ahora';
 
   @override
-  String get off => 'Off';
+  String get off => 'Apagado';
 
   @override
-  String get ok => 'OK';
+  String get ok => 'Ok';
 
   @override
   String get openInExplorer => 'Abrir en el Explorador';
 
   @override
-  String get or => 'or';
+  String get or => 'o';
 
   @override
   String get orchard => 'Orchard';
 
   @override
-  String get orchardInput => 'Orchard Input';
+  String get orchardInput => 'Entrada Orchard';
 
   @override
-  String get paymentMade => 'Pago enviado';
+  String get paymentMade => 'Pago realizado';
 
   @override
-  String get paymentURI => 'Payment URI';
+  String get paymentURI => 'URI de pago';
 
   @override
-  String get ping => 'Ping Test';
+  String get ping => 'Prueba de ping';
 
   @override
-  String get pleaseAuthenticate => 'Please Authenticate';
+  String get pleaseAuthenticate => 'Por favor autenticar';
 
   @override
-  String get pleaseQuitAndRestartTheAppNow => 'Please Quit and Restart the app in order for these changes to take effect';
+  String get pleaseQuitAndRestartTheAppNow => 'Por favor, cierre y reinicie la aplicación para que estos cambios surtan efecto';
 
   @override
-  String get pool => 'Pool';
+  String get pool => 'Herramienta';
 
   @override
-  String get poolTransfer => 'Pool Transfer';
+  String get poolTransfer => 'Transferencia de Pool';
 
   @override
-  String get pools => 'Transferir Suministros';
+  String get pools => 'Piscinas';
 
   @override
-  String get prev => 'Prev';
+  String get prev => 'Anterior';
 
   @override
-  String get priv => 'Privacy';
+  String get priv => 'Privacidad';
 
   @override
   String privacy(Object level) {
-    return 'PRIVACIDAD: $level';
+    return 'PRIVACIA: $level';
   }
 
   @override
-  String get privacyLevelTooLow => 'Nivel de Privacidad muy BAJO';
+  String get privacyLevelTooLow => 'Privacidad demasiado LOW - Pulsación larga para anular';
 
   @override
   String get privateKey => 'Clave Privada';
 
   @override
-  String get protectOpen => 'Bloquer al abrir';
+  String get protectOpen => 'Proteger abrir';
 
   @override
-  String get protectSend => 'Autenticar al enviar';
+  String get protectSend => 'Proteger envío';
 
   @override
-  String get publicKey => 'Public Key';
+  String get publicKey => 'Clave pública';
 
   @override
   String get qr => 'QR Code';
 
   @override
-  String get rawTransaction => 'Transacción con Firmar';
+  String get rawTransaction => 'Transacción sin procesar';
 
   @override
   String receive(Object ticker) {
@@ -535,56 +535,56 @@ class SEs extends S {
 
   @override
   String received(Object amount, Object ticker) {
-    return 'Recibido $amount $ticker';
+    return 'Recibida $amount $ticker';
   }
 
   @override
-  String get receivers => 'Receivers';
+  String get receivers => 'Receptores';
 
   @override
   String get recipient => 'Destinatario';
 
   @override
-  String get repeatNewPassword => 'Repeat New Password';
+  String get repeatNewPassword => 'Repetir nueva contraseña';
 
   @override
   String get reply => 'Responder';
 
   @override
-  String get replyUA => 'Reply UA Receivers';
+  String get replyUA => 'Responder destinatarios de UA';
 
   @override
-  String get required => 'Value Required';
+  String get required => 'Valor requerido';
 
   @override
-  String get rescan => 'Escanear';
+  String get rescan => 'Reescanear';
 
   @override
-  String get rescanFrom => '¿Escanear desde...?';
+  String get rescanFrom => 'Reescanear desde...';
 
   @override
-  String get rescanWarning => 'RESCAN resets all your accounts. You may want to consider using REWIND instead';
+  String get rescanWarning => 'RESCAN restablece todas sus cuentas. Puede que quiera considerar usar REWIND en su lugar';
 
   @override
-  String get reset => 'Restablecer';
+  String get reset => 'Reset';
 
   @override
   String get restart => 'Reiniciar';
 
   @override
-  String get restore => 'Restore';
+  String get restore => 'Restaurar';
 
   @override
-  String get restoreAnAccount => '¿Restaurar una Cuenta?';
+  String get restoreAnAccount => '¿Restaurar una cuenta?';
 
   @override
-  String get retrieveTransactionDetails => 'Obtener detalles de la transacción';
+  String get retrieveTransactionDetails => 'Recuperar detalles de la transacción';
 
   @override
   String get rewind => 'Rewind';
 
   @override
-  String get sapling => 'Sapling';
+  String get sapling => 'Brote';
 
   @override
   String get saplingInput => 'Sapling Input';
@@ -593,31 +593,31 @@ class SEs extends S {
   String get save => 'Guardar';
 
   @override
-  String get scanQrCode => 'Escanear Código QR';
+  String get scanQrCode => 'Scan QR Code';
 
   @override
-  String get scanRawTx => 'Scan the Unsigned Tx QR codes';
+  String get scanRawTx => 'Escanear los códigos QR Tx no firmados';
 
   @override
-  String get scanSignedTx => 'Scan the Signed Tx QR codes';
+  String get scanSignedTx => 'Escanear los códigos QR Tx firmados';
 
   @override
   String get secretKey => 'Clave secreta';
 
   @override
-  String get secured => 'Secured';
+  String get secured => 'Asegurado';
 
   @override
   String get seed => 'Semilla';
 
   @override
-  String get seedKeys => 'Seed & Keys';
+  String get seedKeys => 'Semilla y llaves';
 
   @override
-  String get seedOrKeyRequired => 'Seed or Private Key required';
+  String get seedOrKeyRequired => 'Semilla o clave privada requerida';
 
   @override
-  String get selectNotesToExcludeFromPayments => 'Seleccionar Notas a EXCLUIR de los pagos';
+  String get selectNotesToExcludeFromPayments => 'Seleccionar notas a EXCLUDE de los pagos';
 
   @override
   String get send => 'Enviar';
@@ -636,92 +636,92 @@ class SEs extends S {
   String get sender => 'Remitente';
 
   @override
-  String get sending => 'Sending Transaction';
+  String get sending => 'Enviando transacción';
 
   @override
-  String get sent => 'Transaction Sent';
+  String get sent => 'Transacción enviada';
 
   @override
-  String get sent_failed => 'Transaction Failed';
+  String get sent_failed => 'Transacción fallida';
 
   @override
   String get server => 'Servidor';
 
   @override
-  String get set => 'Utilizar';
+  String get set => 'Fijar';
 
   @override
   String get settings => 'Ajustes';
 
   @override
-  String get shielded => 'Shielded';
+  String get shielded => 'Protegido';
 
   @override
-  String get showSubKeys => 'Show Sub Keys';
+  String get showSubKeys => 'Mostrar subclaves';
 
   @override
-  String get sign => 'Firmar';
+  String get sign => 'Firmar transacción';
 
   @override
-  String get signOffline => 'Firmar';
+  String get signOffline => 'Signo';
 
   @override
-  String get signedTx => 'Tx firmada';
+  String get signedTx => 'Tx firmado';
 
   @override
-  String get source => 'Source';
+  String get source => 'Fuente';
 
   @override
   String get spendable => 'Disponible';
 
   @override
   String spent(Object amount, Object ticker) {
-    return 'Enviado $amount $ticker';
+    return 'Gastar $amount $ticker';
   }
 
   @override
   String get subject => 'Asunto';
 
   @override
-  String get sweep => 'Barrer';
+  String get sweep => 'Barrido';
 
   @override
-  String get sync => 'Synchronization';
+  String get sync => 'Sincronización';
 
   @override
-  String get syncPaused => 'Escaneo en pausa';
+  String get syncPaused => 'PASADO - Toca para Reanudar';
 
   @override
-  String get table => 'Lista';
+  String get table => 'Tabla';
 
   @override
   String get template => 'Plantilla';
 
   @override
   String textCopiedToClipboard(Object text) {
-    return '$text copiado al portapapeles';
+    return '$text copied to clipboard';
   }
 
   @override
-  String get thePrivateWalletMessenger => 'Billetera & Mensajería Privada';
+  String get thePrivateWalletMessenger => 'El monedero privado y mensajero';
 
   @override
   String get theme => 'Tema';
 
   @override
-  String get thisAccountAlreadyExists => 'Esta cuenta ya existe.';
+  String get thisAccountAlreadyExists => 'Otra cuenta tiene la misma dirección';
 
   @override
-  String get timestamp => 'Fecha/Hora';
+  String get timestamp => 'Timestamp';
 
   @override
-  String get toPool => 'Para Suministro';
+  String get toPool => 'A Pool';
 
   @override
-  String get tools => 'Tools';
+  String get tools => 'Herramientas';
 
   @override
-  String get totalBalance => 'Saldo Total';
+  String get totalBalance => 'Saldo total';
 
   @override
   String get transactionDetails => 'Detalles de la transacción';
@@ -730,19 +730,19 @@ class SEs extends S {
   String get transactionHistory => 'Historial de transacciones';
 
   @override
-  String get transactions => 'Transacciónes';
+  String get transactions => 'Transacciones';
 
   @override
   String get transfer => 'Transferir';
 
   @override
-  String get transparent => 'Transparent';
+  String get transparent => 'Transparente';
 
   @override
-  String get transparentInput => 'Transparent Input';
+  String get transparentInput => 'Entrada transparente';
 
   @override
-  String get transparentKey => 'Transparente Clavo';
+  String get transparentKey => 'Clave transparente';
 
   @override
   String get txID => 'TXID';
@@ -753,34 +753,34 @@ class SEs extends S {
   }
 
   @override
-  String get txPlan => 'Transaction Plan';
+  String get txPlan => 'Plan de transacción';
 
   @override
   String get ua => 'UA';
 
   @override
-  String get unifiedViewingKey => 'Clave de visualización Unidad';
+  String get unifiedViewingKey => 'Clave de visualización unificada';
 
   @override
-  String get unsignedTx => 'Tx no firmada';
+  String get unsignedTx => 'Tx sin firmar';
 
   @override
-  String get update => 'Recalcular';
+  String get update => 'Recalcar';
 
   @override
-  String get useZats => 'Use Zats (8 decimals)';
+  String get useZats => 'Usar Zats (8 decimales)';
 
   @override
   String get version => 'Versión';
 
   @override
-  String get veryLow => 'Muy Bajo';
+  String get veryLow => 'Muy bajo';
 
   @override
-  String get viewingKey => 'Clave de visualización';
+  String get viewingKey => 'Viendo clave';
 
   @override
-  String get views => 'Views';
+  String get views => 'Vistas';
 
   @override
   String get welcomeToYwallet => 'Bienvenido a YWallet';

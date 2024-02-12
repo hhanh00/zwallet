@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:isolate';
 import 'dart:math';
 
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -15,6 +16,7 @@ import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
 
 part 'store2.g.dart';
+part 'store2.freezed.dart';
 
 var appStore = AppStore();
 
@@ -371,3 +373,12 @@ class AccountBalanceSnapshot {
   @override
   String toString() => '($coin, $id, $balance)';
 }
+
+@freezed
+class SeedInfo with _$SeedInfo {
+  const factory SeedInfo({
+    required String seed,
+    required int index,
+  }) = _SeedInfo;
+}
+ 

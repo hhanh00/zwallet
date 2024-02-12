@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -9,6 +10,7 @@ import '../../router.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
+import '../../store2.dart';
 import '../../tablelist.dart';
 import '../../pages/utils.dart';
 import '../widgets.dart';
@@ -19,6 +21,7 @@ class KeyToolPage extends StatefulWidget {
 }
 
 class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
+  late final seed = WarpApi.getBackup(aa.coin, aa.id).seed!;
   List<KeyPackT> keys = [];
   final formKey = GlobalKey<FormBuilderState>();
   bool shielded = false;
@@ -34,18 +37,19 @@ class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
           IconButton(onPressed: refresh, icon: Icon(Icons.refresh))
         ]),
         body: wrapWithLoading(Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: TableListPage(
-                  key: UniqueKey(),
-                  view: 2,
-                  items: keys,
-                  metadata: TableListKeyMetadata(
-                      shielded: shielded,
-                      accountIndex: account,
-                      external: external,
-                      addressIndex: address,
-                      formKey: formKey),
-                ))));
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: TableListPage(
+              key: UniqueKey(),
+              view: 2,
+              items: keys,
+              metadata: TableListKeyMetadata(
+                  seed: seed,
+                  shielded: shielded,
+                  accountIndex: account,
+                  external: external,
+                  addressIndex: address,
+                  formKey: formKey),
+            ))));
   }
 
   void refresh() {
@@ -82,6 +86,7 @@ class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
 
 class TableListKeyMetadata extends TableListItemMetadata<KeyPackT> {
   final s = S.of(rootNavigatorKey.currentContext!);
+  final String seed;
   final coinIndex = coins[aa.coin].coinIndex;
   final int accountIndex;
   final int addressIndex;
@@ -90,7 +95,8 @@ class TableListKeyMetadata extends TableListItemMetadata<KeyPackT> {
   int? selection;
   final GlobalKey<FormBuilderState> formKey;
   TableListKeyMetadata(
-      {required this.shielded,
+      {required this.seed,
+      required this.shielded,
       required this.accountIndex,
       required this.external,
       required this.addressIndex,
@@ -129,6 +135,15 @@ class TableListKeyMetadata extends TableListItemMetadata<KeyPackT> {
                     Panel(s.address, text: address),
                     Gap(8),
                     Panel(s.secretKey, text: key),
+                    Gap(8),
+                    IconButton(
+                      onPressed: () => addSubAccount(
+                        context,
+                        seed,
+                        idx,
+                      ),
+                      icon: Icon(Icons.add),
+                    ),
                   ],
                 )
               : ListTile(leading: Text(idx.toString()), title: Text(address))),
@@ -205,4 +220,9 @@ class TableListKeyMetadata extends TableListItemMetadata<KeyPackT> {
 
   @override
   SortConfig2? sortBy(String field) => null;
+}
+
+void addSubAccount(BuildContext context, String seed, int index) {
+  GoRouter.of(context).push('/more/account_manager/new',
+      extra: SeedInfo(seed: seed, index: index));
 }

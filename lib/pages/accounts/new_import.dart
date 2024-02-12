@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../store2.dart';
 import '../utils.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
@@ -14,7 +15,8 @@ import '../../pages/widgets.dart';
 
 class NewImportAccountPage extends StatefulWidget {
   final bool first;
-  NewImportAccountPage({required this.first});
+  final SeedInfo? seedInfo;
+  NewImportAccountPage({required this.first, this.seedInfo});
 
   @override
   State<StatefulWidget> createState() => _NewImportAccountState();
@@ -35,6 +37,12 @@ class _NewImportAccountState extends State<NewImportAccountPage>
   void initState() {
     super.initState();
     if (widget.first) nameController.text = 'Main';
+    final si = widget.seedInfo;
+    if (si != null) {
+      _restore = true;
+      _key = si.seed;
+      accountIndexController.text = si.index.toString();
+    }
     options = coins.map((c) {
       return FormBuilderFieldOption(
           child: ListTile(
