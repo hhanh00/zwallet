@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:settings_ui/settings_ui.dart';
 
+import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
 import '../utils.dart';
 import '../widgets.dart';
@@ -80,7 +81,7 @@ class MorePage extends StatelessWidget {
       MoreSection(
         title: Text(s.tools),
         tiles: [
-          MoreTile(
+          if (aa.seed != null) MoreTile(
               url: '/more/keytool',
               icon: FaIcon(FontAwesomeIcons.key),
               text: s.keyTool,

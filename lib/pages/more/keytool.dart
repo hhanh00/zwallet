@@ -21,7 +21,7 @@ class KeyToolPage extends StatefulWidget {
 }
 
 class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
-  late final seed = WarpApi.getBackup(aa.coin, aa.id).seed!;
+  late final seed = aa.seed!;
   List<KeyPackT> keys = [];
   final formKey = GlobalKey<FormBuilderState>();
   bool shielded = false;
