@@ -34,7 +34,7 @@
 - **Color and Dark/Light Themes**
 - Customizable anchor offset
 - **QR code scanner support**
-- **Localization** in English, Spanish, French, Chinese, (more to come)
+- **Localization** in English, Spanish, French, Chinese, (contribute at: https://crowdin.com/project/ywallet)
 - *Fluent and Responsive UI*
 
 # Privacy Features
