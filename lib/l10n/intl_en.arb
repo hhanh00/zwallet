@@ -12,7 +12,6 @@
 	"addressCopiedToClipboard": "Address copied to clipboard",
 	"addressIndex": "Address Index",
 	"addressIsEmpty": "Address is empty",
-	"advanced": "Advanced",
 	"amount": "Amount",
 	"amountCurrency": "Amount in Fiat",
 	"amountMustBePositive": "Amount must be positive",
