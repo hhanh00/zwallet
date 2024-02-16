@@ -14,7 +14,7 @@ class SFr extends S {
   String get accountBalanceHistory => 'Historique du solde du compte';
 
   @override
-  String get accountIndex => 'Index du compte client';
+  String get accountIndex => 'Index du Compte';
 
   @override
   String get accountManager => 'Gestionnaire de compte';
@@ -32,19 +32,16 @@ class SFr extends S {
   String get addContact => 'Ajouter un contact';
 
   @override
-  String get address => 'Adresses';
+  String get address => 'Adresse';
 
   @override
   String get addressCopiedToClipboard => 'Adresse copiée dans le presse-papiers';
 
   @override
-  String get addressIndex => 'Index d\'adresse';
+  String get addressIndex => 'Index de l\'adresse';
 
   @override
   String get addressIsEmpty => 'L\'adresse est vide';
-
-  @override
-  String get advanced => 'Avancé';
 
   @override
   String get amount => 'Montant';
@@ -62,7 +59,7 @@ class SFr extends S {
   String get antispamFilter => 'Filtre anti-spam';
 
   @override
-  String get any => 'N\'importe quel';
+  String get any => 'Toujours';
 
   @override
   String get appData => 'Données de l\'application';
@@ -71,7 +68,7 @@ class SFr extends S {
   String get auto => 'Automatique';
 
   @override
-  String get autoFee => 'Frais automatiques';
+  String get autoFee => 'Frais calculés automatiquement';
 
   @override
   String get autoHide => 'Masquage automatique';
@@ -98,13 +95,13 @@ class SFr extends S {
   String get balance => 'Solde';
 
   @override
-  String get barcode => 'Barcode';
+  String get barcode => 'Code-barres';
 
   @override
   String get blockExplorer => 'Explorateur de blocs';
 
   @override
-  String get body => 'Corps';
+  String get body => 'Corps du message';
 
   @override
   String get broadcast => 'Diffusion';
@@ -119,7 +116,7 @@ class SFr extends S {
   String get cannotDeleteActive => 'Impossible de supprimer le compte actif sauf s\'il est le dernier';
 
   @override
-  String get cannotUseTKey => 'Impossible d\'importer une clé privée transparente. Utilisez SWEEP à la place';
+  String get cannotUseTKey => 'Impossible d\'importer une clé privée transparente. Utilisez BALAYER à la place';
 
   @override
   String get catchup => 'Rattraper';
@@ -134,7 +131,7 @@ class SFr extends S {
   String get configure => 'Configurer';
 
   @override
-  String get confirmDeleteAccount => 'Êtes-vous sûr de vouloir SUPPRIMER ce compte ? Vous DEVEZ avoir un SAUVEGARDE pour le récupérer. Cette opération n\'est PAS réversible.';
+  String get confirmDeleteAccount => 'Êtes-vous sûr de vouloir SUPPRIMER ce compte ? Vous DEVEZ avoir une SAUVEGARDE pour le récupérer. Cette opération n\'est PAS réversible.';
 
   @override
   String get confirmDeleteContact => 'Êtes-vous sûr de vouloir SUPPRIMER ce contact ?';
@@ -159,10 +156,10 @@ class SFr extends S {
   String get confirmWatchOnly => 'Voulez-vous SUPPRIMER la clé secrète et convertir ce compte en un compte en lecture seule ? Vous ne pourrez plus dépenser depuis cet appareil. Cette opération n\'est PAS réversible.';
 
   @override
-  String get confirmations => 'Confirmations min.';
+  String get confirmations => 'Confirmations minimum';
 
   @override
-  String get confs => 'Confs';
+  String get confs => 'Confirmations';
 
   @override
   String get connectionError => 'DÉCONNECTÉ';
@@ -183,7 +180,7 @@ class SFr extends S {
   String get copy => 'Copie';
 
   @override
-  String get count => 'Compter';
+  String get count => 'Nombre';
 
   @override
   String get crypto => 'Crypto';
@@ -248,13 +245,13 @@ class SFr extends S {
   String get disclaimerText => 'SELF-CUSTODY';
 
   @override
-  String get disclaimer_1 => 'Je comprends que je sois responsable de la sécurisation de ma phrase de graine';
+  String get disclaimer_1 => 'Je comprends que je suis responsable de la sécurisation de ma phrase de graine';
 
   @override
   String get disclaimer_2 => 'Je comprends que YWallet ne puisse pas récupérer ma phrase de graine';
 
   @override
-  String get disclaimer_3 => 'Je comprends qui connaît ma phrase de graine peut obtenir mes fonds';
+  String get disclaimer_3 => 'Je comprends que qui connaît ma phrase de graine peut obtenir mes fonds';
 
   @override
   String get diversified => 'Diversifié';
@@ -278,10 +275,10 @@ class SFr extends S {
   String get fee => 'Frais';
 
   @override
-  String get fromPool => 'Depuis la piscine';
+  String get fromPool => 'Depuis le type de fonds';
 
   @override
-  String get fromto => 'De/À';
+  String get fromto => 'De/Vers';
 
   @override
   String get fullBackup => 'Sauvegarde complète';
@@ -290,7 +287,7 @@ class SFr extends S {
   String get fullRestore => 'Restauration complète';
 
   @override
-  String get gapLimit => 'Limite de Gap';
+  String get gapLimit => 'Limite d\'écart';
 
   @override
   String get general => 'Général';
@@ -302,7 +299,7 @@ class SFr extends S {
   String get help => 'Aide';
 
   @override
-  String get hidden => 'Hidden';
+  String get hidden => 'Masqué';
 
   @override
   String get high => 'Élevé';
@@ -320,7 +317,7 @@ class SFr extends S {
   String get incomingFunds => 'Fonds entrants';
 
   @override
-  String get index => 'Index';
+  String get index => 'Indice';
 
   @override
   String get interval => 'Intervalle';
@@ -335,7 +332,7 @@ class SFr extends S {
   String get invalidPassword => 'Mot de passe invalide';
 
   @override
-  String get invalidPaymentURI => 'Invalid Payment URI';
+  String get invalidPaymentURI => 'Paiement URI invalide';
 
   @override
   String get key => 'Graine, clé secrète ou clé de vue (optionnel)';
@@ -344,10 +341,10 @@ class SFr extends S {
   String get keyTool => 'Outil clé';
 
   @override
-  String get keygen => 'Keygen de sauvegarde';
+  String get keygen => 'Générateur de clés de sauvegarde';
 
   @override
-  String get keygenHelp => 'Full backups use the AGE encryption system. The encryption key is used to encrypt the backup but CANNOT decrypt it. The SECRET key is needed to restore the backup.\nThe app will not store the keys. Every time this keygen will produce a DIFFERENT pair of keys.\n\nYou MUST save BOTH keys that you use';
+  String get keygenHelp => 'Les sauvegardes utilisent le système de chiffrage AGE. La clé de chiffrage est utilisée pour faire la sauvegarde, mais ne peut PAS le déchiffrer. La clé secrète est nécessaire pour recharger la sauvegarde.\n\nVous devez garder les DEUX clés';
 
   @override
   String get largestSpendingsByAddress => 'Les plus grandes dépenses par adresse';
@@ -377,7 +374,7 @@ class SFr extends S {
   String get marketPrice => 'Prix de Marché';
 
   @override
-  String get max => 'Max.';
+  String get max => 'Maximum';
 
   @override
   String get maxAmountPerNote => 'Montant maximum par note';
@@ -404,10 +401,10 @@ class SFr extends S {
   String get mode => 'Mode Avancé';
 
   @override
-  String get more => 'En savoir plus';
+  String get more => 'Plus';
 
   @override
-  String get multiPay => 'Multi Paye';
+  String get multiPay => 'Multi Paiement';
 
   @override
   String get na => 'N/D';
@@ -422,7 +419,7 @@ class SFr extends S {
   String get netOrchard => 'Changement net de Orchard';
 
   @override
-  String get netSapling => 'Changement de plante nette';
+  String get netSapling => 'Changement net de Sapling';
 
   @override
   String get newAccount => 'Nouveau compte';
@@ -449,7 +446,7 @@ class SFr extends S {
   String get notEnoughBalance => 'Solde insuffisant';
 
   @override
-  String get notes => 'Notes';
+  String get notes => 'Billets';
 
   @override
   String get now => 'Maintenant';
@@ -470,7 +467,7 @@ class SFr extends S {
   String get orchard => 'Orchard';
 
   @override
-  String get orchardInput => 'Entrée Orchard';
+  String get orchardInput => 'Source Orchard';
 
   @override
   String get paymentMade => 'Paiement effectué';
@@ -488,13 +485,13 @@ class SFr extends S {
   String get pleaseQuitAndRestartTheAppNow => 'Veuillez quitter et redémarrer l\'application pour que ces modifications prennent effet';
 
   @override
-  String get pool => 'Piscine';
+  String get pool => 'Type de fonds';
 
   @override
-  String get poolTransfer => 'Transfert de piscine';
+  String get poolTransfer => 'Transfert de type de fonds';
 
   @override
-  String get pools => 'Pools';
+  String get pools => 'Types de fonds';
 
   @override
   String get prev => 'Précédent';
@@ -508,13 +505,13 @@ class SFr extends S {
   }
 
   @override
-  String get privacyLevelTooLow => 'Confidentialité insuffisante - Appui long pour remplacer';
+  String get privacyLevelTooLow => 'Confidentialité insuffisante - Appui longuement pour continuer';
 
   @override
   String get privateKey => 'Clé privée';
 
   @override
-  String get protectOpen => 'Protéger Ouvert';
+  String get protectOpen => 'Protéger l\'ouverture';
 
   @override
   String get protectSend => 'Protéger l\'envoi';
@@ -523,7 +520,7 @@ class SFr extends S {
   String get publicKey => 'Clé publique';
 
   @override
-  String get qr => 'QR Code';
+  String get qr => 'Code QR';
 
   @override
   String get rawTransaction => 'Transaction brute';
@@ -551,7 +548,7 @@ class SFr extends S {
   String get reply => 'Répondre';
 
   @override
-  String get replyUA => 'Répondre aux récepteurs UA';
+  String get replyUA => 'Receveurs UA inclus dans l\'adresse de l\'envoyeur';
 
   @override
   String get required => 'Valeur requise';
@@ -563,10 +560,10 @@ class SFr extends S {
   String get rescanFrom => 'Rescanner depuis...';
 
   @override
-  String get rescanWarning => 'RESCAN réinitialise tous vos comptes. Vous pouvez envisager d\'utiliser REWIND à la place';
+  String get rescanWarning => 'RESCANNER réinitialise tous vos comptes. Vous pouvez envisager d\'utiliser REMBOBINER à la place';
 
   @override
-  String get reset => 'Reset';
+  String get reset => 'Réinitialiser';
 
   @override
   String get restart => 'Redémarrer';
@@ -581,22 +578,22 @@ class SFr extends S {
   String get retrieveTransactionDetails => 'Récupérer les détails de la transaction';
 
   @override
-  String get rewind => 'Rewind';
+  String get rewind => 'Rembobiner';
 
   @override
-  String get sapling => 'Pousse';
+  String get sapling => 'Sapling';
 
   @override
-  String get saplingInput => 'Sapling Input';
+  String get saplingInput => 'Source Sapling';
 
   @override
   String get save => 'Enregistrer';
 
   @override
-  String get scanQrCode => 'Scan QR Code';
+  String get scanQrCode => 'Scanner le QR code';
 
   @override
-  String get scanRawTx => 'Scannez les codes QR Tx non signés';
+  String get scanRawTx => 'Scannez les codes QR de la Tx non signée';
 
   @override
   String get scanSignedTx => 'Scannez les codes QR de la Tx signée';
@@ -611,10 +608,10 @@ class SFr extends S {
   String get seed => 'Graine';
 
   @override
-  String get seedKeys => 'Graines et clés';
+  String get seedKeys => 'Graine et clés';
 
   @override
-  String get seedOrKeyRequired => 'Seed ou clé privée requise';
+  String get seedOrKeyRequired => 'Graine ou clé privée requise';
 
   @override
   String get selectNotesToExcludeFromPayments => 'Sélectionnez les notes à EXCLUDE dans les paiements';
@@ -666,13 +663,13 @@ class SFr extends S {
   String get signOffline => 'Signer';
 
   @override
-  String get signedTx => 'Tx signé';
+  String get signedTx => 'Tx signée';
 
   @override
   String get source => 'Source';
 
   @override
-  String get spendable => 'Dépendable';
+  String get spendable => 'Dépensable';
 
   @override
   String spent(Object amount, Object ticker) {
@@ -715,7 +712,7 @@ class SFr extends S {
   String get timestamp => 'Horodatage';
 
   @override
-  String get toPool => 'Vers le pool';
+  String get toPool => 'Vers le type de fonds';
 
   @override
   String get tools => 'Outils';
@@ -745,7 +742,7 @@ class SFr extends S {
   String get transparentKey => 'Clé transparente';
 
   @override
-  String get txID => 'TXID';
+  String get txID => 'TX ID';
 
   @override
   String txId(Object txid) {
@@ -765,7 +762,7 @@ class SFr extends S {
   String get unsignedTx => 'Tx non signée';
 
   @override
-  String get update => 'Recalc';
+  String get update => 'Recalculer';
 
   @override
   String get useZats => 'Utiliser Zats (8 décimales)';
@@ -786,5 +783,5 @@ class SFr extends S {
   String get welcomeToYwallet => 'Bienvenue sur YWallet';
 
   @override
-  String get wifi => 'WiFi';
+  String get wifi => 'Wi-Fi';
 }

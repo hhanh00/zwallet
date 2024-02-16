@@ -173,12 +173,6 @@ abstract class S {
   /// **'Address is empty'**
   String get addressIsEmpty;
 
-  /// No description provided for @advanced.
-  ///
-  /// In en, this message translates to:
-  /// **'Advanced'**
-  String get advanced;
-
   /// No description provided for @amount.
   ///
   /// In en, this message translates to:

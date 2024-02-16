@@ -44,9 +44,6 @@ class SEn extends S {
   String get addressIsEmpty => 'Address is empty';
 
   @override
-  String get advanced => 'Advanced';
-
-  @override
   String get amount => 'Amount';
 
   @override

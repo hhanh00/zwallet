@@ -126,7 +126,10 @@ abstract class _SyncStatus2 with Store {
   @action
   Future<void> update() async {
     try {
+      final lh = latestHeight;
       latestHeight = await WarpApi.getLatestHeight(aa.coin);
+      if (lh == null && latestHeight != null)
+        aa.update(latestHeight);
       connected = true;
     } on String catch (e) {
       logger.d(e);
