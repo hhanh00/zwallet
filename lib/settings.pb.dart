@@ -16,7 +16,7 @@ import 'package:protobuf/protobuf.dart' as $pb;
 
 class AppSettings extends $pb.GeneratedMessage {
   factory AppSettings({
-    $core.int? anchorOffset,
+    $core.int? confirmations,
     $core.bool? nogetTx,
     $core.int? rowsPerPage,
     $core.bool? showConfirmations,
@@ -44,8 +44,8 @@ class AppSettings extends $pb.GeneratedMessage {
     $core.int? backgroundSync,
   }) {
     final $result = create();
-    if (anchorOffset != null) {
-      $result.anchorOffset = anchorOffset;
+    if (confirmations != null) {
+      $result.confirmations = confirmations;
     }
     if (nogetTx != null) {
       $result.nogetTx = nogetTx;
@@ -129,7 +129,7 @@ class AppSettings extends $pb.GeneratedMessage {
   factory AppSettings.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'AppSettings', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'anchorOffset', $pb.PbFieldType.OU3)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'confirmations', $pb.PbFieldType.OU3)
     ..aOB(2, _omitFieldNames ? '' : 'nogetTx')
     ..a<$core.int>(3, _omitFieldNames ? '' : 'rowsPerPage', $pb.PbFieldType.OU3)
     ..aOB(4, _omitFieldNames ? '' : 'showConfirmations')
@@ -180,13 +180,13 @@ class AppSettings extends $pb.GeneratedMessage {
   static AppSettings? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.int get anchorOffset => $_getIZ(0);
+  $core.int get confirmations => $_getIZ(0);
   @$pb.TagNumber(1)
-  set anchorOffset($core.int v) { $_setUnsignedInt32(0, v); }
+  set confirmations($core.int v) { $_setUnsignedInt32(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasAnchorOffset() => $_has(0);
+  $core.bool hasConfirmations() => $_has(0);
   @$pb.TagNumber(1)
-  void clearAnchorOffset() => clearField(1);
+  void clearConfirmations() => clearField(1);
 
   @$pb.TagNumber(2)
   $core.bool get nogetTx => $_getBF(1);

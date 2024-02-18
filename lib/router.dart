@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'appsettings.dart';
 import 'pages/more/cold.dart';
 import 'settings.pb.dart';
 import 'package:flutter/material.dart';

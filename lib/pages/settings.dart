@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -344,9 +345,13 @@ class _PrivacyState extends State<PrivacyTab>
             name: 'anchor',
             decoration: InputDecoration(
                 label: Text(s.confirmations, style: t.textTheme.bodyMedium)),
-            initialValue: widget.appSettings.anchorOffset.toString(),
+            initialValue: widget.appSettings.confirmations.toString(),
             onChanged: (v) =>
-                widget.appSettings.anchorOffset = int.tryParse(v!) ?? 0,
+                widget.appSettings.confirmations = int.tryParse(v!) ?? 0,
+            validator:
+            FormBuilderValidators.compose([
+              FormBuilderValidators.integer(),
+              FormBuilderValidators.min(1)]),
           ),
           Divider(),
           if (!isMobile())

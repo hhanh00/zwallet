@@ -384,4 +384,3 @@ class SeedInfo with _$SeedInfo {
     required int index,
   }) = _SeedInfo;
 }
- 

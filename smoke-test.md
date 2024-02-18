@@ -1,4 +1,5 @@
 # Send YEC & ZEC
+- New Account / Import from Seed
 - Address: Contact, account, address or QR code
 - Amount in coin & fiat
 - Max button
@@ -8,7 +9,6 @@
   - Subject
   - Body
   - Reply-To
-- Send Templates
 
 # Execution Plan
   - t2t, t2z, z2t, z2z
@@ -21,11 +21,12 @@
 - Copy address to clipboard
 
 # Transparent Account
-- Override derivation path
-- Shield
+- Sweep
+- Key tool
 
 # Synchronization
 - Recan by date & height
+- Rewind
 
 # Accounts
 - New, Edit, Delete
@@ -46,6 +47,7 @@
 - number of confirmations
 
 # Desktop integrations
+- Encrypted Db
 - Send/Receive
 - QR code reader
 
@@ -53,6 +55,3 @@
 - by QR
 - by File
 - Broadcast
-
-# Derivation Tool
-

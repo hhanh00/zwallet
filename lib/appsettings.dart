@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as m;
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -12,7 +13,7 @@ var coinSettings = CoinSettings();
 
 extension AppSettingsExtension on AppSettings {
   void defaults() {
-    if (!hasAnchorOffset()) anchorOffset = 3;
+    if (!hasConfirmations()) confirmations = 3;
     if (!hasRowsPerPage()) rowsPerPage = 10;
     if (!hasDeveloperMode()) developerMode = 5;
     if (!hasCurrency()) currency = 'USD';
@@ -45,6 +46,7 @@ extension AppSettingsExtension on AppSettings {
   }
 
   int chartRangeDays() => 365;
+  int get anchorOffset => m.max(confirmations, 1) - 1;
 }
 
 extension CoinSettingsExtension on CoinSettings {

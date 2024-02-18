@@ -2,7 +2,7 @@ syntax = "proto3";
 package pb;
 
 message AppSettings {
-    uint32 anchor_offset = 1;
+    uint32 confirmations = 1;
     bool noget_tx = 2;
     uint32 rows_per_page = 3;
     bool show_confirmations = 4;
