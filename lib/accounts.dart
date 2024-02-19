@@ -14,7 +14,8 @@ import 'pages/utils.dart';
 
 part 'accounts.g.dart';
 
-final ActiveAccount2 nullAccount = ActiveAccount2(0, 0, "", null, false, false, false);
+final ActiveAccount2 nullAccount =
+    ActiveAccount2(0, 0, "", null, false, false, false);
 
 ActiveAccount2 aa = nullAccount;
 
@@ -40,8 +41,8 @@ void setActiveAccount(int coin, int id) {
 }
 
 class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
-  ActiveAccount2(
-      super.coin, super.id, super.name, super.seed, super.canPay, super.external, super.saved);
+  ActiveAccount2(super.coin, super.id, super.name, super.seed, super.canPay,
+      super.external, super.saved);
 
   static ActiveAccount2? fromPrefs(SharedPreferences prefs) {
     final coin = prefs.getInt('coin') ?? 0;
@@ -66,7 +67,8 @@ class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
     final external =
         c.supportsLedger && !isMobile() && WarpApi.ledgerHasAccount(coin, id);
     final canPay = backup.sk != null || external;
-    return ActiveAccount2(coin, id, backup.name!, backup.seed, canPay, external, backup.saved);
+    return ActiveAccount2(
+        coin, id, backup.name!, backup.seed, canPay, external, backup.saved);
   }
 
   bool get hasUA => coins[coin].supportsUA;
@@ -81,7 +83,8 @@ abstract class _ActiveAccount2 with Store {
   final bool external;
   final bool saved;
 
-  _ActiveAccount2(this.coin, this.id, this.name, this.seed, this.canPay, this.external, this.saved)
+  _ActiveAccount2(this.coin, this.id, this.name, this.seed, this.canPay,
+      this.external, this.saved)
       : notes = Notes(coin, id),
         txs = Txs(coin, id),
         messages = Messages(coin, id);
@@ -123,8 +126,10 @@ abstract class _ActiveAccount2 with Store {
   @action
   void updateDivisified() {
     if (id == 0) return;
-    diversifiedAddress = WarpApi.getDiversifiedAddress(coin, id,
-        coinSettings.uaType, DateTime.now().millisecondsSinceEpoch ~/ 1000);
+    try {
+      diversifiedAddress = WarpApi.getDiversifiedAddress(coin, id,
+          coinSettings.uaType, DateTime.now().millisecondsSinceEpoch ~/ 1000);
+    } catch (e) {}
   }
 
   @action

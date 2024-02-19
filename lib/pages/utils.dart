@@ -687,3 +687,8 @@ void showLocalNotification({required int id, String? title, String? body}) {
 extension PoolBalanceExtension on PoolBalanceT {
   int get total => transparent + sapling + orchard;
 }
+
+String? isValidUA(int uaType) {
+  if (uaType == 1) return GetIt.I<S>().invalidAddress;
+  return null;
+}

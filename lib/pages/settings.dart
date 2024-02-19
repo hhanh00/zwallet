@@ -555,6 +555,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
               label: s.mainUA,
               name: 'main_address',
               radio: false,
+              validator: isValidUA,
             ),
           FieldUA(
             widget.coinSettings.replyUa,
@@ -725,6 +726,7 @@ class FieldUA extends StatelessWidget {
   final bool radio;
   final bool emptySelectionAllowed;
   final int pools;
+  final String? Function(int)? validator;
   FieldUA(
     int initialValue, {
     required this.name,
@@ -732,6 +734,7 @@ class FieldUA extends StatelessWidget {
     this.onChanged,
     this.emptySelectionAllowed = false,
     required this.radio,
+    this.validator,
     this.pools = 7,
   }) : initialValues = PoolBitSet.toSet(initialValue);
 
@@ -744,8 +747,9 @@ class FieldUA extends StatelessWidget {
       name: name,
       initialValue: initialValues,
       onChanged: (v) => onChanged?.call(PoolBitSet.fromSet(v!)),
+      validator: (v) => validator?.call(PoolBitSet.fromSet(v!)),
       builder: (field) => InputDecorator(
-          decoration: InputDecoration(label: Text(label)),
+          decoration: InputDecoration(label: Text(label), errorText: field.errorText),
           child: Padding(
             padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
             child: SegmentedButton(
