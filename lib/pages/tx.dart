@@ -24,6 +24,7 @@ class TxPage extends StatelessWidget {
           aaSequence.settingsSeqno;
           syncStatus2.changed;
           return TableListPage(
+            listKey: PageStorageKey('txs'),
             padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
             view: appSettings.txView,
             items: aa.txs.items,

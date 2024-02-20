@@ -20,6 +20,7 @@ class SortSetting extends InheritedWidget {
 
 class TableListPage<U, T extends TableListItemMetadata<U>>
     extends StatelessWidget {
+  final Key? listKey;
   final int view;
   final T metadata;
   final List<U> items;
@@ -27,6 +28,7 @@ class TableListPage<U, T extends TableListItemMetadata<U>>
 
   TableListPage({
     Key? key,
+    this.listKey,
     required this.view,
     required this.items,
     required this.metadata,
@@ -40,7 +42,7 @@ class TableListPage<U, T extends TableListItemMetadata<U>>
         case 0:
           return _TableView(items, metadata);
         case 1:
-          return _ListView(items, metadata);
+          return _ListView(items, metadata, key: listKey);
         case 2:
           return OrientationBuilder(builder: (context, orientation) {
             if (orientation == Orientation.portrait)
@@ -154,7 +156,7 @@ class _DataSource<U, T extends TableListItemMetadata<U>>
 class _ListView<U, T extends TableListItemMetadata<U>> extends StatefulWidget {
   final List<U> items;
   final T metadata;
-  _ListView(this.items, this.metadata);
+  _ListView(this.items, this.metadata, {super.key});
 
   @override
   State<StatefulWidget> createState() => ListViewState<U, T>();
@@ -172,7 +174,7 @@ class ListViewState<U, T extends TableListItemMetadata<U>>
         ));
     final header = headerTextWidget ?? widget.metadata.header(context);
     return CustomScrollView(
-      key: UniqueKey(),
+      key: widget.key,
       semanticChildCount: widget.items.length,
       slivers: [
         if (header != null)

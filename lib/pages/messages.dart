@@ -26,6 +26,7 @@ class MessagePage extends StatelessWidget {
           aaSequence.settingsSeqno;
           syncStatus2.changed;
           return TableListPage(
+            listKey: PageStorageKey('messages'),
             padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
             view: appSettings.messageView,
             items: aa.messages.items,

@@ -21,6 +21,7 @@ class CoinControlPage extends StatelessWidget {
             aaSequence.seqno;
             aaSequence.settingsSeqno;
             return TableListPage(
+              listKey: PageStorageKey('notes'),
               view: appSettings.noteView,
               items: aa.notes.items,
               metadata: TableListNoteMetadata(),
