@@ -803,11 +803,11 @@ abstract class S {
   /// **'Low'**
   String get low;
 
-  /// No description provided for @mainUA.
+  /// No description provided for @mainReceivers.
   ///
   /// In en, this message translates to:
-  /// **'Main UA Receivers'**
-  String get mainUA;
+  /// **'Main Receivers'**
+  String get mainReceivers;
 
   /// No description provided for @market.
   ///
@@ -1547,11 +1547,11 @@ abstract class S {
   /// **'Transaction Plan'**
   String get txPlan;
 
-  /// No description provided for @ua.
+  /// No description provided for @mainAddress.
   ///
   /// In en, this message translates to:
-  /// **'UA'**
-  String get ua;
+  /// **'Main Address'**
+  String get mainAddress;
 
   /// No description provided for @unifiedViewingKey.
   ///

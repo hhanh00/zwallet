@@ -365,7 +365,7 @@ class SEn extends S {
   String get low => 'Low';
 
   @override
-  String get mainUA => 'Main UA Receivers';
+  String get mainReceivers => 'Main Receivers';
 
   @override
   String get market => 'Market';
@@ -753,7 +753,7 @@ class SEn extends S {
   String get txPlan => 'Transaction Plan';
 
   @override
-  String get ua => 'UA';
+  String get mainAddress => 'Main Address';
 
   @override
   String get unifiedViewingKey => 'Unified Viewing Key';

@@ -552,7 +552,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
             FieldUA(
               widget.coinSettings.uaType,
               onChanged: (v) => widget.coinSettings.uaType = v!,
-              label: s.mainUA,
+              label: s.mainReceivers,
               name: 'main_address',
               radio: false,
               validator: isValidUA,

@@ -186,7 +186,7 @@ class _QRAddressState extends State<QRAddressWidget> {
       case 4:
         return s.diversified;
       default:
-        return s.ua;
+        return s.mainAddress;
     }
   }
 

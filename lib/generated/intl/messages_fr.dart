@@ -365,7 +365,7 @@ class SFr extends S {
   String get low => 'Bas';
 
   @override
-  String get mainUA => 'Récepteurs UA Principaux';
+  String get mainReceivers => 'Receveurs inclus dans l\'adresse principale';
 
   @override
   String get market => 'Marché';
@@ -753,7 +753,7 @@ class SFr extends S {
   String get txPlan => 'Plan de transaction';
 
   @override
-  String get ua => 'UA';
+  String get mainAddress => 'Adresse Principale';
 
   @override
   String get unifiedViewingKey => 'Clé de vue unifiée';

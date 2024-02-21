@@ -107,7 +107,7 @@ class SEs extends S {
   String get broadcast => 'Transmitir';
 
   @override
-  String get budget => 'Presupuesto\n';
+  String get budget => 'Presupuesto';
 
   @override
   String get cancel => 'Cancelar';
@@ -284,10 +284,10 @@ class SEs extends S {
   String get fullBackup => 'Copia de seguridad';
 
   @override
-  String get fullRestore => 'Restauración completa';
+  String get fullRestore => 'Restaurar';
 
   @override
-  String get gapLimit => 'Límite de brechas';
+  String get gapLimit => 'Límite de brecha';
 
   @override
   String get general => 'General';
@@ -311,7 +311,7 @@ class SEs extends S {
   String get import => 'Importar';
 
   @override
-  String get includeReplyTo => 'Incluir mi dirección en la nota';
+  String get includeReplyTo => 'Incluir mi dirección';
 
   @override
   String get incomingFunds => 'Fondos entrantes';
@@ -365,7 +365,7 @@ class SEs extends S {
   String get low => 'Baja';
 
   @override
-  String get mainUA => 'Receptores de la DU principal';
+  String get mainReceivers => 'Dirección principal';
 
   @override
   String get market => 'Mercado';
@@ -374,7 +374,7 @@ class SEs extends S {
   String get marketPrice => 'Precios Mkt';
 
   @override
-  String get max => 'Máx';
+  String get max => 'Máximo';
 
   @override
   String get maxAmountPerNote => 'Cantidad máxima por nota';
@@ -386,7 +386,7 @@ class SEs extends S {
   String get memo => 'Memo';
 
   @override
-  String get memoTooLong => 'Nota demasiado larga';
+  String get memoTooLong => 'Memo demasiado largo';
 
   @override
   String get message => 'Mensaje';
@@ -536,7 +536,7 @@ class SEs extends S {
   }
 
   @override
-  String get receivers => 'Receptores';
+  String get receivers => 'Receptores al enviar';
 
   @override
   String get recipient => 'Destinatario';
@@ -548,7 +548,7 @@ class SEs extends S {
   String get reply => 'Responder';
 
   @override
-  String get replyUA => 'Receptores de DU de respuesta';
+  String get replyUA => 'Dirección de respuesta';
 
   @override
   String get required => 'Valor requerido';
@@ -666,7 +666,7 @@ class SEs extends S {
   String get signedTx => 'Tx firmado';
 
   @override
-  String get source => 'Fuente';
+  String get source => 'Origen';
 
   @override
   String get spendable => 'Disponible';
@@ -753,7 +753,7 @@ class SEs extends S {
   String get txPlan => 'Plan de transacción';
 
   @override
-  String get ua => 'DU';
+  String get mainAddress => 'Principal';
 
   @override
   String get unifiedViewingKey => 'Clave de visualización unificada';
