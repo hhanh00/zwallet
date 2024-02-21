@@ -36,14 +36,11 @@ class _PaymentURIState extends State<PaymentURIPage> {
           child: Padding(padding: EdgeInsets.all(16),
           child: Column(
             children: [
-              QRAddressWidget(
-                addressMode,
-                uaType: coinSettings.uaType,
+              AddressCarousel(
                 amount: amount,
                 memo: memoController.text,
-                onMode: onMode,
                 paymentURI: false,
-              ),
+                onAddressModeChanged: (m) => setState(() => addressMode = m),),
               AmountPicker(Amount(amount, false), onChanged: onAmount, canDeductFee: false),
               FormBuilderTextField(
                 name: 'memo',
@@ -71,9 +68,5 @@ class _PaymentURIState extends State<PaymentURIPage> {
     EasyDebounce.debounce('payment_uri', Duration(milliseconds: 500), () {
       setState(() {});
     });
-  }
-
-  onMode() {
-    setState(() => addressMode = nextAddressMode(addressMode, availableMode));
   }
 }

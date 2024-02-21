@@ -1,29 +1,135 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
+import '../../appsettings.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../utils.dart';
+
+class AddressCarousel extends StatefulWidget {
+  final void Function(int mode)? onAddressModeChanged;
+  final int? amount;
+  final String? memo;
+  final bool paymentURI;
+  AddressCarousel(
+      {this.amount,
+      this.memo,
+      this.paymentURI = true,
+      this.onAddressModeChanged});
+
+  @override
+  State<StatefulWidget> createState() => AddressCarouselState();
+}
+
+class AddressCarouselState extends State<AddressCarousel> {
+  final int availableMode = WarpApi.getAvailableAddrs(aa.coin, aa.id);
+  List<int> addressModes = [];
+  List<Widget> addresses = [];
+  int index = 0;
+  final carouselController = CarouselController();
+
+  @override
+  void initState() {
+    super.initState();
+    updateAddresses();
+  }
+
+  void updateAddresses() {
+    addresses.clear();
+    addressModes.clear();
+
+    final c = coins[aa.coin];
+    for (var i = 0; i < 5; i++) {
+      final am = (c.defaultAddrMode - i) % 5;
+      if (am == 0 && !c.supportsUA) continue;
+      if (am == c.defaultAddrMode ||
+          am == 4 ||
+          availableMode & (1 << (am - 1)) != 0) {
+        final address = QRAddressWidget(
+          am,
+          uaType: coinSettings.uaType,
+          amount: widget.amount,
+          memo: widget.memo,
+          paymentURI: widget.paymentURI,
+        );
+        addresses.add(address);
+        addressModes.add(am);
+      }
+    }
+  }
+
+  @override
+  void didUpdateWidget(AddressCarousel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    updateAddresses();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      children: [
+        CarouselSlider(
+          carouselController: carouselController,
+          items: addresses,
+          options: CarouselOptions(
+            height: 280,
+            viewportFraction: 1.0,
+            onPageChanged: (i, reason) {
+              widget.onAddressModeChanged?.call(addressModes[i]);
+              setState(() => index = i);
+            },
+          ),
+        ),
+        Gap(8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: addresses
+              .mapIndexed(
+                (w, i) => GestureDetector(
+                  onTap: () {
+                    carouselController.animateToPage(i);
+                  },
+                  child: Container(
+                    width: 12.0,
+                    height: 12.0,
+                    margin:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: theme.primaryColor
+                            .withOpacity(i == index ? 0.9 : 0.4)),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      ],
+    );
+  }
+}
 
 class QRAddressWidget extends StatefulWidget {
   final int addressMode;
   final int? amount;
   final String? memo;
   final int uaType;
-  final void Function()? onMode;
   final bool paymentURI;
 
-  QRAddressWidget(this.addressMode, {
+  QRAddressWidget(
+    this.addressMode, {
     super.key,
     required this.uaType,
     this.amount,
     this.memo,
-    this.onMode,
     this.paymentURI = true,
   });
 
@@ -40,22 +146,19 @@ class _QRAddressState extends State<QRAddressWidget> {
 
     return Observer(builder: (context) {
       aa.diversifiedAddress;
-      final uri = a != 0
+      final uri = a != 0 || widget.memo.isNotEmptyAndNotNull
           ? WarpApi.makePaymentURI(
               aa.coin, address, widget.amount!, widget.memo ?? '')
           : address;
       return Column(children: [
-        GestureDetector(
-          onTap: widget.onMode,
-          child: QrImage(
-            data: uri,
-            version: QrVersions.auto,
-            size: 200.0,
-            backgroundColor: Colors.white,
-            embeddedImage: image,
-          ),
+        QrImage(
+          data: uri,
+          version: QrVersions.auto,
+          size: 200.0,
+          backgroundColor: Colors.white,
+          embeddedImage: image,
         ),
-        Padding(padding: EdgeInsets.all(8)),
+        Gap(8),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -122,9 +225,8 @@ class _QRAddressState extends State<QRAddressWidget> {
     if (widget.paymentURI)
       GoRouter.of(context).push('/account/pay_uri');
     else {
-      final qrUri = Uri(
-        path: '/showqr',
-        queryParameters: {'title': widget.memo ?? ''});
+      final qrUri =
+          Uri(path: '/showqr', queryParameters: {'title': widget.memo ?? ''});
       GoRouter.of(context).push(qrUri.toString(), extra: uri);
     }
   }
