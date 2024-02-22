@@ -142,6 +142,8 @@ class _GeneralState extends State<GeneralTab>
   Widget build(BuildContext context) {
     super.build(context);
     final s = S.of(context);
+    final t = Theme.of(context);
+    final small = t.textTheme.labelMedium!;
     final currencyOptions = widget.currencies
             ?.map((c) => DropdownMenuItem(value: c, child: Text(c)))
             .toList() ??
@@ -183,15 +185,15 @@ class _GeneralState extends State<GeneralTab>
                       segments: [
                         ButtonSegment(
                           value: 0,
-                          label: Text(s.off),
+                          label: Text(s.off, style: small),
                         ),
                         ButtonSegment(
                           value: 1,
-                          label: Text(s.wifi),
+                          label: Text(s.wifi, style: small),
                         ),
                         ButtonSegment(
                           value: 2,
-                          label: Text(s.any),
+                          label: Text(s.any, style: small),
                         ),
                       ],
                     ),
