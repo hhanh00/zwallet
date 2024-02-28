@@ -392,7 +392,7 @@ class AmountPickerState extends State<AmountPicker> {
   late final amountController =
       TextEditingController(text: amountToString2(widget.initialAmount.value));
   late final nformat = NumberFormat.decimalPatternDigits(
-      locale: s.localeName, decimalDigits: decimalDigits(appSettings.fullPrec));
+      locale: Platform.localeName, decimalDigits: decimalDigits(appSettings.fullPrec));
   late final fiatController = TextEditingController(text: nformat.format(0.0));
 
   @override

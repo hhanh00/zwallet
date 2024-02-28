@@ -66,9 +66,8 @@ class Amount {
 
 int decimalDigits(bool fullPrec) => fullPrec ? MAX_PRECISION : 3;
 String decimalFormat(double x, int decimalDigits, {String symbol = ''}) {
-  final s = GetIt.I.get<S>();
   return NumberFormat.currency(
-    locale: s.localeName,
+    locale: Platform.localeName,
     decimalDigits: decimalDigits,
     symbol: symbol,
   ).format(x).trimRight();
@@ -338,9 +337,8 @@ Future<bool> showConfirmDialog(
 
 Decimal parseNumber(String? sn) {
   if (sn == null || sn.isEmpty) return Decimal.zero;
-  final s = GetIt.I.get<S>();
   // There is no API to parse directly from intl string
-  final v = NumberFormat.currency(locale: s.localeName).parse(sn);
+  final v = NumberFormat.currency(locale: Platform.localeName).parse(sn);
   return Decimal.parse(v.toStringAsFixed(8));
 }
 
