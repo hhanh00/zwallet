@@ -101,7 +101,9 @@ final _data = <r.Reflectable, r.ReflectorData>{
               r'contact': 0,
               r'contact=': 1,
               r'memo': 0,
-              r'memo=': 1
+              r'memo=': 1,
+              r'memos': 0,
+              r'memos=': 1
             })
       ],
       null,
@@ -126,7 +128,8 @@ final _data = <r.Reflectable, r.ReflectorData>{
         r'fullTxId': (dynamic instance) => instance.fullTxId,
         r'address': (dynamic instance) => instance.address,
         r'contact': (dynamic instance) => instance.contact,
-        r'memo': (dynamic instance) => instance.memo
+        r'memo': (dynamic instance) => instance.memo,
+        r'memos': (dynamic instance) => instance.memos
       },
       {
         r'height=': (dynamic instance, value) => instance.height = value,
@@ -141,7 +144,8 @@ final _data = <r.Reflectable, r.ReflectorData>{
         r'fullTxId=': (dynamic instance, value) => instance.fullTxId = value,
         r'address=': (dynamic instance, value) => instance.address = value,
         r'contact=': (dynamic instance, value) => instance.contact = value,
-        r'memo=': (dynamic instance, value) => instance.memo = value
+        r'memo=': (dynamic instance, value) => instance.memo = value,
+        r'memos=': (dynamic instance, value) => instance.memos = value
       },
       null,
       [

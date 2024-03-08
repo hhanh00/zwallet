@@ -151,6 +151,7 @@ class TransactionPage extends StatefulWidget {
 }
 
 class TransactionState extends State<TransactionPage> {
+  late final s = S.of(context);
   late int idx;
 
   @override
@@ -163,7 +164,6 @@ class TransactionState extends State<TransactionPage> {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     final n = aa.txs.items.length;
     return Scaffold(
       appBar: AppBar(title: Text(s.transactionDetails),
@@ -197,10 +197,22 @@ class TransactionState extends State<TransactionPage> {
             Panel(s.contactName, text: tx.contact ?? ''), // Add Contact button
             Gap(8),
             Panel(s.memo, text: tx.memo ?? ''),
+            Gap(8),
+            ..._memos()
           ],
         ),
       ),
     ));
+  }
+
+  List<Widget> _memos() {
+    List<Widget> ms = [];
+    for (var txm in tx.memos) {
+      ms.add(Gap(8));
+      ms.add(Panel(s.memo, text: 
+        txm.address + '\n' + txm.memo));
+    }
+    return ms;
   }
 
   open() {

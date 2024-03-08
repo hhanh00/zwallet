@@ -246,7 +246,8 @@ abstract class _Txs with Store {
       final timestamp =
           DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000);
       return Tx.from(height, tx.id, tx.height, timestamp, tx.shortTxId!,
-          tx.txId!, tx.value / ZECUNIT, tx.address, tx.name, tx.memo);
+          tx.txId!, tx.value / ZECUNIT, tx.address, tx.name, tx.memo,
+          tx.messages?.memos ?? []);
     }).toList();
   }
 

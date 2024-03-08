@@ -1003,10 +1003,11 @@ class ShieldedTx {
   int get value => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 16, 0);
   String? get address => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 18);
   String? get memo => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 20);
+  MemoVec? get messages => MemoVec.reader.vTableGetNullable(_bc, _bcOffset, 22);
 
   @override
   String toString() {
-    return 'ShieldedTx{id: ${id}, txId: ${txId}, height: ${height}, shortTxId: ${shortTxId}, timestamp: ${timestamp}, name: ${name}, value: ${value}, address: ${address}, memo: ${memo}}';
+    return 'ShieldedTx{id: ${id}, txId: ${txId}, height: ${height}, shortTxId: ${shortTxId}, timestamp: ${timestamp}, name: ${name}, value: ${value}, address: ${address}, memo: ${memo}, messages: ${messages}}';
   }
 
   ShieldedTxT unpack() => ShieldedTxT(
@@ -1018,7 +1019,8 @@ class ShieldedTx {
       name: name,
       value: value,
       address: address,
-      memo: memo);
+      memo: memo,
+      messages: messages?.unpack());
 
   static int pack(fb.Builder fbBuilder, ShieldedTxT? object) {
     if (object == null) return 0;
@@ -1036,6 +1038,7 @@ class ShieldedTxT implements fb.Packable {
   int value;
   String? address;
   String? memo;
+  MemoVecT? messages;
 
   ShieldedTxT({
       this.id = 0,
@@ -1046,7 +1049,8 @@ class ShieldedTxT implements fb.Packable {
       this.name,
       this.value = 0,
       this.address,
-      this.memo});
+      this.memo,
+      this.messages});
 
   @override
   int pack(fb.Builder fbBuilder) {
@@ -1060,7 +1064,8 @@ class ShieldedTxT implements fb.Packable {
         : fbBuilder.writeString(address!);
     final int? memoOffset = memo == null ? null
         : fbBuilder.writeString(memo!);
-    fbBuilder.startTable(9);
+    final int? messagesOffset = messages?.pack(fbBuilder);
+    fbBuilder.startTable(10);
     fbBuilder.addUint32(0, id);
     fbBuilder.addOffset(1, txIdOffset);
     fbBuilder.addUint32(2, height);
@@ -1070,12 +1075,13 @@ class ShieldedTxT implements fb.Packable {
     fbBuilder.addUint64(6, value);
     fbBuilder.addOffset(7, addressOffset);
     fbBuilder.addOffset(8, memoOffset);
+    fbBuilder.addOffset(9, messagesOffset);
     return fbBuilder.endTable();
   }
 
   @override
   String toString() {
-    return 'ShieldedTxT{id: ${id}, txId: ${txId}, height: ${height}, shortTxId: ${shortTxId}, timestamp: ${timestamp}, name: ${name}, value: ${value}, address: ${address}, memo: ${memo}}';
+    return 'ShieldedTxT{id: ${id}, txId: ${txId}, height: ${height}, shortTxId: ${shortTxId}, timestamp: ${timestamp}, name: ${name}, value: ${value}, address: ${address}, memo: ${memo}, messages: ${messages}}';
   }
 }
 
@@ -1093,7 +1099,7 @@ class ShieldedTxBuilder {
   final fb.Builder fbBuilder;
 
   void begin() {
-    fbBuilder.startTable(9);
+    fbBuilder.startTable(10);
   }
 
   int addId(int? id) {
@@ -1132,6 +1138,10 @@ class ShieldedTxBuilder {
     fbBuilder.addOffset(8, offset);
     return fbBuilder.offset;
   }
+  int addMessagesOffset(int? offset) {
+    fbBuilder.addOffset(9, offset);
+    return fbBuilder.offset;
+  }
 
   int finish() {
     return fbBuilder.endTable();
@@ -1148,6 +1158,7 @@ class ShieldedTxObjectBuilder extends fb.ObjectBuilder {
   final int? _value;
   final String? _address;
   final String? _memo;
+  final MemoVecObjectBuilder? _messages;
 
   ShieldedTxObjectBuilder({
     int? id,
@@ -1159,6 +1170,7 @@ class ShieldedTxObjectBuilder extends fb.ObjectBuilder {
     int? value,
     String? address,
     String? memo,
+    MemoVecObjectBuilder? messages,
   })
       : _id = id,
         _txId = txId,
@@ -1168,7 +1180,8 @@ class ShieldedTxObjectBuilder extends fb.ObjectBuilder {
         _name = name,
         _value = value,
         _address = address,
-        _memo = memo;
+        _memo = memo,
+        _messages = messages;
 
   /// Finish building, and store into the [fbBuilder].
   @override
@@ -1183,7 +1196,8 @@ class ShieldedTxObjectBuilder extends fb.ObjectBuilder {
         : fbBuilder.writeString(_address!);
     final int? memoOffset = _memo == null ? null
         : fbBuilder.writeString(_memo!);
-    fbBuilder.startTable(9);
+    final int? messagesOffset = _messages?.getOrCreateOffset(fbBuilder);
+    fbBuilder.startTable(10);
     fbBuilder.addUint32(0, _id);
     fbBuilder.addOffset(1, txIdOffset);
     fbBuilder.addUint32(2, _height);
@@ -1193,6 +1207,7 @@ class ShieldedTxObjectBuilder extends fb.ObjectBuilder {
     fbBuilder.addUint64(6, _value);
     fbBuilder.addOffset(7, addressOffset);
     fbBuilder.addOffset(8, memoOffset);
+    fbBuilder.addOffset(9, messagesOffset);
     return fbBuilder.endTable();
   }
 
@@ -1645,6 +1660,240 @@ class MessageVecObjectBuilder extends fb.ObjectBuilder {
         : fbBuilder.writeList(_messages!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
     fbBuilder.startTable(1);
     fbBuilder.addOffset(0, messagesOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class Memo {
+  Memo._(this._bc, this._bcOffset);
+  factory Memo(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<Memo> reader = _MemoReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  bool get incoming => const fb.BoolReader().vTableGet(_bc, _bcOffset, 4, false);
+  String? get address => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 6);
+  String? get memo => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 8);
+
+  @override
+  String toString() {
+    return 'Memo{incoming: ${incoming}, address: ${address}, memo: ${memo}}';
+  }
+
+  MemoT unpack() => MemoT(
+      incoming: incoming,
+      address: address,
+      memo: memo);
+
+  static int pack(fb.Builder fbBuilder, MemoT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class MemoT implements fb.Packable {
+  bool incoming;
+  String? address;
+  String? memo;
+
+  MemoT({
+      this.incoming = false,
+      this.address,
+      this.memo});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? addressOffset = address == null ? null
+        : fbBuilder.writeString(address!);
+    final int? memoOffset = memo == null ? null
+        : fbBuilder.writeString(memo!);
+    fbBuilder.startTable(3);
+    fbBuilder.addBool(0, incoming);
+    fbBuilder.addOffset(1, addressOffset);
+    fbBuilder.addOffset(2, memoOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'MemoT{incoming: ${incoming}, address: ${address}, memo: ${memo}}';
+  }
+}
+
+class _MemoReader extends fb.TableReader<Memo> {
+  const _MemoReader();
+
+  @override
+  Memo createObject(fb.BufferContext bc, int offset) => 
+    Memo._(bc, offset);
+}
+
+class MemoBuilder {
+  MemoBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(3);
+  }
+
+  int addIncoming(bool? incoming) {
+    fbBuilder.addBool(0, incoming);
+    return fbBuilder.offset;
+  }
+  int addAddressOffset(int? offset) {
+    fbBuilder.addOffset(1, offset);
+    return fbBuilder.offset;
+  }
+  int addMemoOffset(int? offset) {
+    fbBuilder.addOffset(2, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class MemoObjectBuilder extends fb.ObjectBuilder {
+  final bool? _incoming;
+  final String? _address;
+  final String? _memo;
+
+  MemoObjectBuilder({
+    bool? incoming,
+    String? address,
+    String? memo,
+  })
+      : _incoming = incoming,
+        _address = address,
+        _memo = memo;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? addressOffset = _address == null ? null
+        : fbBuilder.writeString(_address!);
+    final int? memoOffset = _memo == null ? null
+        : fbBuilder.writeString(_memo!);
+    fbBuilder.startTable(3);
+    fbBuilder.addBool(0, _incoming);
+    fbBuilder.addOffset(1, addressOffset);
+    fbBuilder.addOffset(2, memoOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class MemoVec {
+  MemoVec._(this._bc, this._bcOffset);
+  factory MemoVec(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<MemoVec> reader = _MemoVecReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  List<Memo>? get memos => const fb.ListReader<Memo>(Memo.reader).vTableGetNullable(_bc, _bcOffset, 4);
+
+  @override
+  String toString() {
+    return 'MemoVec{memos: ${memos}}';
+  }
+
+  MemoVecT unpack() => MemoVecT(
+      memos: memos?.map((e) => e.unpack()).toList());
+
+  static int pack(fb.Builder fbBuilder, MemoVecT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class MemoVecT implements fb.Packable {
+  List<MemoT>? memos;
+
+  MemoVecT({
+      this.memos});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? memosOffset = memos == null ? null
+        : fbBuilder.writeList(memos!.map((b) => b.pack(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, memosOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'MemoVecT{memos: ${memos}}';
+  }
+}
+
+class _MemoVecReader extends fb.TableReader<MemoVec> {
+  const _MemoVecReader();
+
+  @override
+  MemoVec createObject(fb.BufferContext bc, int offset) => 
+    MemoVec._(bc, offset);
+}
+
+class MemoVecBuilder {
+  MemoVecBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(1);
+  }
+
+  int addMemosOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class MemoVecObjectBuilder extends fb.ObjectBuilder {
+  final List<MemoObjectBuilder>? _memos;
+
+  MemoVecObjectBuilder({
+    List<MemoObjectBuilder>? memos,
+  })
+      : _memos = memos;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? memosOffset = _memos == null ? null
+        : fbBuilder.writeList(_memos!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, memosOffset);
     return fbBuilder.endTable();
   }
 

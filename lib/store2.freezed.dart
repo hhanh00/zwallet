@@ -146,3 +146,135 @@ abstract class _SeedInfo implements SeedInfo {
   _$$SeedInfoImplCopyWith<_$SeedInfoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+/// @nodoc
+mixin _$TxMemo {
+  String get address => throw _privateConstructorUsedError;
+  String get memo => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $TxMemoCopyWith<TxMemo> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $TxMemoCopyWith<$Res> {
+  factory $TxMemoCopyWith(TxMemo value, $Res Function(TxMemo) then) =
+      _$TxMemoCopyWithImpl<$Res, TxMemo>;
+  @useResult
+  $Res call({String address, String memo});
+}
+
+/// @nodoc
+class _$TxMemoCopyWithImpl<$Res, $Val extends TxMemo>
+    implements $TxMemoCopyWith<$Res> {
+  _$TxMemoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? address = null,
+    Object? memo = null,
+  }) {
+    return _then(_value.copyWith(
+      address: null == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String,
+      memo: null == memo
+          ? _value.memo
+          : memo // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$TxMemoImplCopyWith<$Res> implements $TxMemoCopyWith<$Res> {
+  factory _$$TxMemoImplCopyWith(
+          _$TxMemoImpl value, $Res Function(_$TxMemoImpl) then) =
+      __$$TxMemoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String address, String memo});
+}
+
+/// @nodoc
+class __$$TxMemoImplCopyWithImpl<$Res>
+    extends _$TxMemoCopyWithImpl<$Res, _$TxMemoImpl>
+    implements _$$TxMemoImplCopyWith<$Res> {
+  __$$TxMemoImplCopyWithImpl(
+      _$TxMemoImpl _value, $Res Function(_$TxMemoImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? address = null,
+    Object? memo = null,
+  }) {
+    return _then(_$TxMemoImpl(
+      address: null == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String,
+      memo: null == memo
+          ? _value.memo
+          : memo // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$TxMemoImpl implements _TxMemo {
+  const _$TxMemoImpl({required this.address, required this.memo});
+
+  @override
+  final String address;
+  @override
+  final String memo;
+
+  @override
+  String toString() {
+    return 'TxMemo(address: $address, memo: $memo)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TxMemoImpl &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.memo, memo) || other.memo == memo));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, address, memo);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TxMemoImplCopyWith<_$TxMemoImpl> get copyWith =>
+      __$$TxMemoImplCopyWithImpl<_$TxMemoImpl>(this, _$identity);
+}
+
+abstract class _TxMemo implements TxMemo {
+  const factory _TxMemo(
+      {required final String address,
+      required final String memo}) = _$TxMemoImpl;
+
+  @override
+  String get address;
+  @override
+  String get memo;
+  @override
+  @JsonKey(ignore: true)
+  _$$TxMemoImplCopyWith<_$TxMemoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

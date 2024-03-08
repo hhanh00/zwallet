@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -456,6 +457,7 @@ class Tx extends HasHeight {
   String? address;
   String? contact;
   String? memo;
+  List<TxMemo> memos;
 
   factory Tx.from(
       int? latestHeight,
@@ -467,14 +469,21 @@ class Tx extends HasHeight {
       double value,
       String? address,
       String? contact,
-      String? memo) {
+      String? memo,
+      List<Memo> memos,
+      ) {
     final confirmations = latestHeight?.let((h) => h - height + 1);
+    final memos2 = memos.map((m) => TxMemo(
+      address: m.address!,
+      memo: m.memo!
+      )).toList();
     return Tx(id, height, confirmations, timestamp, txid, fullTxId, value,
-        address, contact, memo);
+        address, contact, memo, memos2);
   }
 
   Tx(this.id, this.height, this.confirmations, this.timestamp, this.txId,
-      this.fullTxId, this.value, this.address, this.contact, this.memo);
+      this.fullTxId, this.value, this.address, this.contact, this.memo,
+      this.memos);
 }
 
 class ZMessage extends HasHeight {

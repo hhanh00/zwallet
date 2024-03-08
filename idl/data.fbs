@@ -59,6 +59,7 @@ table ShieldedTx {
     value:uint64;
     address:string;
     memo:string;
+    messages:MemoVec;
 }
 
 table ShieldedTxVec {
@@ -81,6 +82,16 @@ table Message {
 
 table MessageVec {
     messages:[Message];
+}
+
+table Memo {
+    incoming:bool;
+    address:string;
+    memo:string;
+}
+
+table MemoVec {
+    memos:[Memo];
 }
 
 table PrevNext {

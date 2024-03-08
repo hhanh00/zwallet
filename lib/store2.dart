@@ -384,3 +384,11 @@ class SeedInfo with _$SeedInfo {
     required int index,
   }) = _SeedInfo;
 }
+
+@freezed
+class TxMemo with _$TxMemo {
+  const factory TxMemo({
+    required String address,
+    required String memo,
+  }) = _TxMemo;
+}
