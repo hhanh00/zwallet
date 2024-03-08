@@ -28,7 +28,8 @@ class SendContext {
         p.address!, 7, Amount(p.amount, false), MemoData(false, '', p.memo!));
   }
 
-  @override String toString() {
+  @override
+  String toString() {
     return 'SendContext($address, $pools, ${amount.value}, ${memo?.memo})';
   }
 
@@ -53,13 +54,14 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   final poolKey = GlobalKey<PoolSelectionState>();
   final amountKey = GlobalKey<AmountPickerState>();
   final memoKey = GlobalKey<InputMemoState>();
-  late final balances =
+  late PoolBalanceT balances =
       WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset, false)
           .unpack();
   String _address = '';
   int _pools = 7;
   Amount _amount = Amount(0, false);
-  MemoData _memo = MemoData(appSettings.includeReplyTo != 0, '', appSettings.memo);
+  MemoData _memo =
+      MemoData(appSettings.includeReplyTo != 0, '', appSettings.memo);
   bool isShielded = false;
   int addressPools = 0;
   bool isTex = false;
@@ -71,8 +73,13 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     _didUpdateSendContext(widget.sendContext);
   }
 
-  @override void didUpdateWidget(QuickSendPage oldWidget) {
+  @override
+  void didUpdateWidget(QuickSendPage oldWidget) {
     super.didUpdateWidget(oldWidget);
+    balances =
+        WarpApi.getPoolBalances(aa.coin, aa.id, appSettings.anchorOffset, false)
+            .unpack();
+    amountKey.currentState?.updateFxRate();
     _didUpdateSendContext(widget.sendContext);
   }
 
@@ -116,16 +123,20 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                     ),
                   ),
                   Gap(8),
-                  if (numReceivers > 1 && custom && customSendSettings.recipientPools)
-                    FieldUA(
-                      rp,
-                      name: 'recipient_pools',
-                      label: s.receivers,
-                      onChanged: (v) => setState(() => rp = v!),
-                      radio: false,
-                      pools: addressPools),
+                  if (numReceivers > 1 &&
+                      custom &&
+                      customSendSettings.recipientPools)
+                    FieldUA(rp,
+                        name: 'recipient_pools',
+                        label: s.receivers,
+                        onChanged: (v) => setState(() => rp = v!),
+                        radio: false,
+                        pools: addressPools),
                   Gap(8),
-                  if (widget.single && custom && customSendSettings.pools && !isTex)
+                  if (widget.single &&
+                      custom &&
+                      customSendSettings.pools &&
+                      !isTex)
                     PoolSelection(
                       _pools,
                       key: poolKey,
@@ -223,9 +234,8 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     if (v == null) return;
     final puri = WarpApi.decodePaymentURI(aa.coin, v);
     if (puri != null) {
-      final sc = SendContext(puri.address!, _pools,
-        Amount(puri.amount, false),
-        MemoData(false, '', puri.memo!));
+      final sc = SendContext(puri.address!, _pools, Amount(puri.amount, false),
+          MemoData(false, '', puri.memo!));
       _didUpdateSendContext(sc);
     } else {
       _address = v;
@@ -253,10 +263,10 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       WarpApi.parseTexAddress(aa.coin, address!);
       isTex = true;
       poolKey.currentState!.setPools(1);
-    }
-    on String {}
-    final receivers = address.isNotEmptyAndNotNull ?
-        WarpApi.receiversOfAddress(aa.coin, address!) : 0;
+    } on String {}
+    final receivers = address.isNotEmptyAndNotNull
+        ? WarpApi.receiversOfAddress(aa.coin, address!)
+        : 0;
     isShielded = receivers != 1;
     addressPools = receivers & coinSettings.receipientPools;
     rp = addressPools;

@@ -405,11 +405,7 @@ class AmountPickerState extends State<AmountPicker> {
   @override
   void initState() {
     super.initState();
-    Future(() async {
-      final c = coins[aa.coin];
-      fxRate = await getFxRate(c.currency, appSettings.currency);
-      setState(() {});
-    });
+    Future(updateFxRate);
   }
 
   @override
@@ -559,6 +555,12 @@ class AmountPickerState extends State<AmountPicker> {
   void setAmount(int amount) {
     final field = fieldKey.currentState!;
     _update(field, amount, AmountSource.External);
+  }
+
+  Future<void> updateFxRate() async {
+    final c = coins[aa.coin];
+    fxRate = await getFxRate(c.currency, appSettings.currency);
+    setState(() {});
   }
 }
 
