@@ -50,6 +50,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   late final t = Theme.of(context);
   final formKey = GlobalKey<FormBuilderState>();
   final addressKey = GlobalKey<InputTextQRState>();
+  final poolKey = GlobalKey<PoolSelectionState>();
   final amountKey = GlobalKey<AmountPickerState>();
   final memoKey = GlobalKey<InputMemoState>();
   late final balances =
@@ -61,6 +62,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   MemoData _memo = MemoData(appSettings.includeReplyTo != 0, '', appSettings.memo);
   bool isShielded = false;
   int addressPools = 0;
+  bool isTex = false;
   int rp = 0;
 
   @override
@@ -123,9 +125,10 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                       radio: false,
                       pools: addressPools),
                   Gap(8),
-                  if (widget.single && custom && customSendSettings.pools)
+                  if (widget.single && custom && customSendSettings.pools && !isTex)
                     PoolSelection(
                       _pools,
+                      key: poolKey,
                       balances: aa.poolBalances,
                       onChanged: (v) => setState(() => _pools = v!),
                     ),
@@ -245,6 +248,13 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   }
 
   _didUpdateAddress(String? address) {
+    isTex = false;
+    try {
+      WarpApi.parseTexAddress(aa.coin, address!);
+      isTex = true;
+      poolKey.currentState!.setPools(1);
+    }
+    on String {}
     final receivers = address.isNotEmptyAndNotNull ?
         WarpApi.receiversOfAddress(aa.coin, address!) : 0;
     isShielded = receivers != 1;

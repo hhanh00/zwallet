@@ -129,6 +129,11 @@ void openTxInExplorer(String txId) {
 String? addressValidator(String? v) {
   final s = S.of(rootNavigatorKey.currentContext!);
   if (v == null || v.isEmpty) return s.addressIsEmpty;
+  try {
+    WarpApi.parseTexAddress(aa.coin, v);
+    return null;
+  }
+  on String {}
   final valid = WarpApi.validAddress(aa.coin, v);
   if (!valid) return s.invalidAddress;
   return null;

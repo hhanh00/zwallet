@@ -541,6 +541,10 @@ class WarpApi {
     return kp;
   }
 
+  static String parseTexAddress(int coin, String address) {
+    return unwrapResultString(warp_api_lib.parse_tex(coin, toNative(address)));
+  }
+
   static void ledgerBuildKeys() {
     unwrapResultU8(warp_api_lib.ledger_build_keys());
   }

@@ -308,12 +308,14 @@ class PoolSelection extends StatefulWidget {
   final PoolBalanceT balances;
   final void Function(int? pools)? onChanged;
   final int initialValue;
-  PoolSelection(this.initialValue, {required this.balances, this.onChanged});
+  PoolSelection(this.initialValue, {super.key, required this.balances, this.onChanged});
   @override
-  State<StatefulWidget> createState() => _PoolSelectionState();
+  State<StatefulWidget> createState() => PoolSelectionState();
 }
 
-class _PoolSelectionState extends State<PoolSelection> {
+class PoolSelectionState extends State<PoolSelection> {
+  final fieldKey = GlobalKey<FormBuilderFieldState<FormBuilderField<Set<int>>, Set<int>>>();
+
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
@@ -322,6 +324,7 @@ class _PoolSelectionState extends State<PoolSelection> {
     final initialPools = PoolBitSet.toSet(widget.initialValue);
 
     return FormBuilderField(
+      key: fieldKey,
       name: 'pool_select',
       initialValue: initialPools.toSet(),
       onChanged: (v) => widget.onChanged?.call(PoolBitSet.fromSet(v!)),
@@ -353,6 +356,10 @@ class _PoolSelectionState extends State<PoolSelection> {
         showSelectedIcon: false,
       ),
     );
+  }
+
+  void setPools(int p) {
+    fieldKey.currentState!.didChange(PoolBitSet.toSet(p));
   }
 }
 

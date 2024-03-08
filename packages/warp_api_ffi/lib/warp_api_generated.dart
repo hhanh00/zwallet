@@ -1726,6 +1726,23 @@ class NativeLibrary {
       CResult_u8 Function(
           int, int, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
+  CResult_____c_char parse_tex(
+    int coin,
+    ffi.Pointer<ffi.Char> address,
+  ) {
+    return _parse_tex(
+      coin,
+      address,
+    );
+  }
+
+  late final _parse_texPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_____c_char Function(
+              ffi.Uint8, ffi.Pointer<ffi.Char>)>>('parse_tex');
+  late final _parse_tex = _parse_texPtr
+      .asFunction<CResult_____c_char Function(int, ffi.Pointer<ffi.Char>)>();
+
   CResult_u32 ping(
     ffi.Pointer<ffi.Char> lwd_url,
   ) {
