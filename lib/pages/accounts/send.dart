@@ -258,16 +258,18 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   }
 
   _didUpdateAddress(String? address) {
+    if (address == null) return;
     isTex = false;
+    var address2 = address;
     try {
-      WarpApi.parseTexAddress(aa.coin, address!);
+      address2 = WarpApi.parseTexAddress(aa.coin, address2);
       isTex = true;
       poolKey.currentState!.setPools(1);
     } on String {}
     final receivers = address.isNotEmptyAndNotNull
-        ? WarpApi.receiversOfAddress(aa.coin, address!)
+        ? WarpApi.receiversOfAddress(aa.coin, address2)
         : 0;
-    isShielded = receivers != 1;
+    isShielded = receivers & 6 != 0;
     addressPools = receivers & coinSettings.receipientPools;
     rp = addressPools;
   }
