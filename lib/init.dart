@@ -116,6 +116,7 @@ class _AppState extends State<App> {
         supportedLocales: [
           Locale('en'),
           Locale('es'),
+          Locale('pt'),
           Locale('fr'),
         ],
         routerConfig: router,

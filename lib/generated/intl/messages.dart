@@ -8,6 +8,7 @@ import 'package:intl/intl.dart' as intl;
 import 'messages_en.dart';
 import 'messages_es.dart';
 import 'messages_fr.dart';
+import 'messages_pt.dart';
 
 /// Callers can lookup localized strings with an instance of S
 /// returned by `S.of(context)`.
@@ -92,7 +93,8 @@ abstract class S {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('es'),
-    Locale('fr')
+    Locale('fr'),
+    Locale('pt')
   ];
 
   /// No description provided for @about.
@@ -1623,7 +1625,7 @@ class _SDelegate extends LocalizationsDelegate<S> {
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'es', 'fr'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'es', 'fr', 'pt'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_SDelegate old) => false;
@@ -1637,6 +1639,7 @@ S lookupS(Locale locale) {
     case 'en': return SEn();
     case 'es': return SEs();
     case 'fr': return SFr();
+    case 'pt': return SPt();
   }
 
   throw FlutterError(
