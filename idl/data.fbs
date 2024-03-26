@@ -85,7 +85,7 @@ table MessageVec {
 }
 
 table Memo {
-    incoming:bool;
+    direction:uint8;
     address:string;
     memo:string;
 }

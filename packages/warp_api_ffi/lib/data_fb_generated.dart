@@ -1683,17 +1683,17 @@ class Memo {
   final fb.BufferContext _bc;
   final int _bcOffset;
 
-  bool get incoming => const fb.BoolReader().vTableGet(_bc, _bcOffset, 4, false);
+  int get direction => const fb.Uint8Reader().vTableGet(_bc, _bcOffset, 4, 0);
   String? get address => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 6);
   String? get memo => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 8);
 
   @override
   String toString() {
-    return 'Memo{incoming: ${incoming}, address: ${address}, memo: ${memo}}';
+    return 'Memo{direction: ${direction}, address: ${address}, memo: ${memo}}';
   }
 
   MemoT unpack() => MemoT(
-      incoming: incoming,
+      direction: direction,
       address: address,
       memo: memo);
 
@@ -1704,12 +1704,12 @@ class Memo {
 }
 
 class MemoT implements fb.Packable {
-  bool incoming;
+  int direction;
   String? address;
   String? memo;
 
   MemoT({
-      this.incoming = false,
+      this.direction = 0,
       this.address,
       this.memo});
 
@@ -1720,7 +1720,7 @@ class MemoT implements fb.Packable {
     final int? memoOffset = memo == null ? null
         : fbBuilder.writeString(memo!);
     fbBuilder.startTable(3);
-    fbBuilder.addBool(0, incoming);
+    fbBuilder.addUint8(0, direction);
     fbBuilder.addOffset(1, addressOffset);
     fbBuilder.addOffset(2, memoOffset);
     return fbBuilder.endTable();
@@ -1728,7 +1728,7 @@ class MemoT implements fb.Packable {
 
   @override
   String toString() {
-    return 'MemoT{incoming: ${incoming}, address: ${address}, memo: ${memo}}';
+    return 'MemoT{direction: ${direction}, address: ${address}, memo: ${memo}}';
   }
 }
 
@@ -1749,8 +1749,8 @@ class MemoBuilder {
     fbBuilder.startTable(3);
   }
 
-  int addIncoming(bool? incoming) {
-    fbBuilder.addBool(0, incoming);
+  int addDirection(int? direction) {
+    fbBuilder.addUint8(0, direction);
     return fbBuilder.offset;
   }
   int addAddressOffset(int? offset) {
@@ -1768,16 +1768,16 @@ class MemoBuilder {
 }
 
 class MemoObjectBuilder extends fb.ObjectBuilder {
-  final bool? _incoming;
+  final int? _direction;
   final String? _address;
   final String? _memo;
 
   MemoObjectBuilder({
-    bool? incoming,
+    int? direction,
     String? address,
     String? memo,
   })
-      : _incoming = incoming,
+      : _direction = direction,
         _address = address,
         _memo = memo;
 
@@ -1789,7 +1789,7 @@ class MemoObjectBuilder extends fb.ObjectBuilder {
     final int? memoOffset = _memo == null ? null
         : fbBuilder.writeString(_memo!);
     fbBuilder.startTable(3);
-    fbBuilder.addBool(0, _incoming);
+    fbBuilder.addUint8(0, _direction);
     fbBuilder.addOffset(1, addressOffset);
     fbBuilder.addOffset(2, memoOffset);
     return fbBuilder.endTable();
