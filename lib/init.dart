@@ -102,6 +102,7 @@ class _AppState extends State<App> {
         ),
       );
       return MaterialApp.router(
+        locale: Locale(appSettings.language),
         title: APP_NAME,
         debugShowCheckedModeBanner: false,
         theme: theme,

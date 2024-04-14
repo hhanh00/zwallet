@@ -42,6 +42,7 @@ class AppSettings extends $pb.GeneratedMessage {
     $core.bool? customSend,
     CustomSendSettings? customSendSettings,
     $core.int? backgroundSync,
+    $core.String? language,
   }) {
     final $result = create();
     if (confirmations != null) {
@@ -122,6 +123,9 @@ class AppSettings extends $pb.GeneratedMessage {
     if (backgroundSync != null) {
       $result.backgroundSync = backgroundSync;
     }
+    if (language != null) {
+      $result.language = language;
+    }
     return $result;
   }
   AppSettings._() : super();
@@ -155,6 +159,7 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOB(27, _omitFieldNames ? '' : 'customSend')
     ..aOM<CustomSendSettings>(28, _omitFieldNames ? '' : 'customSendSettings', subBuilder: CustomSendSettings.create)
     ..a<$core.int>(30, _omitFieldNames ? '' : 'backgroundSync', $pb.PbFieldType.OU3)
+    ..aOS(31, _omitFieldNames ? '' : 'language')
     ..hasRequiredFields = false
   ;
 
@@ -416,6 +421,15 @@ class AppSettings extends $pb.GeneratedMessage {
   $core.bool hasBackgroundSync() => $_has(25);
   @$pb.TagNumber(30)
   void clearBackgroundSync() => clearField(30);
+
+  @$pb.TagNumber(31)
+  $core.String get language => $_getSZ(26);
+  @$pb.TagNumber(31)
+  set language($core.String v) { $_setString(26, v); }
+  @$pb.TagNumber(31)
+  $core.bool hasLanguage() => $_has(26);
+  @$pb.TagNumber(31)
+  void clearLanguage() => clearField(31);
 }
 
 class CoinSettings extends $pb.GeneratedMessage {

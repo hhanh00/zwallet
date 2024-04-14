@@ -30,8 +30,26 @@ class _ThemeEditorState extends State<ThemeEditorTab>
     return FormBuilder(
         key: formKey,
         child: Column(children: [
-          FormBuilderSwitch(name: 'dark', title: Text(s.dark),
-          initialValue: _dark, onChanged: (v) => setState(() => setDark(v!)),),
+          FormBuilderRadioGroup(
+            decoration: InputDecoration(label: Text('Language')),
+            name: 'language',
+            initialValue: appSettings.language,
+            options: [
+              FormBuilderFieldOption(value: 'en', child: Text('English')),
+              FormBuilderFieldOption(value: 'fr', child: Text('Français')),
+              FormBuilderFieldOption(value: 'es', child: Text('Spanish')),
+              FormBuilderFieldOption(value: 'pt', child: Text('Português')),
+            ],
+            onChanged: (v) => widget.appSettings.language = v!,
+          ),
+          Divider(),
+          Gap(8),
+          FormBuilderSwitch(
+            name: 'dark',
+            title: Text(s.dark),
+            initialValue: _dark,
+            onChanged: (v) => setState(() => setDark(v!)),
+          ),
           Gap(16),
           Wrap(
               spacing: 8,

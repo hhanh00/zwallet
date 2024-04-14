@@ -28,6 +28,7 @@ message AppSettings {
     bool custom_send = 27;
     CustomSendSettings custom_send_settings = 28;
     uint32 background_sync = 30;
+    string language = 31;
 }
 
 message CoinSettings {

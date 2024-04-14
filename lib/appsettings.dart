@@ -31,6 +31,7 @@ extension AppSettingsExtension on AppSettings {
     if (!hasCustomSendSettings())
       customSendSettings = CustomSendSettings()..defaults();
     if (!hasBackgroundSync()) backgroundSync = 1;
+    if (!hasLanguage()) language = 'en';
   }
 
   static AppSettings load(SharedPreferences prefs) {
