@@ -22,6 +22,11 @@ class ZcashCoin extends CoinBase {
     LWInstance("Zcash Infra (France)", "https://lwd5.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (USA)", "https://lwd6.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (Brazil)", "https://lwd7.zcash-infra.com:9067"),
+    LWInstance("Zec.rocks (Global)", "https://zec.rocks:443"),
+    LWInstance("Zec.rocks (NA)", "https://na.zec.rocks:443"),
+    LWInstance("Zec.rocks (SA)", "https://sa.zec.rocks:443"),
+    LWInstance("Zec.rocks (EU)", "https://eu.zec.rocks:443"),
+    LWInstance("Zec.rocks (AP)", "https://ap.zec.rocks:443"),
   ];
   int defaultAddrMode = 0;
   int defaultUAType = 7; // TSO
