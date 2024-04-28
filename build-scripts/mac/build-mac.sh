@@ -6,6 +6,7 @@ curl https://download.z.cash/downloads/sapling-spend.params --output .zcash-para
 cp .zcash-params/* $BUILD_DIR/assets/
 
 rustup target add aarch64-apple-darwin
+rustup target add x86_64-apple-darwin
 popd
 
 git clone -b "$1" --depth 1 https://github.com/flutter/flutter.git flutter

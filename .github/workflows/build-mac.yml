@@ -21,6 +21,7 @@ jobs:
           curl https://download.z.cash/downloads/sapling-spend.params --output $HOME/.zcash-params/sapling-spend.params
       - name: Build Rust
         run: |
+          rustup target add x86_64-apple-darwin
           cargo b -r --target=x86_64-apple-darwin --features=dart_ffi,sqlcipher,ledger
       - name: Cache rust library
         uses: actions/cache/save@v3
