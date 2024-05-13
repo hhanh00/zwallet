@@ -392,3 +392,75 @@ class TxMemo with _$TxMemo {
     required String memo,
   }) = _TxMemo;
 }
+
+@freezed
+class SwapAmount with _$SwapAmount {
+  const factory SwapAmount({
+    required String amount,
+    required String currency,
+  }) = _SwapAmount;
+}
+
+@freezed
+class SwapQuote with _$SwapQuote {
+  const factory SwapQuote({
+    required String estimated_amount,
+    required String rate_id,
+    required String valid_until,
+  }) = _SwapQuote;
+
+  factory SwapQuote.fromJson(Map<String, dynamic> json) => _$SwapQuoteFromJson(json);
+}
+
+@freezed
+class SwapRequest with _$SwapRequest {
+  const factory SwapRequest({
+    required bool fixed,
+    required String currency_from,
+    required String currency_to,
+    required double amount_from,
+    required String address_to,
+  }) = _SwapRequest;
+
+  factory SwapRequest.fromJson(Map<String, dynamic> json) => _$SwapRequestFromJson(json);
+}
+
+@freezed
+class SwapLeg with _$SwapLeg {
+  const factory SwapLeg({
+    required String symbol,
+    required String name,
+    required String image,
+    required String validation_address,
+    required String address_explorer,
+    required String tx_explorer,
+  }) = _SwapLeg;
+
+  factory SwapLeg.fromJson(Map<String, dynamic> json) => _$SwapLegFromJson(json);
+}
+
+@freezed
+class SwapResponse with _$SwapResponse {
+  const factory SwapResponse({
+    required String id,
+    required String currency_from,
+    required String currency_to,
+    required String amount_from,
+    required String amount_to,
+    required String address_from,
+    required String address_to,
+  }) = _SwapResponse;
+
+  factory SwapResponse.fromJson(Map<String, dynamic> json) => _$SwapResponseFromJson(json);
+}
+
+@freezed
+class SwapDetails with _$SwapDetails {
+  const factory SwapDetails({
+    required SwapResponse response,
+    required SwapLeg leg_from,
+    required SwapLeg leg_to,
+  }) = _SwapDetails;
+
+  factory SwapDetails.fromJson(Map<String, dynamic> json) => _$SwapDetailsFromJson(json);
+}

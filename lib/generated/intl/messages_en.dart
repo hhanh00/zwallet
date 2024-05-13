@@ -784,4 +784,34 @@ class SEn extends S {
 
   @override
   String get wifi => 'WiFi';
+
+  @override
+  String get swap => 'Swap';
+
+  @override
+  String get swapProviders => 'Swap Providers';
+
+  @override
+  String get stealthEx => 'StealthEX';
+
+  @override
+  String get getQuote => 'Get Quote';
+
+  @override
+  String get invalidSwapCurrencies => 'Swap must include ZEC';
+
+  @override
+  String get checkSwapAddress => 'Make sure that the destination address is valid!';
+
+  @override
+  String get swapSend => 'Send';
+
+  @override
+  String get swapReceive => 'Receive';
+
+  @override
+  String get swapFromTip => 'Tip: Send the funds to the address in the upper box and you will receive the ZEC in your transparent address.';
+
+  @override
+  String get swapToTip => 'Tip: Tap the Send Button and receive the other currency';
 }

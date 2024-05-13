@@ -251,5 +251,15 @@
 	"viewingKey": "Viewing Key",
 	"views": "Views",
 	"welcomeToYwallet": "Welcome to YWallet",
-	"wifi": "WiFi"
+	"wifi": "WiFi",
+	"swap": "Swap",
+	"swapProviders": "Swap Providers",
+	"stealthEx": "StealthEX",
+	"getQuote": "Get Quote",
+	"invalidSwapCurrencies": "Swap must include ZEC",
+	"checkSwapAddress": "Make sure that the destination address is valid!",
+	"swapSend": "Send",
+	"swapReceive": "Receive",
+	"swapFromTip": "Tip: Send the funds to the address in the upper box and you will receive the ZEC in your transparent address.",
+	"swapToTip": "Tip: Tap the Send Button and receive the other currency"
 }

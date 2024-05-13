@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,6 +22,7 @@ import '../accounts.dart';
 import '../appsettings.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
+import '../store2.dart';
 import 'scan.dart';
 import 'utils.dart';
 
@@ -308,13 +310,15 @@ class PoolSelection extends StatefulWidget {
   final PoolBalanceT balances;
   final void Function(int? pools)? onChanged;
   final int initialValue;
-  PoolSelection(this.initialValue, {super.key, required this.balances, this.onChanged});
+  PoolSelection(this.initialValue,
+      {super.key, required this.balances, this.onChanged});
   @override
   State<StatefulWidget> createState() => PoolSelectionState();
 }
 
 class PoolSelectionState extends State<PoolSelection> {
-  final fieldKey = GlobalKey<FormBuilderFieldState<FormBuilderField<Set<int>>, Set<int>>>();
+  final fieldKey =
+      GlobalKey<FormBuilderFieldState<FormBuilderField<Set<int>>, Set<int>>>();
 
   @override
   Widget build(BuildContext context) {
@@ -399,7 +403,8 @@ class AmountPickerState extends State<AmountPicker> {
   late final amountController =
       TextEditingController(text: amountToString2(widget.initialAmount.value));
   late final nformat = NumberFormat.decimalPatternDigits(
-      locale: Platform.localeName, decimalDigits: decimalDigits(appSettings.fullPrec));
+      locale: Platform.localeName,
+      decimalDigits: decimalDigits(appSettings.fullPrec));
   late final fiatController = TextEditingController(text: nformat.format(0.0));
 
   @override
@@ -829,4 +834,105 @@ class MessageContentWidget extends StatelessWidget {
       ]);
     }
   }
+}
+
+class SwapAmountWidget extends StatefulWidget {
+  final String name;
+  final SwapAmount initialValue;
+  final bool readOnly;
+  final List<String>? currencies;
+
+  const SwapAmountWidget({
+    super.key,
+    required this.name,
+    required this.initialValue,
+    this.readOnly = false,
+    this.currencies,
+  });
+
+  @override
+  State<StatefulWidget> createState() => SwapAmountState();
+}
+
+class SwapAmountState extends State<SwapAmountWidget> {
+  var formKey = GlobalKey<FormBuilderState>();
+  var fieldKey = GlobalKey<
+      FormBuilderFieldState<FormBuilderField<SwapAmount>, SwapAmount>>();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context);
+    final items = widget.currencies
+        ?.map((c) => DropdownMenuItem(value: c, child: Text(c)))
+        .toList();
+
+    logger.d('build -> ${widget.initialValue}');
+
+    return FormBuilderField<SwapAmount>(
+      key: fieldKey,
+      name: widget.name,
+      initialValue: widget.initialValue,
+      builder: (FormFieldState<SwapAmount> field) {
+        return FormBuilder(
+          key: formKey,
+          child: SizedBox(
+            height: 100,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  SizedBox(
+                      width: 180,
+                      child: FormBuilderTextField(
+                        name: 'amount',
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          errorText: field.errorText,
+                        ),
+                        readOnly: widget.readOnly,
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.numeric(),
+                        ]),
+                        initialValue: value.amount.toString(),
+                        onChanged: (v) {
+                          field.didChange(value.copyWith(amount: v!));
+                        },
+                      )),
+                  items != null
+                      ? SizedBox(
+                          width: 140,
+                          child: FormBuilderDropdown(
+                            name: 'currency',
+                            decoration:
+                                InputDecoration(border: InputBorder.none),
+                            items: items,
+                            initialValue: value.currency,
+                            onChanged: (v) =>
+                                field.didChange(value.copyWith(currency: v!)),
+                          ))
+                      : Text(value.currency, style: t.textTheme.bodyLarge),
+                ]),
+          ),
+        );
+      },
+    );
+  }
+
+  void update(SwapAmount value) {
+    final f = formKey.currentState!;
+    f.fields['amount']!.didChange(value.amount);
+    f.fields['currency']!.didChange(value.currency);
+  }
+
+  bool validate() {
+    return formKey.currentState!.validate();
+  }
+
+  void invalidate(String error) {
+    formKey.currentState!.fields['amount']!.invalidate(error);
+  }
+
+  SwapAmount get value => fieldKey.currentState!.value!;
 }

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'pages/accounts/swap.dart';
+import 'pages/accounts/swap/stealthex.dart';
 import 'pages/more/cold.dart';
 import 'settings.pb.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +47,18 @@ import 'store2.dart';
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _accountNavigatorKey = GlobalKey<NavigatorState>();
 
+final helpRouteMap = {
+  "/account": "/accounts",
+  "/account/multi_pay": "/multipay",
+  "/account/multi_pay/new": "/multipay",
+  "/txplan": "/transacting/report",
+  "/submit_tx": "/transacting/report#transaction-sent",
+  "/broadcast_tx": "/transacting/report#transaction-sent",
+  "/messages": "/messages",
+  "/history": "/history",
+  "contacts": "/contacts",
+};
+
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: '/splash',
@@ -74,6 +88,21 @@ final router = GoRouter(
                           builder: (context, state) =>
                               QuickSendPage(single: false)),
                     ]),
+                GoRoute(
+                  path: 'swap',
+                  builder: (context, state) => SwapPage(),
+                  routes: [
+                    GoRoute(
+                        path: 'stealthex',
+                        builder: (context, state) => StealthExPage(),
+                        routes: [
+                          GoRoute(
+                              path: 'details',
+                              builder: (context, state) =>
+                                  StealthExSummaryPage(state.extra as SwapDetails)),
+                        ]),
+                  ],
+                ),
                 GoRoute(
                   path: 'txplan',
                   builder: (context, state) => TxPlanPage(
@@ -188,8 +217,9 @@ final router = GoRouter(
                       routes: [
                         GoRoute(
                             path: 'new',
-                            builder: (context, state) =>
-                                NewImportAccountPage(first: false, seedInfo: state.extra as SeedInfo?)),
+                            builder: (context, state) => NewImportAccountPage(
+                                first: false,
+                                seedInfo: state.extra as SeedInfo?)),
                       ]),
                   GoRoute(
                       path: 'cold',
@@ -363,7 +393,8 @@ class _ScaffoldBar extends State<ScaffoldBar> {
                   icon: Icon(Icons.account_balance), label: s.balance),
               BottomNavigationBarItem(
                   icon: Icon(Icons.message), label: s.messages),
-              BottomNavigationBarItem(icon: Icon(Icons.view_list), label: s.history),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.view_list), label: s.history),
               BottomNavigationBarItem(
                   icon: Icon(Icons.contacts), label: s.contacts),
               BottomNavigationBarItem(

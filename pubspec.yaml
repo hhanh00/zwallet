@@ -113,6 +113,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.3
+  flutter_svg: ^2.0.9
 
 dependency_overrides:
   # camera_android:
@@ -175,6 +176,7 @@ flutter:
     - assets/fail.mp3
     - assets/ding.mp3
     - assets/ledger.png
+    - assets/stealthex.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

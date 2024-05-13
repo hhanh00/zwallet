@@ -1614,6 +1614,66 @@ abstract class S {
   /// In en, this message translates to:
   /// **'WiFi'**
   String get wifi;
+
+  /// No description provided for @swap.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap'**
+  String get swap;
+
+  /// No description provided for @swapProviders.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap Providers'**
+  String get swapProviders;
+
+  /// No description provided for @stealthEx.
+  ///
+  /// In en, this message translates to:
+  /// **'StealthEX'**
+  String get stealthEx;
+
+  /// No description provided for @getQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Quote'**
+  String get getQuote;
+
+  /// No description provided for @invalidSwapCurrencies.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap must include ZEC'**
+  String get invalidSwapCurrencies;
+
+  /// No description provided for @checkSwapAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure that the destination address is valid!'**
+  String get checkSwapAddress;
+
+  /// No description provided for @swapSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get swapSend;
+
+  /// No description provided for @swapReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive'**
+  String get swapReceive;
+
+  /// No description provided for @swapFromTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: Send the funds to the address in the upper box and you will receive the ZEC in your transparent address.'**
+  String get swapFromTip;
+
+  /// No description provided for @swapToTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: Tap the Send Button and receive the other currency'**
+  String get swapToTip;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

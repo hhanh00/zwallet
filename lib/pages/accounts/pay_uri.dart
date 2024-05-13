@@ -4,10 +4,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
-import '../../appsettings.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
-import '../main/home.dart';
 import '../main/qr_address.dart';
 import '../utils.dart';
 import '../widgets.dart';
