@@ -1615,6 +1615,18 @@ abstract class S {
   /// **'WiFi'**
   String get wifi;
 
+  /// No description provided for @dontShowAnymore.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not show anymore'**
+  String get dontShowAnymore;
+
+  /// No description provided for @swapDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Swaps are offered by third-party providers. Use at your own risk and do your own research.'**
+  String get swapDisclaimer;
+
   /// No description provided for @swap.
   ///
   /// In en, this message translates to:

@@ -43,6 +43,7 @@ class AppSettings extends $pb.GeneratedMessage {
     CustomSendSettings? customSendSettings,
     $core.int? backgroundSync,
     $core.String? language,
+    $core.bool? swapDisclaimerAccepted,
   }) {
     final $result = create();
     if (confirmations != null) {
@@ -126,6 +127,9 @@ class AppSettings extends $pb.GeneratedMessage {
     if (language != null) {
       $result.language = language;
     }
+    if (swapDisclaimerAccepted != null) {
+      $result.swapDisclaimerAccepted = swapDisclaimerAccepted;
+    }
     return $result;
   }
   AppSettings._() : super();
@@ -160,6 +164,7 @@ class AppSettings extends $pb.GeneratedMessage {
     ..aOM<CustomSendSettings>(28, _omitFieldNames ? '' : 'customSendSettings', subBuilder: CustomSendSettings.create)
     ..a<$core.int>(30, _omitFieldNames ? '' : 'backgroundSync', $pb.PbFieldType.OU3)
     ..aOS(31, _omitFieldNames ? '' : 'language')
+    ..aOB(32, _omitFieldNames ? '' : 'swapDisclaimerAccepted', protoName: 'swapDisclaimerAccepted')
     ..hasRequiredFields = false
   ;
 
@@ -430,6 +435,15 @@ class AppSettings extends $pb.GeneratedMessage {
   $core.bool hasLanguage() => $_has(26);
   @$pb.TagNumber(31)
   void clearLanguage() => clearField(31);
+
+  @$pb.TagNumber(32)
+  $core.bool get swapDisclaimerAccepted => $_getBF(27);
+  @$pb.TagNumber(32)
+  set swapDisclaimerAccepted($core.bool v) { $_setBool(27, v); }
+  @$pb.TagNumber(32)
+  $core.bool hasSwapDisclaimerAccepted() => $_has(27);
+  @$pb.TagNumber(32)
+  void clearSwapDisclaimerAccepted() => clearField(32);
 }
 
 class CoinSettings extends $pb.GeneratedMessage {

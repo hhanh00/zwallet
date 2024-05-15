@@ -252,6 +252,8 @@
 	"views": "Views",
 	"welcomeToYwallet": "Welcome to YWallet",
 	"wifi": "WiFi",
+	"dontShowAnymore": "Do not show anymore",
+	"swapDisclaimer": "Swaps are offered by third-party providers. Use at your own risk and do your own research.",
 	"swap": "Swap",
 	"swapProviders": "Swap Providers",
 	"stealthEx": "StealthEX",

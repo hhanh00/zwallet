@@ -786,6 +786,12 @@ class SEs extends S {
   String get wifi => 'WiFi';
 
   @override
+  String get dontShowAnymore => 'Do not show anymore';
+
+  @override
+  String get swapDisclaimer => 'Swaps are offered by third-party providers. Use at your own risk and do your own research.';
+
+  @override
   String get swap => 'Swap';
 
   @override
