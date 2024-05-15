@@ -437,11 +437,12 @@ class WarpApi {
   }
 
   static String commitUnsavedContacts(
-      int coin, int account, int anchorOffset, FeeT fee) {
+      int coin, int account, int pools, int anchorOffset, FeeT fee) {
     final fee2 = encodeFee(fee);
     return unwrapResultString(warp_api_lib.commit_unsaved_contacts(
         coin,
         account,
+        pools, 
         anchorOffset,
         toNativeBytes(fee2),
         fee2.lengthInBytes));

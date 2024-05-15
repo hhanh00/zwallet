@@ -916,6 +916,7 @@ class NativeLibrary {
   CResult_____c_char commit_unsaved_contacts(
     int coin,
     int account,
+    int pools,
     int anchor_offset,
     ffi.Pointer<ffi.Uint8> fee_bytes,
     int fee_len,
@@ -923,6 +924,7 @@ class NativeLibrary {
     return _commit_unsaved_contacts(
       coin,
       account,
+      pools,
       anchor_offset,
       fee_bytes,
       fee_len,
@@ -931,11 +933,16 @@ class NativeLibrary {
 
   late final _commit_unsaved_contactsPtr = _lookup<
       ffi.NativeFunction<
-          CResult_____c_char Function(ffi.Uint8, ffi.Uint32, ffi.Uint32,
-              ffi.Pointer<ffi.Uint8>, ffi.Uint64)>>('commit_unsaved_contacts');
+          CResult_____c_char Function(
+              ffi.Uint8,
+              ffi.Uint32,
+              ffi.Uint8,
+              ffi.Uint32,
+              ffi.Pointer<ffi.Uint8>,
+              ffi.Uint64)>>('commit_unsaved_contacts');
   late final _commit_unsaved_contacts = _commit_unsaved_contactsPtr.asFunction<
       CResult_____c_char Function(
-          int, int, int, ffi.Pointer<ffi.Uint8>, int)>();
+          int, int, int, int, ffi.Pointer<ffi.Uint8>, int)>();
 
   void mark_message_read(
     int coin,
@@ -1959,6 +1966,8 @@ const int ShieldedTx_VT_SHORT_TX_ID = 10;
 
 const int ShieldedTx_VT_MEMO = 20;
 
+const int ShieldedTx_VT_MESSAGES = 22;
+
 const int ShieldedTxVec_VT_TXS = 4;
 
 const int Message_VT_ID_MSG = 4;
@@ -1979,7 +1988,9 @@ const int Message_VT_READ = 22;
 
 const int Message_VT_INCOMING = 24;
 
-const int MessageVec_VT_MESSAGES = 4;
+const int Memo_VT_DIRECTION = 4;
+
+const int MemoVec_VT_MEMOS = 4;
 
 const int PrevNext_VT_PREV = 4;
 

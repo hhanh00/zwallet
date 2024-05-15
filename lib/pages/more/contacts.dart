@@ -71,9 +71,10 @@ class _ContactsState extends State<ContactsPage> {
         await showConfirmDialog(context, s.save, s.confirmSaveContacts);
     if (!confirmed) return;
     final txPlan = WarpApi.commitUnsavedContacts(
-        aa.coin, aa.id, appSettings.anchorOffset, fee); // save to Orchard
+        aa.coin, aa.id, coinSettings.receipientPools,
+        appSettings.anchorOffset, fee); // save to Orchard
     GoRouter.of(context)
-        .pushReplacement('/account/txplan?tab=more', extra: txPlan);
+        .push('/account/txplan?tab=contacts', extra: txPlan);
   }
 
   _add() {

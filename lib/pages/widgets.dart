@@ -819,7 +819,7 @@ class MessageContentWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final m = message;
     final addressWidget =
-        Text('${trailing(address, 8)}', style: theme.textTheme.labelMedium);
+        Text('${centerTrim(address)}', style: theme.textTheme.labelMedium);
     if (m != null) {
       return Column(children: [
         addressWidget,

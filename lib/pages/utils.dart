@@ -360,17 +360,16 @@ Future<void> saveFile(String data, String filename, String title) async {
   await saveFileBinary(utf8.encode(data), filename, title);
 }
 
-String centerTrim(String v, {int length = 16}) {
+String centerTrim(String v, {int leading = 2, int length = 16}) {
   if (v.length <= length) return v;
-  final s = length ~/ 2;
-  final e = v.length - length + s;
-  return v.substring(0, s) + '...' + v.substring(e);
+  final e = v.length - length + leading;
+  return v.substring(0, leading) + '...' + v.substring(e);
 }
 
-String trailing(String v, int n) {
-  final len = min(n, v.length);
-  return v.substring(v.length - len);
-}
+// String trailing(String v, int n) {
+//   final len = min(n, v.length);
+//   return v.substring(v.length - len);
+// }
 
 String getPrivacyLevel(BuildContext context, int level) {
   final s = S.of(context);
