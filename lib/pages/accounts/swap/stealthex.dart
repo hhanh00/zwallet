@@ -204,11 +204,11 @@ class StealthExState extends State<StealthExPage> with WithLoadingAnimation {
     }
     load(() async {
       try {
-      final swap =
-          await createExchange(q.rate_id, fromCurrency, toCurrency, amount, address);
-      GoRouter.of(context).push('/account/swap/stealthex/details', extra: swap);
-      }
-      on String catch (err) {
+        final swap = await createExchange(
+            q.rate_id, fromCurrency, toCurrency, amount, address);
+        GoRouter.of(context)
+            .push('/account/swap/stealthex/details', extra: swap);
+      } on String catch (err) {
         formKey.currentState!.fields['address']!.invalidate(err);
       }
     });
@@ -216,8 +216,8 @@ class StealthExState extends State<StealthExPage> with WithLoadingAnimation {
 }
 
 class StealthExSummaryPage extends StatefulWidget {
-  final SwapDetails details;
-  StealthExSummaryPage(this.details);
+  final SwapT swap;
+  StealthExSummaryPage(this.swap);
 
   @override
   State<StatefulWidget> createState() => StealthExSummaryState();
@@ -228,9 +228,9 @@ class StealthExSummaryState extends State<StealthExSummaryPage>
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final details = widget.details;
-    logger.d(jsonEncode(details));
-    final reversed = details.leg_from.symbol != 'zec';
+    final swap = widget.swap;
+    logger.d(swap);
+    final reversed = swap.fromCurrency != 'zec';
     return wrapWithLoading(
       Scaffold(
         appBar: AppBar(title: Text(s.stealthEx)),
@@ -239,22 +239,24 @@ class StealthExSummaryState extends State<StealthExSummaryPage>
             padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
             child: Column(
               children: [
-                Text(details.response.id),
+                Text(swap.providerId!),
                 Gap(8),
                 Panel(s.swapSend,
                     child: SwapLegWidget(
-                      details.response.amount_from,
-                      details.response.address_from,
-                      details.leg_from,
+                      swap.fromAmount!,
+                      swap.fromAddress!,
+                      swap.fromCurrency!,
+                      swap.fromImage!,
                       isFrom: true,
                       onSend: _send,
                     )),
                 Gap(16),
                 Panel(s.swapReceive,
                     child: SwapLegWidget(
-                      details.response.amount_to,
-                      details.response.address_to,
-                      details.leg_to,
+                      swap.toAmount!,
+                      swap.toAddress!,
+                      swap.toCurrency!,
+                      swap.toImage!,
                       isFrom: false,
                     )),
                 Gap(16),
@@ -289,31 +291,35 @@ class StealthExSummaryState extends State<StealthExSummaryPage>
 class SwapLegWidget extends StatelessWidget {
   final String amount;
   final String address;
-  final SwapLeg leg;
+  final String currency;
+  final String image;
   final bool isFrom;
   final Function(String, String)? onSend;
-  SwapLegWidget(this.amount, this.address, this.leg,
+  SwapLegWidget(this.amount, this.address, this.currency, this.image,
       {super.key, required this.isFrom, this.onSend});
 
   @override
   Widget build(BuildContext context) {
     final qr =
-        (leg.symbol == 'btc') ? 'bitcoin:${address}?amount=${amount}' : null;
-    final canSend = leg.symbol == 'zec';
-    return Wrap(
-      spacing: 16,
+        (currency == 'btc') ? 'bitcoin:${address}?amount=${amount}' : null;
+    final canSend = currency == 'zec';
+    return Column(
       children: [
-        SvgPicture.network(leg.image),
-        Text(amount),
-        Text(leg.symbol),
-        Text(address, maxLines: 4),
-        if (isFrom && qr != null)
-          IconButton(
-              onPressed: () => _qr(context, qr), icon: Icon(Icons.qr_code)),
-        if (isFrom && canSend && onSend != null)
-          IconButton(
-              onPressed: () => onSend?.call(address, amount),
-              icon: Icon(Icons.send))
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          SvgPicture.network(image),
+          SelectableText(amount),
+          Text(currency),
+        ]),
+        SelectableText(address),
+        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          if (isFrom && qr != null)
+            IconButton(
+                onPressed: () => _qr(context, qr), icon: Icon(Icons.qr_code)),
+          if (isFrom && canSend && onSend != null)
+            IconButton(
+                onPressed: () => onSend?.call(address, amount),
+                icon: Icon(Icons.send))
+        ]),
       ],
     );
   }
@@ -342,8 +348,8 @@ Future<List<String>> getCurrencies() async {
   return _currencies;
 }
 
-Future<SwapDetails> createExchange(String rateId,
-    String from, String to, Decimal amount, String address) async {
+Future<SwapT> createExchange(String rateId, String from, String to,
+    Decimal amount, String address) async {
   final requestURL = Uri.parse('${SXbaseURL}/v3/exchange');
   final requestData = SwapRequest(
       fixed: true,
@@ -378,18 +384,20 @@ Future<SwapDetails> createExchange(String rateId,
 
   logger.d(rep.body);
 
-  final swapDbEntry = SwapT(
+  final swap = SwapT(
     provider: 'SX',
     providerId: resp.id,
     timestamp: DateTime.parse(resp.timestamp).millisecondsSinceEpoch ~/ 1000,
     fromCurrency: fromDetails.symbol,
     fromAmount: resp.amount_from,
     fromAddress: resp.address_from,
+    fromImage: fromDetails.image,
     toCurrency: toDetails.symbol,
     toAmount: resp.amount_to,
     toAddress: resp.address_to,
+    toImage: toDetails.image,
   );
-  WarpApi.storeSwap(aa.coin, aa.id, swapDbEntry);
+  WarpApi.storeSwap(aa.coin, aa.id, swap);
 
-  return SwapDetails(leg_from: fromDetails, leg_to: toDetails, response: resp);
+  return swap;
 }

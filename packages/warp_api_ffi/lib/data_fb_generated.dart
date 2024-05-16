@@ -5966,13 +5966,15 @@ class Swap {
   String? get fromCurrency => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 10);
   String? get fromAmount => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 12);
   String? get fromAddress => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 14);
-  String? get toCurrency => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 16);
-  String? get toAmount => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 18);
-  String? get toAddress => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 20);
+  String? get fromImage => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 16);
+  String? get toCurrency => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 18);
+  String? get toAmount => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 20);
+  String? get toAddress => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 22);
+  String? get toImage => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 24);
 
   @override
   String toString() {
-    return 'Swap{provider: ${provider}, providerId: ${providerId}, timestamp: ${timestamp}, fromCurrency: ${fromCurrency}, fromAmount: ${fromAmount}, fromAddress: ${fromAddress}, toCurrency: ${toCurrency}, toAmount: ${toAmount}, toAddress: ${toAddress}}';
+    return 'Swap{provider: ${provider}, providerId: ${providerId}, timestamp: ${timestamp}, fromCurrency: ${fromCurrency}, fromAmount: ${fromAmount}, fromAddress: ${fromAddress}, fromImage: ${fromImage}, toCurrency: ${toCurrency}, toAmount: ${toAmount}, toAddress: ${toAddress}, toImage: ${toImage}}';
   }
 
   SwapT unpack() => SwapT(
@@ -5982,9 +5984,11 @@ class Swap {
       fromCurrency: fromCurrency,
       fromAmount: fromAmount,
       fromAddress: fromAddress,
+      fromImage: fromImage,
       toCurrency: toCurrency,
       toAmount: toAmount,
-      toAddress: toAddress);
+      toAddress: toAddress,
+      toImage: toImage);
 
   static int pack(fb.Builder fbBuilder, SwapT? object) {
     if (object == null) return 0;
@@ -5999,9 +6003,11 @@ class SwapT implements fb.Packable {
   String? fromCurrency;
   String? fromAmount;
   String? fromAddress;
+  String? fromImage;
   String? toCurrency;
   String? toAmount;
   String? toAddress;
+  String? toImage;
 
   SwapT({
       this.provider,
@@ -6010,9 +6016,11 @@ class SwapT implements fb.Packable {
       this.fromCurrency,
       this.fromAmount,
       this.fromAddress,
+      this.fromImage,
       this.toCurrency,
       this.toAmount,
-      this.toAddress});
+      this.toAddress,
+      this.toImage});
 
   @override
   int pack(fb.Builder fbBuilder) {
@@ -6026,28 +6034,34 @@ class SwapT implements fb.Packable {
         : fbBuilder.writeString(fromAmount!);
     final int? fromAddressOffset = fromAddress == null ? null
         : fbBuilder.writeString(fromAddress!);
+    final int? fromImageOffset = fromImage == null ? null
+        : fbBuilder.writeString(fromImage!);
     final int? toCurrencyOffset = toCurrency == null ? null
         : fbBuilder.writeString(toCurrency!);
     final int? toAmountOffset = toAmount == null ? null
         : fbBuilder.writeString(toAmount!);
     final int? toAddressOffset = toAddress == null ? null
         : fbBuilder.writeString(toAddress!);
-    fbBuilder.startTable(9);
+    final int? toImageOffset = toImage == null ? null
+        : fbBuilder.writeString(toImage!);
+    fbBuilder.startTable(11);
     fbBuilder.addOffset(0, providerOffset);
     fbBuilder.addOffset(1, providerIdOffset);
     fbBuilder.addUint32(2, timestamp);
     fbBuilder.addOffset(3, fromCurrencyOffset);
     fbBuilder.addOffset(4, fromAmountOffset);
     fbBuilder.addOffset(5, fromAddressOffset);
-    fbBuilder.addOffset(6, toCurrencyOffset);
-    fbBuilder.addOffset(7, toAmountOffset);
-    fbBuilder.addOffset(8, toAddressOffset);
+    fbBuilder.addOffset(6, fromImageOffset);
+    fbBuilder.addOffset(7, toCurrencyOffset);
+    fbBuilder.addOffset(8, toAmountOffset);
+    fbBuilder.addOffset(9, toAddressOffset);
+    fbBuilder.addOffset(10, toImageOffset);
     return fbBuilder.endTable();
   }
 
   @override
   String toString() {
-    return 'SwapT{provider: ${provider}, providerId: ${providerId}, timestamp: ${timestamp}, fromCurrency: ${fromCurrency}, fromAmount: ${fromAmount}, fromAddress: ${fromAddress}, toCurrency: ${toCurrency}, toAmount: ${toAmount}, toAddress: ${toAddress}}';
+    return 'SwapT{provider: ${provider}, providerId: ${providerId}, timestamp: ${timestamp}, fromCurrency: ${fromCurrency}, fromAmount: ${fromAmount}, fromAddress: ${fromAddress}, fromImage: ${fromImage}, toCurrency: ${toCurrency}, toAmount: ${toAmount}, toAddress: ${toAddress}, toImage: ${toImage}}';
   }
 }
 
@@ -6065,7 +6079,7 @@ class SwapBuilder {
   final fb.Builder fbBuilder;
 
   void begin() {
-    fbBuilder.startTable(9);
+    fbBuilder.startTable(11);
   }
 
   int addProviderOffset(int? offset) {
@@ -6092,16 +6106,24 @@ class SwapBuilder {
     fbBuilder.addOffset(5, offset);
     return fbBuilder.offset;
   }
-  int addToCurrencyOffset(int? offset) {
+  int addFromImageOffset(int? offset) {
     fbBuilder.addOffset(6, offset);
     return fbBuilder.offset;
   }
-  int addToAmountOffset(int? offset) {
+  int addToCurrencyOffset(int? offset) {
     fbBuilder.addOffset(7, offset);
     return fbBuilder.offset;
   }
-  int addToAddressOffset(int? offset) {
+  int addToAmountOffset(int? offset) {
     fbBuilder.addOffset(8, offset);
+    return fbBuilder.offset;
+  }
+  int addToAddressOffset(int? offset) {
+    fbBuilder.addOffset(9, offset);
+    return fbBuilder.offset;
+  }
+  int addToImageOffset(int? offset) {
+    fbBuilder.addOffset(10, offset);
     return fbBuilder.offset;
   }
 
@@ -6117,9 +6139,11 @@ class SwapObjectBuilder extends fb.ObjectBuilder {
   final String? _fromCurrency;
   final String? _fromAmount;
   final String? _fromAddress;
+  final String? _fromImage;
   final String? _toCurrency;
   final String? _toAmount;
   final String? _toAddress;
+  final String? _toImage;
 
   SwapObjectBuilder({
     String? provider,
@@ -6128,9 +6152,11 @@ class SwapObjectBuilder extends fb.ObjectBuilder {
     String? fromCurrency,
     String? fromAmount,
     String? fromAddress,
+    String? fromImage,
     String? toCurrency,
     String? toAmount,
     String? toAddress,
+    String? toImage,
   })
       : _provider = provider,
         _providerId = providerId,
@@ -6138,9 +6164,11 @@ class SwapObjectBuilder extends fb.ObjectBuilder {
         _fromCurrency = fromCurrency,
         _fromAmount = fromAmount,
         _fromAddress = fromAddress,
+        _fromImage = fromImage,
         _toCurrency = toCurrency,
         _toAmount = toAmount,
-        _toAddress = toAddress;
+        _toAddress = toAddress,
+        _toImage = toImage;
 
   /// Finish building, and store into the [fbBuilder].
   @override
@@ -6155,22 +6183,28 @@ class SwapObjectBuilder extends fb.ObjectBuilder {
         : fbBuilder.writeString(_fromAmount!);
     final int? fromAddressOffset = _fromAddress == null ? null
         : fbBuilder.writeString(_fromAddress!);
+    final int? fromImageOffset = _fromImage == null ? null
+        : fbBuilder.writeString(_fromImage!);
     final int? toCurrencyOffset = _toCurrency == null ? null
         : fbBuilder.writeString(_toCurrency!);
     final int? toAmountOffset = _toAmount == null ? null
         : fbBuilder.writeString(_toAmount!);
     final int? toAddressOffset = _toAddress == null ? null
         : fbBuilder.writeString(_toAddress!);
-    fbBuilder.startTable(9);
+    final int? toImageOffset = _toImage == null ? null
+        : fbBuilder.writeString(_toImage!);
+    fbBuilder.startTable(11);
     fbBuilder.addOffset(0, providerOffset);
     fbBuilder.addOffset(1, providerIdOffset);
     fbBuilder.addUint32(2, _timestamp);
     fbBuilder.addOffset(3, fromCurrencyOffset);
     fbBuilder.addOffset(4, fromAmountOffset);
     fbBuilder.addOffset(5, fromAddressOffset);
-    fbBuilder.addOffset(6, toCurrencyOffset);
-    fbBuilder.addOffset(7, toAmountOffset);
-    fbBuilder.addOffset(8, toAddressOffset);
+    fbBuilder.addOffset(6, fromImageOffset);
+    fbBuilder.addOffset(7, toCurrencyOffset);
+    fbBuilder.addOffset(8, toAmountOffset);
+    fbBuilder.addOffset(9, toAddressOffset);
+    fbBuilder.addOffset(10, toImageOffset);
     return fbBuilder.endTable();
   }
 

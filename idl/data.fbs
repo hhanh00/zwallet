@@ -288,9 +288,11 @@ table Swap {
   from_currency:string;
   from_amount:string;
   from_address:string;
+  from_image:string;
   to_currency:string;
   to_amount:string;
   to_address:string;
+  to_image:string;
 }
 
 table SwapVec {

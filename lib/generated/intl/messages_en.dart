@@ -826,4 +826,7 @@ class SEn extends S {
 
   @override
   String get confirmClearSwapHistory => 'Are you sure you want to clear the swap history?';
+
+  @override
+  String get retry => 'Retry';
 }

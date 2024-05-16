@@ -1,6 +1,7 @@
 import 'package:YWallet/pages/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
@@ -73,7 +74,8 @@ class SwapHistoryState extends State<SwapHistoryPage>
                     ],
                   ),
                   Text(swap.toAddress!, overflow: TextOverflow.ellipsis),
-
+                  Divider(),
+                  ElevatedButton(onPressed: () => GoRouter.of(context).push('/account/swap/stealthex/details', extra: swap), child: Text(s.retry)),
                   // Text(
                   //     '${swap.fromAmount} ${swap.fromCurrency} ${swap.fromAddress} '),
                   // Text('${swap.toAmount} ${swap.toCurrency} ${swap.toAddress}'),

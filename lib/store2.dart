@@ -456,13 +456,3 @@ class SwapResponse with _$SwapResponse {
   factory SwapResponse.fromJson(Map<String, dynamic> json) => _$SwapResponseFromJson(json);
 }
 
-@freezed
-class SwapDetails with _$SwapDetails {
-  const factory SwapDetails({
-    required SwapResponse response,
-    required SwapLeg leg_from,
-    required SwapLeg leg_to,
-  }) = _SwapDetails;
-
-  factory SwapDetails.fromJson(Map<String, dynamic> json) => _$SwapDetailsFromJson(json);
-}

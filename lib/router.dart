@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:warp_api/data_fb_generated.dart';
+
 import 'pages/accounts/swap.dart';
 import 'pages/accounts/swap/history.dart';
 import 'pages/accounts/swap/stealthex.dart';
@@ -104,7 +106,7 @@ final router = GoRouter(
                           GoRoute(
                               path: 'details',
                               builder: (context, state) =>
-                                  StealthExSummaryPage(state.extra as SwapDetails)),
+                                  StealthExSummaryPage(state.extra as SwapT)),
                         ]),
                   ],
                 ),

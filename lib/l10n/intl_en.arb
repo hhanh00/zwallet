@@ -265,5 +265,6 @@
 	"swapFromTip": "Tip: Send the funds to the address in the upper box and you will receive the ZEC in your transparent address.",
 	"swapToTip": "Tip: Tap the Send Button and receive the other currency",
 	"confirm": "Please Confirm",
-	"confirmClearSwapHistory": "Are you sure you want to clear the swap history?"
+	"confirmClearSwapHistory": "Are you sure you want to clear the swap history?",
+	"retry": "Retry"
 }

@@ -1698,6 +1698,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Are you sure you want to clear the swap history?'**
   String get confirmClearSwapHistory;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
