@@ -546,6 +546,15 @@ class WarpApi {
     return unwrapResultString(warp_api_lib.parse_tex(coin, toNative(address)));
   }
 
+  static void storeSwap(int coin, int account, SwapT swap) {
+    final fbBuilder = Builder();
+    int root = swap.pack(fbBuilder);
+    fbBuilder.finish(root);
+    final swapBytes = fbBuilder.buffer;
+    unwrapResultU8(warp_api_lib.store_swap(coin, account, 
+      toNativeBytes(swapBytes), swapBytes.length));
+  }
+
   static void ledgerBuildKeys() {
     unwrapResultU8(warp_api_lib.ledger_build_keys());
   }

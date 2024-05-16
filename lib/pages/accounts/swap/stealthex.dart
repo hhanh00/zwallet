@@ -79,6 +79,12 @@ class StealthExState extends State<StealthExPage> with WithLoadingAnimation {
                   key: fromKey,
                   name: 'from',
                   initialValue: from,
+                  onChanged: (v) => setState(() {
+                    logger.d('from onChanged');
+                    toKey.currentState!.resetAmount();
+                    quote = null;
+                    from = v;
+                  }),
                   currencies: currencies,
                 ),
                 Gap(32),
@@ -92,6 +98,14 @@ class StealthExState extends State<StealthExPage> with WithLoadingAnimation {
                   key: toKey,
                   name: 'to',
                   initialValue: to,
+                  onChanged: (v) => setState(() {
+                    logger.d('to onChanged $v');
+                    if (to.currency != v.currency && v.amount != '0') {
+                      toKey.currentState!.resetAmount();
+                      quote = null;
+                    }
+                    to = v;
+                  }),
                   readOnly: true,
                   currencies: currencies,
                 ),
@@ -165,12 +179,9 @@ class StealthExState extends State<StealthExPage> with WithLoadingAnimation {
         final q = SwapQuote.fromJson(res);
         logger.d(q);
         quote = q;
-        from = SwapAmount(amount: amount.toString(), currency: f);
-        to = SwapAmount(amount: q.estimated_amount, currency: t);
-        toKey.currentState!.update(to);
+        toKey.currentState!.update(to.copyWith(amount: q.estimated_amount));
       } else {
         quote = null;
-        to = SwapAmount(amount: '0', currency: t);
         logger.e(res);
         final error = res['err']['details'] as String;
         fromKey.currentState!.invalidate(error);
@@ -192,9 +203,14 @@ class StealthExState extends State<StealthExPage> with WithLoadingAnimation {
       return;
     }
     load(() async {
+      try {
       final swap =
-          await createExchange(fromCurrency, toCurrency, amount, address);
+          await createExchange(q.rate_id, fromCurrency, toCurrency, amount, address);
       GoRouter.of(context).push('/account/swap/stealthex/details', extra: swap);
+      }
+      on String catch (err) {
+        formKey.currentState!.fields['address']!.invalidate(err);
+      }
     });
   }
 }
@@ -326,11 +342,12 @@ Future<List<String>> getCurrencies() async {
   return _currencies;
 }
 
-Future<SwapDetails> createExchange(
+Future<SwapDetails> createExchange(String rateId,
     String from, String to, Decimal amount, String address) async {
   final requestURL = Uri.parse('${SXbaseURL}/v3/exchange');
   final requestData = SwapRequest(
       fixed: true,
+      rate_id: rateId,
       currency_from: from,
       currency_to: to,
       amount_from: amount.toDouble(),
@@ -342,7 +359,8 @@ Future<SwapDetails> createExchange(
   );
   logger.d(requestData);
   if (rep.statusCode != 201) {
-    throw new Exception(rep.body);
+    final err = jsonDecode(rep.body)['err']['details'] as String;
+    throw err;
   }
 
   final repBody = jsonDecode(rep.body)['data'];
@@ -359,5 +377,19 @@ Future<SwapDetails> createExchange(
   logger.d(toDetails);
 
   logger.d(rep.body);
+
+  final swapDbEntry = SwapT(
+    provider: 'SX',
+    providerId: resp.id,
+    timestamp: DateTime.parse(resp.timestamp).millisecondsSinceEpoch ~/ 1000,
+    fromCurrency: fromDetails.symbol,
+    fromAmount: resp.amount_from,
+    fromAddress: resp.address_from,
+    toCurrency: toDetails.symbol,
+    toAmount: resp.amount_to,
+    toAddress: resp.address_to,
+  );
+  WarpApi.storeSwap(aa.coin, aa.id, swapDbEntry);
+
   return SwapDetails(leg_from: fromDetails, leg_to: toDetails, response: resp);
 }

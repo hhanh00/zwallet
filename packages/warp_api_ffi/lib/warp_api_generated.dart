@@ -1764,6 +1764,27 @@ class NativeLibrary {
   late final _ping =
       _pingPtr.asFunction<CResult_u32 Function(ffi.Pointer<ffi.Char>)>();
 
+  CResult_u8 store_swap(
+    int coin,
+    int account,
+    ffi.Pointer<ffi.Uint8> swap_bytes,
+    int swap_len,
+  ) {
+    return _store_swap(
+      coin,
+      account,
+      swap_bytes,
+      swap_len,
+    );
+  }
+
+  late final _store_swapPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_u8 Function(ffi.Uint8, ffi.Uint32, ffi.Pointer<ffi.Uint8>,
+              ffi.Uint64)>>('store_swap');
+  late final _store_swap = _store_swapPtr
+      .asFunction<CResult_u8 Function(int, int, ffi.Pointer<ffi.Uint8>, int)>();
+
   CResult_____c_char ledger_send(
     int coin,
     ffi.Pointer<ffi.Char> tx_plan,
@@ -2081,3 +2102,21 @@ const int Fee_VT_MIN_FEE = 6;
 const int Fee_VT_MAX_FEE = 8;
 
 const int Fee_VT_SCHEME = 10;
+
+const int Swap_VT_PROVIDER = 4;
+
+const int Swap_VT_PROVIDER_ID = 6;
+
+const int Swap_VT_EXPIRATION = 8;
+
+const int Swap_VT_FROM_CURRENCY = 10;
+
+const int Swap_VT_FROM_AMOUNT = 12;
+
+const int Swap_VT_FROM_ADDRESS = 14;
+
+const int Swap_VT_TO_CURRENCY = 16;
+
+const int Swap_VT_TO_AMOUNT = 18;
+
+const int Swap_VT_TO_ADDRESS = 20;

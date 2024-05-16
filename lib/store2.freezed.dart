@@ -598,6 +598,7 @@ SwapRequest _$SwapRequestFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$SwapRequest {
   bool get fixed => throw _privateConstructorUsedError;
+  String get rate_id => throw _privateConstructorUsedError;
   String get currency_from => throw _privateConstructorUsedError;
   String get currency_to => throw _privateConstructorUsedError;
   double get amount_from => throw _privateConstructorUsedError;
@@ -617,6 +618,7 @@ abstract class $SwapRequestCopyWith<$Res> {
   @useResult
   $Res call(
       {bool fixed,
+      String rate_id,
       String currency_from,
       String currency_to,
       double amount_from,
@@ -637,6 +639,7 @@ class _$SwapRequestCopyWithImpl<$Res, $Val extends SwapRequest>
   @override
   $Res call({
     Object? fixed = null,
+    Object? rate_id = null,
     Object? currency_from = null,
     Object? currency_to = null,
     Object? amount_from = null,
@@ -647,6 +650,10 @@ class _$SwapRequestCopyWithImpl<$Res, $Val extends SwapRequest>
           ? _value.fixed
           : fixed // ignore: cast_nullable_to_non_nullable
               as bool,
+      rate_id: null == rate_id
+          ? _value.rate_id
+          : rate_id // ignore: cast_nullable_to_non_nullable
+              as String,
       currency_from: null == currency_from
           ? _value.currency_from
           : currency_from // ignore: cast_nullable_to_non_nullable
@@ -677,6 +684,7 @@ abstract class _$$SwapRequestImplCopyWith<$Res>
   @useResult
   $Res call(
       {bool fixed,
+      String rate_id,
       String currency_from,
       String currency_to,
       double amount_from,
@@ -695,6 +703,7 @@ class __$$SwapRequestImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? fixed = null,
+    Object? rate_id = null,
     Object? currency_from = null,
     Object? currency_to = null,
     Object? amount_from = null,
@@ -705,6 +714,10 @@ class __$$SwapRequestImplCopyWithImpl<$Res>
           ? _value.fixed
           : fixed // ignore: cast_nullable_to_non_nullable
               as bool,
+      rate_id: null == rate_id
+          ? _value.rate_id
+          : rate_id // ignore: cast_nullable_to_non_nullable
+              as String,
       currency_from: null == currency_from
           ? _value.currency_from
           : currency_from // ignore: cast_nullable_to_non_nullable
@@ -730,6 +743,7 @@ class __$$SwapRequestImplCopyWithImpl<$Res>
 class _$SwapRequestImpl implements _SwapRequest {
   const _$SwapRequestImpl(
       {required this.fixed,
+      required this.rate_id,
       required this.currency_from,
       required this.currency_to,
       required this.amount_from,
@@ -741,6 +755,8 @@ class _$SwapRequestImpl implements _SwapRequest {
   @override
   final bool fixed;
   @override
+  final String rate_id;
+  @override
   final String currency_from;
   @override
   final String currency_to;
@@ -751,7 +767,7 @@ class _$SwapRequestImpl implements _SwapRequest {
 
   @override
   String toString() {
-    return 'SwapRequest(fixed: $fixed, currency_from: $currency_from, currency_to: $currency_to, amount_from: $amount_from, address_to: $address_to)';
+    return 'SwapRequest(fixed: $fixed, rate_id: $rate_id, currency_from: $currency_from, currency_to: $currency_to, amount_from: $amount_from, address_to: $address_to)';
   }
 
   @override
@@ -760,6 +776,7 @@ class _$SwapRequestImpl implements _SwapRequest {
         (other.runtimeType == runtimeType &&
             other is _$SwapRequestImpl &&
             (identical(other.fixed, fixed) || other.fixed == fixed) &&
+            (identical(other.rate_id, rate_id) || other.rate_id == rate_id) &&
             (identical(other.currency_from, currency_from) ||
                 other.currency_from == currency_from) &&
             (identical(other.currency_to, currency_to) ||
@@ -772,8 +789,8 @@ class _$SwapRequestImpl implements _SwapRequest {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, fixed, currency_from, currency_to, amount_from, address_to);
+  int get hashCode => Object.hash(runtimeType, fixed, rate_id, currency_from,
+      currency_to, amount_from, address_to);
 
   @JsonKey(ignore: true)
   @override
@@ -792,6 +809,7 @@ class _$SwapRequestImpl implements _SwapRequest {
 abstract class _SwapRequest implements SwapRequest {
   const factory _SwapRequest(
       {required final bool fixed,
+      required final String rate_id,
       required final String currency_from,
       required final String currency_to,
       required final double amount_from,
@@ -802,6 +820,8 @@ abstract class _SwapRequest implements SwapRequest {
 
   @override
   bool get fixed;
+  @override
+  String get rate_id;
   @override
   String get currency_from;
   @override
@@ -1063,6 +1083,7 @@ SwapResponse _$SwapResponseFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$SwapResponse {
   String get id => throw _privateConstructorUsedError;
+  String get timestamp => throw _privateConstructorUsedError;
   String get currency_from => throw _privateConstructorUsedError;
   String get currency_to => throw _privateConstructorUsedError;
   String get amount_from => throw _privateConstructorUsedError;
@@ -1084,6 +1105,7 @@ abstract class $SwapResponseCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
+      String timestamp,
       String currency_from,
       String currency_to,
       String amount_from,
@@ -1106,6 +1128,7 @@ class _$SwapResponseCopyWithImpl<$Res, $Val extends SwapResponse>
   @override
   $Res call({
     Object? id = null,
+    Object? timestamp = null,
     Object? currency_from = null,
     Object? currency_to = null,
     Object? amount_from = null,
@@ -1117,6 +1140,10 @@ class _$SwapResponseCopyWithImpl<$Res, $Val extends SwapResponse>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      timestamp: null == timestamp
+          ? _value.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
               as String,
       currency_from: null == currency_from
           ? _value.currency_from
@@ -1156,6 +1183,7 @@ abstract class _$$SwapResponseImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
+      String timestamp,
       String currency_from,
       String currency_to,
       String amount_from,
@@ -1176,6 +1204,7 @@ class __$$SwapResponseImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? timestamp = null,
     Object? currency_from = null,
     Object? currency_to = null,
     Object? amount_from = null,
@@ -1187,6 +1216,10 @@ class __$$SwapResponseImplCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      timestamp: null == timestamp
+          ? _value.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
               as String,
       currency_from: null == currency_from
           ? _value.currency_from
@@ -1221,6 +1254,7 @@ class __$$SwapResponseImplCopyWithImpl<$Res>
 class _$SwapResponseImpl implements _SwapResponse {
   const _$SwapResponseImpl(
       {required this.id,
+      required this.timestamp,
       required this.currency_from,
       required this.currency_to,
       required this.amount_from,
@@ -1233,6 +1267,8 @@ class _$SwapResponseImpl implements _SwapResponse {
 
   @override
   final String id;
+  @override
+  final String timestamp;
   @override
   final String currency_from;
   @override
@@ -1248,7 +1284,7 @@ class _$SwapResponseImpl implements _SwapResponse {
 
   @override
   String toString() {
-    return 'SwapResponse(id: $id, currency_from: $currency_from, currency_to: $currency_to, amount_from: $amount_from, amount_to: $amount_to, address_from: $address_from, address_to: $address_to)';
+    return 'SwapResponse(id: $id, timestamp: $timestamp, currency_from: $currency_from, currency_to: $currency_to, amount_from: $amount_from, amount_to: $amount_to, address_from: $address_from, address_to: $address_to)';
   }
 
   @override
@@ -1257,6 +1293,8 @@ class _$SwapResponseImpl implements _SwapResponse {
         (other.runtimeType == runtimeType &&
             other is _$SwapResponseImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp) &&
             (identical(other.currency_from, currency_from) ||
                 other.currency_from == currency_from) &&
             (identical(other.currency_to, currency_to) ||
@@ -1273,8 +1311,8 @@ class _$SwapResponseImpl implements _SwapResponse {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, currency_from, currency_to,
-      amount_from, amount_to, address_from, address_to);
+  int get hashCode => Object.hash(runtimeType, id, timestamp, currency_from,
+      currency_to, amount_from, amount_to, address_from, address_to);
 
   @JsonKey(ignore: true)
   @override
@@ -1293,6 +1331,7 @@ class _$SwapResponseImpl implements _SwapResponse {
 abstract class _SwapResponse implements SwapResponse {
   const factory _SwapResponse(
       {required final String id,
+      required final String timestamp,
       required final String currency_from,
       required final String currency_to,
       required final String amount_from,
@@ -1305,6 +1344,8 @@ abstract class _SwapResponse implements SwapResponse {
 
   @override
   String get id;
+  @override
+  String get timestamp;
   @override
   String get currency_from;
   @override

@@ -280,3 +280,19 @@ table AccountAddress {
   orchard:string;
   address:string;
 }
+
+table Swap {
+  provider:string;
+  provider_id:string;
+  timestamp:uint32;
+  from_currency:string;
+  from_amount:string;
+  from_address:string;
+  to_currency:string;
+  to_amount:string;
+  to_address:string;
+}
+
+table SwapVec {
+    values:[Swap];
+}

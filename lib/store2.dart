@@ -416,6 +416,7 @@ class SwapQuote with _$SwapQuote {
 class SwapRequest with _$SwapRequest {
   const factory SwapRequest({
     required bool fixed,
+    required String rate_id,
     required String currency_from,
     required String currency_to,
     required double amount_from,
@@ -443,6 +444,7 @@ class SwapLeg with _$SwapLeg {
 class SwapResponse with _$SwapResponse {
   const factory SwapResponse({
     required String id,
+    required String timestamp,
     required String currency_from,
     required String currency_to,
     required String amount_from,

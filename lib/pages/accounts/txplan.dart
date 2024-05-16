@@ -97,7 +97,7 @@ class TxPlanWidget extends StatelessWidget {
     final rows = report.outputs!.map((e) {
       final style = _styleOfAddress(e.address!, t);
       return DataRow(cells: [
-        DataCell(Text('...${centerTrim(e.address!)}', style: style)),
+        DataCell(Text('${centerTrim(e.address!)}', style: style)),
         DataCell(Text('${poolToString(s, e.pool)}', style: style)),
         DataCell(Text('${amountToString2(e.amount, digits: MAX_PRECISION)}',
             style: style)),

@@ -22,7 +22,7 @@ import '../settings.pb.dart';
 import '../store2.dart';
 import 'utils.dart';
 
-List<String>? currencies;
+late List<String> currencies;
 
 class SettingsPage extends StatefulWidget {
   final int coin;
@@ -45,16 +45,18 @@ class _SettingsState extends State<SettingsPage>
   @override
   void initState() {
     super.initState();
+    currencies = [appSettings.currency];
     coinSettings.lwd =
         coinSettings.lwd.deepCopy(); // otherwise they cannot be edited
     coinSettings.explorer = coinSettings.explorer.deepCopy();
-    if (currencies == null) {
-      currencies = [];
-      Future(() async {
-        currencies = await fetchCurrencies();
-        setState(() {});
-      });
-    }
+    Future(() async {
+      final _currencies = await fetchCurrencies();
+      if (_currencies != null) {
+        setState(() {
+          currencies = _currencies;
+        });
+      }
+    });
   }
 
   @override
@@ -350,10 +352,10 @@ class _PrivacyState extends State<PrivacyTab>
             initialValue: widget.appSettings.confirmations.toString(),
             onChanged: (v) =>
                 widget.appSettings.confirmations = int.tryParse(v!) ?? 0,
-            validator:
-            FormBuilderValidators.compose([
+            validator: FormBuilderValidators.compose([
               FormBuilderValidators.integer(),
-              FormBuilderValidators.min(1)]),
+              FormBuilderValidators.min(1)
+            ]),
           ),
           Divider(),
           if (!isMobile())
@@ -468,8 +470,8 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
         .map(
           (kv) => FormBuilderFieldOption(
               value: kv.key,
-              child: Text(
-                  kv.value.name + (pings[kv.key]?.let((v) => ' [$v ms]') ?? ''))),
+              child: Text(kv.value.name +
+                  (pings[kv.key]?.let((v) => ' [$v ms]') ?? ''))),
         )
         .toList();
     final explorers = c.blockExplorers
@@ -751,7 +753,8 @@ class FieldUA extends StatelessWidget {
       onChanged: (v) => onChanged?.call(PoolBitSet.fromSet(v!)),
       validator: (v) => validator?.call(PoolBitSet.fromSet(v!)),
       builder: (field) => InputDecorator(
-          decoration: InputDecoration(label: Text(label), errorText: field.errorText),
+          decoration:
+              InputDecoration(label: Text(label), errorText: field.errorText),
           child: Padding(
             padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
             child: SegmentedButton(

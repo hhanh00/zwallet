@@ -841,6 +841,7 @@ class SwapAmountWidget extends StatefulWidget {
   final SwapAmount initialValue;
   final bool readOnly;
   final List<String>? currencies;
+  final void Function(SwapAmount)? onChanged;
 
   const SwapAmountWidget({
     super.key,
@@ -848,6 +849,7 @@ class SwapAmountWidget extends StatefulWidget {
     required this.initialValue,
     this.readOnly = false,
     this.currencies,
+    this.onChanged,
   });
 
   @override
@@ -872,6 +874,7 @@ class SwapAmountState extends State<SwapAmountWidget> {
       key: fieldKey,
       name: widget.name,
       initialValue: widget.initialValue,
+      onChanged: (v) => widget.onChanged?.call(v!),
       builder: (FormFieldState<SwapAmount> field) {
         return FormBuilder(
           key: formKey,
@@ -921,6 +924,7 @@ class SwapAmountState extends State<SwapAmountWidget> {
   }
 
   void update(SwapAmount value) {
+    logger.d('update $value');
     final f = formKey.currentState!;
     f.fields['amount']!.didChange(value.amount);
     f.fields['currency']!.didChange(value.currency);
@@ -932,6 +936,11 @@ class SwapAmountState extends State<SwapAmountWidget> {
 
   void invalidate(String error) {
     formKey.currentState!.fields['amount']!.invalidate(error);
+  }
+
+  void resetAmount() {
+    logger.d('reset amount');
+    formKey.currentState!.fields['amount']!.didChange('0');
   }
 
   SwapAmount get value => fieldKey.currentState!.value!;

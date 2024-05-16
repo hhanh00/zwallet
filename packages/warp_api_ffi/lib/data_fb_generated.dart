@@ -5948,3 +5948,237 @@ class AccountAddressObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+class Swap {
+  Swap._(this._bc, this._bcOffset);
+  factory Swap(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<Swap> reader = _SwapReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  String? get provider => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
+  String? get providerId => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 6);
+  int get timestamp => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 8, 0);
+  String? get fromCurrency => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 10);
+  String? get fromAmount => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 12);
+  String? get fromAddress => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 14);
+  String? get toCurrency => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 16);
+  String? get toAmount => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 18);
+  String? get toAddress => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 20);
+
+  @override
+  String toString() {
+    return 'Swap{provider: ${provider}, providerId: ${providerId}, timestamp: ${timestamp}, fromCurrency: ${fromCurrency}, fromAmount: ${fromAmount}, fromAddress: ${fromAddress}, toCurrency: ${toCurrency}, toAmount: ${toAmount}, toAddress: ${toAddress}}';
+  }
+
+  SwapT unpack() => SwapT(
+      provider: provider,
+      providerId: providerId,
+      timestamp: timestamp,
+      fromCurrency: fromCurrency,
+      fromAmount: fromAmount,
+      fromAddress: fromAddress,
+      toCurrency: toCurrency,
+      toAmount: toAmount,
+      toAddress: toAddress);
+
+  static int pack(fb.Builder fbBuilder, SwapT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class SwapT implements fb.Packable {
+  String? provider;
+  String? providerId;
+  int timestamp;
+  String? fromCurrency;
+  String? fromAmount;
+  String? fromAddress;
+  String? toCurrency;
+  String? toAmount;
+  String? toAddress;
+
+  SwapT({
+      this.provider,
+      this.providerId,
+      this.timestamp = 0,
+      this.fromCurrency,
+      this.fromAmount,
+      this.fromAddress,
+      this.toCurrency,
+      this.toAmount,
+      this.toAddress});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? providerOffset = provider == null ? null
+        : fbBuilder.writeString(provider!);
+    final int? providerIdOffset = providerId == null ? null
+        : fbBuilder.writeString(providerId!);
+    final int? fromCurrencyOffset = fromCurrency == null ? null
+        : fbBuilder.writeString(fromCurrency!);
+    final int? fromAmountOffset = fromAmount == null ? null
+        : fbBuilder.writeString(fromAmount!);
+    final int? fromAddressOffset = fromAddress == null ? null
+        : fbBuilder.writeString(fromAddress!);
+    final int? toCurrencyOffset = toCurrency == null ? null
+        : fbBuilder.writeString(toCurrency!);
+    final int? toAmountOffset = toAmount == null ? null
+        : fbBuilder.writeString(toAmount!);
+    final int? toAddressOffset = toAddress == null ? null
+        : fbBuilder.writeString(toAddress!);
+    fbBuilder.startTable(9);
+    fbBuilder.addOffset(0, providerOffset);
+    fbBuilder.addOffset(1, providerIdOffset);
+    fbBuilder.addUint32(2, timestamp);
+    fbBuilder.addOffset(3, fromCurrencyOffset);
+    fbBuilder.addOffset(4, fromAmountOffset);
+    fbBuilder.addOffset(5, fromAddressOffset);
+    fbBuilder.addOffset(6, toCurrencyOffset);
+    fbBuilder.addOffset(7, toAmountOffset);
+    fbBuilder.addOffset(8, toAddressOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'SwapT{provider: ${provider}, providerId: ${providerId}, timestamp: ${timestamp}, fromCurrency: ${fromCurrency}, fromAmount: ${fromAmount}, fromAddress: ${fromAddress}, toCurrency: ${toCurrency}, toAmount: ${toAmount}, toAddress: ${toAddress}}';
+  }
+}
+
+class _SwapReader extends fb.TableReader<Swap> {
+  const _SwapReader();
+
+  @override
+  Swap createObject(fb.BufferContext bc, int offset) => 
+    Swap._(bc, offset);
+}
+
+class SwapBuilder {
+  SwapBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(9);
+  }
+
+  int addProviderOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+  int addProviderIdOffset(int? offset) {
+    fbBuilder.addOffset(1, offset);
+    return fbBuilder.offset;
+  }
+  int addTimestamp(int? timestamp) {
+    fbBuilder.addUint32(2, timestamp);
+    return fbBuilder.offset;
+  }
+  int addFromCurrencyOffset(int? offset) {
+    fbBuilder.addOffset(3, offset);
+    return fbBuilder.offset;
+  }
+  int addFromAmountOffset(int? offset) {
+    fbBuilder.addOffset(4, offset);
+    return fbBuilder.offset;
+  }
+  int addFromAddressOffset(int? offset) {
+    fbBuilder.addOffset(5, offset);
+    return fbBuilder.offset;
+  }
+  int addToCurrencyOffset(int? offset) {
+    fbBuilder.addOffset(6, offset);
+    return fbBuilder.offset;
+  }
+  int addToAmountOffset(int? offset) {
+    fbBuilder.addOffset(7, offset);
+    return fbBuilder.offset;
+  }
+  int addToAddressOffset(int? offset) {
+    fbBuilder.addOffset(8, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class SwapObjectBuilder extends fb.ObjectBuilder {
+  final String? _provider;
+  final String? _providerId;
+  final int? _timestamp;
+  final String? _fromCurrency;
+  final String? _fromAmount;
+  final String? _fromAddress;
+  final String? _toCurrency;
+  final String? _toAmount;
+  final String? _toAddress;
+
+  SwapObjectBuilder({
+    String? provider,
+    String? providerId,
+    int? timestamp,
+    String? fromCurrency,
+    String? fromAmount,
+    String? fromAddress,
+    String? toCurrency,
+    String? toAmount,
+    String? toAddress,
+  })
+      : _provider = provider,
+        _providerId = providerId,
+        _timestamp = timestamp,
+        _fromCurrency = fromCurrency,
+        _fromAmount = fromAmount,
+        _fromAddress = fromAddress,
+        _toCurrency = toCurrency,
+        _toAmount = toAmount,
+        _toAddress = toAddress;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? providerOffset = _provider == null ? null
+        : fbBuilder.writeString(_provider!);
+    final int? providerIdOffset = _providerId == null ? null
+        : fbBuilder.writeString(_providerId!);
+    final int? fromCurrencyOffset = _fromCurrency == null ? null
+        : fbBuilder.writeString(_fromCurrency!);
+    final int? fromAmountOffset = _fromAmount == null ? null
+        : fbBuilder.writeString(_fromAmount!);
+    final int? fromAddressOffset = _fromAddress == null ? null
+        : fbBuilder.writeString(_fromAddress!);
+    final int? toCurrencyOffset = _toCurrency == null ? null
+        : fbBuilder.writeString(_toCurrency!);
+    final int? toAmountOffset = _toAmount == null ? null
+        : fbBuilder.writeString(_toAmount!);
+    final int? toAddressOffset = _toAddress == null ? null
+        : fbBuilder.writeString(_toAddress!);
+    fbBuilder.startTable(9);
+    fbBuilder.addOffset(0, providerOffset);
+    fbBuilder.addOffset(1, providerIdOffset);
+    fbBuilder.addUint32(2, _timestamp);
+    fbBuilder.addOffset(3, fromCurrencyOffset);
+    fbBuilder.addOffset(4, fromAmountOffset);
+    fbBuilder.addOffset(5, fromAddressOffset);
+    fbBuilder.addOffset(6, toCurrencyOffset);
+    fbBuilder.addOffset(7, toAmountOffset);
+    fbBuilder.addOffset(8, toAddressOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
