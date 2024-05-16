@@ -555,6 +555,16 @@ class WarpApi {
       toNativeBytes(swapBytes), swapBytes.length));
   }
 
+  static List<SwapT> listSwaps(int coin) {
+    final res = unwrapResultBytes(warp_api_lib.list_swaps(coin));
+    final s = SwapVec(res);
+    return s.unpack().values!;
+  }
+
+  static void clearSwapHistory(int coin) {
+    unwrapResultU8(warp_api_lib.clear_swap_history(coin));
+  }
+
   static void ledgerBuildKeys() {
     unwrapResultU8(warp_api_lib.ledger_build_keys());
   }

@@ -6182,3 +6182,105 @@ class SwapObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+class SwapVec {
+  SwapVec._(this._bc, this._bcOffset);
+  factory SwapVec(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<SwapVec> reader = _SwapVecReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  List<Swap>? get values => const fb.ListReader<Swap>(Swap.reader).vTableGetNullable(_bc, _bcOffset, 4);
+
+  @override
+  String toString() {
+    return 'SwapVec{values: ${values}}';
+  }
+
+  SwapVecT unpack() => SwapVecT(
+      values: values?.map((e) => e.unpack()).toList());
+
+  static int pack(fb.Builder fbBuilder, SwapVecT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class SwapVecT implements fb.Packable {
+  List<SwapT>? values;
+
+  SwapVecT({
+      this.values});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? valuesOffset = values == null ? null
+        : fbBuilder.writeList(values!.map((b) => b.pack(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, valuesOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'SwapVecT{values: ${values}}';
+  }
+}
+
+class _SwapVecReader extends fb.TableReader<SwapVec> {
+  const _SwapVecReader();
+
+  @override
+  SwapVec createObject(fb.BufferContext bc, int offset) => 
+    SwapVec._(bc, offset);
+}
+
+class SwapVecBuilder {
+  SwapVecBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(1);
+  }
+
+  int addValuesOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class SwapVecObjectBuilder extends fb.ObjectBuilder {
+  final List<SwapObjectBuilder>? _values;
+
+  SwapVecObjectBuilder({
+    List<SwapObjectBuilder>? values,
+  })
+      : _values = values;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? valuesOffset = _values == null ? null
+        : fbBuilder.writeList(_values!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, valuesOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}

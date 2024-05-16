@@ -29,6 +29,9 @@ class SwapState extends State<SwapPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(s.swapProviders),
+        actions: [
+          IconButton(onPressed: () => GoRouter.of(context).push('/account/swap/history'), icon: Icon(Icons.list)),
+        ]
       ),
       body: Center(
         child: Column(

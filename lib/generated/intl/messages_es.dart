@@ -820,4 +820,10 @@ class SEs extends S {
 
   @override
   String get swapToTip => 'Tip: Tap the Send Button and receive the other currency';
+
+  @override
+  String get confirm => 'Please Confirm';
+
+  @override
+  String get confirmClearSwapHistory => 'Are you sure you want to clear the swap history?';
 }

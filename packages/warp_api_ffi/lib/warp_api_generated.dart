@@ -1785,6 +1785,34 @@ class NativeLibrary {
   late final _store_swap = _store_swapPtr
       .asFunction<CResult_u8 Function(int, int, ffi.Pointer<ffi.Uint8>, int)>();
 
+  CResult______u8 list_swaps(
+    int coin,
+  ) {
+    return _list_swaps(
+      coin,
+    );
+  }
+
+  late final _list_swapsPtr =
+      _lookup<ffi.NativeFunction<CResult______u8 Function(ffi.Uint8)>>(
+          'list_swaps');
+  late final _list_swaps =
+      _list_swapsPtr.asFunction<CResult______u8 Function(int)>();
+
+  CResult_u8 clear_swap_history(
+    int coin,
+  ) {
+    return _clear_swap_history(
+      coin,
+    );
+  }
+
+  late final _clear_swap_historyPtr =
+      _lookup<ffi.NativeFunction<CResult_u8 Function(ffi.Uint8)>>(
+          'clear_swap_history');
+  late final _clear_swap_history =
+      _clear_swap_historyPtr.asFunction<CResult_u8 Function(int)>();
+
   CResult_____c_char ledger_send(
     int coin,
     ffi.Pointer<ffi.Char> tx_plan,
@@ -2106,8 +2134,6 @@ const int Fee_VT_SCHEME = 10;
 const int Swap_VT_PROVIDER = 4;
 
 const int Swap_VT_PROVIDER_ID = 6;
-
-const int Swap_VT_EXPIRATION = 8;
 
 const int Swap_VT_FROM_CURRENCY = 10;
 

@@ -1686,6 +1686,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Tip: Tap the Send Button and receive the other currency'**
   String get swapToTip;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Please Confirm'**
+  String get confirm;
+
+  /// No description provided for @confirmClearSwapHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear the swap history?'**
+  String get confirmClearSwapHistory;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

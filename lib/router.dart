@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'pages/accounts/swap.dart';
+import 'pages/accounts/swap/history.dart';
 import 'pages/accounts/swap/stealthex.dart';
 import 'pages/more/cold.dart';
 import 'settings.pb.dart';
@@ -92,6 +93,10 @@ final router = GoRouter(
                   path: 'swap',
                   builder: (context, state) => SwapPage(),
                   routes: [
+                    GoRoute(
+                        path: 'history',
+                        builder: (context, state) => SwapHistoryPage(),
+                    ),
                     GoRoute(
                         path: 'stealthex',
                         builder: (context, state) => StealthExPage(),
