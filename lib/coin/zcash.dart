@@ -14,7 +14,7 @@ class ZcashCoin extends CoinBase {
   String? marketTicker = "ZECUSDT";
   AssetImage image = AssetImage('assets/zcash.png');
   List<LWInstance> lwd = [
-    LWInstance("Lightwalletd", "https://mainnet.lightwalletd.com:9067"),
+    LWInstance("Zec.rocks (Global)", "https://zec.rocks:443"),
     LWInstance("Zcash Infra (USA)", "https://lwd1.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (HK)", "https://lwd2.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (USA)", "https://lwd3.zcash-infra.com:9067"),
@@ -22,7 +22,6 @@ class ZcashCoin extends CoinBase {
     LWInstance("Zcash Infra (France)", "https://lwd5.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (USA)", "https://lwd6.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (Brazil)", "https://lwd7.zcash-infra.com:9067"),
-    LWInstance("Zec.rocks (Global)", "https://zec.rocks:443"),
     LWInstance("Zec.rocks (NA)", "https://na.zec.rocks:443"),
     LWInstance("Zec.rocks (SA)", "https://sa.zec.rocks:443"),
     LWInstance("Zec.rocks (EU)", "https://eu.zec.rocks:443"),
@@ -36,7 +35,6 @@ class ZcashCoin extends CoinBase {
   List<double> weights = [0.05, 0.25, 2.50];
   List<String> blockExplorers = [
     "https://blockchair.com/zcash/transaction",
-    "https://zcashblockexplorer.com/transactions",
     "https://zecblockexplorer.com/tx"
   ];
 }
