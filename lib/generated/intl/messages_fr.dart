@@ -786,47 +786,47 @@ class SFr extends S {
   String get wifi => 'Wi-Fi';
 
   @override
-  String get dontShowAnymore => 'Do not show anymore';
+  String get dontShowAnymore => 'Ne plus afficher';
 
   @override
-  String get swapDisclaimer => 'Swaps are offered by third-party providers. Use at your own risk and do your own research.';
+  String get swapDisclaimer => 'Les swaps sont offerts par des services tiers. Utilisez à votre propre risque et faites votre propre recherche.';
 
   @override
   String get swap => 'Swap';
 
   @override
-  String get swapProviders => 'Swap Providers';
+  String get swapProviders => 'Fournisseurs de Swaps';
 
   @override
   String get stealthEx => 'StealthEX';
 
   @override
-  String get getQuote => 'Get Quote';
+  String get getQuote => 'Cotation';
 
   @override
-  String get invalidSwapCurrencies => 'Swap must include ZEC';
+  String get invalidSwapCurrencies => 'Swap doit inclure ZEC';
 
   @override
-  String get checkSwapAddress => 'Make sure that the destination address is valid!';
+  String get checkSwapAddress => 'Vérifier que l\'adresse est correcte!';
 
   @override
-  String get swapSend => 'Send';
+  String get swapSend => 'Envoyer';
 
   @override
-  String get swapReceive => 'Receive';
+  String get swapReceive => 'Recevoir';
 
   @override
-  String get swapFromTip => 'Tip: Send the funds to the address in the upper box and you will receive the ZEC in your transparent address.';
+  String get swapFromTip => 'Aide : Envoyez des fonds vers l\'adresse du haut pour recevoir des fonds a l\'adresse du bas.';
 
   @override
-  String get swapToTip => 'Tip: Tap the Send Button and receive the other currency';
+  String get swapToTip => 'Aide : Appuyez sur le bouton pour envoyer des fonds a l\'adresse du haut';
 
   @override
-  String get confirm => 'Please Confirm';
+  String get confirm => 'Veuillez confirmer';
 
   @override
-  String get confirmClearSwapHistory => 'Are you sure you want to clear the swap history?';
+  String get confirmClearSwapHistory => 'Êtes-vous sûr de vouloir effacer l\'historique des swaps ?';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Refaire';
 }

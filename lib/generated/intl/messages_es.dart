@@ -786,47 +786,47 @@ class SEs extends S {
   String get wifi => 'WiFi';
 
   @override
-  String get dontShowAnymore => 'Do not show anymore';
+  String get dontShowAnymore => 'No mostrar más';
 
   @override
-  String get swapDisclaimer => 'Swaps are offered by third-party providers. Use at your own risk and do your own research.';
+  String get swapDisclaimer => 'Los swaps son ofrecidos por proveedores externos. Utilice bajo su propio riesgo y realice sus propias investigaciones.';
 
   @override
   String get swap => 'Swap';
 
   @override
-  String get swapProviders => 'Swap Providers';
+  String get swapProviders => 'Proveedores de Swap';
 
   @override
   String get stealthEx => 'StealthEX';
 
   @override
-  String get getQuote => 'Get Quote';
+  String get getQuote => 'Obtener presupuesto';
 
   @override
-  String get invalidSwapCurrencies => 'Swap must include ZEC';
+  String get invalidSwapCurrencies => 'El intercambio debe incluir ZEC';
 
   @override
-  String get checkSwapAddress => 'Make sure that the destination address is valid!';
+  String get checkSwapAddress => '¡Asegúrese de que la dirección de destino es válida!';
 
   @override
-  String get swapSend => 'Send';
+  String get swapSend => 'Enviar';
 
   @override
-  String get swapReceive => 'Receive';
+  String get swapReceive => 'Recibir';
 
   @override
-  String get swapFromTip => 'Tip: Send the funds to the address in the upper box and you will receive the ZEC in your transparent address.';
+  String get swapFromTip => 'Consejo: Envía los fondos a la dirección en la parte superior y recibirás el ZEC en tu dirección transparente.';
 
   @override
-  String get swapToTip => 'Tip: Tap the Send Button and receive the other currency';
+  String get swapToTip => 'Consejo: Toque el botón Enviar y reciba la otra moneda';
 
   @override
-  String get confirm => 'Please Confirm';
+  String get confirm => 'Por favor, confirme';
 
   @override
-  String get confirmClearSwapHistory => 'Are you sure you want to clear the swap history?';
+  String get confirmClearSwapHistory => '¿Está seguro de que desea borrar el historial de intercambio?';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Reintentar';
 }

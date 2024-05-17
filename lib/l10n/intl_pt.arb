@@ -251,5 +251,20 @@
 	"viewingKey": "Visualizando Chave",
 	"views": "Visualizações",
 	"welcomeToYwallet": "Bem-vindo ao YWallet",
-	"wifi": "Wi-Fi"
+	"wifi": "Wi-Fi",
+	"dontShowAnymore": "Não mostrar mais",
+	"swapDisclaimer": "Os swaps são oferecidos por provedores de terceiros. Use por sua conta e risco e faça a sua própria pesquisa.",
+	"swap": "Trocar",
+	"swapProviders": "Trocar provedores",
+	"stealthEx": "Furto",
+	"getQuote": "Obter cotação",
+	"invalidSwapCurrencies": "Trocar deve incluir ZEC",
+	"checkSwapAddress": "Certifique-se de que o endereço de destino é válido!",
+	"swapSend": "Mandar",
+	"swapReceive": "Receber",
+	"swapFromTip": "Dica: Envie os fundos para o endereço na caixa superior e você receberá o ZEC no seu endereço transparente.",
+	"swapToTip": "Dica: Toque no botão enviar e receba a outra moeda",
+	"confirm": "Por favor confirme",
+	"confirmClearSwapHistory": "Tem certeza de que deseja limpar o histórico de trocas?",
+	"retry": "Repetir"
 }
