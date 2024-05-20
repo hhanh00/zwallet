@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 import '../../accounts.dart';
+import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../utils.dart';
 import '../widgets.dart';
@@ -16,6 +17,7 @@ class MorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final c = coins[aa.coin];
     final moreSections = [
       MoreSection(title: Text(s.account), tiles: [
         MoreTile(
@@ -35,7 +37,7 @@ class MorePage extends StatelessWidget {
             icon: FaIcon(FontAwesomeIcons.peopleArrows),
             text: s.multiPay,
             secured: appSettings.protectSend),
-        MoreTile(
+        if (c.supportsUA) MoreTile(
             url: '/account/swap',
             icon: FaIcon(FontAwesomeIcons.arrowRightArrowLeft),
             text: s.swap,
