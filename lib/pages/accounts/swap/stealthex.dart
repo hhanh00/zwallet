@@ -65,86 +65,90 @@ class StealthExState extends State<StealthExPage> with WithLoadingAnimation {
   @override
   Widget build(BuildContext context) {
     final sendToZEC = reversed ? from.currency == 'ZEC' : to.currency == 'ZEC';
-    return wrapWithLoading(Scaffold(
-      appBar: AppBar(title: Text(s.stealthEx)),
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-        child: Center(
-          child: FormBuilder(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SwapAmountWidget(
-                  key: fromKey,
-                  name: 'from',
-                  initialValue: from,
-                  onChanged: (v) => setState(() {
-                    logger.d('from onChanged');
-                    toKey.currentState!.resetAmount();
-                    quote = null;
-                    from = v;
-                  }),
-                  currencies: currencies,
-                ),
-                Gap(32),
-                IconButton(
-                    onPressed: swapCurrencies,
-                    icon: Icon(reversed
-                        ? FontAwesomeIcons.arrowUp
-                        : FontAwesomeIcons.arrowDown)),
-                Gap(32),
-                SwapAmountWidget(
-                  key: toKey,
-                  name: 'to',
-                  initialValue: to,
-                  onChanged: (v) => setState(() {
-                    logger.d('to onChanged $v');
-                    if (to.currency != v.currency && v.amount != '0') {
-                      toKey.currentState!.resetAmount();
-                      quote = null;
-                    }
-                    to = v;
-                  }),
-                  readOnly: true,
-                  currencies: currencies,
-                ),
-                Gap(32),
-                if (!sendToZEC)
-                  FormBuilderTextField(
-                    name: 'address',
-                    decoration: InputDecoration(
-                      label: Text(s.address),
-                      helperText: s.checkSwapAddress,
+    return wrapWithLoading(
+      Scaffold(
+        appBar: AppBar(title: Text(s.stealthEx)),
+        body: Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+          child: SingleChildScrollView(
+            child: Center(
+              child: FormBuilder(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SwapAmountWidget(
+                      key: fromKey,
+                      name: 'from',
+                      initialValue: from,
+                      onChanged: (v) => setState(() {
+                        logger.d('from onChanged');
+                        toKey.currentState!.resetAmount();
+                        quote = null;
+                        from = v;
+                      }),
+                      currencies: currencies,
                     ),
-                    controller: addressController,
-                  ),
-                Gap(32),
-                ButtonBar(children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      final from = fromKey.currentState!;
-                      final to = toKey.currentState!;
-                      if (fromKey.currentState!.validate()) {
-                        final a = Decimal.parse(from.value.amount);
-                        logger.d("$a ${from.value}");
-                        getQuote(a, from.value.currency, to.value.currency);
-                      }
-                    },
-                    child: Text(s.getQuote),
-                  ),
-                  if (quote?.rate_id != null)
-                    ElevatedButton.icon(
-                        onPressed: swap,
-                        label: Text(s.next),
-                        icon: Icon(Icons.chevron_right)),
-                ]),
-              ],
+                    Gap(16),
+                    IconButton(
+                        onPressed: swapCurrencies,
+                        icon: Icon(reversed
+                            ? FontAwesomeIcons.arrowUp
+                            : FontAwesomeIcons.arrowDown)),
+                    Gap(16),
+                    SwapAmountWidget(
+                      key: toKey,
+                      name: 'to',
+                      initialValue: to,
+                      onChanged: (v) => setState(() {
+                        logger.d('to onChanged $v');
+                        if (to.currency != v.currency && v.amount != '0') {
+                          toKey.currentState!.resetAmount();
+                          quote = null;
+                        }
+                        to = v;
+                      }),
+                      readOnly: true,
+                      currencies: currencies,
+                    ),
+                    Gap(32),
+                    if (!sendToZEC)
+                      FormBuilderTextField(
+                        name: 'address',
+                        decoration: InputDecoration(
+                          label: Text(s.address),
+                          helperText: s.checkSwapAddress,
+                        ),
+                        controller: addressController,
+                      ),
+                    Gap(32),
+                    ButtonBar(children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          final from = fromKey.currentState!;
+                          final to = toKey.currentState!;
+                          if (fromKey.currentState!.validate()) {
+                            final a = Decimal.parse(from.value.amount);
+                            logger.d("$a ${from.value}");
+                            getQuote(a, from.value.currency, to.value.currency);
+                          }
+                        },
+                        child: Text(s.getQuote),
+                      ),
+                      if (quote?.rate_id != null)
+                        ElevatedButton.icon(
+                            onPressed: swap,
+                            label: Text(s.next),
+                            icon: Icon(Icons.chevron_right)),
+                    ]),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
       ),
-    ));
+    );
   }
 
   swapCurrencies() {
