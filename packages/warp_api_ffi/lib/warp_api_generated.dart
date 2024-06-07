@@ -395,6 +395,25 @@ class NativeLibrary {
   late final _warp =
       _warpPtr.asFunction<CResult_u8 Function(int, int, int, int, int, int)>();
 
+  CResult_bool transparent_sync(
+    int coin,
+    int account,
+    int height,
+  ) {
+    return _transparent_sync(
+      coin,
+      account,
+      height,
+    );
+  }
+
+  late final _transparent_syncPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_bool Function(
+              ffi.Uint8, ffi.Uint32, ffi.Uint32)>>('transparent_sync');
+  late final _transparent_sync =
+      _transparent_syncPtr.asFunction<CResult_bool Function(int, int, int)>();
+
   int is_valid_seed(
     int coin,
     ffi.Pointer<ffi.Char> seed,
@@ -1938,16 +1957,6 @@ final class CResult_____c_char extends ffi.Struct {
   external int len;
 }
 
-final class CResult_u64 extends ffi.Struct {
-  @ffi.Uint64()
-  external int value;
-
-  external ffi.Pointer<ffi.Char> error;
-
-  @ffi.Uint32()
-  external int len;
-}
-
 final class CResult_bool extends ffi.Struct {
   @bool()
   external int value;
@@ -1959,6 +1968,17 @@ final class CResult_bool extends ffi.Struct {
 }
 
 typedef bool = ffi.Char;
+
+final class CResult_u64 extends ffi.Struct {
+  @ffi.Uint64()
+  external int value;
+
+  external ffi.Pointer<ffi.Char> error;
+
+  @ffi.Uint32()
+  external int len;
+}
+
 typedef DartPostCObjectFnType = ffi.Pointer<ffi.Void>;
 
 const int EXPIRY_HEIGHT_OFFSET = 50;
@@ -2141,8 +2161,12 @@ const int Swap_VT_FROM_AMOUNT = 12;
 
 const int Swap_VT_FROM_ADDRESS = 14;
 
-const int Swap_VT_TO_CURRENCY = 16;
+const int Swap_VT_FROM_IMAGE = 16;
 
-const int Swap_VT_TO_AMOUNT = 18;
+const int Swap_VT_TO_CURRENCY = 18;
 
-const int Swap_VT_TO_ADDRESS = 20;
+const int Swap_VT_TO_AMOUNT = 20;
+
+const int Swap_VT_TO_ADDRESS = 22;
+
+const int Swap_VT_TO_IMAGE = 24;

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:warp_api/warp_api.dart';
 
 import '../accounts.dart';
 import '../generated/intl/messages.dart';
@@ -14,7 +15,24 @@ import 'avatar.dart';
 import 'utils.dart';
 import 'widgets.dart';
 
-class TxPage extends StatelessWidget {
+class TxPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => TxPageState();
+}
+
+class TxPageState extends State<TxPage> {
+  @override
+  void initState() {
+    super.initState();
+    syncStatus2.latestHeight?.let((height) {
+      Future(() async {
+        final txListUpdated = await WarpApi.transparentSync(aa.coin, aa.id, height);
+        if (txListUpdated)
+          aa.update(height); // reload if updated
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SortSetting(

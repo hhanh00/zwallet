@@ -180,6 +180,13 @@ class WarpApi {
     warp_api_lib.cancel_warp();
   }
 
+  static Future<bool> transparentSync(int coin, int account, int height) async {
+    final res = await compute(
+      (_) => warp_api_lib.transparent_sync(coin, account, height),
+      null);
+    return unwrapResultBool(res);
+  }
+
   static Future<int> getLatestHeight(int coin) async {
     return await compute(
         (_) => unwrapResultU32(warp_api_lib.get_latest_height(coin)), null);
