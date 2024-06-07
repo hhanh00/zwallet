@@ -66,10 +66,12 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   int addressPools = 0;
   bool isTex = false;
   int rp = 0;
+  late bool custom;
 
   @override
   void initState() {
     super.initState();
+    custom = widget.custom ^ appSettings.customSend;
     _didUpdateSendContext(widget.sendContext);
   }
 
@@ -85,7 +87,6 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
 
   @override
   Widget build(BuildContext context) {
-    final custom = widget.custom ^ appSettings.customSend;
     final customSendSettings = appSettings.customSendSettings;
     final spendable = getSpendable(_pools, balances);
     final numReceivers = numPoolsOf(addressPools);
@@ -94,6 +95,10 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         appBar: AppBar(
           title: Text(s.send),
           actions: [
+            IconButton(
+              onPressed: _toggleCustom,
+              icon: Icon(Icons.tune),
+            ),
             IconButton(
               onPressed: send,
               icon: Icon(widget.single ? Icons.send : Icons.add),
@@ -272,5 +277,9 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     isShielded = receivers & 6 != 0;
     addressPools = receivers & coinSettings.receipientPools;
     rp = addressPools;
+  }
+
+  _toggleCustom() {
+    setState(() => custom = !custom);
   }
 }
