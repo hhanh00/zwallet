@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.6.0+531
+version: 1.6.0+532
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -32,7 +32,6 @@ dependencies:
     git:
       url: https://github.com/hhanh00/qr.flutter.git
       ref: 4bdb1126e553b474b80c8c91e9f9e43baf1e9c4e
-  #zxing2: ^0.1.1
   http: ^0.13.3
   intl: ^0.18.0
   path: ^1.8.0
@@ -40,7 +39,6 @@ dependencies:
   gap: ^3.0.1
   material_design_icons_flutter: ^5.0.5955-rc.1
   rflutter_alert: ^2.0.7
-  #sprintf: ^6.0.0
   tuple: ^2.0.1
   local_auth: ^2.1.2
   key_guardmanager: ^1.0.0
@@ -57,22 +55,13 @@ dependencies:
   settings_ui: ^2.0.2
   url_launcher: ^6.0.10
   flex_color_scheme: ^7.3.1
-  #flutter_colorpicker: ^1.0.3
-  #fl_chart: ^0.50.1
   another_flushbar: ^1.12.30
   timeago: ^3.5.0
-  #k_chart: ^0.7.1
-#    git:
-#      url: https://github.com/hhanh00/k_chart.git
-#      ref: 821f81681f8ee819cd721498f7b28d290f4ebe38
   graphic: ^2.2.1
   loading_animation_widget: ^1.2.0
-  #toggle_switch: ^2.1.0
   get_it: ^7.6.4
   rxdart: ^0.27.7
   bubble: ^1.2.1
-  #grouped_list: ^4.1.0
-  #json_annotation: ^4.1.0
   share_plus: ^7.2.1
   path_provider: ^2.0.3
   file_picker: ^6.1.1
@@ -80,29 +69,18 @@ dependencies:
   mustache_template: ^2.0.0
   flutter_palette: ^1.1.0+1
   mobile_scanner: ^4.0.0
-  #flutter_svg: ^1.0.3
-  #flutter_typeahead: ^3.2.0
-  # flutter_zxing:
-  #   path: flutter_zxing
-  #flutter_speed_dial: ^5.0.0
-  #currency_text_input_formatter: ^2.1.2
   sensors_plus: ^4.0.0
   connectivity_plus: ^2.2.1
   app_links: ^3.5.0
-  #url_protocol: ^1.0.0
   quick_actions: ^0.6.0
   csv: ^5.0.0
   badges: ^2.0.2
   network_info_plus : ^2.0.2
-  #animated_text_kit: ^4.2.2
-  #audioplayers: ^1.0.0
   flutter_localizations:
     sdk: flutter
-  #flutter_foreground_task: ^6.1.2
   workmanager: ^0.5.2
   awesome_notifications_core: ^0.9.0
   awesome_notifications: ^0.9.0
-  #flutter_ringtone_player: ^3.2.0
   font_awesome_flutter: ^10.5.0
   getwidget: ^2.0.4
   reflectable: ^4.0.5
@@ -116,11 +94,6 @@ dependencies:
   flutter_svg: ^2.0.9
 
 dependency_overrides:
-  # camera_android:
-  #   git:
-  #     url: https://github.com/elmar001/plugins.git
-  #     path: packages/camera/camera_android
-  #     ref: 5172b44088a4082ff0899594614c5380457d341b
   intl: ^0.18.0
 
 dev_dependencies:
