@@ -95,8 +95,10 @@ class WarpApi {
 
   static void initProver(Uint8List spend, Uint8List output) {
     unwrapResultU8(warp_api_lib.init_prover(
-      toNativeBytes(spend), spend.lengthInBytes,
-      toNativeBytes(output), output.lengthInBytes,
+      toNativeBytes(spend),
+      spend.lengthInBytes,
+      toNativeBytes(output),
+      output.lengthInBytes,
     ));
   }
 
@@ -167,11 +169,11 @@ class WarpApi {
     return unwrapResultU32(warp_api_lib.rescan_from(coin, height));
   }
 
-  static Future<int> warpSync(
-      int coin, int account, bool getTx, int anchorOffset, int maxCost, int port) async {
+  static Future<int> warpSync(int coin, int account, bool getTx,
+      int anchorOffset, int maxCost, int port) async {
     final res = await compute(
-        (_) =>
-            warp_api_lib.warp(coin, account, getTx ? 1 : 0, anchorOffset, maxCost, port),
+        (_) => warp_api_lib.warp(
+            coin, account, getTx ? 1 : 0, anchorOffset, maxCost, port),
         null);
     return unwrapResultU8(res);
   }
@@ -182,8 +184,7 @@ class WarpApi {
 
   static Future<bool> transparentSync(int coin, int account, int height) async {
     final res = await compute(
-      (_) => warp_api_lib.transparent_sync(coin, account, height),
-      null);
+        (_) => warp_api_lib.transparent_sync(coin, account, height), null);
     return unwrapResultBool(res);
   }
 
@@ -446,13 +447,8 @@ class WarpApi {
   static String commitUnsavedContacts(
       int coin, int account, int pools, int anchorOffset, FeeT fee) {
     final fee2 = encodeFee(fee);
-    return unwrapResultString(warp_api_lib.commit_unsaved_contacts(
-        coin,
-        account,
-        pools, 
-        anchorOffset,
-        toNativeBytes(fee2),
-        fee2.lengthInBytes));
+    return unwrapResultString(warp_api_lib.commit_unsaved_contacts(coin,
+        account, pools, anchorOffset, toNativeBytes(fee2), fee2.lengthInBytes));
   }
 
   static void markMessageAsRead(int coin, int messageId, bool read) {
@@ -558,8 +554,8 @@ class WarpApi {
     int root = swap.pack(fbBuilder);
     fbBuilder.finish(root);
     final swapBytes = fbBuilder.buffer;
-    unwrapResultU8(warp_api_lib.store_swap(coin, account, 
-      toNativeBytes(swapBytes), swapBytes.length));
+    unwrapResultU8(warp_api_lib.store_swap(
+        coin, account, toNativeBytes(swapBytes), swapBytes.length));
   }
 
   static List<SwapT> listSwaps(int coin) {
@@ -570,6 +566,25 @@ class WarpApi {
 
   static void clearSwapHistory(int coin) {
     unwrapResultU8(warp_api_lib.clear_swap_history(coin));
+  }
+
+  static void populateVoteNotes(
+      int coin, int account, int startHeight, int endHeight) {
+    warp_api_lib.populate_vote_notes(coin, account, startHeight, endHeight);
+  }
+
+  static List<int> listVoteNotes(int coin, int account) {
+    final res = unwrapResultBytes(warp_api_lib.list_vote_notes(coin, account));
+    return IdList(res).unpack().ids!;
+  }
+
+  static Future<List<int>> vote(
+      int coin, int account, List<int> ids, int candidate, String election) async {
+    return await compute((_) {
+      final idsListBytes = IdListObjectBuilder(ids: ids).toBytes();
+      return unwrapResultBytes(warp_api_lib.vote(coin, account, toNativeBytes(idsListBytes),
+          idsListBytes.length, candidate, toNative(election)));
+    }, null);
   }
 
   static void ledgerBuildKeys() {

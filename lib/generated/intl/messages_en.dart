@@ -829,4 +829,7 @@ class SEn extends S {
 
   @override
   String get retry => 'Retry';
+
+  @override
+  String get vote => 'Vote';
 }

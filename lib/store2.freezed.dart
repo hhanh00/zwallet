@@ -1363,3 +1363,454 @@ abstract class _SwapResponse implements SwapResponse {
   _$$SwapResponseImplCopyWith<_$SwapResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+Election _$ElectionFromJson(Map<String, dynamic> json) {
+  return _Election.fromJson(json);
+}
+
+/// @nodoc
+mixin _$Election {
+  String get name => throw _privateConstructorUsedError;
+  int get start_height => throw _privateConstructorUsedError;
+  int get end_height => throw _privateConstructorUsedError;
+  int get close_height => throw _privateConstructorUsedError;
+  String get submit_url => throw _privateConstructorUsedError;
+  List<String> get candidates => throw _privateConstructorUsedError;
+  String get status => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $ElectionCopyWith<Election> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ElectionCopyWith<$Res> {
+  factory $ElectionCopyWith(Election value, $Res Function(Election) then) =
+      _$ElectionCopyWithImpl<$Res, Election>;
+  @useResult
+  $Res call(
+      {String name,
+      int start_height,
+      int end_height,
+      int close_height,
+      String submit_url,
+      List<String> candidates,
+      String status});
+}
+
+/// @nodoc
+class _$ElectionCopyWithImpl<$Res, $Val extends Election>
+    implements $ElectionCopyWith<$Res> {
+  _$ElectionCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? start_height = null,
+    Object? end_height = null,
+    Object? close_height = null,
+    Object? submit_url = null,
+    Object? candidates = null,
+    Object? status = null,
+  }) {
+    return _then(_value.copyWith(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      start_height: null == start_height
+          ? _value.start_height
+          : start_height // ignore: cast_nullable_to_non_nullable
+              as int,
+      end_height: null == end_height
+          ? _value.end_height
+          : end_height // ignore: cast_nullable_to_non_nullable
+              as int,
+      close_height: null == close_height
+          ? _value.close_height
+          : close_height // ignore: cast_nullable_to_non_nullable
+              as int,
+      submit_url: null == submit_url
+          ? _value.submit_url
+          : submit_url // ignore: cast_nullable_to_non_nullable
+              as String,
+      candidates: null == candidates
+          ? _value.candidates
+          : candidates // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$ElectionImplCopyWith<$Res>
+    implements $ElectionCopyWith<$Res> {
+  factory _$$ElectionImplCopyWith(
+          _$ElectionImpl value, $Res Function(_$ElectionImpl) then) =
+      __$$ElectionImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String name,
+      int start_height,
+      int end_height,
+      int close_height,
+      String submit_url,
+      List<String> candidates,
+      String status});
+}
+
+/// @nodoc
+class __$$ElectionImplCopyWithImpl<$Res>
+    extends _$ElectionCopyWithImpl<$Res, _$ElectionImpl>
+    implements _$$ElectionImplCopyWith<$Res> {
+  __$$ElectionImplCopyWithImpl(
+      _$ElectionImpl _value, $Res Function(_$ElectionImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? start_height = null,
+    Object? end_height = null,
+    Object? close_height = null,
+    Object? submit_url = null,
+    Object? candidates = null,
+    Object? status = null,
+  }) {
+    return _then(_$ElectionImpl(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      start_height: null == start_height
+          ? _value.start_height
+          : start_height // ignore: cast_nullable_to_non_nullable
+              as int,
+      end_height: null == end_height
+          ? _value.end_height
+          : end_height // ignore: cast_nullable_to_non_nullable
+              as int,
+      close_height: null == close_height
+          ? _value.close_height
+          : close_height // ignore: cast_nullable_to_non_nullable
+              as int,
+      submit_url: null == submit_url
+          ? _value.submit_url
+          : submit_url // ignore: cast_nullable_to_non_nullable
+              as String,
+      candidates: null == candidates
+          ? _value._candidates
+          : candidates // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ElectionImpl implements _Election {
+  const _$ElectionImpl(
+      {required this.name,
+      required this.start_height,
+      required this.end_height,
+      required this.close_height,
+      required this.submit_url,
+      required final List<String> candidates,
+      required this.status})
+      : _candidates = candidates;
+
+  factory _$ElectionImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ElectionImplFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final int start_height;
+  @override
+  final int end_height;
+  @override
+  final int close_height;
+  @override
+  final String submit_url;
+  final List<String> _candidates;
+  @override
+  List<String> get candidates {
+    if (_candidates is EqualUnmodifiableListView) return _candidates;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_candidates);
+  }
+
+  @override
+  final String status;
+
+  @override
+  String toString() {
+    return 'Election(name: $name, start_height: $start_height, end_height: $end_height, close_height: $close_height, submit_url: $submit_url, candidates: $candidates, status: $status)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ElectionImpl &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.start_height, start_height) ||
+                other.start_height == start_height) &&
+            (identical(other.end_height, end_height) ||
+                other.end_height == end_height) &&
+            (identical(other.close_height, close_height) ||
+                other.close_height == close_height) &&
+            (identical(other.submit_url, submit_url) ||
+                other.submit_url == submit_url) &&
+            const DeepCollectionEquality()
+                .equals(other._candidates, _candidates) &&
+            (identical(other.status, status) || other.status == status));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      name,
+      start_height,
+      end_height,
+      close_height,
+      submit_url,
+      const DeepCollectionEquality().hash(_candidates),
+      status);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ElectionImplCopyWith<_$ElectionImpl> get copyWith =>
+      __$$ElectionImplCopyWithImpl<_$ElectionImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ElectionImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _Election implements Election {
+  const factory _Election(
+      {required final String name,
+      required final int start_height,
+      required final int end_height,
+      required final int close_height,
+      required final String submit_url,
+      required final List<String> candidates,
+      required final String status}) = _$ElectionImpl;
+
+  factory _Election.fromJson(Map<String, dynamic> json) =
+      _$ElectionImpl.fromJson;
+
+  @override
+  String get name;
+  @override
+  int get start_height;
+  @override
+  int get end_height;
+  @override
+  int get close_height;
+  @override
+  String get submit_url;
+  @override
+  List<String> get candidates;
+  @override
+  String get status;
+  @override
+  @JsonKey(ignore: true)
+  _$$ElectionImplCopyWith<_$ElectionImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$Vote {
+  Election get election => throw _privateConstructorUsedError;
+  List<int> get ids => throw _privateConstructorUsedError;
+  int? get candidate => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $VoteCopyWith<Vote> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $VoteCopyWith<$Res> {
+  factory $VoteCopyWith(Vote value, $Res Function(Vote) then) =
+      _$VoteCopyWithImpl<$Res, Vote>;
+  @useResult
+  $Res call({Election election, List<int> ids, int? candidate});
+
+  $ElectionCopyWith<$Res> get election;
+}
+
+/// @nodoc
+class _$VoteCopyWithImpl<$Res, $Val extends Vote>
+    implements $VoteCopyWith<$Res> {
+  _$VoteCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? election = null,
+    Object? ids = null,
+    Object? candidate = freezed,
+  }) {
+    return _then(_value.copyWith(
+      election: null == election
+          ? _value.election
+          : election // ignore: cast_nullable_to_non_nullable
+              as Election,
+      ids: null == ids
+          ? _value.ids
+          : ids // ignore: cast_nullable_to_non_nullable
+              as List<int>,
+      candidate: freezed == candidate
+          ? _value.candidate
+          : candidate // ignore: cast_nullable_to_non_nullable
+              as int?,
+    ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ElectionCopyWith<$Res> get election {
+    return $ElectionCopyWith<$Res>(_value.election, (value) {
+      return _then(_value.copyWith(election: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$VoteImplCopyWith<$Res> implements $VoteCopyWith<$Res> {
+  factory _$$VoteImplCopyWith(
+          _$VoteImpl value, $Res Function(_$VoteImpl) then) =
+      __$$VoteImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({Election election, List<int> ids, int? candidate});
+
+  @override
+  $ElectionCopyWith<$Res> get election;
+}
+
+/// @nodoc
+class __$$VoteImplCopyWithImpl<$Res>
+    extends _$VoteCopyWithImpl<$Res, _$VoteImpl>
+    implements _$$VoteImplCopyWith<$Res> {
+  __$$VoteImplCopyWithImpl(_$VoteImpl _value, $Res Function(_$VoteImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? election = null,
+    Object? ids = null,
+    Object? candidate = freezed,
+  }) {
+    return _then(_$VoteImpl(
+      election: null == election
+          ? _value.election
+          : election // ignore: cast_nullable_to_non_nullable
+              as Election,
+      ids: null == ids
+          ? _value._ids
+          : ids // ignore: cast_nullable_to_non_nullable
+              as List<int>,
+      candidate: freezed == candidate
+          ? _value.candidate
+          : candidate // ignore: cast_nullable_to_non_nullable
+              as int?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$VoteImpl implements _Vote {
+  const _$VoteImpl(
+      {required this.election, required final List<int> ids, this.candidate})
+      : _ids = ids;
+
+  @override
+  final Election election;
+  final List<int> _ids;
+  @override
+  List<int> get ids {
+    if (_ids is EqualUnmodifiableListView) return _ids;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_ids);
+  }
+
+  @override
+  final int? candidate;
+
+  @override
+  String toString() {
+    return 'Vote(election: $election, ids: $ids, candidate: $candidate)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$VoteImpl &&
+            (identical(other.election, election) ||
+                other.election == election) &&
+            const DeepCollectionEquality().equals(other._ids, _ids) &&
+            (identical(other.candidate, candidate) ||
+                other.candidate == candidate));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, election,
+      const DeepCollectionEquality().hash(_ids), candidate);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$VoteImplCopyWith<_$VoteImpl> get copyWith =>
+      __$$VoteImplCopyWithImpl<_$VoteImpl>(this, _$identity);
+}
+
+abstract class _Vote implements Vote {
+  const factory _Vote(
+      {required final Election election,
+      required final List<int> ids,
+      final int? candidate}) = _$VoteImpl;
+
+  @override
+  Election get election;
+  @override
+  List<int> get ids;
+  @override
+  int? get candidate;
+  @override
+  @JsonKey(ignore: true)
+  _$$VoteImplCopyWith<_$VoteImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

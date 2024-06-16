@@ -10,6 +10,7 @@ import 'package:settings_ui/settings_ui.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
+import '../../store2.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
@@ -37,11 +38,16 @@ class MorePage extends StatelessWidget {
             icon: FaIcon(FontAwesomeIcons.peopleArrows),
             text: s.multiPay,
             secured: appSettings.protectSend),
-        if (c.supportsUA) MoreTile(
-            url: '/account/swap',
-            icon: FaIcon(FontAwesomeIcons.arrowRightArrowLeft),
-            text: s.swap,
-            secured: appSettings.protectSend),
+        if (c.supportsUA)
+          MoreTile(
+              url: '/account/swap',
+              icon: FaIcon(FontAwesomeIcons.arrowRightArrowLeft),
+              text: s.swap,
+              secured: appSettings.protectSend),
+        if (syncStatus2.latestHeight != null) MoreTile(
+            url: '/more/vote',
+            icon: FaIcon(FontAwesomeIcons.personBooth),
+            text: s.vote),
       ]),
       MoreSection(title: Text(s.backup), tiles: [
         MoreTile(
@@ -88,11 +94,12 @@ class MorePage extends StatelessWidget {
       MoreSection(
         title: Text(s.tools),
         tiles: [
-          if (aa.seed != null) MoreTile(
-              url: '/more/keytool',
-              icon: FaIcon(FontAwesomeIcons.key),
-              text: s.keyTool,
-              secured: true),
+          if (aa.seed != null)
+            MoreTile(
+                url: '/more/keytool',
+                icon: FaIcon(FontAwesomeIcons.key),
+                text: s.keyTool,
+                secured: true),
           MoreTile(
               url: '/more/sweep',
               icon: FaIcon(FontAwesomeIcons.broom),

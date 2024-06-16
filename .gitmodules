@@ -13,3 +13,6 @@
 [submodule "orchard"]
 	path = orchard
 	url = https://github.com/hhanh00/orchard.git
+[submodule "native/zcash-vote"]
+	path = native/zcash-vote
+	url = https://github.com/hhanh00/zcash-vote.git

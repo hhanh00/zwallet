@@ -428,18 +428,21 @@ class Note extends HasHeight {
   double value;
   bool orchard;
   bool excluded;
+  bool selected;
 
   factory Note.from(int? latestHeight, int id, int height, DateTime timestamp,
-      double value, bool orchard, bool excluded) {
+      double value, bool orchard, bool excluded, bool selected) {
     final confirmations = latestHeight?.let((h) => h - height + 1);
-    return Note(id, height, confirmations, timestamp, value, orchard, excluded);
+    return Note(id, height, confirmations, timestamp, value, orchard, excluded, selected);
   }
 
   Note(this.id, this.height, this.confirmations, this.timestamp, this.value,
-      this.orchard, this.excluded);
+      this.orchard, this.excluded, this.selected);
 
   Note get invertExcluded =>
-      Note(id, height, confirmations, timestamp, value, orchard, !excluded);
+      Note(id, height, confirmations, timestamp, value, orchard, !excluded, selected);
+
+  Note clone() => Note(id, height, confirmations, timestamp, value, orchard, excluded, selected);
 }
 
 @reflector

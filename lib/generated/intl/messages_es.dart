@@ -829,4 +829,7 @@ class SEs extends S {
 
   @override
   String get retry => 'Reintentar';
+
+  @override
+  String get vote => 'Vote';
 }

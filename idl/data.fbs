@@ -1,5 +1,9 @@
 namespace fb;
 
+table IdList {
+  ids: [uint32];
+}
+
 table Account {
     coin:uint8;
     id:uint32;
@@ -296,5 +300,5 @@ table Swap {
 }
 
 table SwapVec {
-    values:[Swap];
+  values:[Swap];
 }

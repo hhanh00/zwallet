@@ -829,4 +829,7 @@ class SPt extends S {
 
   @override
   String get retry => 'Repetir';
+
+  @override
+  String get vote => 'Vote';
 }

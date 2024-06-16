@@ -266,5 +266,6 @@
 	"swapToTip": "Tip: Tap the Send Button and receive the other currency",
 	"confirm": "Please Confirm",
 	"confirmClearSwapHistory": "Are you sure you want to clear the swap history?",
-	"retry": "Retry"
+	"retry": "Retry",
+	"vote": "Vote"
 }

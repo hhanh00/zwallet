@@ -197,7 +197,7 @@ abstract class _Notes with Store {
     items = shieledNotes.map((n) {
       final timestamp = DateTime.fromMillisecondsSinceEpoch(n.timestamp * 1000);
       return Note.from(height, n.id, n.height, timestamp, n.value / ZECUNIT,
-          n.orchard, n.excluded);
+          n.orchard, n.excluded, false);
     }).toList();
   }
 
