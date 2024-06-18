@@ -249,14 +249,14 @@ class VoteCandidateState extends State<VoteCandidatePage>
     await load(() async {
       final vote = await WarpApi.vote(
           aa.coin, aa.id, ids, candidate, jsonEncode(election));
-      logger.d("vote size ${vote.length}");
       final rep = await http.put(Uri.parse(election.submit_url), body: vote);
       if (rep.statusCode != 200) {
         final error = rep.body;
         await showMessageBox2(context, 'Vote Failed', error);
       }
       else {
-        await showMessageBox2(context, 'Vote Submitted', 'Thank you');
+        final hash = rep.body;
+        await showMessageBox2(context, 'Vote Submitted', hash);
         GoRouter.of(context).go('/more');
       }
     });
