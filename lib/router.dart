@@ -6,6 +6,7 @@ import 'pages/accounts/swap.dart';
 import 'pages/accounts/swap/history.dart';
 import 'pages/accounts/swap/stealthex.dart';
 import 'pages/more/cold.dart';
+import 'pages/more/vote.dart';
 import 'settings.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -291,6 +292,20 @@ final router = GoRouter(
                   GoRoute(
                     path: 'sweep',
                     builder: (context, state) => SweepPage(),
+                  ),
+                  GoRoute(
+                    path: 'vote',
+                    builder: (context, state) => VotePage(),
+                    routes: [
+                      GoRoute(
+                        path: 'notes',
+                        builder: (context, state) => VoteNotesPage(state.extra as Vote),
+                      ),
+                      GoRoute(
+                        path: 'candidate',
+                        builder: (context, state) => VoteCandidatePage(state.extra as Vote),
+                      ),
+                    ],
                   ),
                   GoRoute(
                       path: 'about',

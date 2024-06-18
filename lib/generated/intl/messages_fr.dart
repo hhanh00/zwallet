@@ -829,4 +829,7 @@ class SFr extends S {
 
   @override
   String get retry => 'Refaire';
+
+  @override
+  String get vote => 'Vote';
 }

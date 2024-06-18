@@ -7,6 +7,108 @@ import 'dart:typed_data' show Uint8List;
 import 'package:flat_buffers/flat_buffers.dart' as fb;
 
 
+class IdList {
+  IdList._(this._bc, this._bcOffset);
+  factory IdList(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<IdList> reader = _IdListReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  List<int>? get ids => const fb.ListReader<int>(fb.Uint32Reader()).vTableGetNullable(_bc, _bcOffset, 4);
+
+  @override
+  String toString() {
+    return 'IdList{ids: ${ids}}';
+  }
+
+  IdListT unpack() => IdListT(
+      ids: const fb.ListReader<int>(fb.Uint32Reader(), lazy: false).vTableGetNullable(_bc, _bcOffset, 4));
+
+  static int pack(fb.Builder fbBuilder, IdListT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class IdListT implements fb.Packable {
+  List<int>? ids;
+
+  IdListT({
+      this.ids});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? idsOffset = ids == null ? null
+        : fbBuilder.writeListUint32(ids!);
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, idsOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'IdListT{ids: ${ids}}';
+  }
+}
+
+class _IdListReader extends fb.TableReader<IdList> {
+  const _IdListReader();
+
+  @override
+  IdList createObject(fb.BufferContext bc, int offset) => 
+    IdList._(bc, offset);
+}
+
+class IdListBuilder {
+  IdListBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(1);
+  }
+
+  int addIdsOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class IdListObjectBuilder extends fb.ObjectBuilder {
+  final List<int>? _ids;
+
+  IdListObjectBuilder({
+    List<int>? ids,
+  })
+      : _ids = ids;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? idsOffset = _ids == null ? null
+        : fbBuilder.writeListUint32(_ids!);
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, idsOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
 class Account {
   Account._(this._bc, this._bcOffset);
   factory Account(List<int> bytes) {

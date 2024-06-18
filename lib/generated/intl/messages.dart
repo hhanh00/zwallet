@@ -1704,6 +1704,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
+
+  /// No description provided for @vote.
+  ///
+  /// In en, this message translates to:
+  /// **'Vote'**
+  String get vote;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

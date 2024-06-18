@@ -1,0 +1,38 @@
+namespace fb;
+
+struct Header {
+  version: uint32;
+  domain: [ubyte: 32];
+}
+
+struct Input {
+  cv: [ubyte: 32];
+  nf: [ubyte: 32];
+  rk: [ubyte: 32];
+}
+
+table Ballot {
+  header: Header;
+  inputs: [Input];
+  amount: uint64;
+  payload: [ubyte];
+}
+
+table Proof {
+  data: [ubyte];
+}
+
+struct Signature {
+  r_part: [ubyte: 32];
+  s_part: [ubyte: 32];
+}
+
+table BallotWitness {
+  proofs: [Proof];
+  binding_signature: Signature;
+}
+
+table BallotEnvelope {
+  ballot: Ballot;
+  witness: BallotWitness;
+}
