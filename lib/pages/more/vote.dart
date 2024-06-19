@@ -55,6 +55,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
       appBar: AppBar(
         title: Text(s.vote),
         actions: [
+          if (e != null) IconButton(onPressed: _reset, icon: Icon(Icons.clear)),
           if (status == null ||
               status == ElectionStatus.Registration ||
               status == ElectionStatus.Opened)
@@ -120,6 +121,12 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
       final electionURL = urlController.text;
       await _load(electionURL);
     }
+  }
+
+  _reset() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('election:url');
+    setState(() { vote = null; });
   }
 }
 
@@ -252,7 +259,11 @@ class VoteCandidateState extends State<VoteCandidatePage>
     await load(() async {
       final vote = await WarpApi.vote(
           aa.coin, aa.id, ids, candidate, jsonEncode(election));
-      final rep = await http.put(Uri.parse(election.submit_url), body: vote);
+      final prefs = await SharedPreferences.getInstance();
+      final electionURL = prefs.getString('election:url')!;
+      final url = Uri.parse(electionURL);
+      final submitURL = url.replace(path: election.submit_url);
+      final rep = await http.put(submitURL, body: vote);
       if (rep.statusCode != 200) {
         final error = rep.body;
         await showMessageBox2(context, 'Vote Failed', error);
