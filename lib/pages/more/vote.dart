@@ -113,7 +113,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
     final e = vote?.election;
     if (e != null) {
       WarpApi.populateVoteNotes(aa.coin, aa.id, e.start_height, e.end_height);
-      final ids = WarpApi.listVoteNotes(aa.coin, aa.id);
+      final ids = WarpApi.listVoteNotes(aa.coin, aa.id, e.end_height);
       logger.d("$ids");
       final vote = Vote(election: e, ids: ids);
       GoRouter.of(context).push('/more/vote/notes', extra: vote);

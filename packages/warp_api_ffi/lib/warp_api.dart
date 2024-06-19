@@ -573,8 +573,8 @@ class WarpApi {
     warp_api_lib.populate_vote_notes(coin, account, startHeight, endHeight);
   }
 
-  static List<int> listVoteNotes(int coin, int account) {
-    final res = unwrapResultBytes(warp_api_lib.list_vote_notes(coin, account));
+  static List<int> listVoteNotes(int coin, int account, int endHeight) {
+    final res = unwrapResultBytes(warp_api_lib.list_vote_notes(coin, account, endHeight));
     return IdList(res).unpack().ids!;
   }
 

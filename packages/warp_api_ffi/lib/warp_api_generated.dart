@@ -1873,18 +1873,21 @@ class NativeLibrary {
   CResult______u8 list_vote_notes(
     int coin,
     int account,
+    int end_height,
   ) {
     return _list_vote_notes(
       coin,
       account,
+      end_height,
     );
   }
 
   late final _list_vote_notesPtr = _lookup<
-          ffi.NativeFunction<CResult______u8 Function(ffi.Uint8, ffi.Uint32)>>(
-      'list_vote_notes');
+      ffi.NativeFunction<
+          CResult______u8 Function(
+              ffi.Uint8, ffi.Uint32, ffi.Uint32)>>('list_vote_notes');
   late final _list_vote_notes =
-      _list_vote_notesPtr.asFunction<CResult______u8 Function(int, int)>();
+      _list_vote_notesPtr.asFunction<CResult______u8 Function(int, int, int)>();
 
   CResult______u8 vote(
     int coin,
