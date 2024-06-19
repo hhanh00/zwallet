@@ -33,7 +33,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
   @override
   void initState() {
     super.initState();
-    Future(() async {
+    load(() async {
       final prefs = await SharedPreferences.getInstance();
       final electionURL = prefs.getString('election:url');
       if (electionURL != null) await _load(electionURL);
@@ -49,36 +49,38 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
 
     ElectionStatus? status;
     final e = vote?.election;
-    if (e != null)
-      status = ElectionStatus.values.byName(e.status);
+    if (e != null) status = ElectionStatus.values.byName(e.status);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(s.vote),
         actions: [
-          if (status == null || status == ElectionStatus.Registration || status == ElectionStatus.Opened)
+          if (status == null ||
+              status == ElectionStatus.Registration ||
+              status == ElectionStatus.Opened)
             IconButton(onPressed: _next, icon: Icon(Icons.chevron_right))
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
-        child: e != null
-            ? SettingsList(sections: [
-                SettingsSection(
-                  title: Text(e.name),
-                  tiles: [
+      body: wrapWithLoading(e != null
+          ? SettingsList(sections: [
+              SettingsSection(
+                title: Text(e.name),
+                tiles: [
+                  SettingsTile(
+                      title: Text('Registration Height'),
+                      value: Text(e.start_height.toString())),
+                  SettingsTile(
+                      title: Text('Snapshot Height'),
+                      value: Text(e.end_height.toString())),
+                  if (status != null)
                     SettingsTile(
-                        title: Text('Registration Height'),
-                        value: Text(e.start_height.toString())),
-                    SettingsTile(
-                        title: Text('Snapshot Height'),
-                        value: Text(e.end_height.toString())),
-                    if (status != null)
-                      SettingsTile(title: Text('Status'), value: Text(status.name)),
-                  ],
-                )
-              ])
-            : FormBuilder(
+                        title: Text('Status'), value: Text(status.name)),
+                ],
+              )
+            ])
+          : Padding(
+              padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+              child: FormBuilder(
                 child: Column(
                   children: [
                     FormBuilderTextField(
@@ -89,8 +91,8 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
                   ],
                 ),
               ),
-      ),
-    );
+            ),
+    ));
   }
 
   _load(String electionURL) async {
@@ -148,7 +150,8 @@ class VoteNotesState extends State<VoteNotesPage> {
     final status = ElectionStatus.values.byName(widget.vote.election.status);
     return Scaffold(
       appBar: AppBar(title: Text('Select Notes to Vote with'), actions: [
-        if (status == ElectionStatus.Opened) IconButton(onPressed: _next, icon: Icon(Icons.chevron_right))
+        if (status == ElectionStatus.Opened)
+          IconButton(onPressed: _next, icon: Icon(Icons.chevron_right))
       ]),
       body: TableListPage(
         view: 1,
@@ -253,8 +256,7 @@ class VoteCandidateState extends State<VoteCandidatePage>
       if (rep.statusCode != 200) {
         final error = rep.body;
         await showMessageBox2(context, 'Vote Failed', error);
-      }
-      else {
+      } else {
         final hash = rep.body;
         await showMessageBox2(context, 'Vote Submitted', hash);
         GoRouter.of(context).go('/more');
