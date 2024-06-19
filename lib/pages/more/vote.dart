@@ -233,7 +233,7 @@ class VoteCandidateState extends State<VoteCandidatePage>
         .toList();
     return Scaffold(
         appBar: AppBar(title: Text('Pick Candidate'), actions: [
-          IconButton(onPressed: _next, icon: Icon(Icons.chevron_right))
+          IconButton(onPressed: _ok, icon: Icon(Icons.check))
         ]),
         body: wrapWithLoading(
           SingleChildScrollView(
@@ -253,7 +253,7 @@ class VoteCandidateState extends State<VoteCandidatePage>
         ));
   }
 
-  _next() async {
+  _ok() async {
     final election = widget.vote.election;
     final ids = widget.vote.ids;
     await load(() async {
