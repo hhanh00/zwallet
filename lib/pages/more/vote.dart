@@ -14,6 +14,8 @@ import '../../generated/intl/messages.dart';
 import '../../store2.dart';
 import '../../tablelist.dart';
 
+const electionURLKey = 'election:url';
+
 enum ElectionStatus {
   Waiting,
   Registration,
@@ -35,7 +37,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
     super.initState();
     load(() async {
       final prefs = await SharedPreferences.getInstance();
-      final electionURL = prefs.getString('election:url');
+      final electionURL = prefs.getString(electionURLKey);
       if (electionURL != null) await _load(electionURL);
     });
   }
@@ -68,14 +70,14 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
                 title: Text(e.name),
                 tiles: [
                   SettingsTile(
-                      title: Text('Registration Height'),
+                      title: Text(s.registrationHeight),
                       value: Text(e.start_height.toString())),
                   SettingsTile(
-                      title: Text('Snapshot Height'),
+                      title: Text(s.snapshotHeight),
                       value: Text(e.end_height.toString())),
                   if (status != null)
                     SettingsTile(
-                        title: Text('Status'), value: Text(status.name)),
+                        title: Text(s.status), value: Text(status.name)),
                 ],
               )
             ])
@@ -87,7 +89,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
                     FormBuilderTextField(
                       name: 'url',
                       controller: urlController,
-                      decoration: InputDecoration(label: Text('Vote URL')),
+                      decoration: InputDecoration(label: Text(s.voteURL)),
                     )
                   ],
                 ),
@@ -98,7 +100,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
 
   _load(String electionURL) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('election:url', electionURL);
+    prefs.setString(electionURLKey, electionURL);
     final rep = await http.get(Uri.parse(electionURL));
     final electionString = rep.body;
     logger.d(electionString);
@@ -125,7 +127,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
 
   _reset() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('election:url');
+    await prefs.remove(electionURLKey);
     setState(() { vote = null; });
   }
 }
@@ -139,6 +141,7 @@ class VoteNotesPage extends StatefulWidget {
 }
 
 class VoteNotesState extends State<VoteNotesPage> {
+  late final s = S.of(context);
   List<Note> notes = [];
 
   @override
@@ -156,7 +159,7 @@ class VoteNotesState extends State<VoteNotesPage> {
   Widget build(BuildContext context) {
     final status = ElectionStatus.values.byName(widget.vote.election.status);
     return Scaffold(
-      appBar: AppBar(title: Text('Select Notes to Vote with'), actions: [
+      appBar: AppBar(title: Text(s.selectNoteVote), actions: [
         if (status == ElectionStatus.Opened)
           IconButton(onPressed: _next, icon: Icon(Icons.chevron_right))
       ]),
@@ -217,6 +220,7 @@ class VoteCandidatePage extends StatefulWidget {
 
 class VoteCandidateState extends State<VoteCandidatePage>
     with WithLoadingAnimation {
+  late final s = S.of(context);
   late final vote = widget.vote;
   var candidate = 0;
 
@@ -232,7 +236,7 @@ class VoteCandidateState extends State<VoteCandidatePage>
             ))
         .toList();
     return Scaffold(
-        appBar: AppBar(title: Text('Pick Candidate'), actions: [
+        appBar: AppBar(title: Text(s.pickCandidate), actions: [
           IconButton(onPressed: _ok, icon: Icon(Icons.check))
         ]),
         body: wrapWithLoading(
@@ -260,16 +264,16 @@ class VoteCandidateState extends State<VoteCandidatePage>
       final vote = await WarpApi.vote(
           aa.coin, aa.id, ids, candidate, jsonEncode(election));
       final prefs = await SharedPreferences.getInstance();
-      final electionURL = prefs.getString('election:url')!;
+      final electionURL = prefs.getString(electionURLKey)!;
       final url = Uri.parse(electionURL);
       final submitURL = url.replace(path: election.submit_url);
       final rep = await http.put(submitURL, body: vote);
       if (rep.statusCode != 200) {
         final error = rep.body;
-        await showMessageBox2(context, 'Vote Failed', error);
+        await showMessageBox2(context, s.voteFailed, error);
       } else {
         final hash = rep.body;
-        await showMessageBox2(context, 'Vote Submitted', hash);
+        await showMessageBox2(context, s.voteSubmitted, hash);
         GoRouter.of(context).go('/more');
       }
     });

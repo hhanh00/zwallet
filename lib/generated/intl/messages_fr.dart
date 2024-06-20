@@ -832,4 +832,28 @@ class SFr extends S {
 
   @override
   String get vote => 'Vote';
+
+  @override
+  String get registrationHeight => 'Registration Height';
+
+  @override
+  String get snapshotHeight => 'Snapshot Height';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get voteURL => 'Vote URL';
+
+  @override
+  String get selectNoteVote => 'Select Notes to Vote with';
+
+  @override
+  String get pickCandidate => 'Pick Candidate';
+
+  @override
+  String get voteFailed => 'Vote Failed';
+
+  @override
+  String get voteSubmitted => 'Vote Submitted';
 }

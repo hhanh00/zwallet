@@ -267,5 +267,14 @@
 	"confirm": "Please Confirm",
 	"confirmClearSwapHistory": "Are you sure you want to clear the swap history?",
 	"retry": "Retry",
-	"vote": "Vote"
+	"vote": "Vote",
+	"registrationHeight": "Registration Height",
+	"snapshotHeight": "Snapshot Height",
+	"status": "Status",
+	"voteURL": "Vote URL",
+	"selectNoteVote": "Select Notes to Vote with",
+	"pickCandidate": "Pick Candidate",
+	"voteFailed": "Vote Failed",
+	"voteSubmitted": "Vote Submitted"
+
 }
