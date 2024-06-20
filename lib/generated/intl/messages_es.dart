@@ -831,29 +831,29 @@ class SEs extends S {
   String get retry => 'Reintentar';
 
   @override
-  String get vote => 'Vote';
+  String get vote => 'Votaciones';
 
   @override
-  String get registrationHeight => 'Registration Height';
+  String get registrationHeight => 'Altura del registro';
 
   @override
-  String get snapshotHeight => 'Snapshot Height';
+  String get snapshotHeight => 'Altura de instantánea';
 
   @override
-  String get status => 'Status';
+  String get status => 'Estado';
 
   @override
-  String get voteURL => 'Vote URL';
+  String get voteURL => 'URL del voto';
 
   @override
-  String get selectNoteVote => 'Select Notes to Vote with';
+  String get selectNoteVote => 'Seleccionar notas con las que votar';
 
   @override
-  String get pickCandidate => 'Pick Candidate';
+  String get pickCandidate => 'Elegir Candidato';
 
   @override
-  String get voteFailed => 'Vote Failed';
+  String get voteFailed => 'Voto fallido';
 
   @override
-  String get voteSubmitted => 'Vote Submitted';
+  String get voteSubmitted => 'Voto enviado';
 }

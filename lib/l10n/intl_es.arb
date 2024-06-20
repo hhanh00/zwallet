@@ -266,5 +266,14 @@
 	"swapToTip": "Consejo: Toque el botón Enviar y reciba la otra moneda",
 	"confirm": "Por favor, confirme",
 	"confirmClearSwapHistory": "¿Está seguro de que desea borrar el historial de intercambio?",
-	"retry": "Reintentar"
+	"retry": "Reintentar",
+	"vote": "Votaciones",
+	"registrationHeight": "Altura del registro",
+	"snapshotHeight": "Altura de instantánea",
+	"status": "Estado",
+	"voteURL": "URL del voto",
+	"selectNoteVote": "Seleccionar notas con las que votar",
+	"pickCandidate": "Elegir Candidato",
+	"voteFailed": "Voto fallido",
+	"voteSubmitted": "Voto enviado"
 }
