@@ -266,5 +266,14 @@
 	"swapToTip": "Aide : Appuyez sur le bouton pour envoyer des fonds a l'adresse du haut",
 	"confirm": "Veuillez confirmer",
 	"confirmClearSwapHistory": "Êtes-vous sûr de vouloir effacer l'historique des swaps ?",
-	"retry": "Refaire"
+	"retry": "Refaire",
+	"vote": "Vote",
+	"registrationHeight": "Hauteur de bloc pour l'enregistrement",
+	"snapshotHeight": "Hauteur du bloc pour la capture",
+	"status": "Statut",
+	"voteURL": "URL du vote",
+	"selectNoteVote": "Sélectionnez les notes avec lesquelles voter",
+	"pickCandidate": "Choisir le candidat",
+	"voteFailed": "Le vote a échoué",
+	"voteSubmitted": "Vote soumis"
 }
