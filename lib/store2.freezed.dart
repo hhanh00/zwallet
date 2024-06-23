@@ -1375,6 +1375,7 @@ mixin _$Election {
   int get end_height => throw _privateConstructorUsedError;
   int get close_height => throw _privateConstructorUsedError;
   String get submit_url => throw _privateConstructorUsedError;
+  String get question => throw _privateConstructorUsedError;
   List<String> get candidates => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
 
@@ -1395,6 +1396,7 @@ abstract class $ElectionCopyWith<$Res> {
       int end_height,
       int close_height,
       String submit_url,
+      String question,
       List<String> candidates,
       String status});
 }
@@ -1417,6 +1419,7 @@ class _$ElectionCopyWithImpl<$Res, $Val extends Election>
     Object? end_height = null,
     Object? close_height = null,
     Object? submit_url = null,
+    Object? question = null,
     Object? candidates = null,
     Object? status = null,
   }) {
@@ -1440,6 +1443,10 @@ class _$ElectionCopyWithImpl<$Res, $Val extends Election>
       submit_url: null == submit_url
           ? _value.submit_url
           : submit_url // ignore: cast_nullable_to_non_nullable
+              as String,
+      question: null == question
+          ? _value.question
+          : question // ignore: cast_nullable_to_non_nullable
               as String,
       candidates: null == candidates
           ? _value.candidates
@@ -1467,6 +1474,7 @@ abstract class _$$ElectionImplCopyWith<$Res>
       int end_height,
       int close_height,
       String submit_url,
+      String question,
       List<String> candidates,
       String status});
 }
@@ -1487,6 +1495,7 @@ class __$$ElectionImplCopyWithImpl<$Res>
     Object? end_height = null,
     Object? close_height = null,
     Object? submit_url = null,
+    Object? question = null,
     Object? candidates = null,
     Object? status = null,
   }) {
@@ -1511,6 +1520,10 @@ class __$$ElectionImplCopyWithImpl<$Res>
           ? _value.submit_url
           : submit_url // ignore: cast_nullable_to_non_nullable
               as String,
+      question: null == question
+          ? _value.question
+          : question // ignore: cast_nullable_to_non_nullable
+              as String,
       candidates: null == candidates
           ? _value._candidates
           : candidates // ignore: cast_nullable_to_non_nullable
@@ -1532,6 +1545,7 @@ class _$ElectionImpl implements _Election {
       required this.end_height,
       required this.close_height,
       required this.submit_url,
+      required this.question,
       required final List<String> candidates,
       required this.status})
       : _candidates = candidates;
@@ -1549,6 +1563,8 @@ class _$ElectionImpl implements _Election {
   final int close_height;
   @override
   final String submit_url;
+  @override
+  final String question;
   final List<String> _candidates;
   @override
   List<String> get candidates {
@@ -1562,7 +1578,7 @@ class _$ElectionImpl implements _Election {
 
   @override
   String toString() {
-    return 'Election(name: $name, start_height: $start_height, end_height: $end_height, close_height: $close_height, submit_url: $submit_url, candidates: $candidates, status: $status)';
+    return 'Election(name: $name, start_height: $start_height, end_height: $end_height, close_height: $close_height, submit_url: $submit_url, question: $question, candidates: $candidates, status: $status)';
   }
 
   @override
@@ -1579,6 +1595,8 @@ class _$ElectionImpl implements _Election {
                 other.close_height == close_height) &&
             (identical(other.submit_url, submit_url) ||
                 other.submit_url == submit_url) &&
+            (identical(other.question, question) ||
+                other.question == question) &&
             const DeepCollectionEquality()
                 .equals(other._candidates, _candidates) &&
             (identical(other.status, status) || other.status == status));
@@ -1593,6 +1611,7 @@ class _$ElectionImpl implements _Election {
       end_height,
       close_height,
       submit_url,
+      question,
       const DeepCollectionEquality().hash(_candidates),
       status);
 
@@ -1617,6 +1636,7 @@ abstract class _Election implements Election {
       required final int end_height,
       required final int close_height,
       required final String submit_url,
+      required final String question,
       required final List<String> candidates,
       required final String status}) = _$ElectionImpl;
 
@@ -1633,6 +1653,8 @@ abstract class _Election implements Election {
   int get close_height;
   @override
   String get submit_url;
+  @override
+  String get question;
   @override
   List<String> get candidates;
   @override

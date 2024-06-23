@@ -464,6 +464,7 @@ class Election with _$Election {
     required int end_height,
     required int close_height,
     required String submit_url,
+    required String question,
     required List<String> candidates,
     required String status,
   }) = _Election;

@@ -587,6 +587,10 @@ class WarpApi {
     }, null);
   }
 
+  static void resetVote(int coin) {
+    warp_api_lib.reset_vote(coin);
+  }
+
   static void ledgerBuildKeys() {
     unwrapResultU8(warp_api_lib.ledger_build_keys());
   }

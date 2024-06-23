@@ -128,6 +128,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
   _reset() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(electionURLKey);
+    WarpApi.resetVote(aa.coin);
     setState(() { vote = null; });
   }
 }
@@ -236,7 +237,7 @@ class VoteCandidateState extends State<VoteCandidatePage>
             ))
         .toList();
     return Scaffold(
-        appBar: AppBar(title: Text(s.pickCandidate), actions: [
+        appBar: AppBar(title: Text(e.question), actions: [
           IconButton(onPressed: _ok, icon: Icon(Icons.check))
         ]),
         body: wrapWithLoading(

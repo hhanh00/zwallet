@@ -1920,6 +1920,19 @@ class NativeLibrary {
       CResult______u8 Function(
           int, int, ffi.Pointer<ffi.Uint8>, int, int, ffi.Pointer<ffi.Char>)>();
 
+  CResult_u8 reset_vote(
+    int coin,
+  ) {
+    return _reset_vote(
+      coin,
+    );
+  }
+
+  late final _reset_votePtr =
+      _lookup<ffi.NativeFunction<CResult_u8 Function(ffi.Uint8)>>('reset_vote');
+  late final _reset_vote =
+      _reset_votePtr.asFunction<CResult_u8 Function(int)>();
+
   CResult_____c_char ledger_send(
     int coin,
     ffi.Pointer<ffi.Char> tx_plan,
