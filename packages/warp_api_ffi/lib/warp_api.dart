@@ -938,3 +938,5 @@ Uint8List encodeFee(FeeT fee) {
 void mempoolRunIsolateFn(int port) {
   warp_api_lib.mempool_run(port);
 }
+
+DateTime toDateTime(int ts) => DateTime.fromMillisecondsSinceEpoch(ts * 1000);

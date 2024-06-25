@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:go_router/go_router.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
@@ -54,48 +55,50 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
     if (e != null) status = ElectionStatus.values.byName(e.status);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(s.vote),
-        actions: [
-          if (e != null) IconButton(onPressed: _reset, icon: Icon(Icons.clear)),
-          if (status == null ||
-              status == ElectionStatus.Registration ||
-              status == ElectionStatus.Opened)
-            IconButton(onPressed: _next, icon: Icon(Icons.chevron_right))
-        ],
-      ),
-      body: wrapWithLoading(e != null
-          ? SettingsList(sections: [
-              SettingsSection(
-                title: Text(e.name),
-                tiles: [
-                  SettingsTile(
-                      title: Text(s.registrationHeight),
-                      value: Text(e.start_height.toString())),
-                  SettingsTile(
-                      title: Text(s.snapshotHeight),
-                      value: Text(e.end_height.toString())),
-                  if (status != null)
-                    SettingsTile(
-                        title: Text(s.status), value: Text(status.name)),
-                ],
-              )
-            ])
-          : Padding(
-              padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
-              child: FormBuilder(
-                child: Column(
-                  children: [
-                    FormBuilderTextField(
-                      name: 'url',
-                      controller: urlController,
-                      decoration: InputDecoration(label: Text(s.voteURL)),
-                    )
-                  ],
+        appBar: AppBar(
+          title: Text(s.vote),
+          actions: [
+            if (e != null)
+              IconButton(onPressed: _reset, icon: Icon(Icons.clear)),
+            if (status == null ||
+                status == ElectionStatus.Registration ||
+                status == ElectionStatus.Opened)
+              IconButton(onPressed: _next, icon: Icon(Icons.chevron_right))
+          ],
+        ),
+        body: wrapWithLoading(
+          e != null
+              ? SettingsList(sections: [
+                  SettingsSection(
+                    title: Text(e.name),
+                    tiles: [
+                      SettingsTile(
+                          title: Text(s.registrationHeight),
+                          value: Text(e.start_height.toString())),
+                      SettingsTile(
+                          title: Text(s.snapshotHeight),
+                          value: Text(e.end_height.toString())),
+                      if (status != null)
+                        SettingsTile(
+                            title: Text(s.status), value: Text(status.name)),
+                    ],
+                  )
+                ])
+              : Padding(
+                  padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                  child: FormBuilder(
+                    child: Column(
+                      children: [
+                        FormBuilderTextField(
+                          name: 'url',
+                          controller: urlController,
+                          decoration: InputDecoration(label: Text(s.voteURL)),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-    ));
+        ));
   }
 
   _load(String electionURL) async {
@@ -116,7 +119,6 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
     if (e != null) {
       WarpApi.populateVoteNotes(aa.coin, aa.id, e.start_height, e.end_height);
       final ids = WarpApi.listVoteNotes(aa.coin, aa.id, e.end_height);
-      logger.d("$ids");
       final vote = Vote(election: e, ids: ids);
       GoRouter.of(context).push('/more/vote/notes', extra: vote);
     } else {
@@ -129,7 +131,9 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(electionURLKey);
     WarpApi.resetVote(aa.coin);
-    setState(() { vote = null; });
+    setState(() {
+      vote = null;
+    });
   }
 }
 
@@ -148,12 +152,16 @@ class VoteNotesState extends State<VoteNotesPage> {
   @override
   void initState() {
     super.initState();
-    final ids = widget.vote.ids;
-    notes = ids.map((id) {
-      var n = aa.notes.items.firstWhere((n) => n.id == id).clone();
-      n.selected = false;
-      return n;
-    }).toList();
+    Future(() async {
+      final ids = widget.vote.ids;
+      final allNotes = await WarpApi.getNotes(aa.coin, aa.id);
+      for (var id in ids) {
+        final sn = allNotes.where((n) => n.id == id).firstOrNull;
+        if (sn != null)
+          notes.add(Note.fromShieldedNote(sn));
+      };
+      setState(() {});
+    });
   }
 
   @override
@@ -237,9 +245,9 @@ class VoteCandidateState extends State<VoteCandidatePage>
             ))
         .toList();
     return Scaffold(
-        appBar: AppBar(title: Text(e.question), actions: [
-          IconButton(onPressed: _ok, icon: Icon(Icons.check))
-        ]),
+        appBar: AppBar(
+            title: Text(e.question),
+            actions: [IconButton(onPressed: _ok, icon: Icon(Icons.check))]),
         body: wrapWithLoading(
           SingleChildScrollView(
             child: Padding(

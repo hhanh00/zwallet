@@ -435,6 +435,9 @@ class Note extends HasHeight {
     final confirmations = latestHeight?.let((h) => h - height + 1);
     return Note(id, height, confirmations, timestamp, value, orchard, excluded, selected);
   }
+  factory Note.fromShieldedNote(ShieldedNote n) => 
+    Note(n.id, n.height, 0, toDateTime(n.timestamp), n.value / ZECUNIT, 
+    n.orchard, n.excluded, false);
 
   Note(this.id, this.height, this.confirmations, this.timestamp, this.value,
       this.orchard, this.excluded, this.selected);
@@ -443,6 +446,7 @@ class Note extends HasHeight {
       Note(id, height, confirmations, timestamp, value, orchard, !excluded, selected);
 
   Note clone() => Note(id, height, confirmations, timestamp, value, orchard, excluded, selected);
+  
 }
 
 @reflector
