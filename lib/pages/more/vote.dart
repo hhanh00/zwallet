@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:go_router/go_router.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
@@ -255,7 +254,7 @@ class VoteCandidateState extends State<VoteCandidatePage>
               child: FormBuilder(
                 child: FormBuilderRadioGroup(
                   name: 'candidates',
-                  initialValue: 0,
+                  initialValue: candidate,
                   orientation: OptionsOrientation.vertical,
                   options: candidates,
                   onChanged: (v) => setState(() => candidate = v!),
