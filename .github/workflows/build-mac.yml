@@ -101,14 +101,14 @@ jobs:
           security import ./macos/certs/codesign.p12 -k $HOME/build.keychain -P $CERT_PWD -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k R5qx5GGokNBm $HOME/build.keychain
           /usr/bin/codesign --force -s "Developer ID Application: Ycash Foundation (8VSA3BX4D8)" --deep --options runtime build/macos/Build/Products/Release/ywallet.app -v
-      # - name: Notarize
-      #   env:
-      #     NOTARIZATION_PWD: ${{ secrets.MACOS_NOTARIZATION_PWD }}
-      #   run: |
-      #     xcrun notarytool store-credentials "notarytool-profile" --apple-id "foundation@ycash.xyz" --team-id "8VSA3BX4D8" --password "$NOTARIZATION_PWD"
-      #     ditto -c -k --keepParent "build/macos/Build/Products/Release/ywallet.app" "notarization.zip"
-      #     xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
-      #     xcrun stapler staple "build/macos/Build/Products/Release/ywallet.app"
+      - name: Notarize
+        env:
+          NOTARIZATION_PWD: ${{ secrets.MACOS_NOTARIZATION_PWD }}
+        run: |
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id "foundation@ycash.xyz" --team-id "8VSA3BX4D8" --password "$NOTARIZATION_PWD"
+          ditto -c -k --keepParent "build/macos/Build/Products/Release/ywallet.app" "notarization.zip"
+          xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
+          xcrun stapler staple "build/macos/Build/Products/Release/ywallet.app"
       - name: Install python
         uses: actions/setup-python@v4
         with:
