@@ -269,7 +269,8 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     try {
       address2 = WarpApi.parseTexAddress(aa.coin, address2);
       isTex = true;
-      poolKey.currentState!.setPools(1);
+      _pools = 1;
+      poolKey.currentState?.setPools(1);
     } on String {}
     final receivers = address.isNotEmptyAndNotNull
         ? WarpApi.receiversOfAddress(aa.coin, address2)
