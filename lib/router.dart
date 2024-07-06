@@ -209,6 +209,11 @@ final router = GoRouter(
                     builder: (context, state) => ContactEditPage(
                         int.parse(state.uri.queryParameters['id']!)),
                   ),
+                  GoRoute(
+                    path: 'submit_tx',
+                    builder: (context, state) =>
+                        SubmitTxPage(txPlan: state.extra as String),
+                  ),
                 ]),
           ],
         ),
