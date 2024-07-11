@@ -1,14 +1,15 @@
 import 'dart:convert';
 
-import 'package:YWallet/pages/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:http/http.dart' as http;
 import 'package:go_router/go_router.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
+import '../../pages/utils.dart';
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
 import '../../store2.dart';
@@ -109,7 +110,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
     final electionJson = jsonDecode(electionString);
     final election = Election.fromJson(electionJson);
     setState(() {
-      vote = Vote(election: election, ids: []);
+      vote = Vote(election: election, notes: []);
     });
   }
 
@@ -117,8 +118,8 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
     final e = vote?.election;
     if (e != null) {
       WarpApi.populateVoteNotes(aa.coin, aa.id, e.start_height, e.end_height);
-      final ids = WarpApi.listVoteNotes(aa.coin, aa.id, e.end_height);
-      final vote = Vote(election: e, ids: ids);
+      final notes = WarpApi.listVoteNotes(aa.coin, aa.id, e.end_height);
+      final vote = Vote(election: e, notes: notes);
       GoRouter.of(context).push('/more/vote/notes', extra: vote);
     } else {
       final electionURL = urlController.text;
@@ -146,22 +147,8 @@ class VoteNotesPage extends StatefulWidget {
 
 class VoteNotesState extends State<VoteNotesPage> {
   late final s = S.of(context);
-  List<Note> notes = [];
-
-  @override
-  void initState() {
-    super.initState();
-    Future(() async {
-      final ids = widget.vote.ids;
-      final allNotes = await WarpApi.getNotes(aa.coin, aa.id);
-      for (var id in ids) {
-        final sn = allNotes.where((n) => n.id == id).firstOrNull;
-        if (sn != null)
-          notes.add(Note.fromShieldedNote(sn));
-      };
-      setState(() {});
-    });
-  }
+  late List<VoteNoteT> notes = widget.vote.notes.map((n) =>
+    VoteNoteT(id: n.id, height: n.height, value: n.value, selected: false)).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -180,13 +167,13 @@ class VoteNotesState extends State<VoteNotesPage> {
   }
 
   _next() {
-    final ids = notes.where((n) => n.selected).map((n) => n.id).toList();
-    final vote = Vote(election: widget.vote.election, ids: ids);
+    final selectedNotes = notes.where((n) => n.selected).toList();
+    final vote = Vote(election: widget.vote.election, notes: selectedNotes);
     GoRouter.of(context).push('/more/vote/candidate', extra: vote);
   }
 }
 
-class TableListVoteMetadata extends TableListItemMetadata<Note> {
+class TableListVoteMetadata extends TableListItemMetadata<VoteNoteT> {
   @override
   List<Widget>? actions(BuildContext context) => [];
 
@@ -206,15 +193,16 @@ class TableListVoteMetadata extends TableListItemMetadata<Note> {
   SortConfig2? sortBy(String field) => null;
 
   @override
-  Widget toListTile(BuildContext context, int index, Note n,
+  Widget toListTile(BuildContext context, int index, VoteNoteT n,
       {void Function(void Function())? setState}) {
+    final v = amountToString2(n.value);
     return GestureDetector(
         onTap: () => setState?.call(() => n.selected = !n.selected),
-        child: ListTile(title: Text(n.value.toString()), selected: n.selected));
+        child: ListTile(title: Text(v), selected: n.selected));
   }
 
   @override
-  DataRow toRow(BuildContext context, int index, Note item) =>
+  DataRow toRow(BuildContext context, int index, VoteNoteT item) =>
       DataRow(cells: []);
 }
 
@@ -267,7 +255,7 @@ class VoteCandidateState extends State<VoteCandidatePage>
 
   _ok() async {
     final election = widget.vote.election;
-    final ids = widget.vote.ids;
+    final ids = widget.vote.notes.map((n) => n.id).toList();
     await load(() async {
       final vote = await WarpApi.vote(
           aa.coin, aa.id, ids, candidate, jsonEncode(election));

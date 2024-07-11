@@ -1668,7 +1668,7 @@ abstract class _Election implements Election {
 /// @nodoc
 mixin _$Vote {
   Election get election => throw _privateConstructorUsedError;
-  List<int> get ids => throw _privateConstructorUsedError;
+  List<VoteNoteT> get notes => throw _privateConstructorUsedError;
   int? get candidate => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -1680,7 +1680,7 @@ abstract class $VoteCopyWith<$Res> {
   factory $VoteCopyWith(Vote value, $Res Function(Vote) then) =
       _$VoteCopyWithImpl<$Res, Vote>;
   @useResult
-  $Res call({Election election, List<int> ids, int? candidate});
+  $Res call({Election election, List<VoteNoteT> notes, int? candidate});
 
   $ElectionCopyWith<$Res> get election;
 }
@@ -1699,7 +1699,7 @@ class _$VoteCopyWithImpl<$Res, $Val extends Vote>
   @override
   $Res call({
     Object? election = null,
-    Object? ids = null,
+    Object? notes = null,
     Object? candidate = freezed,
   }) {
     return _then(_value.copyWith(
@@ -1707,10 +1707,10 @@ class _$VoteCopyWithImpl<$Res, $Val extends Vote>
           ? _value.election
           : election // ignore: cast_nullable_to_non_nullable
               as Election,
-      ids: null == ids
-          ? _value.ids
-          : ids // ignore: cast_nullable_to_non_nullable
-              as List<int>,
+      notes: null == notes
+          ? _value.notes
+          : notes // ignore: cast_nullable_to_non_nullable
+              as List<VoteNoteT>,
       candidate: freezed == candidate
           ? _value.candidate
           : candidate // ignore: cast_nullable_to_non_nullable
@@ -1734,7 +1734,7 @@ abstract class _$$VoteImplCopyWith<$Res> implements $VoteCopyWith<$Res> {
       __$$VoteImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Election election, List<int> ids, int? candidate});
+  $Res call({Election election, List<VoteNoteT> notes, int? candidate});
 
   @override
   $ElectionCopyWith<$Res> get election;
@@ -1751,7 +1751,7 @@ class __$$VoteImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? election = null,
-    Object? ids = null,
+    Object? notes = null,
     Object? candidate = freezed,
   }) {
     return _then(_$VoteImpl(
@@ -1759,10 +1759,10 @@ class __$$VoteImplCopyWithImpl<$Res>
           ? _value.election
           : election // ignore: cast_nullable_to_non_nullable
               as Election,
-      ids: null == ids
-          ? _value._ids
-          : ids // ignore: cast_nullable_to_non_nullable
-              as List<int>,
+      notes: null == notes
+          ? _value._notes
+          : notes // ignore: cast_nullable_to_non_nullable
+              as List<VoteNoteT>,
       candidate: freezed == candidate
           ? _value.candidate
           : candidate // ignore: cast_nullable_to_non_nullable
@@ -1775,17 +1775,19 @@ class __$$VoteImplCopyWithImpl<$Res>
 
 class _$VoteImpl implements _Vote {
   const _$VoteImpl(
-      {required this.election, required final List<int> ids, this.candidate})
-      : _ids = ids;
+      {required this.election,
+      required final List<VoteNoteT> notes,
+      this.candidate})
+      : _notes = notes;
 
   @override
   final Election election;
-  final List<int> _ids;
+  final List<VoteNoteT> _notes;
   @override
-  List<int> get ids {
-    if (_ids is EqualUnmodifiableListView) return _ids;
+  List<VoteNoteT> get notes {
+    if (_notes is EqualUnmodifiableListView) return _notes;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_ids);
+    return EqualUnmodifiableListView(_notes);
   }
 
   @override
@@ -1793,7 +1795,7 @@ class _$VoteImpl implements _Vote {
 
   @override
   String toString() {
-    return 'Vote(election: $election, ids: $ids, candidate: $candidate)';
+    return 'Vote(election: $election, notes: $notes, candidate: $candidate)';
   }
 
   @override
@@ -1803,14 +1805,14 @@ class _$VoteImpl implements _Vote {
             other is _$VoteImpl &&
             (identical(other.election, election) ||
                 other.election == election) &&
-            const DeepCollectionEquality().equals(other._ids, _ids) &&
+            const DeepCollectionEquality().equals(other._notes, _notes) &&
             (identical(other.candidate, candidate) ||
                 other.candidate == candidate));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, election,
-      const DeepCollectionEquality().hash(_ids), candidate);
+      const DeepCollectionEquality().hash(_notes), candidate);
 
   @JsonKey(ignore: true)
   @override
@@ -1822,13 +1824,13 @@ class _$VoteImpl implements _Vote {
 abstract class _Vote implements Vote {
   const factory _Vote(
       {required final Election election,
-      required final List<int> ids,
+      required final List<VoteNoteT> notes,
       final int? candidate}) = _$VoteImpl;
 
   @override
   Election get election;
   @override
-  List<int> get ids;
+  List<VoteNoteT> get notes;
   @override
   int? get candidate;
   @override

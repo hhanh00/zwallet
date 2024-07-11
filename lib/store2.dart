@@ -476,7 +476,7 @@ class Election with _$Election {
 class Vote with _$Vote {
   const factory Vote({
     required Election election,
-    required List<int> ids,
+    required List<VoteNoteT> notes,
     int? candidate,
   }) = _Vote;
 }

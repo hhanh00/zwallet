@@ -6420,3 +6420,242 @@ class SwapVecObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+class VoteNote {
+  VoteNote._(this._bc, this._bcOffset);
+  factory VoteNote(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<VoteNote> reader = _VoteNoteReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  int get id => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 4, 0);
+  int get height => const fb.Uint32Reader().vTableGet(_bc, _bcOffset, 6, 0);
+  int get value => const fb.Uint64Reader().vTableGet(_bc, _bcOffset, 8, 0);
+  bool get selected => const fb.BoolReader().vTableGet(_bc, _bcOffset, 10, false);
+
+  @override
+  String toString() {
+    return 'VoteNote{id: ${id}, height: ${height}, value: ${value}, selected: ${selected}}';
+  }
+
+  VoteNoteT unpack() => VoteNoteT(
+      id: id,
+      height: height,
+      value: value,
+      selected: selected);
+
+  static int pack(fb.Builder fbBuilder, VoteNoteT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class VoteNoteT implements fb.Packable {
+  int id;
+  int height;
+  int value;
+  bool selected;
+
+  VoteNoteT({
+      this.id = 0,
+      this.height = 0,
+      this.value = 0,
+      this.selected = false});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    fbBuilder.startTable(4);
+    fbBuilder.addUint32(0, id);
+    fbBuilder.addUint32(1, height);
+    fbBuilder.addUint64(2, value);
+    fbBuilder.addBool(3, selected);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'VoteNoteT{id: ${id}, height: ${height}, value: ${value}, selected: ${selected}}';
+  }
+}
+
+class _VoteNoteReader extends fb.TableReader<VoteNote> {
+  const _VoteNoteReader();
+
+  @override
+  VoteNote createObject(fb.BufferContext bc, int offset) => 
+    VoteNote._(bc, offset);
+}
+
+class VoteNoteBuilder {
+  VoteNoteBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(4);
+  }
+
+  int addId(int? id) {
+    fbBuilder.addUint32(0, id);
+    return fbBuilder.offset;
+  }
+  int addHeight(int? height) {
+    fbBuilder.addUint32(1, height);
+    return fbBuilder.offset;
+  }
+  int addValue(int? value) {
+    fbBuilder.addUint64(2, value);
+    return fbBuilder.offset;
+  }
+  int addSelected(bool? selected) {
+    fbBuilder.addBool(3, selected);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class VoteNoteObjectBuilder extends fb.ObjectBuilder {
+  final int? _id;
+  final int? _height;
+  final int? _value;
+  final bool? _selected;
+
+  VoteNoteObjectBuilder({
+    int? id,
+    int? height,
+    int? value,
+    bool? selected,
+  })
+      : _id = id,
+        _height = height,
+        _value = value,
+        _selected = selected;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    fbBuilder.startTable(4);
+    fbBuilder.addUint32(0, _id);
+    fbBuilder.addUint32(1, _height);
+    fbBuilder.addUint64(2, _value);
+    fbBuilder.addBool(3, _selected);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
+class VoteNoteVec {
+  VoteNoteVec._(this._bc, this._bcOffset);
+  factory VoteNoteVec(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<VoteNoteVec> reader = _VoteNoteVecReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  List<VoteNote>? get notes => const fb.ListReader<VoteNote>(VoteNote.reader).vTableGetNullable(_bc, _bcOffset, 4);
+
+  @override
+  String toString() {
+    return 'VoteNoteVec{notes: ${notes}}';
+  }
+
+  VoteNoteVecT unpack() => VoteNoteVecT(
+      notes: notes?.map((e) => e.unpack()).toList());
+
+  static int pack(fb.Builder fbBuilder, VoteNoteVecT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class VoteNoteVecT implements fb.Packable {
+  List<VoteNoteT>? notes;
+
+  VoteNoteVecT({
+      this.notes});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? notesOffset = notes == null ? null
+        : fbBuilder.writeList(notes!.map((b) => b.pack(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, notesOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'VoteNoteVecT{notes: ${notes}}';
+  }
+}
+
+class _VoteNoteVecReader extends fb.TableReader<VoteNoteVec> {
+  const _VoteNoteVecReader();
+
+  @override
+  VoteNoteVec createObject(fb.BufferContext bc, int offset) => 
+    VoteNoteVec._(bc, offset);
+}
+
+class VoteNoteVecBuilder {
+  VoteNoteVecBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(1);
+  }
+
+  int addNotesOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class VoteNoteVecObjectBuilder extends fb.ObjectBuilder {
+  final List<VoteNoteObjectBuilder>? _notes;
+
+  VoteNoteVecObjectBuilder({
+    List<VoteNoteObjectBuilder>? notes,
+  })
+      : _notes = notes;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? notesOffset = _notes == null ? null
+        : fbBuilder.writeList(_notes!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, notesOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}
