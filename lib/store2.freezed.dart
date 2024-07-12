@@ -1370,6 +1370,7 @@ Election _$ElectionFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Election {
+  int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   int get start_height => throw _privateConstructorUsedError;
   int get end_height => throw _privateConstructorUsedError;
@@ -1391,7 +1392,8 @@ abstract class $ElectionCopyWith<$Res> {
       _$ElectionCopyWithImpl<$Res, Election>;
   @useResult
   $Res call(
-      {String name,
+      {int id,
+      String name,
       int start_height,
       int end_height,
       int close_height,
@@ -1414,6 +1416,7 @@ class _$ElectionCopyWithImpl<$Res, $Val extends Election>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? start_height = null,
     Object? end_height = null,
@@ -1424,6 +1427,10 @@ class _$ElectionCopyWithImpl<$Res, $Val extends Election>
     Object? status = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -1469,7 +1476,8 @@ abstract class _$$ElectionImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String name,
+      {int id,
+      String name,
       int start_height,
       int end_height,
       int close_height,
@@ -1490,6 +1498,7 @@ class __$$ElectionImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? start_height = null,
     Object? end_height = null,
@@ -1500,6 +1509,10 @@ class __$$ElectionImplCopyWithImpl<$Res>
     Object? status = null,
   }) {
     return _then(_$ElectionImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -1540,7 +1553,8 @@ class __$$ElectionImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ElectionImpl implements _Election {
   const _$ElectionImpl(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.start_height,
       required this.end_height,
       required this.close_height,
@@ -1553,6 +1567,8 @@ class _$ElectionImpl implements _Election {
   factory _$ElectionImpl.fromJson(Map<String, dynamic> json) =>
       _$$ElectionImplFromJson(json);
 
+  @override
+  final int id;
   @override
   final String name;
   @override
@@ -1578,7 +1594,7 @@ class _$ElectionImpl implements _Election {
 
   @override
   String toString() {
-    return 'Election(name: $name, start_height: $start_height, end_height: $end_height, close_height: $close_height, submit_url: $submit_url, question: $question, candidates: $candidates, status: $status)';
+    return 'Election(id: $id, name: $name, start_height: $start_height, end_height: $end_height, close_height: $close_height, submit_url: $submit_url, question: $question, candidates: $candidates, status: $status)';
   }
 
   @override
@@ -1586,6 +1602,7 @@ class _$ElectionImpl implements _Election {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ElectionImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.start_height, start_height) ||
                 other.start_height == start_height) &&
@@ -1606,6 +1623,7 @@ class _$ElectionImpl implements _Election {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      id,
       name,
       start_height,
       end_height,
@@ -1631,7 +1649,8 @@ class _$ElectionImpl implements _Election {
 
 abstract class _Election implements Election {
   const factory _Election(
-      {required final String name,
+      {required final int id,
+      required final String name,
       required final int start_height,
       required final int end_height,
       required final int close_height,
@@ -1643,6 +1662,8 @@ abstract class _Election implements Election {
   factory _Election.fromJson(Map<String, dynamic> json) =
       _$ElectionImpl.fromJson;
 
+  @override
+  int get id;
   @override
   String get name;
   @override

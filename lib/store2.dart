@@ -459,6 +459,7 @@ class SwapResponse with _$SwapResponse {
 @freezed
 class Election with _$Election {
   const factory Election({
+    required int id,
     required String name,
     required int start_height,
     required int end_height,
