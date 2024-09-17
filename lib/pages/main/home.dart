@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../generated/intl/messages.dart';
 import '../../appsettings.dart';
-import '../../store2.dart';
+import '../../store.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../utils.dart';
@@ -31,12 +31,12 @@ class HomePageInner extends StatefulWidget {
 
 class _HomeState extends State<HomePageInner> {
   final key = GlobalKey<BalanceState>();
-  int addressMode = coins[aa.coin].defaultAddrMode;
+  int mask = coins[aa.coin].defaultAddrMode;
 
   @override
   void initState() {
     super.initState();
-    syncStatus2.update();
+    syncStatus.update();
   }
 
   @override
@@ -53,9 +53,8 @@ class _HomeState extends State<HomePageInner> {
           child: Center(
             child: Observer(
               builder: (context) {
-                aaSequence.seqno;
                 aa.poolBalances;
-                syncStatus2.changed;
+                syncStatus.changed;
 
                 return Column(
                   children: [
@@ -66,11 +65,12 @@ class _HomeState extends State<HomePageInner> {
                         child: Column(children: [
                           AddressCarousel(
                             onAddressModeChanged: (m) =>
-                                setState(() => addressMode = m),
+                                setState(() => mask = m),
+                            onQRPressed: () {}, // TODO: Go to Payment URI or save QR
                           ),
                           Gap(8),
                           BalanceWidget(
-                            addressMode,
+                            mask & 7,
                             key: key,
                           ),
                           Gap(16),
@@ -84,7 +84,8 @@ class _HomeState extends State<HomePageInner> {
               },
             ),
           ),
-        ));
+        ),
+        );
   }
 
   _send(bool custom) async {
@@ -94,7 +95,7 @@ class _HomeState extends State<HomePageInner> {
       if (!authed) return;
     }
     final c = custom ? 1 : 0;
-    GoRouter.of(context).push('/account/quick_send?custom=$c');
+    GoRouter.of(context).push('/account/send?custom=$c');
   }
 
   _backup() {

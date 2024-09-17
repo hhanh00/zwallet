@@ -27,7 +27,7 @@
 		33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F22044A3C60003C045 /* Assets.xcassets */; };
 		33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F42044A3C60003C045 /* MainMenu.xib */; };
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
-		3B7C926628AE6FF000777DAD /* libwarp_api_ffi.dylib in Bundle Framework */ = {isa = PBXBuildFile; fileRef = 3B7C926528AE6FF000777DAD /* libwarp_api_ffi.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		3B804ED42C95D180002DBAAD /* libzcash_warp.dylib in Bundle Framework */ = {isa = PBXBuildFile; fileRef = 3B804ED32C95D180002DBAAD /* libzcash_warp.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,7 +47,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3B7C926628AE6FF000777DAD /* libwarp_api_ffi.dylib in Bundle Framework */,
+				3B804ED42C95D180002DBAAD /* libzcash_warp.dylib in Bundle Framework */,
 			);
 			name = "Bundle Framework";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -72,6 +72,7 @@
 		33E5194F232828860026EE4D /* AppInfo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppInfo.xcconfig; sourceTree = "<group>"; };
 		3ABAA4F74E9B840322C571A2 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		3B7C926528AE6FF000777DAD /* libwarp_api_ffi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwarp_api_ffi.dylib; path = ../target/universal/release/libwarp_api_ffi.dylib; sourceTree = "<group>"; };
+		3B804ED32C95D180002DBAAD /* libzcash_warp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libzcash_warp.dylib; sourceTree = "<group>"; };
 		3BD6E01629DA5FC4008FE892 /* RunnerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerDebug.entitlements; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		8D0D09BA27FFDEBE0DB78C1C /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +106,7 @@
 		33CC10E42044A3C60003C045 = {
 			isa = PBXGroup;
 			children = (
+				3B804ED32C95D180002DBAAD /* libzcash_warp.dylib */,
 				3B7C926528AE6FF000777DAD /* libwarp_api_ffi.dylib */,
 				33FAB671232836740065AC1E /* Runner */,
 				33CEB47122A05771004F2AC0 /* Flutter */,

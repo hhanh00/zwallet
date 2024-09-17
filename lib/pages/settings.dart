@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:protobuf/protobuf.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/warp.dart';
 
 import '../accounts.dart';
 import '../theme_editor.dart';
@@ -19,7 +20,7 @@ import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import '../appsettings.dart' as app;
 import '../settings.pb.dart';
-import '../store2.dart';
+import '../store.dart';
 import 'utils.dart';
 
 late List<String> currencies;
@@ -102,13 +103,13 @@ class _SettingsState extends State<SettingsPage>
 
   _ok() async {
     if (validate()) {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = GetIt.I.get<SharedPreferences>();
       await appSettings.save(prefs);
       coinKey.currentState?.let((c) => coinSettings.save(aa.coin));
       app.appSettings = app.AppSettingsExtension.load(prefs);
-      app.coinSettings = app.CoinSettingsExtension.load(aa.coin);
+      app.coinSettings = await app.CoinSettingsExtension.load(aa.coin);
       final serverUrl = resolveURL(coins[aa.coin], app.coinSettings);
-      WarpApi.updateLWD(aa.coin, serverUrl);
+      warp.configure(aa.coin, url: serverUrl);
       aaSequence.settingsSeqno = DateTime.now().millisecondsSinceEpoch;
       Future(() async {
         await marketPrice.update();
@@ -588,7 +589,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
       final c = coins[widget.coin];
       final server = c.lwd[i].url;
       Future(() async {
-        final ping = await WarpApi.ping(server);
+        final ping = await warp.pingServer(server);
         pings[i] = ping;
         setState(() {});
       });
@@ -730,6 +731,7 @@ class FieldUA extends StatelessWidget {
   final bool radio;
   final bool emptySelectionAllowed;
   final int pools;
+  final bool hidden;
   final String? Function(int)? validator;
   FieldUA(
     int initialValue, {
@@ -740,10 +742,12 @@ class FieldUA extends StatelessWidget {
     required this.radio,
     this.validator,
     this.pools = 7,
+    this.hidden = false,
   }) : initialValues = PoolBitSet.toSet(initialValue);
 
   @override
   Widget build(BuildContext context) {
+    if (hidden) return SizedBox.shrink();
     final s = S.of(context);
     final t = Theme.of(context);
     final small = t.textTheme.labelMedium!;

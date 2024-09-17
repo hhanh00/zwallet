@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../generated/intl/messages.dart';
-import '../../store2.dart';
+import '../../store.dart';
 import '../utils.dart';
 
 class SyncStatusWidget extends StatefulWidget {
@@ -17,26 +17,26 @@ class SyncStatusState extends State<SyncStatusWidget> {
   void initState() {
     super.initState();
     Future(() async {
-      await syncStatus2.update();
+      await syncStatus.update();
       await startAutoSync();
     });
   }
 
   String getSyncText(int syncedHeight) {
     final s = S.of(context);
-    if (!syncStatus2.connected) return s.connectionError;
-    final latestHeight = syncStatus2.latestHeight;
+    if (!syncStatus.connected) return s.connectionError;
+    final latestHeight = syncStatus.latestHeight;
     if (latestHeight == null) return '';
 
-    if (syncStatus2.paused) return s.syncPaused;
-    if (!syncStatus2.syncing) return syncedHeight.toString();
+    if (syncStatus.paused) return s.syncPaused;
+    if (!syncStatus.syncing) return syncedHeight.toString();
 
-    final timestamp = syncStatus2.timestamp?.let(timeago.format) ?? s.na;
-    final downloadedSize = syncStatus2.downloadedSize;
-    final trialDecryptionCount = syncStatus2.trialDecryptionCount;
+    final timestamp = syncStatus.timestamp?.let(timeago.format) ?? s.na;
+    final downloadedSize = syncStatus.downloadedSize;
+    final trialDecryptionCount = syncStatus.trialDecryptionCount;
 
-    final remaining = syncStatus2.eta.remaining;
-    final percent = syncStatus2.eta.progress;
+    final remaining = syncStatus.eta.remaining;
+    final percent = syncStatus.eta.progress;
     final downloadedSize2 = NumberFormat.compact().format(downloadedSize);
     final trialDecryptionCount2 =
         NumberFormat.compact().format(trialDecryptionCount);
@@ -45,14 +45,14 @@ class SyncStatusState extends State<SyncStatusWidget> {
       case 0:
         return '$syncedHeight / $latestHeight';
       case 1:
-        final m = syncStatus2.isRescan ? s.rescan : s.catchup;
+        final m = syncStatus.isRescan ? s.rescan : s.catchup;
         return '$m $percent %';
       case 2:
         return remaining != null ? '$remaining...' : '';
       case 3:
         return timestamp;
       case 4:
-        return '${syncStatus2.eta.timeRemaining}';
+        return '${syncStatus.eta.timeRemaining}';
       case 5:
         return '\u{2193} $downloadedSize2';
       case 6:
@@ -65,9 +65,9 @@ class SyncStatusState extends State<SyncStatusWidget> {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
 
-    final syncedHeight = syncStatus2.syncedHeight;
+    final syncedHeight = syncStatus.syncedHeight;
     final text = getSyncText(syncedHeight);
-    final syncing = syncStatus2.syncing;
+    final syncing = syncStatus.syncing;
     final syncStyle = syncing
         ? t.textTheme.bodySmall!
         : t.textTheme.bodyMedium!.apply(color: t.primaryColor);
@@ -79,7 +79,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
                 color: t.colorScheme.background,
                 padding: EdgeInsets.all(8),
                 child: Text(text, style: syncStyle))));
-    final value = syncStatus2.eta.progress?.let((x) => x.toDouble() / 100.0);
+    final value = syncStatus.eta.progress?.let((x) => x.toDouble() / 100.0);
     return SizedBox(
       height: 50,
       child: Stack(
@@ -97,14 +97,14 @@ class SyncStatusState extends State<SyncStatusWidget> {
   }
 
   _onSync() {
-    if (syncStatus2.syncing) {
+    if (syncStatus.syncing) {
       setState(() {
         display = (display + 1) % 7;
       });
     } else {
-      if (syncStatus2.paused)
-        syncStatus2.setPause(false);
-      Future(() => syncStatus2.sync(false));
+      if (syncStatus.paused)
+        syncStatus.setPause(false);
+      Future(() => syncStatus.sync(false));
     }
   }
 }

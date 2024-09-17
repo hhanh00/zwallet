@@ -3,14 +3,14 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 
 import '../../router.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
-import '../../store2.dart';
+import '../../store.dart';
 import '../../tablelist.dart';
 import '../../pages/utils.dart';
 import '../widgets.dart';
@@ -22,7 +22,7 @@ class KeyToolPage extends StatefulWidget {
 
 class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
   late final seed = aa.seed!;
-  List<KeyPackT> keys = [];
+  List<Zip32KeysT> keys = [];
   final formKey = GlobalKey<FormBuilderState>();
   bool shielded = false;
   int account = 0;
@@ -70,21 +70,16 @@ class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
     setState(() {});
   }
 
-  Future<void> _computeKeys(int coin, int id, int account, int ext) async {
+  Future<void> _computeKeys(int coin, int account, int index, int ext) async {
+    // TODO: CHECK
     for (int a = 0; a < 100; a++) {
-      final zkp =
-          (await WarpApi.deriveZip32(coin, id, account + a, 0, null)).unpack();
-      final tkp =
-          (await WarpApi.deriveZip32(coin, id, account, ext, address + a))
-              .unpack();
-      final kp = KeyPackT(
-          tAddr: tkp.tAddr, tKey: tkp.tKey, zAddr: zkp.zAddr, zKey: zkp.zKey);
+      final kp = await warp.deriveZip32Keys(coin, account, index);
       keys.add(kp);
     }
   }
 }
 
-class TableListKeyMetadata extends TableListItemMetadata<KeyPackT> {
+class TableListKeyMetadata extends TableListItemMetadata<Zip32KeysT> {
   final s = S.of(rootNavigatorKey.currentContext!);
   final String seed;
   final coinIndex = coins[aa.coin].coinIndex;
@@ -113,10 +108,10 @@ class TableListKeyMetadata extends TableListItemMetadata<KeyPackT> {
   }
 
   @override
-  Widget toListTile(BuildContext context, int index, KeyPackT item,
+  Widget toListTile(BuildContext context, int index, Zip32KeysT item,
       {void Function(void Function())? setState}) {
-    final address = shielded ? item.zAddr! : item.tAddr!;
-    final key = shielded ? item.zKey! : item.tKey!;
+    final address = shielded ? item.zaddress! : item.taddress!;
+    final key = shielded ? item.zsk! : item.tsk!;
     final derPath = path(index);
     final selected = selection == index;
     final idx = shielded ? accountIndex + index : addressIndex + index;
@@ -151,10 +146,10 @@ class TableListKeyMetadata extends TableListItemMetadata<KeyPackT> {
   }
 
   @override
-  DataRow toRow(BuildContext context, int index, KeyPackT item) {
+  DataRow toRow(BuildContext context, int index, Zip32KeysT item) {
     final idx = shielded ? accountIndex + index : addressIndex + index;
-    final address = shielded ? item.zAddr! : item.tAddr!;
-    final key = shielded ? item.zKey! : item.tKey!;
+    final address = shielded ? item.zaddress! : item.taddress!;
+    final key = shielded ? item.zsk! : item.tsk!;
 
     return DataRow.byIndex(index: index, cells: [
       DataCell(Text(idx.toString())),

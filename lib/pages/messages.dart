@@ -4,9 +4,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/warp.dart';
 
-import '../store2.dart';
+import '../store.dart';
 import '../accounts.dart';
 import '../appsettings.dart';
 import '../generated/intl/messages.dart';
@@ -24,7 +24,7 @@ class MessagePage extends StatelessWidget {
         builder: (context) {
           aaSequence.seqno;
           aaSequence.settingsSeqno;
-          syncStatus2.changed;
+          syncStatus.changed;
           return TableListPage(
             listKey: PageStorageKey('messages'),
             padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -181,7 +181,7 @@ class MessageTile extends StatelessWidget {
           _onSelect(context);
         },
         onLongPress: () {
-          WarpApi.markAllMessagesAsRead(aa.coin, aa.id, true);
+          warp.markAllMessagesRead(aa.coin, aa.id, false);
         },
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 8),
@@ -267,26 +267,26 @@ class _MessageItemState extends State<MessageItemPage> {
     setState(() {});
   }
 
-  prevInThread() {
-    final pn = WarpApi.getPrevNextMessage(
-        aa.coin, aa.id, message.subject, message.height);
-    final id = pn.prev;
+  prevInThread() async {
+    final m = await warp.prevMessageThread(
+        aa.coin, aa.id, message.height, message.subject);
+    final id = m.idMsg;
     if (id != 0) idx = aa.messages.items.indexWhere((m) => m.id == id);
     setState(() {});
   }
 
-  nextInThread() {
-    final pn = WarpApi.getPrevNextMessage(
-        aa.coin, aa.id, message.subject, message.height);
-    final id = pn.next;
+  nextInThread() async {
+    final m = await warp.nextMessageThread(
+        aa.coin, aa.id, message.height, message.subject);
+    final id = m.idMsg;
     if (id != 0) idx = aa.messages.items.indexWhere((m) => m.id == id);
     setState(() {});
   }
 
   reply() async {
     final memo = MemoData(true, message.subject, '');
-    final sc = SendContext(message.fromAddress!, 7, Amount(0, false), memo);
-    GoRouter.of(context).go('/account/quick_send', extra: sc);
+    // final sc = SendContext(message.fromAddress!, 7, Amount(0, false), memo);
+    // GoRouter.of(context).go('/account/quick_send', extra: sc);
   }
 
   open() {

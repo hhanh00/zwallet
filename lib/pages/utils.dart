@@ -27,8 +27,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart'
     show VxNullableStringIsEmptyOrNullExtension;
-import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -39,7 +39,7 @@ import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import '../main.dart';
 import '../router.dart';
-import '../store2.dart';
+import '../store.dart';
 import 'widgets.dart';
 
 var logger = Logger();
@@ -48,20 +48,13 @@ const APP_NAME = "YWallet";
 const ZECUNIT = 100000000.0;
 const ZECUNIT_INT = 100000000;
 const MAX_PRECISION = 8;
+const DAY_MS = 24 * 3600 * 1000;
+const MAXHEIGHT = 4000000000;
 
 final DateFormat noteDateFormat = DateFormat("yy-MM-dd HH:mm");
 final DateFormat txDateFormat = DateFormat("MM-dd HH:mm");
 final DateFormat msgDateFormat = DateFormat("MM-dd HH:mm");
 final DateFormat msgDateFormatFull = DateFormat("yy-MM-dd HH:mm:ss");
-
-class Amount {
-  int value;
-  bool deductFee;
-  Amount(this.value, this.deductFee);
-
-  @override
-  String toString() => 'Amount($value, $deductFee)';
-}
 
 int decimalDigits(bool fullPrec) => fullPrec ? MAX_PRECISION : 3;
 String decimalFormat(double x, int decimalDigits, {String symbol = ''}) {
@@ -119,29 +112,41 @@ Future<void> showSnackBar(String msg) async {
   await bar.show(rootNavigatorKey.currentContext!);
 }
 
-void openTxInExplorer(String txId) {
-  final settings = CoinSettingsExtension.load(aa.coin);
+void openTxInExplorer(String txId) async {
+  final settings = await CoinSettingsExtension.load(aa.coin);
   final url = settings.resolveBlockExplorer(aa.coin);
   launchUrl(Uri.parse("$url/$txId"), mode: LaunchMode.inAppWebView);
+}
+
+String? addressOrUriValidator(String? v) {
+  final s = S.of(rootNavigatorKey.currentContext!);
+  if (v == null || v.isEmpty) return s.addressIsEmpty;
+  if (warp.isValidAddressOrUri(aa.coin, v) == 0)
+    return s.invalidAddress;
+  return null;
 }
 
 String? addressValidator(String? v) {
   final s = S.of(rootNavigatorKey.currentContext!);
   if (v == null || v.isEmpty) return s.addressIsEmpty;
   try {
-    WarpApi.parseTexAddress(aa.coin, v);
-    return null;
+    warp.decodeAddress(aa.coin, v);
+  } on String catch (e) {
+    logger.d(e);
+    return s.invalidAddress;
   }
-  on String {}
-  final valid = WarpApi.validAddress(aa.coin, v);
-  if (!valid) return s.invalidAddress;
   return null;
 }
 
 String? paymentURIValidator(String? v) {
   final s = S.of(rootNavigatorKey.currentContext!);
   if (v.isEmptyOrNull) return s.required;
-  if (WarpApi.decodePaymentURI(aa.coin, v!) == null) return s.invalidPaymentURI;
+  try {
+    warp.parsePaymentURI(aa.coin, v!);
+  }
+  catch (_) {
+    return s.invalidPaymentURI;
+  }
   return null;
 }
 
@@ -245,6 +250,8 @@ Future<bool> authenticate(BuildContext context, String reason) async {
   return false;
 }
 
+int now() => DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
 void handleAccel(AccelerometerEvent event) {
   final n = sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
   final inclination = acos(event.z / n) / pi * 180 * event.y.sign;
@@ -294,7 +301,7 @@ Future<void> saveFileBinary(
   }
 }
 
-int getSpendable(int pools, PoolBalanceT balances) {
+int getSpendable(int pools, BalanceT balances) {
   return (pools & 1 != 0 ? balances.transparent : 0) +
       (pools & 2 != 0 ? balances.sapling : 0) +
       (pools & 4 != 0 ? balances.orchard : 0);
@@ -453,11 +460,10 @@ class Tx extends HasHeight {
   DateTime timestamp;
   String txId;
   String fullTxId;
-  double value;
+  int value;
   String? address;
   String? contact;
-  String? memo;
-  List<TxMemo> memos;
+  String memo;
 
   factory Tx.from(
       int? latestHeight,
@@ -466,24 +472,18 @@ class Tx extends HasHeight {
       DateTime timestamp,
       String txid,
       String fullTxId,
-      double value,
+      int value,
       String? address,
       String? contact,
-      String? memo,
-      List<Memo> memos,
+      String memo,
       ) {
     final confirmations = latestHeight?.let((h) => h - height + 1);
-    final memos2 = memos.map((m) => TxMemo(
-      address: m.address!,
-      memo: m.memo!
-      )).toList();
     return Tx(id, height, confirmations, timestamp, txid, fullTxId, value,
-        address, contact, memo, memos2);
+        address, contact, memo);
   }
 
   Tx(this.id, this.height, this.confirmations, this.timestamp, this.txId,
-      this.fullTxId, this.value, this.address, this.contact, this.memo,
-      this.memos);
+      this.fullTxId, this.value, this.address, this.contact, this.memo);
 }
 
 class ZMessage extends HasHeight {
@@ -616,6 +616,8 @@ class AccountBalance {
   String toString() => "($time $balance)";
 }
 
+const DAY_SEC = 24 * 3600;
+
 List<TimeSeriesPoint<V>> sampleDaily<T, Y, V>(
     Iterable<T> timeseries,
     int start,
@@ -683,8 +685,14 @@ class PoolBitSet {
   static int fromSet(Set<int> poolSet) => poolSet.map((p) => 1 << p).sum;
 }
 
-List<Account> getAllAccounts() =>
-    coins.expand((c) => WarpApi.getAccountList(c.coin)).toList();
+List<AccountNameT> getAllAccounts() {
+  var accounts = <AccountNameT>[];
+  for (var coin in coins) {
+    final a = warp.listAccounts(coin.coin);
+    accounts.addAll(a);
+  }
+  return accounts;
+}
 
 void showLocalNotification({required int id, String? title, String? body}) {
   AwesomeNotifications().createNotification(
@@ -696,7 +704,7 @@ void showLocalNotification({required int id, String? title, String? body}) {
   ));
 }
 
-extension PoolBalanceExtension on PoolBalanceT {
+extension PoolBalanceExtension on BalanceT {
   int get total => transparent + sapling + orchard;
 }
 

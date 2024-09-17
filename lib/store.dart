@@ -1,13 +1,11 @@
 import 'dart:async';
-import 'dart:ffi';
-import 'dart:isolate';
 import 'dart:math';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
-import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 
 import 'appsettings.dart';
 import 'pages/utils.dart';
@@ -15,8 +13,8 @@ import 'accounts.dart';
 import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
 
-part 'store2.g.dart';
-part 'store2.freezed.dart';
+part 'store.g.dart';
+part 'store.freezed.dart';
 
 var appStore = AppStore();
 
@@ -30,40 +28,24 @@ abstract class _AppStore with Store {
   bool flat = false;
 }
 
-final syncProgressPort2 = ReceivePort();
-final syncProgressStream = syncProgressPort2.asBroadcastStream();
-
-void initSyncListener() {
-  syncProgressStream.listen((e) {
-    if (e is List<int>) {
-      final progress = Progress(e);
-      syncStatus2.setProgress(progress);
-      final b = progress.balances?.unpack();
-      if (b != null)
-        aa.poolBalances = b;
-      logger.d(progress.balances);
-    }
-  });
-}
-
 Timer? syncTimer;
 
 Future<void> startAutoSync() async {
   if (syncTimer == null) {
-    await syncStatus2.update();
-    await syncStatus2.sync(false, auto: true);
+    await syncStatus.update();
+    await syncStatus.sync(false, auto: true);
     syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
-      syncStatus2.sync(false, auto: true);
+      syncStatus.sync(false, auto: true);
       aa.updateDivisified();
     });
   }
 }
 
-var syncStatus2 = SyncStatus2();
+var syncStatus = SyncStatus();
 
-class SyncStatus2 = _SyncStatus2 with _$SyncStatus2;
+class SyncStatus = _SyncStatus with _$SyncStatus;
 
-abstract class _SyncStatus2 with Store {
+abstract class _SyncStatus with Store {
   int startSyncedHeight = 0;
   bool isRescan = false;
   ETA eta = ETA();
@@ -102,6 +84,9 @@ abstract class _SyncStatus2 with Store {
     return DateTime.now().microsecondsSinceEpoch;
   }
 
+  @computed
+  int get expirationHeight => syncedHeight + 100;
+
   bool get isSynced {
     final sh = syncedHeight;
     final lh = latestHeight;
@@ -111,14 +96,14 @@ abstract class _SyncStatus2 with Store {
   int? get confirmHeight {
     final lh = latestHeight;
     if (lh == null) return null;
-    final ch = lh - appSettings.anchorOffset;
+    final ch = lh - appSettings.anchorOffset + 1;
     return max(ch, 0);
   }
 
   @action
   void reset() {
     isRescan = false;
-    syncedHeight = WarpApi.getDbHeight(aa.coin).height;
+    syncedHeight = warp.getSyncHeight(aa.coin);
     syncing = false;
     paused = false;
   }
@@ -127,15 +112,27 @@ abstract class _SyncStatus2 with Store {
   Future<void> update() async {
     try {
       final lh = latestHeight;
-      latestHeight = await WarpApi.getLatestHeight(aa.coin);
-      if (lh == null && latestHeight != null)
-        aa.update(latestHeight);
+      latestHeight = await warp.getBCHeight(aa.coin);
+      if (lh == null && latestHeight != null) aa.update(latestHeight!);
       connected = true;
     } on String catch (e) {
       logger.d(e);
       connected = false;
     }
-    syncedHeight = WarpApi.getDbHeight(aa.coin).height;
+    syncedHeight = warp.getSyncHeight(aa.coin);
+  }
+
+  Future<void> syncToHeight(int coin, int endHeight, ETA eta) async {
+    var height = warp.getSyncHeight(coin);
+    while (height < endHeight) {
+      await WarpSync.synchronize(aa.coin, endHeight);
+      height = warp.getSyncHeight(coin);
+      eta.checkpoint(height, DateTime.now());
+      aa.update(height);
+      runInAction(() {
+        syncedHeight = height;
+      });
+    }
   }
 
   @action
@@ -157,21 +154,16 @@ abstract class _SyncStatus2 with Store {
       isRescan = rescan;
       _updateSyncedHeight();
       startSyncedHeight = syncedHeight;
+
       eta.begin(latestHeight!);
       eta.checkpoint(syncedHeight, DateTime.now());
-
       final preBalance = AccountBalanceSnapshot(
           coin: aa.coin, id: aa.id, balance: aa.poolBalances.total);
       // This may take a long time
-      await WarpApi.warpSync(
-          aa.coin,
-          aa.id,
-          !appSettings.nogetTx,
-          appSettings.anchorOffset,
-          coinSettings.spamFilter ? 50 : 1000000,
-          syncProgressPort2.sendPort.nativePort);
+      await syncToHeight(aa.coin, lh - appSettings.anchorOffset + 1, eta);
+      await syncToHeight(aa.coin, lh, eta);
+      eta.end();
 
-      aa.update(latestHeight);
       contacts.fetchContacts();
       marketPrice.update();
       final postBalance = AccountBalanceSnapshot(
@@ -209,7 +201,7 @@ abstract class _SyncStatus2 with Store {
 
   @action
   Future<void> rescan(int height) async {
-    WarpApi.rescanFrom(aa.coin, height);
+    warp.resetChain(aa.coin, height);
     _updateSyncedHeight();
     paused = false;
     await sync(true);
@@ -221,21 +213,18 @@ abstract class _SyncStatus2 with Store {
   }
 
   @action
-  void setProgress(Progress progress) {
+  void setProgress(ProgressT progress) {
     trialDecryptionCount = progress.trialDecryptions;
     syncedHeight = progress.height;
     downloadedSize = progress.downloaded;
     if (progress.timestamp > 0)
-      timestamp = DateTime.fromMillisecondsSinceEpoch(progress.timestamp * 1000);
+      timestamp =
+          DateTime.fromMillisecondsSinceEpoch(progress.timestamp * 1000);
     eta.checkpoint(syncedHeight, DateTime.now());
   }
 
   void _updateSyncedHeight() {
-    final h = WarpApi.getDbHeight(aa.coin);
-    syncedHeight = h.height;
-    timestamp = (h.timestamp != 0)
-        ? DateTime.fromMillisecondsSinceEpoch(h.timestamp * 1000)
-        : null;
+    syncedHeight = warp.getSyncHeight(aa.coin);
   }
 }
 
@@ -330,33 +319,23 @@ class ContactStore = _ContactStore with _$ContactStore;
 
 abstract class _ContactStore with Store {
   @observable
-  ObservableList<Contact> contacts = ObservableList<Contact>.of([]);
+  List<ContactCardT> contacts = [];
 
-  @action
-  void fetchContacts() {
-    contacts.clear();
-    contacts.addAll(WarpApi.getContacts(aa.coin));
+  void fetchContacts() async {
+    final cs = await warp.listContacts(aa.coin);
+    runInAction(() { contacts = cs; });
   }
 
-  @action
-  void add(Contact c) {
-    WarpApi.storeContact(c.id, c.name!, c.address!, true);
-    markContactsSaved(aa.coin, false);
+  void add(ContactCardT c) {
+    warp.addContact(aa.coin, c);
     fetchContacts();
   }
 
   @action
-  void remove(Contact c) {
+  void remove(ContactCardT c) {
     contacts.removeWhere((contact) => contact.id == c.id);
-    WarpApi.storeContact(c.id, c.name!, "", true);
-    markContactsSaved(aa.coin, false);
+    warp.deleteContact(aa.coin, c.id);
     fetchContacts();
-  }
-
-  @action
-  markContactsSaved(int coin, bool v) {
-    coinSettings.contactsSaved = true;
-    coinSettings.save(coin);
   }
 }
 
@@ -409,7 +388,8 @@ class SwapQuote with _$SwapQuote {
     required String valid_until,
   }) = _SwapQuote;
 
-  factory SwapQuote.fromJson(Map<String, dynamic> json) => _$SwapQuoteFromJson(json);
+  factory SwapQuote.fromJson(Map<String, dynamic> json) =>
+      _$SwapQuoteFromJson(json);
 }
 
 @freezed
@@ -423,7 +403,8 @@ class SwapRequest with _$SwapRequest {
     required String address_to,
   }) = _SwapRequest;
 
-  factory SwapRequest.fromJson(Map<String, dynamic> json) => _$SwapRequestFromJson(json);
+  factory SwapRequest.fromJson(Map<String, dynamic> json) =>
+      _$SwapRequestFromJson(json);
 }
 
 @freezed
@@ -437,7 +418,8 @@ class SwapLeg with _$SwapLeg {
     required String tx_explorer,
   }) = _SwapLeg;
 
-  factory SwapLeg.fromJson(Map<String, dynamic> json) => _$SwapLegFromJson(json);
+  factory SwapLeg.fromJson(Map<String, dynamic> json) =>
+      _$SwapLegFromJson(json);
 }
 
 @freezed
@@ -453,7 +435,8 @@ class SwapResponse with _$SwapResponse {
     required String address_to,
   }) = _SwapResponse;
 
-  factory SwapResponse.fromJson(Map<String, dynamic> json) => _$SwapResponseFromJson(json);
+  factory SwapResponse.fromJson(Map<String, dynamic> json) =>
+      _$SwapResponseFromJson(json);
 }
 
 @freezed
@@ -468,7 +451,8 @@ class Election with _$Election {
     required String status,
   }) = _Election;
 
-  factory Election.fromJson(Map<String, dynamic> json) => _$ElectionFromJson(json);
+  factory Election.fromJson(Map<String, dynamic> json) =>
+      _$ElectionFromJson(json);
 }
 
 @freezed

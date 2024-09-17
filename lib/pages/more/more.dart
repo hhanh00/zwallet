@@ -10,7 +10,7 @@ import 'package:settings_ui/settings_ui.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
-import '../../store2.dart';
+import '../../store.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
@@ -44,7 +44,7 @@ class MorePage extends StatelessWidget {
               icon: FaIcon(FontAwesomeIcons.arrowRightArrowLeft),
               text: s.swap,
               secured: appSettings.protectSend),
-        if (syncStatus2.latestHeight != null) MoreTile(
+        if (syncStatus.latestHeight != null) MoreTile(
             url: '/more/vote',
             icon: FaIcon(FontAwesomeIcons.personBooth),
             text: s.vote),

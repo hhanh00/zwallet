@@ -1,20 +1,23 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
+import 'package:warp/warp.dart';
 
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
+import '../../store.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
 class SubmitTxPage extends StatefulWidget {
-  final String? txPlan;
-  final String? txBin;
-  SubmitTxPage({this.txPlan, this.txBin});
+  final TransactionSummaryT txSummary;
+  SubmitTxPage(this.txSummary);
   @override
   State<StatefulWidget> createState() => _SubmitTxState();
 }
@@ -28,12 +31,9 @@ class _SubmitTxState extends State<SubmitTxPage> {
     super.initState();
     Future(() async {
       try {
-        String? txIdJs;
-        if (widget.txPlan != null)
-          txIdJs = await WarpApi.signAndBroadcast(aa.coin, aa.id, widget.txPlan!);
-        if (widget.txBin != null)
-          txIdJs = WarpApi.broadcast(aa.coin, widget.txBin!);
-        txId = jsonDecode(txIdJs!);
+        final txBytes = await warp.sign(aa.coin, widget.txSummary, syncStatus.expirationHeight);
+        String json = jsonDecode(await warp.broadcast(aa.coin, txBytes));
+        txId = json;
       } on String catch (e) {
         error = e;
       }
@@ -88,23 +88,43 @@ class _SubmitTxState extends State<SubmitTxPage> {
   }
 }
 
-class ExportUnsignedTxPage extends StatelessWidget {
-  final String data;
-  ExportUnsignedTxPage(this.data);
+// class ExportUnsignedTxPage extends StatefulWidget {
+//   final Uint8List data;
+//   ExportUnsignedTxPage(this.data);
+  
+//   @override
+//   State<StatefulWidget> createState() => ExportUnsignedTxState();
+// }
 
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(s.unsignedTx), actions: [
-        IconButton(onPressed: () => export(context), icon: Icon(Icons.save))
-      ]),
-      body: AnimatedQR.init(s.rawTransaction, s.scanQrCode, data),
-    );
-  }
+// class ExportUnsignedTxState extends State<ExportUnsignedTxPage> {
+//   List<PacketT> packets = [];
 
-  export(BuildContext context) async {
-    final s = S.of(context);
-    await saveFile(data, 'tx.raw', s.rawTransaction);
-  }
-}
+//   @override
+//   void initState() {
+//     super.initState();
+//     Future(() async {
+//       final p = await warp.splitData(aa.coin, widget.data, 1);
+//       setState(() {
+//         packets = p;
+//       });
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final s = S.of(context);
+//     return Scaffold(
+//       appBar: AppBar(title: Text(s.unsignedTx), actions: [
+//         IconButton(onPressed: () => export(context), icon: Icon(Icons.save))
+//       ]),
+//       body: packets.isNotEmpty ?
+//         AnimatedQR(s.rawTransaction, s.scanQrCode, packets) :
+//         SizedBox.shrink(),
+//     );
+//   }
+
+//   export(BuildContext context) async {
+//     final s = S.of(context);
+//     await saveFile(data, 'tx.raw', s.rawTransaction);
+//   }
+// }

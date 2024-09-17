@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:warp/warp.dart';
 
 import '../../appsettings.dart';
-import '../../store2.dart';
+import '../../store.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../utils.dart';
@@ -100,18 +101,14 @@ class BalanceState extends State<BalanceWidget> {
   }
 
   int get balance {
-    switch (widget.mode) {
-      case 0:
-      case 4:
-        return totalBalance;
-      case 1:
-        return aa.poolBalances.transparent;
-      case 2:
-        return aa.poolBalances.sapling;
-      case 3:
-        return aa.poolBalances.orchard;
-    }
-    throw 'Unreachable';
+    int amount = 0;
+    if (widget.mode & 1 != 0)
+      amount += aa.poolBalances.transparent;
+    if (widget.mode & 2 != 0)
+      amount += aa.poolBalances.sapling;
+    if (widget.mode & 4 != 0)
+      amount += aa.poolBalances.orchard;
+    return amount;
   }
 
   int get totalBalance =>

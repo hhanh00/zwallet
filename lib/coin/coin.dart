@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:warp/warp.dart';
+
 import '../pages/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,7 @@ abstract class CoinBase {
   late String dbDir;
   late String dbFullPath;
   List<LWInstance> get lwd;
+  String? warpUrl;
   int get defaultAddrMode;
   int get defaultUAType;
   bool get supportsUA;
@@ -34,9 +37,11 @@ abstract class CoinBase {
   List<double> get weights;
   List<String> get blockExplorers;
 
-  void init(String dbDirPath) {
+  Future<void> init(String dbDirPath) async {
     dbDir = dbDirPath;
     dbFullPath = _getFullPath(dbDir);
+    warp.configure(coin, db: dbFullPath);
+    warp.resetTables(coin);
   }
 
   Future<bool> tryImport(PlatformFile file) async {

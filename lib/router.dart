@@ -1,6 +1,5 @@
 import 'dart:io';
-
-import 'package:warp_api/data_fb_generated.dart';
+import 'dart:typed_data';
 
 import 'pages/accounts/swap.dart';
 import 'pages/accounts/swap/history.dart';
@@ -11,7 +10,8 @@ import 'settings.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 
 import 'accounts.dart';
 import 'coin/coins.dart';
@@ -46,7 +46,7 @@ import 'pages/welcome.dart';
 import 'pages/settings.dart';
 import 'pages/messages.dart';
 import 'pages/utils.dart';
-import 'store2.dart';
+import 'store.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _accountNavigatorKey = GlobalKey<NavigatorState>();
@@ -79,6 +79,7 @@ final router = GoRouter(
               path: '/account',
               builder: (context, state) => HomePage(),
               redirect: (context, state) {
+                print('/account ${aa.id}');
                 if (aa.id == 0) return '/welcome';
                 return null;
               },
@@ -90,7 +91,9 @@ final router = GoRouter(
                       GoRoute(
                           path: 'new',
                           builder: (context, state) =>
-                              QuickSendPage(single: false)),
+                              SendPage(
+                                PaymentRequestT(),
+                                single: false)),
                     ]),
                 GoRoute(
                   path: 'swap',
@@ -100,21 +103,21 @@ final router = GoRouter(
                         path: 'history',
                         builder: (context, state) => SwapHistoryPage(),
                     ),
-                    GoRoute(
-                        path: 'stealthex',
-                        builder: (context, state) => StealthExPage(),
-                        routes: [
-                          GoRoute(
-                              path: 'details',
-                              builder: (context, state) =>
-                                  StealthExSummaryPage(state.extra as SwapT)),
-                        ]),
+                    // GoRoute(
+                    //     path: 'stealthex',
+                    //     builder: (context, state) => StealthExPage(),
+                    //     routes: [
+                    //       GoRoute(
+                    //           path: 'details',
+                    //           builder: (context, state) =>
+                    //               StealthExSummaryPage(state.extra as SwapT)),
+                    //     ]),
                   ],
                 ),
                 GoRoute(
                   path: 'txplan',
                   builder: (context, state) => TxPlanPage(
-                    state.extra as String,
+                    state.extra as TransactionSummaryT,
                     tab: state.uri.queryParameters['tab']!,
                     signOnly: state.uri.queryParameters['sign'] != null,
                   ),
@@ -122,48 +125,52 @@ final router = GoRouter(
                 GoRoute(
                   path: 'submit_tx',
                   builder: (context, state) =>
-                      SubmitTxPage(txPlan: state.extra as String),
+                      SubmitTxPage(state.extra as TransactionSummaryT),
                 ),
-                GoRoute(
-                  path: 'broadcast_tx',
-                  builder: (context, state) =>
-                      SubmitTxPage(txBin: state.extra as String),
-                ),
-                GoRoute(
-                  path: 'export_raw_tx',
-                  builder: (context, state) =>
-                      ExportUnsignedTxPage(state.extra as String),
-                ),
+                // GoRoute(
+                //   path: 'broadcast_tx',
+                //   builder: (context, state) =>
+                //       SubmitTxPage(txBin: state.extra as Uint8List),
+                // ),
+                // GoRoute(
+                //   path: 'export_raw_tx',
+                //   builder: (context, state) =>
+                //       ExportUnsignedTxPage(state.extra as Uint8List),
+                // ),
                 GoRoute(
                   path: 'rescan',
                   builder: (context, state) => RescanPage(),
                 ),
                 GoRoute(
-                  path: 'quick_send',
+                  path: 'send',
                   builder: (context, state) {
                     bool custom = state.uri.queryParameters['custom'] == '1';
-                    return QuickSendPage(
+                    final p = state.extra as PaymentRequestT?;
+                    return SendPage(p ?? PaymentRequestT(
+                      address: '',
+                      amount: 0,
+                      memo: UserMemoT(replyTo: false, body: ''),
+                    ),
                       custom: custom,
                       single: true,
-                      sendContext: state.extra as SendContext?,
                     );
                   },
-                  routes: [
-                    GoRoute(
-                      path: 'contacts',
-                      builder: (context, state) => ContactsPage(main: false),
-                    ),
-                    GoRoute(
-                      path: 'accounts',
-                      builder: (context, state) =>
-                          AccountManagerPage(main: false),
-                    ),
-                  ],
+                //   routes: [
+                //     GoRoute(
+                //       path: 'contacts',
+                //       builder: (context, state) => ContactsPage(main: false),
+                //     ),
+                //     GoRoute(
+                //       path: 'accounts',
+                //       builder: (context, state) =>
+                //           AccountManagerPage(main: false),
+                //     ),
+                //   ],
                 ),
-                GoRoute(
-                  path: 'pay_uri',
-                  builder: (context, state) => PaymentURIPage(),
-                ),
+                // GoRoute(
+                //   path: 'pay_uri',
+                //   builder: (context, state) => PaymentURIPage(),
+                // ),
               ],
             ),
           ],
@@ -240,7 +247,7 @@ final router = GoRouter(
                         GoRoute(
                           path: 'signed',
                           builder: (context, state) =>
-                              SignedTxPage(state.extra as String),
+                              SignedTxPage(state.extra as List<int>),
                         ),
                         GoRoute(
                           path: 'broadcast',
@@ -269,10 +276,10 @@ final router = GoRouter(
                     path: 'rescan',
                     builder: (context, state) => RescanPage(),
                   ),
-                  GoRoute(
-                    path: 'rewind',
-                    builder: (context, state) => RewindPage(),
-                  ),
+                  // GoRoute(
+                  //   path: 'rewind',
+                  //   builder: (context, state) => RewindPage(),
+                  // ),
                   GoRoute(
                     path: 'budget',
                     builder: (context, state) => BudgetPage(),
@@ -311,11 +318,11 @@ final router = GoRouter(
                       path: 'about',
                       builder: (context, state) =>
                           AboutPage(state.extra as String)),
-                  GoRoute(
-                    path: 'submit_tx',
-                    builder: (context, state) =>
-                        SubmitTxPage(txPlan: state.extra as String),
-                  ),
+                  // GoRoute(
+                  //   path: 'submit_tx',
+                  //   builder: (context, state) =>
+                  //       SubmitTxPage(txPlan: state.extra as Uint8List),
+                  // ),
                 ]),
           ],
         ),
@@ -330,7 +337,7 @@ final router = GoRouter(
         final c = coins.first;
         if (isMobile()) return null; // db encryption is only for desktop
         if (!File(c.dbFullPath).existsSync()) return null; // fresh install
-        if (WarpApi.decryptDb(c.dbFullPath, appStore.dbPassword))
+        if (warp.checkDbPassword(c.coin, appStore.dbPassword))
           return null; // not encrypted
         return '/decrypt_db';
       },

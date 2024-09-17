@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
 
 class BackupPage extends StatefulWidget {
-  late final Backup backup;
+  late final BackupT backup;
   late final String primary;
 
   BackupPage() {
-    backup = WarpApi.getBackup(aa.coin, aa.id);
+    backup = warp.getBackup(aa.coin, aa.id);
     if (backup.seed != null)
       primary = backup.seed!;
     else if (backup.sk != null)
@@ -101,7 +101,7 @@ class _BackupState extends State<BackupPage> {
   }
 
   _remind(bool? v) {
-    WarpApi.setBackupReminder(aa.coin, aa.id, v!);
+    warp.setBackupReminder(aa.coin, aa.id, v!);
     setActiveAccount(aa.coin, aa.id); // reload
   }
 }

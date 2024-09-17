@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:warp_api/warp_api.dart';
 
 import '../accounts.dart';
 import '../generated/intl/messages.dart';
 import '../appsettings.dart';
-import '../store2.dart';
+import '../store.dart';
 import '../tablelist.dart';
 import 'avatar.dart';
 import 'utils.dart';
@@ -22,25 +21,13 @@ class TxPage extends StatefulWidget {
 
 class TxPageState extends State<TxPage> {
   @override
-  void initState() {
-    super.initState();
-    syncStatus2.latestHeight?.let((height) {
-      Future(() async {
-        final txListUpdated = await WarpApi.transparentSync(aa.coin, aa.id, height);
-        if (txListUpdated)
-          aa.update(height); // reload if updated
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SortSetting(
       child: Observer(
         builder: (context) {
           aaSequence.seqno;
           aaSequence.settingsSeqno;
-          syncStatus2.changed;
+          syncStatus.changed;
           return TableListPage(
             listKey: PageStorageKey('txs'),
             padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -67,11 +54,7 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
   @override
   Widget toListTile(BuildContext context, int index, Tx tx, {void Function(void Function())? setState}) {
     ZMessage? message;
-    try {
-      message = aa.messages.items.firstWhere((m) => m.txId == tx.id);
-    } on StateError {
-      message = null;
-    }
+    message = aa.messages.items.firstWhere((m) => m.txId == tx.id);
     return TxItem(tx, message, index: index);
   }
 
@@ -96,7 +79,7 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
     var style = t.textTheme.bodyMedium!.copyWith(color: color);
     style = weightFromAmount(style, tx.value);
     final a = tx.contact ?? centerTrim(tx.address ?? '');
-    final m = tx.memo?.let((m) => m.substring(0, min(m.length, 32))) ?? '';
+    final m = tx.memo.substring(0, min(tx.memo.length, 32));
 
     return DataRow.byIndex(
         index: index,
@@ -104,7 +87,7 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
           DataCell(Text("${tx.height}")),
           DataCell(Text("${tx.confirmations}")),
           DataCell(Text("${txDateFormat.format(tx.timestamp)}")),
-          DataCell(Text(decimalToString(tx.value),
+          DataCell(Text(amountToString2(tx.value),
               style: style, textAlign: TextAlign.left)),
           DataCell(Text("${tx.txId}")),
           DataCell(Text("$a")),
@@ -126,7 +109,7 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
 class TxItem extends StatelessWidget {
   final Tx tx;
   final int? index;
-  final ZMessage? message;
+  final ZMessage message;
   TxItem(this.tx, this.message, {this.index});
 
   @override
@@ -138,7 +121,7 @@ class TxItem extends StatelessWidget {
 
     final av = avatar(initial);
     final dateString = Text(humanizeDateTime(context, tx.timestamp));
-    final value = Text('${decimalToString(tx.value)}',
+    final value = Text('${amountToString2(tx.value)}',
         style: theme.textTheme.titleLarge!.apply(color: color));
     final trailing = Column(children: [dateString, value]);
 
@@ -151,7 +134,7 @@ class TxItem extends StatelessWidget {
             Gap(15),
             Expanded(
               child: MessageContentWidget(
-                  tx.contact ?? tx.address ?? '', message, tx.memo ?? ''),
+                  tx.contact ?? tx.address ?? '', message),
             ),
             SizedBox(width: 120, child: trailing),
           ],
@@ -208,29 +191,19 @@ class TransactionState extends State<TransactionPage> {
             Gap(8),
             Panel(s.timestamp, text: noteDateFormat.format(tx.timestamp)),
             Gap(8),
-            Panel(s.amount, text: decimalToString(tx.value)),
+            Panel(s.amount, text: amountToString2(tx.value)),
             Gap(8),
             Panel(s.address, text: tx.address ?? ''),
             Gap(8),
             Panel(s.contactName, text: tx.contact ?? ''), // Add Contact button
             Gap(8),
-            Panel(s.memo, text: tx.memo ?? ''),
-            Gap(8),
-            ..._memos()
+            // TODO
+            // Panel(s.memo, text: tx.memo ?? ''),
+            // Gap(8),
           ],
         ),
       ),
     ));
-  }
-
-  List<Widget> _memos() {
-    List<Widget> ms = [];
-    for (var txm in tx.memos) {
-      ms.add(Gap(8));
-      ms.add(Panel(s.memo, text: 
-        txm.address + '\n' + txm.memo));
-    }
-    return ms;
   }
 
   open() {

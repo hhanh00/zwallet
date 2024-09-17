@@ -1,9 +1,11 @@
+import 'package:YWallet/store.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 
 import '../../accounts.dart';
 import '../../coin/coins.dart';
@@ -18,7 +20,7 @@ class AccountManagerPage extends StatefulWidget {
 }
 
 class _AccountManagerState extends State<AccountManagerPage> {
-  late List<Account> accounts = getAllAccounts();
+  late List<AccountNameT> accounts = getAllAccounts();
   late final s = S.of(context);
   int? selected;
   bool editing = false;
@@ -59,7 +61,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
 
   onEdit(String name) {
     final a = accounts[selected!];
-    WarpApi.updateAccountName(a.coin, a.id, name);
+    warp.editAccountName(a.coin, a.id, name);
     _refresh();
     editing = false;
     setState(() {});
@@ -68,14 +70,13 @@ class _AccountManagerState extends State<AccountManagerPage> {
   select(int index) {
     final a = accounts[index];
     if (widget.main) {
-      setActiveAccount(a.coin, a.id);
       Future(() async {
-        final prefs = await SharedPreferences.getInstance();
-        await aa.save(prefs);
+        await setActiveAccount(a.coin, a.id);
+        await aa.save();
       });
-      aa.update(null);
+      aa.update(syncStatus.syncedHeight);
     }
-    GoRouter.of(context).pop<Account>(a);
+    GoRouter.of(context).pop<AccountNameT>(a);
   }
 
   delete() async {
@@ -89,7 +90,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
     final confirmed = await showConfirmDialog(
         context, s.deleteAccount(a.name!), s.confirmDeleteAccount);
     if (confirmed) {
-      WarpApi.deleteAccount(a.coin, a.id);
+      warp.deleteAccount(a.coin, a.id);
       _refresh();
       if (count == 1) {
         setActiveAccount(0, 0);
@@ -105,7 +106,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
     final confirmed = await showConfirmDialog(
         context, s.convertToWatchonly, s.confirmWatchOnly);
     if (!confirmed) return;
-    WarpApi.convertToWatchOnly(aa.coin, aa.id);
+    // warp.convertToWatchOnly(aa.coin, aa.id);
     _refresh();
     setState(() {});
   }
@@ -116,7 +117,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
 }
 
 class AccountList extends StatelessWidget {
-  final List<Account> accounts;
+  final List<AccountNameT> accounts;
   final int? selected;
   final bool editing;
   final void Function(int?)? onSelect;
@@ -157,7 +158,7 @@ class AccountList extends StatelessWidget {
 }
 
 class AccountTile extends StatelessWidget {
-  final Account a;
+  final AccountNameT a;
   final void Function()? onPress;
   final void Function()? onLongPress;
   final bool selected;

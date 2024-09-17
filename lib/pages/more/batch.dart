@@ -2,11 +2,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
 
@@ -100,19 +101,20 @@ class _BatchBackupState extends State<BatchBackupPage> {
 
   key() async {
     final keys =
-        await GoRouter.of(context).push<Agekeys>('/more/backup/keygen');
-    keys?.let((keys) => backupKeyController.text = keys.pk!);
+        await GoRouter.of(context).push<AgekeysT>('/more/backup/keygen');
+    keys?.let((keys) => backupKeyController.text = keys.publicKey!);
   }
 
   save() async {
     final s = S.of(context);
-    final tempDir = await getTemporaryDirectory();
+    final tempDir = await getApplicationCacheDirectory();
     final path = isMobile()
         ? await getTemporaryPath('YWallet.age')
         : await FilePicker.platform.saveFile(dialogTitle: s.fullBackup);
     if (path != null) {
       try {
-        WarpApi.zipBackup(backupKeyController.text, path, tempDir.path);
+        warp.encryptZIPDbFiles(
+            tempDir.path, '.db', path, backupKeyController.text);
         if (isMobile()) {
           await shareFile(context, path, title: s.fullBackup);
         }
@@ -127,12 +129,12 @@ class _BatchBackupState extends State<BatchBackupPage> {
     final r = await FilePicker.platform.pickFiles(dialogTitle: s.fullRestore);
     if (r != null) {
       final file = r.files.first;
-      final dbDir = await getDbPath();
+      final tempDir = (await getApplicationCacheDirectory()).path;
       try {
-        final zipFile =
-            WarpApi.decryptBackup(restoreKeyController.text, file.path!, dbDir);
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('backup', zipFile);
+        await warp.decryptZIPDbFiles(
+            file.path!, tempDir, restoreKeyController.text);
+        final prefs = GetIt.I.get<SharedPreferences>();
+        await prefs.setString('backup', tempDir);
         await showMessageBox2(
             context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow,
             dismissable: false);
@@ -165,7 +167,7 @@ class KeygenPage extends StatefulWidget {
 
 class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
   late final s = S.of(context);
-  Agekeys? _keys;
+  AgekeysT? _keys;
 
   @override
   void initState() {
@@ -193,9 +195,9 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
                 Panel(s.help,
                     child: Text(s.keygenHelp, style: t.textTheme.titleSmall)),
                 Gap(16),
-                Panel(s.encryptionKey, text: _keys?.pk, save: true),
+                Panel(s.encryptionKey, text: _keys?.publicKey, save: true),
                 Gap(16),
-                Panel(s.secretKey, text: _keys?.sk, save: true),
+                Panel(s.secretKey, text: _keys?.secretKey, save: true),
               ],
             ),
           ),
@@ -203,7 +205,7 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
   }
 
   _keygen() async {
-    final keys = await load(() => WarpApi.generateKey());
+    final keys = await load(() => warp.generateZIPDbKeys());
     setState(() => _keys = keys);
   }
 

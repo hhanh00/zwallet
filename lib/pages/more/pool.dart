@@ -6,8 +6,8 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 
 import '../../appsettings.dart';
 import '../../pages/widgets.dart';
@@ -77,9 +77,9 @@ class _PoolTransferState extends State<PoolTransferPage>
                       ),
                       Gap(16),
                       AmountPicker(
-                        Amount(amount, false),
+                        amount,
                         spendable: spendable,
-                        onChanged: (a) => setState(() => amount = a!.value),
+                        onChanged: (a) => setState(() => amount = a!),
                       ),
                       Gap(16),
                       FormBuilderTextField(
@@ -114,19 +114,19 @@ class _PoolTransferState extends State<PoolTransferPage>
     final splitAmount = stringToAmount(splitController.text);
     load(() async {
       try {
-        final plan = await WarpApi.transferPools(
-          aa.coin,
-          aa.id,
-          from,
-          to,
-          amount,
-          false,
-          memoController.text,
-          splitAmount,
-          appSettings.anchorOffset,
-          coinSettings.feeT,
-        );
-        GoRouter.of(context).push('/account/txplan?tab=more', extra: plan);
+        // TODO
+        // final plan = await warp.transferPool(
+        //   aa.coin,
+        //   aa.id,
+        //   from,
+        //   to,
+        //   amount,
+        //   false,
+        //   memoController.text,
+        //   splitAmount,
+        //   appSettings.anchorOffset,
+        // );
+        // GoRouter.of(context).push('/account/txplan?tab=more', extra: plan);
       } on String catch (e) {
         await showMessageBox2(context, s.error, e);
       }
@@ -167,7 +167,7 @@ class HorizontalBarChart extends StatelessWidget {
   }
 }
 
-extension PoolBalanceExtension on PoolBalanceT {
+extension PoolBalanceExtension on BalanceT {
   int get(int p) {
     switch (p) {
       case 1:

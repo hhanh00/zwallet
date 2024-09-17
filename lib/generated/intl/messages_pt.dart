@@ -1,5 +1,7 @@
 import 'messages.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for Portuguese (`pt`).
 class SPt extends S {
   SPt([String locale = 'pt']) : super(locale);

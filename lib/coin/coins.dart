@@ -7,6 +7,6 @@ CoinBase ycash = YcashCoin();
 CoinBase zcash = ZcashCoin();
 CoinBase zcashtest = ZcashTestCoin();
 
-final coins = [zcash, ycash];
+final coins = [zcash]; // , ycash TODO
 
 final activationDate = DateTime(2018, 10, 29);

@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:math' as m;
+import 'dart:typed_data';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 
 import 'settings.pb.dart';
 import 'coin/coins.dart';
@@ -53,24 +54,28 @@ extension AppSettingsExtension on AppSettings {
 extension CoinSettingsExtension on CoinSettings {
   void defaults(int coin) {
     int defaultUAType = coins[coin].defaultUAType;
+    if (!hasLwd()) lwd = ServerURL(index: 0);
     if (!hasUaType()) uaType = defaultUAType;
     if (!hasReplyUa()) replyUa = defaultUAType;
     if (!hasSpamFilter()) spamFilter = true;
     if (!hasReceipientPools()) receipientPools = 7;
   }
 
-  static CoinSettings load(int coin) {
-    final p = WarpApi.getProperty(coin, 'settings');
-    return CoinSettings.fromBuffer(base64Decode(p))..defaults(coin);
+  static Future<CoinSettings> load(int coin) async {
+    Uint8List p;
+    try {
+      p = await warp.getAccountProperty(coin, 0, 'settings');
+    } catch (_) {
+      p = Uint8List(0);
+    }
+    final cs = CoinSettings.fromBuffer(p)..defaults(coin);
+    return cs;
   }
 
   void save(int coin) {
-    final bytes = writeToBuffer();
-    final settings = base64Encode(bytes);
-    WarpApi.setProperty(coin, 'settings', settings);
+    final settings = writeToBuffer();
+    warp.setAccountProperty(coin, 0, 'settings', settings);
   }
-
-  FeeT get feeT => FeeT(scheme: manualFee ? 1 : 0, fee: fee.toInt());
 
   String resolveBlockExplorer(int coin) {
     final explorers = coins[coin].blockExplorers;

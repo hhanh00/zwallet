@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:YWallet/router.dart';
@@ -11,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/warp.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../../accounts.dart';
@@ -22,7 +21,7 @@ import '../appsettings.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import '../settings.pb.dart';
-import '../store2.dart';
+import '../store.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -44,9 +43,8 @@ class _SplashState extends State<SplashPage> {
         // await _setupMempool();
         final applinkUri = await _registerURLHandler();
         final quickAction = await _registerQuickActions();
-        _initWallets();
+        await _initWallets();
         await _restoreActive();
-        initSyncListener();
         // _initForegroundTask();
         _initBackgroundSync();
         _initAccel();
@@ -114,35 +112,33 @@ class _SplashState extends State<SplashPage> {
     _setProgress(0.1, 'Initialize ZK Prover');
     final spend = await rootBundle.load('assets/sapling-spend.params');
     final output = await rootBundle.load('assets/sapling-output.params');
-    WarpApi.initProver(spend.buffer.asUint8List(), output.buffer.asUint8List());
+    warp.initProver(spend.buffer.asUint8List(), output.buffer.asUint8List());
   }
 
-  void _initWallets() {
+  Future<void> _initWallets() async {
     for (var c in coins) {
       final coin = c.coin;
       _setProgress(0.5 + 0.1 * coin, 'Initializing ${c.ticker}');
-      WarpApi.setDbPasswd(coin, appStore.dbPassword);
-      WarpApi.initWallet(coin, c.dbFullPath);
-      final p = WarpApi.getProperty(coin, 'settings');
-      final settings = p.isNotEmpty
-          ? CoinSettings.fromBuffer(base64Decode(p))
-          : CoinSettings();
-      final url = resolveURL(c, settings);
-      WarpApi.updateLWD(coin, url);
-      try {
-        WarpApi.migrateData(c.coin);
-      } catch (_) {} // do not fail on network exception
+      warp.setDbPassword(coin, appStore.dbPassword, c.dbFullPath);
+      final cs = await CoinSettingsExtension.load(c.coin);
+      final url = resolveURL(c, cs);
+      // TODO: Configure warp dynamically
+      warp.configure(coin, url: url, warp: c.warpUrl, warpEndHeight: 2400000);
+      // try {
+      //   WarpApi.migrateData(c.coin);
+      // } catch (_) {} // do not fail on network exception
     }
   }
 
   Future<void> _restoreActive() async {
     _setProgress(0.8, 'Load Active Account');
-    final prefs = await SharedPreferences.getInstance();
-    final a = ActiveAccount2.fromPrefs(prefs);
-    a?.let((a) {
-      setActiveAccount(a.coin, a.id);
-      aa.update(syncStatus2.latestHeight);
-    });
+    final prefs = GetIt.I.get<SharedPreferences>();
+    final a = await ActiveAccount2.fromPrefs(prefs);
+    print('_restoreActive ${a?.id}');
+    if (a != null) {
+      await setActiveAccount(a.coin, a.id);
+      await aa.update(MAXHEIGHT);
+    };
   }
 
   _initAccel() {
@@ -219,23 +215,23 @@ class _LoadProgressState extends State<LoadProgress> {
 
 StreamSubscription? subUniLinks;
 
-bool setActiveAccountOf(int coin) {
-  final coinSettings = CoinSettingsExtension.load(coin);
+Future<bool> setActiveAccountOf(int coin) async {
+  final coinSettings = await CoinSettingsExtension.load(coin);
   final id = coinSettings.account;
   if (id == 0) return false;
   setActiveAccount(coin, id);
   return true;
 }
 
-void handleUri(Uri uri) {
+Future<void> handleUri(Uri uri) async {
   final scheme = uri.scheme;
   final coinDef = coins.firstWhere((c) => c.currency == scheme);
   final coin = coinDef.coin;
-  if (setActiveAccountOf(coin)) {
-    SendContext? sc = SendContext.fromPaymentURI(uri.toString());
-    final context = rootNavigatorKey.currentContext!;
-    GoRouter.of(context).go('/account/quick_send', extra: sc);
-  }
+  // if (await setActiveAccountOf(coin)) {
+  //   SendContext? sc = SendContext.fromPaymentURI(uri.toString());
+  //   final context = rootNavigatorKey.currentContext!;
+  //   GoRouter.of(context).go('/account/quick_send', extra: sc);
+  // }
 }
 
 Future<Uri?> registerURLHandler() async {
@@ -269,7 +265,7 @@ void backgroundSyncDispatcher() {
   if (!appStore.initialized) return;
   Workmanager().executeTask((task, inputData) async {
     logger.i("Native called background task: $task");
-    await syncStatus2.sync(false, auto: true);
+    await syncStatus.sync(false, auto: true);
     return true;
   });
 }

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/warp.dart';
 
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
-import '../store2.dart';
+import '../store.dart';
 
 class DbLoginPage extends StatefulWidget {
   @override
@@ -46,11 +46,11 @@ class _DbLoginState extends State<DbLoginPage> {
         ));
   }
 
-  _ok() {
+  _ok() async {
     final s = S.of(context);
     final password = passwordController.text;
     final c = coins.first;
-    if (WarpApi.decryptDb(c.dbFullPath, password)) {
+    if (await warp.checkDbPassword(c.coin, password)) {
       appStore.dbPassword = password;
       GoRouter.of(context).go('/splash');
     } else {

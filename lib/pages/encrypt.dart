@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/warp.dart';
 
 import '../accounts.dart';
 import '../coin/coins.dart';
@@ -40,8 +41,7 @@ class _EncryptDbState extends State<EncryptDbPage> with WithLoadingAnimation {
                   controller: oldController,
                   obscureText: true,
                   validator: (v) {
-                    final c = coins[aa.coin];
-                    if (!WarpApi.decryptDb(c.dbFullPath, v!))
+                    if (!warp.checkDbPassword(aa.coin, v!))
                       return s.invalidPassword;
                     return null;
                   },
@@ -74,11 +74,16 @@ class _EncryptDbState extends State<EncryptDbPage> with WithLoadingAnimation {
     if (form.validate()) {
       form.save();
       await load(() async {
-        final tempDir = await getTemporaryDirectory();
+        final cacheDir = await getApplicationCacheDirectory();
+        final tempDir = await cacheDir.createTemp();
+        final tempPath = tempDir.path;
         final passwd = newController.text;
-        final path = await WarpApi.zipDbs(passwd, tempDir.path);
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('backup', path);
+        for (var c in coins) {
+          final newDbPath = '$tempPath/${c.dbName}';
+          await warp.encryptDb(c.coin, passwd, newDbPath);
+        }
+        final prefs = GetIt.I.get<SharedPreferences>();
+        await prefs.setString('backup', tempPath);
       });
       await showMessageBox2(
           context, s.restart, s.pleaseQuitAndRestartTheAppNow, dismissable: false);

@@ -5,10 +5,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
-import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
 
-import '../../store2.dart';
+import '../../store.dart';
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
 import '../utils.dart';
@@ -31,7 +30,7 @@ class _BudgetState extends State<BudgetPage> {
     return Scaffold(
         appBar: AppBar(title: Text(s.budget)),
         body: Observer(builder: (context) {
-          syncStatus2.syncedHeight;
+          syncStatus.syncedHeight;
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -109,7 +108,7 @@ class _BudgetChartState extends State<BudgetChart> {
 }
 
 class BudgetTable extends StatelessWidget {
-  final List<Spending> spendings;
+  final List<SpendingT> spendings;
   BudgetTable(this.spendings);
 
   @override

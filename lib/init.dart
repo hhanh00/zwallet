@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:get_it/get_it.dart';
+
 import 'accounts.dart';
 import 'appsettings.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -8,7 +10,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/warp.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 
@@ -20,9 +22,9 @@ import 'router.dart';
 
 Future<void> initCoins() async {
   final dbPath = await getDbPath();
-  Directory(dbPath).createSync(recursive: true);
+  await Directory(dbPath).create(recursive: true);
   for (var coin in coins) {
-    coin.init(dbPath);
+    await coin.init(dbPath);
   }
 }
 
@@ -30,7 +32,7 @@ Future<void> restoreWindow() async {
   if (isMobile()) return;
   await windowManager.ensureInitialized();
 
-  final prefs = await SharedPreferences.getInstance();
+  final prefs = GetIt.I.get<SharedPreferences>();
   final width = prefs.getDouble('width');
   final height = prefs.getDouble('height');
   final size = width != null && height != null ? Size(width, height) : null;
@@ -53,7 +55,7 @@ class _OnWindow extends WindowListener {
   @override
   void onWindowResized() async {
     final s = await windowManager.getSize();
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = GetIt.I.get<SharedPreferences>();
     prefs.setDouble('width', s.width);
     prefs.setDouble('height', s.height);
   }
@@ -61,7 +63,6 @@ class _OnWindow extends WindowListener {
   @override
   void onWindowClose() async {
     logger.d('Shutdown');
-    WarpApi.cancelSync();
   }
 }
 

@@ -15,14 +15,14 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 
 import '../accounts.dart';
 import '../appsettings.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
-import '../store2.dart';
+import '../store.dart';
 import 'scan.dart';
 import 'utils.dart';
 
@@ -99,7 +99,7 @@ class LoadingWrapper extends StatelessWidget {
 }
 
 class RecipientWidget extends StatelessWidget {
-  final RecipientT recipient;
+  final UserMemoT recipient;
   final bool? selected;
   late final ZMessage message;
   RecipientWidget(this.recipient, {this.selected}) {
@@ -108,10 +108,10 @@ class RecipientWidget extends StatelessWidget {
       0,
       false,
       '',
-      recipient.address!,
-      recipient.address!,
+      recipient.recipient!,
+      recipient.recipient!,
       recipient.subject!,
-      recipient.memo!,
+      recipient.body!,
       DateTime.now(),
       0,
       false,
@@ -132,10 +132,11 @@ class RecipientWidget extends StatelessWidget {
               if (recipient.replyTo)
                 Text(s.includeReplyTo, style: t.textTheme.labelSmall),
               MessageContentWidget(
-                  recipient.address!, message, recipient.memo!),
-              Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(amountToString2(recipient.amount))),
+                  recipient.recipient!, message),
+              // TODO
+              // Align(
+              //     alignment: Alignment.centerRight,
+              //     child: Text(amountToString2(recipient.amount))),
             ],
           ),
         ));
@@ -307,11 +308,12 @@ class InputTextQRState extends State<InputTextQR> {
 }
 
 class PoolSelection extends StatefulWidget {
-  final PoolBalanceT balances;
+  final BalanceT balances;
   final void Function(int? pools)? onChanged;
   final int initialValue;
+  final bool hidden;
   PoolSelection(this.initialValue,
-      {super.key, required this.balances, this.onChanged});
+      {super.key, required this.balances, this.onChanged, this.hidden = false});
   @override
   State<StatefulWidget> createState() => PoolSelectionState();
 }
@@ -322,6 +324,7 @@ class PoolSelectionState extends State<PoolSelection> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.hidden) return SizedBox.shrink();
     final t = Theme.of(context);
     final txtStyle = t.textTheme.labelLarge!;
 
@@ -377,15 +380,13 @@ enum AmountSource {
 
 class AmountPicker extends StatefulWidget {
   final int? spendable;
-  final Amount initialAmount;
-  final bool canDeductFee;
-  final void Function(Amount?)? onChanged;
+  final int initialAmount;
+  final void Function(int?)? onChanged;
   final bool custom;
   AmountPicker(
     this.initialAmount, {
     super.key,
     this.spendable,
-    this.canDeductFee = true,
     this.onChanged,
     this.custom = false,
   });
@@ -396,12 +397,12 @@ class AmountPicker extends StatefulWidget {
 class AmountPickerState extends State<AmountPicker> {
   late final s = S.of(context);
   final fieldKey =
-      GlobalKey<FormBuilderFieldState<FormBuilderField<Amount>, Amount>>();
+      GlobalKey<FormBuilderFieldState<FormBuilderField<int>, int>>();
   final formKey = GlobalKey<FormBuilderState>();
   double? fxRate;
   double _sliderValue = 0;
   late final amountController =
-      TextEditingController(text: amountToString2(widget.initialAmount.value));
+      TextEditingController(text: amountToString2(widget.initialAmount));
   late final nformat = NumberFormat.decimalPatternDigits(
       locale: Platform.localeName,
       decimalDigits: decimalDigits(appSettings.fullPrec));
@@ -418,15 +419,15 @@ class AmountPickerState extends State<AmountPicker> {
     final customSendSettings = appSettings.customSendSettings;
     final c = coins[aa.coin];
     final spendable = widget.spendable;
-    return FormBuilderField<Amount>(
+    return FormBuilderField<int>(
       key: fieldKey,
       name: 'amount_form',
       initialValue: widget.initialAmount,
       onChanged: widget.onChanged,
       validator: FormBuilderValidators.compose([
-        (a) => a!.value <= 0 ? s.amountMustBePositive : null,
+        (a) => a! <= 0 ? s.amountMustBePositive : null,
         if (spendable != null)
-          (a) => a!.value > spendable ? s.notEnoughBalance : null,
+          (a) => a! > spendable ? s.notEnoughBalance : null,
       ]),
       builder: (field) {
         return FormBuilder(
@@ -458,14 +459,6 @@ class AmountPickerState extends State<AmountPicker> {
                       },
                     ),
                   ),
-                  if (widget.canDeductFee &&
-                      spendable != null &&
-                      widget.custom &&
-                      customSendSettings.max)
-                    IconButton(
-                      onPressed: () => _max(field),
-                      icon: FaIcon(FontAwesomeIcons.maximize),
-                    ),
                 ],
               ),
               if (!widget.custom || customSendSettings.amountCurrency)
@@ -500,18 +493,6 @@ class AmountPickerState extends State<AmountPicker> {
                     _update(field, value, AmountSource.Slider);
                   },
                 ),
-              if (widget.canDeductFee &&
-                  widget.custom &&
-                  customSendSettings.deductFee)
-                FormBuilderSwitch(
-                    name: 'deduct_fee',
-                    initialValue: widget.initialAmount.deductFee,
-                    title: Text(s.deductFee),
-                    onChanged: (v) {
-                      var a = field.value!;
-                      a.deductFee = v!;
-                      field.didChange(a);
-                    }),
             ],
           ),
         );
@@ -521,14 +502,12 @@ class AmountPickerState extends State<AmountPicker> {
 
   AmountSource? _source;
 
-  _update(FormFieldState<Amount> field, int v, AmountSource source) {
+  _update(FormFieldState<int> field, int v, AmountSource source) {
     if (_source != null) return;
-    var amount = field.value ?? Amount(0, false);
     try {
       _source = source;
-      amount.value = v;
       if (source != AmountSource.Crypto) {
-        amountController.text = amountToString2(amount.value);
+        amountController.text = amountToString2(v);
       }
       final spendable = widget.spendable;
       if (source != AmountSource.Fiat) {
@@ -538,23 +517,14 @@ class AmountPickerState extends State<AmountPicker> {
         });
       }
       if (source != AmountSource.Slider && spendable != null && spendable > 0) {
-        final p = amount.value / spendable * 100;
+        final p = v / spendable * 100;
         _sliderValue = p.clamp(0.0, 100.0);
       }
-      field.didChange(amount);
+      field.didChange(v);
     } finally {
       _source = null;
     }
     setState(() {});
-  }
-
-  _max(FormFieldState<Amount> field) {
-    final value = widget.spendable!;
-    formKey.currentState!.fields['deduct_fee']?.setValue(true);
-    var amount = field.value!;
-    amount.value = value;
-    amount.deductFee = true;
-    _update(field, value, AmountSource.External);
   }
 
   void setAmount(int amount) {
@@ -570,10 +540,11 @@ class AmountPickerState extends State<AmountPicker> {
 }
 
 class InputMemo extends StatefulWidget {
-  final MemoData memo;
-  final void Function(MemoData?)? onChanged;
+  final UserMemoT memo;
+  final void Function(UserMemoT?)? onChanged;
   final bool custom;
-  InputMemo(this.memo, {super.key, this.onChanged, this.custom = false});
+  final bool hidden;
+  InputMemo(this.memo, {super.key, this.onChanged, this.custom = false, this.hidden = false});
 
   @override
   State<StatefulWidget> createState() => InputMemoState();
@@ -581,24 +552,25 @@ class InputMemo extends StatefulWidget {
 
 class InputMemoState extends State<InputMemo> {
   final fieldKey =
-      GlobalKey<FormBuilderFieldState<FormBuilderField<MemoData>, MemoData>>();
+      GlobalKey<FormBuilderFieldState<FormBuilderField<UserMemoT>, UserMemoT>>();
   final formKey = GlobalKey<FormBuilderState>();
-  late MemoData value = widget.memo.clone();
+  late UserMemoT value = widget.memo;
   late final subjectController =
       TextEditingController(text: widget.memo.subject);
-  late final memoController = TextEditingController(text: widget.memo.memo);
+  late final memoController = TextEditingController(text: widget.memo.body);
 
   @override
   Widget build(BuildContext context) {
+    if (widget.hidden) return SizedBox.shrink();
     final s = S.of(context);
     final customSendSettings = appSettings.customSendSettings;
-    return FormBuilderField<MemoData>(
+    return FormBuilderField<UserMemoT>(
         key: fieldKey,
         name: 'memo',
         initialValue: value,
-        validator: (MemoData? v) {
+        validator: (UserMemoT? v) {
           if (v == null) return null;
-          if (utf8.encode(v.memo).length > 511) return s.memoTooLong;
+          if (utf8.encode(v.body!).length > 511) return s.memoTooLong;
           return null;
         },
         onChanged: widget.onChanged,
@@ -611,9 +583,9 @@ class InputMemoState extends State<InputMemo> {
                   FormBuilderSwitch(
                     name: 'reply',
                     title: Text(s.includeReplyTo),
-                    initialValue: value.reply,
+                    initialValue: value.replyTo,
                     onChanged: (v) {
-                      value.reply = v!;
+                      value.replyTo = v!;
                       field.didChange(value);
                     },
                   ),
@@ -635,7 +607,7 @@ class InputMemoState extends State<InputMemo> {
                   maxLines: 10,
                   enableSuggestions: true,
                   onChanged: (v) {
-                    value.memo = v!;
+                    value.body = v!;
                     field.didChange(value);
                   },
                 )
@@ -645,12 +617,12 @@ class InputMemoState extends State<InputMemo> {
         });
   }
 
-  void setMemoBody(String body) {
-    final m = MemoData(false, '', body);
-    formKey.currentState!.fields['reply']?.setValue(false);
-    subjectController.text = m.subject;
-    memoController.text = m.memo;
-    fieldKey.currentState!.didChange(m);
+  void setMemoBody(UserMemoT memo) {
+    formKey.currentState?.fields['reply']?.setValue(false);
+    value.replyTo = false;
+    subjectController.text = memo.subject ?? '';
+    memoController.text = memo.body!;
+    fieldKey.currentState?.didChange(memo);
   }
 }
 
@@ -716,18 +688,9 @@ enum Severity {
 class AnimatedQR extends StatefulWidget {
   final String title;
   final String caption;
-  final String data;
-  final List<String> chunks;
+  final List<PacketT> chunks;
 
-  AnimatedQR.init(String title, String caption, String data)
-      : this(
-            title,
-            caption,
-            data,
-            WarpApi.splitData(DateTime.now().millisecondsSinceEpoch ~/ 1000,
-                base64Encode(ZLibCodec().encode(utf8.encode(data)))));
-
-  AnimatedQR(this.title, this.caption, this.data, this.chunks);
+  AnimatedQR(this.title, this.caption, this.chunks);
 
   @override
   State<StatefulWidget> createState() => _AnimatedQRState();
@@ -758,13 +721,15 @@ class _AnimatedQRState extends State<AnimatedQR> {
     final theme = Theme.of(context);
     final idx = index % widget.chunks.length;
     final qrSize = getScreenSize(context) * 0.8;
+    final packet = widget.chunks[idx];
+    final data = base64Encode(packet.data!);
     return Center(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         QrImage(
             key: ValueKey(idx),
-            data: widget.chunks[idx],
+            data: data,
             size: qrSize,
             backgroundColor: Colors.white),
         Gap(8),
@@ -809,10 +774,9 @@ class HorizontalBarChart extends StatelessWidget {
 
 class MessageContentWidget extends StatelessWidget {
   final String address;
-  final ZMessage? message;
-  final String memo;
+  final ZMessage message;
 
-  MessageContentWidget(this.address, this.message, this.memo);
+  MessageContentWidget(this.address, this.message);
 
   @override
   Widget build(BuildContext context) {
@@ -820,19 +784,12 @@ class MessageContentWidget extends StatelessWidget {
     final m = message;
     final addressWidget =
         Text('${centerTrim(address)}', style: theme.textTheme.labelMedium);
-    if (m != null) {
-      return Column(children: [
-        addressWidget,
-        Text("${m.subject}", style: theme.textTheme.titleSmall),
-        if (m.subject != m.body)
-          Text("${m.body}", style: theme.textTheme.bodySmall),
-      ]);
-    } else {
-      return Column(children: [
-        addressWidget,
-        Text(memo, style: theme.textTheme.bodySmall),
-      ]);
-    }
+    return Column(children: [
+      addressWidget,
+      Text("${m.subject}", style: theme.textTheme.titleSmall),
+      if (m.subject != m.body)
+        Text("${m.body}", style: theme.textTheme.bodySmall),
+    ]);
   }
 }
 

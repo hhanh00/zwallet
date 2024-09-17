@@ -14,6 +14,7 @@ class ZcashCoin extends CoinBase {
   String? marketTicker = "ZECUSDT";
   AssetImage image = AssetImage('assets/zcash.png');
   List<LWInstance> lwd = [
+    LWInstance("Local", "http://172.16.11.208:9067"),
     LWInstance("Zec.rocks (Global)", "https://zec.rocks:443"),
     LWInstance("Zcash Infra (USA)", "https://lwd1.zcash-infra.com:9067"),
     LWInstance("Zcash Infra (HK)", "https://lwd2.zcash-infra.com:9067"),
@@ -27,6 +28,8 @@ class ZcashCoin extends CoinBase {
     LWInstance("Zec.rocks (EU)", "https://eu.zec.rocks:443"),
     LWInstance("Zec.rocks (AP)", "https://ap.zec.rocks:443"),
   ];
+  // String? warpUrl = "http://zebra2.zcash-infra.com:8000";
+  String? warpUrl = "http://127.0.0.1:8000";
   int defaultAddrMode = 0;
   int defaultUAType = 7; // TSO
   bool supportsUA = true;

@@ -4,13 +4,13 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 
 import '../../accounts.dart';
 import '../../appsettings.dart';
 import '../../generated/intl/messages.dart';
-import '../../store2.dart';
+import '../../store.dart';
 import '../scan.dart';
 import '../utils.dart';
 
@@ -53,8 +53,7 @@ class _ContactsState extends State<ContactsPage> {
 
   _select(int v) {
     final c = contacts.contacts[v];
-    if (!widget.main)
-      GoRouter.of(context).pop(c);
+    if (!widget.main) GoRouter.of(context).pop(c);
   }
 
   _copyToClipboard(int? v) {
@@ -65,16 +64,12 @@ class _ContactsState extends State<ContactsPage> {
 
   _save() async {
     final s = S.of(context);
-    final coinSettings = CoinSettingsExtension.load(aa.coin);
-    final fee = coinSettings.feeT;
     final confirmed =
         await showConfirmDialog(context, s.save, s.confirmSaveContacts);
     if (!confirmed) return;
-    final txPlan = WarpApi.commitUnsavedContacts(
-        aa.coin, aa.id, coinSettings.receipientPools,
-        appSettings.anchorOffset, fee); // save to Orchard
-    GoRouter.of(context)
-        .push('/account/txplan?tab=contacts', extra: txPlan);
+    final txPlan = warp.saveContacts(
+        aa.coin, aa.id, syncStatus.syncedHeight, appSettings.anchorOffset);
+    GoRouter.of(context).push('/account/txplan?tab=contacts', extra: txPlan);
   }
 
   _add() {
@@ -93,7 +88,7 @@ class _ContactsState extends State<ContactsPage> {
         await showConfirmDialog(context, s.delete, s.confirmDeleteContact);
     if (!confirmed) return;
     final c = listKey.currentState!.selectedContact!;
-    WarpApi.storeContact(c.id, c.name!, '', true);
+    warp.deleteContact(aa.coin, c.id);
     contacts.fetchContacts();
   }
 }
@@ -117,7 +112,7 @@ class ContactListState extends State<ContactList> {
       final c = contacts.contacts;
       return ListView.separated(
         itemBuilder: (context, index) => ContactItem(
-          c[index].unpack(),
+          c[index],
           selected: selected == index,
           onLongPress: () {
             final v = selected != index ? index : null;
@@ -133,11 +128,12 @@ class ContactListState extends State<ContactList> {
     });
   }
 
-  Contact? get selectedContact => selected?.let((s) => contacts.contacts[s]);
+  ContactCardT? get selectedContact =>
+      selected?.let((s) => contacts.contacts[s]);
 }
 
 class ContactItem extends StatelessWidget {
-  final ContactT contact;
+  final ContactCardT contact;
   final bool? selected;
   final void Function()? onPress;
   final void Function()? onLongPress;
@@ -173,7 +169,7 @@ class _ContactEditState extends State<ContactEditPage> {
   @override
   void initState() {
     super.initState();
-    final c = WarpApi.getContact(aa.coin, widget.id);
+    final c = warp.getContact(aa.coin, widget.id);
     nameController.text = c.name!;
     addressController.text = c.address!;
   }
@@ -206,8 +202,13 @@ class _ContactEditState extends State<ContactEditPage> {
   }
 
   _save() {
-    WarpApi.storeContact(
-        widget.id, nameController.text, addressController.text, true);
+    warp.addContact(
+        aa.coin,
+        ContactCardT(
+            id: widget.id,
+            name: nameController.text,
+            address: addressController.text,
+            saved: false));
     contacts.fetchContacts();
     GoRouter.of(context).pop();
   }
@@ -274,8 +275,12 @@ class _ContactAddState extends State<ContactAddPage> {
   add() async {
     final form = formKey.currentState!;
     if (form.validate()) {
-      WarpApi.storeContact(
-          0, nameController.text, addressController.text, true);
+      warp.addContact(
+          aa.coin,
+          ContactCardT(
+              name: nameController.text,
+              address: addressController.text,
+              saved: false));
       contacts.fetchContacts();
       GoRouter.of(context).pop();
     }

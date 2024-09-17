@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:velocity_x/velocity_x.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/data_fb_generated.dart';
+import 'package:warp/warp.dart';
 
+import '../accounts.dart';
 import '../generated/intl/messages.dart';
 import 'utils.dart';
 
@@ -97,14 +97,14 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
 }
 
 class MultiQRReader extends StatefulWidget {
-  final void Function(String?)? onChanged;
+  final void Function(List<int>)? onChanged;
   MultiQRReader({this.onChanged});
   @override
   State<StatefulWidget> createState() => _MultiQRReaderState();
 }
 
 class _MultiQRReaderState extends State<MultiQRReader> {
-  final Set<String> fragments = {};
+  final Set<PacketT> packets = {};
   double value = 0.0;
 
   @override
@@ -121,22 +121,18 @@ class _MultiQRReaderState extends State<MultiQRReader> {
     );
   }
 
-  _onScan(BarcodeCapture capture) {
+  _onScan(BarcodeCapture capture) async {
     final List<Barcode> barcodes = capture.barcodes;
     for (final barcode in barcodes) {
       final text = barcode.rawValue;
       if (text == null) return;
-      if (!fragments.contains(text)) {
-        fragments.add(text);
-        final res = WarpApi.mergeData(text);
-        if (res.data.isEmptyOrNull) {
-          logger.d('${res.progress} ${res.total}');
-          setState(() {
-            value = res.progress / res.total;
-          });
-        } else {
-          final decoded =
-              utf8.decode(ZLibCodec().decode(base64Decode(res.data!)));
+      if (!packets.contains(text)) {
+        final data = base64Decode(text);
+        final packet = PacketT(data: data);
+        packets.add(packet);
+        final res = await warp.mergeData(aa.coin, packets.toList());
+        final decoded = res.data;
+        if (decoded != null) {
           widget.onChanged?.call(decoded);
         }
       }

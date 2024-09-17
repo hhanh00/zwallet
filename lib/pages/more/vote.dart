@@ -3,15 +3,16 @@ import 'dart:convert';
 import 'package:YWallet/pages/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:go_router/go_router.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:warp_api/warp_api.dart';
+import 'package:warp/warp.dart';
 
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
-import '../../store2.dart';
+import '../../store.dart';
 import '../../tablelist.dart';
 
 enum ElectionStatus {
@@ -34,7 +35,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
   void initState() {
     super.initState();
     Future(() async {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = GetIt.I.get<SharedPreferences>();
       final electionURL = prefs.getString('election:url');
       if (electionURL != null) await _load(electionURL);
     });
@@ -44,7 +45,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
   Widget build(BuildContext context) {
     final s = S.of(context);
 
-    final height = syncStatus2.latestHeight;
+    final height = syncStatus.latestHeight;
     if (height == null) return Scaffold();
 
     ElectionStatus? status;
@@ -94,7 +95,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
   }
 
   _load(String electionURL) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = GetIt.I.get<SharedPreferences>();
     prefs.setString('election:url', electionURL);
     final rep = await http.get(Uri.parse(electionURL));
     final electionString = rep.body;
@@ -109,11 +110,11 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
   _next() async {
     final e = vote?.election;
     if (e != null) {
-      WarpApi.populateVoteNotes(aa.coin, aa.id, e.start_height, e.end_height);
-      final ids = WarpApi.listVoteNotes(aa.coin, aa.id);
-      logger.d("$ids");
-      final vote = Vote(election: e, ids: ids);
-      GoRouter.of(context).push('/more/vote/notes', extra: vote);
+      // WarpApi.populateVoteNotes(aa.coin, aa.id, e.start_height, e.end_height);
+      // final ids = WarpApi.listVoteNotes(aa.coin, aa.id);
+      // logger.d("$ids");
+      // final vote = Vote(election: e, ids: ids);
+      // GoRouter.of(context).push('/more/vote/notes', extra: vote);
     } else {
       final electionURL = urlController.text;
       await _load(electionURL);
@@ -247,18 +248,18 @@ class VoteCandidateState extends State<VoteCandidatePage>
     final election = widget.vote.election;
     final ids = widget.vote.ids;
     await load(() async {
-      final vote = await WarpApi.vote(
-          aa.coin, aa.id, ids, candidate, jsonEncode(election));
-      final rep = await http.put(Uri.parse(election.submit_url), body: vote);
-      if (rep.statusCode != 200) {
-        final error = rep.body;
-        await showMessageBox2(context, 'Vote Failed', error);
-      }
-      else {
-        final hash = rep.body;
-        await showMessageBox2(context, 'Vote Submitted', hash);
-        GoRouter.of(context).go('/more');
-      }
+      // final vote = await WarpApi.vote(
+      //     aa.coin, aa.id, ids, candidate, jsonEncode(election));
+      // final rep = await http.put(Uri.parse(election.submit_url), body: vote);
+      // if (rep.statusCode != 200) {
+      //   final error = rep.body;
+      //   await showMessageBox2(context, 'Vote Failed', error);
+      // }
+      // else {
+      //   final hash = rep.body;
+      //   await showMessageBox2(context, 'Vote Submitted', hash);
+      //   GoRouter.of(context).go('/more');
+      // }
     });
   }
 }
