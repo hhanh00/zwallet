@@ -267,5 +267,6 @@
 	"confirm": "Please Confirm",
 	"confirmClearSwapHistory": "Are you sure you want to clear the swap history?",
 	"retry": "Retry",
-	"vote": "Vote"
+	"vote": "Vote",
+	"birthHeight": "Birth Height"
 }

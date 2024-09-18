@@ -5,10 +5,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_palette/flutter_palette.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -65,6 +62,48 @@ class Panel extends StatelessWidget {
 
   _save(BuildContext context) {
     GoRouter.of(context).push('/showqr?title=$title', extra: text!);
+  }
+}
+
+class MoreSection {
+  final Widget title;
+  final List<MoreTile> tiles;
+  MoreSection({
+    required this.title,
+    required this.tiles,
+  });
+}
+
+class MoreTile {
+  final String url;
+  final String text;
+  final Widget icon;
+  final bool secured;
+  final Future<void> Function()? onPressed;
+
+  MoreTile(
+      {required this.url,
+      required this.text,
+      required this.icon,
+      this.secured = false,
+      this.onPressed});
+}
+
+class MediumTitle extends StatelessWidget {
+  final String title;
+  MediumTitle(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context);
+    return Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: t.colorScheme.primary),
+        child: Text(title,
+            style: t.textTheme.bodyLarge!
+                .copyWith(color: t.colorScheme.background)));
   }
 }
 
@@ -131,8 +170,7 @@ class RecipientWidget extends StatelessWidget {
             children: [
               if (recipient.replyTo)
                 Text(s.includeReplyTo, style: t.textTheme.labelSmall),
-              MessageContentWidget(
-                  recipient.recipient!, message),
+              MessageContentWidget(recipient.recipient!, message),
               // TODO
               // Align(
               //     alignment: Alignment.centerRight,
@@ -140,85 +178,6 @@ class RecipientWidget extends StatelessWidget {
             ],
           ),
         ));
-  }
-}
-
-class MosaicWidget extends StatelessWidget {
-  final List<MoreTile> buttons;
-  MosaicWidget(this.buttons);
-
-  @override
-  Widget build(BuildContext context) {
-    final t = Theme.of(context);
-    final palette = getPalette(t.colorScheme.inversePrimary, buttons.length);
-    return ListView.builder(
-        itemBuilder: (BuildContext context, int index) {
-          final button = buttons[index];
-          return ListTile(
-            leading: SizedBox(width: 40, child: button.icon),
-            title: Text(button.text, style: t.textTheme.headlineSmall),
-            tileColor: palette.colors[index].toColor(),
-            trailing: Icon(Icons.chevron_right),
-            onTap: () => _onMenu(context, button),
-          );
-        },
-        itemCount: buttons.length);
-  }
-
-  _onMenu(BuildContext context, MoreTile button) async {
-    final onPressed = button.onPressed;
-    if (onPressed != null) {
-      await onPressed();
-    } else {
-      if (button.secured) {
-        final s = S.of(context);
-        final auth = await authenticate(context, s.secured);
-        if (!auth) return;
-      }
-      GoRouter.of(context).push(button.url);
-    }
-  }
-}
-
-class MoreSection {
-  final Widget title;
-  final List<MoreTile> tiles;
-  MoreSection({
-    required this.title,
-    required this.tiles,
-  });
-}
-
-class MoreTile {
-  final String url;
-  final String text;
-  final Widget icon;
-  final bool secured;
-  final Future<void> Function()? onPressed;
-
-  MoreTile(
-      {required this.url,
-      required this.text,
-      required this.icon,
-      this.secured = false,
-      this.onPressed});
-}
-
-class MediumTitle extends StatelessWidget {
-  final String title;
-  MediumTitle(this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    final t = Theme.of(context);
-    return Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: t.colorScheme.primary),
-        child: Text(title,
-            style: t.textTheme.bodyLarge!
-                .copyWith(color: t.colorScheme.background)));
   }
 }
 
@@ -304,6 +263,104 @@ class InputTextQRState extends State<InputTextQR> {
 
   setValue(String v) {
     _onChanged(v, fieldKey.currentState!);
+  }
+}
+
+class HeightPicker extends StatefulWidget {
+  final int height;
+  final Widget? label;
+  final void Function(int?)? onChanged;
+  HeightPicker(this.height, {super.key, this.onChanged, this.label});
+  @override
+  State<StatefulWidget> createState() => HeightPicketState();
+}
+
+class HeightPicketState extends State<HeightPicker> {
+  late final s = S.of(context);
+  final fieldKey =
+      GlobalKey<FormBuilderFieldState<FormBuilderField<int>, int>>();
+  final formKey = GlobalKey<FormBuilderState>();
+  late final heightController =
+      TextEditingController(text: widget.height.toString());
+
+  @override
+  Widget build(BuildContext context) {
+    return FormBuilderField<int>(
+        key: fieldKey,
+        name: 'amount_form',
+        initialValue: widget.height,
+        validator: (_) {
+          final formState = formKey.currentState!;
+          if (formState.validate()) return null;
+          return 'Invalid height';
+        },
+        onChanged: widget.onChanged,
+        builder: (field) {
+          return FormBuilder(
+              key: formKey,
+              child: Row(children: [
+                Expanded(
+                    child: FormBuilderTextField(
+                        name: 'height_int',
+                        decoration: InputDecoration(label: widget.label),
+                        validator: FormBuilderValidators.integer(),
+                        keyboardType: TextInputType.numberWithOptions(),
+                        controller: heightController,
+                        onChanged: (v) {
+                          final h = int.tryParse(v!);
+                          h?.let((h) => field.didChange(h));
+                        })),
+                IconButton(
+                    onPressed: () => pickCalendar(field),
+                    icon: Icon(Icons.calendar_today)),
+              ]));
+        });
+  }
+
+  pickCalendar(FormFieldState<int> field) async {
+    final h = await GoRouter.of(context).push<int>('/calendar_height');
+    print('HEIGHT $h');
+    heightController.text = h.toString();
+  }
+}
+
+class CalendarHeightPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => CalendarHeightState();
+}
+
+class CalendarHeightState extends State<CalendarHeightPage> {
+  late S s = S.of(context);
+  int? height;
+
+  @override
+  Widget build(BuildContext context) {
+    final today = DateTime.now();
+    final activationDate = DateTime.fromMillisecondsSinceEpoch(
+        warp.getActivationDate(aa.coin) * 1000);
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _2) {
+        if (didPop) return;
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => GoRouter.of(context).pop(height));
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text(s.birthHeight)),
+        body: CalendarDatePicker(
+          initialDate: today,
+          firstDate: activationDate,
+          lastDate: today,
+          onDateChanged: selectDate,
+        ),
+      ),
+    );
+  }
+
+  selectDate(DateTime? date) async {
+    final d = date!.millisecondsSinceEpoch ~/ 1000;
+    height = await warp.getHeightByTime(aa.coin, d);
   }
 }
 
@@ -544,15 +601,16 @@ class InputMemo extends StatefulWidget {
   final void Function(UserMemoT?)? onChanged;
   final bool custom;
   final bool hidden;
-  InputMemo(this.memo, {super.key, this.onChanged, this.custom = false, this.hidden = false});
+  InputMemo(this.memo,
+      {super.key, this.onChanged, this.custom = false, this.hidden = false});
 
   @override
   State<StatefulWidget> createState() => InputMemoState();
 }
 
 class InputMemoState extends State<InputMemo> {
-  final fieldKey =
-      GlobalKey<FormBuilderFieldState<FormBuilderField<UserMemoT>, UserMemoT>>();
+  final fieldKey = GlobalKey<
+      FormBuilderFieldState<FormBuilderField<UserMemoT>, UserMemoT>>();
   final formKey = GlobalKey<FormBuilderState>();
   late UserMemoT value = widget.memo;
   late final subjectController =

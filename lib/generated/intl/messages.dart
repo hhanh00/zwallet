@@ -1712,6 +1712,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Vote'**
   String get vote;
+
+  /// No description provided for @birthHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth Height'**
+  String get birthHeight;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

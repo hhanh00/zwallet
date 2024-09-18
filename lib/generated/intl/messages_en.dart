@@ -834,4 +834,7 @@ class SEn extends S {
 
   @override
   String get vote => 'Vote';
+
+  @override
+  String get birthHeight => 'Birth Height';
 }

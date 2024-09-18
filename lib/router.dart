@@ -6,6 +6,7 @@ import 'pages/accounts/swap/history.dart';
 import 'pages/accounts/swap/stealthex.dart';
 import 'pages/more/cold.dart';
 import 'pages/more/vote.dart';
+import 'pages/widgets.dart';
 import 'settings.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -379,6 +380,10 @@ final router = GoRouter(
           title: state.uri.queryParameters['title']!,
           text: state.extra as String),
     ),
+    GoRoute(
+      path: '/calendar_height',
+      builder: (context, state) => CalendarHeightPage()
+    )
   ],
 );
 

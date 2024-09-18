@@ -31,6 +31,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
   final nameController = TextEditingController();
   String _key = '';
   final accountIndexController = TextEditingController(text: '0');
+  int? _birthHeight;
   late List<FormBuilderFieldOption<int>> options;
   bool _restore = false;
 
@@ -115,7 +116,10 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                       decoration: InputDecoration(label: Text(s.accountIndex)),
                       controller: accountIndexController,
                       keyboardType: TextInputType.number,
-                    )
+                    ),
+                    Gap(8),
+                    HeightPicker(syncStatus.syncedHeight, label: Text(s.birthHeight),
+                    onChanged: (h) => _birthHeight = h,)
                   ]),
                 // TODO: Ledger
                 // if (_restore && coins[coin].supportsLedger && !isMobile())
@@ -143,17 +147,13 @@ class _NewImportAccountState extends State<NewImportAccountPage>
         if (_key.isEmpty)
           _key = await warp.generateSeed();
         final account = await warp.createAccount(
-            coin, nameController.text, _key, index, syncStatus.latestHeight ?? 0);
+            coin, nameController.text, _key, index, _birthHeight ?? syncStatus.syncedHeight);
         if (account < 0)
           form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
         else {
-          print('+');
           await setActiveAccount(coin, account);
-          print('+');
           await aa.save();
-          print('+');
           final accounts = warp.listAccounts(coin);
-          print('+');
           if (accounts.length == 1) {
             // First account of a coin is synced
             await warp.resetChain(coin, syncStatus.latestHeight ?? 0);
