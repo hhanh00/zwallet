@@ -219,7 +219,7 @@ Future<bool> setActiveAccountOf(int coin) async {
   final coinSettings = await CoinSettingsExtension.load(coin);
   final id = coinSettings.account;
   if (id == 0) return false;
-  setActiveAccount(coin, id);
+  await setActiveAccount(coin, id);
   return true;
 }
 

@@ -47,7 +47,7 @@
 	"confirmRewind": "Do you want to rewind to block {height}?",
 	"confirmSaveContacts": "Are you sure you want to save your contacts?",
 	"confirmSaveKeys": "Have you saved your keys?",
-	"confirmWatchOnly": "Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.",
+	"confirmWatchOnly": "Deleting or converting to viewing key is NOT reversible. You CANNOT upgrade back to using a secret key.",
 	"confirmations": "Min. Confirmations",
 	"confs": "Confs",
 	"connectionError": "DISCONNECTED",
@@ -268,5 +268,8 @@
 	"confirmClearSwapHistory": "Are you sure you want to clear the swap history?",
 	"retry": "Retry",
 	"vote": "Vote",
-	"birthHeight": "Birth Height"
+	"birthHeight": "Birth Height",
+	"downgradeAccount": "Downgrade Account",
+	"noKey": "No Key",
+	"editAccount": "Edit Account"
 }

@@ -121,8 +121,7 @@ void openTxInExplorer(String txId) async {
 String? addressOrUriValidator(String? v) {
   final s = S.of(rootNavigatorKey.currentContext!);
   if (v == null || v.isEmpty) return s.addressIsEmpty;
-  if (warp.isValidAddressOrUri(aa.coin, v) == 0)
-    return s.invalidAddress;
+  if (warp.isValidAddressOrUri(aa.coin, v) == 0) return s.invalidAddress;
   return null;
 }
 
@@ -143,8 +142,7 @@ String? paymentURIValidator(String? v) {
   if (v.isEmptyOrNull) return s.required;
   try {
     warp.parsePaymentURI(aa.coin, v!);
-  }
-  catch (_) {
+  } catch (_) {
     return s.invalidPaymentURI;
   }
   return null;
@@ -440,16 +438,18 @@ class Note extends HasHeight {
   factory Note.from(int? latestHeight, int id, int height, DateTime timestamp,
       double value, bool orchard, bool excluded, bool selected) {
     final confirmations = latestHeight?.let((h) => h - height + 1);
-    return Note(id, height, confirmations, timestamp, value, orchard, excluded, selected);
+    return Note(id, height, confirmations, timestamp, value, orchard, excluded,
+        selected);
   }
 
   Note(this.id, this.height, this.confirmations, this.timestamp, this.value,
       this.orchard, this.excluded, this.selected);
 
-  Note get invertExcluded =>
-      Note(id, height, confirmations, timestamp, value, orchard, !excluded, selected);
+  Note get invertExcluded => Note(id, height, confirmations, timestamp, value,
+      orchard, !excluded, selected);
 
-  Note clone() => Note(id, height, confirmations, timestamp, value, orchard, excluded, selected);
+  Note clone() => Note(
+      id, height, confirmations, timestamp, value, orchard, excluded, selected);
 }
 
 @reflector
@@ -466,17 +466,17 @@ class Tx extends HasHeight {
   String memo;
 
   factory Tx.from(
-      int? latestHeight,
-      int id,
-      int height,
-      DateTime timestamp,
-      String txid,
-      String fullTxId,
-      int value,
-      String? address,
-      String? contact,
-      String memo,
-      ) {
+    int? latestHeight,
+    int id,
+    int height,
+    DateTime timestamp,
+    String txid,
+    String fullTxId,
+    int value,
+    String? address,
+    String? contact,
+    String memo,
+  ) {
     final confirmations = latestHeight?.let((h) => h - height + 1);
     return Tx(id, height, confirmations, timestamp, txid, fullTxId, value,
         address, contact, memo);
@@ -713,3 +713,10 @@ String? isValidUA(int uaType) {
   return null;
 }
 
+extension UareceiversExtension on UareceiversT {
+  int get mask {
+    return (transparent != null ? 1 : 0) |
+        (sapling != null ? 2 : 0) |
+        (orchard != null ? 4 : 0);
+  }
+}

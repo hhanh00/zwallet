@@ -155,7 +155,7 @@ class SEn extends S {
   String get confirmSaveKeys => 'Have you saved your keys?';
 
   @override
-  String get confirmWatchOnly => 'Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.';
+  String get confirmWatchOnly => 'Deleting or converting to viewing key is NOT reversible. You CANNOT upgrade back to using a secret key.';
 
   @override
   String get confirmations => 'Min. Confirmations';
@@ -837,4 +837,13 @@ class SEn extends S {
 
   @override
   String get birthHeight => 'Birth Height';
+
+  @override
+  String get downgradeAccount => 'Downgrade Account';
+
+  @override
+  String get noKey => 'No Key';
+
+  @override
+  String get editAccount => 'Edit Account';
 }

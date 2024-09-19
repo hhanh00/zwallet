@@ -390,7 +390,7 @@ abstract class S {
   /// No description provided for @confirmWatchOnly.
   ///
   /// In en, this message translates to:
-  /// **'Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.'**
+  /// **'Deleting or converting to viewing key is NOT reversible. You CANNOT upgrade back to using a secret key.'**
   String get confirmWatchOnly;
 
   /// No description provided for @confirmations.
@@ -1718,6 +1718,24 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Birth Height'**
   String get birthHeight;
+
+  /// No description provided for @downgradeAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Downgrade Account'**
+  String get downgradeAccount;
+
+  /// No description provided for @noKey.
+  ///
+  /// In en, this message translates to:
+  /// **'No Key'**
+  String get noKey;
+
+  /// No description provided for @editAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Account'**
+  String get editAccount;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

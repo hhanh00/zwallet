@@ -28,7 +28,7 @@ class AddressCarousel extends StatefulWidget {
 }
 
 class AddressCarouselState extends State<AddressCarousel> {
-  int index = 0;
+  int? index;
   final carouselController = CarouselSliderController();
 
   @override
@@ -41,10 +41,15 @@ class AddressCarouselState extends State<AddressCarousel> {
     return Observer(builder: (context) {
       aa.diversifiedAddress;
 
+      if (aa.id == 0) return SizedBox.shrink();
       final theme = Theme.of(context);
 
+      final accountAddress = warp.getAccountAddress(aa.coin, aa.id, 0, 7);
+      final receivers = warp.decodeAddress(aa.coin, accountAddress);
+      final accountMask = receivers.mask;
+
       final supportsUA = coins[aa.coin].supportsUA;
-      final ua = coinSettings.uaType;
+      final ua = coinSettings.uaType & accountMask;
       final addressAvailable = supportsUA
           ? [7 & ua, 8 | (6 & ua), 2, 4, 1] // main, div, sap, orch, trp
           : [2, 10, 1]; // pool masks, 15 = t|s|o|div
@@ -58,6 +63,14 @@ class AddressCarouselState extends State<AddressCarousel> {
               onQRPressed: widget.onQRPressed);
           addressEnabled.add(Tuple2(mask, qr));
         }
+      }
+      // Remove duplicate masks
+      final masks = addressEnabled.map((k) => k.item1).toSet();
+      addressEnabled.retainWhere((k) => masks.remove(k.item1));
+      if (index == null) {
+        index = 0;
+        WidgetsBinding.instance.addPostFrameCallback((_) =>
+            widget.onAddressModeChanged?.call(addressEnabled.first.item1));
       }
 
       final addresses = addressEnabled.map((a) => a.item2).toList();

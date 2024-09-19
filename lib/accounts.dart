@@ -32,7 +32,6 @@ Future<void> setActiveAccount(int coin, int id) async {
   coinSettings = await CoinSettingsExtension.load(coin);
   runInAction(() {
     aa = ActiveAccount2.fromId(coin, id);
-    print('## ${aa.id}');
     coinSettings.account = id;
     coinSettings.save(coin);
     aa.updateDivisified();

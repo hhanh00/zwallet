@@ -65,7 +65,7 @@ extension CoinSettingsExtension on CoinSettings {
     Uint8List p;
     try {
       p = await warp.getAccountProperty(coin, 0, 'settings');
-    } catch (_) {
+    } on String {
       p = Uint8List(0);
     }
     final cs = CoinSettings.fromBuffer(p)..defaults(coin);

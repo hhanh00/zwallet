@@ -837,4 +837,13 @@ class SEs extends S {
 
   @override
   String get birthHeight => 'Birth Height';
+
+  @override
+  String get downgradeAccount => 'Downgrade Account';
+
+  @override
+  String get noKey => 'No Key';
+
+  @override
+  String get editAccount => 'Edit Account';
 }

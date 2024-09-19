@@ -31,7 +31,7 @@ class HomePageInner extends StatefulWidget {
 
 class _HomeState extends State<HomePageInner> {
   final key = GlobalKey<BalanceState>();
-  int mask = coins[aa.coin].defaultAddrMode;
+  int mask = 0;
 
   @override
   void initState() {

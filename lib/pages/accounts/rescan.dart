@@ -1,3 +1,4 @@
+import 'package:YWallet/pages/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -15,83 +16,56 @@ import '../utils.dart';
 
 class RescanPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _RescanState();
+  State<StatefulWidget> createState() => RescanState();
 }
 
-class _RescanState extends State<RescanPage> with WithLoadingAnimation {
-  late final s = S.of(context);
+class RescanState extends State<RescanPage> {
+  late S s = S.of(context);
   final formKey = GlobalKey<FormBuilderState>();
-  final minDate = activationDate;
-  DateTime maxDate = DateTime.now();
+  late int height;
+
+  @override
+  void initState() {
+    super.initState();
+    final activationHeight = warp.getActivationHeight(aa.coin);
+    final accounts = warp.listAccounts(aa.coin);
+    final minHeight = accounts.map((a) => a.birth).min() ?? activationHeight;
+    height = minHeight;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final t = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(s.rescan),
-        actions: [
-          IconButton(onPressed: _rescan, icon: Icon(Icons.check)),
-        ],
-      ),
-      body: wrapWithLoading(
-        SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: FormBuilder(
-              key: formKey,
-              child: Column(
-                children: [
-                  FormBuilderField<DateTime>(
-                      name: 'date',
-                      builder: (field) => CalendarDatePicker(
-                          initialDate: minDate,
-                          firstDate: minDate,
-                          lastDate: maxDate,
-                          onDateChanged: (v) => field.didChange(v))),
-                  Gap(8),
-                  FormBuilderTextField(
-                    name: 'height',
-                    decoration: InputDecoration(labelText: s.height),
-                    keyboardType: TextInputType.number,
-                    validator: (v) => (v.isEmptyOrNull
-                        ? null
-                        : FormBuilderValidators.integer()(v)),
-                  ),
-                  Gap(16),
-                  DecoratedBox(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.red, width: 2)),
-                      child: Padding(
-                          padding: EdgeInsets.all(8),
-                          child: Text(s.rescanWarning,
-                              style: t.textTheme.titleLarge)))
-                ],
-              ),
-            ),
-          ),
+        appBar: AppBar(
+          title: Text(s.rescan),
+          actions: [
+            IconButton(onPressed: rescan, icon: Icon(Icons.check)),
+          ],
         ),
-      ),
-    );
+        body: Padding(
+            padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+            child: FormBuilder(
+                key: formKey,
+                child: Column(children: [
+                  HeightPicker(
+                    height,
+                    label: Text(s.rescanFrom),
+                    onChanged: (h) => height = h!,
+                  )
+                ]))));
   }
 
-  _rescan() async {
+  rescan() async {
     final form = formKey.currentState!;
     if (form.validate()) {
       form.save();
-      String? h = form.fields['height']!.value;
-      DateTime d = form.fields['date']!.value ?? minDate;
-      load(() async {
-        final height = h.isNotEmptyAndNotNull
-            ? int.parse(h!)
-            : await warp.getHeightByTime(aa.coin, d.millisecondsSinceEpoch ~/ 1000);
-        final confirmed = await showConfirmDialog(
-            context, s.rescan, s.confirmRescanFrom(height));
-        if (!confirmed) return;
-        aa.reset(height);
-        Future(() => syncStatus.rescan(height));
+      final h = height;
+      if (h != null) {
+        aa.reset(h);
+        Future(() => syncStatus.rescan(h));
         GoRouter.of(context).pop();
-      });
+      }
     }
   }
 }
@@ -116,14 +90,18 @@ class _RewindState extends State<RewindPage> {
       final cps = await warp.listCheckpoints(aa.coin);
       setState(() {
         checkpoints = cps;
-        checkpointDates = checkpoints.map((cp) => 
-          _toDate(cp.timestamp, dateOnly: true)).toSet().toList();
+        checkpointDates = checkpoints
+            .map((cp) => _toDate(cp.timestamp, dateOnly: true))
+            .toSet()
+            .toList();
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final activationDate = DateTime.fromMillisecondsSinceEpoch(
+        warp.getActivationDate(aa.coin) * 1000);
     final today = DateTime.now();
     return Scaffold(
       appBar: AppBar(title: Text(s.rewind), actions: [
@@ -170,7 +148,8 @@ class _RewindState extends State<RewindPage> {
 
   rewind() async {
     final height = checkpoints[selected!].height;
-    final confirmed = await showConfirmDialog(context, s.rewind, s.confirmRewind(height));
+    final confirmed =
+        await showConfirmDialog(context, s.rewind, s.confirmRewind(height));
     if (!confirmed) return;
     Future(() async {
       await warp.rewindTo(aa.coin, height);
@@ -179,10 +158,9 @@ class _RewindState extends State<RewindPage> {
     GoRouter.of(context).pop();
   }
 
-  DateTime _toDate(int ts, { bool dateOnly = false }) {
+  DateTime _toDate(int ts, {bool dateOnly = false}) {
     var dt = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
-    if (dateOnly)
-      dt = DateTime(dt.year, dt.month, dt.day);
+    if (dateOnly) dt = DateTime(dt.year, dt.month, dt.day);
     return dt;
   }
 }

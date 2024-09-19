@@ -146,8 +146,10 @@ class _NewImportAccountState extends State<NewImportAccountPage>
         final index = int.parse(accountIndexController.text);
         if (_key.isEmpty)
           _key = await warp.generateSeed();
+        final latestHeight = await SyncStatus.getLatestHeight(coin);
+        final birthHeight = _birthHeight ?? latestHeight ?? syncStatus.syncedHeight;
         final account = await warp.createAccount(
-            coin, nameController.text, _key, index, _birthHeight ?? syncStatus.syncedHeight);
+            coin, nameController.text, _key, index, birthHeight);
         if (account < 0)
           form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
         else {
@@ -156,13 +158,10 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           final accounts = warp.listAccounts(coin);
           if (accounts.length == 1) {
             // First account of a coin is synced
-            await warp.resetChain(coin, syncStatus.latestHeight ?? 0);
+            await warp.resetChain(coin, birthHeight);
           } 
           if (widget.first) {
-            if (_key.isNotEmpty)
-              GoRouter.of(context).go('/account/rescan');
-            else
-              GoRouter.of(context).go('/account');
+            GoRouter.of(context).go('/account');
           }
           else
             GoRouter.of(context).pop();

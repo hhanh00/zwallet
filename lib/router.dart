@@ -96,25 +96,25 @@ final router = GoRouter(
                                 PaymentRequestT(),
                                 single: false)),
                     ]),
-                GoRoute(
-                  path: 'swap',
-                  builder: (context, state) => SwapPage(),
-                  routes: [
-                    GoRoute(
-                        path: 'history',
-                        builder: (context, state) => SwapHistoryPage(),
-                    ),
-                    // GoRoute(
-                    //     path: 'stealthex',
-                    //     builder: (context, state) => StealthExPage(),
-                    //     routes: [
-                    //       GoRoute(
-                    //           path: 'details',
-                    //           builder: (context, state) =>
-                    //               StealthExSummaryPage(state.extra as SwapT)),
-                    //     ]),
-                  ],
-                ),
+                // GoRoute(
+                //   path: 'swap',
+                //   builder: (context, state) => SwapPage(),
+                //   routes: [
+                //     GoRoute(
+                //         path: 'history',
+                //         builder: (context, state) => SwapHistoryPage(),
+                //     ),
+                //     // GoRoute(
+                //     //     path: 'stealthex',
+                //     //     builder: (context, state) => StealthExPage(),
+                //     //     routes: [
+                //     //       GoRoute(
+                //     //           path: 'details',
+                //     //           builder: (context, state) =>
+                //     //               StealthExSummaryPage(state.extra as SwapT)),
+                //     //     ]),
+                //   ],
+                // ),
                 GoRoute(
                   path: 'txplan',
                   builder: (context, state) => TxPlanPage(
@@ -172,6 +172,14 @@ final router = GoRouter(
                 //   path: 'pay_uri',
                 //   builder: (context, state) => PaymentURIPage(),
                 // ),
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) => EditAccountPage(state.extra as AccountNameT),
+                ),
+                GoRoute(
+                  path: 'downgrade',
+                  builder: (context, state) => DowngradeAccountPage(state.extra as AccountNameT),
+                )
               ],
             ),
           ],
@@ -382,7 +390,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/calendar_height',
-      builder: (context, state) => CalendarHeightPage()
+      builder: (context, state) => CalendarHeightPage(state.extra as DateTime)
     )
   ],
 );

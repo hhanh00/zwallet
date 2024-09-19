@@ -271,6 +271,7 @@ class HeightPicker extends StatefulWidget {
   final Widget? label;
   final void Function(int?)? onChanged;
   HeightPicker(this.height, {super.key, this.onChanged, this.label});
+
   @override
   State<StatefulWidget> createState() => HeightPicketState();
 }
@@ -318,13 +319,16 @@ class HeightPicketState extends State<HeightPicker> {
   }
 
   pickCalendar(FormFieldState<int> field) async {
-    final h = await GoRouter.of(context).push<int>('/calendar_height');
-    print('HEIGHT $h');
-    heightController.text = h.toString();
+    final height = int.parse(heightController.text);
+    final date = DateTime.fromMillisecondsSinceEpoch(await warp.getTimeByHeight(aa.coin, height) * 1000);
+    final h = await GoRouter.of(context).push<int>('/calendar_height', extra: date);
+    h?.let((h) => heightController.text = h.toString());
   }
 }
 
 class CalendarHeightPage extends StatefulWidget {
+  final DateTime date;
+  CalendarHeightPage(this.date);
   @override
   State<StatefulWidget> createState() => CalendarHeightState();
 }
@@ -349,7 +353,7 @@ class CalendarHeightState extends State<CalendarHeightPage> {
       child: Scaffold(
         appBar: AppBar(title: Text(s.birthHeight)),
         body: CalendarDatePicker(
-          initialDate: today,
+          initialDate: widget.date,
           firstDate: activationDate,
           lastDate: today,
           onDateChanged: selectDate,

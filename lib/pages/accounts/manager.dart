@@ -1,9 +1,9 @@
 import 'package:YWallet/store.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp/data_fb_generated.dart';
 import 'package:warp/warp.dart';
 
@@ -11,6 +11,7 @@ import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../utils.dart';
+import '../widgets.dart';
 
 class AccountManagerPage extends StatefulWidget {
   final bool main;
@@ -23,7 +24,6 @@ class _AccountManagerState extends State<AccountManagerPage> {
   late List<AccountNameT> accounts = getAllAccounts();
   late final s = S.of(context);
   int? selected;
-  bool editing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,31 +39,17 @@ class _AccountManagerState extends State<AccountManagerPage> {
             IconButton(onPressed: add, icon: Icon(Icons.add)),
         ]),
         body: AccountList(
-          accounts: accounts,
+          accounts,
+          key: ValueKey(accounts),
           selected: selected,
-          editing: editing,
           onSelect: (v) => select(v!),
           onLongSelect: (v) => setState(() => selected = v),
-          onEdit: onEdit,
         ));
   }
 
   add() async {
     await GoRouter.of(context).push('/more/account_manager/new');
     _refresh();
-    setState(() {});
-  }
-
-  edit() {
-    editing = true;
-    setState(() {});
-  }
-
-  onEdit(String name) {
-    final a = accounts[selected!];
-    warp.editAccountName(a.coin, a.id, name);
-    _refresh();
-    editing = false;
     setState(() {});
   }
 
@@ -90,10 +76,10 @@ class _AccountManagerState extends State<AccountManagerPage> {
     final confirmed = await showConfirmDialog(
         context, s.deleteAccount(a.name!), s.confirmDeleteAccount);
     if (confirmed) {
-      warp.deleteAccount(a.coin, a.id);
+      await warp.deleteAccount(a.coin, a.id);
       _refresh();
-      if (count == 1) {
-        setActiveAccount(0, 0);
+      if (accounts.isEmpty) {
+        await setActiveAccount(0, 0);
         GoRouter.of(context).go('/account');
       } else {
         selected = null;
@@ -102,35 +88,39 @@ class _AccountManagerState extends State<AccountManagerPage> {
     }
   }
 
+  edit() async {
+    final a = accounts[selected!];
+    await GoRouter.of(context).push('/account/edit', extra: a);
+    _refresh();
+    setState(() {});
+  }
+
   cold() async {
-    final confirmed = await showConfirmDialog(
-        context, s.convertToWatchonly, s.confirmWatchOnly);
-    if (!confirmed) return;
-    // warp.convertToWatchOnly(aa.coin, aa.id);
+    final a = accounts[selected!];
+    await GoRouter.of(context).push('/account/downgrade', extra: a);
     _refresh();
     setState(() {});
   }
 
   _refresh() {
-    accounts = getAllAccounts();
+    setState(() {
+      accounts = getAllAccounts();
+    });
   }
 }
 
 class AccountList extends StatelessWidget {
   final List<AccountNameT> accounts;
   final int? selected;
-  final bool editing;
   final void Function(int?)? onSelect;
   final void Function(int?)? onLongSelect;
-  final void Function(String)? onEdit;
 
-  AccountList({
-    required this.accounts,
+  AccountList(
+    this.accounts, {
+    super.key,
     this.selected,
     this.onSelect,
     this.onLongSelect,
-    this.editing = false,
-    this.onEdit,
   });
 
   @override
@@ -141,20 +131,16 @@ class AccountList extends StatelessWidget {
           return AccountTile(
             a,
             selected: index == selected,
-            editing: editing,
             onPress: () => onSelect?.call(index),
             onLongPress: () {
               final v = selected != index ? index : null;
               onLongSelect?.call(v);
             },
-            onEdit: onEdit,
           );
         },
         separatorBuilder: (context, index) => Divider(),
         itemCount: accounts.length);
   }
-
-  // Account? get selectedAccount => selected?.let((s) => widget.accounts[s]);
 }
 
 class AccountTile extends StatelessWidget {
@@ -162,63 +148,194 @@ class AccountTile extends StatelessWidget {
   final void Function()? onPress;
   final void Function()? onLongPress;
   final bool selected;
-  final bool editing;
-  final void Function(String)? onEdit;
   late final nameController = TextEditingController(text: a.name);
-  AccountTile(this.a,
-      {this.onPress,
-      this.onLongPress,
-      required this.selected,
-      required this.editing,
-      this.onEdit});
+  AccountTile(
+    this.a, {
+    this.onPress,
+    this.onLongPress,
+    required this.selected,
+  });
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     final c = coins[a.coin];
-    WidgetSpan? icon;
-    switch (a.keyType) {
-      case 0x80:
-        icon = WidgetSpan(
-            child: Icon(MdiIcons.snowflake, color: t.colorScheme.secondary),
-            style: t.textTheme.bodyMedium);
-        break;
-      case 1: // secret key
-        icon = WidgetSpan(
-            child: Icon(MdiIcons.sprout, color: t.colorScheme.secondary),
-            style: t.textTheme.bodyMedium);
-        break;
-      case 2: // ledger
-        icon = WidgetSpan(
-            child: Image.asset(
-          "assets/ledger.png",
-          height: 20,
-          color: t.colorScheme.secondary,
-        ));
-        break;
-    }
+    List<InlineSpan> accountFeatures = [
+      TextSpan(text: a.name, style: t.textTheme.headlineSmall),
+      WidgetSpan(child: Gap(0, crossAxisExtent: 8)),
+    ];
+    if (a.keyType & 2 != 0) // T_SK
+      accountFeatures
+          .add(TextSpan(text: 'T', style: TextStyle(color: t.primaryColor)));
+    else if (a.keyType & 1 != 0) // T_VK
+      accountFeatures.add(TextSpan(text: 't'));
+    if (a.keyType & 8 != 0) // T_SK
+      accountFeatures
+          .add(TextSpan(text: 'S', style: TextStyle(color: t.primaryColor)));
+    else if (a.keyType & 4 != 0) // S_VK
+      accountFeatures.add(TextSpan(text: 's'));
+    if (a.keyType & 32 != 0) // O_SK
+      accountFeatures
+          .add(TextSpan(text: 'O', style: TextStyle(color: t.primaryColor)));
+    else if (a.keyType & 16 != 0) // O_VK
+      accountFeatures.add(TextSpan(text: 'o'));
+    final accountRT = Text.rich(TextSpan(children: accountFeatures));
+
     return ListTile(
       selected: selected,
       leading: CircleAvatar(backgroundImage: c.image),
-      title: editing && selected
-          ? TextField(
-              controller: nameController,
-              autofocus: true,
-              onEditingComplete: () => onEdit?.call(nameController.text))
-          : RichText(
-              text: TextSpan(children: [
-              TextSpan(text: a.name, style: t.textTheme.headlineSmall),
-              if (icon != null)
-                WidgetSpan(
-                    child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                )),
-              if (icon != null) icon,
-            ])),
+      title: accountRT,
       trailing: Text(amountToString2(a.balance)),
       onTap: onPress,
       onLongPress: onLongPress,
       selectedTileColor: t.colorScheme.inversePrimary,
     );
+  }
+}
+
+class EditAccountPage extends StatefulWidget {
+  final AccountNameT account;
+  EditAccountPage(this.account, {super.key});
+  @override
+  State<StatefulWidget> createState() => EditAccountState();
+}
+
+class EditAccountState extends State<EditAccountPage> {
+  late final S s = S.of(context);
+  final formKey = GlobalKey<FormBuilderState>();
+  late final nameController = TextEditingController(text: widget.account.name);
+  late int birth = widget.account.birth;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          title: Text(s.editAccount),
+          actions: [IconButton(onPressed: ok, icon: Icon(Icons.check))]),
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+        child: FormBuilder(
+          key: formKey,
+          child: Column(children: [
+            FormBuilderTextField(name: 'name', decoration: InputDecoration(label: Text(s.name)), controller: nameController),
+            HeightPicker(birth, label: Text(s.birthHeight), onChanged: (v) => setState(() => birth = v!),),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  ok() async {
+    await warp.editAccountName(widget.account.coin, widget.account.id, 
+      nameController.text);
+    await warp.editAccountBirthHeight(widget.account.coin, widget.account.id, 
+      birth);
+    GoRouter.of(context).pop();
+  }
+}
+
+class DowngradeAccountPage extends StatefulWidget {
+  final AccountNameT account;
+  DowngradeAccountPage(this.account, {super.key});
+  @override
+  State<StatefulWidget> createState() => DowngradeAccountState();
+}
+
+class DowngradeAccountState extends State<DowngradeAccountPage> {
+  late final S s = S.of(context);
+  late final AccountSigningCapabilitiesT accountCaps =
+      warp.getAccountCapabilities(widget.account.coin, widget.account.id);
+  final formKey = GlobalKey<FormBuilderState>();
+
+  @override
+  Widget build(BuildContext context) {
+    print(accountCaps);
+    final keyOptions = [
+      FormBuilderFieldOption(value: 3, child: Text(s.secretKey)),
+      FormBuilderFieldOption(value: 1, child: Text(s.viewingKey)),
+      FormBuilderFieldOption(value: 0, child: Text(s.noKey)),
+    ];
+
+    return Scaffold(
+      appBar: AppBar(
+          title: Text(s.downgradeAccount),
+          actions: [IconButton(onPressed: downgrade, icon: Icon(Icons.check))]),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+          child: FormBuilder(
+            key: formKey,
+            child: Column(children: [
+              FormBuilderCheckbox(
+                  name: 'seed',
+                  title: Text(s.seed),
+                  enabled: accountCaps.transparent == 3 &&
+                      accountCaps.sapling == 3 &&
+                      accountCaps.orchard == 3,
+                  initialValue: accountCaps.seed,
+                  onChanged: (v) {
+                    setState(() => accountCaps.seed = v!);
+                  }),
+              FormBuilderRadioGroup(
+                name: 'transparent',
+                decoration: InputDecoration(label: Text(s.transparent)),
+                options: keyOptions,
+                initialValue: accountCaps.transparent,
+                onChanged: (v) {
+                  setState(() {
+                    uncheckSeed();
+                    accountCaps.transparent = v!;
+                  });
+                },
+              ),
+              FormBuilderRadioGroup(
+                name: 'sapling',
+                decoration: InputDecoration(label: Text(s.sapling)),
+                options: keyOptions,
+                initialValue: accountCaps.sapling,
+                onChanged: (v) {
+                  setState(() {
+                    uncheckSeed();
+                    accountCaps.sapling = v!;
+                  });
+                },
+              ),
+              FormBuilderRadioGroup(
+                name: 'orchard',
+                decoration: InputDecoration(label: Text(s.orchard)),
+                options: keyOptions,
+                initialValue: accountCaps.orchard,
+                onChanged: (v) {
+                  setState(() {
+                    uncheckSeed();
+                    accountCaps.orchard = v!;
+                  });
+                },
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+
+  uncheckSeed() {
+    formKey.currentState!.fields['seed']!.setValue(false);
+    accountCaps.seed = false;
+  }
+
+  downgrade() async {
+    logger.d(accountCaps);
+    final confirmed =
+        await showConfirmDialog(context, s.coldStorage, s.confirmWatchOnly);
+    if (confirmed) {
+      try {
+        await warp.downgradeAccount(
+            widget.account.coin, widget.account.id, accountCaps);
+        GoRouter.of(context).pop();
+      } on String catch (e) {
+        await showMessageBox2(context, s.error, e);
+      }
+    }
   }
 }

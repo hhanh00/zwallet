@@ -43,7 +43,17 @@ Future<void> startAutoSync() async {
 
 var syncStatus = SyncStatus();
 
-class SyncStatus = _SyncStatus with _$SyncStatus;
+class SyncStatus extends _SyncStatus with _$SyncStatus {
+  static Future<int?> getLatestHeight(int coin) async {
+    try {
+      final latestHeight = await warp.getBCHeight(coin);
+      return latestHeight;
+    } on String catch (e) {
+      logger.d(e);
+      return null;
+    }
+  }
+}
 
 abstract class _SyncStatus with Store {
   int startSyncedHeight = 0;
