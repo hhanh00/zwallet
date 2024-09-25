@@ -24,9 +24,8 @@ abstract class CoinBase {
   int get coinIndex;
   String? get marketTicker;
   AssetImage get image;
-  String get dbName;
+  String get dbRoot;
   late String dbDir;
-  late String dbFullPath;
   List<LWInstance> get lwd;
   String? warpUrl;
   int get defaultAddrMode;
@@ -37,45 +36,39 @@ abstract class CoinBase {
   List<double> get weights;
   List<String> get blockExplorers;
 
-  Future<void> init(String dbDirPath) async {
-    dbDir = dbDirPath;
-    dbFullPath = _getFullPath(dbDir);
-    warp.configure(coin, db: dbFullPath);
-    warp.resetTables(coin);
-  }
-
   Future<bool> tryImport(PlatformFile file) async {
-    if (file.name == dbName) {
+    if (file.name == dbRoot) {
       final tempDir = await getTempPath();
-      final dest = p.join(tempDir, dbName);
+      final dest = p.join(tempDir, dbRoot);
       await File(file.path!).copy(dest); // save to temporary directory
       return true;
     }
     return false;
   }
 
-  Future<void> importFromTemp() async {
-    final tempDir = await getTempPath();
-    final src = File(p.join(tempDir, dbName));
-    print("Import from ${src.path}");
-    if (await src.exists()) {
-      print("copied to $dbFullPath");
-      await delete();
-      await src.copy(dbFullPath);
-      await src.delete();
-    }
-  }
+  // Future<void> importFromTemp() async {
+  //   final tempDir = await getTempPath();
+  //   final src = File(p.join(tempDir, dbRoot));
+  //   print("Import from ${src.path}");
+  //   if (await src.exists()) {
+  //     print("copied to $dbFullPath");
+  //     await delete();
+  //     await src.copy(dbFullPath);
+  //     await src.delete();
+  //   }
+  // }
 
   Future<void> delete() async {
     try {
-      await File(p.join(dbDir, dbName)).delete();
-      await File(p.join(dbDir, "$dbName-shm")).delete();
-      await File(p.join(dbDir, "$dbName-wal")).delete();
+      await File(p.join(dbDir, dbRoot)).delete();
+      await File(p.join(dbDir, "$dbRoot-shm")).delete();
+      await File(p.join(dbDir, "$dbRoot-wal")).delete();
     } catch (e) {} // ignore failure
   }
 
-  String _getFullPath(String dbPath) {
-    final path = p.join(dbPath, dbName);
+  String _getFullPath(String dbPath, int n) {
+    final version = n.toString().padLeft(2, '0');
+    final path = p.join(dbPath, "$dbRoot$version.db");
     return path;
   }
 }

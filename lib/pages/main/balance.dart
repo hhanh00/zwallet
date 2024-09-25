@@ -73,7 +73,7 @@ class BalanceState extends State<BalanceWidget> {
             ob > 0
                 ? InputDecorator(
                     decoration: InputDecoration(
-                        label: Text('+ ${amountToString2(ob)}'),
+                        label: Text('+ ${amountToString(ob)}'),
                         border: OutlineInputBorder(
                             borderSide: BorderSide(color: t.primaryColor),
                             borderRadius: BorderRadius.circular(8))),

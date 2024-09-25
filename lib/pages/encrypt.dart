@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:YWallet/init.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get_it/get_it.dart';
@@ -5,10 +8,12 @@ import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp/warp.dart';
+import 'package:path/path.dart' as path;
 
 import '../accounts.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
+import '../store.dart';
 import 'utils.dart';
 
 class EncryptDbPage extends StatefulWidget {
@@ -41,7 +46,8 @@ class _EncryptDbState extends State<EncryptDbPage> with WithLoadingAnimation {
                   controller: oldController,
                   obscureText: true,
                   validator: (v) {
-                    if (!warp.checkDbPassword(aa.coin, v!))
+                    final dbFile = getDbFile(appStore.dbDir, aa.coin)!.item2;
+                    if (!warp.checkDbPassword(dbFile, v!))
                       return s.invalidPassword;
                     return null;
                   },
@@ -74,13 +80,14 @@ class _EncryptDbState extends State<EncryptDbPage> with WithLoadingAnimation {
     if (form.validate()) {
       form.save();
       await load(() async {
-        final cacheDir = await getApplicationCacheDirectory();
-        final tempDir = await cacheDir.createTemp();
+        final dbDir = Directory(appStore.dbDir);
+        final tempDir = await dbDir.createTemp();
         final tempPath = tempDir.path;
         final passwd = newController.text;
+        logger.d(tempPath);
         for (var c in coins) {
-          final newDbPath = '$tempPath/${c.dbName}';
-          await warp.encryptDb(c.coin, passwd, newDbPath);
+          final newDbFile = dbFileByVersion(tempPath, c.dbRoot, warp.getSchemaVersion());
+          await warp.encryptDb(c.coin, passwd, newDbFile.path);
         }
         final prefs = GetIt.I.get<SharedPreferences>();
         await prefs.setString('backup', tempPath);

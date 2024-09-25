@@ -11,6 +11,7 @@ import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp/warp.dart';
+import 'package:path/path.dart' as path;
 
 import 'appsettings.dart';
 import 'main.reflectable.dart';
@@ -36,16 +37,13 @@ void main() async {
   initializeReflectable();
   print('restoreSettings');
   await restoreSettings();
-  print('initCoins');
-  await initCoins();
   print('restoreWindow');
   await restoreWindow();
   print('initNotifications');
   initNotifications();
-  final dbPath = await getDbPath();
-  print("db path $dbPath");
+  await initDbPath();
   print('recoverDb');
-  await recoverDb(dbPath);
+  await recoverDb();
   print('runApp');
   runApp(App());
 }
@@ -55,21 +53,19 @@ Future<void> restoreSettings() async {
   appSettings = AppSettingsExtension.load(prefs);
 }
 
-Future<void> recoverDb(String dbPath) async {
+Future<void> recoverDb() async {
   final prefs = GetIt.I.get<SharedPreferences>();
   final backupPath = prefs.getString('backup');
   if (backupPath == null) return;
-  print('Recovering $backupPath');
+  logger.i('Recovering $backupPath');
   final backupDir = Directory(backupPath);
-  await prefs.remove('backup');
-  for (var c in coins) {
-    await c.delete();
-  }
   final dbDir = await getDbPath();
   for (var file in await backupDir.list().whereType<File>().toList()) {
-    await file.copy(dbDir);
+    final name = path.relative(file.path, from: backupPath);
+    await file.copySync(path.join(dbDir, name));
   }
-  await backupDir.delete();
+  await prefs.remove('backup');
+  await backupDir.delete(recursive: true);
 }
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =

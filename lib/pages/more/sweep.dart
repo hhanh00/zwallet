@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:warp/warp.dart';
 
 import '../../appsettings.dart';
+import '../input_widgets.dart';
 import '../settings.dart';
 import '../widgets.dart';
 import '../../accounts.dart';
@@ -38,7 +39,8 @@ class _SweepState extends State<SweepPage>
         ),
         body: LoadingWrapper(loading,
             child: SingleChildScrollView(
-              child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: FormBuilder(
                 key: formKey,
                 child: Column(children: [
@@ -95,8 +97,13 @@ class _SweepState extends State<SweepPage>
                     emptySelectionAllowed: true,
                   ),
                   if (_pool == 0)
-                    InputTextQR('',
-                        onChanged: (v) => setState(() => _address = v)),
+                    TextQRPicker(
+                      '',
+                      name: 'destination',
+                      label: Text(s.destination),
+                      validator: addressValidator,
+                      onSaved: (v) => setState(() => _address = v),
+                    ),
                 ]),
               ),
             ))));
@@ -107,13 +114,12 @@ class _SweepState extends State<SweepPage>
     final seed = seedController.text;
     final sk = privateKeyController.text;
 
-    if (!form.validate()) return;
+    if (!form.saveAndValidate()) return;
     if (seed.isEmpty && sk.isEmpty) {
       form.fields['seed']!.invalidate(s.seedOrKeyRequired);
       form.fields['sk']!.invalidate(s.seedOrKeyRequired);
       return;
     }
-    form.save();
 
     final latestHeight = await warp.getBCHeight(aa.coin);
 

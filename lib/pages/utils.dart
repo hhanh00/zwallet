@@ -128,23 +128,17 @@ String? addressOrUriValidator(String? v) {
 String? addressValidator(String? v) {
   final s = S.of(rootNavigatorKey.currentContext!);
   if (v == null || v.isEmpty) return s.addressIsEmpty;
-  try {
-    warp.decodeAddress(aa.coin, v);
-  } on String catch (e) {
-    logger.d(e);
-    return s.invalidAddress;
-  }
+  print('++');
+  final check = warp.isValidAddressOrUri(aa.coin, v);
+  if (check == 0) return s.invalidAddress;
   return null;
 }
 
 String? paymentURIValidator(String? v) {
   final s = S.of(rootNavigatorKey.currentContext!);
-  if (v.isEmptyOrNull) return s.required;
-  try {
-    warp.parsePaymentURI(aa.coin, v!);
-  } catch (_) {
+  if (v == null || v.isEmpty) return s.required;
+  if (warp.isValidAddressOrUri(aa.coin, v) != 2)
     return s.invalidPaymentURI;
-  }
   return null;
 }
 
@@ -356,9 +350,12 @@ int stringToAmount(String? s) {
   return (ZECUNIT_DECIMAL * v).toBigInt().toInt();
 }
 
-String amountToString2(int amount, {int? digits}) {
+String amountToString(int amount, {int? digits}) =>
+    zecToString(amount / ZECUNIT, digits: digits);
+
+String zecToString(double zec, {int? digits}) {
   final dd = digits ?? decimalDigits(appSettings.fullPrec);
-  return decimalFormat(amount / ZECUNIT, dd);
+  return decimalFormat(zec, dd);
 }
 
 Future<void> saveFile(String data, String filename, String title) async {
@@ -719,4 +716,21 @@ extension UareceiversExtension on UareceiversT {
         (sapling != null ? 2 : 0) |
         (orchard != null ? 4 : 0);
   }
+}
+
+extension RecipientExtension on RecipientT {
+  static RecipientT empty() => RecipientT(
+        address: '',
+        amount: 0,
+        pools: 7,
+        memo: UserMemoT(replyTo: false, subject: '', body: ''),
+      );
+}
+
+extension PaymentRequestExtension on PaymentRequestT {
+  static PaymentRequestT empty() => PaymentRequestT(
+    recipients: [RecipientExtension.empty()],
+    srcPools: 7,
+    senderPayFees: true,
+  );
 }

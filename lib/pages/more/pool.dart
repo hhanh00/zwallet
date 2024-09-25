@@ -13,6 +13,7 @@ import '../../appsettings.dart';
 import '../../pages/widgets.dart';
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
+import '../input_widgets.dart';
 import '../settings.dart';
 import '../utils.dart';
 
@@ -25,7 +26,7 @@ class _PoolTransferState extends State<PoolTransferPage>
     with WithLoadingAnimation {
   late final s = S.of(context);
   final memoController = TextEditingController(text: appSettings.memo);
-  final splitController = TextEditingController(text: amountToString2(0));
+  final splitController = TextEditingController(text: amountToString(0));
   late final List<double> balances;
   int amount = 0;
   int from = 1;
@@ -76,11 +77,11 @@ class _PoolTransferState extends State<PoolTransferPage>
                         radio: true,
                       ),
                       Gap(16),
-                      AmountPicker(
-                        amount,
-                        spendable: spendable,
-                        onChanged: (a) => setState(() => amount = a!),
-                      ),
+                      // AmountPicker(
+                      //   amount,
+                      //   spendable: spendable,
+                      //   onChanged: (a) => setState(() => amount = a!),
+                      // ),
                       Gap(16),
                       FormBuilderTextField(
                         name: 'memo',

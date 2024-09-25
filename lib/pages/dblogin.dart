@@ -6,7 +6,9 @@ import 'package:warp/warp.dart';
 
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
+import '../init.dart';
 import '../store.dart';
+import 'utils.dart';
 
 class DbLoginPage extends StatefulWidget {
   @override
@@ -16,6 +18,24 @@ class DbLoginPage extends StatefulWidget {
 class _DbLoginState extends State<DbLoginPage> {
   final formKey = GlobalKey<FormBuilderState>();
   final passwordController = TextEditingController();
+  String? currentDb;
+
+  void initState() {
+    super.initState();
+    if (!isMobile()) {
+      // db encryption is only for desktop
+      currentDb = getDbFile(appStore.dbDir, 0)?.item2;
+      if (currentDb != null) {
+        // fresh install are not encrypted
+        if (!warp.checkDbPassword(currentDb!, '')) 
+          return; // encrypted
+      }
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      GoRouter.of(context).go('/splash');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +69,7 @@ class _DbLoginState extends State<DbLoginPage> {
   _ok() async {
     final s = S.of(context);
     final password = passwordController.text;
-    final c = coins.first;
-    if (await warp.checkDbPassword(c.coin, password)) {
+    if (await warp.checkDbPassword(currentDb!, password)) {
       appStore.dbPassword = password;
       GoRouter.of(context).go('/splash');
     } else {

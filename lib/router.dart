@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'init.dart';
 import 'pages/accounts/swap.dart';
 import 'pages/accounts/swap/history.dart';
 import 'pages/accounts/swap/stealthex.dart';
@@ -66,7 +67,7 @@ final helpRouteMap = {
 
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,
-  initialLocation: '/splash',
+  initialLocation: '/decrypt_db',
   debugLogDiagnostics: true,
   routes: [
     GoRoute(path: '/', redirect: (context, state) => '/account'),
@@ -92,9 +93,7 @@ final router = GoRouter(
                       GoRoute(
                           path: 'new',
                           builder: (context, state) =>
-                              SendPage(
-                                PaymentRequestT(),
-                                single: false)),
+                              SendPage(PaymentRequestT(), single: false)),
                     ]),
                 // GoRoute(
                 //   path: 'swap',
@@ -145,28 +144,23 @@ final router = GoRouter(
                 GoRoute(
                   path: 'send',
                   builder: (context, state) {
-                    bool custom = state.uri.queryParameters['custom'] == '1';
                     final p = state.extra as PaymentRequestT?;
-                    return SendPage(p ?? PaymentRequestT(
-                      address: '',
-                      amount: 0,
-                      memo: UserMemoT(replyTo: false, body: ''),
-                    ),
-                      custom: custom,
+                    return SendPage(
+                      p ?? PaymentRequestExtension.empty(),
                       single: true,
                     );
                   },
-                //   routes: [
-                //     GoRoute(
-                //       path: 'contacts',
-                //       builder: (context, state) => ContactsPage(main: false),
-                //     ),
-                //     GoRoute(
-                //       path: 'accounts',
-                //       builder: (context, state) =>
-                //           AccountManagerPage(main: false),
-                //     ),
-                //   ],
+                  routes: [
+                    GoRoute(
+                      path: 'contacts',
+                      builder: (context, state) => ContactsPage(main: false),
+                    ),
+                    GoRoute(
+                      path: 'accounts',
+                      builder: (context, state) =>
+                          AccountManagerPage(main: false),
+                    ),
+                  ],
                 ),
                 // GoRoute(
                 //   path: 'pay_uri',
@@ -174,11 +168,13 @@ final router = GoRouter(
                 // ),
                 GoRoute(
                   path: 'edit',
-                  builder: (context, state) => EditAccountPage(state.extra as AccountNameT),
+                  builder: (context, state) =>
+                      EditAccountPage(state.extra as AccountNameT),
                 ),
                 GoRoute(
                   path: 'downgrade',
-                  builder: (context, state) => DowngradeAccountPage(state.extra as AccountNameT),
+                  builder: (context, state) =>
+                      DowngradeAccountPage(state.extra as AccountNameT),
                 )
               ],
             ),
@@ -315,11 +311,13 @@ final router = GoRouter(
                     routes: [
                       GoRoute(
                         path: 'notes',
-                        builder: (context, state) => VoteNotesPage(state.extra as Vote),
+                        builder: (context, state) =>
+                            VoteNotesPage(state.extra as Vote),
                       ),
                       GoRoute(
                         path: 'candidate',
-                        builder: (context, state) => VoteCandidatePage(state.extra as Vote),
+                        builder: (context, state) =>
+                            VoteCandidatePage(state.extra as Vote),
                       ),
                     ],
                   ),
@@ -343,12 +341,6 @@ final router = GoRouter(
       path: '/splash',
       builder: (context, state) => SplashPage(),
       redirect: (context, state) {
-        final c = coins.first;
-        if (isMobile()) return null; // db encryption is only for desktop
-        if (!File(c.dbFullPath).existsSync()) return null; // fresh install
-        if (warp.checkDbPassword(c.coin, appStore.dbPassword))
-          return null; // not encrypted
-        return '/decrypt_db';
       },
     ),
     GoRoute(
@@ -389,9 +381,9 @@ final router = GoRouter(
           text: state.extra as String),
     ),
     GoRoute(
-      path: '/calendar_height',
-      builder: (context, state) => CalendarHeightPage(state.extra as DateTime)
-    )
+        path: '/calendar_height',
+        builder: (context, state) =>
+            CalendarHeightPage(state.extra as DateTime))
   ],
 );
 

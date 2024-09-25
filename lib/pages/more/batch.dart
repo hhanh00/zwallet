@@ -1,3 +1,4 @@
+import 'package:YWallet/init.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -11,7 +12,9 @@ import 'package:warp/warp.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
 
+import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
+import '../../store.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
@@ -107,16 +110,22 @@ class _BatchBackupState extends State<BatchBackupPage> {
 
   save() async {
     final s = S.of(context);
-    final tempDir = await getApplicationCacheDirectory();
-    final path = isMobile()
+    final outFilePath = isMobile()
         ? await getTemporaryPath('YWallet.age')
         : await FilePicker.platform.saveFile(dialogTitle: s.fullBackup);
-    if (path != null) {
+    if (outFilePath != null) {
+      final dbDir = appStore.dbDir;
+      final version = warp.getSchemaVersion();
       try {
-        warp.encryptZIPDbFiles(
-            tempDir.path, '.db', path, backupKeyController.text);
+        List<String> files = [];
+        for (var c in coins) {
+          final fn = dbFileByVersion(dbDir, c.dbRoot, version).path;
+          files.add(path.relative(fn, from: dbDir));
+        }
+        await warp.encryptZIPDbFiles(
+            dbDir, files, outFilePath, backupKeyController.text);
         if (isMobile()) {
-          await shareFile(context, path, title: s.fullBackup);
+          await shareFile(context, outFilePath, title: s.fullBackup);
         }
       } on String catch (e) {
         await showMessageBox2(context, s.error, e);
@@ -129,7 +138,8 @@ class _BatchBackupState extends State<BatchBackupPage> {
     final r = await FilePicker.platform.pickFiles(dialogTitle: s.fullRestore);
     if (r != null) {
       final file = r.files.first;
-      final tempDir = (await getApplicationCacheDirectory()).path;
+      final docDir = (await getApplicationDocumentsDirectory());
+      final tempDir = docDir.createTempSync().path;
       try {
         await warp.decryptZIPDbFiles(
             file.path!, tempDir, restoreKeyController.text);

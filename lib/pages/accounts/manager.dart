@@ -185,7 +185,7 @@ class AccountTile extends StatelessWidget {
       selected: selected,
       leading: CircleAvatar(backgroundImage: c.image),
       title: accountRT,
-      trailing: Text(amountToString2(a.balance)),
+      trailing: Text(amountToString(a.balance)),
       onTap: onPress,
       onLongPress: onLongPress,
       selectedTileColor: t.colorScheme.inversePrimary,

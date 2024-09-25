@@ -14,6 +14,7 @@ import 'package:warp/warp.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../../accounts.dart';
+import '../init.dart';
 import 'accounts/send.dart';
 import 'settings.dart';
 import 'utils.dart';
@@ -119,7 +120,9 @@ class _SplashState extends State<SplashPage> {
     for (var c in coins) {
       final coin = c.coin;
       _setProgress(0.5 + 0.1 * coin, 'Initializing ${c.ticker}');
-      warp.setDbPassword(coin, appStore.dbPassword, c.dbFullPath);
+      final path = await upgradeDb(coin, appStore.dbPassword);
+      logger.i("Db path: $path");
+      warp.setDbPathPassword(coin, path, appStore.dbPassword);
       final cs = await CoinSettingsExtension.load(c.coin);
       final url = resolveURL(c, cs);
       // TODO: Configure warp dynamically

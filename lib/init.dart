@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:get_it/get_it.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:tuple/tuple.dart';
 
 import 'accounts.dart';
 import 'appsettings.dart';
@@ -13,19 +15,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp/warp.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:path/path.dart' as path;
 
 import 'coin/coins.dart';
 import 'generated/intl/messages.dart';
 import 'main.dart';
 import 'pages/utils.dart';
 import 'router.dart';
+import 'store.dart';
 
-Future<void> initCoins() async {
+Future<void> initDbPath() async {
   final dbPath = await getDbPath();
   await Directory(dbPath).create(recursive: true);
-  for (var coin in coins) {
-    await coin.init(dbPath);
-  }
+  appStore.dbDir = dbPath;
 }
 
 Future<void> restoreWindow() async {
@@ -92,8 +94,9 @@ class _AppState extends State<App> {
     return Observer(builder: (context) {
       aaSequence.settingsSeqno;
       final scheme = FlexScheme.values.byName(appSettings.palette.name);
-      final baseTheme = appSettings.palette.dark ? FlexThemeData.dark(scheme: scheme)
-      : FlexThemeData.light(scheme: scheme);
+      final baseTheme = appSettings.palette.dark
+          ? FlexThemeData.dark(scheme: scheme)
+          : FlexThemeData.light(scheme: scheme);
       final theme = baseTheme.copyWith(
         useMaterial3: true,
         dataTableTheme: DataTableThemeData(
@@ -125,4 +128,52 @@ class _AppState extends State<App> {
       );
     });
   }
+}
+
+Future<String> upgradeDb(int coin, String password) async {
+  final c = coins[coin];
+  final dbRoot = c.dbRoot; // for ex, zec
+  final dbDir = appStore.dbDir;
+
+  // copy zec.db to zec01.db
+  final src = File(path.join(dbDir, "$dbRoot.db"));
+  if (src.existsSync())
+    src.copySync(File(path.join(dbDir, "${dbRoot}01.db")).path);
+
+  final currentDb = getDbFile(dbDir, coin);
+  final version = warp.getSchemaVersion();
+  final dbLatestVersionFile = dbFileByVersion(dbDir, dbRoot, version);
+  if (currentDb == null) {
+    logger.d("No db file - create a new installation");
+    await warp.createDb(coin, dbLatestVersionFile.path, password);
+  } else {
+    for (var nn = currentDb.item1; nn < version; nn++) {
+      logger.d("Migrating from version $nn");
+      await warp.migrateDb(coin, nn, dbFileByVersion(dbDir, dbRoot, nn).path,
+          dbFileByVersion(dbDir, dbRoot, nn + 1).path, password);
+    }
+  }
+  return dbLatestVersionFile.path;
+}
+
+File dbFileByVersion(String dbDir, String dbRoot, int n) {
+  final version = n.toString().padLeft(2, '0');
+  return File(path.join(dbDir, "$dbRoot$version.db"));
+}
+
+Tuple2<int, String>? getDbFile(String dbDir, int coin) {
+  final dbRoot = coins[coin].dbRoot;
+  // find the highest NN such as zecNN.db exists
+  int i = 1;
+  while (true) {
+    final nextDb = dbFileByVersion(dbDir, dbRoot, i);
+    if (nextDb.existsSync()) {
+      i += 1;
+      continue;
+    }
+    break;
+  }
+  final current = dbFileByVersion(dbDir, dbRoot, i - 1);
+  if (!current.existsSync()) return null;
+  return Tuple2(i - 1, current.path);
 }

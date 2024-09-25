@@ -99,14 +99,14 @@ class TxPlanWidget extends StatelessWidget {
     final t = Theme.of(context);
     final c = coins[aa.coin];
     final supportsUA = c.supportsUA;
-    final rows = report.recipients!.map((e) {
+    final rows = report.recipients!.where((e) => !e.change).map((e) {
       final receivers = warp.decodeAddress(aa.coin, e.address!);
       final style = styleOfAddress(receivers, t);
       final pool = poolOfAddress(receivers, s);
       return DataRow(cells: [
         DataCell(Text('${centerTrim(e.address!)}', style: style)),
         DataCell(Text('$pool', style: style)),
-        DataCell(Text('${amountToString2(e.amount, digits: MAX_PRECISION)}',
+        DataCell(Text('${amountToString(e.amount, digits: MAX_PRECISION)}',
             style: style)),
       ]);
     }).toList();
@@ -135,26 +135,26 @@ class TxPlanWidget extends StatelessWidget {
           visualDensity: VisualDensity.compact,
           title: Text(s.transparentInput),
           trailing: Text(
-              amountToString2(report.transparentIns, digits: MAX_PRECISION),
+              amountToString(report.transparentIns, digits: MAX_PRECISION),
               style: TextStyle(color: t.primaryColor))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.netSapling),
           trailing: Text(
-              amountToString2(report.saplingNet, digits: MAX_PRECISION),
+              amountToString(report.saplingNet, digits: MAX_PRECISION),
               style: TextStyle(color: t.primaryColor))),
       if (supportsUA)
         ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(s.netOrchard),
             trailing: Text(
-                amountToString2(report.orchardNet, digits: MAX_PRECISION),
+                amountToString(report.orchardNet, digits: MAX_PRECISION),
                 style: TextStyle(color: t.primaryColor))),
       ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(s.fee),
           subtitle: Text(feeStructure),
-          trailing: Text(amountToString2(report.fee, digits: MAX_PRECISION),
+          trailing: Text(amountToString(report.fee, digits: MAX_PRECISION),
               style: TextStyle(color: t.primaryColor))),
       privacyToString(context, report.privacyLevel,
           canSend: !invalidPrivacy, onSend: onSend)!,
@@ -174,7 +174,7 @@ class TxPlanWidget extends StatelessWidget {
   String poolOfAddress(UareceiversT ua, S s) {
     if (ua.orchard != null) return s.orchard;
     if (ua.sapling != null) return s.sapling;
-    if (ua.transparent != null) return s.sapling;
+    if (ua.transparent != null) return s.transparent;
     return s.na;
   }
 }

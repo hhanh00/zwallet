@@ -10,7 +10,7 @@ class ZcashCoin extends CoinBase {
   String currency = "zcash";
   int coinIndex = 133;
   String ticker = "ZEC";
-  String dbName = "zec.db";
+  String dbRoot = "zec";
   String? marketTicker = "ZECUSDT";
   AssetImage image = AssetImage('assets/zcash.png');
   List<LWInstance> lwd = [

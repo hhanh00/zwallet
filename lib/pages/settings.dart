@@ -483,7 +483,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
               child: Text(kv.value),
             ))
         .toList();
-    final fee = amountToString2(widget.coinSettings.fee.toInt());
+    final fee = amountToString(widget.coinSettings.fee.toInt());
 
     return FormBuilder(
         key: formKey,

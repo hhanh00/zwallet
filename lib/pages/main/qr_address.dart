@@ -150,7 +150,7 @@ class _QRAddressState extends State<QRAddressWidget> {
     if (amount != 0 || widget.memo.isNotEmptyAndNotNull) {
       final memo = UserMemoT(body: widget.memo);
       final recipient =
-          PaymentRequestT(address: widget.address, amount: amount, memo: memo);
+          RecipientT(address: widget.address, amount: amount, memo: memo);
       uri = warp.makePaymentURI(aa.coin, [recipient]);
     } else {
       uri = widget.address;

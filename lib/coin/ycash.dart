@@ -10,7 +10,7 @@ class YcashCoin extends CoinBase {
   String currency = "ycash";
   int coinIndex = 347;
   String ticker = "YEC";
-  String dbName = "yec.db";
+  String dbRoot = "yec";
   String? marketTicker;
   AssetImage image = AssetImage('assets/ycash.png');
   List<LWInstance> lwd = [

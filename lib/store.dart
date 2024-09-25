@@ -22,6 +22,7 @@ class AppStore = _AppStore with _$AppStore;
 
 abstract class _AppStore with Store {
   bool initialized = false;
+  String dbDir = '';
   String dbPassword = '';
 
   @observable
@@ -135,8 +136,10 @@ abstract class _SyncStatus with Store {
   Future<void> syncToHeight(int coin, int endHeight, ETA eta) async {
     var height = warp.getSyncHeight(coin);
     while (height < endHeight) {
+      if (aa.coin != coin)
+        break;
       await WarpSync.synchronize(aa.coin, endHeight);
-      height = warp.getSyncHeight(coin);
+      height = warp.getSyncHeight(aa.coin);
       eta.checkpoint(height, DateTime.now());
       aa.update(height);
       runInAction(() {
@@ -165,13 +168,14 @@ abstract class _SyncStatus with Store {
       _updateSyncedHeight();
       startSyncedHeight = syncedHeight;
 
+      int coin = aa.coin;
       eta.begin(latestHeight!);
       eta.checkpoint(syncedHeight, DateTime.now());
       final preBalance = AccountBalanceSnapshot(
           coin: aa.coin, id: aa.id, balance: aa.poolBalances.total);
       // This may take a long time
-      await syncToHeight(aa.coin, lh - appSettings.anchorOffset + 1, eta);
-      await syncToHeight(aa.coin, lh, eta);
+      await syncToHeight(coin, lh - appSettings.anchorOffset + 1, eta);
+      await syncToHeight(coin, lh, eta);
       eta.end();
 
       contacts.fetchContacts();
@@ -184,7 +188,7 @@ abstract class _SyncStatus with Store {
         final ticker = coins[aa.coin].ticker;
         if (preBalance.balance < postBalance.balance) {
           final amount =
-              amountToString2(postBalance.balance - preBalance.balance);
+              amountToString(postBalance.balance - preBalance.balance);
           showLocalNotification(
             id: latestHeight!,
             title: s.incomingFunds,
@@ -192,7 +196,7 @@ abstract class _SyncStatus with Store {
           );
         } else {
           final amount =
-              amountToString2(preBalance.balance - postBalance.balance);
+              amountToString(preBalance.balance - postBalance.balance);
           showLocalNotification(
             id: latestHeight!,
             title: s.paymentMade,

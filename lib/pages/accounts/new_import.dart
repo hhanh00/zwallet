@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp/warp.dart';
 
 import '../../store.dart';
+import '../input_widgets.dart';
 import '../utils.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
@@ -103,12 +102,12 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 ),
                 if (_restore)
                   Column(children: [
-                    InputTextQR(
+                    TextQRPicker(
                       _key,
-                      label: s.key,
-                      lines: 4,
-                      onChanged: (v) => setState(() => _key = v!),
+                      name: 'key',
+                      label: Text(s.key),
                       validator: _checkKey,
+                      onSaved: (v) => setState(() => _key = v!),
                     ),
                     Gap(8),
                     FormBuilderTextField(
@@ -140,8 +139,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
 
   _onOK() async {
     final form = formKey.currentState!;
-    if (form.validate()) {
-      form.save();
+    if (form.saveAndValidate()) {
       await load(() async {
         final index = int.parse(accountIndexController.text);
         if (_key.isEmpty)
