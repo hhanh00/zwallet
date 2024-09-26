@@ -140,17 +140,19 @@ Future<String> upgradeDb(int coin, String password) async {
   if (src.existsSync())
     src.copySync(File(path.join(dbDir, "${dbRoot}01.db")).path);
 
-  final currentDb = getDbFile(dbDir, coin);
-  final version = warp.getSchemaVersion();
+  final version = appStore.dbVersion;
   final dbLatestVersionFile = dbFileByVersion(dbDir, dbRoot, version);
-  if (currentDb == null) {
-    logger.d("No db file - create a new installation");
-    await warp.createDb(coin, dbLatestVersionFile.path, password);
-  } else {
-    for (var nn = currentDb.item1; nn < version; nn++) {
-      logger.d("Migrating from version $nn");
-      await warp.migrateDb(coin, nn, dbFileByVersion(dbDir, dbRoot, nn).path,
-          dbFileByVersion(dbDir, dbRoot, nn + 1).path, password);
+  if (!dbLatestVersionFile.existsSync()) {
+    final latestDb = getDbFile(coin, dbDir, version);
+    if (latestDb == null) {
+      logger.d("No db file - create a new installation");
+      await warp.createDb(coin, dbLatestVersionFile.path, password);
+    } else {
+      for (var nn = latestDb.item1; nn < version; nn++) {
+        logger.d("Migrating from version $nn");
+        await warp.migrateDb(coin, nn, dbFileByVersion(dbDir, dbRoot, nn).path,
+            dbFileByVersion(dbDir, dbRoot, nn + 1).path, password);
+      }
     }
   }
   return dbLatestVersionFile.path;
@@ -161,19 +163,19 @@ File dbFileByVersion(String dbDir, String dbRoot, int n) {
   return File(path.join(dbDir, "$dbRoot$version.db"));
 }
 
-Tuple2<int, String>? getDbFile(String dbDir, int coin) {
+Tuple2<int, String>? getDbFile(int coin, String dbDir, int start) {
   final dbRoot = coins[coin].dbRoot;
   // find the highest NN such as zecNN.db exists
-  int i = 1;
-  while (true) {
+  int i = start;
+  while (i > 0) {
     final nextDb = dbFileByVersion(dbDir, dbRoot, i);
-    if (nextDb.existsSync()) {
-      i += 1;
+    if (!nextDb.existsSync()) {
+      i -= 1;
       continue;
     }
     break;
   }
-  final current = dbFileByVersion(dbDir, dbRoot, i - 1);
-  if (!current.existsSync()) return null;
-  return Tuple2(i - 1, current.path);
+  if (i == 0) return null;
+  final current = dbFileByVersion(dbDir, dbRoot, i);
+  return Tuple2(i, current.path);
 }

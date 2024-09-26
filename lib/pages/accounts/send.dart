@@ -45,17 +45,17 @@ class SendPageState extends State<SendPage> {
   void initState() {
     super.initState();
 
-    final recipient = widget.payment?.recipients?.firstOrNull;
-    print(recipient);
-    address = recipient?.address ?? '';
-    amount = recipient?.amount ?? 0;
-    memo = recipient?.memo ?? UserMemoT(subject: '', body: '');
+    final payment = widget.payment ?? PaymentRequestExtension.empty()
+      ..recipients!.add(RecipientExtension.empty());
+    final recipient = payment.recipients!.first;
+    address = recipient.address!;
+    amount = recipient.amount;
+    memo = recipient.memo!;
     if (warp.isValidAddressOrUri(aa.coin, address) == 1)
       toRecvAvailable = warp.decodeAddress(aa.coin, address).mask;
     feeIncluded = widget.payment?.senderPayFees ?? true;
 
-    balance =
-        warp.getBalance(aa.coin, aa.id, syncStatus.confirmHeight ?? MAXHEIGHT);
+    balance = warp.getBalance(aa.coin, aa.id, syncStatus.confirmHeight);
     fromAddress = warp.getAccountAddress(aa.coin, aa.id, now(), 7);
     fromRecvAvailable = warp.decodeAddress(aa.coin, fromAddress).mask;
   }
@@ -74,7 +74,9 @@ class SendPageState extends State<SendPage> {
         IconButton(
             onPressed: () => setState(() => custom = !custom),
             icon: Icon(Icons.tune)),
-        IconButton(onPressed: send, icon: Icon(Icons.send)),
+        widget.single
+            ? IconButton(onPressed: send, icon: Icon(Icons.send))
+            : IconButton(onPressed: add, icon: Icon(Icons.add)),
       ]),
       body: SingleChildScrollView(
         child: Padding(
@@ -165,8 +167,12 @@ class SendPageState extends State<SendPage> {
     if (address == null) return;
     if (warp.isValidAddressOrUri(aa.coin, address) == 2) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final p = warp.parsePaymentURI(aa.coin, address, syncStatus.syncedHeight, syncStatus.expirationHeight);
-        GoRouter.of(context).go('/account/send', extra: p);
+        final p = warp.parsePaymentURI(aa.coin, address,
+            syncStatus.syncedHeight, syncStatus.expirationHeight);
+        if (p.recipients!.length == 1)
+          GoRouter.of(context).go('/account/send', extra: p);
+        else
+          GoRouter.of(context).go('/account/multi_pay', extra: p);
       });
     }
     setState(() {
@@ -185,6 +191,13 @@ class SendPageState extends State<SendPage> {
   }
 
   send() {
+    getPaymentAndContinue((payment) async {
+      final tx = await warp.pay(aa.coin, aa.id, payment);
+      GoRouter.of(context).push('/account/txplan?tab=account', extra: tx);
+    });
+  }
+
+  getPaymentAndContinue(Future<void> continuation(PaymentRequestT p)) {
     formKey.currentState!.saveAndValidate();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       print(address);
@@ -194,7 +207,6 @@ class SendPageState extends State<SendPage> {
       print(feeIncluded);
       print(memo);
       if (formKey.currentState!.isValid) {
-        final height = syncStatus.latestHeight ?? syncStatus.syncedHeight;
         final recipient = RecipientT(
             address: address,
             amount: amount,
@@ -205,11 +217,16 @@ class SendPageState extends State<SendPage> {
             srcPools: fromRecvSelected ?? fromRecvAvailable,
             senderPayFees: feeIncluded,
             useChange: true,
-            height: height,
-            expiration: height + 50);
-        final tx = await warp.pay(aa.coin, aa.id, payment);
-        GoRouter.of(context).push('/account/txplan?tab=account', extra: tx);
+            height: syncStatus.confirmHeight,
+            expiration: syncStatus.expirationHeight);
+        await continuation(payment);
       }
+    });
+  }
+
+  add() {
+    getPaymentAndContinue((payment) async {
+      GoRouter.of(context).pop<PaymentRequestT>(payment);
     });
   }
 }

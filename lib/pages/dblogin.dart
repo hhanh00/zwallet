@@ -24,7 +24,7 @@ class _DbLoginState extends State<DbLoginPage> {
     super.initState();
     if (!isMobile()) {
       // db encryption is only for desktop
-      currentDb = getDbFile(appStore.dbDir, 0)?.item2;
+      currentDb = getDbFile(0, appStore.dbDir, appStore.dbVersion)?.item2;
       if (currentDb != null) {
         // fresh install are not encrypted
         if (!warp.checkDbPassword(currentDb!, '')) 

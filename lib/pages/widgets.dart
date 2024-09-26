@@ -385,7 +385,7 @@ class HorizontalBarChart extends StatelessWidget {
 
 class MessageContentWidget extends StatelessWidget {
   final String address;
-  final ZMessage message;
+  final ZMessage? message;
 
   MessageContentWidget(this.address, this.message);
 
@@ -397,8 +397,8 @@ class MessageContentWidget extends StatelessWidget {
         Text('${centerTrim(address)}', style: theme.textTheme.labelMedium);
     return Column(children: [
       addressWidget,
-      Text("${m.subject}", style: theme.textTheme.titleSmall),
-      if (m.subject != m.body)
+      if (m != null) Text("${m.subject}", style: theme.textTheme.titleSmall),
+      if (m != null && m.subject != m.body)
         Text("${m.body}", style: theme.textTheme.bodySmall),
     ]);
   }

@@ -115,7 +115,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
         : await FilePicker.platform.saveFile(dialogTitle: s.fullBackup);
     if (outFilePath != null) {
       final dbDir = appStore.dbDir;
-      final version = warp.getSchemaVersion();
+      final version = appStore.dbVersion;
       try {
         List<String> files = [];
         for (var c in coins) {

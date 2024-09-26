@@ -88,12 +88,12 @@ final router = GoRouter(
               routes: [
                 GoRoute(
                     path: 'multi_pay',
-                    builder: (context, state) => MultiPayPage(),
+                    builder: (context, state) => MultiPayPage(state.extra as PaymentRequestT?),
                     routes: [
                       GoRoute(
                           path: 'new',
                           builder: (context, state) =>
-                              SendPage(PaymentRequestT(), single: false)),
+                              SendPage(null, single: false)),
                     ]),
                 // GoRoute(
                 //   path: 'swap',
@@ -146,7 +146,7 @@ final router = GoRouter(
                   builder: (context, state) {
                     final p = state.extra as PaymentRequestT?;
                     return SendPage(
-                      p ?? PaymentRequestExtension.empty(),
+                      p,
                       single: true,
                     );
                   },
@@ -162,10 +162,10 @@ final router = GoRouter(
                     ),
                   ],
                 ),
-                // GoRoute(
-                //   path: 'pay_uri',
-                //   builder: (context, state) => PaymentURIPage(),
-                // ),
+                GoRoute(
+                  path: 'payment_uri',
+                  builder: (context, state) => PaymentURIPage(),
+                ),
                 GoRoute(
                   path: 'edit',
                   builder: (context, state) =>
@@ -340,8 +340,6 @@ final router = GoRouter(
     GoRoute(
       path: '/splash',
       builder: (context, state) => SplashPage(),
-      redirect: (context, state) {
-      },
     ),
     GoRoute(
       path: '/welcome',
@@ -377,7 +375,7 @@ final router = GoRouter(
     GoRoute(
       path: '/showqr',
       builder: (context, state) => ShowQRPage(
-          title: state.uri.queryParameters['title']!,
+          title: state.uri.queryParameters['title'] ?? '',
           text: state.extra as String),
     ),
     GoRoute(

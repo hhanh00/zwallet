@@ -46,7 +46,9 @@ class _EncryptDbState extends State<EncryptDbPage> with WithLoadingAnimation {
                   controller: oldController,
                   obscureText: true,
                   validator: (v) {
-                    final dbFile = getDbFile(appStore.dbDir, aa.coin)!.item2;
+                    final version = appStore.dbVersion;
+                    final dbFile =
+                        getDbFile(aa.coin, appStore.dbDir, version)!.item2;
                     if (!warp.checkDbPassword(dbFile, v!))
                       return s.invalidPassword;
                     return null;
@@ -86,14 +88,15 @@ class _EncryptDbState extends State<EncryptDbPage> with WithLoadingAnimation {
         final passwd = newController.text;
         logger.d(tempPath);
         for (var c in coins) {
-          final newDbFile = dbFileByVersion(tempPath, c.dbRoot, warp.getSchemaVersion());
+          final newDbFile =
+              dbFileByVersion(tempPath, c.dbRoot, appStore.dbVersion);
           await warp.encryptDb(c.coin, passwd, newDbFile.path);
         }
         final prefs = GetIt.I.get<SharedPreferences>();
         await prefs.setString('backup', tempPath);
       });
-      await showMessageBox2(
-          context, s.restart, s.pleaseQuitAndRestartTheAppNow, dismissable: false);
+      await showMessageBox2(context, s.restart, s.pleaseQuitAndRestartTheAppNow,
+          dismissable: false);
       GoRouter.of(context).pop();
     }
   }

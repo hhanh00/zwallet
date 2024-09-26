@@ -16,19 +16,27 @@ import '../../generated/intl/messages.dart';
 import '../utils.dart';
 
 class AddressCarousel extends StatefulWidget {
-  final void Function(int mode)? onAddressModeChanged;
+  final int? index;
+  final void Function(String?)? onChanged;
+  final void Function(int index, int mode)? onAddressModeChanged;
   final void Function()? onQRPressed;
   final int? amount;
   final String? memo;
   AddressCarousel(
-      {this.amount, this.memo, this.onAddressModeChanged, this.onQRPressed});
+      {super.key,
+      this.index,
+      this.amount,
+      this.memo,
+      this.onChanged,
+      this.onAddressModeChanged,
+      this.onQRPressed});
 
   @override
   State<StatefulWidget> createState() => AddressCarouselState();
 }
 
 class AddressCarouselState extends State<AddressCarousel> {
-  int? index;
+  late int? index = widget.index;
   final carouselController = CarouselSliderController();
 
   @override
@@ -53,7 +61,7 @@ class AddressCarouselState extends State<AddressCarousel> {
       final addressAvailable = supportsUA
           ? [7 & ua, 8 | (6 & ua), 2, 4, 1] // main, div, sap, orch, trp
           : [2, 10, 1]; // pool masks, 15 = t|s|o|div
-      List<Tuple2<int, Widget>> addressEnabled = [];
+      List<Tuple3<int, Widget, String>> addressEnabled = [];
       for (var mask in addressAvailable) {
         final address = warp.getAccountAddress(aa.coin, aa.id, now(), mask);
         if (address.isNotEmpty) {
@@ -61,7 +69,7 @@ class AddressCarouselState extends State<AddressCarousel> {
               amount: widget.amount,
               memo: widget.memo,
               onQRPressed: widget.onQRPressed);
-          addressEnabled.add(Tuple2(mask, qr));
+          addressEnabled.add(Tuple3(mask, qr, qr.uri));
         }
       }
       // Remove duplicate masks
@@ -69,8 +77,10 @@ class AddressCarouselState extends State<AddressCarousel> {
       addressEnabled.retainWhere((k) => masks.remove(k.item1));
       if (index == null) {
         index = 0;
-        WidgetsBinding.instance.addPostFrameCallback((_) =>
-            widget.onAddressModeChanged?.call(addressEnabled.first.item1));
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          widget.onChanged?.call(addressEnabled.first.item3);
+          widget.onAddressModeChanged?.call(0, addressEnabled.first.item1);
+        });
       }
 
       final addresses = addressEnabled.map((a) => a.item2).toList();
@@ -84,7 +94,8 @@ class AddressCarouselState extends State<AddressCarousel> {
               viewportFraction: 1.0,
               onPageChanged: (i, reason) {
                 final mask = addressEnabled[i].item1;
-                widget.onAddressModeChanged?.call(mask);
+                widget.onAddressModeChanged?.call(i, mask);
+                widget.onChanged?.call(addressEnabled[i].item3);
                 setState(() => index = i);
               },
             ),
@@ -123,6 +134,7 @@ class QRAddressWidget extends StatefulWidget {
   final int mask;
   final int? amount;
   final String? memo;
+  late final String uri;
   final void Function()? onQRPressed;
 
   QRAddressWidget(
@@ -132,32 +144,32 @@ class QRAddressWidget extends StatefulWidget {
     this.amount,
     this.memo,
     this.onQRPressed,
-  });
+  }) {
+    final a = amount ?? 0;
+    if (a != 0 || memo.isNotEmptyAndNotNull) {
+      final userMemo = UserMemoT(body: memo!);
+      final recipient =
+          RecipientT(address: address, pools: 7, amount: a, memo: userMemo);
+      final payment = PaymentRequestExtension.empty()
+        ..recipients!.add(recipient);
+      uri = warp.makePaymentURI(aa.coin, payment);
+    } else
+      uri = address;
+  }
 
   @override
   State<StatefulWidget> createState() => _QRAddressState();
 }
 
 class _QRAddressState extends State<QRAddressWidget> {
-  String uri = '';
-
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
-    final amount = widget.amount ?? 0;
     final image = coins[aa.coin].image;
 
-    if (amount != 0 || widget.memo.isNotEmptyAndNotNull) {
-      final memo = UserMemoT(body: widget.memo);
-      final recipient =
-          RecipientT(address: widget.address, amount: amount, memo: memo);
-      uri = warp.makePaymentURI(aa.coin, [recipient]);
-    } else {
-      uri = widget.address;
-    }
     return Column(children: [
       QrImage(
-        data: uri,
+        data: widget.uri,
         version: QrVersions.auto,
         size: 200.0,
         backgroundColor: Colors.white,
@@ -167,7 +179,7 @@ class _QRAddressState extends State<QRAddressWidget> {
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(centerTrim(uri)),
+          Text(centerTrim(widget.uri)),
           Padding(padding: EdgeInsets.all(4)),
           IconButton.outlined(onPressed: addressCopy, icon: Icon(Icons.copy)),
           Padding(padding: EdgeInsets.all(4)),
@@ -194,7 +206,7 @@ class _QRAddressState extends State<QRAddressWidget> {
 
   addressCopy() {
     final s = S.of(context);
-    Clipboard.setData(ClipboardData(text: uri));
+    Clipboard.setData(ClipboardData(text: widget.uri));
     showSnackBar(s.addressCopiedToClipboard);
   }
 

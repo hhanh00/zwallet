@@ -36,7 +36,6 @@ class HomePageInner extends StatefulWidget {
 class _HomeState extends State<HomePageInner> {
   final key = GlobalKey<BalanceState>();
   int mask = 0;
-  int _pools = 2;
   final formKey = GlobalKey<FormBuilderState>();
 
   @override
@@ -70,9 +69,10 @@ class _HomeState extends State<HomePageInner> {
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: Column(children: [
                         AddressCarousel(
-                          onAddressModeChanged: (m) => setState(() => mask = m),
-                          onQRPressed:
-                              () {}, // TODO: Go to Payment URI or save QR
+                          onAddressModeChanged: (_, m) => setState(() => mask = m),
+                          onQRPressed: () {
+                            GoRouter.of(context).push('/account/payment_uri');
+                          },
                         ),
                         Gap(8),
                         BalanceWidget(

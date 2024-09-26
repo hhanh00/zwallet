@@ -11,7 +11,6 @@ import '../accounts.dart';
 import '../appsettings.dart';
 import '../generated/intl/messages.dart';
 import '../tablelist.dart';
-import '../../pages/accounts/send.dart';
 import 'avatar.dart';
 import 'utils.dart';
 import 'widgets.dart';
@@ -69,6 +68,7 @@ class TableListMessageMetadata extends TableListItemMetadata<ZMessage> {
   DataRow toRow(BuildContext context, int index, ZMessage message) {
     final t = Theme.of(context);
     var style = t.textTheme.bodyMedium!;
+    logger.i(message);
     if (!message.read) style = style.copyWith(fontWeight: FontWeight.bold);
     final addressStyle = message.incoming
         ? style.apply(color: Colors.green)

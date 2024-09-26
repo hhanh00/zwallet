@@ -93,6 +93,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.3
   flutter_svg: ^2.0.9
+  hex: ^0.2.0
 
 dependency_overrides:
   intl: ^0.18.0

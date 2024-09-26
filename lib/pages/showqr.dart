@@ -49,7 +49,7 @@ class ShowQRPage extends StatelessWidget {
   }
 }
 
-Future<void> saveQRImage(String data, String title) async {
+Future<void> saveQRImage(String data, String? title) async {
   final code =
       QrCode.fromData(data: data, errorCorrectLevel: QrErrorCorrectLevel.L);
   code.make();
@@ -68,5 +68,5 @@ Future<void> saveQRImage(String data, String title) async {
   final ByteData? byteData =
       await image.toByteData(format: ImageByteFormat.png);
   final Uint8List pngBytes = byteData!.buffer.asUint8List();
-  await saveFileBinary(pngBytes, 'qr.png', title);
+  await saveFileBinary(pngBytes, 'qr.png', title ?? '');
 }

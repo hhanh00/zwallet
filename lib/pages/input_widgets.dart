@@ -184,6 +184,7 @@ class AmountPicker extends StatefulWidget {
   final int initialAmount;
   final int? maxAmount;
   final Function(int?)? onSaved;
+  final Function(int?)? onChanged;
   final bool showFiat;
   final bool showSlider;
 
@@ -193,6 +194,7 @@ class AmountPicker extends StatefulWidget {
     required this.name,
     this.maxAmount,
     this.onSaved,
+    this.onChanged,
     this.showFiat = true,
     this.showSlider = true,
   });
@@ -231,6 +233,7 @@ class AmountPickerState extends State<AmountPicker> {
     return FormBuilderField<int>(
         name: widget.name,
         onSaved: widget.onSaved,
+        onChanged: widget.onChanged,
         builder: (field) {
           _field = field;
           return Column(children: [

@@ -729,8 +729,11 @@ extension RecipientExtension on RecipientT {
 
 extension PaymentRequestExtension on PaymentRequestT {
   static PaymentRequestT empty() => PaymentRequestT(
-    recipients: [RecipientExtension.empty()],
+    recipients: [],
     srcPools: 7,
     senderPayFees: true,
+    useChange: true,
+    height: syncStatus.confirmHeight,
+    expiration: syncStatus.expirationHeight,
   );
 }

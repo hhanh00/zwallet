@@ -21,6 +21,7 @@ var appStore = AppStore();
 class AppStore = _AppStore with _$AppStore;
 
 abstract class _AppStore with Store {
+  int dbVersion = warp.getSchemaVersion();
   bool initialized = false;
   String dbDir = '';
   String dbPassword = '';
@@ -96,7 +97,7 @@ abstract class _SyncStatus with Store {
   }
 
   @computed
-  int get expirationHeight => syncedHeight + 100;
+  int get expirationHeight => confirmHeight + 100;
 
   bool get isSynced {
     final sh = syncedHeight;
@@ -104,9 +105,8 @@ abstract class _SyncStatus with Store {
     return lh != null && sh >= lh;
   }
 
-  int? get confirmHeight {
-    final lh = latestHeight;
-    if (lh == null) return null;
+  int get confirmHeight {
+    final lh = latestHeight ?? syncedHeight;
     final ch = lh - appSettings.anchorOffset + 1;
     return max(ch, 0);
   }
@@ -180,6 +180,9 @@ abstract class _SyncStatus with Store {
 
       contacts.fetchContacts();
       marketPrice.update();
+      if (!appSettings.nogetTx) {
+        await warp.retrieveTransactionDetails(aa.coin);
+      }
       final postBalance = AccountBalanceSnapshot(
           coin: aa.coin, id: aa.id, balance: aa.poolBalances.total);
       if (preBalance.sameAccount(postBalance) &&
