@@ -120,13 +120,11 @@ class TableListNoteMetadata extends TableListItemMetadata<Note> {
   @override
   void inverseSelection() {
     aa.notes.invert();
-    aa.updatePoolBalances();
   }
 
   _select(Note note) {
     note.excluded = !note.excluded;
     aa.notes.exclude(note);
-    aa.updatePoolBalances();
   }
 
   TextStyle _noteStyle(ThemeData t, Note note) {
@@ -229,7 +227,6 @@ class NoteTable extends StatelessWidget {
 
   _selectInverse() {
     aa.notes.invert();
-    aa.updatePoolBalances();
   }
 }
 
@@ -279,7 +276,6 @@ class NotesDataSource extends DataTableSource {
 
   void _noteSelected(Note note) {
     aa.notes.exclude(note);
-    aa.updatePoolBalances();
   }
 }
 
@@ -321,7 +317,6 @@ class NoteListState extends State<NoteList> with AutomaticKeepAliveClientMixin {
 
   _onInvert() {
     aa.notes.invert();
-    aa.updatePoolBalances();
   }
 
   @override
@@ -385,7 +380,6 @@ class NoteItemState extends State<NoteItem> {
       excluded = !excluded;
       widget.note.excluded = excluded;
       aa.notes.exclude(widget.note);
-      aa.updatePoolBalances();
     });
   }
 }

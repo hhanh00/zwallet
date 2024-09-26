@@ -68,6 +68,7 @@ class SendPageState extends State<SendPage> {
       if (custom && css.contacts) AccountsBookButton,
     ];
     final isShielded = (toRecvSelected ?? toRecvAvailable) & 6 != 0;
+    final labels = poolLabels();
 
     return Scaffold(
       appBar: AppBar(title: Text(s.send), actions: [
@@ -97,11 +98,7 @@ class SendPageState extends State<SendPage> {
                     key: ValueKey(toRecvAvailable),
                     name: 'to_receivers',
                     available: toRecvAvailable,
-                    labels: [
-                      Text(s.transparent, style: TextStyle(color: Colors.red)),
-                      Text(s.sapling, style: TextStyle(color: Colors.orange)),
-                      Text(s.orchard, style: TextStyle(color: Colors.green))
-                    ],
+                    labels: labels,
                     onSaved: (v) => toRecvSelected = v,
                     multiSelectionEnabled: true,
                     show: toRecvAvailable != 0 && custom && css.recipientPools),
@@ -109,14 +106,7 @@ class SendPageState extends State<SendPage> {
                 SegmentedPicker(fromRecvAvailable,
                     name: 'from_receivers',
                     available: fromRecvAvailable,
-                    labels: [
-                      Text(amountToString(balance.transparent),
-                          style: TextStyle(color: Colors.green)),
-                      Text(amountToString(balance.sapling),
-                          style: TextStyle(color: Colors.orange)),
-                      Text(amountToString(balance.orchard),
-                          style: TextStyle(color: Colors.red))
-                    ],
+                    labels: labels,
                     onSaved: (v) => fromRecvSelected = v,
                     multiSelectionEnabled: true,
                     show: custom && css.pools),
@@ -207,6 +197,9 @@ class SendPageState extends State<SendPage> {
       print(feeIncluded);
       print(memo);
       if (formKey.currentState!.isValid) {
+        if (memo.replyTo)
+          memo.sender = warp.getAccountAddress(aa.coin, aa.id, now(), 
+            coinSettings.replyUa);
         final recipient = RecipientT(
             address: address,
             amount: amount,

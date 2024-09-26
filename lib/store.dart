@@ -169,10 +169,10 @@ abstract class _SyncStatus with Store {
       startSyncedHeight = syncedHeight;
 
       int coin = aa.coin;
-      eta.begin(latestHeight!);
+      int account = aa.id;
+      eta.begin(lh);
       eta.checkpoint(syncedHeight, DateTime.now());
-      final preBalance = AccountBalanceSnapshot(
-          coin: aa.coin, id: aa.id, balance: aa.poolBalances.total);
+      final preBalance = warp.getBalance(coin, account, lh);
       // This may take a long time
       await syncToHeight(coin, lh - appSettings.anchorOffset + 1, eta);
       await syncToHeight(coin, lh, eta);
@@ -183,25 +183,24 @@ abstract class _SyncStatus with Store {
       if (!appSettings.nogetTx) {
         await warp.retrieveTransactionDetails(aa.coin);
       }
-      final postBalance = AccountBalanceSnapshot(
-          coin: aa.coin, id: aa.id, balance: aa.poolBalances.total);
-      if (preBalance.sameAccount(postBalance) &&
-          preBalance.balance != postBalance.balance) {
+      if (aa.coin == coin && aa.id == account) {
+        final lh = syncStatus.latestHeight!;
+        final postBalance = warp.getBalance(coin, account, lh);
         final s = GetIt.I.get<S>();
         final ticker = coins[aa.coin].ticker;
-        if (preBalance.balance < postBalance.balance) {
+        if (preBalance.total < postBalance.total) {
           final amount =
-              amountToString(postBalance.balance - preBalance.balance);
+              amountToString(postBalance.total - preBalance.total);
           showLocalNotification(
-            id: latestHeight!,
+            id: lh,
             title: s.incomingFunds,
             body: s.received(amount, ticker),
           );
         } else {
           final amount =
-              amountToString(preBalance.balance - postBalance.balance);
+              amountToString(preBalance.total - postBalance.total);
           showLocalNotification(
-            id: latestHeight!,
+            id: lh,
             title: s.paymentMade,
             body: s.spent(amount, ticker),
           );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:warp/data_fb_generated.dart';
 import 'package:warp/warp.dart';
 
 import '../../appsettings.dart';
@@ -9,14 +10,17 @@ import '../../coin/coins.dart';
 import '../utils.dart';
 
 class BalanceWidget extends StatefulWidget {
+  final BalanceT balance;
   final int mode;
   final void Function()? onMode;
-  BalanceWidget(this.mode, {this.onMode, super.key});
+  BalanceWidget(this.balance, this.mode, {this.onMode, super.key});
   @override
   State<StatefulWidget> createState() => BalanceState();
 }
 
 class BalanceState extends State<BalanceWidget> {
+  late final accountBalance = widget.balance;
+
   @override
   void initState() {
     super.initState();
@@ -100,21 +104,7 @@ class BalanceState extends State<BalanceWidget> {
     }
   }
 
-  int get balance {
-    int amount = 0;
-    if (widget.mode & 1 != 0)
-      amount += aa.poolBalances.transparent;
-    if (widget.mode & 2 != 0)
-      amount += aa.poolBalances.sapling;
-    if (widget.mode & 4 != 0)
-      amount += aa.poolBalances.orchard;
-    return amount;
-  }
-
-  int get totalBalance =>
-      aa.poolBalances.transparent +
-      aa.poolBalances.sapling +
-      aa.poolBalances.orchard;
-
+  int get balance => accountBalance.masked(widget.mode);
+  int get totalBalance => accountBalance.total;
   int get otherBalance => totalBalance - balance;
 }

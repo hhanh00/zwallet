@@ -846,4 +846,7 @@ class SEn extends S {
 
   @override
   String get editAccount => 'Edit Account';
+
+  @override
+  String get tooManyNotes => 'Too Many Notes';
 }

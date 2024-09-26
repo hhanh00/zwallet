@@ -9,6 +9,7 @@ import 'package:warp/data_fb_generated.dart';
 import 'package:warp/warp.dart';
 
 import 'pages/utils.dart';
+import 'store.dart';
 
 part 'accounts.g.dart';
 
@@ -107,8 +108,6 @@ abstract class _ActiveAccount2 with Store {
   @observable
   String currency = '';
 
-  @observable
-  BalanceT poolBalances = BalanceT();
   Notes notes;
   Txs txs;
   Messages messages;
@@ -118,18 +117,12 @@ abstract class _ActiveAccount2 with Store {
 
   @action
   void reset(int resetHeight) {
-    poolBalances = BalanceT();
     notes.clear();
     txs.clear();
     messages.clear();
     spendings = [];
     accountBalances = [];
     height = resetHeight;
-  }
-
-  @action
-  void updatePoolBalances() {
-    poolBalances = warp.getBalance(coin, id, height);
   }
 
   @action
@@ -144,7 +137,6 @@ abstract class _ActiveAccount2 with Store {
   Future<void> update(int newHeight) async {
     if (id == 0) return;
     updateDivisified();
-    updatePoolBalances();
 
     notes.read(newHeight);
     txs.read(newHeight);
@@ -160,7 +152,8 @@ abstract class _ActiveAccount2 with Store {
     spendings = await warp.getSpendings(coin, id, start);
 
     List<AccountBalance> abs = [];
-    var b = poolBalances.orchard + poolBalances.sapling;
+    final balance = warp.getBalance(aa.coin, aa.id, syncStatus.confirmHeight);
+    var b = balance.orchard + balance.sapling;
     abs.add(AccountBalance(DateTime.now(), b / ZECUNIT));
     for (var trade
         in txs.items.sortedBy((a, b) => b.height.compareTo(a.height))) {

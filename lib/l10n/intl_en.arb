@@ -271,5 +271,6 @@
 	"birthHeight": "Birth Height",
 	"downgradeAccount": "Downgrade Account",
 	"noKey": "No Key",
-	"editAccount": "Edit Account"
+	"editAccount": "Edit Account",
+	"tooManyNotes": "Too Many Notes"
 }

@@ -1736,6 +1736,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Edit Account'**
   String get editAccount;
+
+  /// No description provided for @tooManyNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Too Many Notes'**
+  String get tooManyNotes;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

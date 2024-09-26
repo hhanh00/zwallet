@@ -137,8 +137,7 @@ String? addressValidator(String? v) {
 String? paymentURIValidator(String? v) {
   final s = S.of(rootNavigatorKey.currentContext!);
   if (v == null || v.isEmpty) return s.required;
-  if (warp.isValidAddressOrUri(aa.coin, v) != 2)
-    return s.invalidPaymentURI;
+  if (warp.isValidAddressOrUri(aa.coin, v) != 2) return s.invalidPaymentURI;
   return null;
 }
 
@@ -703,6 +702,14 @@ void showLocalNotification({required int id, String? title, String? body}) {
 
 extension PoolBalanceExtension on BalanceT {
   int get total => transparent + sapling + orchard;
+
+  int masked(int mask) {
+    int amount = 0;
+    if (mask & 1 != 0) amount += transparent;
+    if (mask & 2 != 0) amount += sapling;
+    if (mask & 4 != 0) amount += orchard;
+    return amount;
+  }
 }
 
 String? isValidUA(int uaType) {
@@ -729,11 +736,20 @@ extension RecipientExtension on RecipientT {
 
 extension PaymentRequestExtension on PaymentRequestT {
   static PaymentRequestT empty() => PaymentRequestT(
-    recipients: [],
-    srcPools: 7,
-    senderPayFees: true,
-    useChange: true,
-    height: syncStatus.confirmHeight,
-    expiration: syncStatus.expirationHeight,
-  );
+        recipients: [],
+        srcPools: 7,
+        senderPayFees: true,
+        useChange: true,
+        height: syncStatus.confirmHeight,
+        expiration: syncStatus.expirationHeight,
+      );
+}
+
+List<Text> poolLabels() {
+  final s = GetIt.I.get<S>();
+  return [
+    Text(s.transparent, style: TextStyle(color: Colors.red)),
+    Text(s.sapling, style: TextStyle(color: Colors.orange)),
+    Text(s.orchard, style: TextStyle(color: Colors.green))
+  ];
 }

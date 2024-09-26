@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:warp/warp.dart';
 
 import '../../generated/intl/messages.dart';
 import '../../appsettings.dart';
@@ -34,7 +35,6 @@ class HomePageInner extends StatefulWidget {
 }
 
 class _HomeState extends State<HomePageInner> {
-  final key = GlobalKey<BalanceState>();
   int mask = 0;
   final formKey = GlobalKey<FormBuilderState>();
 
@@ -58,8 +58,8 @@ class _HomeState extends State<HomePageInner> {
         child: Center(
           child: Observer(
             builder: (context) {
-              aa.poolBalances;
               syncStatus.changed;
+              final balance = warp.getBalance(aa.coin, aa.id, MAXHEIGHT);
 
               return Column(
                 children: [
@@ -76,8 +76,9 @@ class _HomeState extends State<HomePageInner> {
                         ),
                         Gap(8),
                         BalanceWidget(
+                          key: ValueKey(balance),
+                          balance,
                           mask & 7,
-                          key: key,
                         ),
                         Gap(16),
                         if (!aa.saved)

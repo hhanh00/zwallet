@@ -10,12 +10,13 @@ import 'package:warp/data_fb_generated.dart';
 import 'package:warp/warp.dart';
 
 import '../../appsettings.dart';
-import '../../pages/widgets.dart';
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
+import '../../store.dart';
 import '../input_widgets.dart';
-import '../settings.dart';
 import '../utils.dart';
+
+const MAX_NOTES = 25;
 
 class PoolTransferPage extends StatefulWidget {
   @override
@@ -25,25 +26,28 @@ class PoolTransferPage extends StatefulWidget {
 class _PoolTransferState extends State<PoolTransferPage>
     with WithLoadingAnimation {
   late final s = S.of(context);
+  final formKey = GlobalKey<FormBuilderState>();
+  late final BalanceT balance;
   final memoController = TextEditingController(text: appSettings.memo);
   final splitController = TextEditingController(text: amountToString(0));
   late final List<double> balances;
   int amount = 0;
   int from = 1;
   int to = 2;
+  UserMemoT memo = UserMemoT(body: '');
 
   @override
   void initState() {
     super.initState();
-    final pb = aa.poolBalances;
-    balances = [pb.transparent, pb.sapling, pb.orchard]
+    balance = warp.getBalance(aa.coin, aa.id, syncStatus.confirmHeight);
+    balances = [balance.transparent, balance.sapling, balance.orchard]
         .map((b) => b / ZECUNIT)
         .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final spendable = aa.poolBalances.get(from);
+    final spendable = balance.masked(from);
     return Scaffold(
       appBar: AppBar(
           title: Text(s.poolTransfer),
@@ -51,55 +55,66 @@ class _PoolTransferState extends State<PoolTransferPage>
       body: wrapWithLoading(
         SingleChildScrollView(
           child: FormBuilder(
+            key: formKey,
             child: Column(
               children: [
                 HorizontalBarChart(balances),
+                Gap(16),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-                      FieldUA(
+                      SegmentedPicker(
                         from,
                         name: 'from',
-                        label: s.fromPool,
+                        labels: poolLabels(),
+                        available: 7,
                         onChanged: (v) => setState(() {
                           from = v!;
                         }),
-                        radio: true,
+                        multiSelectionEnabled: true,
                       ),
-                      FieldUA(
+                      Gap(16),
+                      SegmentedPicker(
                         to,
                         name: 'to',
-                        label: s.toPool,
+                        labels: poolLabels(),
+                        available: 7,
                         onChanged: (v) => setState(() {
                           to = v!;
                         }),
-                        radio: true,
+                        multiSelectionEnabled: false,
                       ),
                       Gap(16),
-                      // AmountPicker(
-                      //   amount,
-                      //   spendable: spendable,
-                      //   onChanged: (a) => setState(() => amount = a!),
-                      // ),
+                      Text('${s.spendable}: ${amountToString(spendable)}'),
                       Gap(16),
-                      FormBuilderTextField(
+                      AmountPicker(
+                        amount,
+                        name: 'amount',
+                        maxAmount: spendable,
+                        onChanged: (a) => setState(() => amount = a!),
+                      ),
+                      Gap(16),
+                      MemoInput(
+                        memo,
                         name: 'memo',
-                        decoration: InputDecoration(label: Text(s.memo)),
-                        controller: memoController,
-                        maxLines: 10,
+                        onSaved: (m) => memo = m!,
                       ),
+                      Gap(16),
                       FormBuilderTextField(
-                          name: 'split',
-                          decoration:
-                              InputDecoration(label: Text(s.maxAmountPerNote)),
-                          controller: splitController,
-                          keyboardType:
-                              TextInputType.numberWithOptions(decimal: true),
-                          validator: FormBuilderValidators.compose([
+                        name: 'split',
+                        decoration:
+                            InputDecoration(label: Text(s.maxAmountPerNote)),
+                        controller: splitController,
+                        keyboardType:
+                            TextInputType.numberWithOptions(decimal: true),
+                        validator: FormBuilderValidators.compose(
+                          [
                             FormBuilderValidators.numeric(),
                             FormBuilderValidators.min(0, inclusive: false),
-                          ]))
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -112,22 +127,47 @@ class _PoolTransferState extends State<PoolTransferPage>
   }
 
   ok() async {
+    final form = formKey.currentState!;
+    if (!form.saveAndValidate()) return;
+
     final splitAmount = stringToAmount(splitController.text);
     load(() async {
       try {
-        // TODO
-        // final plan = await warp.transferPool(
-        //   aa.coin,
-        //   aa.id,
-        //   from,
-        //   to,
-        //   amount,
-        //   false,
-        //   memoController.text,
-        //   splitAmount,
-        //   appSettings.anchorOffset,
-        // );
-        // GoRouter.of(context).push('/account/txplan?tab=more', extra: plan);
+        final toAddress = warp.getAccountAddress(aa.coin, aa.id, now(), to);
+        if (memo.replyTo)
+          memo.sender = warp.getAccountAddress(aa.coin, aa.id, now(), 
+            coinSettings.replyUa);
+        final n = amount ~/ splitAmount;
+        final m = amount % splitAmount;
+        if (n > MAX_NOTES) {
+          await showMessageBox2(context, s.error, s.tooManyNotes);
+          return;
+        }
+        List<RecipientT> recipients = [];
+        if (m != 0)
+          recipients.add(RecipientT(
+            address: toAddress,
+            amount: m,
+            pools: to,
+          ));
+        for (var i = 0; i < n; i++) {
+          recipients.add(RecipientT(
+            address: toAddress,
+            amount: splitAmount,
+            pools: to,
+          ));
+        }
+        recipients.first.memo = memo;
+        final payment = PaymentRequestT(
+            recipients: recipients,
+            srcPools: from,
+            senderPayFees: false,
+            useChange: true,
+            height: syncStatus.confirmHeight,
+            expiration: syncStatus.expirationHeight);
+
+        final plan = await warp.pay(aa.coin, aa.id, payment);
+        GoRouter.of(context).push('/account/txplan?tab=more', extra: plan);
       } on String catch (e) {
         await showMessageBox2(context, s.error, e);
       }

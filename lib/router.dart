@@ -88,7 +88,8 @@ final router = GoRouter(
               routes: [
                 GoRoute(
                     path: 'multi_pay',
-                    builder: (context, state) => MultiPayPage(state.extra as PaymentRequestT?),
+                    builder: (context, state) =>
+                        MultiPayPage(state.extra as PaymentRequestT?),
                     routes: [
                       GoRoute(
                           path: 'new',
@@ -325,11 +326,11 @@ final router = GoRouter(
                       path: 'about',
                       builder: (context, state) =>
                           AboutPage(state.extra as String)),
-                  // GoRoute(
-                  //   path: 'submit_tx',
-                  //   builder: (context, state) =>
-                  //       SubmitTxPage(txPlan: state.extra as Uint8List),
-                  // ),
+                  GoRoute(
+                    path: 'submit_tx',
+                    builder: (context, state) =>
+                        SubmitTxPage(state.extra as TransactionSummaryT),
+                  ),
                 ]),
           ],
         ),
