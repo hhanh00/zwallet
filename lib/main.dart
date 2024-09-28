@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:YWallet/pages/settings.dart';
-import 'package:YWallet/store.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +11,6 @@ import 'package:path/path.dart' as path;
 
 import 'appsettings.dart';
 import 'main.reflectable.dart';
-import 'coin/coins.dart';
 import './pages/utils.dart';
 
 import 'init.dart';

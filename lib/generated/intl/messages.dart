@@ -615,11 +615,11 @@ abstract class S {
   /// **'ERROR'**
   String get error;
 
-  /// No description provided for @external.
+  /// No description provided for @change.
   ///
   /// In en, this message translates to:
-  /// **'External'**
-  String get external;
+  /// **'Change'**
+  String get change;
 
   /// No description provided for @fee.
   ///
@@ -1742,6 +1742,30 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Too Many Notes'**
   String get tooManyNotes;
+
+  /// No description provided for @addresses.
+  ///
+  /// In en, this message translates to:
+  /// **'Addresses'**
+  String get addresses;
+
+  /// No description provided for @utxo.
+  ///
+  /// In en, this message translates to:
+  /// **'UTXO'**
+  String get utxo;
+
+  /// No description provided for @addAddressConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to add a new transparent address?'**
+  String get addAddressConfirm;
+
+  /// No description provided for @scanTransparentAddresses.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Transparent Addresses'**
+  String get scanTransparentAddresses;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

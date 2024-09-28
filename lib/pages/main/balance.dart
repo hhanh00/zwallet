@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:warp/data_fb_generated.dart';
-import 'package:warp/warp.dart';
 
 import '../../appsettings.dart';
 import '../../store.dart';

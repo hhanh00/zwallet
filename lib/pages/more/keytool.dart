@@ -26,8 +26,8 @@ class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
   final formKey = GlobalKey<FormBuilderState>();
   bool shielded = false;
   int account = 0;
-  bool external = true;
-  int address = 0;
+  bool change = false;
+  int addrIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -46,34 +46,32 @@ class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
                   seed: seed,
                   shielded: shielded,
                   accountIndex: account,
-                  external: external,
-                  addressIndex: address,
+                  change: change,
+                  addressIndex: addrIndex,
                   formKey: formKey),
             ))));
   }
 
   void refresh() {
-    final form = formKey.currentState!;
-    if (form.validate()) {
+    final form = formKey.currentState;
+    if (form != null && form.validate()) {
       form.save();
       account = int.parse(form.fields['account']!.value);
-      external = form.fields['external']?.value as bool;
-      address = int.parse(form.fields['address']?.value);
+      change = form.fields['change']?.value as bool;
+      addrIndex = int.parse(form.fields['address']?.value);
       shielded = form.fields['shielded']?.value as bool;
-      final ext = external ? 0 : 1; // only used by taddr
 
       final coin = aa.coin;
       final id = aa.id;
       keys.clear();
-      load(() => _computeKeys(coin, id, account, ext));
+      load(() => _computeKeys(coin, id, account, change ? 1 : 0, addrIndex));
     }
     setState(() {});
   }
 
-  Future<void> _computeKeys(int coin, int account, int index, int ext) async {
-    // TODO: CHECK
+  Future<void> _computeKeys(int coin, int account, int aindex, int ext, int addrIndex) async {
     for (int a = 0; a < 100; a++) {
-      final kp = await warp.deriveZip32Keys(coin, account, index);
+      final kp = await warp.deriveZip32Keys(coin, account, aindex, ext, addrIndex + a);
       keys.add(kp);
     }
   }
@@ -86,14 +84,14 @@ class TableListKeyMetadata extends TableListItemMetadata<Zip32KeysT> {
   final int accountIndex;
   final int addressIndex;
   final bool shielded;
-  final bool external;
+  final bool change;
   int? selection;
   final GlobalKey<FormBuilderState> formKey;
   TableListKeyMetadata(
       {required this.seed,
       required this.shielded,
       required this.accountIndex,
-      required this.external,
+      required this.change,
       required this.addressIndex,
       required this.formKey});
 
@@ -160,10 +158,10 @@ class TableListKeyMetadata extends TableListItemMetadata<Zip32KeysT> {
   }
 
   String path(index) {
-    final ext = external ? '0' : '1';
+    final c = change ? '1' : '0';
     return shielded
         ? "m/32'/$coinIndex'/${accountIndex + index}'"
-        : "m/44'/$coinIndex'/$accountIndex'/$ext/${addressIndex + index}";
+        : "m/44'/$coinIndex'/$accountIndex'/$c/${addressIndex + index}";
   }
 
   @override
@@ -182,9 +180,9 @@ class TableListKeyMetadata extends TableListItemMetadata<Zip32KeysT> {
               ]),
             ),
             FormBuilderSwitch(
-              name: 'external',
-              title: Text(s.external),
-              initialValue: external,
+              name: 'change',
+              title: Text(s.change),
+              initialValue: change,
             ),
             FormBuilderTextField(
               name: 'address',

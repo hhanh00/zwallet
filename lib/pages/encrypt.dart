@@ -1,14 +1,13 @@
 import 'dart:io';
 
 import 'package:YWallet/init.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp/warp.dart';
-import 'package:path/path.dart' as path;
 
 import '../accounts.dart';
 import '../coin/coins.dart';
@@ -95,8 +94,13 @@ class _EncryptDbState extends State<EncryptDbPage> with WithLoadingAnimation {
         final prefs = GetIt.I.get<SharedPreferences>();
         await prefs.setString('backup', tempPath);
       });
-      await showMessageBox2(context, s.restart, s.pleaseQuitAndRestartTheAppNow,
-          dismissable: false);
+
+      await AwesomeDialog(context: context, 
+        dialogType: DialogType.info,
+        title: s.restart, 
+        desc: s.pleaseQuitAndRestartTheAppNow,
+        dismissOnTouchOutside: false,
+        dismissOnBackKeyPress: false)..show();
       GoRouter.of(context).pop();
     }
   }

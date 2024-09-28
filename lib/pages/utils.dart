@@ -25,13 +25,13 @@ import 'package:reflectable/reflectable.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:velocity_x/velocity_x.dart'
-    show VxNullableStringIsEmptyOrNullExtension;
 import 'package:warp/data_fb_generated.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:warp/warp.dart';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'package:flat_buffers/flat_buffers.dart' as fb;
 
 import '../accounts.dart';
 import '../appsettings.dart';
@@ -50,6 +50,7 @@ const ZECUNIT_INT = 100000000;
 const MAX_PRECISION = 8;
 const DAY_MS = 24 * 3600 * 1000;
 const MAXHEIGHT = 4000000000;
+const MAXMONEY = 2200000000000000;
 
 final DateFormat noteDateFormat = DateFormat("yy-MM-dd HH:mm");
 final DateFormat txDateFormat = DateFormat("MM-dd HH:mm");
@@ -68,21 +69,19 @@ String decimalFormat(double x, int decimalDigits, {String symbol = ''}) {
 String decimalToString(double x) =>
     decimalFormat(x, decimalDigits(appSettings.fullPrec));
 
-Future<bool> showMessageBox2(BuildContext context, String title, String content,
-    {String? label, bool dismissable = true}) async {
+Future<void> showMessageBox(BuildContext context, String title, String content,
+    {DialogType type = DialogType.info, String? label}) async {
   final s = S.of(context);
-  final confirm = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) =>
-          AlertDialog(title: Text(title), content: Text(content), actions: [
-            if (dismissable)
-              ElevatedButton.icon(
-                  onPressed: () => GoRouter.of(context).pop(),
-                  icon: Icon(Icons.check),
-                  label: Text(label ?? s.ok))
-          ]));
-  return confirm ?? false;
+
+  await AwesomeDialog(
+    context: context,
+    dialogType: type,
+    title: title,
+    desc: content,
+    btnOkOnPress: () {},
+    btnOkText: s.ok,
+  )
+    ..show();
 }
 
 mixin WithLoadingAnimation<T extends StatefulWidget> on State<T> {
@@ -726,12 +725,14 @@ extension UareceiversExtension on UareceiversT {
 }
 
 extension RecipientExtension on RecipientT {
-  static RecipientT empty() => RecipientT(
-        address: '',
-        amount: 0,
-        pools: 7,
-        memo: UserMemoT(replyTo: false, subject: '', body: ''),
-      );
+  static RecipientT empty() {
+    return RecipientT(
+      address: '',
+      amount: 0,
+      pools: 7,
+      memo: UserMemoT(replyTo: false, subject: '', body: appSettings.memo),
+    );
+  }
 }
 
 extension PaymentRequestExtension on PaymentRequestT {
@@ -745,6 +746,15 @@ extension PaymentRequestExtension on PaymentRequestT {
       );
 }
 
+extension TransactionSummaryExtension on TransactionSummaryT {
+  Uint8List toBin() {
+    final builder = fb.Builder();
+    int root = pack(builder);
+    builder.finish(root);
+    return builder.buffer;
+  }
+}
+
 List<Text> poolLabels() {
   final s = GetIt.I.get<S>();
   return [
@@ -752,4 +762,10 @@ List<Text> poolLabels() {
     Text(s.sapling, style: TextStyle(color: Colors.orange)),
     Text(s.orchard, style: TextStyle(color: Colors.green))
   ];
+}
+
+DateTime toDate(int ts, {bool dateOnly = false}) {
+  var dt = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
+  if (dateOnly) dt = DateTime(dt.year, dt.month, dt.day);
+  return dt;
 }

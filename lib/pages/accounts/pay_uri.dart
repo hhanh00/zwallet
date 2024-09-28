@@ -2,15 +2,10 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:go_router/go_router.dart';
-import 'package:warp/warp.dart';
 
-import '../../accounts.dart';
-import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../input_widgets.dart';
 import '../main/qr_address.dart';
-import '../utils.dart';
-import '../widgets.dart';
 
 class PaymentURIPage extends StatefulWidget {
   final int amount;

@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:warp/warp.dart';
-
 import '../pages/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +23,6 @@ abstract class CoinBase {
   String? get marketTicker;
   AssetImage get image;
   String get dbRoot;
-  late String dbDir;
   List<LWInstance> get lwd;
   String? warpUrl;
   int get defaultAddrMode;
@@ -44,31 +41,5 @@ abstract class CoinBase {
       return true;
     }
     return false;
-  }
-
-  // Future<void> importFromTemp() async {
-  //   final tempDir = await getTempPath();
-  //   final src = File(p.join(tempDir, dbRoot));
-  //   print("Import from ${src.path}");
-  //   if (await src.exists()) {
-  //     print("copied to $dbFullPath");
-  //     await delete();
-  //     await src.copy(dbFullPath);
-  //     await src.delete();
-  //   }
-  // }
-
-  Future<void> delete() async {
-    try {
-      await File(p.join(dbDir, dbRoot)).delete();
-      await File(p.join(dbDir, "$dbRoot-shm")).delete();
-      await File(p.join(dbDir, "$dbRoot-wal")).delete();
-    } catch (e) {} // ignore failure
-  }
-
-  String _getFullPath(String dbPath, int n) {
-    final version = n.toString().padLeft(2, '0');
-    final path = p.join(dbPath, "$dbRoot$version.db");
-    return path;
   }
 }

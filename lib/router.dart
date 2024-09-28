@@ -1,11 +1,10 @@
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'init.dart';
-import 'pages/accounts/swap.dart';
-import 'pages/accounts/swap/history.dart';
-import 'pages/accounts/swap/stealthex.dart';
+import 'package:get_it/get_it.dart';
+
+import 'generated/intl/messages.dart';
 import 'pages/more/cold.dart';
+import 'pages/more/transparent.dart';
 import 'pages/more/vote.dart';
 import 'pages/widgets.dart';
 import 'settings.pb.dart';
@@ -13,11 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp/data_fb_generated.dart';
-import 'package:warp/warp.dart';
 
 import 'accounts.dart';
-import 'coin/coins.dart';
-import 'generated/intl/messages.dart';
 import 'pages/accounts/manager.dart';
 import 'pages/accounts/multipay.dart';
 import 'pages/accounts/new_import.dart';
@@ -38,7 +34,6 @@ import 'pages/more/contacts.dart';
 import 'pages/more/keytool.dart';
 import 'pages/more/more.dart';
 import 'pages/more/pool.dart';
-import 'pages/more/sweep.dart';
 import 'pages/tx.dart';
 import 'pages/more/quotes.dart';
 import 'pages/scan.dart';
@@ -52,18 +47,6 @@ import 'store.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _accountNavigatorKey = GlobalKey<NavigatorState>();
-
-final helpRouteMap = {
-  "/account": "/accounts",
-  "/account/multi_pay": "/multipay",
-  "/account/multi_pay/new": "/multipay",
-  "/txplan": "/transacting/report",
-  "/submit_tx": "/transacting/report#transaction-sent",
-  "/broadcast_tx": "/transacting/report#transaction-sent",
-  "/messages": "/messages",
-  "/history": "/history",
-  "contacts": "/contacts",
-};
 
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,
@@ -124,20 +107,18 @@ final router = GoRouter(
                   ),
                 ),
                 GoRoute(
-                  path: 'submit_tx',
+                  path: 'broadcast_tx',
                   builder: (context, state) =>
-                      SubmitTxPage(state.extra as TransactionSummaryT),
+                      SubmitTxPage(state.extra as TransactionBytesT),
                 ),
-                // GoRoute(
-                //   path: 'broadcast_tx',
-                //   builder: (context, state) =>
-                //       SubmitTxPage(txBin: state.extra as Uint8List),
-                // ),
-                // GoRoute(
-                //   path: 'export_raw_tx',
-                //   builder: (context, state) =>
-                //       ExportUnsignedTxPage(state.extra as Uint8List),
-                // ),
+                GoRoute(
+                    path: 'export_raw_tx',
+                    builder: (context, state) {
+                      final s = GetIt.I.get<S>();
+                      final tx = state.extra as TransactionSummaryT;
+                      return AnimatedQRExportPage(tx.toBin(),
+                          title: s.rawTransaction, filename: 'tx.raw');
+                    }),
                 GoRoute(
                   path: 'rescan',
                   builder: (context, state) => RescanPage(),
@@ -243,17 +224,33 @@ final router = GoRouter(
                                 seedInfo: state.extra as SeedInfo?)),
                       ]),
                   GoRoute(
+                      path: 'transparent',
+                      builder: (context, state) =>
+                          PlaceHolderPage("transparent"),
+                      routes: [
+                        GoRoute(
+                            path: 'addresses',
+                            builder: (context, state) =>
+                                TransparentAddressesPage(),
+                            routes: [
+                              GoRoute(
+                                path: 'scan',
+                                builder: (context, state) =>
+                                    ScanTransparentAddressesPage(),
+                              ),
+                            ]),
+                        GoRoute(
+                          path: 'utxos',
+                          builder: (context, state) => ListUTXOPage(),
+                        ),
+                      ]),
+                  GoRoute(
                       path: 'cold',
                       builder: (context, state) => PlaceHolderPage('Cold'),
                       routes: [
                         GoRoute(
                           path: 'sign',
                           builder: (context, state) => ColdSignPage(),
-                        ),
-                        GoRoute(
-                          path: 'signed',
-                          builder: (context, state) =>
-                              SignedTxPage(state.extra as List<int>),
                         ),
                         GoRoute(
                           path: 'broadcast',
@@ -282,10 +279,10 @@ final router = GoRouter(
                     path: 'rescan',
                     builder: (context, state) => RescanPage(),
                   ),
-                  // GoRoute(
-                  //   path: 'rewind',
-                  //   builder: (context, state) => RewindPage(),
-                  // ),
+                  GoRoute(
+                    path: 'rewind',
+                    builder: (context, state) => RewindPage(),
+                  ),
                   GoRoute(
                     path: 'budget',
                     builder: (context, state) => BudgetPage(),
@@ -303,8 +300,12 @@ final router = GoRouter(
                     builder: (context, state) => KeyToolPage(),
                   ),
                   GoRoute(
-                    path: 'sweep',
-                    builder: (context, state) => SweepPage(),
+                    path: 'signed',
+                    builder: (context, state) {
+                      final S s = GetIt.I.get<S>();
+                      return AnimatedQRExportPage(state.extra as Uint8List,
+                          title: s.signedTx, filename: 'tx.sgn');
+                    },
                   ),
                   GoRoute(
                     path: 'vote',
@@ -327,9 +328,9 @@ final router = GoRouter(
                       builder: (context, state) =>
                           AboutPage(state.extra as String)),
                   GoRoute(
-                    path: 'submit_tx',
+                    path: 'broadcast_tx',
                     builder: (context, state) =>
-                        SubmitTxPage(state.extra as TransactionSummaryT),
+                        SubmitTxPage(state.extra as TransactionBytesT),
                   ),
                 ]),
           ],

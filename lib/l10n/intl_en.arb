@@ -85,7 +85,7 @@
 	"encryptDatabase": "Encrypt Database",
 	"encryptionKey": "Encryption Key",
 	"error": "ERROR",
-	"external": "External",
+	"change": "Change",
 	"fee": "Fee",
 	"fromPool": "From Pool",
 	"fromto": "From/To",
@@ -272,5 +272,9 @@
 	"downgradeAccount": "Downgrade Account",
 	"noKey": "No Key",
 	"editAccount": "Edit Account",
-	"tooManyNotes": "Too Many Notes"
+	"tooManyNotes": "Too Many Notes",
+	"addresses": "Addresses",
+	"utxo": "UTXO",
+	"addAddressConfirm": "Are you sure you want to add a new transparent address?",
+	"scanTransparentAddresses": "Scan Transparent Addresses"
 }

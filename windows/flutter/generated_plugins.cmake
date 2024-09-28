@@ -9,6 +9,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus_windows
   local_auth_windows
   network_info_plus_windows
+  rive_common
   screen_retriever
   share_plus
   url_launcher_windows

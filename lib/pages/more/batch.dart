@@ -128,7 +128,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
           await shareFile(context, outFilePath, title: s.fullBackup);
         }
       } on String catch (e) {
-        await showMessageBox2(context, s.error, e);
+        await showMessageBox(context, s.error, e);
       }
     }
   }
@@ -145,9 +145,9 @@ class _BatchBackupState extends State<BatchBackupPage> {
             file.path!, tempDir, restoreKeyController.text);
         final prefs = GetIt.I.get<SharedPreferences>();
         await prefs.setString('backup', tempDir);
-        await showMessageBox2(
+        await showMessageBox(
             context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow,
-            dismissable: false);
+            );
         GoRouter.of(context).pop();
       } on String catch (e) {
         restoreFormKey.currentState!.fields['restore']!.invalidate(e);

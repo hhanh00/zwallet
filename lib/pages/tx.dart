@@ -264,9 +264,6 @@ class TransactionState extends State<TransactionPage> {
                     ...?souts,
                   ],
                 )
-                // TODO
-                // Panel(s.memo, text: tx.memo ?? ''),
-                // Gap(8),
               ],
             ),
           ),

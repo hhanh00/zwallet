@@ -1,10 +1,10 @@
-import 'dart:typed_data';
-
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flat_buffers/flat_buffers.dart' as fb;
 import 'package:warp/data_fb_generated.dart';
 import 'package:warp/warp.dart';
 
@@ -22,10 +22,10 @@ class TxPlanPage extends StatefulWidget {
   TxPlanPage(this.plan, {required this.tab, this.signOnly = false});
 
   @override
-  State<StatefulWidget> createState() => _TxPlanState();
+  State<StatefulWidget> createState() => TxPlanState();
 }
 
-class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
+class TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
   late final s = S.of(context);
 
   @override
@@ -33,6 +33,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
     final plan = widget.plan;
     final txplan =
         TxPlanWidget(plan, signOnly: widget.signOnly, onSend: sendOrSign);
+    final canSign = warp.canSign(aa.coin, aa.id, plan);
     return Scaffold(
         appBar: AppBar(
           title: Text(s.txPlan),
@@ -41,7 +42,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
               onPressed: () => exportRaw(context),
               icon: Icon(MdiIcons.snowflake),
             ),
-            if (aa.canPay && !txplan.invalidPrivacy)
+            if (canSign && !txplan.invalidPrivacy)
               IconButton(
                 onPressed: () => sendOrSign(context),
                 icon: widget.signOnly
@@ -53,9 +54,12 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
         body: wrapWithLoading(SingleChildScrollView(child: txplan)));
   }
 
-  send(BuildContext context) {
-    GoRouter.of(context).go('/${widget.tab}/submit_tx',
-        extra: widget.plan);
+  send(BuildContext context) async {
+    await load(() async {
+      final txBytes = await warp.sign(aa.coin, widget.plan, syncStatus.expirationHeight);
+      GoRouter.of(context).go('/${widget.tab}/broadcast_tx',
+          extra: txBytes);
+    });
   }
 
   exportRaw(BuildContext context) {
@@ -69,12 +73,15 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
   sign(BuildContext context) async {
     try {
       await load(() async {
-        final txBin = await warp.sign(
+        final txBytes = await warp.sign(
             aa.coin, widget.plan, syncStatus.expirationHeight);
-        GoRouter.of(context).go('/more/cold/signed', extra: txBin);
+        final builder = fb.Builder();
+        final root = txBytes.pack(builder);
+        builder.finish(root);
+        GoRouter.of(context).go('/more/signed', extra: builder.buffer);
       });
     } on String catch (error) {
-      await showMessageBox2(context, s.error, error);
+      await showMessageBox(context, s.error, error, type: DialogType.error);
     }
   }
 }

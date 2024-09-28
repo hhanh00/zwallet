@@ -13,10 +13,10 @@ import 'store.dart';
 
 part 'accounts.g.dart';
 
-final ActiveAccount2 nullAccount =
-    ActiveAccount2(0, 0, "", null, false, false, false);
+final ActiveAccount nullAccount =
+    ActiveAccount(0, 0, "", null, false, false);
 
-ActiveAccount2 aa = nullAccount;
+ActiveAccount aa = nullAccount;
 
 AASequence aaSequence = AASequence();
 class AASequence = _AASequence with _$AASequence;
@@ -32,7 +32,7 @@ abstract class _AASequence with Store {
 Future<void> setActiveAccount(int coin, int id) async {
   coinSettings = await CoinSettingsExtension.load(coin);
   runInAction(() {
-    aa = ActiveAccount2.fromId(coin, id);
+    aa = ActiveAccount.fromId(coin, id);
     coinSettings.account = id;
     coinSettings.save(coin);
     aa.updateDivisified();
@@ -41,26 +41,27 @@ Future<void> setActiveAccount(int coin, int id) async {
   });
 }
 
-class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
-  ActiveAccount2(super.coin, super.id, super.name, super.seed, super.canPay,
+class ActiveAccount extends _ActiveAccount with _$ActiveAccount {
+  ActiveAccount(super.coin, super.id, super.name, super.seed,
       super.external, super.saved);
 
-  static Future<ActiveAccount2?> fromPrefs(SharedPreferences prefs) async {
+  static Future<ActiveAccount?> fromPrefs(SharedPreferences prefs) async {
     final coin = prefs.getInt('coin') ?? 0;
     var id = prefs.getInt('account') ?? 0;
-    print('--> $coin $id');
     final accounts = await warp.listAccounts(coin);
     final a =
         accounts.singleWhere((a) => a.id == id, orElse: () => AccountNameT());
-    if (a.id != 0) return ActiveAccount2.fromId(coin, id);
-    print('2--> $coin $id');
+    if (a.id != 0) return ActiveAccount.fromId(coin, id);
     for (var c in coins) {
       final accounts = await warp.listAccounts(coin);
-      print(accounts);
       if (accounts.isNotEmpty)
-        return ActiveAccount2.fromId(c.coin, accounts[0].id);
+        return ActiveAccount.fromId(c.coin, accounts[0].id);
     }
     return null;
+  }
+
+  Future<void> reload() async {
+    await setActiveAccount(aa.coin, aa.id);
   }
 
   Future<void> save() async {
@@ -70,30 +71,27 @@ class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
     await prefs.setInt('account', id);
   }
 
-  factory ActiveAccount2.fromId(int coin, int id) {
+  factory ActiveAccount.fromId(int coin, int id) {
     if (id == 0) return nullAccount;
-    print('active $coin $id');
     final backup = warp.getBackup(coin, id);
     final external = false;
     // TODO: Ledger -> c.supportsLedger && !isMobile() && WarpApi.ledgerHasAccount(coin, id);
-    final canPay = backup.sk != null || external;
-    return ActiveAccount2(
-        coin, id, backup.name!, backup.seed, canPay, external, backup.saved);
+    return ActiveAccount(
+        coin, id, backup.name!, backup.seed, external, backup.saved);
   }
 
   bool get hasUA => coins[coin].supportsUA;
 }
 
-abstract class _ActiveAccount2 with Store {
+abstract class _ActiveAccount with Store {
   final int coin;
   final int id;
   final String name;
   final String? seed;
-  final bool canPay;
   final bool external;
   final bool saved;
 
-  _ActiveAccount2(this.coin, this.id, this.name, this.seed, this.canPay,
+  _ActiveAccount(this.coin, this.id, this.name, this.seed,
       this.external, this.saved)
       : notes = Notes(coin, id),
         txs = Txs(coin, id),

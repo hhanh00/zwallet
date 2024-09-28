@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:YWallet/router.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,13 +14,11 @@ import 'package:workmanager/workmanager.dart';
 
 import '../../accounts.dart';
 import '../init.dart';
-import 'accounts/send.dart';
 import 'settings.dart';
 import 'utils.dart';
 import '../appsettings.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
-import '../settings.pb.dart';
 import '../store.dart';
 
 class SplashPage extends StatefulWidget {
@@ -126,7 +123,7 @@ class _SplashState extends State<SplashPage> {
       final cs = await CoinSettingsExtension.load(c.coin);
       final url = resolveURL(c, cs);
       // TODO: Configure warp dynamically
-      warp.configure(coin, url: url, warp: c.warpUrl, warpEndHeight: 2400000);
+      warp.configure(coin, url: url, warp: c.warpUrl, warpEndHeight: 0);
       // try {
       //   WarpApi.migrateData(c.coin);
       // } catch (_) {} // do not fail on network exception
@@ -136,7 +133,7 @@ class _SplashState extends State<SplashPage> {
   Future<void> _restoreActive() async {
     _setProgress(0.8, 'Load Active Account');
     final prefs = GetIt.I.get<SharedPreferences>();
-    final a = await ActiveAccount2.fromPrefs(prefs);
+    final a = await ActiveAccount.fromPrefs(prefs);
     print('_restoreActive ${a?.id}');
     if (a != null) {
       await setActiveAccount(a.coin, a.id);
@@ -230,6 +227,7 @@ Future<void> handleUri(Uri uri) async {
   final scheme = uri.scheme;
   final coinDef = coins.firstWhere((c) => c.currency == scheme);
   final coin = coinDef.coin;
+  // TODO
   // if (await setActiveAccountOf(coin)) {
   //   SendContext? sc = SendContext.fromPaymentURI(uri.toString());
   //   final context = rootNavigatorKey.currentContext!;

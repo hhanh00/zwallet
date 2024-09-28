@@ -1,3 +1,4 @@
+import 'package:YWallet/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -8,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../../src/version.dart';
 import '../../appsettings.dart';
@@ -20,6 +22,7 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final t = Theme.of(context);
     final template = Template(contentTemplate);
     var content = template.renderString({'APP': APP_NAME});
     final id = commitId.substring(0, 8);
@@ -32,7 +35,9 @@ class AboutPage extends StatelessWidget {
             child: Column(
               children: [
                 MarkdownBody(data: content),
-                Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+                Gap(16),
+                SelectableText(appStore.dbDir, style: t.textTheme.labelSmall),
+                Gap(8),
                 TextButton(
                     child: Text(versionString),
                     onPressed: () => openGithub(commitId)),
@@ -90,7 +95,7 @@ class _DisclaimerState extends State<DisclaimerPage> {
                 onChanged: (v) => setState(() => accepted[2] = v!),
               ),
               Gap(16),
-              ButtonBar(children: [
+              OverflowBar(children: [
                 IconButton.outlined(onPressed: allAccepted ? _accept : null, icon: Icon(Icons.check))
               ]),
             ],

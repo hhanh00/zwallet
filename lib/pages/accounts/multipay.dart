@@ -87,7 +87,7 @@ class _MultiPayState extends State<MultiPayPage> {
       );
       GoRouter.of(context).push('/account/txplan?tab=more', extra: txPlan);
     } on String catch (e) {
-      await showMessageBox2(context, s.error, e);
+      await showMessageBox(context, s.error, e);
     } finally {
       _calculating(false);
     }

@@ -271,7 +271,7 @@ class SEs extends S {
   String get error => 'ERROR';
 
   @override
-  String get external => 'Externo';
+  String get change => 'Change';
 
   @override
   String get fee => 'Comisión';
@@ -849,4 +849,16 @@ class SEs extends S {
 
   @override
   String get tooManyNotes => 'Too Many Notes';
+
+  @override
+  String get addresses => 'Addresses';
+
+  @override
+  String get utxo => 'UTXO';
+
+  @override
+  String get addAddressConfirm => 'Are you sure you want to add a new transparent address?';
+
+  @override
+  String get scanTransparentAddresses => 'Scan Transparent Addresses';
 }

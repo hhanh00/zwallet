@@ -106,7 +106,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                       _key,
                       name: 'key',
                       label: Text(s.key),
-                      validator: _checkKey,
+                      validator: (v) => _checkKey(coin, v),
                       onSaved: (v) => setState(() => _key = v!),
                     ),
                     Gap(8),
@@ -168,11 +168,9 @@ class _NewImportAccountState extends State<NewImportAccountPage>
     }
   }
 
-  String? _checkKey(String? v) {
+  String? _checkKey(int coin, String? v) {
     if (v == null || v.isEmpty) return null;
-    // if (WarpApi.isValidTransparentKey(v)) return s.cannotUseTKey;
-    // final keyType = WarpApi.validKey(coin, v);
-    // if (keyType < 0) return s.invalidKey;
+    if (!warp.isValidKey(coin, v)) return s.invalidKey;
     return null;
   }
 

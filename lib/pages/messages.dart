@@ -284,7 +284,8 @@ class _MessageItemState extends State<MessageItemPage> {
   }
 
   reply() async {
-    final memo = MemoData(true, message.subject, '');
+    // TODO
+    // final memo = MemoData(true, message.subject, '');
     // final sc = SendContext(message.fromAddress!, 7, Amount(0, false), memo);
     // GoRouter.of(context).go('/account/quick_send', extra: sc);
   }

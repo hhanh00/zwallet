@@ -94,6 +94,7 @@ dependencies:
   cupertino_icons: ^1.0.3
   flutter_svg: ^2.0.9
   hex: ^0.2.0
+  awesome_dialog: ^3.2.1
 
 dependency_overrides:
   intl: ^0.18.0

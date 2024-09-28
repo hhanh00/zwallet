@@ -4,7 +4,6 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:warp/warp.dart';
 
-import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import '../init.dart';
 import '../store.dart';

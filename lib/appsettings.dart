@@ -3,7 +3,6 @@ import 'dart:math' as m;
 import 'dart:typed_data';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:warp/data_fb_generated.dart';
 import 'package:warp/warp.dart';
 
 import 'settings.pb.dart';

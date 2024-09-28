@@ -1,4 +1,3 @@
-import 'package:YWallet/pages/input_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -10,10 +9,7 @@ import '../../generated/intl/messages.dart';
 import '../../appsettings.dart';
 import '../../store.dart';
 import '../../accounts.dart';
-import '../../coin/coins.dart';
-import '../accounts/send.dart';
 import '../utils.dart';
-import '../widgets.dart';
 import 'balance.dart';
 import 'sync_status.dart';
 import 'qr_address.dart';

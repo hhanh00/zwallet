@@ -1,15 +1,12 @@
 import 'package:YWallet/pages/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tuple/tuple.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:warp/data_fb_generated.dart';
 import 'package:warp/warp.dart';
 
 import '../../accounts.dart';
-import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
 import '../../store.dart';
 import '../utils.dart';
@@ -35,7 +32,6 @@ class RescanState extends State<RescanPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
           title: Text(s.rescan),
@@ -60,49 +56,38 @@ class RescanState extends State<RescanPage> {
     final form = formKey.currentState!;
     if (form.validate()) {
       form.save();
-      final h = height;
-      if (h != null) {
-        aa.reset(h);
-        Future(() => syncStatus.rescan(h));
-        GoRouter.of(context).pop();
-      }
+      aa.reset(height);
+      Future(() => syncStatus.rescan(height));
+      GoRouter.of(context).pop();
     }
   }
 }
 
 class RewindPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _RewindState();
+  State<StatefulWidget> createState() => RewindState();
 }
 
-class _RewindState extends State<RewindPage> {
+class RewindState extends State<RewindPage> {
   late final s = S.of(context);
   int? selected;
   bool calendar = true;
   DateTime? dateSelected;
-  List<CheckpointT> checkpoints = [];
-  List<DateTime> checkpointDates = [];
+  List<Tuple2<int, DateTime>>? checkpointDates;
 
   @override
   void initState() {
     super.initState();
-    Future(() async {
-      final cps = await warp.listCheckpoints(aa.coin);
-      setState(() {
-        checkpoints = cps;
-        checkpointDates = checkpoints
-            .map((cp) => _toDate(cp.timestamp, dateOnly: true))
-            .toSet()
-            .toList();
-      });
-    });
+  }
+
+  Future<List<Tuple2<int, DateTime>>> initialize() async {
+    final checkpoints = await warp.listCheckpoints(aa.coin);
+    return checkpoints
+        .map((cp) => Tuple2(cp.height, toDate(cp.timestamp, dateOnly: true))).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final activationDate = DateTime.fromMillisecondsSinceEpoch(
-        warp.getActivationDate(aa.coin) * 1000);
-    final today = DateTime.now();
     return Scaffold(
       appBar: AppBar(title: Text(s.rewind), actions: [
         calendar
@@ -113,54 +98,63 @@ class _RewindState extends State<RewindPage> {
                 onPressed: () => setState(() => calendar = true),
                 icon: Icon(Icons.event)),
         if (selected != null)
-          IconButton(onPressed: rewind, icon: Icon(Icons.check)),
+          IconButton(
+              onPressed: () => rewind(checkpointDates),
+              icon: Icon(Icons.check)),
       ]),
-      body: calendar
-          ? CalendarDatePicker(
-              initialDate: today,
-              firstDate: activationDate,
-              lastDate: today,
-              onDateChanged: _selectDate,
-              selectableDayPredicate: (dt) => checkpointDates.contains(dt),
-            )
-          : ListView.separated(
-              itemBuilder: (context, index) {
-                final cp = checkpoints[index];
-                final time = noteDateFormat.format(_toDate(cp.timestamp));
-                return ListTile(
-                  selected: index == selected,
-                  title: Text(time),
-                  trailing: Text(cp.height.toString()),
-                  onTap: () => setState(
-                      () => selected = index != selected ? index : null),
-                );
-              },
-              separatorBuilder: (context, index) => Divider(),
-              itemCount: checkpoints.length),
+      body: FutureBuilder(
+          future: initialize(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) return Jumbotron(snapshot.error.toString());
+            if (!snapshot.hasData) return CircularProgressIndicator();
+            final cpd = snapshot.data;
+            if (cpd == null) return SizedBox.shrink();
+            checkpointDates = cpd;
+            final dates = cpd.map((cp) => cp.item2).toSet();
+            return calendar
+                ? CalendarDatePicker(
+                    initialDate: dates.last,
+                    firstDate: dates.first,
+                    lastDate: dates.last,
+                    onDateChanged: (dt) => _selectDate(cpd, dt),
+                    selectableDayPredicate: (dt) => dates.contains(dt),
+                  )
+                : ListView.separated(
+                    itemBuilder: (context, index) {
+                      final cp = cpd[index];
+                      final time = noteDateFormat.format(cp.item2);
+                      return ListTile(
+                        selected: index == selected,
+                        title: Text(time),
+                        trailing: Text(cp.item1.toString()),
+                        onTap: () => setState(
+                            () => selected = index != selected ? index : null),
+                      );
+                    },
+                    separatorBuilder: (context, index) => Divider(),
+                    itemCount: cpd.length);
+          }),
     );
   }
 
-  _selectDate(DateTime dt) {
-    selected = checkpointDates.indexWhere((d) => d == dt);
-    dateSelected = dt;
-    setState(() {});
+  _selectDate(List<Tuple2<int, DateTime>> checkpointDates, DateTime dt) {
+    selected = checkpointDates.indexWhere((d) => d.item2 == dt);
+    setState(() {
+      dateSelected = dt;
+    });
   }
 
-  rewind() async {
-    final height = checkpoints[selected!].height;
+  rewind(List<Tuple2<int, DateTime>>? checkpointDates) async {
+    if (checkpointDates == null) return;
+    final height = checkpointDates[selected!].item1;
     final confirmed =
         await showConfirmDialog(context, s.rewind, s.confirmRewind(height));
     if (!confirmed) return;
     Future(() async {
       await warp.rewindTo(aa.coin, height);
+      await aa.reload();
       syncStatus.sync(true);
     });
     GoRouter.of(context).pop();
-  }
-
-  DateTime _toDate(int ts, {bool dateOnly = false}) {
-    var dt = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
-    if (dateOnly) dt = DateTime(dt.year, dt.month, dt.day);
-    return dt;
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -111,7 +112,7 @@ class _PoolTransferState extends State<PoolTransferPage>
                         validator: FormBuilderValidators.compose(
                           [
                             FormBuilderValidators.numeric(),
-                            FormBuilderValidators.min(0, inclusive: false),
+                            FormBuilderValidators.min(0, inclusive: true),
                           ],
                         ),
                       ),
@@ -130,17 +131,18 @@ class _PoolTransferState extends State<PoolTransferPage>
     final form = formKey.currentState!;
     if (!form.saveAndValidate()) return;
 
-    final splitAmount = stringToAmount(splitController.text);
+    int splitAmount = stringToAmount(splitController.text);
     load(() async {
       try {
         final toAddress = warp.getAccountAddress(aa.coin, aa.id, now(), to);
         if (memo.replyTo)
           memo.sender = warp.getAccountAddress(aa.coin, aa.id, now(), 
             coinSettings.replyUa);
+        if (splitAmount == 0) splitAmount = MAXMONEY;
         final n = amount ~/ splitAmount;
         final m = amount % splitAmount;
         if (n > MAX_NOTES) {
-          await showMessageBox2(context, s.error, s.tooManyNotes);
+          await showMessageBox(context, s.error, s.tooManyNotes);
           return;
         }
         List<RecipientT> recipients = [];
@@ -157,11 +159,11 @@ class _PoolTransferState extends State<PoolTransferPage>
             pools: to,
           ));
         }
-        recipients.first.memo = memo;
+        recipients.firstOrNull?.memo = memo;
         final payment = PaymentRequestT(
             recipients: recipients,
             srcPools: from,
-            senderPayFees: false,
+            senderPayFees: true,
             useChange: true,
             height: syncStatus.confirmHeight,
             expiration: syncStatus.expirationHeight);
@@ -169,7 +171,7 @@ class _PoolTransferState extends State<PoolTransferPage>
         final plan = await warp.pay(aa.coin, aa.id, payment);
         GoRouter.of(context).push('/account/txplan?tab=more', extra: plan);
       } on String catch (e) {
-        await showMessageBox2(context, s.error, e);
+        await showMessageBox(context, s.error, e, type: DialogType.error);
       }
     });
   }

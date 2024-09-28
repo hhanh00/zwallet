@@ -271,7 +271,7 @@ class SFr extends S {
   String get error => 'ERREUR';
 
   @override
-  String get external => 'Externe';
+  String get change => 'Change';
 
   @override
   String get fee => 'Frais';
@@ -849,4 +849,16 @@ class SFr extends S {
 
   @override
   String get tooManyNotes => 'Too Many Notes';
+
+  @override
+  String get addresses => 'Addresses';
+
+  @override
+  String get utxo => 'UTXO';
+
+  @override
+  String get addAddressConfirm => 'Are you sure you want to add a new transparent address?';
+
+  @override
+  String get scanTransparentAddresses => 'Scan Transparent Addresses';
 }

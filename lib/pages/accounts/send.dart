@@ -1,4 +1,5 @@
 import 'package:YWallet/store.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -142,9 +143,6 @@ class SendPageState extends State<SendPage> {
                     show: isShielded && (!custom || css.memo),
                     advanced: custom && css.memoSubject),
                 Gap(8),
-                Divider(),
-                Gap(8),
-                IconButton(onPressed: send, icon: Icon(Icons.send)),
               ],
             ),
           ),
@@ -182,39 +180,38 @@ class SendPageState extends State<SendPage> {
 
   send() {
     getPaymentAndContinue((payment) async {
-      final tx = await warp.pay(aa.coin, aa.id, payment);
-      GoRouter.of(context).push('/account/txplan?tab=account', extra: tx);
+      try {
+        final tx = await warp.pay(aa.coin, aa.id, payment);
+        GoRouter.of(context).push('/account/txplan?tab=account', extra: tx);
+      } on String catch (msg) {
+        showMessageBox(context, s.error, msg, type: DialogType.error);
+      }
     });
   }
 
-  getPaymentAndContinue(Future<void> continuation(PaymentRequestT p)) {
-    formKey.currentState!.saveAndValidate();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      print(address);
-      print(fromRecvSelected ?? fromRecvAvailable);
-      print(toRecvSelected ?? toRecvAvailable);
-      print(amount);
-      print(feeIncluded);
-      print(memo);
-      if (formKey.currentState!.isValid) {
-        if (memo.replyTo)
-          memo.sender = warp.getAccountAddress(aa.coin, aa.id, now(), 
-            coinSettings.replyUa);
-        final recipient = RecipientT(
-            address: address,
-            amount: amount,
-            pools: toRecvSelected ?? toRecvAvailable,
-            memo: memo);
-        final payment = PaymentRequestT(
-            recipients: [recipient],
-            srcPools: fromRecvSelected ?? fromRecvAvailable,
-            senderPayFees: feeIncluded,
-            useChange: true,
-            height: syncStatus.confirmHeight,
-            expiration: syncStatus.expirationHeight);
-        await continuation(payment);
-      }
-    });
+  getPaymentAndContinue(Future<void> continuation(PaymentRequestT p)) async {
+    if (!formKey.currentState!.saveAndValidate()) return print(address);
+    print(fromRecvSelected ?? fromRecvAvailable);
+    print(toRecvSelected ?? toRecvAvailable);
+    print(amount);
+    print(feeIncluded);
+    print(memo);
+    if (memo.replyTo)
+      memo.sender =
+          warp.getAccountAddress(aa.coin, aa.id, now(), coinSettings.replyUa);
+    final recipient = RecipientT(
+        address: address,
+        amount: amount,
+        pools: toRecvSelected ?? toRecvAvailable,
+        memo: memo);
+    final payment = PaymentRequestT(
+        recipients: [recipient],
+        srcPools: fromRecvSelected ?? fromRecvAvailable,
+        senderPayFees: feeIncluded,
+        useChange: true,
+        height: syncStatus.confirmHeight,
+        expiration: syncStatus.expirationHeight);
+    await continuation(payment);
   }
 
   add() {

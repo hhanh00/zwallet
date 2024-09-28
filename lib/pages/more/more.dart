@@ -44,10 +44,21 @@ class MorePage extends StatelessWidget {
               icon: FaIcon(FontAwesomeIcons.arrowRightArrowLeft),
               text: s.swap,
               secured: appSettings.protectSend),
-        if (syncStatus.latestHeight != null) MoreTile(
-            url: '/more/vote',
-            icon: FaIcon(FontAwesomeIcons.personBooth),
-            text: s.vote),
+        if (syncStatus.latestHeight != null)
+          MoreTile(
+              url: '/more/vote',
+              icon: FaIcon(FontAwesomeIcons.personBooth),
+              text: s.vote),
+      ]),
+      MoreSection(title: Text(s.transparent), tiles: [
+        MoreTile(
+            url: '/more/transparent/addresses',
+            icon: FaIcon(FontAwesomeIcons.locationDot),
+            text: s.addresses),
+        MoreTile(
+            url: '/more/transparent/utxos',
+            icon: FaIcon(FontAwesomeIcons.moneyBill),
+            text: s.utxo),
       ]),
       MoreSection(title: Text(s.backup), tiles: [
         MoreTile(
@@ -100,10 +111,6 @@ class MorePage extends StatelessWidget {
                 icon: FaIcon(FontAwesomeIcons.key),
                 text: s.keyTool,
                 secured: true),
-          MoreTile(
-              url: '/more/sweep',
-              icon: FaIcon(FontAwesomeIcons.broom),
-              text: s.sweep),
           MoreTile(
               url: '/more/about',
               icon: FaIcon(FontAwesomeIcons.circleInfo),

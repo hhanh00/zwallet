@@ -9,6 +9,7 @@
 #include <awesome_notifications/awesome_notifications_plugin.h>
 #include <awesome_notifications_core/awesome_notifications_core_plugin.h>
 #include <gtk/gtk_plugin.h>
+#include <rive_common/rive_plugin.h>
 #include <screen_retriever/screen_retriever_plugin.h>
 #include <url_launcher_linux/url_launcher_plugin.h>
 #include <window_manager/window_manager_plugin.h>
@@ -23,6 +24,9 @@ void fl_register_plugins(FlPluginRegistry* registry) {
   g_autoptr(FlPluginRegistrar) gtk_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "GtkPlugin");
   gtk_plugin_register_with_registrar(gtk_registrar);
+  g_autoptr(FlPluginRegistrar) rive_common_registrar =
+      fl_plugin_registry_get_registrar_for_plugin(registry, "RivePlugin");
+  rive_plugin_register_with_registrar(rive_common_registrar);
   g_autoptr(FlPluginRegistrar) screen_retriever_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "ScreenRetrieverPlugin");
   screen_retriever_plugin_register_with_registrar(screen_retriever_registrar);

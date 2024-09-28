@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:warp/data_fb_generated.dart';
 
 import '../appsettings.dart';
@@ -234,12 +235,13 @@ class AmountPickerState extends State<AmountPicker> {
         name: widget.name,
         onSaved: widget.onSaved,
         onChanged: widget.onChanged,
+        validator: validAmount,
         builder: (field) {
           _field = field;
           return Column(children: [
             FormBuilderTextField(
               name: '_amount_crypto',
-              decoration: InputDecoration(label: Text(coin.ticker)),
+              decoration: InputDecoration(label: Text(coin.ticker), errorText: field.errorText),
               controller: zController,
             ),
             if (widget.showFiat)
@@ -325,6 +327,12 @@ class AmountPickerState extends State<AmountPicker> {
 
   maximize() {
     widget.maxAmount?.let((m) => zController.text = amountToString(m));
+  }
+
+  String? validAmount(int? v) {
+    final S s = S.of(context);
+    if (v! <= 0) return s.amountMustBePositive;
+    return null;
   }
 }
 

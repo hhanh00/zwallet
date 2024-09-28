@@ -10,6 +10,7 @@ import 'package:warp/warp.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
+import '../input_widgets.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
@@ -69,7 +70,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
     final a = accounts[selected!];
     final count = accounts.length;
     if (count > 1 && a.coin == aa.coin && a.id == aa.id) {
-      await showMessageBox2(context, s.error, s.cannotDeleteActive);
+      await showMessageBox(context, s.error, s.cannotDeleteActive);
       return;
     }
 
@@ -217,8 +218,15 @@ class EditAccountState extends State<EditAccountPage> {
         child: FormBuilder(
           key: formKey,
           child: Column(children: [
-            FormBuilderTextField(name: 'name', decoration: InputDecoration(label: Text(s.name)), controller: nameController),
-            HeightPicker(birth, label: Text(s.birthHeight), onChanged: (v) => setState(() => birth = v!),),
+            FormBuilderTextField(
+                name: 'name',
+                decoration: InputDecoration(label: Text(s.name)),
+                controller: nameController),
+            HeightPicker(
+              birth,
+              label: Text(s.birthHeight),
+              onChanged: (v) => setState(() => birth = v!),
+            ),
           ]),
         ),
       ),
@@ -226,10 +234,10 @@ class EditAccountState extends State<EditAccountPage> {
   }
 
   ok() async {
-    await warp.editAccountName(widget.account.coin, widget.account.id, 
-      nameController.text);
-    await warp.editAccountBirthHeight(widget.account.coin, widget.account.id, 
-      birth);
+    await warp.editAccountName(
+        widget.account.coin, widget.account.id, nameController.text);
+    await warp.editAccountBirthHeight(
+        widget.account.coin, widget.account.id, birth);
     GoRouter.of(context).pop();
   }
 }
@@ -250,10 +258,10 @@ class DowngradeAccountState extends State<DowngradeAccountPage> {
   @override
   Widget build(BuildContext context) {
     print(accountCaps);
-    final keyOptions = [
-      FormBuilderFieldOption(value: 3, child: Text(s.secretKey)),
-      FormBuilderFieldOption(value: 1, child: Text(s.viewingKey)),
-      FormBuilderFieldOption(value: 0, child: Text(s.noKey)),
+    final labels = [
+      Text(s.noKey),
+      Text(s.viewingKey),
+      Text(s.secretKey),
     ];
 
     return Scaffold(
@@ -276,42 +284,48 @@ class DowngradeAccountState extends State<DowngradeAccountPage> {
                   onChanged: (v) {
                     setState(() => accountCaps.seed = v!);
                   }),
-              FormBuilderRadioGroup(
-                name: 'transparent',
-                decoration: InputDecoration(label: Text(s.transparent)),
-                options: keyOptions,
-                initialValue: accountCaps.transparent,
-                onChanged: (v) {
-                  setState(() {
-                    uncheckSeed();
-                    accountCaps.transparent = v!;
-                  });
-                },
-              ),
-              FormBuilderRadioGroup(
-                name: 'sapling',
-                decoration: InputDecoration(label: Text(s.sapling)),
-                options: keyOptions,
-                initialValue: accountCaps.sapling,
-                onChanged: (v) {
-                  setState(() {
-                    uncheckSeed();
-                    accountCaps.sapling = v!;
-                  });
-                },
-              ),
-              FormBuilderRadioGroup(
-                name: 'orchard',
-                decoration: InputDecoration(label: Text(s.orchard)),
-                options: keyOptions,
-                initialValue: accountCaps.orchard,
-                onChanged: (v) {
-                  setState(() {
-                    uncheckSeed();
-                    accountCaps.orchard = v!;
-                  });
-                },
-              ),
+              Gap(16),
+              InputDecorator(
+                  decoration: InputDecoration(label: Text(s.transparent)),
+                  child: SegmentedPicker(
+                    _initialValue(accountCaps.transparent),
+                    name: 'transparent',
+                    available: _available(accountCaps.transparent),
+                    labels: labels,
+                    multiSelectionEnabled: false,
+                    onChanged: (v) {
+                      uncheckSeed();
+                      accountCaps.transparent = _selected(v!);
+                    },
+                  )),
+              Gap(16),
+              InputDecorator(
+                  decoration: InputDecoration(label: Text(s.sapling)),
+                  child: SegmentedPicker(
+                    _initialValue(accountCaps.sapling),
+                    name: 'sapling',
+                    available: _available(accountCaps.sapling),
+                    labels: labels,
+                    multiSelectionEnabled: false,
+                    onChanged: (v) {
+                      uncheckSeed();
+                      accountCaps.sapling = _selected(v!);
+                    },
+                  )),
+              Gap(16),
+              InputDecorator(
+                  decoration: InputDecoration(label: Text(s.orchard)),
+                  child: SegmentedPicker(
+                    _initialValue(accountCaps.orchard),
+                    name: 'orchard',
+                    available: _available(accountCaps.orchard),
+                    labels: labels,
+                    multiSelectionEnabled: false,
+                    onChanged: (v) {
+                      uncheckSeed();
+                      accountCaps.orchard = _selected(v!);
+                    },
+                  )),
             ]),
           ),
         ),
@@ -332,10 +346,50 @@ class DowngradeAccountState extends State<DowngradeAccountPage> {
       try {
         await warp.downgradeAccount(
             widget.account.coin, widget.account.id, accountCaps);
+        await aa.reload();
         GoRouter.of(context).pop();
       } on String catch (e) {
-        await showMessageBox2(context, s.error, e);
+        await showMessageBox(context, s.error, e);
       }
+    }
+  }
+
+  int _initialValue(int caps) {
+    // from capabilities to highest bit mask
+    switch (caps) {
+      case 3:
+        return 4;
+      case 1:
+        return 2;
+      case 0:
+      default:
+        return 1;
+    }
+  }
+
+  int _available(int caps) {
+    // from capabilities to bit mask available
+    switch (caps) {
+      case 3:
+        return 7; // secret key -> no key + view + sk
+      case 1:
+        return 3;
+      default:
+        return 1;
+    }
+  }
+
+  int _selected(int mask) {
+    // from bit mask to key capabilities
+    // inverse of _initialValue
+    switch (mask) {
+      case 4:
+        return 3;
+      case 2:
+        return 1;
+      case 1:
+      default:
+        return 0;
     }
   }
 }
