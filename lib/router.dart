@@ -203,6 +203,11 @@ final router = GoRouter(
                     builder: (context, state) => ContactEditPage(
                         int.parse(state.uri.queryParameters['id']!)),
                   ),
+                  GoRoute(
+                    path: 'broadcast_tx',
+                    builder: (context, state) =>
+                        SubmitTxPage(state.extra as TransactionBytesT),
+                  ),
                 ]),
           ],
         ),
@@ -383,7 +388,14 @@ final router = GoRouter(
     GoRoute(
         path: '/calendar_height',
         builder: (context, state) =>
-            CalendarHeightPage(state.extra as DateTime))
+            CalendarHeightPage(state.extra as DateTime)),
+    GoRoute(
+        path: '/contacts_saved',
+        builder: (context, state) {
+          final coin = int.parse(state.uri.queryParameters['coin']!);
+          final account = int.parse(state.uri.queryParameters['account']!);
+          return ContactsSavedPage(coin, account);
+        })
   ],
 );
 

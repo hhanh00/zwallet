@@ -16,6 +16,7 @@ import 'package:flutter_palette/flutter_palette.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hex/hex.dart';
 import 'package:intl/intl.dart';
 import 'package:key_guardmanager/key_guardmanager.dart';
 import 'package:local_auth/local_auth.dart';
@@ -454,7 +455,7 @@ class Tx extends HasHeight {
   int? confirmations;
   DateTime timestamp;
   String txId;
-  String fullTxId;
+  Uint8List fullTxId;
   int value;
   String? address;
   String? contact;
@@ -466,7 +467,7 @@ class Tx extends HasHeight {
     int height,
     DateTime timestamp,
     String txid,
-    String fullTxId,
+    Uint8List fullTxId,
     int value,
     String? address,
     String? contact,
@@ -768,4 +769,9 @@ DateTime toDate(int ts, {bool dateOnly = false}) {
   var dt = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
   if (dateOnly) dt = DateTime(dt.year, dt.month, dt.day);
   return dt;
+}
+
+String reversedHex(Uint8List hex) {
+  final r = hex.reversed.toList();
+  return HEX.encode(r);
 }

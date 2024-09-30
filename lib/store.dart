@@ -34,7 +34,7 @@ Timer? syncTimer;
 
 Future<void> startAutoSync() async {
   if (syncTimer == null) {
-    await syncStatus.update();
+    await syncStatus.updateBCHeight();
     await syncStatus.sync(false, auto: true);
     syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
       syncStatus.sync(false, auto: true);
@@ -120,7 +120,7 @@ abstract class _SyncStatus with Store {
   }
 
   @action
-  Future<void> update() async {
+  Future<void> updateBCHeight() async {
     try {
       final lh = latestHeight;
       latestHeight = await warp.getBCHeight(aa.coin);
@@ -154,7 +154,7 @@ abstract class _SyncStatus with Store {
     if (paused) return;
     if (syncing) return;
     try {
-      await update();
+      await updateBCHeight();
       final lh = latestHeight;
       if (lh == null) return;
       // don't auto sync more than 1 month of data
@@ -178,11 +178,12 @@ abstract class _SyncStatus with Store {
       await syncToHeight(coin, lh, eta);
       eta.end();
 
-      contacts.fetchContacts();
-      marketPrice.update();
       if (!appSettings.nogetTx) {
         await warp.retrieveTransactionDetails(aa.coin);
       }
+      contacts.fetchContacts();
+      await aa.update(syncedHeight);
+      marketPrice.update();
       if (aa.coin == coin && aa.id == account) {
         final lh = syncStatus.latestHeight!;
         final postBalance = warp.getBalance(coin, account, lh);

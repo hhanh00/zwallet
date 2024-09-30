@@ -276,5 +276,6 @@
 	"addresses": "Addresses",
 	"utxo": "UTXO",
 	"addAddressConfirm": "Are you sure you want to add a new transparent address?",
-	"scanTransparentAddresses": "Scan Transparent Addresses"
+	"scanTransparentAddresses": "Scan Transparent Addresses",
+	"contactsSaved": "Contacts Saved"
 }

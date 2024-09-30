@@ -1,4 +1,5 @@
 import 'package:YWallet/store.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
@@ -70,7 +71,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
     final a = accounts[selected!];
     final count = accounts.length;
     if (count > 1 && a.coin == aa.coin && a.id == aa.id) {
-      await showMessageBox(context, s.error, s.cannotDeleteActive);
+      await showMessageBox(context, s.error, s.cannotDeleteActive, type: DialogType.error);
       return;
     }
 
@@ -79,6 +80,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
     if (confirmed) {
       await warp.deleteAccount(a.coin, a.id);
       _refresh();
+      contacts.fetchContacts();
       if (accounts.isEmpty) {
         await setActiveAccount(0, 0);
         GoRouter.of(context).go('/account');
@@ -161,31 +163,11 @@ class AccountTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     final c = coins[a.coin];
-    List<InlineSpan> accountFeatures = [
-      TextSpan(text: a.name, style: t.textTheme.headlineSmall),
-      WidgetSpan(child: Gap(0, crossAxisExtent: 8)),
-    ];
-    if (a.keyType & 2 != 0) // T_SK
-      accountFeatures
-          .add(TextSpan(text: 'T', style: TextStyle(color: t.primaryColor)));
-    else if (a.keyType & 1 != 0) // T_VK
-      accountFeatures.add(TextSpan(text: 't'));
-    if (a.keyType & 8 != 0) // T_SK
-      accountFeatures
-          .add(TextSpan(text: 'S', style: TextStyle(color: t.primaryColor)));
-    else if (a.keyType & 4 != 0) // S_VK
-      accountFeatures.add(TextSpan(text: 's'));
-    if (a.keyType & 32 != 0) // O_SK
-      accountFeatures
-          .add(TextSpan(text: 'O', style: TextStyle(color: t.primaryColor)));
-    else if (a.keyType & 16 != 0) // O_VK
-      accountFeatures.add(TextSpan(text: 'o'));
-    final accountRT = Text.rich(TextSpan(children: accountFeatures));
 
     return ListTile(
       selected: selected,
       leading: CircleAvatar(backgroundImage: c.image),
-      title: accountRT,
+      title: Text(a.name!, style: t.textTheme.headlineSmall),
       trailing: Text(amountToString(a.balance)),
       onTap: onPress,
       onLongPress: onLongPress,

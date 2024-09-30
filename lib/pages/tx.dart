@@ -171,10 +171,9 @@ class TransactionState extends State<TransactionPage> {
   void initState() {
     super.initState();
     idx = widget.txIndex;
-    details = warp.getTransactionDetails(aa.coin, tx.id);
+    details = warp.getTransactionDetails(aa.coin, tx.fullTxId);
     logger.i(details);
     tins = details.tins?.map((tin) {
-      // final txid = HEX.encoder.convert(tin.txid!);
       return ListTile(
         leading: Icon(Icons.arrow_left),
         title: Text(tin.address!),
@@ -235,7 +234,7 @@ class TransactionState extends State<TransactionPage> {
             child: Column(
               children: [
                 Gap(16),
-                Panel(s.txID, text: tx.fullTxId),
+                Panel(s.txID, text: reversedHex(tx.fullTxId)),
                 Gap(8),
                 Panel(s.height, text: tx.height.toString()),
                 Gap(8),
@@ -271,7 +270,7 @@ class TransactionState extends State<TransactionPage> {
   }
 
   open() {
-    openTxInExplorer(tx.fullTxId);
+    openTxInExplorer(reversedHex(tx.fullTxId));
   }
 
   prev() {

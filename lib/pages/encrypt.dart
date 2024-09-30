@@ -78,8 +78,7 @@ class _EncryptDbState extends State<EncryptDbPage> with WithLoadingAnimation {
 
   encrypt() async {
     final form = formKey.currentState!;
-    if (form.validate()) {
-      form.save();
+    if (form.saveAndValidate()) {
       await load(() async {
         final dbDir = Directory(appStore.dbDir);
         final tempDir = await dbDir.createTemp();
@@ -95,13 +94,16 @@ class _EncryptDbState extends State<EncryptDbPage> with WithLoadingAnimation {
         await prefs.setString('backup', tempPath);
       });
 
-      await AwesomeDialog(context: context, 
-        dialogType: DialogType.info,
-        title: s.restart, 
+      await AwesomeDialog(
+        context: context,
+        dialogType: DialogType.warning,
+        title: s.restart,
         desc: s.pleaseQuitAndRestartTheAppNow,
         dismissOnTouchOutside: false,
-        dismissOnBackKeyPress: false)..show();
-      GoRouter.of(context).pop();
+        dismissOnBackKeyPress: false,
+        onDismissCallback: (_) => GoRouter.of(context).pop(),
+      )
+        ..show();
     }
   }
 }

@@ -1,3 +1,5 @@
+import 'package:YWallet/pages/widgets.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -67,9 +69,16 @@ class _ContactsState extends State<ContactsPage> {
     final confirmed =
         await showConfirmDialog(context, s.save, s.confirmSaveContacts);
     if (!confirmed) return;
-    final txPlan = warp.saveContacts(
-        aa.coin, aa.id, syncStatus.syncedHeight, appSettings.anchorOffset);
-    GoRouter.of(context).push('/account/txplan?tab=contacts', extra: txPlan);
+    try {
+      final txPlan = await warp.saveContacts(
+          aa.coin,
+          aa.id,
+          syncStatus.confirmHeight,
+          '/contacts_saved?coin=${aa.coin}&account=${aa.id}');
+      GoRouter.of(context).push('/account/txplan?tab=contacts', extra: txPlan);
+    } on String catch (m) {
+      await showMessageBox(context, s.error, m, type: DialogType.error);
+    }
   }
 
   _add() {
@@ -278,11 +287,43 @@ class _ContactAddState extends State<ContactAddPage> {
       warp.addContact(
           aa.coin,
           ContactCardT(
-              name: nameController.text,
-              address: addressController.text,
-              saved: false));
+            account: aa.id,
+            name: nameController.text,
+            address: addressController.text,
+            saved: false,
+          ));
       contacts.fetchContacts();
       GoRouter.of(context).pop();
     }
+  }
+}
+
+class ContactsSavedPage extends StatefulWidget {
+  final int coin;
+  final int account;
+  ContactsSavedPage(this.coin, this.account, {super.key});
+
+  @override
+  State<StatefulWidget> createState() => ContactsSavedState();
+}
+
+class ContactsSavedState extends State<ContactsSavedPage> {
+  late final S s = S.of(context);
+
+  @override
+  void initState() {
+    super.initState();
+    warp.onContactsSaved(widget.coin, widget.account);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text(s.contacts), actions: [
+          IconButton(
+              onPressed: () => GoRouter.of(context).pop(),
+              icon: Icon(Icons.check)),
+        ]),
+        body: Jumbotron(s.contactsSaved));
   }
 }

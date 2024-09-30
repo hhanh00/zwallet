@@ -37,7 +37,7 @@ class _HomeState extends State<HomePageInner> {
   @override
   void initState() {
     super.initState();
-    syncStatus.update();
+    syncStatus.updateBCHeight();
   }
 
   @override

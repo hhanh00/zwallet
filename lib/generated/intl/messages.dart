@@ -1766,6 +1766,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Scan Transparent Addresses'**
   String get scanTransparentAddresses;
+
+  /// No description provided for @contactsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts Saved'**
+  String get contactsSaved;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

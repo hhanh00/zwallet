@@ -153,7 +153,7 @@ class RewindState extends State<RewindPage> {
     Future(() async {
       await warp.rewindTo(aa.coin, height);
       await aa.reload();
-      syncStatus.sync(true);
+      await syncStatus.sync(true);
     });
     GoRouter.of(context).pop();
   }

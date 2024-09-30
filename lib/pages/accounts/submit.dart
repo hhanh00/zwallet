@@ -33,6 +33,12 @@ class _SubmitTxState extends State<SubmitTxPage> {
       try {
         String json = jsonDecode(await warp.broadcast(aa.coin, widget.data));
         txId = json;
+        final redirect = widget.data.redirect;
+        redirect?.let((r) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            GoRouter.of(context).pushReplacement(redirect);
+          });
+        });
       } on FormatException catch (e) {
         final s = GetIt.I.get<S>();
         await AwesomeDialog(

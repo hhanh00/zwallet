@@ -38,7 +38,7 @@ class TransparentAddressesState extends State<TransparentAddressesPage> {
           final a = addresses[i];
           return ListTile(
             leading: Text(a.addrIndex.toString()),
-            title: Text(a.address!),
+            title: SelectableText(a.address!),
           );
         },
         separatorBuilder: (context, i) => Divider(),

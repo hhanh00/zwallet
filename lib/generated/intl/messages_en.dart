@@ -861,4 +861,7 @@ class SEn extends S {
 
   @override
   String get scanTransparentAddresses => 'Scan Transparent Addresses';
+
+  @override
+  String get contactsSaved => 'Contacts Saved';
 }

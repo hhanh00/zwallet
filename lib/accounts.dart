@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
@@ -66,7 +68,6 @@ class ActiveAccount extends _ActiveAccount with _$ActiveAccount {
 
   Future<void> save() async {
     final prefs = GetIt.I.get<SharedPreferences>();
-    print('save $coin $id');
     await prefs.setInt('coin', coin);
     await prefs.setInt('account', id);
   }
@@ -246,13 +247,14 @@ abstract class _Txs with Store {
       items = shieldedTxs.map((tx) {
         final timestamp =
             DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000);
+        final fullTxId = Uint8List.fromList(tx.txid!);
         return Tx.from(
             height,
             tx.id,
             tx.height,
             timestamp,
-            centerTrim(tx.txid!),
-            tx.txid!,
+            centerTrim(reversedHex(fullTxId)),
+            fullTxId,
             tx.amount,
             tx.address,
             tx.contact,

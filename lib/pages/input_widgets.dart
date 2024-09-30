@@ -118,6 +118,7 @@ Widget QRButton(
 class SegmentedPicker extends StatefulWidget {
   final String name;
   final List<Text> labels;
+  final InputDecoration? decoration;
   final int initialValue;
   final int available;
   final bool multiSelectionEnabled;
@@ -130,6 +131,7 @@ class SegmentedPicker extends StatefulWidget {
       required this.name,
       required this.available,
       required this.labels,
+      this.decoration,
       this.onChanged,
       this.onSaved,
       required this.multiSelectionEnabled,
@@ -151,7 +153,7 @@ class SegmentedPickerState extends State<SegmentedPicker> {
   Widget build(BuildContext context) {
     if (!widget.show) return SizedBox.shrink();
 
-    return FormBuilderField(
+    final f = FormBuilderField(
       name: widget.name,
       onChanged: widget.onChanged,
       onSaved: widget.onSaved,
@@ -177,6 +179,9 @@ class SegmentedPickerState extends State<SegmentedPicker> {
         );
       },
     );
+
+    return widget.decoration != null ?
+      InputDecorator(decoration: widget.decoration!, child: f) : f;
   }
 }
 

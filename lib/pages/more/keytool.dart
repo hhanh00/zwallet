@@ -26,7 +26,6 @@ class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
   final formKey = GlobalKey<FormBuilderState>();
   bool shielded = false;
   int account = 0;
-  bool change = false;
   int addrIndex = 0;
 
   @override
@@ -46,7 +45,6 @@ class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
                   seed: seed,
                   shielded: shielded,
                   accountIndex: account,
-                  change: change,
                   addressIndex: addrIndex,
                   formKey: formKey),
             ))));
@@ -57,21 +55,20 @@ class _KeyToolState extends State<KeyToolPage> with WithLoadingAnimation {
     if (form != null && form.validate()) {
       form.save();
       account = int.parse(form.fields['account']!.value);
-      change = form.fields['change']?.value as bool;
       addrIndex = int.parse(form.fields['address']?.value);
       shielded = form.fields['shielded']?.value as bool;
 
       final coin = aa.coin;
       final id = aa.id;
       keys.clear();
-      load(() => _computeKeys(coin, id, account, change ? 1 : 0, addrIndex));
+      load(() => _computeKeys(coin, id, account, addrIndex));
     }
     setState(() {});
   }
 
-  Future<void> _computeKeys(int coin, int account, int aindex, int ext, int addrIndex) async {
+  Future<void> _computeKeys(int coin, int account, int aindex, int addrIndex) async {
     for (int a = 0; a < 100; a++) {
-      final kp = await warp.deriveZip32Keys(coin, account, aindex, ext, addrIndex + a);
+      final kp = await warp.deriveZip32Keys(coin, account, aindex, addrIndex + a);
       keys.add(kp);
     }
   }
@@ -84,14 +81,12 @@ class TableListKeyMetadata extends TableListItemMetadata<Zip32KeysT> {
   final int accountIndex;
   final int addressIndex;
   final bool shielded;
-  final bool change;
   int? selection;
   final GlobalKey<FormBuilderState> formKey;
   TableListKeyMetadata(
       {required this.seed,
       required this.shielded,
       required this.accountIndex,
-      required this.change,
       required this.addressIndex,
       required this.formKey});
 
@@ -158,10 +153,9 @@ class TableListKeyMetadata extends TableListItemMetadata<Zip32KeysT> {
   }
 
   String path(index) {
-    final c = change ? '1' : '0';
     return shielded
         ? "m/32'/$coinIndex'/${accountIndex + index}'"
-        : "m/44'/$coinIndex'/$accountIndex'/$c/${addressIndex + index}";
+        : "m/44'/$coinIndex'/$accountIndex'/0/${addressIndex + index}";
   }
 
   @override
@@ -178,11 +172,6 @@ class TableListKeyMetadata extends TableListItemMetadata<Zip32KeysT> {
                 FormBuilderValidators.required(),
                 FormBuilderValidators.integer(),
               ]),
-            ),
-            FormBuilderSwitch(
-              name: 'change',
-              title: Text(s.change),
-              initialValue: change,
             ),
             FormBuilderTextField(
               name: 'address',

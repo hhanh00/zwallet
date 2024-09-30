@@ -1,4 +1,5 @@
 import 'package:YWallet/init.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -145,10 +146,15 @@ class _BatchBackupState extends State<BatchBackupPage> {
             file.path!, tempDir, restoreKeyController.text);
         final prefs = GetIt.I.get<SharedPreferences>();
         await prefs.setString('backup', tempDir);
-        await showMessageBox(
-            context, s.databaseRestored, s.pleaseQuitAndRestartTheAppNow,
-            );
-        GoRouter.of(context).pop();
+        await AwesomeDialog(
+          context: context,
+          title: s.databaseRestored,
+          desc: s.pleaseQuitAndRestartTheAppNow,
+          dialogType: DialogType.warning,
+          dismissOnBackKeyPress: false,
+          dismissOnTouchOutside: false,
+        )
+          ..show();
       } on String catch (e) {
         restoreFormKey.currentState!.fields['restore']!.invalidate(e);
       }
