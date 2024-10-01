@@ -6,9 +6,8 @@ list(APPEND FLUTTER_PLUGIN_LIST
   app_links
   awesome_notifications
   awesome_notifications_core
-  connectivity_plus_windows
+  connectivity_plus
   local_auth_windows
-  network_info_plus_windows
   rive_common
   screen_retriever
   share_plus
