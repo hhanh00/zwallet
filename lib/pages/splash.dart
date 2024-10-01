@@ -244,7 +244,7 @@ Future<Uri?> registerURLHandler() async {
     handleUri(uri);
   });
 
-  final uri = await _appLinks.getInitialAppLink();
+  final uri = await _appLinks.getInitialLink();
   return uri;
 }
 

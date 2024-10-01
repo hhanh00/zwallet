@@ -76,7 +76,7 @@ class ActiveAccount extends _ActiveAccount with _$ActiveAccount {
     if (id == 0) return nullAccount;
     final backup = warp.getBackup(coin, id);
     final external = false;
-    // TODO: Ledger -> c.supportsLedger && !isMobile() && WarpApi.ledgerHasAccount(coin, id);
+    // TODO: Ledger -> c.supportsLedger && !isMobile() && WarpApi.ledgerHasAccount(coin, id);`
     return ActiveAccount(
         coin, id, backup.name!, backup.seed, external, backup.saved);
   }
@@ -307,6 +307,7 @@ abstract class _Messages with Store {
             memo.sender,
             memo.sender,
             memo.recipient!,
+            m.contact ?? '',
             memo.subject!,
             memo.body!,
             DateTime.fromMillisecondsSinceEpoch(m.timestamp * 1000),

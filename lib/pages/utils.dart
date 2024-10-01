@@ -149,7 +149,7 @@ ColorPalette getPalette(Color color, int n) => ColorPalette.polyad(
       brightnessVariability: 10,
     );
 
-int numPoolsOf(int v) => Uint8(v).bitsSet;
+int numPoolsOf(int v) => Uint8(v).countOnes();
 
 int poolOf(int v) {
   switch (v) {
@@ -489,6 +489,7 @@ class ZMessage extends HasHeight {
   final String? fromAddress;
   final String? sender;
   final String recipient;
+  final String? contact;
   final String subject;
   final String body;
   final DateTime timestamp;
@@ -502,6 +503,7 @@ class ZMessage extends HasHeight {
       this.fromAddress,
       this.sender,
       this.recipient,
+      this.contact,
       this.subject,
       this.body,
       this.timestamp,
@@ -509,7 +511,7 @@ class ZMessage extends HasHeight {
       this.read);
 
   ZMessage withRead(bool v) {
-    return ZMessage(id, txId, incoming, fromAddress, sender, recipient, subject,
+    return ZMessage(id, txId, incoming, fromAddress, sender, recipient, contact, subject,
         body, timestamp, height, v);
   }
 
