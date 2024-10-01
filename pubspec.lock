@@ -814,14 +814,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.8.0"
-  key_guardmanager:
-    dependency: "direct main"
-    description:
-      name: key_guardmanager
-      sha256: b417914b6260f2904ad3268c9743a43bde181f4182609480cfea0de09927a85e
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   list_utilities:
     dependency: transitive
     description:

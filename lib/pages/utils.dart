@@ -18,7 +18,6 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hex/hex.dart';
 import 'package:intl/intl.dart';
-import 'package:key_guardmanager/key_guardmanager.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
@@ -220,13 +219,8 @@ Future<bool> authenticate(BuildContext context, String reason) async {
 
   final localAuth = LocalAuthentication();
   try {
-    final bool didAuthenticate;
-    if (Platform.isAndroid && !await localAuth.canCheckBiometrics) {
-      didAuthenticate = await KeyGuardmanager.authStatus == "true";
-    } else {
-      didAuthenticate = await localAuth.authenticate(
+    final bool didAuthenticate = await localAuth.authenticate(
           localizedReason: reason, options: AuthenticationOptions());
-    }
     if (didAuthenticate) {
       return true;
     }

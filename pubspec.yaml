@@ -41,7 +41,6 @@ dependencies:
   rflutter_alert: ^2.0.7
   tuple: ^2.0.1
   local_auth: ^2.1.2
-  key_guardmanager: ^1.0.0
   shared_preferences: ^2.0.7
   shared_preferences_android:
   shared_preferences_ios:
