@@ -277,5 +277,7 @@
 	"utxo": "UTXO",
 	"addAddressConfirm": "Are you sure you want to add a new transparent address?",
 	"scanTransparentAddresses": "Scan Transparent Addresses",
-	"contactsSaved": "Contacts Saved"
+	"contactsSaved": "Contacts Saved",
+	"warpURL": "Warp URL",
+	"endWarpHeight": "End Warp Height"
 }

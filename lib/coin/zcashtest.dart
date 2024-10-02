@@ -16,6 +16,7 @@ class ZcashTestCoin extends CoinBase {
   List<LWInstance> lwd = [
     LWInstance("Lightwalletd", "https://testnet.lightwalletd.com:9067"),
   ];
+  int warpHeight = 0;
   int defaultAddrMode = 0;
   int defaultUAType = 7; // TSO
   bool supportsUA = true;

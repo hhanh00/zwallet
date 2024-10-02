@@ -122,11 +122,8 @@ class _SplashState extends State<SplashPage> {
       warp.setDbPathPassword(coin, path, appStore.dbPassword);
       final cs = await CoinSettingsExtension.load(c.coin);
       final url = resolveURL(c, cs);
-      // TODO: Configure warp dynamically
-      warp.configure(coin, url: url, warp: c.warpUrl, warpEndHeight: 0);
-      // try {
-      //   WarpApi.migrateData(c.coin);
-      // } catch (_) {} // do not fail on network exception
+      warp.configure(coin,
+          url: url, warp: c.warpUrl, warpEndHeight: c.warpHeight);
     }
   }
 
@@ -138,7 +135,7 @@ class _SplashState extends State<SplashPage> {
     if (a != null) {
       await setActiveAccount(a.coin, a.id);
       await aa.update(MAXHEIGHT);
-    };
+    }
   }
 
   _initAccel() {

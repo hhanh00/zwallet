@@ -1772,6 +1772,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Contacts Saved'**
   String get contactsSaved;
+
+  /// No description provided for @warpURL.
+  ///
+  /// In en, this message translates to:
+  /// **'Warp URL'**
+  String get warpURL;
+
+  /// No description provided for @endWarpHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'End Warp Height'**
+  String get endWarpHeight;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

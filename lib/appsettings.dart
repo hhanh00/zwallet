@@ -58,6 +58,8 @@ extension CoinSettingsExtension on CoinSettings {
     if (!hasReplyUa()) replyUa = defaultUAType;
     if (!hasSpamFilter()) spamFilter = true;
     if (!hasReceipientPools()) receipientPools = 7;
+    if (!hasWarpUrl()) warpUrl = coins[coin].warpUrl ?? '';
+    if (!hasWarpHeight()) warpHeight = coins[coin].warpHeight;
   }
 
   static Future<CoinSettings> load(int coin) async {

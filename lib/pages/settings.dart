@@ -109,7 +109,10 @@ class _SettingsState extends State<SettingsPage>
       app.appSettings = app.AppSettingsExtension.load(prefs);
       app.coinSettings = await app.CoinSettingsExtension.load(aa.coin);
       final serverUrl = resolveURL(coins[aa.coin], app.coinSettings);
-      warp.configure(aa.coin, url: serverUrl);
+      warp.configure(aa.coin,
+          url: serverUrl,
+          warp: app.coinSettings.warpUrl,
+          warpEndHeight: app.coinSettings.warpHeight);
       aaSequence.settingsSeqno = DateTime.now().millisecondsSinceEpoch;
       Future(() async {
         await marketPrice.update();
@@ -458,6 +461,10 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
   final formKey = GlobalKey<FormBuilderState>();
   late List<int?> pings =
       List.generate(coins[widget.coin].lwd.length, (i) => null);
+  late final warpUrlController =
+      TextEditingController(text: widget.coinSettings.warpUrl);
+  late final endWarpHeightController =
+      TextEditingController(text: widget.coinSettings.warpHeight.toString());
 
   @override
   Widget build(BuildContext context) {
@@ -533,6 +540,24 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
           ),
           Gap(8),
           ElevatedButton(onPressed: ping, child: Text(s.ping)),
+          Gap(8),
+          FormBuilderTextField(
+            name: 'warp_url',
+            decoration: InputDecoration(label: Text(s.warpURL)),
+            controller: warpUrlController,
+            onChanged: (v) => widget.coinSettings.warpUrl = v!,
+            onSaved: (v) => widget.coinSettings.warpUrl = v!,
+          ),
+          Gap(8),
+          FormBuilderTextField(
+            name: 'warp_height',
+            decoration: InputDecoration(label: Text(s.endWarpHeight)),
+            controller: endWarpHeightController,
+            keyboardType: TextInputType.numberWithOptions(),
+            validator: FormBuilderValidators.integer(),
+            onChanged: (v) => widget.coinSettings.warpHeight = int.parse(v!),
+            onSaved: (v) => widget.coinSettings.warpHeight = int.parse(v!),
+          ),
           Gap(8),
           FormBuilderRadioGroup<int>(
             name: 'explorer',

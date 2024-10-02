@@ -28,8 +28,8 @@ class ZcashCoin extends CoinBase {
     LWInstance("Zec.rocks (EU)", "https://eu.zec.rocks:443"),
     LWInstance("Zec.rocks (AP)", "https://ap.zec.rocks:443"),
   ];
-  // String? warpUrl = "http://zebra2.zcash-infra.com:8000";
-  String? warpUrl = "http://127.0.0.1:8000";
+  String? warpUrl = "http://zebra2.zcash-infra.com:8000";
+  int warpHeight = 2400000;
   int defaultAddrMode = 0;
   int defaultUAType = 7; // TSO
   bool supportsUA = true;

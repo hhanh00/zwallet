@@ -25,6 +25,7 @@ abstract class CoinBase {
   String get dbRoot;
   List<LWInstance> get lwd;
   String? warpUrl;
+  int get warpHeight;
   int get defaultAddrMode;
   int get defaultUAType;
   bool get supportsUA;

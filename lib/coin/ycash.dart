@@ -16,6 +16,7 @@ class YcashCoin extends CoinBase {
   List<LWInstance> lwd = [
     LWInstance("Lightwalletd", "https://lite.ycash.xyz:9067"),
   ];
+  int warpHeight = 0;
   int defaultAddrMode = 2;
   int defaultUAType = 2;
   bool supportsUA = false;

@@ -864,4 +864,10 @@ class SPt extends S {
 
   @override
   String get contactsSaved => 'Contacts Saved';
+
+  @override
+  String get warpURL => 'Warp URL';
+
+  @override
+  String get endWarpHeight => 'End Warp Height';
 }

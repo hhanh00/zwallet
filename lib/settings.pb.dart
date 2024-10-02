@@ -458,6 +458,8 @@ class CoinSettings extends $pb.GeneratedMessage {
     $core.int? replyUa,
     $core.bool? contactsSaved,
     $core.int? receipientPools,
+    $core.String? warpUrl,
+    $core.int? warpHeight,
   }) {
     final $result = create();
     if (account != null) {
@@ -490,6 +492,12 @@ class CoinSettings extends $pb.GeneratedMessage {
     if (receipientPools != null) {
       $result.receipientPools = receipientPools;
     }
+    if (warpUrl != null) {
+      $result.warpUrl = warpUrl;
+    }
+    if (warpHeight != null) {
+      $result.warpHeight = warpHeight;
+    }
     return $result;
   }
   CoinSettings._() : super();
@@ -507,6 +515,8 @@ class CoinSettings extends $pb.GeneratedMessage {
     ..a<$core.int>(8, _omitFieldNames ? '' : 'replyUa', $pb.PbFieldType.OU3)
     ..aOB(9, _omitFieldNames ? '' : 'contactsSaved')
     ..a<$core.int>(11, _omitFieldNames ? '' : 'receipientPools', $pb.PbFieldType.OU3)
+    ..aOS(12, _omitFieldNames ? '' : 'warpUrl')
+    ..a<$core.int>(13, _omitFieldNames ? '' : 'warpHeight', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
   ;
 
@@ -624,6 +634,24 @@ class CoinSettings extends $pb.GeneratedMessage {
   $core.bool hasReceipientPools() => $_has(9);
   @$pb.TagNumber(11)
   void clearReceipientPools() => clearField(11);
+
+  @$pb.TagNumber(12)
+  $core.String get warpUrl => $_getSZ(10);
+  @$pb.TagNumber(12)
+  set warpUrl($core.String v) { $_setString(10, v); }
+  @$pb.TagNumber(12)
+  $core.bool hasWarpUrl() => $_has(10);
+  @$pb.TagNumber(12)
+  void clearWarpUrl() => clearField(12);
+
+  @$pb.TagNumber(13)
+  $core.int get warpHeight => $_getIZ(11);
+  @$pb.TagNumber(13)
+  set warpHeight($core.int v) { $_setUnsignedInt32(11, v); }
+  @$pb.TagNumber(13)
+  $core.bool hasWarpHeight() => $_has(11);
+  @$pb.TagNumber(13)
+  void clearWarpHeight() => clearField(13);
 }
 
 class ServerURL extends $pb.GeneratedMessage {
