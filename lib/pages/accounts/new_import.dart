@@ -139,27 +139,31 @@ class _NewImportAccountState extends State<NewImportAccountPage>
       form.save();
       await load(() async {
         final index = int.parse(accountIndexController.text);
-        final account = await WarpApi.newAccount(
-            coin, nameController.text, _key, index);
-        if (account < 0)
-          form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
-        else {
-          setActiveAccount(coin, account);
-          final prefs = await SharedPreferences.getInstance();
-          await aa.save(prefs);
-          final count = WarpApi.countAccounts(coin);
-          if (count == 1) {
-            // First account of a coin is synced
-            await WarpApi.skipToLastHeight(coin);
-          } 
-          if (widget.first) {
-            if (_key.isNotEmpty)
-              GoRouter.of(context).go('/account/rescan');
+        try {
+          final account = await WarpApi.newAccount(
+              coin, nameController.text, _key, index);
+          if (account < 0)
+            form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
+          else {
+            setActiveAccount(coin, account);
+            final prefs = await SharedPreferences.getInstance();
+            await aa.save(prefs);
+            final count = WarpApi.countAccounts(coin);
+            if (count == 1) {
+              // First account of a coin is synced
+              await WarpApi.skipToLastHeight(coin);
+            } 
+            if (widget.first) {
+              if (_key.isNotEmpty)
+                GoRouter.of(context).go('/account/rescan');
+              else
+                GoRouter.of(context).go('/account');
+            }
             else
-              GoRouter.of(context).go('/account');
+              GoRouter.of(context).pop();
           }
-          else
-            GoRouter.of(context).pop();
+        } catch (e) {
+          showMessageBox2(context, s.error, s.accountRestorationFailed);
         }
       });
     }

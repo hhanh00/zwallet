@@ -131,7 +131,9 @@ class _SplashState extends State<SplashPage> {
       WarpApi.updateLWD(coin, url);
       try {
         WarpApi.migrateData(c.coin);
-      } catch (_) {} // do not fail on network exception
+      } catch (e) {
+        showMessageBox2(context, s.error, s.initializationFailed);
+      }
     }
   }
 

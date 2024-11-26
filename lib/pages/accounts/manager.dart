@@ -59,10 +59,14 @@ class _AccountManagerState extends State<AccountManagerPage> {
 
   onEdit(String name) {
     final a = accounts[selected!];
-    WarpApi.updateAccountName(a.coin, a.id, name);
-    _refresh();
-    editing = false;
-    setState(() {});
+    try {
+      WarpApi.updateAccountName(a.coin, a.id, name);
+      _refresh();
+      editing = false;
+      setState(() {});
+    } catch (e) {
+      showMessageBox2(context, s.error, s.accountManagementFailed);
+    }
   }
 
   select(int index) {
@@ -89,14 +93,18 @@ class _AccountManagerState extends State<AccountManagerPage> {
     final confirmed = await showConfirmDialog(
         context, s.deleteAccount(a.name!), s.confirmDeleteAccount);
     if (confirmed) {
-      WarpApi.deleteAccount(a.coin, a.id);
-      _refresh();
-      if (count == 1) {
-        setActiveAccount(0, 0);
-        GoRouter.of(context).go('/account');
-      } else {
-        selected = null;
-        setState(() {});
+      try {
+        WarpApi.deleteAccount(a.coin, a.id);
+        _refresh();
+        if (count == 1) {
+          setActiveAccount(0, 0);
+          GoRouter.of(context).go('/account');
+        } else {
+          selected = null;
+          setState(() {});
+        }
+      } catch (e) {
+        showMessageBox2(context, s.error, s.accountManagementFailed);
       }
     }
   }
@@ -105,9 +113,13 @@ class _AccountManagerState extends State<AccountManagerPage> {
     final confirmed = await showConfirmDialog(
         context, s.convertToWatchonly, s.confirmWatchOnly);
     if (!confirmed) return;
-    WarpApi.convertToWatchOnly(aa.coin, aa.id);
-    _refresh();
-    setState(() {});
+    try {
+      WarpApi.convertToWatchOnly(aa.coin, aa.id);
+      _refresh();
+      setState(() {});
+    } catch (e) {
+      showMessageBox2(context, s.error, s.accountManagementFailed);
+    }
   }
 
   _refresh() {

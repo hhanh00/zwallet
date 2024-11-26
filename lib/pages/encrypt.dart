@@ -74,11 +74,15 @@ class _EncryptDbState extends State<EncryptDbPage> with WithLoadingAnimation {
     if (form.validate()) {
       form.save();
       await load(() async {
-        final tempDir = await getTemporaryDirectory();
-        final passwd = newController.text;
-        final path = await WarpApi.zipDbs(passwd, tempDir.path);
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('backup', path);
+        try {
+          final tempDir = await getTemporaryDirectory();
+          final passwd = newController.text;
+          final path = await WarpApi.zipDbs(passwd, tempDir.path);
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('backup', path);
+        } catch (e) {
+          await showMessageBox2(context, s.error, s.encryptionFailed);
+        }
       });
       await showMessageBox2(
           context, s.restart, s.pleaseQuitAndRestartTheAppNow, dismissable: false);

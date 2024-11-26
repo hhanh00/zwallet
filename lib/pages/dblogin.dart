@@ -50,11 +50,15 @@ class _DbLoginState extends State<DbLoginPage> {
     final s = S.of(context);
     final password = passwordController.text;
     final c = coins.first;
-    if (WarpApi.decryptDb(c.dbFullPath, password)) {
-      appStore.dbPassword = password;
-      GoRouter.of(context).go('/splash');
-    } else {
-      formKey.currentState!.fields['password']!.invalidate(s.invalidPassword);
+    try {
+      if (WarpApi.decryptDb(c.dbFullPath, password)) {
+        appStore.dbPassword = password;
+        GoRouter.of(context).go('/splash');
+      } else {
+        formKey.currentState!.fields['password']!.invalidate(s.invalidPassword);
+      }
+    } catch (e) {
+      formKey.currentState!.fields['password']!.invalidate(s.decryptionFailed);
     }
   }
 }
