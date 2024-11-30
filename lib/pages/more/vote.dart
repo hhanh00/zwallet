@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:gap/gap.dart';
 import 'package:http/http.dart' as http;
 import 'package:go_router/go_router.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -222,6 +223,7 @@ class VoteCandidateState extends State<VoteCandidatePage>
 
   @override
   Widget build(BuildContext context) {
+    final t = Theme.of(context);
     final e = widget.vote.election;
     final candidates = e.candidates
         .asMap()
@@ -240,12 +242,18 @@ class VoteCandidateState extends State<VoteCandidatePage>
             child: Padding(
               padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: FormBuilder(
-                child: FormBuilderRadioGroup(
-                  name: 'candidates',
-                  initialValue: candidate,
-                  orientation: OptionsOrientation.vertical,
-                  options: candidates,
-                  onChanged: (v) => setState(() => candidate = v!),
+                child: Column(
+                  children: [
+                    Text(e.question, style: t.textTheme.headlineSmall),
+                    Gap(16),
+                    FormBuilderRadioGroup(
+                      name: 'candidates',
+                      initialValue: candidate,
+                      orientation: OptionsOrientation.vertical,
+                      options: candidates,
+                      onChanged: (v) => setState(() => candidate = v!),
+                    ),
+                  ],
                 ),
               ),
             ),

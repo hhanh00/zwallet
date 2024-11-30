@@ -45,7 +45,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
       case 0:
         return '$syncedHeight / $latestHeight';
       case 1:
-        final m = syncStatus2.isRescan ? s.rescan : s.catchup;
+        final m = syncStatus2.rescanning ? s.rescan : s.catchup;
         return '$m $percent %';
       case 2:
         return remaining != null ? '$remaining...' : '';
@@ -104,7 +104,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
     } else {
       if (syncStatus2.paused)
         syncStatus2.setPause(false);
-      Future(() => syncStatus2.sync(false));
+      Future(() => syncStatus2.sync());
     }
   }
 }

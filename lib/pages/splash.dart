@@ -269,7 +269,7 @@ void backgroundSyncDispatcher() {
   if (!appStore.initialized) return;
   Workmanager().executeTask((task, inputData) async {
     logger.i("Native called background task: $task");
-    await syncStatus2.sync(false, auto: true);
+    await syncStatus2.sync(auto: true);
     return true;
   });
 }

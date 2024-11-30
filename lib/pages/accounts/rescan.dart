@@ -162,7 +162,7 @@ class _RewindState extends State<RewindPage> {
     if (!confirmed) return;
     WarpApi.rewindTo(aa.coin, height);
     Future(() async {
-      syncStatus2.sync(true);
+      syncStatus2.sync();
     });
     GoRouter.of(context).pop();
   }

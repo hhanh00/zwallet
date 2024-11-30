@@ -51,9 +51,9 @@ Timer? syncTimer;
 Future<void> startAutoSync() async {
   if (syncTimer == null) {
     await syncStatus2.update();
-    await syncStatus2.sync(false, auto: true);
+    await syncStatus2.sync(auto: true);
     syncTimer = Timer.periodic(Duration(seconds: 15), (timer) {
-      syncStatus2.sync(false, auto: true);
+      syncStatus2.sync(auto: true);
       aa.updateDivisified();
     });
   }
@@ -65,7 +65,6 @@ class SyncStatus2 = _SyncStatus2 with _$SyncStatus2;
 
 abstract class _SyncStatus2 with Store {
   int startSyncedHeight = 0;
-  bool isRescan = false;
   ETA eta = ETA();
 
   @observable
@@ -85,6 +84,8 @@ abstract class _SyncStatus2 with Store {
 
   @observable
   bool paused = false;
+
+  bool rescanning = false;
 
   @observable
   int downloadedSize = 0;
@@ -117,7 +118,7 @@ abstract class _SyncStatus2 with Store {
 
   @action
   void reset() {
-    isRescan = false;
+    rescanning = false;
     syncedHeight = WarpApi.getDbHeight(aa.coin).height;
     syncing = false;
     paused = false;
@@ -139,8 +140,8 @@ abstract class _SyncStatus2 with Store {
   }
 
   @action
-  Future<void> sync(bool rescan, {bool auto = false}) async {
-    logger.d('R/A/P/S $rescan $auto $paused $syncing');
+  Future<void> sync({bool auto = false}) async {
+    logger.d('A/P/S $auto $paused $syncing');
     if (paused) return;
     if (syncing) return;
     try {
@@ -148,13 +149,18 @@ abstract class _SyncStatus2 with Store {
       final lh = latestHeight;
       if (lh == null) return;
       // don't auto sync more than 1 month of data
-      if (!rescan && auto && lh - syncedHeight > 30 * 24 * 60 * 4 / 5) {
+      if (!rescanning && auto && lh - syncedHeight > 30 * 24 * 60 * 4 / 5) {
         paused = true;
         return;
       }
-      if (isSynced) return;
+      if (isSynced) {
+        rescanning = false;
+        return;
+      }
+      // user started/resumed a manual scan
+      if (!auto)
+        rescanning = true;
       syncing = true;
-      isRescan = rescan;
       _updateSyncedHeight();
       startSyncedHeight = syncedHeight;
       eta.begin(latestHeight!);
@@ -212,7 +218,7 @@ abstract class _SyncStatus2 with Store {
     WarpApi.rescanFrom(aa.coin, height);
     _updateSyncedHeight();
     paused = false;
-    await sync(true);
+    await sync();
   }
 
   @action
