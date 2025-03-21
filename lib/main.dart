@@ -33,9 +33,6 @@ void main() async {
   await initCoins();
   await restoreWindow();
   initNotifications();
-  // Placeholder
-  final a = createElection(urls: "A", key: "");
-  print(a);
   final prefs = await SharedPreferences.getInstance();
   final dbPath = await getDbPath();
   print("db path $dbPath");
