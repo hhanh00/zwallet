@@ -5,6 +5,24 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+part 'simple.freezed.dart';
 
-String createElection({required String urls, required String key}) =>
-    RustLib.instance.api.crateApiSimpleCreateElection(urls: urls, key: key);
+Future<Election> createElection(
+        {required String filepath,
+        required String urls,
+        required String key}) =>
+    RustLib.instance.api
+        .crateApiSimpleCreateElection(filepath: filepath, urls: urls, key: key);
+
+@freezed
+class Election with _$Election {
+  const factory Election({
+    required String name,
+    required int startHeight,
+    required int endHeight,
+    required String question,
+    required List<String> candidates,
+    required bool signatureRequired,
+  }) = _Election;
+}

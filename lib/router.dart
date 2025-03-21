@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:YWallet/pages/vote/overview.dart';
+import 'package:YWallet/pages/vote/vote_data.dart';
+import 'package:go_provider/go_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:warp_api/data_fb_generated.dart';
 
 import 'pages/accounts/swap.dart';
@@ -7,6 +11,8 @@ import 'pages/accounts/swap/history.dart';
 import 'pages/accounts/swap/stealthex.dart';
 import 'pages/more/cold.dart';
 import 'pages/more/vote.dart';
+import 'pages/vote/new.dart';
+import 'pages/vote/select.dart';
 import 'settings.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -68,6 +74,18 @@ final router = GoRouter(
   initialLocation: '/splash',
   debugLogDiagnostics: true,
   routes: [
+    GoProviderRoute(
+      path: '/vote',
+      providers: [
+        Provider(create: (_) => ElectionInfo()),
+      ],
+      builder: (context, state) => VoteSelect(),
+      routes: [
+        GoRoute(path: 'new', builder: (context, state) => VoteNew()),
+        GoRoute(path: 'overview', builder: (context, state) => VoteOverview()),
+        GoRoute(path: 'vote', builder: (context, state) => Container(color: Colors.green)),
+        GoRoute(path: 'delegate', builder: (context, state) => Container(color: Colors.orange)),
+    ]),
     GoRoute(path: '/', redirect: (context, state) => '/account'),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => ScaffoldBar(shell: shell),

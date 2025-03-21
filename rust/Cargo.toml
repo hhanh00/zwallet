@@ -8,6 +8,9 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 flutter_rust_bridge = "=2.9.0"
+anyhow = "1"
+reqwest = { version = "0.11.27", features = ["json"] }
+zcash-vote = { path = "../native/zcash-vote" }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
