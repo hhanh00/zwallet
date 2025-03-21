@@ -25,5 +25,5 @@ zcash_note_encryption = { path = "librustzcash/components/zcash_note_encryption"
 # Android 32-bit fix
 halo2_gadgets  = { git = "https://github.com/zcash/halo2.git", rev = "642924d614305d882cc122739c59144109f4bd3f" }
 halo2_proofs = { git = "https://github.com/zcash/halo2.git", rev = "642924d614305d882cc122739c59144109f4bd3f" }
-#orchard = { git = "https://github.com/zcash/orchard.git", rev = "6cbde279e90974201bedbd9b5ddf155e8f8b1e8e" }
-orchard = { path = "orchard" }
+orchard = {git = "https://github.com/hhanh00/orchard.git", rev="dff7dee"}
+#orchard = {path = "orchard"}
