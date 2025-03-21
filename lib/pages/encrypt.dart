@@ -80,8 +80,8 @@ class _EncryptDbState extends State<EncryptDbPage> with WithLoadingAnimation {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('backup', path);
       });
-      await showMessageBox2(
-          context, s.restart, s.pleaseQuitAndRestartTheAppNow, dismissable: false);
+      await showMessageBox2(context, s.restart, s.pleaseQuitAndRestartTheAppNow,
+          dismissable: false);
       GoRouter.of(context).pop();
     }
   }

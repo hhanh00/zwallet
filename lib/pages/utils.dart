@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:YWallet/main.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:binary/binary.dart';
 import 'package:collection/collection.dart';
@@ -37,7 +38,6 @@ import '../accounts.dart';
 import '../appsettings.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
-import '../main.dart';
 import '../router.dart';
 import '../store2.dart';
 import 'widgets.dart';
@@ -131,8 +131,7 @@ String? addressValidator(String? v) {
   try {
     WarpApi.parseTexAddress(aa.coin, v);
     return null;
-  }
-  on String {}
+  } on String {}
   final valid = WarpApi.validAddress(aa.coin, v);
   if (!valid) return s.invalidAddress;
   return null;
@@ -433,20 +432,20 @@ class Note extends HasHeight {
   factory Note.from(int? latestHeight, int id, int height, DateTime timestamp,
       double value, bool orchard, bool excluded, bool selected) {
     final confirmations = latestHeight?.let((h) => h - height + 1);
-    return Note(id, height, confirmations, timestamp, value, orchard, excluded, selected);
+    return Note(id, height, confirmations, timestamp, value, orchard, excluded,
+        selected);
   }
-  factory Note.fromShieldedNote(ShieldedNoteT n) =>
-    Note(n.id, n.height, 0, toDateTime(n.timestamp), n.value / ZECUNIT,
-    n.orchard, n.excluded, false);
+  factory Note.fromShieldedNote(ShieldedNoteT n) => Note(n.id, n.height, 0,
+      toDateTime(n.timestamp), n.value / ZECUNIT, n.orchard, n.excluded, false);
 
   Note(this.id, this.height, this.confirmations, this.timestamp, this.value,
       this.orchard, this.excluded, this.selected);
 
-  Note get invertExcluded =>
-      Note(id, height, confirmations, timestamp, value, orchard, !excluded, selected);
+  Note get invertExcluded => Note(id, height, confirmations, timestamp, value,
+      orchard, !excluded, selected);
 
-  Note clone() => Note(id, height, confirmations, timestamp, value, orchard, excluded, selected);
-
+  Note clone() => Note(
+      id, height, confirmations, timestamp, value, orchard, excluded, selected);
 }
 
 @reflector
@@ -464,29 +463,36 @@ class Tx extends HasHeight {
   List<TxMemo> memos;
 
   factory Tx.from(
-      int? latestHeight,
-      int id,
-      int height,
-      DateTime timestamp,
-      String txid,
-      String fullTxId,
-      double value,
-      String? address,
-      String? contact,
-      String? memo,
-      List<Memo> memos,
-      ) {
+    int? latestHeight,
+    int id,
+    int height,
+    DateTime timestamp,
+    String txid,
+    String fullTxId,
+    double value,
+    String? address,
+    String? contact,
+    String? memo,
+    List<Memo> memos,
+  ) {
     final confirmations = latestHeight?.let((h) => h - height + 1);
-    final memos2 = memos.map((m) => TxMemo(
-      address: m.address!,
-      memo: m.memo!
-      )).toList();
+    final memos2 =
+        memos.map((m) => TxMemo(address: m.address!, memo: m.memo!)).toList();
     return Tx(id, height, confirmations, timestamp, txid, fullTxId, value,
         address, contact, memo, memos2);
   }
 
-  Tx(this.id, this.height, this.confirmations, this.timestamp, this.txId,
-      this.fullTxId, this.value, this.address, this.contact, this.memo,
+  Tx(
+      this.id,
+      this.height,
+      this.confirmations,
+      this.timestamp,
+      this.txId,
+      this.fullTxId,
+      this.value,
+      this.address,
+      this.contact,
+      this.memo,
       this.memos);
 }
 
@@ -708,4 +714,3 @@ String? isValidUA(int uaType) {
   if (uaType == 1) return GetIt.I<S>().invalidAddress;
   return null;
 }
-

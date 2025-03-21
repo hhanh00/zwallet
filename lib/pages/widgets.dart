@@ -5,7 +5,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_palette/flutter_palette.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -84,7 +83,7 @@ class LoadingWrapper extends StatelessWidget {
         Container(
             height: size.height,
             width: size.width,
-            color: t.colorScheme.background),
+            color: t.colorScheme.surface),
         Opacity(opacity: 0.4, child: child),
         Container(
           height: size.height - 200,
@@ -216,8 +215,8 @@ class MediumTitle extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             color: t.colorScheme.primary),
         child: Text(title,
-            style: t.textTheme.bodyLarge!
-                .copyWith(color: t.colorScheme.background)));
+            style:
+                t.textTheme.bodyLarge!.copyWith(color: t.colorScheme.surface)));
   }
 }
 

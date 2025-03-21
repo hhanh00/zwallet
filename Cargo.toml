@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["native/*"]
+members = ["native/*", "rust"]
 
 [profile.release]
 lto = true

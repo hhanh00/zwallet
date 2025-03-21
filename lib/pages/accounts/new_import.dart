@@ -72,12 +72,11 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 Image.asset('assets/icon.png', height: 128),
                 Gap(16),
                 FormBuilderTextField(
-                  name: 'name',
-                  decoration: InputDecoration(labelText: s.accountName),
-                  controller: nameController,
-                  enableSuggestions: true,
-                  validator: FormBuilderValidators.required()
-                ),
+                    name: 'name',
+                    decoration: InputDecoration(labelText: s.accountName),
+                    controller: nameController,
+                    enableSuggestions: true,
+                    validator: FormBuilderValidators.required()),
                 FormBuilderRadioGroup<int>(
                   decoration: InputDecoration(labelText: s.crypto),
                   orientation: OptionsOrientation.vertical,
@@ -139,8 +138,8 @@ class _NewImportAccountState extends State<NewImportAccountPage>
       form.save();
       await load(() async {
         final index = int.parse(accountIndexController.text);
-        final account = await WarpApi.newAccount(
-            coin, nameController.text, _key, index);
+        final account =
+            await WarpApi.newAccount(coin, nameController.text, _key, index);
         if (account < 0)
           form.fields['name']!.invalidate(s.thisAccountAlreadyExists);
         else {
@@ -151,14 +150,13 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           if (count == 1) {
             // First account of a coin is synced
             await WarpApi.skipToLastHeight(coin);
-          } 
+          }
           if (widget.first) {
             if (_key.isNotEmpty)
               GoRouter.of(context).go('/account/rescan');
             else
               GoRouter.of(context).go('/account');
-          }
-          else
+          } else
             GoRouter.of(context).pop();
         }
       });

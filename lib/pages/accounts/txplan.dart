@@ -158,8 +158,7 @@ class TxPlanWidget extends StatelessWidget {
           trailing: Text(amountToString2(report.fee, digits: MAX_PRECISION),
               style: TextStyle(color: t.primaryColor))),
       privacyToString(context, report.privacyLevel,
-        canSend: !invalidPrivacy,
-        onSend: onSend)!,
+          canSend: !invalidPrivacy, onSend: onSend)!,
       Gap(16),
       if (invalidPrivacy)
         Text(s.privacyLevelTooLow, style: t.textTheme.bodyLarge),
@@ -183,17 +182,19 @@ String poolToString(S s, int pool) {
 }
 
 Widget? privacyToString(BuildContext context, int privacyLevel,
-    {required bool canSend, Future<void> Function(BuildContext context)? onSend}) {
+    {required bool canSend,
+    Future<void> Function(BuildContext context)? onSend}) {
   final m = S
       .of(context)
       .privacy(getPrivacyLevel(context, privacyLevel).toUpperCase());
   final colors = [Colors.red, Colors.orange, Colors.yellow, Colors.green];
   return getColoredButton(context, m, colors[privacyLevel],
-    canSend: canSend, onSend: onSend);
+      canSend: canSend, onSend: onSend);
 }
 
 ElevatedButton getColoredButton(BuildContext context, String text, Color color,
-    {required bool canSend, Future<void> Function(BuildContext context)? onSend}) {
+    {required bool canSend,
+    Future<void> Function(BuildContext context)? onSend}) {
   var foregroundColor =
       color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
 

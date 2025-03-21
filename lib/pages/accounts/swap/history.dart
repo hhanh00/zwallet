@@ -44,43 +44,48 @@ class SwapHistoryState extends State<SwapHistoryPage>
           child: ListView.builder(
             itemBuilder: (context, index) {
               final swap = history[index];
-              return Panel('', child: Column(
-                children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(swap.provider!, style: TextStyle(color: p)),
-                        Text(swap.providerId!,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text(DateTime.fromMillisecondsSinceEpoch(
-                                swap.timestamp * 1000)
-                            .timeAgo()),
-                      ]),
-                  Divider(),
-                  Row(
+              return Panel('',
+                  child: Column(
                     children: [
-                      Text(swap.fromAmount!),
-                      Gap(8),
-                      Text(swap.fromCurrency!),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(swap.provider!, style: TextStyle(color: p)),
+                            Text(swap.providerId!,
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text(DateTime.fromMillisecondsSinceEpoch(
+                                    swap.timestamp * 1000)
+                                .timeAgo()),
+                          ]),
+                      Divider(),
+                      Row(
+                        children: [
+                          Text(swap.fromAmount!),
+                          Gap(8),
+                          Text(swap.fromCurrency!),
+                        ],
+                      ),
+                      Text(swap.fromAddress!, overflow: TextOverflow.ellipsis),
+                      Divider(),
+                      Row(
+                        children: [
+                          Text(swap.toAmount!),
+                          Gap(8),
+                          Text(swap.toCurrency!),
+                        ],
+                      ),
+                      Text(swap.toAddress!, overflow: TextOverflow.ellipsis),
+                      Divider(),
+                      ElevatedButton(
+                          onPressed: () => GoRouter.of(context).push(
+                              '/account/swap/stealthex/details',
+                              extra: swap),
+                          child: Text(s.retry)),
+                      // Text(
+                      //     '${swap.fromAmount} ${swap.fromCurrency} ${swap.fromAddress} '),
+                      // Text('${swap.toAmount} ${swap.toCurrency} ${swap.toAddress}'),
                     ],
-                  ),
-                  Text(swap.fromAddress!, overflow: TextOverflow.ellipsis),
-                  Divider(),
-                  Row(
-                    children: [
-                      Text(swap.toAmount!),
-                      Gap(8),
-                      Text(swap.toCurrency!),
-                    ],
-                  ),
-                  Text(swap.toAddress!, overflow: TextOverflow.ellipsis),
-                  Divider(),
-                  ElevatedButton(onPressed: () => GoRouter.of(context).push('/account/swap/stealthex/details', extra: swap), child: Text(s.retry)),
-                  // Text(
-                  //     '${swap.fromAmount} ${swap.fromCurrency} ${swap.fromAddress} '),
-                  // Text('${swap.toAmount} ${swap.toCurrency} ${swap.toAddress}'),
-                ],
-              ));
+                  ));
             },
             itemCount: history.length,
           ),

@@ -152,7 +152,9 @@ version = "0.1.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f67642eb6773fb42a95dd3b348c305ee18dee6642274c6b412d67e985e3befc"
 dependencies = [
+ "anyhow",
  "atomic 0.5.3",
+ "backtrace",
 ]
 
 [[package]]
@@ -186,15 +188,33 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "85965b6739a430150bdd138e2374a98af0c3ee0d030b3bb7fc3bddff58d0102e"
 
 [[package]]
+name = "android_log-sys"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "84521a3cf562bc62942e294181d9eef17eb38ceb8c68677bc49f144e4c3d4f8d"
+
+[[package]]
 name = "android_logger"
 version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d9ed09b18365ed295d722d0b5ed59c01b79a826ff2d2a8f73d5ecca8e6fb2f66"
 dependencies = [
- "android_log-sys",
+ "android_log-sys 0.2.0",
  "env_logger 0.8.4",
  "lazy_static",
  "log",
+]
+
+[[package]]
+name = "android_logger"
+version = "0.13.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c494134f746c14dc653a35a4ea5aca24ac368529da5370ecf41fe0341c35772f"
+dependencies = [
+ "android_log-sys 0.3.2",
+ "env_logger 0.10.2",
+ "log",
+ "once_cell",
 ]
 
 [[package]]
@@ -875,6 +895,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "build-target"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "832133bbabbbaa9fbdba793456a2827627a7d2b8fb96032fa1e7666d7895832b"
+
+[[package]]
 name = "bumpalo"
 version = "3.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1167,6 +1193,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ca0197aee26d1ae37445ee532fefce43251d24cc7c166799f4d46817f1d3973"
 dependencies = [
  "crossbeam-utils",
+]
+
+[[package]]
+name = "console_error_panic_hook"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a06aeb73f470f66dcdbf7223caeebb85984942f22f1adb2a088cf9668146bbbc"
+dependencies = [
+ "cfg-if",
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -1475,6 +1511,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "dart-sys"
+version = "4.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "57967e4b200d767d091b961d6ab42cc7d0cc14fe9e052e75d0d3cf9eb732d895"
+dependencies = [
+ "cc",
+]
+
+[[package]]
+name = "dashmap"
+version = "4.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e77a43b28d0668df09411cb0bc9a8c2adc40f9a048afe863e05fd43251e8e39c"
+dependencies = [
+ "cfg-if",
+ "num_cpus",
+]
+
+[[package]]
 name = "dashmap"
 version = "5.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1485,6 +1540,17 @@ dependencies = [
  "lock_api",
  "once_cell",
  "parking_lot_core",
+]
+
+[[package]]
+name = "delegate-attr"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51aac4c99b2e6775164b412ea33ae8441b2fde2dbf05a20bc0052a63d08c475b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.89",
 ]
 
 [[package]]
@@ -1661,6 +1727,16 @@ dependencies = [
  "log",
  "regex",
  "termcolor",
+]
+
+[[package]]
+name = "env_logger"
+version = "0.10.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4cd405aab171cb85d6735e5c8d9db038c17d3ca007a4d2c25f337935c3d90580"
+dependencies = [
+ "log",
+ "regex",
 ]
 
 [[package]]
@@ -1931,6 +2007,48 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2a530c4694a6a8d528794ee9bbd8ba0122e779629ac908d15ad5a7ae7763a33d"
 dependencies = [
  "thiserror",
+]
+
+[[package]]
+name = "flutter_rust_bridge"
+version = "2.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2f8c0dee6249225e815dcff3f3a39b98d9f66fdb3c392a432715b646bfa4da02"
+dependencies = [
+ "allo-isolate",
+ "android_logger 0.13.3",
+ "anyhow",
+ "build-target",
+ "bytemuck",
+ "byteorder",
+ "console_error_panic_hook",
+ "dart-sys",
+ "delegate-attr",
+ "flutter_rust_bridge_macros",
+ "futures",
+ "js-sys",
+ "lazy_static",
+ "log",
+ "oslog",
+ "portable-atomic",
+ "threadpool",
+ "tokio",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
+name = "flutter_rust_bridge_macros"
+version = "2.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8e88d604908d9eccb4ca9c26640ce41033165cbef041460e704ae28bd5208bce"
+dependencies = [
+ "hex",
+ "md-5",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.89",
 ]
 
 [[package]]
@@ -2624,7 +2742,7 @@ version = "0.6.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d26a3d3569737dfaac7fc1c4078e6af07471c3060b8e570bcd83cdd5f4685395"
 dependencies = [
- "dashmap",
+ "dashmap 5.5.3",
  "find-crate",
  "fluent",
  "fluent-syntax",
@@ -3239,6 +3357,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "60302e4db3a61da70c0cb7991976248362f30319e88850c487b9b95bbf059e00"
 
 [[package]]
+name = "md-5"
+version = "0.10.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d89e7ee0cfbedfc4da3340218492196241d89eefb6dab27de5df917a6d2e78cf"
+dependencies = [
+ "cfg-if",
+ "digest 0.10.7",
+]
+
+[[package]]
 name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3616,6 +3744,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oslog"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8343ce955f18e7e68c0207dd0ea776ec453035685395ababd2ea651c569728b3"
+dependencies = [
+ "cc",
+ "dashmap 4.0.2",
+ "log",
+]
+
+[[package]]
 name = "overload"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3904,6 +4043,12 @@ dependencies = [
  "opaque-debug 0.3.1",
  "universal-hash 0.5.1",
 ]
+
+[[package]]
+name = "portable-atomic"
+version = "1.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "350e9b48cbc6b0e028b0473b114454c6316e57336ee184ceab6e53f72c178b3e"
 
 [[package]]
 name = "ppv-lite86"
@@ -4658,6 +4803,13 @@ dependencies = [
  "rkyv",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "rust_lib_YWallet"
+version = "0.1.0"
+dependencies = [
+ "flutter_rust_bridge",
 ]
 
 [[package]]
@@ -5535,6 +5687,15 @@ checksum = "8b9ef9bad013ada3808854ceac7b46812a6465ba368859a37e2100283d2d719c"
 dependencies = [
  "cfg-if",
  "once_cell",
+]
+
+[[package]]
+name = "threadpool"
+version = "1.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d050e60b33d41c19108b32cea32164033a9013fe3b46cbd4457559bfbf77afaa"
+dependencies = [
+ "num_cpus",
 ]
 
 [[package]]
@@ -6702,7 +6863,7 @@ dependencies = [
  "age",
  "allo-isolate",
  "ambassador",
- "android_logger",
+ "android_logger 0.10.1",
  "anyhow",
  "assert_matches",
  "async-trait",

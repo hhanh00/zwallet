@@ -30,7 +30,8 @@ class _SubmitTxState extends State<SubmitTxPage> {
       try {
         String? txIdJs;
         if (widget.txPlan != null)
-          txIdJs = await WarpApi.signAndBroadcast(aa.coin, aa.id, widget.txPlan!);
+          txIdJs =
+              await WarpApi.signAndBroadcast(aa.coin, aa.id, widget.txPlan!);
         if (widget.txBin != null)
           txIdJs = WarpApi.broadcast(aa.coin, widget.txBin!);
         txId = jsonDecode(txIdJs!);

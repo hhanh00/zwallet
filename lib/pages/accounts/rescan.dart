@@ -107,8 +107,10 @@ class _RewindState extends State<RewindPage> {
   bool calendar = true;
   DateTime? dateSelected;
   final List<Checkpoint> checkpoints = WarpApi.getCheckpoints(aa.coin);
-  late final List<DateTime> checkpointDates = checkpoints.map((cp) => 
-    _toDate(cp.timestamp, dateOnly: true)).toSet().toList();
+  late final List<DateTime> checkpointDates = checkpoints
+      .map((cp) => _toDate(cp.timestamp, dateOnly: true))
+      .toSet()
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +160,8 @@ class _RewindState extends State<RewindPage> {
 
   rewind() async {
     final height = checkpoints[selected!].height;
-    final confirmed = await showConfirmDialog(context, s.rewind, s.confirmRewind(height));
+    final confirmed =
+        await showConfirmDialog(context, s.rewind, s.confirmRewind(height));
     if (!confirmed) return;
     WarpApi.rewindTo(aa.coin, height);
     Future(() async {
@@ -167,10 +170,9 @@ class _RewindState extends State<RewindPage> {
     GoRouter.of(context).pop();
   }
 
-  DateTime _toDate(int ts, { bool dateOnly = false }) {
+  DateTime _toDate(int ts, {bool dateOnly = false}) {
     var dt = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
-    if (dateOnly)
-      dt = DateTime(dt.year, dt.month, dt.day);
+    if (dateOnly) dt = DateTime(dt.year, dt.month, dt.day);
     return dt;
   }
 }

@@ -38,7 +38,8 @@ class _SweepState extends State<SweepPage>
         ),
         body: LoadingWrapper(loading,
             child: SingleChildScrollView(
-              child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: FormBuilder(
                 key: formKey,
                 child: Column(children: [

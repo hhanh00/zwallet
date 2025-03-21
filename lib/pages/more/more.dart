@@ -44,10 +44,11 @@ class MorePage extends StatelessWidget {
               icon: FaIcon(FontAwesomeIcons.arrowRightArrowLeft),
               text: s.swap,
               secured: appSettings.protectSend),
-        if (syncStatus2.latestHeight != null) MoreTile(
-            url: '/more/vote',
-            icon: FaIcon(FontAwesomeIcons.personBooth),
-            text: s.vote),
+        if (syncStatus2.latestHeight != null)
+          MoreTile(
+              url: '/more/vote',
+              icon: FaIcon(FontAwesomeIcons.personBooth),
+              text: s.vote),
       ]),
       MoreSection(title: Text(s.backup), tiles: [
         MoreTile(

@@ -1,3 +1,4 @@
+import 'package:YWallet/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,7 +8,6 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
-import '../../main.dart';
 import '../../accounts.dart';
 import '../../appsettings.dart';
 import '../../generated/intl/messages.dart';

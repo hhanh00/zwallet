@@ -25,7 +25,7 @@ class BackupPage extends StatefulWidget {
     else
       throw 'Account has no key';
   }
-  
+
   @override
   State<StatefulWidget> createState() => _BackupState();
 }
@@ -44,13 +44,13 @@ class _BackupState extends State<BackupPage> {
     TextStyle? style;
     if (widget.backup.seed != null) {
       var seed = widget.backup.seed!;
-      if (widget.backup.index != 0)
-        seed += ' [${widget.backup.index}]';
+      if (widget.backup.index != 0) seed += ' [${widget.backup.index}]';
       cards.add(BackupPanel(name, s.seed, seed, Icon(Icons.save)));
       style = small;
     }
     if (widget.backup.sk != null) {
-      cards.add(BackupPanel(name, s.secretKey, widget.backup.sk!, Icon(Icons.vpn_key),
+      cards.add(BackupPanel(
+          name, s.secretKey, widget.backup.sk!, Icon(Icons.vpn_key),
           style: style));
       style = small;
     }
@@ -61,8 +61,8 @@ class _BackupState extends State<BackupPage> {
       style = small;
     }
     if (widget.backup.fvk != null) {
-      cards.add(BackupPanel(
-          name, s.viewingKey, widget.backup.fvk!, Icon(Icons.visibility_outlined),
+      cards.add(BackupPanel(name, s.viewingKey, widget.backup.fvk!,
+          Icon(Icons.visibility_outlined),
           style: style));
       style = small;
     }

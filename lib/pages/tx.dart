@@ -26,9 +26,9 @@ class TxPageState extends State<TxPage> {
     super.initState();
     syncStatus2.latestHeight?.let((height) {
       Future(() async {
-        final txListUpdated = await WarpApi.transparentSync(aa.coin, aa.id, height);
-        if (txListUpdated)
-          aa.update(height); // reload if updated
+        final txListUpdated =
+            await WarpApi.transparentSync(aa.coin, aa.id, height);
+        if (txListUpdated) aa.update(height); // reload if updated
       });
     });
   }
@@ -65,7 +65,8 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
   void inverseSelection() {}
 
   @override
-  Widget toListTile(BuildContext context, int index, Tx tx, {void Function(void Function())? setState}) {
+  Widget toListTile(BuildContext context, int index, Tx tx,
+      {void Function(void Function())? setState}) {
     ZMessage? message;
     try {
       message = aa.messages.items.firstWhere((m) => m.txId == tx.id);
@@ -118,7 +119,7 @@ class TableListTxMetadata extends TableListItemMetadata<Tx> {
     aa.txs.setSortOrder(field);
     return aa.txs.order;
   }
-  
+
   @override
   Widget? header(BuildContext context) => null;
 }
@@ -143,7 +144,9 @@ class TxItem extends StatelessWidget {
     final trailing = Column(children: [dateString, value]);
 
     return GestureDetector(
-        onTap: () { if (index != null) gotoTx(context, index!); },
+        onTap: () {
+          if (index != null) gotoTx(context, index!);
+        },
         behavior: HitTestBehavior.translucent,
         child: Row(
           children: [
@@ -184,51 +187,49 @@ class TransactionState extends State<TransactionPage> {
   Widget build(BuildContext context) {
     final n = aa.txs.items.length;
     return Scaffold(
-      appBar: AppBar(title: Text(s.transactionDetails),
-      actions: [
-            IconButton(
-                onPressed: idx > 0 ? prev : null,
-                icon: Icon(Icons.chevron_left)),
-            IconButton(
-                onPressed: idx < n - 1 ? next : null,
-                icon: Icon(Icons.chevron_right)),
-            IconButton(
-                onPressed: open, icon: Icon(Icons.open_in_browser)),
-      ]),
-      body: SingleChildScrollView(
-        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            Gap(16),
-            Panel(s.txID, text: tx.fullTxId),
-            Gap(8),
-            Panel(s.height, text: tx.height.toString()),
-            Gap(8),
-            Panel(s.confs, text: tx.confirmations.toString()),
-            Gap(8),
-            Panel(s.timestamp, text: noteDateFormat.format(tx.timestamp)),
-            Gap(8),
-            Panel(s.amount, text: decimalToString(tx.value)),
-            Gap(8),
-            Panel(s.address, text: tx.address ?? ''),
-            Gap(8),
-            Panel(s.contactName, text: tx.contact ?? ''), // Add Contact button
-            Gap(8),
-            Panel(s.memo, text: tx.memo ?? ''),
-            Gap(8),
-            ..._memos()
-          ],
-        ),
-      ),
-    ));
+        appBar: AppBar(title: Text(s.transactionDetails), actions: [
+          IconButton(
+              onPressed: idx > 0 ? prev : null, icon: Icon(Icons.chevron_left)),
+          IconButton(
+              onPressed: idx < n - 1 ? next : null,
+              icon: Icon(Icons.chevron_right)),
+          IconButton(onPressed: open, icon: Icon(Icons.open_in_browser)),
+        ]),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                Gap(16),
+                Panel(s.txID, text: tx.fullTxId),
+                Gap(8),
+                Panel(s.height, text: tx.height.toString()),
+                Gap(8),
+                Panel(s.confs, text: tx.confirmations.toString()),
+                Gap(8),
+                Panel(s.timestamp, text: noteDateFormat.format(tx.timestamp)),
+                Gap(8),
+                Panel(s.amount, text: decimalToString(tx.value)),
+                Gap(8),
+                Panel(s.address, text: tx.address ?? ''),
+                Gap(8),
+                Panel(s.contactName,
+                    text: tx.contact ?? ''), // Add Contact button
+                Gap(8),
+                Panel(s.memo, text: tx.memo ?? ''),
+                Gap(8),
+                ..._memos()
+              ],
+            ),
+          ),
+        ));
   }
 
   List<Widget> _memos() {
     List<Widget> ms = [];
     for (var txm in tx.memos) {
       ms.add(Gap(8));
-      ms.add(Panel(s.memo, text: 
-        txm.address + '\n' + txm.memo));
+      ms.add(Panel(s.memo, text: txm.address + '\n' + txm.memo));
     }
     return ms;
   }
@@ -244,7 +245,7 @@ class TransactionState extends State<TransactionPage> {
 
   next() {
     final n = aa.txs.items.length;
-    if (idx < n-1) idx += 1;
+    if (idx < n - 1) idx += 1;
     setState(() {});
   }
 

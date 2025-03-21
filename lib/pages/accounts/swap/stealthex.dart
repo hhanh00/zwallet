@@ -14,7 +14,6 @@ import 'package:http/http.dart' as http;
 import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
-import 'package:flat_buffers/flat_buffers.dart' as fb;
 
 import '../../../accounts.dart';
 import '../../../appsettings.dart';

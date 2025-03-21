@@ -226,35 +226,37 @@ class _MessageItemState extends State<MessageItemPage> {
     final s = S.of(context);
     final ts = msgDateFormatFull.format(message.timestamp);
     return Scaffold(
-      appBar: AppBar(title: Text(message.subject), actions: [
-        IconButton(
-            onPressed: nextInThread,
-            icon: Icon(Icons.arrow_left)), // because the sorting is desc
-        IconButton(
-            onPressed: idx > 0 ? prev : null, icon: Icon(Icons.chevron_left)),
-        IconButton(
-            onPressed: idx < n - 1 ? next : null,
-            icon: Icon(Icons.chevron_right)),
-        IconButton(onPressed: prevInThread, icon: Icon(Icons.arrow_right)),
-        if (message.fromAddress.isNotEmptyAndNotNull) IconButton(onPressed: reply, icon: Icon(Icons.reply)),
-        IconButton(onPressed: open, icon: Icon(Icons.open_in_browser)),
-      ]),
-      body: SingleChildScrollView(
-        child: Padding(padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(children: [
-          Gap(16),
-          Panel(s.datetime, text: ts),
-          Gap(8),
-          Panel(s.sender, text: message.sender ?? ''),
-          Gap(8),
-          Panel(s.recipient, text: message.recipient),
-          Gap(8),
-          Panel(s.subject, text: message.subject),
-          Gap(8),
-          Panel(s.body, text: message.body, maxLines: 20),
+        appBar: AppBar(title: Text(message.subject), actions: [
+          IconButton(
+              onPressed: nextInThread,
+              icon: Icon(Icons.arrow_left)), // because the sorting is desc
+          IconButton(
+              onPressed: idx > 0 ? prev : null, icon: Icon(Icons.chevron_left)),
+          IconButton(
+              onPressed: idx < n - 1 ? next : null,
+              icon: Icon(Icons.chevron_right)),
+          IconButton(onPressed: prevInThread, icon: Icon(Icons.arrow_right)),
+          if (message.fromAddress.isNotEmptyAndNotNull)
+            IconButton(onPressed: reply, icon: Icon(Icons.reply)),
+          IconButton(onPressed: open, icon: Icon(Icons.open_in_browser)),
         ]),
-      ),
-    ));
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Column(children: [
+              Gap(16),
+              Panel(s.datetime, text: ts),
+              Gap(8),
+              Panel(s.sender, text: message.sender ?? ''),
+              Gap(8),
+              Panel(s.recipient, text: message.recipient),
+              Gap(8),
+              Panel(s.subject, text: message.subject),
+              Gap(8),
+              Panel(s.body, text: message.body, maxLines: 20),
+            ]),
+          ),
+        ));
   }
 
   prev() {
