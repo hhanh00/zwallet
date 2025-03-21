@@ -52,7 +52,7 @@ class TableListPage<U, T extends TableListItemMetadata<U>>
           });
       }
       throw 'Unreachable';
-    } ();
+    }();
     return padding != null ? Padding(padding: padding!, child: inner) : inner;
   }
 }

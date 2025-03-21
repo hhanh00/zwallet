@@ -41,7 +41,8 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
     final s = S.of(context);
     return Scaffold(
         appBar: AppBar(title: Text(s.scanQrCode), actions: [
-          if (isMobile()) IconButton(onPressed: _open, icon: Icon(Icons.open_in_new)),
+          if (isMobile())
+            IconButton(onPressed: _open, icon: Icon(Icons.open_in_new)),
           IconButton(onPressed: _ok, icon: Icon(Icons.check)),
         ]),
         body: FormBuilder(

@@ -28,31 +28,35 @@ class _PaymentURIState extends State<PaymentURIPage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(s.paymentURI)),
-      body: SingleChildScrollView(
-        child: FormBuilder(
-          child: Padding(padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              AddressCarousel(
-                amount: amount,
-                memo: memoController.text,
-                paymentURI: false,
-                onAddressModeChanged: (m) => setState(() => addressMode = m),),
-              AmountPicker(Amount(amount, false), onChanged: onAmount, canDeductFee: false),
-              FormBuilderTextField(
-                name: 'memo',
-                decoration: InputDecoration(label: Text(s.memo)),
-                controller: memoController,
-                enableSuggestions: true,
-                onChanged: (_) => onMemo(),
-                maxLines: 10,
+        appBar: AppBar(title: Text(s.paymentURI)),
+        body: SingleChildScrollView(
+          child: FormBuilder(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  AddressCarousel(
+                    amount: amount,
+                    memo: memoController.text,
+                    paymentURI: false,
+                    onAddressModeChanged: (m) =>
+                        setState(() => addressMode = m),
+                  ),
+                  AmountPicker(Amount(amount, false),
+                      onChanged: onAmount, canDeductFee: false),
+                  FormBuilderTextField(
+                    name: 'memo',
+                    decoration: InputDecoration(label: Text(s.memo)),
+                    controller: memoController,
+                    enableSuggestions: true,
+                    onChanged: (_) => onMemo(),
+                    maxLines: 10,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    ));
+        ));
   }
 
   onAmount(Amount? a) {

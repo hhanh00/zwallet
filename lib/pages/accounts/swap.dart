@@ -25,12 +25,11 @@ class SwapState extends State<SwapPage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(s.swapProviders),
-        actions: [
-          IconButton(onPressed: () => GoRouter.of(context).push('/account/swap/history'), icon: Icon(Icons.list)),
-        ]
-      ),
+      appBar: AppBar(title: Text(s.swapProviders), actions: [
+        IconButton(
+            onPressed: () => GoRouter.of(context).push('/account/swap/history'),
+            icon: Icon(Icons.list)),
+      ]),
       body: Center(
         child: Column(
           children: [

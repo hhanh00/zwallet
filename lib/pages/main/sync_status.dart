@@ -76,7 +76,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
         child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Container(
-                color: t.colorScheme.background,
+                color: t.colorScheme.surface,
                 padding: EdgeInsets.all(8),
                 child: Text(text, style: syncStyle))));
     final value = syncStatus2.eta.progress?.let((x) => x.toDouble() / 100.0);
@@ -102,8 +102,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
         display = (display + 1) % 7;
       });
     } else {
-      if (syncStatus2.paused)
-        syncStatus2.setPause(false);
+      if (syncStatus2.paused) syncStatus2.setPause(false);
       Future(() => syncStatus2.sync(false));
     }
   }

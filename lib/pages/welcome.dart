@@ -12,21 +12,24 @@ class WelcomePage extends StatelessWidget {
     final t = Theme.of(context);
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(title: Text(APP_NAME)),
-      body: Center(child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/welcome.png', width: size.width, height: size.height - 310, fit: BoxFit.fill),
-            Gap(8),
-            Text(s.welcomeToYwallet, style: t.textTheme.headlineSmall!),
-            Gap(8),
-            Text(s.thePrivateWalletMessenger, style: t.textTheme.titleMedium!),
-            Gap(16),
-            OutlinedButton(onPressed: () { _onNew(context); }, 
+        appBar: AppBar(title: Text(APP_NAME)),
+        body: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Image.asset('assets/welcome.png',
+              width: size.width, height: size.height - 310, fit: BoxFit.fill),
+          Gap(8),
+          Text(s.welcomeToYwallet, style: t.textTheme.headlineSmall!),
+          Gap(8),
+          Text(s.thePrivateWalletMessenger, style: t.textTheme.titleMedium!),
+          Gap(16),
+          OutlinedButton(
+              onPressed: () {
+                _onNew(context);
+              },
               child: Text(s.newAccount)),
-            Gap(32),
-      ]))
-    );
+          Gap(32),
+        ])));
   }
 
   _onNew(BuildContext context) {

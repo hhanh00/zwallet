@@ -64,7 +64,8 @@ class TableListNoteMetadata extends TableListItemMetadata<Note> {
   }
 
   @override
-  Widget toListTile(BuildContext context, int index, Note note, {void Function(void Function())? setState}) {
+  Widget toListTile(BuildContext context, int index, Note note,
+      {void Function(void Function())? setState}) {
     final t = Theme.of(context);
     final excluded = note.excluded;
     final style = _noteStyle(t, note);
@@ -77,7 +78,7 @@ class TableListNoteMetadata extends TableListItemMetadata<Note> {
         child: ColoredBox(
             color: excluded
                 ? t.primaryColor.withOpacity(0.5)
-                : t.colorScheme.background,
+                : t.colorScheme.surface,
             child: Padding(
                 padding: EdgeInsets.all(8),
                 child: Row(children: [
@@ -102,10 +103,10 @@ class TableListNoteMetadata extends TableListItemMetadata<Note> {
     return DataRow.byIndex(
       index: index,
       selected: note.excluded,
-      color: MaterialStateColor.resolveWith((states) =>
-          states.contains(MaterialState.selected)
+      color: WidgetStateColor.resolveWith((states) =>
+          states.contains(WidgetState.selected)
               ? t.primaryColor.withOpacity(0.5)
-              : t.colorScheme.background),
+              : t.colorScheme.surface),
       cells: [
         DataCell(Text("${note.height}", style: style)),
         DataCell(Text("$nConfs", style: style)),
@@ -144,7 +145,7 @@ class TableListNoteMetadata extends TableListItemMetadata<Note> {
     aa.notes.setSortOrder(field);
     return aa.notes.order;
   }
-  
+
   @override
   Widget? header(BuildContext context) => null;
 }
@@ -201,8 +202,8 @@ class NoteTable extends StatelessWidget {
               ),
               DataColumn(
                 numeric: true,
-                label: Text(
-                    s.amount + (aa.notes.order?.indicator('value') ?? '')),
+                label:
+                    Text(s.amount + (aa.notes.order?.indicator('value') ?? '')),
                 onSort: (_, __) => aa.notes.setSortOrder('value'),
               ),
             ],
@@ -253,10 +254,10 @@ class NotesDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       selected: note.excluded,
-      color: MaterialStateColor.resolveWith((states) =>
-          states.contains(MaterialState.selected)
+      color: WidgetStateColor.resolveWith((states) =>
+          states.contains(WidgetState.selected)
               ? t.primaryColor.withOpacity(0.5)
-              : t.colorScheme.background),
+              : t.colorScheme.surface),
       cells: [
         DataCell(Text("${note.height}", style: style)),
         DataCell(Text("$confirmations", style: style)),
@@ -365,7 +366,7 @@ class NoteItemState extends State<NoteItem> {
         child: ColoredBox(
             color: excluded
                 ? t.primaryColor.withOpacity(0.5)
-                : t.colorScheme.background,
+                : t.colorScheme.surface,
             child: Padding(
                 padding: EdgeInsets.all(8),
                 child: Row(children: [

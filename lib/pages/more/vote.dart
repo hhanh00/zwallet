@@ -7,13 +7,28 @@ import 'package:go_router/go_router.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/data_fb_generated.dart';
-import 'package:warp_api/warp_api.dart';
 
 import '../../pages/utils.dart';
 import '../../accounts.dart';
 import '../../generated/intl/messages.dart';
 import '../../store2.dart';
 import '../../tablelist.dart';
+
+class VotePage2 extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => VoteState();
+}
+
+class VoteState extends State<VotePage2> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Container(color: Colors.red, height: 200),
+      Container(color: Colors.blue, height: 100),
+      Expanded(child: Container(color: Colors.green)),
+    ]);
+  }
+}
 
 const electionURLKey = 'election:url';
 
@@ -29,7 +44,7 @@ class VotePage extends StatefulWidget {
   State<StatefulWidget> createState() => VoteState();
 }
 
-class VoteState extends State<VotePage> with WithLoadingAnimation {
+class _VoteState extends State<VotePage> with WithLoadingAnimation {
   final urlController = TextEditingController();
   Vote? vote;
 
@@ -147,8 +162,10 @@ class VoteNotesPage extends StatefulWidget {
 
 class VoteNotesState extends State<VoteNotesPage> {
   late final s = S.of(context);
-  late List<VoteNoteT> notes = widget.vote.notes.map((n) =>
-    VoteNoteT(id: n.id, height: n.height, value: n.value, selected: false)).toList();
+  late List<VoteNoteT> notes = widget.vote.notes
+      .map((n) => VoteNoteT(
+          id: n.id, height: n.height, value: n.value, selected: false))
+      .toList();
 
   @override
   Widget build(BuildContext context) {

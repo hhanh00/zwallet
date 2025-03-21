@@ -92,6 +92,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.3
   flutter_svg: ^2.0.9
+  rust_lib_YWallet:
+    path: rust_builder
+  flutter_rust_bridge: 2.9.0
 
 dependency_overrides:
   intl: ^0.18.0
@@ -107,6 +110,8 @@ dev_dependencies:
   flutter_native_splash: ^2.2.16
   intl_utils: ^2.8.1
   msix: ^3.16.7
+  integration_test:
+    sdk: flutter
 
 flutter_icons:
   android: true

@@ -97,8 +97,8 @@ final router = GoRouter(
                   builder: (context, state) => SwapPage(),
                   routes: [
                     GoRoute(
-                        path: 'history',
-                        builder: (context, state) => SwapHistoryPage(),
+                      path: 'history',
+                      builder: (context, state) => SwapHistoryPage(),
                     ),
                     GoRoute(
                         path: 'stealthex',
@@ -304,11 +304,13 @@ final router = GoRouter(
                     routes: [
                       GoRoute(
                         path: 'notes',
-                        builder: (context, state) => VoteNotesPage(state.extra as Vote),
+                        builder: (context, state) =>
+                            VoteNotesPage(state.extra as Vote),
                       ),
                       GoRoute(
                         path: 'candidate',
-                        builder: (context, state) => VoteCandidatePage(state.extra as Vote),
+                        builder: (context, state) =>
+                            VoteCandidatePage(state.extra as Vote),
                       ),
                     ],
                   ),

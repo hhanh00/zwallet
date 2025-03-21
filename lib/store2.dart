@@ -39,8 +39,7 @@ void initSyncListener() {
       final progress = Progress(e);
       syncStatus2.setProgress(progress);
       final b = progress.balances?.unpack();
-      if (b != null)
-        aa.poolBalances = b;
+      if (b != null) aa.poolBalances = b;
       logger.d(progress.balances);
     }
   });
@@ -128,8 +127,7 @@ abstract class _SyncStatus2 with Store {
     try {
       final lh = latestHeight;
       latestHeight = await WarpApi.getLatestHeight(aa.coin);
-      if (lh == null && latestHeight != null)
-        aa.update(latestHeight);
+      if (lh == null && latestHeight != null) aa.update(latestHeight);
       connected = true;
     } on String catch (e) {
       logger.d(e);
@@ -226,7 +224,8 @@ abstract class _SyncStatus2 with Store {
     syncedHeight = progress.height;
     downloadedSize = progress.downloaded;
     if (progress.timestamp > 0)
-      timestamp = DateTime.fromMillisecondsSinceEpoch(progress.timestamp * 1000);
+      timestamp =
+          DateTime.fromMillisecondsSinceEpoch(progress.timestamp * 1000);
     eta.checkpoint(syncedHeight, DateTime.now());
   }
 
@@ -409,7 +408,8 @@ class SwapQuote with _$SwapQuote {
     required String valid_until,
   }) = _SwapQuote;
 
-  factory SwapQuote.fromJson(Map<String, dynamic> json) => _$SwapQuoteFromJson(json);
+  factory SwapQuote.fromJson(Map<String, dynamic> json) =>
+      _$SwapQuoteFromJson(json);
 }
 
 @freezed
@@ -423,7 +423,8 @@ class SwapRequest with _$SwapRequest {
     required String address_to,
   }) = _SwapRequest;
 
-  factory SwapRequest.fromJson(Map<String, dynamic> json) => _$SwapRequestFromJson(json);
+  factory SwapRequest.fromJson(Map<String, dynamic> json) =>
+      _$SwapRequestFromJson(json);
 }
 
 @freezed
@@ -437,7 +438,8 @@ class SwapLeg with _$SwapLeg {
     required String tx_explorer,
   }) = _SwapLeg;
 
-  factory SwapLeg.fromJson(Map<String, dynamic> json) => _$SwapLegFromJson(json);
+  factory SwapLeg.fromJson(Map<String, dynamic> json) =>
+      _$SwapLegFromJson(json);
 }
 
 @freezed
@@ -453,7 +455,8 @@ class SwapResponse with _$SwapResponse {
     required String address_to,
   }) = _SwapResponse;
 
-  factory SwapResponse.fromJson(Map<String, dynamic> json) => _$SwapResponseFromJson(json);
+  factory SwapResponse.fromJson(Map<String, dynamic> json) =>
+      _$SwapResponseFromJson(json);
 }
 
 @freezed
@@ -470,7 +473,8 @@ class Election with _$Election {
     required String status,
   }) = _Election;
 
-  factory Election.fromJson(Map<String, dynamic> json) => _$ElectionFromJson(json);
+  factory Election.fromJson(Map<String, dynamic> json) =>
+      _$ElectionFromJson(json);
 }
 
 @freezed

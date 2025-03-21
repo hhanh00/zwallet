@@ -53,8 +53,7 @@ class _ContactsState extends State<ContactsPage> {
 
   _select(int v) {
     final c = contacts.contacts[v];
-    if (!widget.main)
-      GoRouter.of(context).pop(c);
+    if (!widget.main) GoRouter.of(context).pop(c);
   }
 
   _copyToClipboard(int? v) {
@@ -71,10 +70,12 @@ class _ContactsState extends State<ContactsPage> {
         await showConfirmDialog(context, s.save, s.confirmSaveContacts);
     if (!confirmed) return;
     final txPlan = WarpApi.commitUnsavedContacts(
-        aa.coin, aa.id, coinSettings.receipientPools,
-        appSettings.anchorOffset, fee); // save to Orchard
-    GoRouter.of(context)
-        .push('/account/txplan?tab=contacts', extra: txPlan);
+        aa.coin,
+        aa.id,
+        coinSettings.receipientPools,
+        appSettings.anchorOffset,
+        fee); // save to Orchard
+    GoRouter.of(context).push('/account/txplan?tab=contacts', extra: txPlan);
   }
 
   _add() {

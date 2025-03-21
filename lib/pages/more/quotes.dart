@@ -49,68 +49,71 @@ class _MarketQuotesState extends State<MarketQuotes> with WithLoadingAnimation {
     final s = S.of(context);
     final min = quotes.map((q) => q.low).min()?.floor();
     final max = quotes.map((q) => q.high).max()?.ceil();
-    final items =
-        intervals.map((i) => DropdownMenuItem(value: i, child: Text(i))).toList();
+    final items = intervals
+        .map((i) => DropdownMenuItem(value: i, child: Text(i)))
+        .toList();
     return Scaffold(
       appBar: AppBar(title: Text(s.marketPrice)),
       body: wrapWithLoading(Stack(
         children: [
-          if (quotes.isNotEmpty) Chart<OHLCV>(
-            data: quotes,
-            variables: {
-              'time': Variable<OHLCV, DateTime>(
-                accessor: (OHLCV d) =>
-                    DateTime.fromMillisecondsSinceEpoch(d.time),
-                scale: TimeScale(formatter: (dt) => chartDateFormat.format(dt)),
-              ),
-              'open': Variable<OHLCV, num>(
-                accessor: (OHLCV d) => d.open,
-                scale: LinearScale(min: min, max: max),
-              ),
-              'high': Variable<OHLCV, num>(
-                accessor: (OHLCV d) => d.high,
-                scale: LinearScale(min: min, max: max),
-              ),
-              'low': Variable<OHLCV, num>(
-                accessor: (OHLCV d) => d.low,
-                scale: LinearScale(min: min, max: max),
-              ),
-              'close': Variable<OHLCV, num>(
-                accessor: (OHLCV d) => d.close,
-                scale: LinearScale(min: min, max: max),
-              ),
-            },
-            axes: [Defaults.horizontalAxis, Defaults.verticalAxis],
-            marks: [
-              CustomMark(
-                shape: ShapeEncode(value: CandlestickShape(hollow: false)),
-                size: SizeEncode(value: 2),
-                position: Varset('time') *
-                    (Varset('open') +
-                        Varset('high') +
-                        Varset('low') +
-                        Varset('close')),
-                color: ColorEncode(
-                    encoder: (tuple) => tuple['close'] <= tuple['open']
-                        ? Colors.red
-                        : Colors.green),
-              )
-            ],
-            selections: {
-              'touchMove': PointSelection(
-                on: {
-                  GestureType.scaleUpdate,
-                  GestureType.tapDown,
-                  GestureType.longPressMoveUpdate
-                },
-                dim: Dim.x,
-              )
-            },
-            tooltip: TooltipGuide(),
-            crosshair: CrosshairGuide(),
-            coord: RectCoord(
-                horizontalRangeUpdater: Defaults.horizontalRangeEvent),
-          ),
+          if (quotes.isNotEmpty)
+            Chart<OHLCV>(
+              data: quotes,
+              variables: {
+                'time': Variable<OHLCV, DateTime>(
+                  accessor: (OHLCV d) =>
+                      DateTime.fromMillisecondsSinceEpoch(d.time),
+                  scale:
+                      TimeScale(formatter: (dt) => chartDateFormat.format(dt)),
+                ),
+                'open': Variable<OHLCV, num>(
+                  accessor: (OHLCV d) => d.open,
+                  scale: LinearScale(min: min, max: max),
+                ),
+                'high': Variable<OHLCV, num>(
+                  accessor: (OHLCV d) => d.high,
+                  scale: LinearScale(min: min, max: max),
+                ),
+                'low': Variable<OHLCV, num>(
+                  accessor: (OHLCV d) => d.low,
+                  scale: LinearScale(min: min, max: max),
+                ),
+                'close': Variable<OHLCV, num>(
+                  accessor: (OHLCV d) => d.close,
+                  scale: LinearScale(min: min, max: max),
+                ),
+              },
+              axes: [Defaults.horizontalAxis, Defaults.verticalAxis],
+              marks: [
+                CustomMark(
+                  shape: ShapeEncode(value: CandlestickShape(hollow: false)),
+                  size: SizeEncode(value: 2),
+                  position: Varset('time') *
+                      (Varset('open') +
+                          Varset('high') +
+                          Varset('low') +
+                          Varset('close')),
+                  color: ColorEncode(
+                      encoder: (tuple) => tuple['close'] <= tuple['open']
+                          ? Colors.red
+                          : Colors.green),
+                )
+              ],
+              selections: {
+                'touchMove': PointSelection(
+                  on: {
+                    GestureType.scaleUpdate,
+                    GestureType.tapDown,
+                    GestureType.longPressMoveUpdate
+                  },
+                  dim: Dim.x,
+                )
+              },
+              tooltip: TooltipGuide(),
+              crosshair: CrosshairGuide(),
+              coord: RectCoord(
+                  horizontalRangeUpdater: Defaults.horizontalRangeEvent),
+            ),
           FormBuilderDropdown(
             name: 'interval',
             decoration: InputDecoration(label: Text(s.interval)),

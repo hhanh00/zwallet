@@ -18,7 +18,10 @@ abstract class AnimatedQRScanPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text(title),
-          actions: [IconButton(onPressed: () => open(context), icon: Icon(Icons.open_in_new))],
+          actions: [
+            IconButton(
+                onPressed: () => open(context), icon: Icon(Icons.open_in_new))
+          ],
         ),
         body: Center(
             child: Column(
@@ -45,7 +48,6 @@ abstract class AnimatedQRScanPage extends StatelessWidget {
   }
 
   Future<void> onData(BuildContext context, String rawTx);
-
 }
 
 class ColdSignPage extends AnimatedQRScanPage {
@@ -57,8 +59,7 @@ class ColdSignPage extends AnimatedQRScanPage {
 
   @override
   Future<void> onData(BuildContext context, String data) async {
-    GoRouter.of(context)
-        .go('/account/txplan?tab=more&sign=1', extra: data);
+    GoRouter.of(context).go('/account/txplan?tab=more&sign=1', extra: data);
   }
 }
 
@@ -69,10 +70,11 @@ class SignedTxPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    return Scaffold(appBar: AppBar(title: Text(s.signedTx), actions: [
-      IconButton(onPressed: () => export(context), icon: Icon(Icons.save))
-    ]),
-    body: AnimatedQR.init(s.signedTx, s.scanSignedTx, txBin));
+    return Scaffold(
+        appBar: AppBar(title: Text(s.signedTx), actions: [
+          IconButton(onPressed: () => export(context), icon: Icon(Icons.save))
+        ]),
+        body: AnimatedQR.init(s.signedTx, s.scanSignedTx, txBin));
   }
 
   export(BuildContext context) async {
@@ -90,7 +92,6 @@ class BroadcastTxPage extends AnimatedQRScanPage {
 
   @override
   Future<void> onData(BuildContext context, String data) async {
-    GoRouter.of(context)
-        .go('/account/broadcast_tx', extra: data);
+    GoRouter.of(context).go('/account/broadcast_tx', extra: data);
   }
 }

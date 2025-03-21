@@ -8,6 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 
+import 'package:YWallet/src/rust/api/simple.dart';
+import 'package:YWallet/src/rust/frb_generated.dart';
+
 import 'appsettings.dart';
 import 'main.reflectable.dart';
 import 'coin/coins.dart';
@@ -24,12 +27,15 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await RustLib.init();
   initializeReflectable();
   await restoreSettings();
   await initCoins();
   await restoreWindow();
   initNotifications();
-  // await loadThemeSettings(); // TODO: Support for themes
+  // Placeholder
+  final a = createElection(urls: "A", key: "");
+  print(a);
   final prefs = await SharedPreferences.getInstance();
   final dbPath = await getDbPath();
   print("db path $dbPath");
