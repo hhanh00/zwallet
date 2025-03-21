@@ -23,7 +23,7 @@ jobs:
       - name: Build Rust
         run: |
           rustup target add x86_64-apple-darwin
-          cargo b -r --target=x86_64-apple-darwin --features=dart_ffi,sqlcipher,ledger
+          cargo b -r --target=x86_64-apple-darwin --features=dart_ffi,sqlcipher
       - name: Cache rust library
         uses: actions/cache/save@v3
         with:
@@ -45,7 +45,7 @@ jobs:
       - name: Build Rust
         run: |
           rustup target add aarch64-apple-darwin
-          cargo b -r --target=aarch64-apple-darwin --features=dart_ffi,sqlcipher,ledger
+          cargo b -r --target=aarch64-apple-darwin --features=dart_ffi,sqlcipher
       - name: Cache rust library
         uses: actions/cache/save@v3
         with:

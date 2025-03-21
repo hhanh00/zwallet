@@ -12,7 +12,7 @@ sudo apt-get update
 sudo apt-get install -y libunwind-dev libudev-dev pkg-config
 sudo apt-get install -y clang cmake ninja-build libgtk-3-dev libsecret-1-dev libjsoncpp-dev
 
-cargo b -r --features=dart_ffi,sqlcipher,ledger
+cargo b -r --features=dart_ffi,sqlcipher
 
 flutter pub get
 flutter gen-l10n

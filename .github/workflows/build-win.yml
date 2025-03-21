@@ -25,7 +25,7 @@ jobs:
         run: ./build-scripts/build-win1.sh "${{ env.FLUTTER_VERSION }}"
 
       - name: build 2/3
-        run: cargo b -r --features=dart_ffi,sqlcipher,ledger
+        run: cargo b -r --features=dart_ffi,sqlcipher
         env:
           HOME: 'D:\'
 
