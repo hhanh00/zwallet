@@ -47,7 +47,7 @@ jobs:
           track: internal
           status: completed
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: APK
           path: ${{ steps.build.outputs.BUILD_DIR }}/app-fdroid.apk

@@ -58,7 +58,7 @@ jobs:
           (cd packages/warp_api_ffi; flutter pub get)
           flutter build -v ipa
       - name: Upload xcarchive
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: YWallet.xcarchive
           path: ./build/ios/archive/Runner.xcarchive
