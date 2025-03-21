@@ -117,9 +117,9 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
   _next() async {
     final e = vote?.election;
     if (e != null) {
-      WarpApi.populateVoteNotes(aa.coin, aa.id, e.start_height, e.end_height);
-      final notes = WarpApi.listVoteNotes(aa.coin, aa.id, e.end_height);
-      final vote = Vote(election: e, notes: notes);
+      // WarpApi.populateVoteNotes(aa.coin, aa.id, e.start_height, e.end_height);
+      // final notes = WarpApi.listVoteNotes(aa.coin, aa.id, e.end_height);
+      // final vote = Vote(election: e, notes: notes);
       GoRouter.of(context).push('/more/vote/notes', extra: vote);
     } else {
       final electionURL = urlController.text;
@@ -130,7 +130,7 @@ class VoteState extends State<VotePage> with WithLoadingAnimation {
   _reset() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(electionURLKey);
-    WarpApi.resetVote(aa.coin);
+    // WarpApi.resetVote(aa.coin);
     setState(() {
       vote = null;
     });
@@ -257,21 +257,21 @@ class VoteCandidateState extends State<VoteCandidatePage>
     final election = widget.vote.election;
     final ids = widget.vote.notes.map((n) => n.id).toList();
     await load(() async {
-      final vote = await WarpApi.vote(
-          aa.coin, aa.id, ids, candidate, jsonEncode(election));
-      final prefs = await SharedPreferences.getInstance();
-      final electionURL = prefs.getString(electionURLKey)!;
-      final url = Uri.parse(electionURL);
-      final submitURL = url.replace(path: election.submit_url);
-      final rep = await http.put(submitURL, body: vote);
-      if (rep.statusCode != 200) {
-        final error = rep.body;
-        await showMessageBox2(context, s.voteFailed, error);
-      } else {
-        final hash = rep.body;
-        await showMessageBox2(context, s.voteSubmitted, hash);
-        GoRouter.of(context).go('/more');
-      }
+      // final vote = await WarpApi.vote(
+      //     aa.coin, aa.id, ids, candidate, jsonEncode(election));
+      // final prefs = await SharedPreferences.getInstance();
+      // final electionURL = prefs.getString(electionURLKey)!;
+      // final url = Uri.parse(electionURL);
+      // final submitURL = url.replace(path: election.submit_url);
+      // final rep = await http.put(submitURL, body: vote);
+      // if (rep.statusCode != 200) {
+      //   final error = rep.body;
+      //   await showMessageBox2(context, s.voteFailed, error);
+      // } else {
+      //   final hash = rep.body;
+      //   await showMessageBox2(context, s.voteSubmitted, hash);
+      //   GoRouter.of(context).go('/more');
+      // }
     });
   }
 }

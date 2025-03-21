@@ -568,29 +568,6 @@ class WarpApi {
     unwrapResultU8(warp_api_lib.clear_swap_history(coin));
   }
 
-  static void populateVoteNotes(
-      int coin, int account, int startHeight, int endHeight) {
-    warp_api_lib.populate_vote_notes(coin, account, startHeight, endHeight);
-  }
-
-  static List<VoteNoteT> listVoteNotes(int coin, int account, int endHeight) {
-    final res = unwrapResultBytes(warp_api_lib.list_vote_notes(coin, account, endHeight));
-    return VoteNoteVec(res).unpack().notes!;
-  }
-
-  static Future<List<int>> vote(
-      int coin, int account, List<int> ids, int candidate, String election) async {
-    return await compute((_) {
-      final idsListBytes = IdListObjectBuilder(ids: ids).toBytes();
-      return unwrapResultBytes(warp_api_lib.vote(coin, account, toNativeBytes(idsListBytes),
-          idsListBytes.length, candidate, toNative(election)));
-    }, null);
-  }
-
-  static void resetVote(int coin) {
-    warp_api_lib.reset_vote(coin);
-  }
-
   static void ledgerBuildKeys() {
     unwrapResultU8(warp_api_lib.ledger_build_keys());
   }

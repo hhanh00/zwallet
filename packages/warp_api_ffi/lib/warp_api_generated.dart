@@ -1832,107 +1832,6 @@ class NativeLibrary {
   late final _clear_swap_history =
       _clear_swap_historyPtr.asFunction<CResult_u8 Function(int)>();
 
-  CResult_u8 download_vote_data(
-    int coin,
-    ffi.Pointer<ffi.Char> election,
-  ) {
-    return _download_vote_data(
-      coin,
-      election,
-    );
-  }
-
-  late final _download_vote_dataPtr = _lookup<
-      ffi.NativeFunction<
-          CResult_u8 Function(
-              ffi.Uint8, ffi.Pointer<ffi.Char>)>>('download_vote_data');
-  late final _download_vote_data = _download_vote_dataPtr
-      .asFunction<CResult_u8 Function(int, ffi.Pointer<ffi.Char>)>();
-
-  CResult_u8 populate_vote_notes(
-    int coin,
-    int account,
-    int start_height,
-    int end_height,
-  ) {
-    return _populate_vote_notes(
-      coin,
-      account,
-      start_height,
-      end_height,
-    );
-  }
-
-  late final _populate_vote_notesPtr = _lookup<
-      ffi.NativeFunction<
-          CResult_u8 Function(ffi.Uint8, ffi.Uint32, ffi.Uint32,
-              ffi.Uint32)>>('populate_vote_notes');
-  late final _populate_vote_notes = _populate_vote_notesPtr
-      .asFunction<CResult_u8 Function(int, int, int, int)>();
-
-  CResult______u8 list_vote_notes(
-    int coin,
-    int account,
-    int end_height,
-  ) {
-    return _list_vote_notes(
-      coin,
-      account,
-      end_height,
-    );
-  }
-
-  late final _list_vote_notesPtr = _lookup<
-      ffi.NativeFunction<
-          CResult______u8 Function(
-              ffi.Uint8, ffi.Uint32, ffi.Uint32)>>('list_vote_notes');
-  late final _list_vote_notes =
-      _list_vote_notesPtr.asFunction<CResult______u8 Function(int, int, int)>();
-
-  CResult______u8 vote(
-    int coin,
-    int account,
-    ffi.Pointer<ffi.Uint8> id_notes,
-    int id_notes_len,
-    int candidate,
-    ffi.Pointer<ffi.Char> election,
-  ) {
-    return _vote(
-      coin,
-      account,
-      id_notes,
-      id_notes_len,
-      candidate,
-      election,
-    );
-  }
-
-  late final _votePtr = _lookup<
-      ffi.NativeFunction<
-          CResult______u8 Function(
-              ffi.Uint8,
-              ffi.Uint32,
-              ffi.Pointer<ffi.Uint8>,
-              ffi.UintPtr,
-              ffi.Uint32,
-              ffi.Pointer<ffi.Char>)>>('vote');
-  late final _vote = _votePtr.asFunction<
-      CResult______u8 Function(
-          int, int, ffi.Pointer<ffi.Uint8>, int, int, ffi.Pointer<ffi.Char>)>();
-
-  CResult_u8 reset_vote(
-    int coin,
-  ) {
-    return _reset_vote(
-      coin,
-    );
-  }
-
-  late final _reset_votePtr =
-      _lookup<ffi.NativeFunction<CResult_u8 Function(ffi.Uint8)>>('reset_vote');
-  late final _reset_vote =
-      _reset_votePtr.asFunction<CResult_u8 Function(int)>();
-
   CResult_____c_char ledger_send(
     int coin,
     ffi.Pointer<ffi.Char> tx_plan,
@@ -2273,3 +2172,5 @@ const int Swap_VT_TO_AMOUNT = 20;
 const int Swap_VT_TO_ADDRESS = 22;
 
 const int Swap_VT_TO_IMAGE = 24;
+
+const int VoteNote_VT_SELECTED = 10;
