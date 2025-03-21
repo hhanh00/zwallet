@@ -2,7 +2,6 @@ name: Build and Release Linux AppImage/Flatpak
 
 on:
   workflow_dispatch:
-  pull_request:
   push:
     tags:
       - "v*"
@@ -43,7 +42,7 @@ jobs:
             ./zwallet.tgz
             ./libwarp_api_ffi.so
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: AppImage
           path: ./misc/Ywallet-latest-x86_64.AppImage

@@ -2,6 +2,7 @@ name: Build and Release MacOS Universal
 
 on:
   workflow_dispatch:
+  pull_request:
   push:
     tags:
       - "v*"
@@ -51,7 +52,7 @@ jobs:
           path: target/aarch64-apple-darwin/release/libwarp_api_ffi.dylib
           key: warp_aarch64-${{ github.sha }}
 
-  build_flutter:
+  build_macos:
     runs-on: macos-latest
     needs: [build-x86_64, build-aarch64]
     steps:
@@ -119,7 +120,7 @@ jobs:
           npm install -g appdmg
           (cd misc; appdmg app.json ../ywallet-universal.dmg)
       - name: Upload dmg
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: YWallet.dmg
           path: ywallet-universal.dmg
