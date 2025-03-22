@@ -69,14 +69,19 @@ fn wire__crate__api__simple__create_election_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_filepath = <String>::sse_decode(&mut deserializer);
             let api_urls = <String>::sse_decode(&mut deserializer);
+            let api_lwd_url = <String>::sse_decode(&mut deserializer);
             let api_key = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
-                        let output_ok =
-                            crate::api::simple::create_election(api_filepath, api_urls, api_key)
-                                .await?;
+                        let output_ok = crate::api::simple::create_election(
+                            api_filepath,
+                            api_urls,
+                            api_lwd_url,
+                            api_key,
+                        )
+                        .await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -91,7 +96,7 @@ fn wire__crate__api__simple__download_impl(
     rust_vec_len_: i32,
     data_len_: i32,
 ) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "download",
             port: Some(port_),
@@ -113,12 +118,14 @@ fn wire__crate__api__simple__download_impl(
                     &mut deserializer,
                 );
             deserializer.end();
-            move |context| {
+            move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                    (move || {
-                        let output_ok = crate::api::simple::download(api_filepath, api_height)?;
+                    (move || async move {
+                        let output_ok =
+                            crate::api::simple::download(api_filepath, api_height).await?;
                         Ok(output_ok)
-                    })(),
+                    })()
+                    .await,
                 )
             }
         },
@@ -236,6 +243,7 @@ impl SseDecode for crate::api::simple::Election {
         let mut var_question = <String>::sse_decode(deserializer);
         let mut var_candidates = <Vec<String>>::sse_decode(deserializer);
         let mut var_signatureRequired = <bool>::sse_decode(deserializer);
+        let mut var_downloaded = <bool>::sse_decode(deserializer);
         return crate::api::simple::Election {
             name: var_name,
             start_height: var_startHeight,
@@ -243,6 +251,7 @@ impl SseDecode for crate::api::simple::Election {
             question: var_question,
             candidates: var_candidates,
             signature_required: var_signatureRequired,
+            downloaded: var_downloaded,
         };
     }
 }
@@ -338,6 +347,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::simple::Election {
             self.question.into_into_dart().into_dart(),
             self.candidates.into_into_dart().into_dart(),
             self.signature_required.into_into_dart().into_dart(),
+            self.downloaded.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -388,6 +398,7 @@ impl SseEncode for crate::api::simple::Election {
         <String>::sse_encode(self.question, serializer);
         <Vec<String>>::sse_encode(self.candidates, serializer);
         <bool>::sse_encode(self.signature_required, serializer);
+        <bool>::sse_encode(self.downloaded, serializer);
     }
 }
 

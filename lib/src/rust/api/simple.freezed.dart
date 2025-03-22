@@ -22,6 +22,7 @@ mixin _$Election {
   String get question => throw _privateConstructorUsedError;
   List<String> get candidates => throw _privateConstructorUsedError;
   bool get signatureRequired => throw _privateConstructorUsedError;
+  bool get downloaded => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ElectionCopyWith<Election> get copyWith =>
@@ -39,7 +40,8 @@ abstract class $ElectionCopyWith<$Res> {
       int endHeight,
       String question,
       List<String> candidates,
-      bool signatureRequired});
+      bool signatureRequired,
+      bool downloaded});
 }
 
 /// @nodoc
@@ -61,6 +63,7 @@ class _$ElectionCopyWithImpl<$Res, $Val extends Election>
     Object? question = null,
     Object? candidates = null,
     Object? signatureRequired = null,
+    Object? downloaded = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -87,6 +90,10 @@ class _$ElectionCopyWithImpl<$Res, $Val extends Election>
           ? _value.signatureRequired
           : signatureRequired // ignore: cast_nullable_to_non_nullable
               as bool,
+      downloaded: null == downloaded
+          ? _value.downloaded
+          : downloaded // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -105,7 +112,8 @@ abstract class _$$ElectionImplCopyWith<$Res>
       int endHeight,
       String question,
       List<String> candidates,
-      bool signatureRequired});
+      bool signatureRequired,
+      bool downloaded});
 }
 
 /// @nodoc
@@ -125,6 +133,7 @@ class __$$ElectionImplCopyWithImpl<$Res>
     Object? question = null,
     Object? candidates = null,
     Object? signatureRequired = null,
+    Object? downloaded = null,
   }) {
     return _then(_$ElectionImpl(
       name: null == name
@@ -151,6 +160,10 @@ class __$$ElectionImplCopyWithImpl<$Res>
           ? _value.signatureRequired
           : signatureRequired // ignore: cast_nullable_to_non_nullable
               as bool,
+      downloaded: null == downloaded
+          ? _value.downloaded
+          : downloaded // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -164,7 +177,8 @@ class _$ElectionImpl implements _Election {
       required this.endHeight,
       required this.question,
       required final List<String> candidates,
-      required this.signatureRequired})
+      required this.signatureRequired,
+      required this.downloaded})
       : _candidates = candidates;
 
   @override
@@ -185,10 +199,12 @@ class _$ElectionImpl implements _Election {
 
   @override
   final bool signatureRequired;
+  @override
+  final bool downloaded;
 
   @override
   String toString() {
-    return 'Election(name: $name, startHeight: $startHeight, endHeight: $endHeight, question: $question, candidates: $candidates, signatureRequired: $signatureRequired)';
+    return 'Election(name: $name, startHeight: $startHeight, endHeight: $endHeight, question: $question, candidates: $candidates, signatureRequired: $signatureRequired, downloaded: $downloaded)';
   }
 
   @override
@@ -206,7 +222,9 @@ class _$ElectionImpl implements _Election {
             const DeepCollectionEquality()
                 .equals(other._candidates, _candidates) &&
             (identical(other.signatureRequired, signatureRequired) ||
-                other.signatureRequired == signatureRequired));
+                other.signatureRequired == signatureRequired) &&
+            (identical(other.downloaded, downloaded) ||
+                other.downloaded == downloaded));
   }
 
   @override
@@ -217,7 +235,8 @@ class _$ElectionImpl implements _Election {
       endHeight,
       question,
       const DeepCollectionEquality().hash(_candidates),
-      signatureRequired);
+      signatureRequired,
+      downloaded);
 
   @JsonKey(ignore: true)
   @override
@@ -233,7 +252,8 @@ abstract class _Election implements Election {
       required final int endHeight,
       required final String question,
       required final List<String> candidates,
-      required final bool signatureRequired}) = _$ElectionImpl;
+      required final bool signatureRequired,
+      required final bool downloaded}) = _$ElectionImpl;
 
   @override
   String get name;
@@ -247,6 +267,8 @@ abstract class _Election implements Election {
   List<String> get candidates;
   @override
   bool get signatureRequired;
+  @override
+  bool get downloaded;
   @override
   @JsonKey(ignore: true)
   _$$ElectionImplCopyWith<_$ElectionImpl> get copyWith =>

@@ -69,6 +69,7 @@ class VoteSelectState extends State<VoteSelect> {
       final file = res.files.first;
       electionStore.filepath = file.path;
       electionStore.election = await getElection(filepath: file.path!);
+      electionStore.downloaded = electionStore.election!.downloaded;
       GoRouter.of(context).push('/more/vote/overview');
     }
   }
