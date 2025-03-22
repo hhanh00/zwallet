@@ -80,7 +80,10 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 
 abstract class RustLibApi extends BaseApi {
   Future<Election> crateApiSimpleCreateElection(
-      {required String filepath, required String urls, required String key});
+      {required String filepath,
+      required String urls,
+      required String lwdUrl,
+      required String key});
 
   Stream<int> crateApiSimpleDownload({required String filepath});
 
@@ -99,12 +102,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<Election> crateApiSimpleCreateElection(
-      {required String filepath, required String urls, required String key}) {
+      {required String filepath,
+      required String urls,
+      required String lwdUrl,
+      required String key}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(filepath, serializer);
         sse_encode_String(urls, serializer);
+        sse_encode_String(lwdUrl, serializer);
         sse_encode_String(key, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 1, port: port_);
@@ -114,7 +121,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiSimpleCreateElectionConstMeta,
-      argValues: [filepath, urls, key],
+      argValues: [filepath, urls, lwdUrl, key],
       apiImpl: this,
     ));
   }
@@ -122,7 +129,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiSimpleCreateElectionConstMeta =>
       const TaskConstMeta(
         debugName: "create_election",
-        argNames: ["filepath", "urls", "key"],
+        argNames: ["filepath", "urls", "lwdUrl", "key"],
       );
 
   @override
@@ -227,8 +234,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Election dco_decode_election(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
     return Election(
       name: dco_decode_String(arr[0]),
       startHeight: dco_decode_u_32(arr[1]),
@@ -236,6 +243,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       question: dco_decode_String(arr[3]),
       candidates: dco_decode_list_String(arr[4]),
       signatureRequired: dco_decode_bool(arr[5]),
+      downloaded: dco_decode_bool(arr[6]),
     );
   }
 
@@ -305,13 +313,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_question = sse_decode_String(deserializer);
     var var_candidates = sse_decode_list_String(deserializer);
     var var_signatureRequired = sse_decode_bool(deserializer);
+    var var_downloaded = sse_decode_bool(deserializer);
     return Election(
         name: var_name,
         startHeight: var_startHeight,
         endHeight: var_endHeight,
         question: var_question,
         candidates: var_candidates,
-        signatureRequired: var_signatureRequired);
+        signatureRequired: var_signatureRequired,
+        downloaded: var_downloaded);
   }
 
   @protected
@@ -397,6 +407,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.question, serializer);
     sse_encode_list_String(self.candidates, serializer);
     sse_encode_bool(self.signatureRequired, serializer);
+    sse_encode_bool(self.downloaded, serializer);
   }
 
   @protected

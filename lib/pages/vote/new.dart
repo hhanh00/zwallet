@@ -1,4 +1,7 @@
 import 'package:YWallet/accounts.dart';
+import 'package:YWallet/appsettings.dart';
+import 'package:YWallet/coin/coins.dart';
+import 'package:YWallet/pages/settings.dart';
 import 'package:YWallet/pages/vote/vote_data.dart';
 import 'package:YWallet/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +40,9 @@ class VoteNewState extends State<VoteNew> {
       final seed = aa.seed ?? "";
       print(seed);
       final path = electionStore.filepath!;
-      final election = await createElection(filepath: path, urls: urls, key: seed);
+      final lwd = resolveURL(coins[aa.coin], coinSettings);
+      final election = await createElection(filepath: path,
+        lwdUrl: lwd, urls: urls, key: seed);
       electionStore.election = election;
       print(election);
       GoRouter.of(context).push("/more/vote/overview");

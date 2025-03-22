@@ -25,6 +25,8 @@ class VoteOverviewState extends State<VoteOverview> {
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       final election = electionStore.election!;
+      final range = (election.endHeight - election.startHeight).toDouble();
+      final progress = height != null ? (height! - election.startHeight) / range: null;
 
       return Scaffold(
           appBar: AppBar(title: Text(election.name)),
@@ -35,12 +37,12 @@ class VoteOverviewState extends State<VoteOverview> {
               ListTile(title: Text("Start Height"), subtitle: Text(election.startHeight.toString())),
               ListTile(title: Text("End Height"), subtitle: Text(election.endHeight.toString())),
               if (height != null) ListTile(title: Text("Downloaded Height"), subtitle: Text(height.toString())),
-              !electionStore.downloaded ?
+              if (progress != null) LinearProgressIndicator(value: progress),
+              if (height == null) !electionStore.downloaded ?
               FilledButton(onPressed: onDownload, child: Text("Download"))
               : ButtonBar(children: [
                 FilledButton(onPressed: onVote, child: Text("Vote")),
                 OutlinedButton(onPressed: onDelegate, child: Text("Delegate")),
-                TextButton(onPressed: onHistory, child: Text("History")),
               ])
             ],
           ));
@@ -55,5 +57,4 @@ class VoteOverviewState extends State<VoteOverview> {
 
   void onVote() {}
   void onDelegate() {}
-  void onHistory() {}
 }
