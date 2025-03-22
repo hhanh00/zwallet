@@ -17,7 +17,8 @@ pub fn open_db(path: &str, new: bool) -> Result<Pool<SqliteConnectionManager>> {
         id_vote INTEGER PRIMARY KEY,
         hash TEXT NOT NULL,
         address TEXT NOT NULL,
-        amount INTEGER NOT NULL)",
+        amount INTEGER NOT NULL,
+        height INTEGER)",
         [],
     )?;
   }

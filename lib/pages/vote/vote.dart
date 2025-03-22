@@ -1,4 +1,5 @@
 import 'package:YWallet/pages/utils.dart';
+import 'package:YWallet/pages/vote/history.dart';
 import 'package:YWallet/pages/vote/vote_data.dart';
 import 'package:YWallet/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,10 @@ class VoteVoteState extends State<VoteVote> with WithLoadingAnimation {
             ),
           Gap(16),
           FilledButton(onPressed: onVote, child: Text("Vote")),
+          Gap(16),
+          Divider(),
+          Text("Past Votes"),
+          Expanded(child: VoteHistory()),
         ]))
       ));
     });

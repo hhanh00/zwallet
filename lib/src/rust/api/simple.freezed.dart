@@ -274,3 +274,172 @@ abstract class _Election implements Election {
   _$$ElectionImplCopyWith<_$ElectionImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+/// @nodoc
+mixin _$Vote {
+  String get hash => throw _privateConstructorUsedError;
+  String get address => throw _privateConstructorUsedError;
+  BigInt get amount => throw _privateConstructorUsedError;
+  int? get height => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $VoteCopyWith<Vote> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $VoteCopyWith<$Res> {
+  factory $VoteCopyWith(Vote value, $Res Function(Vote) then) =
+      _$VoteCopyWithImpl<$Res, Vote>;
+  @useResult
+  $Res call({String hash, String address, BigInt amount, int? height});
+}
+
+/// @nodoc
+class _$VoteCopyWithImpl<$Res, $Val extends Vote>
+    implements $VoteCopyWith<$Res> {
+  _$VoteCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? hash = null,
+    Object? address = null,
+    Object? amount = null,
+    Object? height = freezed,
+  }) {
+    return _then(_value.copyWith(
+      hash: null == hash
+          ? _value.hash
+          : hash // ignore: cast_nullable_to_non_nullable
+              as String,
+      address: null == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String,
+      amount: null == amount
+          ? _value.amount
+          : amount // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      height: freezed == height
+          ? _value.height
+          : height // ignore: cast_nullable_to_non_nullable
+              as int?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$VoteImplCopyWith<$Res> implements $VoteCopyWith<$Res> {
+  factory _$$VoteImplCopyWith(
+          _$VoteImpl value, $Res Function(_$VoteImpl) then) =
+      __$$VoteImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String hash, String address, BigInt amount, int? height});
+}
+
+/// @nodoc
+class __$$VoteImplCopyWithImpl<$Res>
+    extends _$VoteCopyWithImpl<$Res, _$VoteImpl>
+    implements _$$VoteImplCopyWith<$Res> {
+  __$$VoteImplCopyWithImpl(_$VoteImpl _value, $Res Function(_$VoteImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? hash = null,
+    Object? address = null,
+    Object? amount = null,
+    Object? height = freezed,
+  }) {
+    return _then(_$VoteImpl(
+      hash: null == hash
+          ? _value.hash
+          : hash // ignore: cast_nullable_to_non_nullable
+              as String,
+      address: null == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String,
+      amount: null == amount
+          ? _value.amount
+          : amount // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      height: freezed == height
+          ? _value.height
+          : height // ignore: cast_nullable_to_non_nullable
+              as int?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$VoteImpl implements _Vote {
+  const _$VoteImpl(
+      {required this.hash,
+      required this.address,
+      required this.amount,
+      this.height});
+
+  @override
+  final String hash;
+  @override
+  final String address;
+  @override
+  final BigInt amount;
+  @override
+  final int? height;
+
+  @override
+  String toString() {
+    return 'Vote(hash: $hash, address: $address, amount: $amount, height: $height)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$VoteImpl &&
+            (identical(other.hash, hash) || other.hash == hash) &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.amount, amount) || other.amount == amount) &&
+            (identical(other.height, height) || other.height == height));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, hash, address, amount, height);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$VoteImplCopyWith<_$VoteImpl> get copyWith =>
+      __$$VoteImplCopyWithImpl<_$VoteImpl>(this, _$identity);
+}
+
+abstract class _Vote implements Vote {
+  const factory _Vote(
+      {required final String hash,
+      required final String address,
+      required final BigInt amount,
+      final int? height}) = _$VoteImpl;
+
+  @override
+  String get hash;
+  @override
+  String get address;
+  @override
+  BigInt get amount;
+  @override
+  int? get height;
+  @override
+  @JsonKey(ignore: true)
+  _$$VoteImplCopyWith<_$VoteImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

@@ -8,7 +8,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'simple.freezed.dart';
 
-// These functions are ignored because they are not marked as `pub`: `from`, `handle_ballot`
+// These functions are ignored because they are not marked as `pub`: `confirm_vote`, `from`, `handle_ballot`, `store_ballot`, `store_vote`
 
 Future<Election> createElection(
         {required String filepath,
@@ -37,6 +37,9 @@ Future<String> vote(
 Future<void> synchronize({required String filepath}) =>
     RustLib.instance.api.crateApiSimpleSynchronize(filepath: filepath);
 
+Future<List<Vote>> listVotes({required String filepath}) =>
+    RustLib.instance.api.crateApiSimpleListVotes(filepath: filepath);
+
 @freezed
 class Election with _$Election {
   const factory Election({
@@ -48,4 +51,14 @@ class Election with _$Election {
     required bool signatureRequired,
     required bool downloaded,
   }) = _Election;
+}
+
+@freezed
+class Vote with _$Vote {
+  const factory Vote({
+    required String hash,
+    required String address,
+    required BigInt amount,
+    int? height,
+  }) = _Vote;
 }
