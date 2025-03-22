@@ -10,4 +10,5 @@ class ElectionInfo = _ElectionInfo with _$ElectionInfo;
 abstract class _ElectionInfo with Store {
   @observable String? filepath;
   @observable Election? election;
+  @observable bool downloaded = false;
 }

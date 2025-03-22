@@ -1,9 +1,11 @@
+use std::{thread, time::Duration};
+
 use anyhow::Result;
 
-use flutter_rust_bridge::frb;
+use flutter_rust_bridge::{frb, spawn_blocking_with};
 use zcash_vote::db::{load_prop, store_prop};
 
-use crate::db::open_db;
+use crate::{db::open_db, frb_generated::{StreamSink, FLUTTER_RUST_BRIDGE_HANDLER}};
 
 use super::{AppState, DBS};
 
@@ -39,6 +41,27 @@ pub fn get_election(filepath: String) -> Result<Election> {
     });
 
     Ok(e)
+}
+
+#[tokio::main(flavor = "current_thread")]
+pub async fn download(filepath: String, height: StreamSink<u32>) -> Result<()> {
+    let pool = {
+        let dbs = DBS.lock().unwrap();
+        let state = dbs.get(&filepath).expect("No registered election for filepath");
+        state.pool.clone()
+    };
+    spawn_blocking_with(move || {
+        let connection = pool.get()?;
+        let election = load_prop(&connection, "election")?.expect("Missing election property");
+        let election: zcash_vote::election::Election = serde_json::from_str(&election).unwrap();
+        for h in election.start_height..=election.end_height {
+            let _ = height.add(h);
+            thread::sleep(Duration::from_millis(100));
+        }
+
+        Ok::<_, anyhow::Error>(())
+    }, FLUTTER_RUST_BRIDGE_HANDLER.thread_pool());
+    Ok(())
 }
 
 #[flutter_rust_bridge::frb(init)]
