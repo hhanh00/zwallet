@@ -17,8 +17,22 @@ class VoteOverviewState extends State<VoteOverview> {
       return Scaffold(
           appBar: AppBar(title: Text(election.name)),
           body: Column(
-            children: [],
+            children: [
+              ListTile(title: Text("Name"), subtitle: Text(election.name)),
+              ListTile(title: Text("Question"), subtitle: Text(election.question)),
+              ListTile(title: Text("Start Height"), subtitle: Text(election.startHeight.toString())),
+              ListTile(title: Text("End Height"), subtitle: Text(election.endHeight.toString())),
+              ButtonBar(children: [
+                FilledButton(onPressed: onVote, child: Text("Vote")),
+                OutlinedButton(onPressed: onDelegate, child: Text("Delegate")),
+                TextButton(onPressed: onHistory, child: Text("History")),
+              ])
+            ],
           ));
     });
   }
+
+  void onVote() {}
+  void onDelegate() {}
+  void onHistory() {}
 }

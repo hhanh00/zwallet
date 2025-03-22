@@ -8,12 +8,17 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'simple.freezed.dart';
 
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`
+
 Future<Election> createElection(
         {required String filepath,
         required String urls,
         required String key}) =>
     RustLib.instance.api
         .crateApiSimpleCreateElection(filepath: filepath, urls: urls, key: key);
+
+Future<Election> getElection({required String filepath}) =>
+    RustLib.instance.api.crateApiSimpleGetElection(filepath: filepath);
 
 @freezed
 class Election with _$Election {

@@ -1,13 +1,13 @@
-use std::{collections::HashMap, sync::Mutex};
+use anyhow::Result;
 
 use flutter_rust_bridge::frb;
-use r2d2::Pool;
-use r2d2_sqlite::SqliteConnectionManager;
-use zcash_vote::db::store_prop;
+use zcash_vote::db::{load_prop, store_prop};
 
 use crate::db::open_db;
 
-pub async fn create_election(filepath: String, urls: String, key: String) -> anyhow::Result<Election> {
+use super::{AppState, DBS};
+
+pub async fn create_election(filepath: String, urls: String, key: String) -> Result<Election> {
     // TODO: Split urls
     let e: zcash_vote::election::Election = reqwest::get(&urls).await?.json().await?;
     let pool = open_db(&filepath, true)?;
@@ -17,19 +17,28 @@ pub async fn create_election(filepath: String, urls: String, key: String) -> any
     store_prop(&connection, "key", &key)?;
 
     let mut dbs = DBS.lock().unwrap();
-    dbs.insert(filepath, State {
+    dbs.insert(filepath, AppState {
         pool,
     });
 
-    let e2 = Election {
-        name: e.name,
-        start_height: e.start_height,
-        end_height: e.end_height,
-        question: e.question,
-        candidates: e.candidates.into_iter().map(|c| c.choice).collect(),
-        signature_required: e.signature_required,
-    };
+    let e2 = Election::from(e);
     Ok(e2)
+}
+
+pub fn get_election(filepath: String) -> Result<Election> {
+    let pool = open_db(&filepath, false)?;
+
+    let connection = pool.get()?;
+    let e = load_prop(&connection, "election")?.expect("Missing election");
+    let e: zcash_vote::election::Election = serde_json::from_str(&e).expect("Invalid json");
+    let e = Election::from(e);
+
+    let mut dbs = DBS.lock().unwrap();
+    dbs.insert(filepath, AppState {
+        pool,
+    });
+
+    Ok(e)
 }
 
 #[flutter_rust_bridge::frb(init)]
@@ -48,12 +57,15 @@ pub struct Election {
     pub signature_required: bool,
 }
 
-#[derive(Clone)]
-pub struct State {
-    pub pool: Pool<SqliteConnectionManager>,
-}
-
-lazy_static::lazy_static! {
-    pub static ref DBS: Mutex<HashMap<String, State>> = 
-        Mutex::new(HashMap::new());
+impl From<zcash_vote::election::Election> for Election {
+    fn from(e: zcash_vote::election::Election) -> Self {
+        Election {
+            name: e.name,
+            start_height: e.start_height,
+            end_height: e.end_height,
+            question: e.question,
+            candidates: e.candidates.into_iter().map(|c| c.choice).collect(),
+            signature_required: e.signature_required,
+        }
+    }
 }
