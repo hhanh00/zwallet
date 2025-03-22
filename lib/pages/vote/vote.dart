@@ -1,3 +1,4 @@
+import 'package:YWallet/pages/utils.dart';
 import 'package:YWallet/pages/vote/vote_data.dart';
 import 'package:YWallet/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
@@ -5,13 +6,16 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 class VoteVote extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => VoteVoteState();
 }
 
-class VoteVoteState extends State<VoteVote> {
+const VOTE_UNIT = 100000;
+
+class VoteVoteState extends State<VoteVote> with WithLoadingAnimation {
   final formKey = GlobalKey<FormBuilderState>();
   final amountController = TextEditingController(text: "0");
   int balance = 0;
@@ -20,8 +24,10 @@ class VoteVoteState extends State<VoteVote> {
   void initState() {
     super.initState();
     Future(() async {
-      final zats = await getBalance(filepath: electionStore.filepath!);
-      setState(() => balance = (zats / BigInt.from(100000)).toInt());
+      final filepath = electionStore.filepath!;
+      await synchronize(filepath: filepath);
+      final zats = await getBalance(filepath: filepath);
+      setState(() => balance = (zats / BigInt.from(VOTE_UNIT)).toInt());
     });
   }
 
@@ -36,7 +42,7 @@ class VoteVoteState extends State<VoteVote> {
 
       return Scaffold(
         appBar: AppBar(title: Text("Vote")),
-        body: FormBuilder(key: formKey, child: Column(children: [
+        body: wrapWithLoading(FormBuilder(key: formKey, child: Column(children: [
           ListTile(title: Text(election.question)),
           FormBuilderRadioGroup<int>(name: "choices", 
             orientation: OptionsOrientation.vertical,
@@ -57,16 +63,24 @@ class VoteVoteState extends State<VoteVote> {
           Gap(16),
           FilledButton(onPressed: onVote, child: Text("Vote")),
         ]))
-      );
+      ));
     });
   }
 
-  void onVote() {
+  void onVote() async {
     final form = formKey.currentState!;
     if (form.saveAndValidate()) {
       final c = form.fields["choices"]!.value;
       final a = int.parse(amountController.text);
       print("choice: $c, amount: $a");
+
+      await load(() async {
+        final id = await vote(filepath: electionStore.filepath!,
+          indexCandidate: c,
+          amount: BigInt.from(a * VOTE_UNIT));
+        await showMessageBox2(context, "Vote Submitted", id);
+        GoRouter.of(context).pop();
+      });
     }
   }
 }

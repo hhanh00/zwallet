@@ -8,7 +8,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'simple.freezed.dart';
 
-// These functions are ignored because they are not marked as `pub`: `from`
+// These functions are ignored because they are not marked as `pub`: `from`, `handle_ballot`
 
 Future<Election> createElection(
         {required String filepath,
@@ -26,6 +26,16 @@ Stream<int> download({required String filepath}) =>
 
 Future<BigInt> getBalance({required String filepath}) =>
     RustLib.instance.api.crateApiSimpleGetBalance(filepath: filepath);
+
+Future<String> vote(
+        {required String filepath,
+        required int indexCandidate,
+        required BigInt amount}) =>
+    RustLib.instance.api.crateApiSimpleVote(
+        filepath: filepath, indexCandidate: indexCandidate, amount: amount);
+
+Future<void> synchronize({required String filepath}) =>
+    RustLib.instance.api.crateApiSimpleSynchronize(filepath: filepath);
 
 @freezed
 class Election with _$Election {
