@@ -1,3 +1,4 @@
+import 'package:YWallet/src/rust/api/simple.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -59,5 +60,16 @@ class VoteSelectState extends State<VoteSelect> {
     }
   }
 
-  void onOpen() {}
+  void onOpen() async {
+    final appDocDir = await getApplicationSupportDirectory();
+    final res = await FilePicker.platform.pickFiles(
+      initialDirectory: appDocDir.path,
+    );
+    if (res != null && res.files.isNotEmpty) {
+      final file = res.files.first;
+      electionStore.filepath = file.path;
+      electionStore.election = await getElection(filepath: file.path!);
+      GoRouter.of(context).push('/more/vote/overview');
+    }
+  }
 }
