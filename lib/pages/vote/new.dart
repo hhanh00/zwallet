@@ -37,12 +37,11 @@ class VoteNewState extends State<VoteNew> {
       print(urls);
       final seed = aa.seed ?? "";
       print(seed);
-      final e = context.read<ElectionInfo>();
-      final path = e.filepath!;
+      final path = electionStore.filepath!;
       final election = await createElection(filepath: path, urls: urls, key: seed);
-      e.election = election;
+      electionStore.election = election;
       print(election);
-      GoRouter.of(context).push("/vote/overview");
+      GoRouter.of(context).push("/more/vote/overview");
     }
   }
 }

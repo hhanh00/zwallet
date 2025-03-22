@@ -1,7 +1,9 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:file_selector/file_selector.dart';
 
@@ -16,10 +18,9 @@ class VoteSelectState extends State<VoteSelect> {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
-    final election = context.watch<ElectionInfo>();
 
     return Observer(builder: (context) {
-      final filepath = election.filepath;
+      final filepath = electionStore.filepath;
 
       return Scaffold(
           appBar: AppBar(title: Text("Vote")),
@@ -46,11 +47,16 @@ class VoteSelectState extends State<VoteSelect> {
   }
 
   void onNew() async {
-    final location = await getSaveLocation(suggestedName: "vote.db");
-    final path = location?.path;
-    final e = context.read<ElectionInfo>();
-    e.filepath = path;
-    GoRouter.of(context).push('/vote/new');
+    final appDocDir = await getApplicationSupportDirectory();
+    final path = await FilePicker.platform.saveFile(
+      dialogTitle: 'Please select where to save the election database',
+      initialDirectory: appDocDir.path,
+      fileName: 'vote.db',
+    );
+    if (path != null) {
+      electionStore.filepath = path;
+      GoRouter.of(context).push('/more/vote/new');
+    }
   }
 
   void onOpen() {}

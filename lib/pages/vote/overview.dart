@@ -11,10 +11,8 @@ class VoteOverview extends StatefulWidget {
 class VoteOverviewState extends State<VoteOverview> {
   @override
   Widget build(BuildContext context) {
-    final e = context.watch<ElectionInfo>();
-
     return Observer(builder: (context) {
-      final election = e.election!;
+      final election = electionStore.election!;
 
       return Scaffold(
           appBar: AppBar(title: Text(election.name)),

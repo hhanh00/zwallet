@@ -1,9 +1,6 @@
 import 'dart:io';
 
 import 'package:YWallet/pages/vote/overview.dart';
-import 'package:YWallet/pages/vote/vote_data.dart';
-import 'package:go_provider/go_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:warp_api/data_fb_generated.dart';
 
 import 'pages/accounts/swap.dart';
@@ -74,18 +71,6 @@ final router = GoRouter(
   initialLocation: '/splash',
   debugLogDiagnostics: true,
   routes: [
-    GoProviderRoute(
-      path: '/vote',
-      providers: [
-        Provider(create: (_) => ElectionInfo()),
-      ],
-      builder: (context, state) => VoteSelect(),
-      routes: [
-        GoRoute(path: 'new', builder: (context, state) => VoteNew()),
-        GoRoute(path: 'overview', builder: (context, state) => VoteOverview()),
-        GoRoute(path: 'vote', builder: (context, state) => Container(color: Colors.green)),
-        GoRoute(path: 'delegate', builder: (context, state) => Container(color: Colors.orange)),
-    ]),
     GoRoute(path: '/', redirect: (context, state) => '/account'),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => ScaffoldBar(shell: shell),
@@ -318,20 +303,13 @@ final router = GoRouter(
                   ),
                   GoRoute(
                     path: 'vote',
-                    builder: (context, state) => VotePage(),
+                    builder: (context, state) => VoteSelect(),
                     routes: [
-                      GoRoute(
-                        path: 'notes',
-                        builder: (context, state) =>
-                            VoteNotesPage(state.extra as Vote),
-                      ),
-                      GoRoute(
-                        path: 'candidate',
-                        builder: (context, state) =>
-                            VoteCandidatePage(state.extra as Vote),
-                      ),
-                    ],
-                  ),
+                      GoRoute(path: 'new', builder: (context, state) => VoteNew()),
+                      GoRoute(path: 'overview', builder: (context, state) => VoteOverview()),
+                      GoRoute(path: 'vote', builder: (context, state) => Container(color: Colors.green)),
+                      GoRoute(path: 'delegate', builder: (context, state) => Container(color: Colors.orange)),
+                  ]),
                   GoRoute(
                       path: 'about',
                       builder: (context, state) =>
