@@ -74,6 +74,21 @@ pub async fn download(filepath: String, height: StreamSink<u32>) -> Result<()> {
     Ok(())
 }
 
+pub fn get_balance(filepath: String) -> Result<u64> {
+    let pool = {
+        let dbs = DBS.lock().unwrap();
+        let state = dbs.get(&filepath).expect("No registered election for filepath");
+        state.pool.clone()
+    };
+    let connection = pool.get()?;
+    let balance = connection.query_row(
+        "SELECT SUM(value) FROM notes WHERE spent IS NULL",
+        [],
+        |r| r.get::<_, Option<u64>>(0),
+    )?.unwrap_or_default();
+    Ok(balance)
+}
+
 #[flutter_rust_bridge::frb(init)]
 pub fn init_app() {
     // Default utilities - feel free to customize

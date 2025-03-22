@@ -24,6 +24,9 @@ Future<Election> getElection({required String filepath}) =>
 Stream<int> download({required String filepath}) =>
     RustLib.instance.api.crateApiSimpleDownload(filepath: filepath);
 
+Future<BigInt> getBalance({required String filepath}) =>
+    RustLib.instance.api.crateApiSimpleGetBalance(filepath: filepath);
+
 @freezed
 class Election with _$Election {
   const factory Election({
