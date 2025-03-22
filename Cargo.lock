@@ -4877,6 +4877,7 @@ dependencies = [
  "rusqlite",
  "serde",
  "serde_json",
+ "tokio",
  "tracing",
  "zcash-vote",
 ]

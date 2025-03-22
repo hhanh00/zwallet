@@ -20,6 +20,9 @@ Future<Election> createElection(
 Future<Election> getElection({required String filepath}) =>
     RustLib.instance.api.crateApiSimpleGetElection(filepath: filepath);
 
+Stream<int> download({required String filepath}) =>
+    RustLib.instance.api.crateApiSimpleDownload(filepath: filepath);
+
 @freezed
 class Election with _$Election {
   const factory Election({
