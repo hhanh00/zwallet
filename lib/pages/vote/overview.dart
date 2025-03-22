@@ -5,7 +5,6 @@ import 'package:YWallet/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class VoteOverview extends StatefulWidget {
   @override
@@ -57,6 +56,7 @@ class VoteOverviewState extends State<VoteOverview> {
         height = h;
         if (h == electionStore.election!.endHeight) {
           electionStore.downloaded = true;
+          height = null;
         }
     });
     });

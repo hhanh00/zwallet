@@ -4870,9 +4870,12 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "flutter_rust_bridge",
+ "hex",
  "lazy_static",
+ "orchard",
  "r2d2",
  "r2d2_sqlite",
+ "rand_core 0.6.4",
  "reqwest",
  "rusqlite",
  "serde",

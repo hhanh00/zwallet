@@ -68,7 +68,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => 1789902854;
+  int get rustContentHash => -208639618;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -92,6 +92,13 @@ abstract class RustLibApi extends BaseApi {
   Future<Election> crateApiSimpleGetElection({required String filepath});
 
   Future<void> crateApiSimpleInitApp();
+
+  Future<void> crateApiSimpleSynchronize({required String filepath});
+
+  Future<String> crateApiSimpleVote(
+      {required String filepath,
+      required int indexCandidate,
+      required BigInt amount});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -230,6 +237,59 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiSimpleInitAppConstMeta => const TaskConstMeta(
         debugName: "init_app",
         argNames: [],
+      );
+
+  @override
+  Future<void> crateApiSimpleSynchronize({required String filepath}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(filepath, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleSynchronizeConstMeta,
+      argValues: [filepath],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleSynchronizeConstMeta => const TaskConstMeta(
+        debugName: "synchronize",
+        argNames: ["filepath"],
+      );
+
+  @override
+  Future<String> crateApiSimpleVote(
+      {required String filepath,
+      required int indexCandidate,
+      required BigInt amount}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(filepath, serializer);
+        sse_encode_u_32(indexCandidate, serializer);
+        sse_encode_u_64(amount, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleVoteConstMeta,
+      argValues: [filepath, indexCandidate, amount],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleVoteConstMeta => const TaskConstMeta(
+        debugName: "vote",
+        argNames: ["filepath", "indexCandidate", "amount"],
       );
 
   @protected
