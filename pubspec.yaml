@@ -64,7 +64,7 @@ dependencies:
   bubble: ^1.2.1
   share_plus: ^7.2.1
   path_provider: ^2.0.3
-  file_picker: ^6.1.1
+  file_picker: ^7.1.0
   cross_file: ^0.3.3
   mustache_template: ^2.0.0
   flutter_palette: ^1.1.0+1
