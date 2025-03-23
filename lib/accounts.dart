@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart' hide Quote;
 import 'appsettings.dart';
 import 'coin/coins.dart';
@@ -327,9 +326,9 @@ Tuple2<SortConfig2?, List<T>> _sort<T extends HasHeight>(
 
   final o = order;
   if (o == null)
-    items = items.sortedByNum((n) => -n.height);
+    items.sort((a, b) => b.height.compareTo(a.height));
   else {
-    items = items.sortedBy((a, b) {
+    items.sort((a, b) {
       final ra = reflector.reflect(a);
       final va = ra.invokeGetter(field)! as dynamic;
       final rb = reflector.reflect(b);

@@ -5,7 +5,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
@@ -93,10 +92,10 @@ class AddressCarouselState extends State<AddressCarousel> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: addresses
-              .mapIndexed(
-                (w, i) => GestureDetector(
+            .asMap().entries.map(
+                (kv) => GestureDetector(
                   onTap: () {
-                    carouselController.animateToPage(i);
+                    carouselController.animateToPage(kv.key);
                   },
                   child: Container(
                     width: 12.0,
@@ -106,7 +105,7 @@ class AddressCarouselState extends State<AddressCarousel> {
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: theme.primaryColor
-                            .withOpacity(i == index ? 0.9 : 0.4)),
+                            .withOpacity(kv.key == index ? 0.9 : 0.4)),
                   ),
                 ),
               )
@@ -146,7 +145,7 @@ class _QRAddressState extends State<QRAddressWidget> {
 
     return Observer(builder: (context) {
       aa.diversifiedAddress;
-      final uri = a != 0 || widget.memo.isNotEmptyAndNotNull
+      final uri = a != 0 || widget.memo?.isNotEmpty == true
           ? WarpApi.makePaymentURI(
               aa.coin, address, widget.amount!, widget.memo ?? '')
           : address;

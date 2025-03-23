@@ -4,7 +4,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -272,7 +271,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       _pools = 1;
       poolKey.currentState?.setPools(1);
     } on String {}
-    final receivers = address.isNotEmptyAndNotNull
+    final receivers = address.isNotEmpty
         ? WarpApi.receiversOfAddress(aa.coin, address2)
         : 0;
     isShielded = receivers & 6 != 0;

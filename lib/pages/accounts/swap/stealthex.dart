@@ -11,7 +11,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -343,7 +342,7 @@ Future<List<String>> getCurrencies() async {
       .map((c) => (c as String).toUpperCase())
       .toSet()
       .toList();
-  _currencies = _currencies.sortedBy((a, b) {
+  _currencies.sort((a, b) {
     if (a == 'ZEC') a = ' ZEC'; // Will appear first
     if (b == 'ZEC') b = ' ZEC';
     return a.compareTo(b);
