@@ -24,6 +24,9 @@ orchard = "0.3.0"
 
 zcash-vote = { path = "../native/zcash-vote" }
 
+[features]
+dart_ffi = []
+
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
 
