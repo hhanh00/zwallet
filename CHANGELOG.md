@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/hhanh00/zwallet/compare/v1.10.0...v1.10.1) (2025-03-23)
+
+
+### Bug Fixes
+
+* android build ([#202](https://github.com/hhanh00/zwallet/issues/202)) ([f327d75](https://github.com/hhanh00/zwallet/commit/f327d754ed5a2b7199c227cbbb6fc29310ac8e14))
+
 ## [1.10.0](https://github.com/hhanh00/zwallet/compare/v1.9.0...v1.10.0) (2025-03-23)
 
 
