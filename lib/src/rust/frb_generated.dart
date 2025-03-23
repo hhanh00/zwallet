@@ -364,8 +364,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Election dco_decode_election(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 7)
-      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return Election(
       name: dco_decode_String(arr[0]),
       startHeight: dco_decode_u_32(arr[1]),
@@ -373,7 +373,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       question: dco_decode_String(arr[3]),
       candidates: dco_decode_list_choice(arr[4]),
       signatureRequired: dco_decode_bool(arr[5]),
-      downloaded: dco_decode_bool(arr[6]),
+      address: dco_decode_String(arr[6]),
+      downloaded: dco_decode_bool(arr[7]),
     );
   }
 
@@ -489,6 +490,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_question = sse_decode_String(deserializer);
     var var_candidates = sse_decode_list_choice(deserializer);
     var var_signatureRequired = sse_decode_bool(deserializer);
+    var var_address = sse_decode_String(deserializer);
     var var_downloaded = sse_decode_bool(deserializer);
     return Election(
         name: var_name,
@@ -497,6 +499,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         question: var_question,
         candidates: var_candidates,
         signatureRequired: var_signatureRequired,
+        address: var_address,
         downloaded: var_downloaded);
   }
 
@@ -639,6 +642,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.question, serializer);
     sse_encode_list_choice(self.candidates, serializer);
     sse_encode_bool(self.signatureRequired, serializer);
+    sse_encode_String(self.address, serializer);
     sse_encode_bool(self.downloaded, serializer);
   }
 

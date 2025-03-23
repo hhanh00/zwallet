@@ -400,6 +400,7 @@ impl SseDecode for crate::api::simple::Election {
         let mut var_question = <String>::sse_decode(deserializer);
         let mut var_candidates = <Vec<crate::api::simple::Choice>>::sse_decode(deserializer);
         let mut var_signatureRequired = <bool>::sse_decode(deserializer);
+        let mut var_address = <String>::sse_decode(deserializer);
         let mut var_downloaded = <bool>::sse_decode(deserializer);
         return crate::api::simple::Election {
             name: var_name,
@@ -408,6 +409,7 @@ impl SseDecode for crate::api::simple::Election {
             question: var_question,
             candidates: var_candidates,
             signature_required: var_signatureRequired,
+            address: var_address,
             downloaded: var_downloaded,
         };
     }
@@ -570,6 +572,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::simple::Election {
             self.question.into_into_dart().into_dart(),
             self.candidates.into_into_dart().into_dart(),
             self.signature_required.into_into_dart().into_dart(),
+            self.address.into_into_dart().into_dart(),
             self.downloaded.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -647,6 +650,7 @@ impl SseEncode for crate::api::simple::Election {
         <String>::sse_encode(self.question, serializer);
         <Vec<crate::api::simple::Choice>>::sse_encode(self.candidates, serializer);
         <bool>::sse_encode(self.signature_required, serializer);
+        <String>::sse_encode(self.address, serializer);
         <bool>::sse_encode(self.downloaded, serializer);
     }
 }

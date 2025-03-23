@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:YWallet/pages/vote/delegate.dart';
 import 'package:YWallet/pages/vote/overview.dart';
 import 'package:YWallet/pages/vote/vote.dart';
 import 'package:warp_api/data_fb_generated.dart';
@@ -309,7 +310,7 @@ final router = GoRouter(
                       GoRoute(path: 'new', builder: (context, state) => VoteNew()),
                       GoRoute(path: 'overview', builder: (context, state) => VoteOverview()),
                       GoRoute(path: 'vote', builder: (context, state) => VoteVote()),
-                      GoRoute(path: 'delegate', builder: (context, state) => Container(color: Colors.orange)),
+                      GoRoute(path: 'delegate', builder: (context, state) => VoteDelegate()),
                   ]),
                   GoRoute(
                       path: 'about',
