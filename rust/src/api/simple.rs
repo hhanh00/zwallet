@@ -1,19 +1,32 @@
-use std::{thread, time::Duration};
-
 use anyhow::Result;
 
-use flutter_rust_bridge::{frb, spawn_blocking_with, spawn_local};
-use orchard::{keys::{PreparedIncomingViewingKey, Scope}, vote::{try_decrypt_ballot, Ballot}};
+use flutter_rust_bridge::frb;
+use orchard::{
+    keys::{PreparedIncomingViewingKey, Scope},
+    vote::{try_decrypt_ballot, Ballot},
+    Address,
+};
 use rand_core::RngCore;
 use reqwest::header::CONTENT_TYPE;
 use rusqlite::{params, Connection, OptionalExtension};
-use zcash_vote::{address::VoteAddress, db::{list_notes, load_prop, mark_spent, store_cmx, store_note, store_prop}, decrypt::{to_fvk, to_sk}, election::{BALLOT_PK, BALLOT_VK}, trees::{list_cmxs, list_nf_ranges}};
+use zcash_vote::{
+    address::VoteAddress,
+    db::{list_notes, load_prop, store_cmx, store_note, store_prop},
+    decrypt::{to_fvk, to_sk},
+    election::{BALLOT_PK, BALLOT_VK},
+    trees::{list_cmxs, list_nf_ranges},
+};
 
-use crate::{db::open_db, frb_generated::{StreamSink, FLUTTER_RUST_BRIDGE_HANDLER}};
+use crate::{db::open_db, frb_generated::StreamSink};
 
 use super::{AppState, DBS};
 
-pub async fn create_election(filepath: String, urls: String, lwd_url: String, key: String) -> Result<Election> {
+pub async fn create_election(
+    filepath: String,
+    urls: String,
+    lwd_url: String,
+    key: String,
+) -> Result<Election> {
     let urls_split: Vec<&str> = urls.split(",").collect();
     let mut rng = rand_core::OsRng;
     let i = rng.next_u64() as usize % urls_split.len();
@@ -27,9 +40,7 @@ pub async fn create_election(filepath: String, urls: String, lwd_url: String, ke
     store_prop(&connection, "key", &key)?;
 
     let mut dbs = DBS.lock().unwrap();
-    dbs.insert(filepath, AppState {
-        pool,
-    });
+    dbs.insert(filepath, AppState { pool });
 
     let e2 = Election::from(e, false);
     Ok(e2)
@@ -42,15 +53,14 @@ pub fn get_election(filepath: String) -> Result<Election> {
     let e = load_prop(&connection, "election")?.expect("Missing election");
     let e: zcash_vote::election::Election = serde_json::from_str(&e).expect("Invalid json");
 
-    let exists = connection.query_row(
-        "SELECT 1 FROM cmxs", [], |_| Ok(())).optional()?;
+    let exists = connection
+        .query_row("SELECT 1 FROM cmxs", [], |_| Ok(()))
+        .optional()?;
 
     let e = Election::from(e, exists.is_some());
 
     let mut dbs = DBS.lock().unwrap();
-    dbs.insert(filepath, AppState {
-        pool,
-    });
+    dbs.insert(filepath, AppState { pool });
 
     Ok(e)
 }
@@ -58,7 +68,9 @@ pub fn get_election(filepath: String) -> Result<Election> {
 pub async fn download(filepath: String, height: StreamSink<u32>) -> Result<()> {
     let pool = {
         let dbs = DBS.lock().unwrap();
-        let state = dbs.get(&filepath).expect("No registered election for filepath");
+        let state = dbs
+            .get(&filepath)
+            .expect("No registered election for filepath");
         state.pool.clone()
     };
     tokio::spawn(async move {
@@ -69,11 +81,17 @@ pub async fn download(filepath: String, height: StreamSink<u32>) -> Result<()> {
         let seed = load_prop(&connection, "key")?.expect("No key");
         let fvk = to_fvk(&seed)?;
 
-        zcash_vote::download::download_reference_data(connection,
-            0, &election, Some(fvk),
-            &lwd_url, move |h| {
+        zcash_vote::download::download_reference_data(
+            connection,
+            0,
+            &election,
+            Some(fvk),
+            &lwd_url,
+            move |h| {
                 let _ = height.add(h);
-            }).await?;
+            },
+        )
+        .await?;
 
         Ok::<_, anyhow::Error>(())
     });
@@ -83,22 +101,28 @@ pub async fn download(filepath: String, height: StreamSink<u32>) -> Result<()> {
 pub fn get_balance(filepath: String) -> Result<u64> {
     let pool = {
         let dbs = DBS.lock().unwrap();
-        let state = dbs.get(&filepath).expect("No registered election for filepath");
+        let state = dbs
+            .get(&filepath)
+            .expect("No registered election for filepath");
         state.pool.clone()
     };
     let connection = pool.get()?;
-    let balance = connection.query_row(
-        "SELECT SUM(value) FROM notes WHERE spent IS NULL",
-        [],
-        |r| r.get::<_, Option<u64>>(0),
-    )?.unwrap_or_default();
+    let balance = connection
+        .query_row(
+            "SELECT SUM(value) FROM notes WHERE spent IS NULL",
+            [],
+            |r| r.get::<_, Option<u64>>(0),
+        )?
+        .unwrap_or_default();
     Ok(balance)
 }
 
 pub async fn vote(filepath: String, index_candidate: u32, amount: u64) -> Result<String> {
     let pool = {
         let dbs = DBS.lock().unwrap();
-        let state = dbs.get(&filepath).expect("No registered election for filepath");
+        let state = dbs
+            .get(&filepath)
+            .expect("No registered election for filepath");
         state.pool.clone()
     };
     let connection = pool.get()?;
@@ -113,6 +137,7 @@ pub async fn vote(filepath: String, index_candidate: u32, amount: u64) -> Result
     let mut rng = rand_core::OsRng;
     let choice = &election.candidates[index_candidate as usize];
     let vaddress = VoteAddress::decode(&choice.address)?;
+    let address = vaddress.0;
     let notes = list_notes(&connection, 0, &fvk)?;
     let cmxs = list_cmxs(&connection)?;
     let nfs = list_nf_ranges(&connection)?;
@@ -121,7 +146,7 @@ pub async fn vote(filepath: String, index_candidate: u32, amount: u64) -> Result
         signature_required,
         sk,
         &fvk,
-        vaddress.0,
+        address.clone(),
         amount,
         &notes,
         &nfs,
@@ -151,16 +176,16 @@ pub async fn vote(filepath: String, index_candidate: u32, amount: u64) -> Result
         let res = rep.text().await?;
         if s {
             success = true;
-        }
-        else {
+        } else {
             tracing::info!("ERROR (transient): {error}");
             error = res;
             continue;
         }
 
         if hash.is_empty() {
-            hash = hex::encode(ballot.data.sighash()?);
-            // crate::db::store_vote(&connection, &hash, &address, amount)?;
+            let id = ballot.data.sighash()?;
+            store_vote(&connection, &id, &address, amount)?;
+            hash = hex::encode(&id);
         }
     }
     if !success {
@@ -173,7 +198,9 @@ pub async fn vote(filepath: String, index_candidate: u32, amount: u64) -> Result
 pub async fn synchronize(filepath: String) -> Result<()> {
     let pool = {
         let dbs = DBS.lock().unwrap();
-        let state = dbs.get(&filepath).expect("No registered election for filepath");
+        let state = dbs
+            .get(&filepath)
+            .expect("No registered election for filepath");
         state.pool.clone()
     };
     let connection = pool.get()?;
@@ -206,6 +233,38 @@ pub async fn synchronize(filepath: String) -> Result<()> {
     Ok(())
 }
 
+pub fn list_votes(filepath: String) -> Result<Vec<Vote>> {
+    let pool = {
+        let dbs = DBS.lock().unwrap();
+        let state = dbs
+            .get(&filepath)
+            .expect("No registered election for filepath");
+        state.pool.clone()
+    };
+    let connection = pool.get()?;
+    let mut s = connection.prepare("SELECT hash, address, amount, height FROM votes")?;
+    let rows = s.query_map([], |r| {
+        Ok((
+            r.get::<_, Vec<u8>>(0)?,
+            r.get::<_, Vec<u8>>(1)?,
+            r.get::<_, u64>(2)?,
+            r.get::<_, Option<u32>>(3)?,
+        ))
+    })?;
+    let mut votes = vec![];
+    for r in rows {
+        let (hash, address, amount, height) = r?;
+        let vote = Vote {
+            hash: hex::encode(hash),
+            address: hex::encode(address),
+            amount,
+            height,
+        };
+        votes.push(vote);
+    }
+    Ok(votes)
+}
+
 fn handle_ballot(
     connection: &Connection,
     election: &zcash_vote::election::Election,
@@ -236,6 +295,7 @@ fn handle_ballot(
                 &txid,
                 &note,
             )?;
+            confirm_vote(connection, &ballot.data.sighash()?, height)?;
         }
         store_cmx(connection, 0, &action.cmx)?;
     }
@@ -249,6 +309,23 @@ fn store_ballot(connection: &Connection, height: u32, ballot: &Ballot) -> Result
         "INSERT INTO ballots(election, height, hash, data)
         VALUES (?1, ?2, ?3, ?4)",
         params![0, height, &hash, &ballot],
+    )?;
+    Ok(())
+}
+
+fn store_vote(connection: &Connection, hash: &[u8], address: &Address, amount: u64) -> Result<()> {
+    connection.execute(
+        "INSERT INTO votes(hash, address, amount, height) 
+        VALUES (?1, ?2, ?3, NULL)",
+        params![hash, address.to_raw_address_bytes(), amount],
+    )?;
+    Ok(())
+}
+
+fn confirm_vote(connection: &Connection, hash: &[u8], height: u32) -> Result<()> {
+    connection.execute(
+        "UPDATE votes SET height = ?2 WHERE hash = ?1",
+        params![hash, height],
     )?;
     Ok(())
 }
@@ -282,4 +359,12 @@ impl Election {
             downloaded,
         }
     }
+}
+
+#[frb(dart_metadata=("freezed"))]
+pub struct Vote {
+    pub hash: String,
+    pub address: String,
+    pub amount: u64,
+    pub height: Option<u32>,
 }
