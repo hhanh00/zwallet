@@ -38,8 +38,8 @@ class VoteSelectState extends State<VoteSelect> {
                         style: t.bodyLarge))),
                 Gap(16),
                 ButtonBar(children: [
-                  FilledButton(onPressed: onNew, child: Text("Create")),
-                  OutlinedButton(onPressed: onOpen, child: Text("Open")),
+                  OutlinedButton(onPressed: onNew, child: Text("Create")),
+                  FilledButton(onPressed: onOpen, child: Text("Open")),
                 ])
               ])));
     });

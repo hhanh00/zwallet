@@ -117,7 +117,7 @@ pub fn get_balance(filepath: String) -> Result<u64> {
     Ok(balance)
 }
 
-pub async fn vote(filepath: String, index_candidate: u32, amount: u64) -> Result<String> {
+pub async fn vote(filepath: String, address: String, amount: u64) -> Result<String> {
     let pool = {
         let dbs = DBS.lock().unwrap();
         let state = dbs
@@ -135,8 +135,7 @@ pub async fn vote(filepath: String, index_candidate: u32, amount: u64) -> Result
     let signature_required = election.signature_required;
 
     let mut rng = rand_core::OsRng;
-    let choice = &election.candidates[index_candidate as usize];
-    let vaddress = VoteAddress::decode(&choice.address)?;
+    let vaddress = VoteAddress::decode(&address)?;
     let address = vaddress.0;
     let notes = list_notes(&connection, 0, &fvk)?;
     let cmxs = list_cmxs(&connection)?;
@@ -246,7 +245,7 @@ pub fn list_votes(filepath: String) -> Result<Vec<Vote>> {
     let rows = s.query_map([], |r| {
         Ok((
             r.get::<_, Vec<u8>>(0)?,
-            r.get::<_, Vec<u8>>(1)?,
+            r.get::<_, String>(1)?,
             r.get::<_, u64>(2)?,
             r.get::<_, Option<u32>>(3)?,
         ))
@@ -256,7 +255,7 @@ pub fn list_votes(filepath: String) -> Result<Vec<Vote>> {
         let (hash, address, amount, height) = r?;
         let vote = Vote {
             hash: hex::encode(hash),
-            address: hex::encode(address),
+            address,
             amount,
             height,
         };
@@ -314,10 +313,11 @@ fn store_ballot(connection: &Connection, height: u32, ballot: &Ballot) -> Result
 }
 
 fn store_vote(connection: &Connection, hash: &[u8], address: &Address, amount: u64) -> Result<()> {
+    let vaddress = VoteAddress(address.clone());
     connection.execute(
         "INSERT INTO votes(hash, address, amount, height) 
         VALUES (?1, ?2, ?3, NULL)",
-        params![hash, address.to_raw_address_bytes(), amount],
+        params![hash, vaddress.encode(), amount],
     )?;
     Ok(())
 }
@@ -337,24 +337,39 @@ pub fn init_app() {
 }
 
 #[frb(dart_metadata=("freezed"))]
+pub struct Choice {
+    pub choice: String,
+    pub address: String,
+}
+
+#[frb(dart_metadata=("freezed"))]
 pub struct Election {
     pub name: String,
     pub start_height: u32,
     pub end_height: u32,
     pub question: String,
-    pub candidates: Vec<String>,
+    pub candidates: Vec<Choice>,
     pub signature_required: bool,
     pub downloaded: bool,
 }
 
 impl Election {
     fn from(e: zcash_vote::election::Election, downloaded: bool) -> Self {
+        let candidates = e
+            .candidates
+            .into_iter()
+            .map(|c| Choice {
+                choice: c.choice,
+                address: c.address,
+            })
+            .collect();
+
         Election {
             name: e.name,
             start_height: e.start_height,
             end_height: e.end_height,
             question: e.question,
-            candidates: e.candidates.into_iter().map(|c| c.choice).collect(),
+            candidates,
             signature_required: e.signature_required,
             downloaded,
         }

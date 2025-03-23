@@ -99,7 +99,7 @@ abstract class RustLibApi extends BaseApi {
 
   Future<String> crateApiSimpleVote(
       {required String filepath,
-      required int indexCandidate,
+      required String address,
       required BigInt amount});
 }
 
@@ -292,13 +292,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @override
   Future<String> crateApiSimpleVote(
       {required String filepath,
-      required int indexCandidate,
+      required String address,
       required BigInt amount}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(filepath, serializer);
-        sse_encode_u_32(indexCandidate, serializer);
+        sse_encode_String(address, serializer);
         sse_encode_u_64(amount, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 8, port: port_);
@@ -308,14 +308,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiSimpleVoteConstMeta,
-      argValues: [filepath, indexCandidate, amount],
+      argValues: [filepath, address, amount],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta get kCrateApiSimpleVoteConstMeta => const TaskConstMeta(
         debugName: "vote",
-        argNames: ["filepath", "indexCandidate", "amount"],
+        argNames: ["filepath", "address", "amount"],
       );
 
   @protected
@@ -349,6 +349,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Choice dco_decode_choice(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return Choice(
+      choice: dco_decode_String(arr[0]),
+      address: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
   Election dco_decode_election(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -359,16 +371,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       startHeight: dco_decode_u_32(arr[1]),
       endHeight: dco_decode_u_32(arr[2]),
       question: dco_decode_String(arr[3]),
-      candidates: dco_decode_list_String(arr[4]),
+      candidates: dco_decode_list_choice(arr[4]),
       signatureRequired: dco_decode_bool(arr[5]),
       downloaded: dco_decode_bool(arr[6]),
     );
   }
 
   @protected
-  List<String> dco_decode_list_String(dynamic raw) {
+  List<Choice> dco_decode_list_choice(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_String).toList();
+    return (raw as List<dynamic>).map(dco_decode_choice).toList();
   }
 
   @protected
@@ -461,13 +473,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Choice sse_decode_choice(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_choice = sse_decode_String(deserializer);
+    var var_address = sse_decode_String(deserializer);
+    return Choice(choice: var_choice, address: var_address);
+  }
+
+  @protected
   Election sse_decode_election(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_name = sse_decode_String(deserializer);
     var var_startHeight = sse_decode_u_32(deserializer);
     var var_endHeight = sse_decode_u_32(deserializer);
     var var_question = sse_decode_String(deserializer);
-    var var_candidates = sse_decode_list_String(deserializer);
+    var var_candidates = sse_decode_list_choice(deserializer);
     var var_signatureRequired = sse_decode_bool(deserializer);
     var var_downloaded = sse_decode_bool(deserializer);
     return Election(
@@ -481,13 +501,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+  List<Choice> sse_decode_list_choice(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <String>[];
+    var ans_ = <Choice>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_String(deserializer));
+      ans_.add(sse_decode_choice(deserializer));
     }
     return ans_;
   }
@@ -604,23 +624,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_choice(Choice self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.choice, serializer);
+    sse_encode_String(self.address, serializer);
+  }
+
+  @protected
   void sse_encode_election(Election self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.name, serializer);
     sse_encode_u_32(self.startHeight, serializer);
     sse_encode_u_32(self.endHeight, serializer);
     sse_encode_String(self.question, serializer);
-    sse_encode_list_String(self.candidates, serializer);
+    sse_encode_list_choice(self.candidates, serializer);
     sse_encode_bool(self.signatureRequired, serializer);
     sse_encode_bool(self.downloaded, serializer);
   }
 
   @protected
-  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+  void sse_encode_list_choice(List<Choice> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
-      sse_encode_String(item, serializer);
+      sse_encode_choice(item, serializer);
     }
   }
 

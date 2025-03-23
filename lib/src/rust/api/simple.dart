@@ -29,10 +29,10 @@ Future<BigInt> getBalance({required String filepath}) =>
 
 Future<String> vote(
         {required String filepath,
-        required int indexCandidate,
+        required String address,
         required BigInt amount}) =>
     RustLib.instance.api.crateApiSimpleVote(
-        filepath: filepath, indexCandidate: indexCandidate, amount: amount);
+        filepath: filepath, address: address, amount: amount);
 
 Future<void> synchronize({required String filepath}) =>
     RustLib.instance.api.crateApiSimpleSynchronize(filepath: filepath);
@@ -41,13 +41,21 @@ Future<List<Vote>> listVotes({required String filepath}) =>
     RustLib.instance.api.crateApiSimpleListVotes(filepath: filepath);
 
 @freezed
+class Choice with _$Choice {
+  const factory Choice({
+    required String choice,
+    required String address,
+  }) = _Choice;
+}
+
+@freezed
 class Election with _$Election {
   const factory Election({
     required String name,
     required int startHeight,
     required int endHeight,
     required String question,
-    required List<String> candidates,
+    required List<Choice> candidates,
     required bool signatureRequired,
     required bool downloaded,
   }) = _Election;

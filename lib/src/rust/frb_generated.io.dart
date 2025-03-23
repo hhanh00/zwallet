@@ -34,10 +34,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int dco_decode_box_autoadd_u_32(dynamic raw);
 
   @protected
+  Choice dco_decode_choice(dynamic raw);
+
+  @protected
   Election dco_decode_election(dynamic raw);
 
   @protected
-  List<String> dco_decode_list_String(dynamic raw);
+  List<Choice> dco_decode_list_choice(dynamic raw);
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
@@ -80,10 +83,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
 
   @protected
+  Choice sse_decode_choice(SseDeserializer deserializer);
+
+  @protected
   Election sse_decode_election(SseDeserializer deserializer);
 
   @protected
-  List<String> sse_decode_list_String(SseDeserializer deserializer);
+  List<Choice> sse_decode_list_choice(SseDeserializer deserializer);
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
@@ -130,10 +136,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
 
   @protected
+  void sse_encode_choice(Choice self, SseSerializer serializer);
+
+  @protected
   void sse_encode_election(Election self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_String(List<String> self, SseSerializer serializer);
+  void sse_encode_list_choice(List<Choice> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_8_strict(

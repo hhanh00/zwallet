@@ -37,17 +37,16 @@ class VoteVoteState extends State<VoteVote> with WithLoadingAnimation {
     return Observer(builder: (context) {
       final election = electionStore.election!;
 
-      final choices = election.candidates.asMap().entries.map((c) => 
-        FormBuilderFieldOption(value: c.key, child: Text(c.value))
+      final choices = election.candidates.map((c) => 
+        FormBuilderFieldOption(value: c.address, child: Text(c.choice))
         ).toList();
 
       return Scaffold(
         appBar: AppBar(title: Text("Vote")),
         body: wrapWithLoading(FormBuilder(key: formKey, child: Column(children: [
           ListTile(title: Text(election.question)),
-          FormBuilderRadioGroup<int>(name: "choices", 
+          FormBuilderRadioGroup<String>(name: "choices", 
             orientation: OptionsOrientation.vertical,
-            initialValue: 0,
             validator: FormBuilderValidators.required(),
             options: choices),
           Gap(8),
@@ -77,11 +76,11 @@ class VoteVoteState extends State<VoteVote> with WithLoadingAnimation {
     if (form.saveAndValidate()) {
       final c = form.fields["choices"]!.value;
       final a = int.parse(amountController.text);
-      print("choice: $c, amount: $a");
+      logger.i("choice: $c, amount: $a");
 
       await load(() async {
         final id = await vote(filepath: electionStore.filepath!,
-          indexCandidate: c,
+          address: c,
           amount: BigInt.from(a * VOTE_UNIT));
         await showMessageBox2(context, "Vote Submitted", id);
         GoRouter.of(context).pop();

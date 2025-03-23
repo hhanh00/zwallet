@@ -15,12 +15,144 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
+mixin _$Choice {
+  String get choice => throw _privateConstructorUsedError;
+  String get address => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $ChoiceCopyWith<Choice> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ChoiceCopyWith<$Res> {
+  factory $ChoiceCopyWith(Choice value, $Res Function(Choice) then) =
+      _$ChoiceCopyWithImpl<$Res, Choice>;
+  @useResult
+  $Res call({String choice, String address});
+}
+
+/// @nodoc
+class _$ChoiceCopyWithImpl<$Res, $Val extends Choice>
+    implements $ChoiceCopyWith<$Res> {
+  _$ChoiceCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? choice = null,
+    Object? address = null,
+  }) {
+    return _then(_value.copyWith(
+      choice: null == choice
+          ? _value.choice
+          : choice // ignore: cast_nullable_to_non_nullable
+              as String,
+      address: null == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$ChoiceImplCopyWith<$Res> implements $ChoiceCopyWith<$Res> {
+  factory _$$ChoiceImplCopyWith(
+          _$ChoiceImpl value, $Res Function(_$ChoiceImpl) then) =
+      __$$ChoiceImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String choice, String address});
+}
+
+/// @nodoc
+class __$$ChoiceImplCopyWithImpl<$Res>
+    extends _$ChoiceCopyWithImpl<$Res, _$ChoiceImpl>
+    implements _$$ChoiceImplCopyWith<$Res> {
+  __$$ChoiceImplCopyWithImpl(
+      _$ChoiceImpl _value, $Res Function(_$ChoiceImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? choice = null,
+    Object? address = null,
+  }) {
+    return _then(_$ChoiceImpl(
+      choice: null == choice
+          ? _value.choice
+          : choice // ignore: cast_nullable_to_non_nullable
+              as String,
+      address: null == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$ChoiceImpl implements _Choice {
+  const _$ChoiceImpl({required this.choice, required this.address});
+
+  @override
+  final String choice;
+  @override
+  final String address;
+
+  @override
+  String toString() {
+    return 'Choice(choice: $choice, address: $address)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ChoiceImpl &&
+            (identical(other.choice, choice) || other.choice == choice) &&
+            (identical(other.address, address) || other.address == address));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, choice, address);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ChoiceImplCopyWith<_$ChoiceImpl> get copyWith =>
+      __$$ChoiceImplCopyWithImpl<_$ChoiceImpl>(this, _$identity);
+}
+
+abstract class _Choice implements Choice {
+  const factory _Choice(
+      {required final String choice,
+      required final String address}) = _$ChoiceImpl;
+
+  @override
+  String get choice;
+  @override
+  String get address;
+  @override
+  @JsonKey(ignore: true)
+  _$$ChoiceImplCopyWith<_$ChoiceImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 mixin _$Election {
   String get name => throw _privateConstructorUsedError;
   int get startHeight => throw _privateConstructorUsedError;
   int get endHeight => throw _privateConstructorUsedError;
   String get question => throw _privateConstructorUsedError;
-  List<String> get candidates => throw _privateConstructorUsedError;
+  List<Choice> get candidates => throw _privateConstructorUsedError;
   bool get signatureRequired => throw _privateConstructorUsedError;
   bool get downloaded => throw _privateConstructorUsedError;
 
@@ -39,7 +171,7 @@ abstract class $ElectionCopyWith<$Res> {
       int startHeight,
       int endHeight,
       String question,
-      List<String> candidates,
+      List<Choice> candidates,
       bool signatureRequired,
       bool downloaded});
 }
@@ -85,7 +217,7 @@ class _$ElectionCopyWithImpl<$Res, $Val extends Election>
       candidates: null == candidates
           ? _value.candidates
           : candidates // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<Choice>,
       signatureRequired: null == signatureRequired
           ? _value.signatureRequired
           : signatureRequired // ignore: cast_nullable_to_non_nullable
@@ -111,7 +243,7 @@ abstract class _$$ElectionImplCopyWith<$Res>
       int startHeight,
       int endHeight,
       String question,
-      List<String> candidates,
+      List<Choice> candidates,
       bool signatureRequired,
       bool downloaded});
 }
@@ -155,7 +287,7 @@ class __$$ElectionImplCopyWithImpl<$Res>
       candidates: null == candidates
           ? _value._candidates
           : candidates // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<Choice>,
       signatureRequired: null == signatureRequired
           ? _value.signatureRequired
           : signatureRequired // ignore: cast_nullable_to_non_nullable
@@ -176,7 +308,7 @@ class _$ElectionImpl implements _Election {
       required this.startHeight,
       required this.endHeight,
       required this.question,
-      required final List<String> candidates,
+      required final List<Choice> candidates,
       required this.signatureRequired,
       required this.downloaded})
       : _candidates = candidates;
@@ -189,9 +321,9 @@ class _$ElectionImpl implements _Election {
   final int endHeight;
   @override
   final String question;
-  final List<String> _candidates;
+  final List<Choice> _candidates;
   @override
-  List<String> get candidates {
+  List<Choice> get candidates {
     if (_candidates is EqualUnmodifiableListView) return _candidates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_candidates);
@@ -251,7 +383,7 @@ abstract class _Election implements Election {
       required final int startHeight,
       required final int endHeight,
       required final String question,
-      required final List<String> candidates,
+      required final List<Choice> candidates,
       required final bool signatureRequired,
       required final bool downloaded}) = _$ElectionImpl;
 
@@ -264,7 +396,7 @@ abstract class _Election implements Election {
   @override
   String get question;
   @override
-  List<String> get candidates;
+  List<Choice> get candidates;
   @override
   bool get signatureRequired;
   @override
