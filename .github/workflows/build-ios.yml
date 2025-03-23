@@ -23,6 +23,8 @@ jobs:
       - name: Build vars
         run: |
           cat build.env >> $GITHUB_ENV
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
       - name: Build Rust
         run: |
           mkdir -p $HOME/.zcash-params
