@@ -8,7 +8,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'simple.freezed.dart';
 
-// These functions are ignored because they are not marked as `pub`: `confirm_vote`, `from`, `handle_ballot`, `store_ballot`, `store_vote`
+// These functions are ignored because they are not marked as `pub`: `confirm_vote`, `from`, `handle_ballot`, `store_ballot`, `store_vote`, `to_address`
 
 Future<Election> createElection(
         {required String filepath,
@@ -51,6 +51,7 @@ class Choice with _$Choice {
 @freezed
 class Election with _$Election {
   const factory Election({
+    required String id,
     required String name,
     required int startHeight,
     required int endHeight,

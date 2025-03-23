@@ -24,6 +24,7 @@ class VoteOverviewState extends State<VoteOverview> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
+      final t = Theme.of(context);
       final election = electionStore.election!;
       final downloaded = electionStore.downloaded;
       final range = (election.endHeight - election.startHeight).toDouble();
@@ -34,6 +35,7 @@ class VoteOverviewState extends State<VoteOverview> {
           body: Column(
             children: [
               ListTile(title: Text("Name"), subtitle: Text(election.name)),
+              ListTile(title: Text("ID"), subtitle: SelectableText(election.id, style: t.textTheme.bodySmall?.copyWith(color: t.colorScheme.primary))),
               ListTile(title: Text("Question"), subtitle: Text(election.question)),
               ListTile(title: Text("Start Height"), subtitle: Text(election.startHeight.toString())),
               ListTile(title: Text("End Height"), subtitle: Text(election.endHeight.toString())),

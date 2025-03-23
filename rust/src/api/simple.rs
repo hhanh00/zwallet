@@ -355,6 +355,7 @@ pub struct Choice {
 
 #[frb(dart_metadata=("freezed"))]
 pub struct Election {
+    pub id: String,
     pub name: String,
     pub start_height: u32,
     pub end_height: u32,
@@ -367,6 +368,7 @@ pub struct Election {
 
 impl Election {
     fn from(e: zcash_vote::election::Election, address: &str, downloaded: bool) -> Self {
+        let id = e.id();
         let candidates = e
             .candidates
             .into_iter()
@@ -377,6 +379,7 @@ impl Election {
             .collect();
 
         Election {
+            id,
             name: e.name,
             start_height: e.start_height,
             end_height: e.end_height,
