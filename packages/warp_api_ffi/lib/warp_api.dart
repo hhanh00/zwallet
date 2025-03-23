@@ -794,10 +794,6 @@ class WarpApi {
     }, null);
   }
 
-  static bool ledgerHasAccount(int coin, int account) {
-    return unwrapResultBool(warp_api_lib.ledger_has_account(coin, account));
-  }
-
   static Future<String> zipDbs(String passwd, String tempDir) async {
     return await compute(
         (_) => unwrapResultString(

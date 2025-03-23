@@ -61,13 +61,10 @@ class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
 
   factory ActiveAccount2.fromId(int coin, int id) {
     if (id == 0) return nullAccount;
-    final c = coins[coin];
     final backup = WarpApi.getBackup(coin, id);
-    final external =
-        c.supportsLedger && !isMobile() && WarpApi.ledgerHasAccount(coin, id);
-    final canPay = backup.sk != null || external;
+    final canPay = backup.sk != null;
     return ActiveAccount2(
-        coin, id, backup.name!, backup.seed, canPay, external, backup.saved);
+        coin, id, backup.name!, backup.seed, canPay, false, backup.saved);
   }
 
   bool get hasUA => coins[coin].supportsUA;
