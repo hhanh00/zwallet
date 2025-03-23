@@ -57,6 +57,7 @@ class Election with _$Election {
     required String question,
     required List<Choice> candidates,
     required bool signatureRequired,
+    required String address,
     required bool downloaded,
   }) = _Election;
 }

@@ -62,8 +62,6 @@ class VoteOverviewState extends State<VoteOverview> {
     });
   }
 
-  void onVote() {
-    GoRouter.of(context).push("/more/vote/vote");
-  }
-  void onDelegate() {}
+  void onVote() => GoRouter.of(context).push("/more/vote/vote");
+  void onDelegate() => GoRouter.of(context).push("/more/vote/delegate");
 }

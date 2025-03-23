@@ -39,10 +39,12 @@ pub async fn create_election(
     store_prop(&connection, "election", &serde_json::to_string(&e)?)?;
     store_prop(&connection, "key", &key)?;
 
+    let address = to_address(&key)?;
+
     let mut dbs = DBS.lock().unwrap();
     dbs.insert(filepath, AppState { pool });
 
-    let e2 = Election::from(e, false);
+    let e2 = Election::from(e, &address, false);
     Ok(e2)
 }
 
@@ -52,12 +54,14 @@ pub fn get_election(filepath: String) -> Result<Election> {
     let connection = pool.get()?;
     let e = load_prop(&connection, "election")?.expect("Missing election");
     let e: zcash_vote::election::Election = serde_json::from_str(&e).expect("Invalid json");
+    let key = load_prop(&connection, "key")?.expect("Missing key");
+    let address = to_address(&key)?;
 
     let exists = connection
         .query_row("SELECT 1 FROM cmxs", [], |_| Ok(()))
         .optional()?;
 
-    let e = Election::from(e, exists.is_some());
+    let e = Election::from(e, &address, exists.is_some());
 
     let mut dbs = DBS.lock().unwrap();
     dbs.insert(filepath, AppState { pool });
@@ -330,6 +334,13 @@ fn confirm_vote(connection: &Connection, hash: &[u8], height: u32) -> Result<()>
     Ok(())
 }
 
+fn to_address(key: &str) -> Result<String> {
+    let fvk = to_fvk(key)?;
+    let address = fvk.address_at(0u64, Scope::External);
+    let vaddress = VoteAddress(address);
+    Ok(vaddress.encode())
+}
+
 #[flutter_rust_bridge::frb(init)]
 pub fn init_app() {
     // Default utilities - feel free to customize
@@ -350,11 +361,12 @@ pub struct Election {
     pub question: String,
     pub candidates: Vec<Choice>,
     pub signature_required: bool,
+    pub address: String,
     pub downloaded: bool,
 }
 
 impl Election {
-    fn from(e: zcash_vote::election::Election, downloaded: bool) -> Self {
+    fn from(e: zcash_vote::election::Election, address: &str, downloaded: bool) -> Self {
         let candidates = e
             .candidates
             .into_iter()
@@ -371,6 +383,7 @@ impl Election {
             question: e.question,
             candidates,
             signature_required: e.signature_required,
+            address: address.to_string(),
             downloaded,
         }
     }
