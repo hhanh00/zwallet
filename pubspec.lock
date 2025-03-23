@@ -65,14 +65,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  auto_size_text_pk:
-    dependency: transitive
-    description:
-      name: auto_size_text_pk
-      sha256: ced55de5336fa7f438c1f5a9aa234e25d7a120c1d40d376a7cdc2af28cdb6995
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   awesome_notifications:
     dependency: "direct main"
     description:
@@ -1786,14 +1778,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
-  velocity_x:
-    dependency: "direct main"
-    description:
-      name: velocity_x
-      sha256: "99b910c80cc2010b184ef921f0af6894a8d632e13169cf77e6f6cb5a7f310698"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.2.1"
   vm_service:
     dependency: transitive
     description:
@@ -1802,14 +1786,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.2.1"
-  vxstate:
-    dependency: transitive
-    description:
-      name: vxstate
-      sha256: ed5a880018191c5cfed8528bd77f2a942b04847168ca12636a306c323d311086
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.0"
   warp_api:
     dependency: "direct main"
     description:

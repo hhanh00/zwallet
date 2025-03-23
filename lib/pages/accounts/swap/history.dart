@@ -2,9 +2,9 @@ import 'package:YWallet/pages/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../accounts.dart';
 import '../../../generated/intl/messages.dart';
@@ -53,9 +53,8 @@ class SwapHistoryState extends State<SwapHistoryPage>
                             Text(swap.provider!, style: TextStyle(color: p)),
                             Text(swap.providerId!,
                                 style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text(DateTime.fromMillisecondsSinceEpoch(
-                                    swap.timestamp * 1000)
-                                .timeAgo()),
+                            Text(timeago.format(DateTime.fromMillisecondsSinceEpoch(
+                                    swap.timestamp * 1000))),
                           ]),
                       Divider(),
                       Row(

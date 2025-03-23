@@ -26,8 +26,6 @@ import 'package:reflectable/reflectable.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:velocity_x/velocity_x.dart'
-    show VxNullableStringIsEmptyOrNullExtension;
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 import 'package:path/path.dart' as p;
@@ -139,7 +137,7 @@ String? addressValidator(String? v) {
 
 String? paymentURIValidator(String? v) {
   final s = S.of(rootNavigatorKey.currentContext!);
-  if (v.isEmptyOrNull) return s.required;
+  if (v == null || v.isEmpty) return s.required;
   if (WarpApi.decodePaymentURI(aa.coin, v!) == null) return s.invalidPaymentURI;
   return null;
 }

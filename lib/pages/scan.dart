@@ -7,7 +7,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../generated/intl/messages.dart';
@@ -130,7 +129,7 @@ class _MultiQRReaderState extends State<MultiQRReader> {
       if (!fragments.contains(text)) {
         fragments.add(text);
         final res = WarpApi.mergeData(text);
-        if (res.data.isEmptyOrNull) {
+        if (res.data?.isEmpty != false) {
           logger.d('${res.progress} ${res.total}');
           setState(() {
             value = res.progress / res.total;

@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mustache_template/mustache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 import '../../generated/intl/messages.dart';
 import '../../src/version.dart';
@@ -108,7 +107,7 @@ class _DisclaimerState extends State<DisclaimerPage> {
     GoRouter.of(context).push('/first_account');
   }
 
-  bool get allAccepted => accepted.all((e) => e);
+  bool get allAccepted => !accepted.any((e) => !e);
 }
 
 class DisclaimerItem extends StatelessWidget {

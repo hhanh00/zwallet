@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../store2.dart';
@@ -236,7 +235,7 @@ class _MessageItemState extends State<MessageItemPage> {
               onPressed: idx < n - 1 ? next : null,
               icon: Icon(Icons.chevron_right)),
           IconButton(onPressed: prevInThread, icon: Icon(Icons.arrow_right)),
-          if (message.fromAddress.isNotEmptyAndNotNull)
+          if (message.fromAddress?.isNotEmpty == true)
             IconButton(onPressed: reply, icon: Icon(Icons.reply)),
           IconButton(onPressed: open, icon: Icon(Icons.open_in_browser)),
         ]),

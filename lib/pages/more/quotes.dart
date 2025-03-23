@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:graphic/graphic.dart';
 import 'package:http/http.dart' as http;
-import 'package:velocity_x/velocity_x.dart';
 
 import '../../accounts.dart';
 import '../../coin/coins.dart';
@@ -46,9 +45,11 @@ class _MarketQuotesState extends State<MarketQuotes> with WithLoadingAnimation {
 
   @override
   Widget build(BuildContext context) {
+    if (quotes.isEmpty) return SizedBox.shrink();
+
     final s = S.of(context);
-    final min = quotes.map((q) => q.low).min()?.floor();
-    final max = quotes.map((q) => q.high).max()?.ceil();
+    final min = quotes.map((q) => q.low).reduce((a, b) => a < b ? a : b).floor();
+    final max = quotes.map((q) => q.high).reduce((a, b) => a > b ? a : b).ceil();
     final items = intervals
         .map((i) => DropdownMenuItem(value: i, child: Text(i)))
         .toList();

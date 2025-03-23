@@ -9,7 +9,6 @@ import 'pages/accounts/swap.dart';
 import 'pages/accounts/swap/history.dart';
 import 'pages/accounts/swap/stealthex.dart';
 import 'pages/more/cold.dart';
-import 'pages/more/vote.dart';
 import 'pages/vote/new.dart';
 import 'pages/vote/select.dart';
 import 'settings.pb.dart';

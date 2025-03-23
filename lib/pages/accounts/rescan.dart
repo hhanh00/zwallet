@@ -3,7 +3,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -54,7 +53,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                     name: 'height',
                     decoration: InputDecoration(labelText: s.height),
                     keyboardType: TextInputType.number,
-                    validator: (v) => (v.isEmptyOrNull
+                    validator: (v) => (v?.isEmpty != false
                         ? null
                         : FormBuilderValidators.integer()(v)),
                   ),
@@ -82,7 +81,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
       String? h = form.fields['height']!.value;
       DateTime d = form.fields['date']!.value ?? minDate;
       load(() async {
-        final height = h.isNotEmptyAndNotNull
+        final height = h?.isNotEmpty == true
             ? int.parse(h!)
             : await WarpApi.getBlockHeightByTime(aa.coin, d);
         final confirmed = await showConfirmDialog(
