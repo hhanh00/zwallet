@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:YWallet/src/rust/api/simple.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +53,7 @@ class VoteSelectState extends State<VoteSelect> {
       dialogTitle: 'Please select where to save the election database',
       initialDirectory: appDocDir.path,
       fileName: 'vote.db',
+      bytes: Uint8List(0)
     );
     if (path != null) {
       electionStore.filepath = path;
