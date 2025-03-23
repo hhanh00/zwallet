@@ -364,17 +364,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Election dco_decode_election(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 8)
-      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    if (arr.length != 9)
+      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
     return Election(
-      name: dco_decode_String(arr[0]),
-      startHeight: dco_decode_u_32(arr[1]),
-      endHeight: dco_decode_u_32(arr[2]),
-      question: dco_decode_String(arr[3]),
-      candidates: dco_decode_list_choice(arr[4]),
-      signatureRequired: dco_decode_bool(arr[5]),
-      address: dco_decode_String(arr[6]),
-      downloaded: dco_decode_bool(arr[7]),
+      id: dco_decode_String(arr[0]),
+      name: dco_decode_String(arr[1]),
+      startHeight: dco_decode_u_32(arr[2]),
+      endHeight: dco_decode_u_32(arr[3]),
+      question: dco_decode_String(arr[4]),
+      candidates: dco_decode_list_choice(arr[5]),
+      signatureRequired: dco_decode_bool(arr[6]),
+      address: dco_decode_String(arr[7]),
+      downloaded: dco_decode_bool(arr[8]),
     );
   }
 
@@ -484,6 +485,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   Election sse_decode_election(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_String(deserializer);
     var var_name = sse_decode_String(deserializer);
     var var_startHeight = sse_decode_u_32(deserializer);
     var var_endHeight = sse_decode_u_32(deserializer);
@@ -493,6 +495,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_address = sse_decode_String(deserializer);
     var var_downloaded = sse_decode_bool(deserializer);
     return Election(
+        id: var_id,
         name: var_name,
         startHeight: var_startHeight,
         endHeight: var_endHeight,
@@ -636,6 +639,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_election(Election self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.id, serializer);
     sse_encode_String(self.name, serializer);
     sse_encode_u_32(self.startHeight, serializer);
     sse_encode_u_32(self.endHeight, serializer);

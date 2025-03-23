@@ -148,6 +148,7 @@ abstract class _Choice implements Choice {
 
 /// @nodoc
 mixin _$Election {
+  String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   int get startHeight => throw _privateConstructorUsedError;
   int get endHeight => throw _privateConstructorUsedError;
@@ -168,7 +169,8 @@ abstract class $ElectionCopyWith<$Res> {
       _$ElectionCopyWithImpl<$Res, Election>;
   @useResult
   $Res call(
-      {String name,
+      {String id,
+      String name,
       int startHeight,
       int endHeight,
       String question,
@@ -191,6 +193,7 @@ class _$ElectionCopyWithImpl<$Res, $Val extends Election>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? startHeight = null,
     Object? endHeight = null,
@@ -201,6 +204,10 @@ class _$ElectionCopyWithImpl<$Res, $Val extends Election>
     Object? downloaded = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -246,7 +253,8 @@ abstract class _$$ElectionImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String name,
+      {String id,
+      String name,
       int startHeight,
       int endHeight,
       String question,
@@ -267,6 +275,7 @@ class __$$ElectionImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? startHeight = null,
     Object? endHeight = null,
@@ -277,6 +286,10 @@ class __$$ElectionImplCopyWithImpl<$Res>
     Object? downloaded = null,
   }) {
     return _then(_$ElectionImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -317,7 +330,8 @@ class __$$ElectionImplCopyWithImpl<$Res>
 
 class _$ElectionImpl implements _Election {
   const _$ElectionImpl(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.startHeight,
       required this.endHeight,
       required this.question,
@@ -327,6 +341,8 @@ class _$ElectionImpl implements _Election {
       required this.downloaded})
       : _candidates = candidates;
 
+  @override
+  final String id;
   @override
   final String name;
   @override
@@ -352,7 +368,7 @@ class _$ElectionImpl implements _Election {
 
   @override
   String toString() {
-    return 'Election(name: $name, startHeight: $startHeight, endHeight: $endHeight, question: $question, candidates: $candidates, signatureRequired: $signatureRequired, address: $address, downloaded: $downloaded)';
+    return 'Election(id: $id, name: $name, startHeight: $startHeight, endHeight: $endHeight, question: $question, candidates: $candidates, signatureRequired: $signatureRequired, address: $address, downloaded: $downloaded)';
   }
 
   @override
@@ -360,6 +376,7 @@ class _$ElectionImpl implements _Election {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ElectionImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.startHeight, startHeight) ||
                 other.startHeight == startHeight) &&
@@ -379,6 +396,7 @@ class _$ElectionImpl implements _Election {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      id,
       name,
       startHeight,
       endHeight,
@@ -397,7 +415,8 @@ class _$ElectionImpl implements _Election {
 
 abstract class _Election implements Election {
   const factory _Election(
-      {required final String name,
+      {required final String id,
+      required final String name,
       required final int startHeight,
       required final int endHeight,
       required final String question,
@@ -406,6 +425,8 @@ abstract class _Election implements Election {
       required final String address,
       required final bool downloaded}) = _$ElectionImpl;
 
+  @override
+  String get id;
   @override
   String get name;
   @override

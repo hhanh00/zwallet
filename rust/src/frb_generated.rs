@@ -394,6 +394,7 @@ impl SseDecode for crate::api::simple::Choice {
 impl SseDecode for crate::api::simple::Election {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_id = <String>::sse_decode(deserializer);
         let mut var_name = <String>::sse_decode(deserializer);
         let mut var_startHeight = <u32>::sse_decode(deserializer);
         let mut var_endHeight = <u32>::sse_decode(deserializer);
@@ -403,6 +404,7 @@ impl SseDecode for crate::api::simple::Election {
         let mut var_address = <String>::sse_decode(deserializer);
         let mut var_downloaded = <bool>::sse_decode(deserializer);
         return crate::api::simple::Election {
+            id: var_id,
             name: var_name,
             start_height: var_startHeight,
             end_height: var_endHeight,
@@ -566,6 +568,7 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::simple::Choice> for crate::ap
 impl flutter_rust_bridge::IntoDart for crate::api::simple::Election {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
+            self.id.into_into_dart().into_dart(),
             self.name.into_into_dart().into_dart(),
             self.start_height.into_into_dart().into_dart(),
             self.end_height.into_into_dart().into_dart(),
@@ -644,6 +647,7 @@ impl SseEncode for crate::api::simple::Choice {
 impl SseEncode for crate::api::simple::Election {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.id, serializer);
         <String>::sse_encode(self.name, serializer);
         <u32>::sse_encode(self.start_height, serializer);
         <u32>::sse_encode(self.end_height, serializer);
