@@ -329,15 +329,14 @@ fn wire__crate__api__simple__vote_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_filepath = <String>::sse_decode(&mut deserializer);
-            let api_index_candidate = <u32>::sse_decode(&mut deserializer);
+            let api_address = <String>::sse_decode(&mut deserializer);
             let api_amount = <u64>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
                         let output_ok =
-                            crate::api::simple::vote(api_filepath, api_index_candidate, api_amount)
-                                .await?;
+                            crate::api::simple::vote(api_filepath, api_address, api_amount).await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -380,6 +379,18 @@ impl SseDecode for bool {
     }
 }
 
+impl SseDecode for crate::api::simple::Choice {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_choice = <String>::sse_decode(deserializer);
+        let mut var_address = <String>::sse_decode(deserializer);
+        return crate::api::simple::Choice {
+            choice: var_choice,
+            address: var_address,
+        };
+    }
+}
+
 impl SseDecode for crate::api::simple::Election {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -387,7 +398,7 @@ impl SseDecode for crate::api::simple::Election {
         let mut var_startHeight = <u32>::sse_decode(deserializer);
         let mut var_endHeight = <u32>::sse_decode(deserializer);
         let mut var_question = <String>::sse_decode(deserializer);
-        let mut var_candidates = <Vec<String>>::sse_decode(deserializer);
+        let mut var_candidates = <Vec<crate::api::simple::Choice>>::sse_decode(deserializer);
         let mut var_signatureRequired = <bool>::sse_decode(deserializer);
         let mut var_downloaded = <bool>::sse_decode(deserializer);
         return crate::api::simple::Election {
@@ -402,13 +413,13 @@ impl SseDecode for crate::api::simple::Election {
     }
 }
 
-impl SseDecode for Vec<String> {
+impl SseDecode for Vec<crate::api::simple::Choice> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
-            ans_.push(<String>::sse_decode(deserializer));
+            ans_.push(<crate::api::simple::Choice>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -534,6 +545,22 @@ fn pde_ffi_dispatcher_sync_impl(
 // Section: rust2dart
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::simple::Choice {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.choice.into_into_dart().into_dart(),
+            self.address.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::simple::Choice {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::simple::Choice> for crate::api::simple::Choice {
+    fn into_into_dart(self) -> crate::api::simple::Choice {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::simple::Election {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -603,6 +630,14 @@ impl SseEncode for bool {
     }
 }
 
+impl SseEncode for crate::api::simple::Choice {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.choice, serializer);
+        <String>::sse_encode(self.address, serializer);
+    }
+}
+
 impl SseEncode for crate::api::simple::Election {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -610,18 +645,18 @@ impl SseEncode for crate::api::simple::Election {
         <u32>::sse_encode(self.start_height, serializer);
         <u32>::sse_encode(self.end_height, serializer);
         <String>::sse_encode(self.question, serializer);
-        <Vec<String>>::sse_encode(self.candidates, serializer);
+        <Vec<crate::api::simple::Choice>>::sse_encode(self.candidates, serializer);
         <bool>::sse_encode(self.signature_required, serializer);
         <bool>::sse_encode(self.downloaded, serializer);
     }
 }
 
-impl SseEncode for Vec<String> {
+impl SseEncode for Vec<crate::api::simple::Choice> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <String>::sse_encode(item, serializer);
+            <crate::api::simple::Choice>::sse_encode(item, serializer);
         }
     }
 }

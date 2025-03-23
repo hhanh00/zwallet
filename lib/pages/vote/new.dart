@@ -49,5 +49,3 @@ class VoteNewState extends State<VoteNew> {
     }
   }
 }
-
-// http://localhost:8000/election/03045bcc8b345e6847b9fb7d0096b57bde97ef40613c55ad8240789c0a90f409
