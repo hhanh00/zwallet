@@ -8,12 +8,12 @@ on:
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
       - name: select Xcode version
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.1'
+          xcode-version: '15.2'
       - name: check Xcode version
         run: /usr/bin/xcodebuild -version
       - name: checkout repository
@@ -33,7 +33,7 @@ jobs:
           cargo install cargo-lipo
           sed -e 's/cdylib/staticlib/' < native/zcash-sync/Cargo.toml >/tmp/out.toml
           mv /tmp/out.toml native/zcash-sync/Cargo.toml
-          cargo lipo --release --features=dart_ffi --targets=aarch64-apple-ios
+          CFLAGS="-fno-stack-check" cargo lipo --release --features=dart_ffi --targets=aarch64-apple-ios
           mv target/aarch64-apple-ios/release/libwarp_api_ffi.a packages/warp_api_ffi/ios
           cp native/zcash-sync/binding.h packages/warp_api_ffi/ios/Classes
       - name: Install the Apple certificate and provisioning profile
