@@ -13,6 +13,7 @@ import 'coin/coins.dart';
 import './pages/utils.dart';
 
 import 'init.dart';
+import 'pages/vote/vote_data.dart';
 
 const ZECUNIT = 100000000.0;
 // ignore: non_constant_identifier_names
@@ -24,6 +25,7 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await RustLib.init();
+  await electionStore.init();
   initializeReflectable();
   await restoreSettings();
   await initCoins();
