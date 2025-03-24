@@ -1,12 +1,9 @@
-import 'dart:typed_data';
+import 'dart:io';
 
-import 'package:YWallet/src/rust/api/simple.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:gap/gap.dart';
+import 'package:YWallet/src/rust/api/simple.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'vote_data.dart';
 
@@ -17,58 +14,47 @@ class VoteSelect extends StatefulWidget {
 
 class VoteSelectState extends State<VoteSelect> {
   @override
+  void initState() {
+    super.initState();
+    Future(electionStore.reloadFileList);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final t = Theme.of(context).textTheme;
-
-    return Observer(builder: (context) {
-      final filepath = electionStore.filepath;
-
-      return Scaffold(
-          appBar: AppBar(title: Text("Vote")),
-          body: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(children: [
-                Card.outlined(
-                    elevation: 10,
-                    child: Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Text(
-                        """Open or Create a new election file. An election file is similar to a wallet but is only used for voting. It contains your SEED PHRASE, therefore keep it in a safe directory and delete it once you have voted.""",
-                        style: t.bodyLarge))),
-                Gap(16),
-                ButtonBar(children: [
-                  OutlinedButton(onPressed: onNew, child: Text("Create")),
-                  FilledButton(onPressed: onOpen, child: Text("Open")),
-                ])
-              ])));
-    });
+    return Scaffold(
+        appBar: AppBar(
+            title: Text("Select or Create"),
+            actions: [IconButton(onPressed: onNew, icon: Icon(Icons.add))]),
+        body: Observer(builder: (context) {
+          final files = electionStore.files;
+          return ListView.builder(
+            itemBuilder: (context, i) {
+              final f = files[i];
+              final fullpath = "${electionStore.votePath}/$f";
+              return Dismissible(
+                key: ValueKey(f),
+                child:
+                    ListTile(title: Text(f), onTap: () => onSelect(fullpath)),
+                onDismissed: (_) {
+                  files.remove(f);
+                  final db = File(fullpath);
+                  db.deleteSync();
+                },
+              );
+            },
+            itemCount: files.length,
+          );
+        }));
   }
 
-  void onNew() async {
-    final appDocDir = await getApplicationSupportDirectory();
-    final path = await FilePicker.platform.saveFile(
-      dialogTitle: 'Please select where to save the election database',
-      initialDirectory: appDocDir.path,
-      fileName: 'vote.db',
-      bytes: Uint8List(0)
-    );
-    if (path != null) {
+  void onNew() => GoRouter.of(context).push("/more/vote/new");
+
+  void onSelect(String path) {
+    Future(() async {
       electionStore.filepath = path;
-      GoRouter.of(context).push('/more/vote/new');
-    }
-  }
-
-  void onOpen() async {
-    final appDocDir = await getApplicationSupportDirectory();
-    final res = await FilePicker.platform.pickFiles(
-      initialDirectory: appDocDir.path,
-    );
-    if (res != null && res.files.isNotEmpty) {
-      final file = res.files.first;
-      electionStore.filepath = file.path;
-      electionStore.election = await getElection(filepath: file.path!);
+      electionStore.election = await getElection(filepath: path);
       electionStore.downloaded = electionStore.election!.downloaded;
-      GoRouter.of(context).push('/more/vote/overview');
-    }
+      GoRouter.of(context).push("/more/vote/overview");
+    });
   }
 }

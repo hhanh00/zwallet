@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:YWallet/accounts.dart';
 import 'package:YWallet/appsettings.dart';
 import 'package:YWallet/coin/coins.dart';
@@ -27,6 +29,9 @@ class VoteNewState extends State<VoteNew> {
             key: formKey,
             child: Column(children: [
               FormBuilderTextField(
+                  name: "name",
+                  decoration: InputDecoration(label: Text("Name"))),
+              FormBuilderTextField(
                   name: "urls",
                   decoration: InputDecoration(label: Text("Election URL(s)"))),
               Gap(16),
@@ -37,16 +42,24 @@ class VoteNewState extends State<VoteNew> {
   void onNext() async {
     final s = formKey.currentState!;
     if (s.validate()) {
+      final name = s.fields["name"]?.value!;
       final urls = s.fields["urls"]?.value!;
       final seed = aa.seed ?? "";
-      final path = electionStore.filepath!;
       final lwd = resolveURL(coins[aa.coin], coinSettings);
       try {
-        final election = await createElection(filepath: path,
+        final dirPath = await getDataPath();
+        final path = File("$dirPath/votes/$name.db");
+        if (path.existsSync()) {
+          s.fields["name"]!.invalidate("Election already exists");
+          return;
+        }
+        final election = await createElection(filepath: path.path,
           lwdUrl: lwd, urls: urls, key: seed);
+        electionStore.filepath = path.path;
         electionStore.election = election;
         electionStore.downloaded = false;
-        GoRouter.of(context).push("/more/vote/overview");
+        electionStore.reloadFileList();
+        GoRouter.of(context).pushReplacement("/more/vote/overview");
       }
       on AnyhowException catch (e) {
         await showMessageBox2(context, "Error", e.message);
