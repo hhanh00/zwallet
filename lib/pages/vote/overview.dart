@@ -26,6 +26,7 @@ class VoteOverviewState extends State<VoteOverview> {
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       final t = Theme.of(context);
+      final filepath = electionStore.filepath!;
       final election = electionStore.election!;
       final downloaded = electionStore.downloaded;
       final range = (election.endHeight - election.startHeight).toDouble();
@@ -42,6 +43,7 @@ class VoteOverviewState extends State<VoteOverview> {
                   subtitle: SelectableText(election.id,
                       style: t.textTheme.bodySmall
                           ?.copyWith(color: t.colorScheme.primary))),
+              ListTile(title: Text("Current election file"), subtitle: Text(filepath)),
               ListTile(
                   title: Text("Question"), subtitle: Text(election.question)),
               ListTile(

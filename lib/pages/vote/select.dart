@@ -28,9 +28,6 @@ class VoteSelectState extends State<VoteSelect> {
           body: Padding(
               padding: EdgeInsets.all(16),
               child: Column(children: [
-                if (filepath != null)
-                  Text("Current election file: $filepath", style: t.bodyMedium),
-                Gap(16),
                 Card.outlined(
                     elevation: 10,
                     child: Padding(
