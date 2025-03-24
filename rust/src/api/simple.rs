@@ -77,7 +77,8 @@ pub async fn download(filepath: String, height: StreamSink<u32>) -> Result<()> {
             .expect("No registered election for filepath");
         state.pool.clone()
     };
-    tokio::spawn(async move {
+    let height2 = height.clone();
+    if let Err(err) = tokio::spawn(async move {
         let connection = pool.get()?;
         let lwd_url = load_prop(&connection, "lwd")?.expect("Missing lightwalletd url");
         let election = load_prop(&connection, "election")?.expect("No election");
@@ -85,20 +86,26 @@ pub async fn download(filepath: String, height: StreamSink<u32>) -> Result<()> {
         let seed = load_prop(&connection, "key")?.expect("No key");
         let fvk = to_fvk(&seed)?;
 
-        zcash_vote::download::download_reference_data(
+        println!("Starting Download");
+        connection.execute("BEGIN TRANSACTION", [])?;
+        let (connection, _) = zcash_vote::download::download_reference_data(
             connection,
             0,
             &election,
             Some(fvk),
             &lwd_url,
             move |h| {
-                let _ = height.add(h);
+                let _ = height2.add(h);
             },
         )
         .await?;
+        connection.execute("COMMIT", [])?;
+        println!("Ending Download");
 
         Ok::<_, anyhow::Error>(())
-    });
+    }).await? {
+        let _ = height.add_error(err);
+    }
     Ok(())
 }
 
