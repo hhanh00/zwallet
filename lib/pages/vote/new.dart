@@ -2,10 +2,12 @@ import 'package:YWallet/accounts.dart';
 import 'package:YWallet/appsettings.dart';
 import 'package:YWallet/coin/coins.dart';
 import 'package:YWallet/pages/settings.dart';
+import 'package:YWallet/pages/utils.dart';
 import 'package:YWallet/pages/vote/vote_data.dart';
 import 'package:YWallet/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
@@ -36,17 +38,19 @@ class VoteNewState extends State<VoteNew> {
     final s = formKey.currentState!;
     if (s.validate()) {
       final urls = s.fields["urls"]?.value!;
-      print(urls);
       final seed = aa.seed ?? "";
-      print(seed);
       final path = electionStore.filepath!;
       final lwd = resolveURL(coins[aa.coin], coinSettings);
-      final election = await createElection(filepath: path,
-        lwdUrl: lwd, urls: urls, key: seed);
-      electionStore.election = election;
-      electionStore.downloaded = false;
-      print(election);
-      GoRouter.of(context).push("/more/vote/overview");
+      try {
+        final election = await createElection(filepath: path,
+          lwdUrl: lwd, urls: urls, key: seed);
+        electionStore.election = election;
+        electionStore.downloaded = false;
+        GoRouter.of(context).push("/more/vote/overview");
+      }
+      on AnyhowException catch (e) {
+        await showMessageBox2(context, "Error", e.message);
+      }
     }
   }
 }

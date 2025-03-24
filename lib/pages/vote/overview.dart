@@ -79,7 +79,6 @@ class VoteOverviewState extends State<VoteOverview> {
         }
       });
     }, onError: (e) async {
-      logger.e(e);
       await showMessageBox2(context, "Download Error", e.toString());
       setState(() {
         height = null;
