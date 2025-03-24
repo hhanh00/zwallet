@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.11.0](https://github.com/hhanh00/zwallet/compare/v1.10.1...v1.11.0) (2025-03-24)
+
+
+### Features
+
+* show election file path on overview page ([#209](https://github.com/hhanh00/zwallet/issues/209)) ([c911650](https://github.com/hhanh00/zwallet/commit/c9116506b677c649dc77cea079b755b5aeb57ca9))
+
+
+### Bug Fixes
+
+* download error handling ([#207](https://github.com/hhanh00/zwallet/issues/207)) ([f0dadac](https://github.com/hhanh00/zwallet/commit/f0dadacb2784cc7889fde533b1e7520f55bb4e9e))
+* error handling on new election form ([#208](https://github.com/hhanh00/zwallet/issues/208)) ([fa83326](https://github.com/hhanh00/zwallet/commit/fa833262c5507f9bdbe5fc21412c6d460c654b75))
+* https connections ([#206](https://github.com/hhanh00/zwallet/issues/206)) ([3a6cdf9](https://github.com/hhanh00/zwallet/commit/3a6cdf9bcb42ec153c617bf25b26a7c2b0daf01c))
+* remove ledger code ([#204](https://github.com/hhanh00/zwallet/issues/204)) ([e8fb412](https://github.com/hhanh00/zwallet/commit/e8fb412f22df96f87fd2d069daf742c91334b4d2))
+
 ## [1.10.1](https://github.com/hhanh00/zwallet/compare/v1.10.0...v1.10.1) (2025-03-23)
 
 
