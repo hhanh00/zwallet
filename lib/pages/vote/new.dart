@@ -44,6 +44,7 @@ class VoteNewState extends State<VoteNew> {
       final election = await createElection(filepath: path,
         lwdUrl: lwd, urls: urls, key: seed);
       electionStore.election = election;
+      electionStore.downloaded = false;
       print(election);
       GoRouter.of(context).push("/more/vote/overview");
     }
