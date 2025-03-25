@@ -219,7 +219,9 @@ class _GeneralState extends State<GeneralTab>
             enableSuggestions: true,
             initialValue: widget.appSettings.memo,
             onChanged: (v) => widget.appSettings.memo = v!,
-          )
+          ),
+          Gap(16),
+          OutlinedButton(onPressed: onResetTutorials, child: Text("Reset Tutorials")),
         ],
       ),
     );
@@ -227,6 +229,15 @@ class _GeneralState extends State<GeneralTab>
 
   bool validate() {
     return formKey.currentState!.validate();
+  }
+
+  void onResetTutorials() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("tutorial:new");
+    await prefs.remove("tutorial:delegate");
+    await prefs.remove("tutorial:overview");
+    await prefs.remove("tutorial:select");
+    await prefs.remove("tutorial:vote");
   }
 
   @override

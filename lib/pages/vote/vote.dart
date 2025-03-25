@@ -1,4 +1,3 @@
-import 'package:YWallet/main.dart';
 import 'package:YWallet/pages/utils.dart';
 import 'package:YWallet/pages/vote/history.dart';
 import 'package:YWallet/pages/vote/vote_data.dart';

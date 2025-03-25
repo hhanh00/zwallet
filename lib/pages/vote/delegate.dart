@@ -32,7 +32,7 @@ class VoteDelegateState extends State<VoteDelegate> with WithLoadingAnimation {
     Future(() async {
       try {
         final filepath = electionStore.filepath!;
-        // await synchronize(filepath: filepath);
+        await synchronize(filepath: filepath);
         final zats = await getBalance(filepath: filepath);
         setState(() => balance = (zats / BigInt.from(VOTE_UNIT)).toInt());
         WidgetsBinding.instance.addPostFrameCallback((_) {
