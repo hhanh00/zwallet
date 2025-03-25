@@ -7,6 +7,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import 'vote.dart';
 
@@ -22,15 +24,20 @@ class VoteDelegateState extends State<VoteDelegate> with WithLoadingAnimation {
 
   int balance = 0;
 
+  final addressKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
     Future(() async {
       try {
         final filepath = electionStore.filepath!;
-        await synchronize(filepath: filepath);
+        // await synchronize(filepath: filepath);
         final zats = await getBalance(filepath: filepath);
         setState(() => balance = (zats / BigInt.from(VOTE_UNIT)).toInt());
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showTutorial(context);
+        });
       } on AnyhowException catch (e) {
         showMessageBox2(context, "Error", e.message);
       }
@@ -47,8 +54,9 @@ class VoteDelegateState extends State<VoteDelegate> with WithLoadingAnimation {
         body: wrapWithLoading(FormBuilder(
             key: formKey,
             child: Column(children: [
+              Showcase(key: addressKey, description: "This is your own voting address. Vote Delegations sent to it will be added to your available votes", child:
               ListTile(
-                  title: Text("My Address"), subtitle: SelectableText(address)),
+                  title: Text("My Address"), subtitle: SelectableText(address))),
               Gap(16),
               FormBuilderTextField(
                   name: "address",
@@ -91,6 +99,16 @@ class VoteDelegateState extends State<VoteDelegate> with WithLoadingAnimation {
           await showMessageBox2(context, "Error", e.message);
         }
       });
+    }
+  }
+
+  void showTutorial(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final showTutorial = prefs.getBool("tutorial:delegate") ?? true;
+    if (showTutorial) {
+      prefs.setBool("tutorial:delegate", false);
+      Future.delayed(Durations.long1, () =>
+      ShowCaseWidget.of(context).startShowCase([addressKey]));
     }
   }
 }

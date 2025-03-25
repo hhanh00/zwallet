@@ -12,6 +12,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class VoteNew extends StatefulWidget {
   @override
@@ -20,6 +22,16 @@ class VoteNew extends StatefulWidget {
 
 class VoteNewState extends State<VoteNew> {
   final formKey = GlobalKey<FormBuilderState>();
+  final nameKey = GlobalKey();
+  final urlKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showTutorial(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +40,18 @@ class VoteNewState extends State<VoteNew> {
         body: FormBuilder(
             key: formKey,
             child: Column(children: [
-              FormBuilderTextField(
+              Showcase(
+                key: nameKey,
+                description: 'The name of the election file. It can be anything you like and will appear in the list of elections.',
+                child: FormBuilderTextField(
                   name: "name",
-                  decoration: InputDecoration(label: Text("Name"))),
-              FormBuilderTextField(
+                  decoration: InputDecoration(label: Text("Name")))),
+              Showcase(
+                key: urlKey,
+                description: "URL or list of URLs as published by the Election authority.",
+                child: FormBuilderTextField(
                   name: "urls",
-                  decoration: InputDecoration(label: Text("Election URL(s)"))),
+                  decoration: InputDecoration(label: Text("Election URL(s)")))),
               Gap(16),
               FilledButton(onPressed: onNext, child: Text("Next"))
             ])));
@@ -64,6 +82,16 @@ class VoteNewState extends State<VoteNew> {
       on AnyhowException catch (e) {
         await showMessageBox2(context, "Error", e.message);
       }
+    }
+  }
+
+  void showTutorial(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final showTutorial = prefs.getBool("tutorial:new") ?? true;
+    if (showTutorial) {
+      prefs.setBool("tutorial:new", false);
+      Future.delayed(Durations.long1, () =>
+      ShowCaseWidget.of(context).startShowCase([nameKey, urlKey]));
     }
   }
 }

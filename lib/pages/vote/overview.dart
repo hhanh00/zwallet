@@ -6,6 +6,8 @@ import 'package:YWallet/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class VoteOverview extends StatefulWidget {
   @override
@@ -15,6 +17,22 @@ class VoteOverview extends StatefulWidget {
 class VoteOverviewState extends State<VoteOverview> {
   StreamSubscription<int>? subscription;
   int? height;
+
+  final nameKey = GlobalKey();
+  final idKey = GlobalKey();
+  final fileKey = GlobalKey();
+  final questionKey = GlobalKey();
+  final startKey = GlobalKey();
+  final endKey = GlobalKey();
+  final downloadKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showTutorial(context);
+    });
+  }
 
   @override
   void dispose() {
@@ -37,21 +55,48 @@ class VoteOverviewState extends State<VoteOverview> {
           appBar: AppBar(title: Text(election.name)),
           body: Column(
             children: [
-              ListTile(title: Text("Name"), subtitle: Text(election.name)),
-              ListTile(
-                  title: Text("ID"),
-                  subtitle: SelectableText(election.id,
-                      style: t.textTheme.bodySmall
-                          ?.copyWith(color: t.colorScheme.primary))),
-              ListTile(title: Text("Current election file"), subtitle: Text(filepath)),
-              ListTile(
-                  title: Text("Question"), subtitle: Text(election.question)),
-              ListTile(
-                  title: Text("Start Height"),
-                  subtitle: Text(election.startHeight.toString())),
-              ListTile(
-                  title: Text("End Height"),
-                  subtitle: Text(election.endHeight.toString())),
+              Showcase(
+                  key: nameKey,
+                  description:
+                      "Name of the election that you chose at creation time",
+                  child: ListTile(
+                      title: Text("Name"), subtitle: Text(election.name))),
+              Showcase(
+                  key: idKey,
+                  description:
+                      "The Hash ID of the election. You SHOULD check that it is the same as the Election Authority published. If it differs, the election could have been tampered with",
+                  child: ListTile(
+                      title: Text("ID"),
+                      subtitle: SelectableText(election.id,
+                          style: t.textTheme.bodySmall
+                              ?.copyWith(color: t.colorScheme.primary)))),
+              Showcase(
+                  key: fileKey,
+                  description:
+                      "The full path to the election file. On mobile devices, this location is sandboxed and is not user accessible",
+                  child: ListTile(
+                      title: Text("Current election file"),
+                      subtitle: Text(filepath))),
+              Showcase(
+                  key: questionKey,
+                  description: "The Question/Motion being polled",
+                  child: ListTile(
+                      title: Text("Question"),
+                      subtitle: Text(election.question))),
+              Showcase(
+                  key: startKey,
+                  description:
+                      "The Start of the Registration Period. Notes created before this height are not eligible",
+                  child: ListTile(
+                      title: Text("Start Height"),
+                      subtitle: Text(election.startHeight.toString()))),
+              Showcase(
+                  key: endKey,
+                  description:
+                      "The End of the Registration Period. Notes created after this height are not eligible",
+                  child: ListTile(
+                      title: Text("End Height"),
+                      subtitle: Text(election.endHeight.toString()))),
               if (height != null)
                 ListTile(
                     title: Text("Downloaded Height"),
@@ -59,8 +104,12 @@ class VoteOverviewState extends State<VoteOverview> {
               if (progress != null) LinearProgressIndicator(value: progress),
               if (height == null)
                 !downloaded
-                    ? FilledButton(
-                        onPressed: onDownload, child: Text("Download"))
+                    ? Showcase(
+                        key: downloadKey,
+                        description:
+                            "Press to start downloading data from the zcash blockchain",
+                        child: FilledButton(
+                            onPressed: onDownload, child: Text("Download")))
                     : ButtonBar(children: [
                         FilledButton(onPressed: onVote, child: Text("Vote")),
                         OutlinedButton(
@@ -91,4 +140,16 @@ class VoteOverviewState extends State<VoteOverview> {
 
   void onVote() => GoRouter.of(context).push("/more/vote/vote");
   void onDelegate() => GoRouter.of(context).push("/more/vote/delegate");
+
+  void showTutorial(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final showTutorial = prefs.getBool("tutorial:overview") ?? true;
+    if (showTutorial) {
+      prefs.setBool("tutorial:overview", false);
+      Future.delayed(Durations.long1, () =>
+      ShowCaseWidget.of(context).startShowCase([nameKey, idKey,
+      fileKey, questionKey, startKey, endKey, downloadKey
+      ]));
+    }
+  }
 }

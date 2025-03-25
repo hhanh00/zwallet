@@ -10,6 +10,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class VoteVote extends StatefulWidget {
   @override
@@ -23,6 +25,9 @@ class VoteVoteState extends State<VoteVote> with WithLoadingAnimation {
   final amountController = TextEditingController(text: "0");
   int balance = 0;
 
+  final availableKey = GlobalKey();
+  final historyKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -32,6 +37,9 @@ class VoteVoteState extends State<VoteVote> with WithLoadingAnimation {
         await synchronize(filepath: filepath);
         final zats = await getBalance(filepath: filepath);
         setState(() => balance = (zats / BigInt.from(VOTE_UNIT)).toInt());
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showTutorial(context);
+        });
       } on AnyhowException catch (e) {
         showMessageBox2(context, "Error", e.message);
       }
@@ -60,9 +68,13 @@ class VoteVoteState extends State<VoteVote> with WithLoadingAnimation {
                     validator: FormBuilderValidators.required(),
                     options: choices),
                 Gap(8),
-                ListTile(
-                    title: Text("Votes Available"),
-                    subtitle: Text(balance.toString())),
+                Showcase(
+                    key: availableKey,
+                    description:
+                        "Amount of votes remaining. Votes that have not been confirmed may still be included here. Blocks are finalized every second. Leave and come back to this page to refresh it.",
+                    child: ListTile(
+                        title: Text("Votes Available"),
+                        subtitle: Text(balance.toString()))),
                 FormBuilderTextField(
                     name: "amount",
                     decoration: InputDecoration(label: Text("Votes")),
@@ -77,7 +89,12 @@ class VoteVoteState extends State<VoteVote> with WithLoadingAnimation {
                 Gap(16),
                 Divider(),
                 Text("Past Votes"),
-                Expanded(child: VoteHistory()),
+                Expanded(
+                    child: Showcase(
+                        key: historyKey,
+                        description:
+                            "Past votes and delegations submitted from this file. If votes were submitted prior to the creation of this file, they will not appear here but are counted anyway. Rows in red are votes that have not been finalized yet.",
+                        child: VoteHistory())),
               ]))));
     });
   }
@@ -101,6 +118,20 @@ class VoteVoteState extends State<VoteVote> with WithLoadingAnimation {
           await showMessageBox2(context, "Error", e.message);
         }
       });
+    }
+  }
+
+  void showTutorial(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final showTutorial = prefs.getBool("tutorial:vote") ?? true;
+    if (showTutorial) {
+      prefs.setBool("tutorial:vote", false);
+      Future.delayed(
+          Durations.long1,
+          () => ShowCaseWidget.of(context).startShowCase([
+                availableKey,
+                historyKey,
+              ]));
     }
   }
 }
