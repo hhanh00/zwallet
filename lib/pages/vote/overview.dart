@@ -58,13 +58,13 @@ class VoteOverviewState extends State<VoteOverview> {
               Showcase(
                   key: nameKey,
                   description:
-                      "Name of the election that you chose at creation time",
+                      "Name of the Election as set by its creator",
                   child: ListTile(
                       title: Text("Name"), subtitle: Text(election.name))),
               Showcase(
                   key: idKey,
                   description:
-                      "The Hash ID of the election. You SHOULD check that it is the same as the Election Authority published. If it differs, the election could have been tampered with",
+                      "The Hash ID of the Election. You SHOULD check that it is the same as the Election Authority published. If it differs, the Election could have been tampered with",
                   child: ListTile(
                       title: Text("ID"),
                       subtitle: SelectableText(election.id,
@@ -73,9 +73,9 @@ class VoteOverviewState extends State<VoteOverview> {
               Showcase(
                   key: fileKey,
                   description:
-                      "The full path to the election file. On mobile devices, this location is sandboxed and is not user accessible",
+                      "The full path to the Election file. On mobile devices, this location is sandboxed and is not user accessible",
                   child: ListTile(
-                      title: Text("Current election file"),
+                      title: Text("Current Election file"),
                       subtitle: Text(filepath))),
               Showcase(
                   key: questionKey,

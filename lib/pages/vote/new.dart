@@ -42,13 +42,13 @@ class VoteNewState extends State<VoteNew> {
             child: Column(children: [
               Showcase(
                 key: nameKey,
-                description: 'The name of the election file. It can be anything you like and will appear in the list of elections.',
+                description: 'The name of the Election file. It can be anything you like and will appear in the list of elections',
                 child: FormBuilderTextField(
                   name: "name",
                   decoration: InputDecoration(label: Text("Name")))),
               Showcase(
                 key: urlKey,
-                description: "URL or list of URLs as published by the Election authority.",
+                description: "URL or list of URLs as published by the Election authority",
                 child: FormBuilderTextField(
                   name: "urls",
                   decoration: InputDecoration(label: Text("Election URL(s)")))),
