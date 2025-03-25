@@ -3,6 +3,8 @@ name: Build and Release MacOS Universal
 on:
   workflow_dispatch:
   pull_request:
+    branches-ignore:
+      - "release-please--*"
   push:
     tags:
       - "v*"
