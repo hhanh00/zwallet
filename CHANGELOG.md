@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.13.0](https://github.com/hhanh00/zwallet/compare/v1.12.0...v1.13.0) (2025-03-25)
+
+
+### Features
+
+* add button to reset tutorials ([#215](https://github.com/hhanh00/zwallet/issues/215)) ([054ce0d](https://github.com/hhanh00/zwallet/commit/054ce0db8a928bb898d4f29334df00b0ad8d0220))
+* add tutorial showcases ([#214](https://github.com/hhanh00/zwallet/issues/214)) ([ec7f706](https://github.com/hhanh00/zwallet/commit/ec7f706cc1de73cfb46a11e408dd0ae6a261a3d7))
+* more error handling on connection failures, etc ([#212](https://github.com/hhanh00/zwallet/issues/212)) ([daefc55](https://github.com/hhanh00/zwallet/commit/daefc558a84fb737b44bfd14f9f2d9af527f409d))
+
+
+### Bug Fixes
+
+* ios data dir ([daefc55](https://github.com/hhanh00/zwallet/commit/daefc558a84fb737b44bfd14f9f2d9af527f409d))
+* tutorial messages ([#216](https://github.com/hhanh00/zwallet/issues/216)) ([812f26d](https://github.com/hhanh00/zwallet/commit/812f26d17c94b3869024001a4ec85d1db22f06e3))
+
 ## [1.12.0](https://github.com/hhanh00/zwallet/compare/v1.11.0...v1.12.0) (2025-03-24)
 
 
