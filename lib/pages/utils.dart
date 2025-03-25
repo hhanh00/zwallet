@@ -385,6 +385,7 @@ Future<String> getDataPath() async {
     home =
         Platform.environment['XDG_DATA_HOME'] ?? Platform.environment['HOME'];
   if (Platform.isMacOS) home = (await getApplicationSupportDirectory()).path;
+  if (Platform.isIOS) home = (await getApplicationDocumentsDirectory()).path;
   final h = home ?? "";
   return h;
 }

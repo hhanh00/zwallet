@@ -3,6 +3,7 @@ import 'package:YWallet/pages/vote/vote_data.dart';
 import 'package:YWallet/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -25,10 +26,14 @@ class VoteDelegateState extends State<VoteDelegate> with WithLoadingAnimation {
   void initState() {
     super.initState();
     Future(() async {
-      final filepath = electionStore.filepath!;
-      await synchronize(filepath: filepath);
-      final zats = await getBalance(filepath: filepath);
-      setState(() => balance = (zats / BigInt.from(VOTE_UNIT)).toInt());
+      try {
+        final filepath = electionStore.filepath!;
+        await synchronize(filepath: filepath);
+        final zats = await getBalance(filepath: filepath);
+        setState(() => balance = (zats / BigInt.from(VOTE_UNIT)).toInt());
+      } on AnyhowException catch (e) {
+        showMessageBox2(context, "Error", e.message);
+      }
     });
   }
 
@@ -50,7 +55,9 @@ class VoteDelegateState extends State<VoteDelegate> with WithLoadingAnimation {
                   controller: addressController,
                   decoration: InputDecoration(label: Text("Delegate To")),
                   validator: FormBuilderValidators.required()),
-              ListTile(title: Text("Votes Available"), subtitle: Text(balance.toString())),
+              ListTile(
+                  title: Text("Votes Available"),
+                  subtitle: Text(balance.toString())),
               FormBuilderTextField(
                   name: "amount",
                   decoration: InputDecoration(label: Text("Votes")),
@@ -73,11 +80,16 @@ class VoteDelegateState extends State<VoteDelegate> with WithLoadingAnimation {
       logger.i("address: $d, amount: $a");
 
       await load(() async {
-        final id = await vote(filepath: electionStore.filepath!,
-          address: d,
-          amount: BigInt.from(a * VOTE_UNIT));
-        await showMessageBox2(context, "Delegation Submitted", id);
-        GoRouter.of(context).pop();
+        try {
+          final id = await vote(
+              filepath: electionStore.filepath!,
+              address: d,
+              amount: BigInt.from(a * VOTE_UNIT));
+          await showMessageBox2(context, "Delegation Submitted", id);
+          GoRouter.of(context).pop();
+        } on AnyhowException catch (e) {
+          await showMessageBox2(context, "Error", e.message);
+        }
       });
     }
   }
