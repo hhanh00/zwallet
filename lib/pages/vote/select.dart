@@ -34,7 +34,7 @@ class VoteSelectState extends State<VoteSelect> {
           Showcase(
               key: addKey,
               description:
-                  "Create a NEW election file. It contains all the information required to vote including the wallet SEED PHRASE.",
+                  "Create a NEW Election file. It contains all the information required to vote including the wallet SEED PHRASE",
               child: IconButton(onPressed: onNew, icon: Icon(Icons.add)))
         ]),
         body: Observer(builder: (context) {
