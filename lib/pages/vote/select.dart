@@ -15,7 +15,6 @@ class VoteSelect extends StatefulWidget {
 }
 
 class VoteSelectState extends State<VoteSelect> {
-  final scaffoldKey = GlobalKey();
   final addKey = GlobalKey();
   final listKey = GlobalKey();
 
@@ -24,46 +23,44 @@ class VoteSelectState extends State<VoteSelect> {
     super.initState();
     Future(electionStore.reloadFileList);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final context = scaffoldKey.currentContext!;
       showTutorial(context);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ShowCaseWidget(
-        builder: (context) => Scaffold(
-            key: scaffoldKey,
-            appBar: AppBar(title: Text("Select or Create"), actions: [
-              Showcase(
-                  key: addKey,
-                  description:
-                      "Create a NEW election file. They contain all the information required to vote including the wallet seed phrase.",
-                  child: IconButton(onPressed: onNew, icon: Icon(Icons.add)))
-            ]),
-            body: Observer(builder: (context) {
-              final files = electionStore.files;
-              return Showcase(
-                  key: listKey,
-                  description: "Tap a file name to OPEN it, swipe left/right to DELETE",
-                  child: ListView.builder(
-                    itemBuilder: (context, i) {
-                      final f = files[i];
-                      final fullpath = "${electionStore.votePath}/$f";
-                      return Dismissible(
-                        key: ValueKey(f),
-                        child: ListTile(
-                            title: Text(f), onTap: () => onSelect(fullpath)),
-                        onDismissed: (_) {
-                          files.remove(f);
-                          final db = File(fullpath);
-                          db.deleteSync();
-                        },
-                      );
+    return Scaffold(
+        appBar: AppBar(title: Text("Select or Create"), actions: [
+          Showcase(
+              key: addKey,
+              description:
+                  "Create a NEW election file. It contains all the information required to vote including the wallet SEED PHRASE.",
+              child: IconButton(onPressed: onNew, icon: Icon(Icons.add)))
+        ]),
+        body: Observer(builder: (context) {
+          final files = electionStore.files;
+          return Showcase(
+              key: listKey,
+              description:
+                  "Tap a file name to OPEN it, swipe left/right to DELETE",
+              child: ListView.builder(
+                itemBuilder: (context, i) {
+                  final f = files[i];
+                  final fullpath = "${electionStore.votePath}/$f";
+                  return Dismissible(
+                    key: ValueKey(f),
+                    child: ListTile(
+                        title: Text(f), onTap: () => onSelect(fullpath)),
+                    onDismissed: (_) {
+                      files.remove(f);
+                      final db = File(fullpath);
+                      db.deleteSync();
                     },
-                    itemCount: files.length,
-                  ));
-            })));
+                  );
+                },
+                itemCount: files.length,
+              ));
+        }));
   }
 
   void onNew() => GoRouter.of(context).push("/more/vote/new");
@@ -79,10 +76,11 @@ class VoteSelectState extends State<VoteSelect> {
 
   void showTutorial(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    final showTutorial = true; // prefs.getBool("tutorial:select") ?? true;
+    final showTutorial = prefs.getBool("tutorial:select") ?? true;
     if (showTutorial) {
       prefs.setBool("tutorial:select", false);
-      ShowCaseWidget.of(context).startShowCase([addKey, listKey]);
+      Future.delayed(Durations.long1, () =>
+      ShowCaseWidget.of(context).startShowCase([addKey, listKey]));
     }
   }
 }

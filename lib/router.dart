@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:YWallet/pages/vote/delegate.dart';
 import 'package:YWallet/pages/vote/overview.dart';
 import 'package:YWallet/pages/vote/vote.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:warp_api/data_fb_generated.dart';
 
 import 'pages/accounts/swap.dart';
@@ -431,7 +432,7 @@ class _ScaffoldBar extends State<ScaffoldBar> {
               widget.shell.goBranch(index);
             },
           ),
-          body: widget.shell,
+          body: ShowCaseWidget(builder: (context) => widget.shell),
         ));
   }
 
