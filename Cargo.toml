@@ -11,15 +11,15 @@ debug = false
 zcash_params = { path = "native/zcash-params" }
 
 [patch."https://github.com/hhanh00/librustzcash.git"]
-zcash_client_backend = { path = "librustzcash/zcash_client_backend" }
-zcash_primitives = { path = "librustzcash/zcash_primitives" }
-zcash_proofs = { path = "librustzcash/zcash_proofs" }
-zcash_address = { path = "librustzcash/components/zcash_address" }
-zcash_encoding = { path = "librustzcash/components/zcash_encoding" }
-zcash_note_encryption = { path = "librustzcash/components/zcash_note_encryption" }
+# zcash_client_backend = { path = "librustzcash/zcash_client_backend" }
+# zcash_primitives = { path = "librustzcash/zcash_primitives" }
+# zcash_proofs = { path = "librustzcash/zcash_proofs" }
+# zcash_address = { path = "librustzcash/components/zcash_address" }
+# zcash_encoding = { path = "librustzcash/components/zcash_encoding" }
+zcash_note_encryption = "0.2"
 
 [patch.crates-io]
-zcash_note_encryption = { path = "librustzcash/components/zcash_note_encryption" }
+#zcash_note_encryption = { path = "librustzcash/components/zcash_note_encryption" }
 #zcash_note_encryption = { git = "https://github.com/hhanh00/librustzcash.git", rev = "f349526f" }
 
 # Android 32-bit fix

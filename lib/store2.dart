@@ -339,7 +339,7 @@ abstract class _ContactStore with Store {
 
   @action
   void add(Contact c) {
-    WarpApi.storeContact(c.id, c.name!, c.address!, true);
+    WarpApi.storeContact(aa.coin, c.id, c.name!, c.address!, true);
     markContactsSaved(aa.coin, false);
     fetchContacts();
   }
@@ -347,7 +347,7 @@ abstract class _ContactStore with Store {
   @action
   void remove(Contact c) {
     contacts.removeWhere((contact) => contact.id == c.id);
-    WarpApi.storeContact(c.id, c.name!, "", true);
+    WarpApi.storeContact(aa.coin, c.id, c.name!, "", true);
     markContactsSaved(aa.coin, false);
     fetchContacts();
   }

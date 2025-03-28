@@ -439,9 +439,9 @@ class WarpApi {
     return convertCString(warp_api_lib.get_lwd_url(coin));
   }
 
-  static void storeContact(int id, String name, String address, bool dirty) {
+  static void storeContact(int coin, int id, String name, String address, bool dirty) {
     warp_api_lib.store_contact(
-        id, toNative(name), toNative(address), dirty ? 1 : 0);
+        coin, id, toNative(name), toNative(address), dirty ? 1 : 0);
   }
 
   static String commitUnsavedContacts(
