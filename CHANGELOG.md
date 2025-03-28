@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/hhanh00/zwallet/compare/v1.13.0...v1.14.0) (2025-03-28)
+
+
+### Features
+
+* new coin db api ([#220](https://github.com/hhanh00/zwallet/issues/220)) ([0cfa588](https://github.com/hhanh00/zwallet/commit/0cfa588db1d4f564efe0783d0696cca987699bf7))
+
 ## [1.13.0](https://github.com/hhanh00/zwallet/compare/v1.12.0...v1.13.0) (2025-03-25)
 
 
