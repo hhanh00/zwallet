@@ -17,10 +17,15 @@ import 'generated/intl/messages.dart';
 import 'main.dart';
 import 'pages/utils.dart';
 import 'router.dart';
+import 'src/rust/api/cdb.dart';
 
 Future<void> initCoins() async {
   final dbPath = await getDbPath();
   Directory(dbPath).createSync(recursive: true);
+  final filepath = "$dbPath/zec_2.db";
+  logger.i(filepath);
+  coinOpenDb(coin: 0, filepath: filepath, password: "HELLO");
+  createSchema(coin: 0);
   for (var coin in coins) {
     coin.init(dbPath);
   }

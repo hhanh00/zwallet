@@ -4896,6 +4896,12 @@ dependencies = [
  "tokio",
  "tracing",
  "zcash-vote",
+ "zcash_address 0.2.0",
+ "zcash_client_backend",
+ "zcash_encoding 0.2.0",
+ "zcash_params",
+ "zcash_primitives 0.10.2",
+ "zcash_proofs",
 ]
 
 [[package]]
