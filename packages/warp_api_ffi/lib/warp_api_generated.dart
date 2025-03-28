@@ -912,12 +912,14 @@ class NativeLibrary {
       _get_block_by_timePtr.asFunction<CResult_u32 Function(int, int)>();
 
   void store_contact(
+    int coin,
     int id,
     ffi.Pointer<ffi.Char> name,
     ffi.Pointer<ffi.Char> address,
     int dirty,
   ) {
     return _store_contact(
+      coin,
       id,
       name,
       address,
@@ -927,10 +929,11 @@ class NativeLibrary {
 
   late final _store_contactPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Void Function(ffi.Uint32, ffi.Pointer<ffi.Char>,
+          ffi.Void Function(ffi.Uint8, ffi.Uint32, ffi.Pointer<ffi.Char>,
               ffi.Pointer<ffi.Char>, bool)>>('store_contact');
   late final _store_contact = _store_contactPtr.asFunction<
-      void Function(int, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
+      void Function(
+          int, int, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
 
   CResult_____c_char commit_unsaved_contacts(
     int coin,

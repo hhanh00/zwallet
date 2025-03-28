@@ -94,7 +94,7 @@ class _ContactsState extends State<ContactsPage> {
         await showConfirmDialog(context, s.delete, s.confirmDeleteContact);
     if (!confirmed) return;
     final c = listKey.currentState!.selectedContact!;
-    WarpApi.storeContact(c.id, c.name!, '', true);
+    WarpApi.storeContact(aa.coin, c.id, c.name!, '', true);
     contacts.fetchContacts();
   }
 }
@@ -208,7 +208,7 @@ class _ContactEditState extends State<ContactEditPage> {
 
   _save() {
     WarpApi.storeContact(
-        widget.id, nameController.text, addressController.text, true);
+        aa.coin, widget.id, nameController.text, addressController.text, true);
     contacts.fetchContacts();
     GoRouter.of(context).pop();
   }
@@ -276,7 +276,7 @@ class _ContactAddState extends State<ContactAddPage> {
     final form = formKey.currentState!;
     if (form.validate()) {
       WarpApi.storeContact(
-          0, nameController.text, addressController.text, true);
+          aa.coin, 0, nameController.text, addressController.text, true);
       contacts.fetchContacts();
       GoRouter.of(context).pop();
     }
