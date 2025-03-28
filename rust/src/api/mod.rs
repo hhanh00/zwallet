@@ -4,6 +4,7 @@ use flutter_rust_bridge::frb;
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
 
+pub mod cdb;
 pub mod simple;
 
 #[derive(Clone)]

@@ -70,6 +70,8 @@ jobs:
           mkdir -p $HOME/.zcash-params
           curl https://download.z.cash/downloads/sapling-output.params --output assets/sapling-output.params
           curl https://download.z.cash/downloads/sapling-spend.params --output assets/sapling-spend.params
+          cp assets/sapling-output.params $HOME/.zcash-params/sapling-output.params
+          cp assets/sapling-spend.params $HOME/.zcash-params/sapling-spend.params
       - name: Cache x86_64 rust library
         uses: actions/cache/restore@v3
         with:

@@ -129,9 +129,6 @@ class _SplashState extends State<SplashPage> {
           : CoinSettings();
       final url = resolveURL(c, settings);
       WarpApi.updateLWD(coin, url);
-      try {
-        WarpApi.migrateData(c.coin);
-      } catch (_) {} // do not fail on network exception
     }
   }
 
