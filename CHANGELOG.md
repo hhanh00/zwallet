@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.13.3](https://github.com/hhanh00/zwallet/compare/v1.13.2...v1.13.3) (2025-04-02)
+
+
+### Bug Fixes
+
+* remove failing proto build due to deprecated cmake ([827c5f1](https://github.com/hhanh00/zwallet/commit/827c5f1522cbf987c58d3f9fc082db39faf16fbd))
+* sweep seed at account index != 0 ([#222](https://github.com/hhanh00/zwallet/issues/222)) ([827c5f1](https://github.com/hhanh00/zwallet/commit/827c5f1522cbf987c58d3f9fc082db39faf16fbd))
+
 ## [1.13.0](https://github.com/hhanh00/zwallet/compare/v1.12.0...v1.13.0) (2025-03-25)
 
 
