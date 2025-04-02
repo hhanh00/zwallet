@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/hhanh00/zwallet/compare/v1.13.0...v1.13.1) (2025-04-02)
+
+
+### Bug Fixes
+
+* sweep seed at account index != 0 ([#222](https://github.com/hhanh00/zwallet/issues/222)) ([effe604](https://github.com/hhanh00/zwallet/commit/effe60496d308828b93bf2ed69a700c277addda5))
+
 ## [1.13.0](https://github.com/hhanh00/zwallet/compare/v1.12.0...v1.13.0) (2025-03-25)
 
 
