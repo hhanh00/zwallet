@@ -128,7 +128,7 @@ class _SweepState extends State<SweepPage>
               seed,
               _pool,
               _address ?? '',
-              0,
+              int.parse(indexController.text),
               30,
               coinSettings.feeT);
           GoRouter.of(context).push('/account/txplan?tab=more', extra: txPlan);
