@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.4](https://github.com/hhanh00/zwallet/compare/v1.13.3...v1.13.4) (2025-04-10)
+
+
+### Bug Fixes
+
+* (vote) scroll on keyboard pop up ([#228](https://github.com/hhanh00/zwallet/issues/228)) ([8c8d060](https://github.com/hhanh00/zwallet/commit/8c8d06025d51650ef05f51e5767764523c16668e))
+
 ## [1.13.3](https://github.com/hhanh00/zwallet/compare/v1.13.2...v1.13.3) (2025-04-02)
 
 
