@@ -25,7 +25,7 @@ class VoteHistoryState extends State<VoteHistory> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: (context, index) {
+    return ListView.builder(shrinkWrap: true, itemBuilder: (context, index) {
       final vote = votes[index];
       final candidates = electionStore.election!.candidates;
       final index_choice = candidates.indexWhere((c) => c.address == vote.address);
