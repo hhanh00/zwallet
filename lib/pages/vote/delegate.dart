@@ -51,7 +51,7 @@ class VoteDelegateState extends State<VoteDelegate> with WithLoadingAnimation {
 
     return Scaffold(
         appBar: AppBar(title: Text("Delegate")),
-        body: wrapWithLoading(FormBuilder(
+        body: wrapWithLoading(SingleChildScrollView(child: FormBuilder(
             key: formKey,
             child: Column(children: [
               Showcase(key: addressKey, description: "This is your own voting address. Vote Delegations sent to it will be added to your available votes", child:
@@ -77,7 +77,7 @@ class VoteDelegateState extends State<VoteDelegate> with WithLoadingAnimation {
                   ])),
               Gap(16),
               FilledButton(onPressed: onDelegate, child: Text("Delegate"))
-            ]))));
+            ])))));
   }
 
   void onDelegate() async {

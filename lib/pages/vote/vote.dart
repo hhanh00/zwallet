@@ -57,7 +57,7 @@ class VoteVoteState extends State<VoteVote> with WithLoadingAnimation {
 
       return Scaffold(
           appBar: AppBar(title: Text("Vote")),
-          body: wrapWithLoading(FormBuilder(
+          body: wrapWithLoading(SingleChildScrollView(child: FormBuilder(
               key: formKey,
               child: Column(children: [
                 ListTile(title: Text(election.question)),
@@ -88,13 +88,12 @@ class VoteVoteState extends State<VoteVote> with WithLoadingAnimation {
                 Gap(16),
                 Divider(),
                 Text("Past Votes"),
-                Expanded(
-                    child: Showcase(
-                        key: historyKey,
-                        description:
-                            "Past votes and delegations submitted from this file. If votes were submitted prior to the creation of this file, they will not appear here but are counted anyway. Rows in red are votes that have not been finalized yet.",
-                        child: VoteHistory())),
-              ]))));
+                Showcase(
+                  key: historyKey,
+                  description:
+                      "Past votes and delegations submitted from this file. If votes were submitted prior to the creation of this file, they will not appear here but are counted anyway. Rows in red are votes that have not been finalized yet.",
+                  child: VoteHistory()),
+              ])))));
     });
   }
 

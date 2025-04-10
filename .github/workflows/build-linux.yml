@@ -3,8 +3,6 @@ name: Build and Release Linux AppImage/Flatpak
 on:
   workflow_dispatch:
   pull_request:
-    branches-ignore:
-      - "release-please--**"
   push:
     tags:
       - "v*"
@@ -12,6 +10,7 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-latest
+    if: "!contains(github.head_ref, 'release-please--')"
     steps:
       - uses: actions/checkout@v4
         with:
