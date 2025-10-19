@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.5](https://github.com/hhanh00/zwallet/compare/v1.13.4...v1.13.5) (2025-10-19)
+
+
+### Bug Fixes
+
+* build on ubuntu 24 ([#233](https://github.com/hhanh00/zwallet/issues/233)) ([539ee08](https://github.com/hhanh00/zwallet/commit/539ee08a621f8e08d04e6bc55da2e3b037270377))
+
 ## [1.13.4](https://github.com/hhanh00/zwallet/compare/v1.13.3...v1.13.4) (2025-04-10)
 
 
