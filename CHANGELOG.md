@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.6](https://github.com/hhanh00/zwallet/compare/v1.13.5...v1.13.6) (2025-10-20)
+
+
+### Bug Fixes
+
+* upgrade appimage definition ([#235](https://github.com/hhanh00/zwallet/issues/235)) ([7712190](https://github.com/hhanh00/zwallet/commit/7712190ef88474802420d046244a0ebcc04d53b2))
+
 ## [1.13.5](https://github.com/hhanh00/zwallet/compare/v1.13.4...v1.13.5) (2025-10-19)
 
 
