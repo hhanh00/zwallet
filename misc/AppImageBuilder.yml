@@ -15,18 +15,6 @@ AppDir:
     version: latest
     exec: ywallet
     exec_args: $@
-  apt:
-    arch: amd64
-    sources:
-      - sourceline: deb [arch=amd64] http://ie.archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse
-        key_url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x871920D1991BC93C'
-    include:
-      - libgtk-3-0
-    exclude:
-      - humanity-icon-theme
-      - hicolor-icon-theme
-      - adwaita-icon-theme
-      - ubuntu-mono
 AppImage:
   arch: x86_64
   update-information: guess
