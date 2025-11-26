@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/hhanh00/zwallet/compare/v1.13.8...v1.14.0) (2025-11-26)
+
+
+### Features
+
+* support for NU6.1 ([#243](https://github.com/hhanh00/zwallet/issues/243)) ([f48ecc9](https://github.com/hhanh00/zwallet/commit/f48ecc9672e57eab3337a7e0b5fea44c765e9c8d))
+
 ## [1.13.8](https://github.com/hhanh00/zwallet/compare/v1.13.7...v1.13.8) (2025-11-25)
 
 
