@@ -1,12 +1,12 @@
 buildscript {
-    ext.kotlin_version = '1.9.10'
+    ext.kotlin_version = '2.2.20'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:8.13.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -15,6 +15,15 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+    }
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                if (namespace == null) {
+                    namespace "me.hanh.ywallet"
+                }
+            }
+        }
     }
 }
 
@@ -26,7 +35,8 @@ subprojects { subproject ->
     afterEvaluate {
         if ((subproject.plugins.hasPlugin('android') || subproject.plugins.hasPlugin('android-library'))) {
             android {
-                compileSdkVersion 34
+                compileSdkVersion 36
+                ndkVersion "29.0.14206865"
             }
         }
     }
