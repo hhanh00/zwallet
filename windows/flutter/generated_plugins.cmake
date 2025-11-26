@@ -6,10 +6,9 @@ list(APPEND FLUTTER_PLUGIN_LIST
   app_links
   awesome_notifications
   awesome_notifications_core
-  connectivity_plus_windows
+  connectivity_plus
   file_selector_windows
   local_auth_windows
-  network_info_plus_windows
   screen_retriever
   share_plus
   url_launcher_windows
@@ -17,7 +16,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
-  rust_lib_YWallet
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

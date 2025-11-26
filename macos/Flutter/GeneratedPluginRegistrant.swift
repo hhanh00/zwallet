@@ -8,11 +8,11 @@ import Foundation
 import app_links
 import awesome_notifications
 import awesome_notifications_core
-import connectivity_plus_macos
+import connectivity_plus
 import file_selector_macos
 import local_auth_darwin
 import mobile_scanner
-import network_info_plus_macos
+import network_info_plus
 import path_provider_foundation
 import screen_retriever
 import share_plus

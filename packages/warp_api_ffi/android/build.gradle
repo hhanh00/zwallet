@@ -2,7 +2,7 @@ group 'com.example.warp_api'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.3.50'
+    ext.kotlin_version = '1.5.20'
     repositories {
         google()
         jcenter()
@@ -26,6 +26,15 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 30
+
+    // Add this block to enforce Java 17 compatibility across all tasks
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
