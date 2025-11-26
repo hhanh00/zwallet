@@ -1,8 +1,5 @@
 import 'dart:io';
 
-import 'package:YWallet/pages/vote/delegate.dart';
-import 'package:YWallet/pages/vote/overview.dart';
-import 'package:YWallet/pages/vote/vote.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:warp_api/data_fb_generated.dart';
 
@@ -10,8 +7,6 @@ import 'pages/accounts/swap.dart';
 import 'pages/accounts/swap/history.dart';
 import 'pages/accounts/swap/stealthex.dart';
 import 'pages/more/cold.dart';
-import 'pages/vote/new.dart';
-import 'pages/vote/select.dart';
 import 'settings.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -303,15 +298,6 @@ final router = GoRouter(
                     path: 'sweep',
                     builder: (context, state) => SweepPage(),
                   ),
-                  GoRoute(
-                    path: 'vote',
-                    builder: (context, state) => VoteSelect(),
-                    routes: [
-                      GoRoute(path: 'new', builder: (context, state) => VoteNew()),
-                      GoRoute(path: 'overview', builder: (context, state) => VoteOverview()),
-                      GoRoute(path: 'vote', builder: (context, state) => VoteVote()),
-                      GoRoute(path: 'delegate', builder: (context, state) => VoteDelegate()),
-                  ]),
                   GoRoute(
                       path: 'about',
                       builder: (context, state) =>
