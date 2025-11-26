@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,9 +24,18 @@ jobs:
         id: clean
         run: ./build-scripts/clean-runner.sh
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin' # Or 'zulu', 'adopt', etc.
+          cache: 'gradle' # Optional: Caches Gradle dependencies
+
       - name: Build
         id: build
-        run: ./build-scripts/build-android.sh
+        run: |
+          ./build-scripts/build-android.sh
+          echo "ANDROID_NDK_ROOT=$HOME/Android/sdk/ndk/25.1.8937393" >> $GITHUB_ENV
 
       - name: Release
         uses: softprops/action-gh-release@v1

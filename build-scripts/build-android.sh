@@ -2,30 +2,20 @@ set -x
 export BUILD_DIR=$PWD
 pushd $HOME
 
-
-if [ -z "$GITHUB_ACTIONS" ]
-then
-    mkdir -p Android/sdk
-    curl https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip --output cmd-tools.zip
-    unzip cmd-tools.zip
-    pushd cmdline-tools/bin
-    yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses
-    yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "cmdline-tools;latest"
-    yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "build-tools;30.0.3" "cmake;3.18.1"
-    yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "ndk;25.1.8937393"
-    yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platforms;android-33"
-    popd
-    export ANDROID_SDK_ROOT=$HOME/Android/sdk
-else
-    export JAVA_HOME=$JAVA_HOME_17_X64
-    export PATH=$JAVA_HOME/bin:$PATH
-    pushd /usr/local/lib/android/sdk/cmdline-tools/latest/bin
-    yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "ndk;25.1.8937393"
-    popd
-    export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
-fi
+export ANDROID_SDK_ROOT=$HOME/Android/sdk
 export ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk/25.1.8937393
 export ANDROID_NDK_HOME=$ANDROID_NDK_ROOT
+
+mkdir -p Android/sdk
+curl https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip --output cmd-tools.zip
+unzip cmd-tools.zip
+pushd cmdline-tools/bin
+yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses
+yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "cmdline-tools;latest"
+yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "build-tools;30.0.3" "cmake;3.18.1"
+yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "ndk;25.1.8937393"
+yes | ./sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platforms;android-33"
+popd
 
 mkdir -p .zcash-params
 curl https://download.z.cash/downloads/sapling-output.params --output .zcash-params/sapling-output.params
