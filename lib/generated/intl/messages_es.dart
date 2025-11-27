@@ -1,4 +1,8 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'messages.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for Spanish Castilian (`es`).
 class SEs extends S {
@@ -113,10 +117,12 @@ class SEs extends S {
   String get cancel => 'Cancelar';
 
   @override
-  String get cannotDeleteActive => 'No se puede eliminar la cuenta activa a menos que sea la última';
+  String get cannotDeleteActive =>
+      'No se puede eliminar la cuenta activa a menos que sea la última';
 
   @override
-  String get cannotUseTKey => 'No se puede importar la clave privada transparente. Utilice BARRIDO en su lugar';
+  String get cannotUseTKey =>
+      'No se puede importar la clave privada transparente. Utilice BARRIDO en su lugar';
 
   @override
   String get catchup => 'Poner al día';
@@ -131,10 +137,12 @@ class SEs extends S {
   String get configure => 'Configurar';
 
   @override
-  String get confirmDeleteAccount => '¿Estás seguro de que quieres eliminar esta cuenta? DEBES tener un BACKUP para recuperarla. Esta operación no es reversible.';
+  String get confirmDeleteAccount =>
+      '¿Estás seguro de que quieres eliminar esta cuenta? DEBES tener un BACKUP para recuperarla. Esta operación no es reversible.';
 
   @override
-  String get confirmDeleteContact => '¿Estás seguro de que quieres ELIMINAR este contacto?';
+  String get confirmDeleteContact =>
+      '¿Estás seguro de que quieres ELIMINAR este contacto?';
 
   @override
   String confirmRescanFrom(Object height) {
@@ -147,13 +155,15 @@ class SEs extends S {
   }
 
   @override
-  String get confirmSaveContacts => '¿Estás seguro de que quieres guardar tus contactos?';
+  String get confirmSaveContacts =>
+      '¿Estás seguro de que quieres guardar tus contactos?';
 
   @override
   String get confirmSaveKeys => '¿Ha guardado sus claves?';
 
   @override
-  String get confirmWatchOnly => '¿Quieres ELIMINAR la clave secreta y convertir esta cuenta en Sólo visualizción? Ya no podrás gastar desde este dispositivo. Esta operación NO es reversible.';
+  String get confirmWatchOnly =>
+      '¿Quieres ELIMINAR la clave secreta y convertir esta cuenta en Sólo visualizción? Ya no podrás gastar desde este dispositivo. Esta operación NO es reversible.';
 
   @override
   String get confirmations => 'Mínimo de confirmaciones';
@@ -230,7 +240,8 @@ class SEs extends S {
   }
 
   @override
-  String get deletePayment => '¿Está seguro de que desea eliminar este destinatario?';
+  String get deletePayment =>
+      '¿Está seguro de que desea eliminar este destinatario?';
 
   @override
   String get derpath => 'Ruta de derivación';
@@ -245,13 +256,16 @@ class SEs extends S {
   String get disclaimerText => 'AUTOCUSTODIA';
 
   @override
-  String get disclaimer_1 => 'Entiendo que soy responsable de asegurar mi frase de semilla';
+  String get disclaimer_1 =>
+      'Entiendo que soy responsable de asegurar mi frase de semilla';
 
   @override
-  String get disclaimer_2 => 'Entiendo que YWallet no puede recuperar mi frase de semilla';
+  String get disclaimer_2 =>
+      'Entiendo que YWallet no puede recuperar mi frase de semilla';
 
   @override
-  String get disclaimer_3 => 'Entiendo que quien conozca mi frase semilla puede obtener mis fondos';
+  String get disclaimer_3 =>
+      'Entiendo que quien conozca mi frase semilla puede obtener mis fondos';
 
   @override
   String get diversified => 'Diversificada';
@@ -335,7 +349,8 @@ class SEs extends S {
   String get invalidPaymentURI => 'URI de pago inválido';
 
   @override
-  String get key => 'Semilla, Clave secreta o Clave de visualización (opcional)';
+  String get key =>
+      'Semilla, Clave secreta o Clave de visualización (opcional)';
 
   @override
   String get keyTool => 'Herramienta de claves';
@@ -344,7 +359,8 @@ class SEs extends S {
   String get keygen => 'Respaldar Keygen';
 
   @override
-  String get keygenHelp => 'Las copias de seguridad completas utilizan el sistema de cifrado AGE. La clave de cifrado se utiliza para cifrar la copia de seguridad pero NO PUEDE descifrarla. La clave SECRETA es necesaria para restaurar la copia de seguridad.\nLa aplicación no guardará las claves cada vez que este keygen produzca un par de claves DIFERENTES.\n\nUsted DEBE guardar AMBAS claves.';
+  String get keygenHelp =>
+      'Las copias de seguridad completas utilizan el sistema de cifrado AGE. La clave de cifrado se utiliza para cifrar la copia de seguridad pero NO PUEDE descifrarla. La clave SECRETA es necesaria para restaurar la copia de seguridad.\nLa aplicación no guardará las claves cada vez que este keygen produzca un par de claves DIFERENTES.\n\nUsted DEBE guardar AMBAS claves.';
 
   @override
   String get largestSpendingsByAddress => 'Mayores gastos por dirección';
@@ -437,7 +453,8 @@ class SEs extends S {
   String get noAuthenticationMethod => 'Sin Método de Autenticación';
 
   @override
-  String get noDbPassword => 'La base de datos debe ser cifrada para proteger abrir/gastar';
+  String get noDbPassword =>
+      'La base de datos debe ser cifrada para proteger abrir/gastar';
 
   @override
   String get noRemindBackup => 'No me lo recuerdes';
@@ -482,7 +499,8 @@ class SEs extends S {
   String get pleaseAuthenticate => 'Por favor autenticar';
 
   @override
-  String get pleaseQuitAndRestartTheAppNow => 'Por favor, cierre y reinicie la aplicación para que estos cambios surtan efecto';
+  String get pleaseQuitAndRestartTheAppNow =>
+      'Por favor, cierre y reinicie la aplicación para que estos cambios surtan efecto';
 
   @override
   String get pool => 'Pool';
@@ -505,7 +523,8 @@ class SEs extends S {
   }
 
   @override
-  String get privacyLevelTooLow => 'Privacidad demasiado BAJA - Pulsación larga para anular';
+  String get privacyLevelTooLow =>
+      'Privacidad demasiado BAJA - Pulsación larga para anular';
 
   @override
   String get privateKey => 'Clave Privada';
@@ -560,7 +579,8 @@ class SEs extends S {
   String get rescanFrom => 'Rescanear desde...';
 
   @override
-  String get rescanWarning => 'RESCANEAR restablece todas sus cuentas. Puede que quiera considerar usar REBOBINAR en su lugar';
+  String get rescanWarning =>
+      'RESCANEAR restablece todas sus cuentas. Puede que quiera considerar usar REBOBINAR en su lugar';
 
   @override
   String get reset => 'Restablecer';
@@ -575,7 +595,8 @@ class SEs extends S {
   String get restoreAnAccount => '¿Restaurar una cuenta?';
 
   @override
-  String get retrieveTransactionDetails => 'Recuperar detalles de la transacción';
+  String get retrieveTransactionDetails =>
+      'Recuperar detalles de la transacción';
 
   @override
   String get rewind => 'Rebobinar';
@@ -614,7 +635,8 @@ class SEs extends S {
   String get seedOrKeyRequired => 'Semilla o clave privada requerida';
 
   @override
-  String get selectNotesToExcludeFromPayments => 'Seleccione las notas a EXCLUIR de los pagos';
+  String get selectNotesToExcludeFromPayments =>
+      'Seleccione las notas a EXCLUIR de los pagos';
 
   @override
   String get send => 'Enviar';
@@ -789,7 +811,8 @@ class SEs extends S {
   String get dontShowAnymore => 'No mostrar más';
 
   @override
-  String get swapDisclaimer => 'Los swaps son ofrecidos por proveedores externos. Utilice bajo su propio riesgo y realice sus propias investigaciones.';
+  String get swapDisclaimer =>
+      'Los swaps son ofrecidos por proveedores externos. Utilice bajo su propio riesgo y realice sus propias investigaciones.';
 
   @override
   String get swap => 'Swap';
@@ -807,7 +830,8 @@ class SEs extends S {
   String get invalidSwapCurrencies => 'El intercambio debe incluir ZEC';
 
   @override
-  String get checkSwapAddress => '¡Asegúrese de que la dirección de destino es válida!';
+  String get checkSwapAddress =>
+      '¡Asegúrese de que la dirección de destino es válida!';
 
   @override
   String get swapSend => 'Enviar';
@@ -816,16 +840,19 @@ class SEs extends S {
   String get swapReceive => 'Recibir';
 
   @override
-  String get swapFromTip => 'Consejo: Envía los fondos a la dirección en la parte superior y recibirás el ZEC en tu dirección transparente.';
+  String get swapFromTip =>
+      'Consejo: Envía los fondos a la dirección en la parte superior y recibirás el ZEC en tu dirección transparente.';
 
   @override
-  String get swapToTip => 'Consejo: Toque el botón Enviar y reciba la otra moneda';
+  String get swapToTip =>
+      'Consejo: Toque el botón Enviar y reciba la otra moneda';
 
   @override
   String get confirm => 'Por favor, confirme';
 
   @override
-  String get confirmClearSwapHistory => '¿Está seguro de que desea borrar el historial de intercambio?';
+  String get confirmClearSwapHistory =>
+      '¿Está seguro de que desea borrar el historial de intercambio?';
 
   @override
   String get retry => 'Reintentar';

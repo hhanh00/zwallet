@@ -10,7 +10,6 @@ import 'package:settings_ui/settings_ui.dart';
 import '../../accounts.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
-import '../../store2.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
@@ -38,16 +37,6 @@ class MorePage extends StatelessWidget {
             icon: FaIcon(FontAwesomeIcons.peopleArrows),
             text: s.multiPay,
             secured: appSettings.protectSend),
-        if (c.supportsUA)
-          MoreTile(
-              url: '/account/swap',
-              icon: FaIcon(FontAwesomeIcons.arrowRightArrowLeft),
-              text: s.swap,
-              secured: appSettings.protectSend),
-        MoreTile(
-            url: '/more/vote',
-            icon: FaIcon(FontAwesomeIcons.personBooth),
-            text: s.vote),
       ]),
       MoreSection(title: Text(s.backup), tiles: [
         MoreTile(
