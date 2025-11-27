@@ -1,4 +1,8 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'messages.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for Portuguese (`pt`).
 class SPt extends S {
@@ -35,7 +39,8 @@ class SPt extends S {
   String get address => 'Endereço';
 
   @override
-  String get addressCopiedToClipboard => 'Endereço copiado para área de transferência';
+  String get addressCopiedToClipboard =>
+      'Endereço copiado para área de transferência';
 
   @override
   String get addressIndex => 'Índice de endereço';
@@ -113,10 +118,12 @@ class SPt extends S {
   String get cancel => 'Cancelar';
 
   @override
-  String get cannotDeleteActive => 'Não é possível excluir a conta ativa a menos que seja a última';
+  String get cannotDeleteActive =>
+      'Não é possível excluir a conta ativa a menos que seja a última';
 
   @override
-  String get cannotUseTKey => 'Não é possível importar uma chave privada transparente. Use SWEEP em vez disso';
+  String get cannotUseTKey =>
+      'Não é possível importar uma chave privada transparente. Use SWEEP em vez disso';
 
   @override
   String get catchup => 'Capturar até';
@@ -131,10 +138,12 @@ class SPt extends S {
   String get configure => 'Configurar';
 
   @override
-  String get confirmDeleteAccount => 'Você tem CERTEZA que deseja EXCLUIR esta conta? Você PRECISA ter um BACKUP para recuperá-la. Esta operação NÃO é reversível.';
+  String get confirmDeleteAccount =>
+      'Você tem CERTEZA que deseja EXCLUIR esta conta? Você PRECISA ter um BACKUP para recuperá-la. Esta operação NÃO é reversível.';
 
   @override
-  String get confirmDeleteContact => 'Você tem CERTEZA que quer EXCLUIR este contato?';
+  String get confirmDeleteContact =>
+      'Você tem CERTEZA que quer EXCLUIR este contato?';
 
   @override
   String confirmRescanFrom(Object height) {
@@ -147,13 +156,15 @@ class SPt extends S {
   }
 
   @override
-  String get confirmSaveContacts => 'Você tem certeza que deseja salvar seus contatos?';
+  String get confirmSaveContacts =>
+      'Você tem certeza que deseja salvar seus contatos?';
 
   @override
   String get confirmSaveKeys => 'Você salvou suas chaves?';
 
   @override
-  String get confirmWatchOnly => 'Você deseja EXCLUIR a chave secreta e converter essa conta em uma conta somente watch? Você não poderá mais gastar deste dispositivo. Esta operação NÃO é reversível.';
+  String get confirmWatchOnly =>
+      'Você deseja EXCLUIR a chave secreta e converter essa conta em uma conta somente watch? Você não poderá mais gastar deste dispositivo. Esta operação NÃO é reversível.';
 
   @override
   String get confirmations => 'Mín. Confirmações';
@@ -230,7 +241,8 @@ class SPt extends S {
   }
 
   @override
-  String get deletePayment => 'Tem certeza de que deseja excluir este destinatário';
+  String get deletePayment =>
+      'Tem certeza de que deseja excluir este destinatário';
 
   @override
   String get derpath => 'Caminho de derivação';
@@ -245,13 +257,16 @@ class SPt extends S {
   String get disclaimerText => 'SEF-CUSTODADE';
 
   @override
-  String get disclaimer_1 => 'Eu entendo que sou responsável por proteger minha seed phrase';
+  String get disclaimer_1 =>
+      'Eu entendo que sou responsável por proteger minha seed phrase';
 
   @override
-  String get disclaimer_2 => 'Eu entendo que o YWallet não pode recuperar minha semente';
+  String get disclaimer_2 =>
+      'Eu entendo que o YWallet não pode recuperar minha semente';
 
   @override
-  String get disclaimer_3 => 'Eu entendo quem sabe minha seed phrase pode receber meus fundos';
+  String get disclaimer_3 =>
+      'Eu entendo quem sabe minha seed phrase pode receber meus fundos';
 
   @override
   String get diversified => 'Diversificado';
@@ -344,7 +359,8 @@ class SPt extends S {
   String get keygen => 'Chave de Backup';
 
   @override
-  String get keygenHelp => 'Os backups completos usam o sistema de criptografia AGE. A chave de criptografia é usada para criptografar o backup, mas NÃO PODEM descriptografá-lo. A chave SECRET é necessária para restaurar o backup.\nO aplicativo não armazenará as chaves. Toda vez que este keygen produzir um par de chaves.\n\nVocê DEVE salvar as chaves BOTH que você usar';
+  String get keygenHelp =>
+      'Os backups completos usam o sistema de criptografia AGE. A chave de criptografia é usada para criptografar o backup, mas NÃO PODEM descriptografá-lo. A chave SECRET é necessária para restaurar o backup.\nO aplicativo não armazenará as chaves. Toda vez que este keygen produzir um par de chaves.\n\nVocê DEVE salvar as chaves BOTH que você usar';
 
   @override
   String get largestSpendingsByAddress => 'Maior pendências por endereço';
@@ -437,7 +453,8 @@ class SPt extends S {
   String get noAuthenticationMethod => 'Nenhum método de autenticação';
 
   @override
-  String get noDbPassword => 'A base de dados deve ser criptografada para proteger aberto/gasto';
+  String get noDbPassword =>
+      'A base de dados deve ser criptografada para proteger aberto/gasto';
 
   @override
   String get noRemindBackup => 'Não me lembre';
@@ -482,7 +499,8 @@ class SPt extends S {
   String get pleaseAuthenticate => 'Por favor, autentique-se';
 
   @override
-  String get pleaseQuitAndRestartTheAppNow => 'Por favor, saia e reinicie o aplicativo para que essas alterações entrem em vigor';
+  String get pleaseQuitAndRestartTheAppNow =>
+      'Por favor, saia e reinicie o aplicativo para que essas alterações entrem em vigor';
 
   @override
   String get pool => 'Banco';
@@ -505,7 +523,8 @@ class SPt extends S {
   }
 
   @override
-  String get privacyLevelTooLow => 'Privacidade muito BAIXA - Pressione e segure para substituir';
+  String get privacyLevelTooLow =>
+      'Privacidade muito BAIXA - Pressione e segure para substituir';
 
   @override
   String get privateKey => 'Chave Privada';
@@ -560,7 +579,8 @@ class SPt extends S {
   String get rescanFrom => 'Reescanear de...';
 
   @override
-  String get rescanWarning => 'RESCAN redefine todas as suas contas. Você pode considerar usar REWIND';
+  String get rescanWarning =>
+      'RESCAN redefine todas as suas contas. Você pode considerar usar REWIND';
 
   @override
   String get reset => 'Reset';
@@ -611,10 +631,12 @@ class SPt extends S {
   String get seedKeys => 'Semente & Chaves';
 
   @override
-  String get seedOrKeyRequired => 'É necessária uma chave privada ou de semente';
+  String get seedOrKeyRequired =>
+      'É necessária uma chave privada ou de semente';
 
   @override
-  String get selectNotesToExcludeFromPayments => 'Selecione notas para EXCLUDE dos pagamentos';
+  String get selectNotesToExcludeFromPayments =>
+      'Selecione notas para EXCLUDE dos pagamentos';
 
   @override
   String get send => 'Mandar';
@@ -789,7 +811,8 @@ class SPt extends S {
   String get dontShowAnymore => 'Não mostrar mais';
 
   @override
-  String get swapDisclaimer => 'Os swaps são oferecidos por provedores de terceiros. Use por sua conta e risco e faça a sua própria pesquisa.';
+  String get swapDisclaimer =>
+      'Os swaps são oferecidos por provedores de terceiros. Use por sua conta e risco e faça a sua própria pesquisa.';
 
   @override
   String get swap => 'Trocar';
@@ -807,7 +830,8 @@ class SPt extends S {
   String get invalidSwapCurrencies => 'Trocar deve incluir ZEC';
 
   @override
-  String get checkSwapAddress => 'Certifique-se de que o endereço de destino é válido!';
+  String get checkSwapAddress =>
+      'Certifique-se de que o endereço de destino é válido!';
 
   @override
   String get swapSend => 'Mandar';
@@ -816,7 +840,8 @@ class SPt extends S {
   String get swapReceive => 'Receber';
 
   @override
-  String get swapFromTip => 'Dica: Envie os fundos para o endereço na caixa superior e você receberá o ZEC no seu endereço transparente.';
+  String get swapFromTip =>
+      'Dica: Envie os fundos para o endereço na caixa superior e você receberá o ZEC no seu endereço transparente.';
 
   @override
   String get swapToTip => 'Dica: Toque no botão enviar e receba a outra moeda';
@@ -825,7 +850,8 @@ class SPt extends S {
   String get confirm => 'Por favor confirme';
 
   @override
-  String get confirmClearSwapHistory => 'Tem certeza de que deseja limpar o histórico de trocas?';
+  String get confirmClearSwapHistory =>
+      'Tem certeza de que deseja limpar o histórico de trocas?';
 
   @override
   String get retry => 'Repetir';
