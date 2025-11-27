@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.1](https://github.com/hhanh00/zwallet/compare/v1.14.0...v1.14.1) (2025-11-27)
+
+
+### Bug Fixes
+
+* android build 16k pages ([#245](https://github.com/hhanh00/zwallet/issues/245)) ([69d9691](https://github.com/hhanh00/zwallet/commit/69d969115b00a37f68f1897fa8e9ad8e7496dee3))
+
 ## [1.14.0](https://github.com/hhanh00/zwallet/compare/v1.13.8...v1.14.0) (2025-11-26)
 
 
