@@ -35,7 +35,7 @@ jobs:
         id: build
         run: |
           ./build-scripts/build-android.sh
-          echo "ANDROID_NDK_ROOT=$HOME/Android/sdk/ndk/25.1.8937393" >> $GITHUB_ENV
+          echo "ANDROID_NDK_ROOT=$HOME/Android/sdk/ndk/29.0.14206865" >> $GITHUB_ENV
 
       - name: Release
         uses: softprops/action-gh-release@v1

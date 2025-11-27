@@ -1,4 +1,8 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'messages.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for English (`en`).
 class SEn extends S {
@@ -113,10 +117,12 @@ class SEn extends S {
   String get cancel => 'Cancel';
 
   @override
-  String get cannotDeleteActive => 'Cannot delete the active account unless it is the last one';
+  String get cannotDeleteActive =>
+      'Cannot delete the active account unless it is the last one';
 
   @override
-  String get cannotUseTKey => 'Cannot import transparent private key. Use SWEEP instead';
+  String get cannotUseTKey =>
+      'Cannot import transparent private key. Use SWEEP instead';
 
   @override
   String get catchup => 'Catch up';
@@ -131,10 +137,12 @@ class SEn extends S {
   String get configure => 'Configure';
 
   @override
-  String get confirmDeleteAccount => 'Are you SURE you want to DELETE this account? You MUST have a BACKUP to recover it. This operation is NOT reversible.';
+  String get confirmDeleteAccount =>
+      'Are you SURE you want to DELETE this account? You MUST have a BACKUP to recover it. This operation is NOT reversible.';
 
   @override
-  String get confirmDeleteContact => 'Are you SURE you want to DELETE this contact?';
+  String get confirmDeleteContact =>
+      'Are you SURE you want to DELETE this contact?';
 
   @override
   String confirmRescanFrom(Object height) {
@@ -147,13 +155,15 @@ class SEn extends S {
   }
 
   @override
-  String get confirmSaveContacts => 'Are you sure you want to save your contacts?';
+  String get confirmSaveContacts =>
+      'Are you sure you want to save your contacts?';
 
   @override
   String get confirmSaveKeys => 'Have you saved your keys?';
 
   @override
-  String get confirmWatchOnly => 'Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.';
+  String get confirmWatchOnly =>
+      'Do you want to DELETE the secret key and convert this account to a watch-only account? You will not be able to spend from this device anymore. This operation is NOT reversible.';
 
   @override
   String get confirmations => 'Min. Confirmations';
@@ -245,13 +255,16 @@ class SEn extends S {
   String get disclaimerText => 'SELF-CUSTODY';
 
   @override
-  String get disclaimer_1 => 'I understand I am responsible for securing my seed phrase';
+  String get disclaimer_1 =>
+      'I understand I am responsible for securing my seed phrase';
 
   @override
-  String get disclaimer_2 => 'I understand YWallet cannot recover my seed phrase';
+  String get disclaimer_2 =>
+      'I understand YWallet cannot recover my seed phrase';
 
   @override
-  String get disclaimer_3 => 'I understand whoever knows my seed phrase can get my funds';
+  String get disclaimer_3 =>
+      'I understand whoever knows my seed phrase can get my funds';
 
   @override
   String get diversified => 'Diversified';
@@ -344,7 +357,8 @@ class SEn extends S {
   String get keygen => 'Backup Keygen';
 
   @override
-  String get keygenHelp => 'Full backups use the AGE encryption system. The encryption key is used to encrypt the backup but CANNOT decrypt it. The SECRET key is needed to restore the backup.\nThe app will not store the keys. Every time this keygen will produce a DIFFERENT pair of keys.\n\nYou MUST save BOTH keys that you use';
+  String get keygenHelp =>
+      'Full backups use the AGE encryption system. The encryption key is used to encrypt the backup but CANNOT decrypt it. The SECRET key is needed to restore the backup.\nThe app will not store the keys. Every time this keygen will produce a DIFFERENT pair of keys.\n\nYou MUST save BOTH keys that you use';
 
   @override
   String get largestSpendingsByAddress => 'Largest Spendings by Address';
@@ -482,7 +496,8 @@ class SEn extends S {
   String get pleaseAuthenticate => 'Please Authenticate';
 
   @override
-  String get pleaseQuitAndRestartTheAppNow => 'Please Quit and Restart the app in order for these changes to take effect';
+  String get pleaseQuitAndRestartTheAppNow =>
+      'Please Quit and Restart the app in order for these changes to take effect';
 
   @override
   String get pool => 'Pool';
@@ -560,7 +575,8 @@ class SEn extends S {
   String get rescanFrom => 'Rescan from...';
 
   @override
-  String get rescanWarning => 'RESCAN resets all your accounts. You may want to consider using REWIND instead';
+  String get rescanWarning =>
+      'RESCAN resets all your accounts. You may want to consider using REWIND instead';
 
   @override
   String get reset => 'Reset';
@@ -614,7 +630,8 @@ class SEn extends S {
   String get seedOrKeyRequired => 'Seed or Private Key required';
 
   @override
-  String get selectNotesToExcludeFromPayments => 'Select notes to EXCLUDE from payments';
+  String get selectNotesToExcludeFromPayments =>
+      'Select notes to EXCLUDE from payments';
 
   @override
   String get send => 'Send';
@@ -789,7 +806,8 @@ class SEn extends S {
   String get dontShowAnymore => 'Do not show anymore';
 
   @override
-  String get swapDisclaimer => 'Swaps are offered by third-party providers. Use at your own risk and do your own research.';
+  String get swapDisclaimer =>
+      'Swaps are offered by third-party providers. Use at your own risk and do your own research.';
 
   @override
   String get swap => 'Swap';
@@ -807,7 +825,8 @@ class SEn extends S {
   String get invalidSwapCurrencies => 'Swap must include ZEC';
 
   @override
-  String get checkSwapAddress => 'Make sure that the destination address is valid!';
+  String get checkSwapAddress =>
+      'Make sure that the destination address is valid!';
 
   @override
   String get swapSend => 'Send';
@@ -816,16 +835,19 @@ class SEn extends S {
   String get swapReceive => 'Receive';
 
   @override
-  String get swapFromTip => 'Tip: Send the funds to the address in the upper box and you will receive the ZEC in your transparent address.';
+  String get swapFromTip =>
+      'Tip: Send the funds to the address in the upper box and you will receive the ZEC in your transparent address.';
 
   @override
-  String get swapToTip => 'Tip: Tap the Send Button and receive the other currency';
+  String get swapToTip =>
+      'Tip: Tap the Send Button and receive the other currency';
 
   @override
   String get confirm => 'Please Confirm';
 
   @override
-  String get confirmClearSwapHistory => 'Are you sure you want to clear the swap history?';
+  String get confirmClearSwapHistory =>
+      'Are you sure you want to clear the swap history?';
 
   @override
   String get retry => 'Retry';
