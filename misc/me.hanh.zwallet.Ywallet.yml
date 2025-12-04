@@ -1,6 +1,6 @@
 id: me.hanh.zwallet.Ywallet
 runtime: org.freedesktop.Platform
-runtime-version: "22.08"
+runtime-version: "24.08"
 sdk: org.freedesktop.Sdk
 command: ywallet
 finish-args:

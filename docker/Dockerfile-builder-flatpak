@@ -6,5 +6,5 @@ RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
 RUN apt-get install -yq curl gnupg2 flatpak flatpak-builder
 
 RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-RUN flatpak install -y flathub org.freedesktop.Platform//22.08 org.freedesktop.Sdk//22.08
+RUN flatpak install -y flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08
 RUN flatpak install -y flathub org.gnome.Platform//43 org.gnome.Sdk//43
