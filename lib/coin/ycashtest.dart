@@ -5,7 +5,7 @@ import "coin.dart";
 class YcashTestCoin extends CoinBase {
   int coin = 3;
   String name = "Ycash Test";
-  String app = "YWalletTest";
+  String app = "YWallet (playground)";
   String symbol = "\u24E8";
   String currency = "ycash";
   int coinIndex = 1; // Testnet is often 1

@@ -20,7 +20,7 @@ allprojects {
         if (project.hasProperty('android')) {
             project.android {
                 if (namespace == null) {
-                    namespace "me.hanh.ywallet"
+                    namespace "me.hanh.ywallet.playground"
                 }
             }
         }

@@ -41,7 +41,7 @@ import 'widgets.dart';
 
 var logger = Logger();
 
-const APP_NAME = "YWallet";
+const APP_NAME = "YWallet (playground)";
 const ZECUNIT = 100000000.0;
 const ZECUNIT_INT = 100000000;
 const MAX_PRECISION = 8;

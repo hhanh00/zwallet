@@ -51,7 +51,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "me.hanh.ywallet"
+        applicationId "me.hanh.ywallet.playground"
         minSdkVersion 24
         targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()

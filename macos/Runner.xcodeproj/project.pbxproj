@@ -434,7 +434,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.hanh.ywallet;
+				PRODUCT_BUNDLE_IDENTIFIER = me.hanh.ywallet.playground;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = "non-global";
 				SWIFT_VERSION = 5.0;
@@ -564,7 +564,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.hanh.ywallet;
+				PRODUCT_BUNDLE_IDENTIFIER = me.hanh.ywallet.playground;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = "non-global";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -588,7 +588,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.hanh.ywallet;
+				PRODUCT_BUNDLE_IDENTIFIER = me.hanh.ywallet.playground;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = "non-global";
 				SWIFT_VERSION = 5.0;

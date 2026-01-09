@@ -5,7 +5,7 @@ import 'coin.dart';
 class ZcashTestCoin extends CoinBase {
   int coin = 2;
   String name = "Zcash Test";
-  String app = "ZWallet";
+  String app = "YWallet (playground)";
   String symbol = "\u24E9";
   String currency = "zcash";
   int coinIndex = 1;
