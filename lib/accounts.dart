@@ -47,7 +47,7 @@ class ActiveAccount2 extends _ActiveAccount2 with _$ActiveAccount2 {
     final coin = prefs.getInt('coin') ?? 0;
     var id = prefs.getInt('account') ?? 0;
     if (WarpApi.checkAccount(coin, id)) return ActiveAccount2.fromId(coin, id);
-    for (var c in coins) {
+    for (var c in getAllCoins()) {
       final id = WarpApi.getFirstAccount(c.coin);
       if (id > 0) return ActiveAccount2.fromId(c.coin, id);
     }

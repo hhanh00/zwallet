@@ -220,6 +220,16 @@ class _GeneralState extends State<GeneralTab>
             initialValue: widget.appSettings.memo,
             onChanged: (v) => widget.appSettings.memo = v!,
           ),
+          FormBuilderSwitch(
+            name: 'developer_mode',
+            title: Text("Enable Developer Options"),
+            initialValue: widget.appSettings.developerMode != 0,
+            onChanged: (v) {
+              setState(() {
+                widget.appSettings.developerMode = v! ? 1 : 0;
+              });
+            },
+          ),
           Gap(16),
           OutlinedButton(onPressed: onResetTutorials, child: Text("Reset Tutorials")),
         ],
@@ -474,8 +484,8 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
     super.build(context);
     final s = S.of(context);
     final t = Theme.of(context);
-    final c = coins[widget.coin];
-    final servers = c.lwd
+    final coinDef = coins[widget.coin];
+    final servers = coinDef.lwd
         .asMap()
         .entries
         .map(
@@ -485,7 +495,7 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
                   (pings[kv.key]?.let((v) => ' [$v ms]') ?? ''))),
         )
         .toList();
-    final explorers = c.blockExplorers
+    final explorers = coinDef.blockExplorers
         .asMap()
         .entries
         .map((kv) => FormBuilderFieldOption(
@@ -526,7 +536,9 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
           FormBuilderRadioGroup<int>(
             name: 'server',
             orientation: OptionsOrientation.vertical,
-            decoration: InputDecoration(label: Text(s.server)),
+            decoration: InputDecoration(
+                label: Text(s.server),
+                helperText: servers.isEmpty ? "Only custom URL is allowed" : null),
             initialValue: widget.coinSettings.lwd.index,
             onChanged: (v) => widget.coinSettings.lwd.index = v!,
             options: [
@@ -595,9 +607,9 @@ class _CoinState extends State<CoinTab> with AutomaticKeepAliveClientMixin {
   }
 
   void ping() {
+    final coinDef = coins[widget.coin];
     for (var i = 0; i < pings.length; i++) {
-      final c = coins[widget.coin];
-      final server = c.lwd[i].url;
+      final server = coinDef.lwd[i].url;
       Future(() async {
         final ping = await WarpApi.ping(server);
         pings[i] = ping;

@@ -15,7 +15,7 @@ extension AppSettingsExtension on AppSettings {
   void defaults() {
     if (!hasConfirmations()) confirmations = 3;
     if (!hasRowsPerPage()) rowsPerPage = 10;
-    if (!hasDeveloperMode()) developerMode = 5;
+    if (!hasDeveloperMode()) developerMode = 0;
     if (!hasCurrency()) currency = 'USD';
     if (!hasAutoHide()) autoHide = 1;
     if (!hasPalette()) {

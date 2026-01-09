@@ -43,7 +43,11 @@ class _NewImportAccountState extends State<NewImportAccountPage>
       _key = si.seed;
       accountIndexController.text = si.index.toString();
     }
-    options = coins.map((c) {
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    options = selectableCoins.map((c) {
       return FormBuilderFieldOption(
           child: ListTile(
             title: Text(c.name),
@@ -51,10 +55,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           ),
           value: c.coin);
     }).toList();
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return wrapWithLoading(Scaffold(
       appBar: AppBar(
         title: Text(s.newAccount),
