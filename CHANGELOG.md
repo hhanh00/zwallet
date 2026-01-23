@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.2](https://github.com/hhanh00/zwallet/compare/v1.14.1...v1.14.2) (2026-01-23)
+
+
+### Bug Fixes
+
+* parse tex address in extract_receivers ([fed0228](https://github.com/hhanh00/zwallet/commit/fed022863f624013659e387266a35e192dc53a6f))
+
 ## [1.14.1](https://github.com/hhanh00/zwallet/compare/v1.14.0...v1.14.1) (2025-11-27)
 
 
