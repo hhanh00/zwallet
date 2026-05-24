@@ -1,10 +1,32 @@
+# DEPRECATION NOTICE
+
+**YWallet is not going to receive further updates** besides
+- security fixes
+- protocol updates
+
+In other words, it is still going to work and your coins are safe,
+but it will not get more features.
+
+The new wallet is https://github.com/hhanh00/zkool2 (by me).
+
+It has become too difficult to maintain feature parity between Ycash & Zcash.
+Zkool is a Zcash only wallet built from the ground up with the experience learned
+from making Ywallet and with a robust foundation that enables it to have functionalities
+that Ywallet would never get.
+
+For instance, you can have accounts that are synchronized at different block heights, allowing
+you to keep old accounts in a "frozen" state. You can have transparent or shielded only accounts.
+You can derive multiple transparent addresses and recover funds from other apps like Exodus and Ledger.
+It is probably the most universal Zcash wallet there is. So if other wallets do not work, chances are
+Zkool will...
+
 # YWallet
 
 > The fastest, most advanced, shielded wallet for Zcash
 
 ## Main Features
 
-- Warp Sync: **PROCESSES ~10 000 BLOCKS PER SECOND** (1) 
+- Warp Sync: **PROCESSES ~10 000 BLOCKS PER SECOND** (1)
 - **Transparent** and **Shielded** Address support (2)
 - Scalable Design: Supports **hundreds of thousands of transactions and received notes**
 - **Low Requirements**: Android 7.0+, 2 GB of RAM
@@ -16,8 +38,8 @@
 - Import seed phrase (**ZIP 32 compliant**) or secret key (**Zcashd standard**)
 - One touch transparent account shielding
 - **Automatic shielding** above configurable threshold
-- Transparent Shielding in Payments 
-- Snap (i.e. **diversified**) addresses 
+- Transparent Shielding in Payments
+- Snap (i.e. **diversified**) addresses
 - Show equivalent in **Fiat currencies** (USD, EUR, JPY, RMB, etc.)
 - Display and select notes (**Coin Control**)
 - Specify spending amount in Fiat or ZEC
