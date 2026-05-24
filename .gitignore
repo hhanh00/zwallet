@@ -57,3 +57,6 @@ jniLibs/
 .flatpak-builder/
 build-dir/
 lib/src/version.dart
+
+# FVM Version Cache
+.fvm/

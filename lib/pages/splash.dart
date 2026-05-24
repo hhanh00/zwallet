@@ -6,6 +6,8 @@ import 'package:YWallet/router.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quick_actions/quick_actions.dart';
@@ -55,6 +57,7 @@ class _SplashState extends State<SplashPage> {
           await authBarrier(context);
         }
         appStore.initialized = true;
+        await _showDeprecationNoticeIfNeeded();
         if (applinkUri != null)
           handleUri(applinkUri);
         else if (quickAction != null)
@@ -152,6 +155,170 @@ class _SplashState extends State<SplashPage> {
   void _setProgress(double progress, String message) {
     print("$progress $message");
     progressKey.currentState!.setValue(progress, message);
+  }
+
+  Future<void> _showDeprecationNoticeIfNeeded() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastAcknowledged = prefs.getInt('deprecation_last_acknowledged');
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final oneMonth = Duration(days: 30).inMilliseconds;
+
+    if (lastAcknowledged != null && now - lastAcknowledged < oneMonth) {
+      return;
+    }
+
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: colorScheme.errorContainer.withOpacity(0.3),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.info_outline_rounded,
+                size: 48,
+                color: colorScheme.error,
+              ),
+            ),
+            const Gap(24),
+            Text(
+              'Important Notice',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: colorScheme.onSurface,
+              ),
+            ),
+            const Gap(16),
+            Text(
+              'YWallet is no longer actively developed',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const Gap(8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.security_rounded,
+                    size: 18,
+                    color: colorScheme.primary,
+                  ),
+                  const Gap(8),
+                  Text(
+                    'Your coins remain safe',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Gap(16),
+            Text(
+              'Security fixes and protocol updates will continue.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const Gap(20),
+            Divider(color: colorScheme.outlineVariant),
+            const Gap(16),
+            Text(
+              'Try the new Zcash wallet:',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const Gap(8),
+            InkWell(
+              onTap: () async {
+                final url = Uri.parse('https://github.com/hhanh00/zkool2');
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                }
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: colorScheme.outline.withOpacity(0.5),
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.arrow_outward_rounded,
+                      size: 16,
+                      color: colorScheme.primary,
+                    ),
+                    const Gap(8),
+                    Text(
+                      'Zkool Wallet',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Gap(8),
+            Text(
+              'The successor to YWallet',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('Got it'),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    await prefs.setInt('deprecation_last_acknowledged', now);
   }
 
   _initBackgroundSync() {

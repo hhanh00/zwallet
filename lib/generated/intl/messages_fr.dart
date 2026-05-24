@@ -1,8 +1,4 @@
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
 import 'messages.dart';
-
-// ignore_for_file: type=lint
 
 /// The translations for French (`fr`).
 class SFr extends S {
@@ -39,8 +35,7 @@ class SFr extends S {
   String get address => 'Adresse';
 
   @override
-  String get addressCopiedToClipboard =>
-      'Adresse copiée dans le presse-papiers';
+  String get addressCopiedToClipboard => 'Adresse copiée dans le presse-papiers';
 
   @override
   String get addressIndex => 'Index de l\'adresse';
@@ -118,12 +113,10 @@ class SFr extends S {
   String get cancel => 'Abandonner';
 
   @override
-  String get cannotDeleteActive =>
-      'Impossible de supprimer le compte actif sauf s\'il est le dernier';
+  String get cannotDeleteActive => 'Impossible de supprimer le compte actif sauf s\'il est le dernier';
 
   @override
-  String get cannotUseTKey =>
-      'Impossible d\'importer une clé privée transparente. Utilisez BALAYER à la place';
+  String get cannotUseTKey => 'Impossible d\'importer une clé privée transparente. Utilisez BALAYER à la place';
 
   @override
   String get catchup => 'Rattraper';
@@ -138,12 +131,10 @@ class SFr extends S {
   String get configure => 'Configurer';
 
   @override
-  String get confirmDeleteAccount =>
-      'Êtes-vous sûr de vouloir SUPPRIMER ce compte ? Vous DEVEZ avoir une SAUVEGARDE pour le récupérer. Cette opération n\'est PAS réversible.';
+  String get confirmDeleteAccount => 'Êtes-vous sûr de vouloir SUPPRIMER ce compte ? Vous DEVEZ avoir une SAUVEGARDE pour le récupérer. Cette opération n\'est PAS réversible.';
 
   @override
-  String get confirmDeleteContact =>
-      'Êtes-vous sûr de vouloir SUPPRIMER ce contact ?';
+  String get confirmDeleteContact => 'Êtes-vous sûr de vouloir SUPPRIMER ce contact ?';
 
   @override
   String confirmRescanFrom(Object height) {
@@ -156,15 +147,13 @@ class SFr extends S {
   }
 
   @override
-  String get confirmSaveContacts =>
-      'Êtes-vous sûr de vouloir enregistrer vos contacts ?';
+  String get confirmSaveContacts => 'Êtes-vous sûr de vouloir enregistrer vos contacts ?';
 
   @override
   String get confirmSaveKeys => 'Avez-vous enregistré vos clés ?';
 
   @override
-  String get confirmWatchOnly =>
-      'Voulez-vous SUPPRIMER la clé secrète et convertir ce compte en un compte en lecture seule ? Vous ne pourrez plus dépenser depuis cet appareil. Cette opération n\'est PAS réversible.';
+  String get confirmWatchOnly => 'Voulez-vous SUPPRIMER la clé secrète et convertir ce compte en un compte en lecture seule ? Vous ne pourrez plus dépenser depuis cet appareil. Cette opération n\'est PAS réversible.';
 
   @override
   String get confirmations => 'Confirmations minimum';
@@ -241,8 +230,7 @@ class SFr extends S {
   }
 
   @override
-  String get deletePayment =>
-      'Êtes-vous sûr de vouloir supprimer ce destinataire';
+  String get deletePayment => 'Êtes-vous sûr de vouloir supprimer ce destinataire';
 
   @override
   String get derpath => 'Chemin de dérivation';
@@ -257,16 +245,13 @@ class SFr extends S {
   String get disclaimerText => 'SELF-CUSTODY';
 
   @override
-  String get disclaimer_1 =>
-      'Je comprends que je suis responsable de la sécurisation de ma phrase de graine';
+  String get disclaimer_1 => 'Je comprends que je suis responsable de la sécurisation de ma phrase de graine';
 
   @override
-  String get disclaimer_2 =>
-      'Je comprends que YWallet ne puisse pas récupérer ma phrase de graine';
+  String get disclaimer_2 => 'Je comprends que YWallet ne puisse pas récupérer ma phrase de graine';
 
   @override
-  String get disclaimer_3 =>
-      'Je comprends que qui connaît ma phrase de graine peut obtenir mes fonds';
+  String get disclaimer_3 => 'Je comprends que qui connaît ma phrase de graine peut obtenir mes fonds';
 
   @override
   String get diversified => 'Diversifié';
@@ -359,12 +344,10 @@ class SFr extends S {
   String get keygen => 'Générateur de clés de sauvegarde';
 
   @override
-  String get keygenHelp =>
-      'Les sauvegardes utilisent le système de chiffrage AGE. La clé de chiffrage est utilisée pour faire la sauvegarde, mais ne peut PAS le déchiffrer. La clé secrète est nécessaire pour recharger la sauvegarde.\n\nVous devez garder les DEUX clés';
+  String get keygenHelp => 'Les sauvegardes utilisent le système de chiffrage AGE. La clé de chiffrage est utilisée pour faire la sauvegarde, mais ne peut PAS le déchiffrer. La clé secrète est nécessaire pour recharger la sauvegarde.\n\nVous devez garder les DEUX clés';
 
   @override
-  String get largestSpendingsByAddress =>
-      'Les plus grandes dépenses par adresse';
+  String get largestSpendingsByAddress => 'Les plus grandes dépenses par adresse';
 
   @override
   String get ledger => 'Ledger';
@@ -445,8 +428,7 @@ class SFr extends S {
   String get newPassword => 'Nouveau mot de passe';
 
   @override
-  String get newPasswordsDoNotMatch =>
-      'Les nouveaux mots de passe ne correspondent pas';
+  String get newPasswordsDoNotMatch => 'Les nouveaux mots de passe ne correspondent pas';
 
   @override
   String get next => 'Suivant';
@@ -455,8 +437,7 @@ class SFr extends S {
   String get noAuthenticationMethod => 'Aucune méthode d\'authentification';
 
   @override
-  String get noDbPassword =>
-      'La base de données doit être chiffrée pour protéger l\'ouverture/dépense';
+  String get noDbPassword => 'La base de données doit être chiffrée pour protéger l\'ouverture/dépense';
 
   @override
   String get noRemindBackup => 'Ne pas me le rappeler';
@@ -501,8 +482,7 @@ class SFr extends S {
   String get pleaseAuthenticate => 'Veuillez vous authentifier';
 
   @override
-  String get pleaseQuitAndRestartTheAppNow =>
-      'Veuillez quitter et redémarrer l\'application pour que ces modifications prennent effet';
+  String get pleaseQuitAndRestartTheAppNow => 'Veuillez quitter et redémarrer l\'application pour que ces modifications prennent effet';
 
   @override
   String get pool => 'Type de fonds';
@@ -525,8 +505,7 @@ class SFr extends S {
   }
 
   @override
-  String get privacyLevelTooLow =>
-      'Confidentialité insuffisante - Appui longuement pour continuer';
+  String get privacyLevelTooLow => 'Confidentialité insuffisante - Appui longuement pour continuer';
 
   @override
   String get privateKey => 'Clé privée';
@@ -581,8 +560,7 @@ class SFr extends S {
   String get rescanFrom => 'Rescanner depuis...';
 
   @override
-  String get rescanWarning =>
-      'RESCANNER réinitialise tous vos comptes. Vous pouvez envisager d\'utiliser REMBOBINER à la place';
+  String get rescanWarning => 'RESCANNER réinitialise tous vos comptes. Vous pouvez envisager d\'utiliser REMBOBINER à la place';
 
   @override
   String get reset => 'Réinitialiser';
@@ -597,8 +575,7 @@ class SFr extends S {
   String get restoreAnAccount => 'Restaurer un compte ?';
 
   @override
-  String get retrieveTransactionDetails =>
-      'Récupérer les détails de la transaction';
+  String get retrieveTransactionDetails => 'Récupérer les détails de la transaction';
 
   @override
   String get rewind => 'Rembobiner';
@@ -637,8 +614,7 @@ class SFr extends S {
   String get seedOrKeyRequired => 'Graine ou clé privée requise';
 
   @override
-  String get selectNotesToExcludeFromPayments =>
-      'Sélectionnez les notes à EXCLUDE dans les paiements';
+  String get selectNotesToExcludeFromPayments => 'Sélectionnez les notes à EXCLUDE dans les paiements';
 
   @override
   String get send => 'Envoyer';
@@ -724,8 +700,7 @@ class SFr extends S {
   }
 
   @override
-  String get thePrivateWalletMessenger =>
-      'Le portefeuille privé et la messagerie';
+  String get thePrivateWalletMessenger => 'Le portefeuille privé et la messagerie';
 
   @override
   String get theme => 'Thème';
@@ -814,8 +789,7 @@ class SFr extends S {
   String get dontShowAnymore => 'Ne plus afficher';
 
   @override
-  String get swapDisclaimer =>
-      'Les swaps sont offerts par des services tiers. Utilisez à votre propre risque et faites votre propre recherche.';
+  String get swapDisclaimer => 'Les swaps sont offerts par des services tiers. Utilisez à votre propre risque et faites votre propre recherche.';
 
   @override
   String get swap => 'Swap';
@@ -842,19 +816,16 @@ class SFr extends S {
   String get swapReceive => 'Recevoir';
 
   @override
-  String get swapFromTip =>
-      'Aide : Envoyez des fonds vers l\'adresse du haut pour recevoir des fonds a l\'adresse du bas.';
+  String get swapFromTip => 'Aide : Envoyez des fonds vers l\'adresse du haut pour recevoir des fonds a l\'adresse du bas.';
 
   @override
-  String get swapToTip =>
-      'Aide : Appuyez sur le bouton pour envoyer des fonds a l\'adresse du haut';
+  String get swapToTip => 'Aide : Appuyez sur le bouton pour envoyer des fonds a l\'adresse du haut';
 
   @override
   String get confirm => 'Veuillez confirmer';
 
   @override
-  String get confirmClearSwapHistory =>
-      'Êtes-vous sûr de vouloir effacer l\'historique des swaps ?';
+  String get confirmClearSwapHistory => 'Êtes-vous sûr de vouloir effacer l\'historique des swaps ?';
 
   @override
   String get retry => 'Refaire';
