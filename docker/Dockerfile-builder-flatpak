@@ -1,9 +1,12 @@
 #syntax=docker/dockerfile:1.2
-FROM ubuntu:focal
+FROM ubuntu:noble
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
-RUN apt-get install -yq curl gnupg2 flatpak flatpak-builder
+RUN apt-get install -yq curl gnupg2 software-properties-common
+RUN apt-get update
+RUN add-apt-repository ppa:flatpak/stable -y
+RUN apt-get install -yq flatpak flatpak-builder ostree gnupg2
 
 RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 RUN flatpak install -y flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08

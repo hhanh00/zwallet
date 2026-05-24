@@ -17,7 +17,7 @@ modules:
     buildsystem: simple
     build-commands:
       - mkdir /app/bin
-      - tar xvf zwallet.tgz -C /app/bin
+      - tar --no-same-owner -xvf zwallet.tgz -C /app/bin
   - name: warp_api_ffi
     sources:
       - type: file
