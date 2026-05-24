@@ -87,6 +87,54 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showDeprecationNoticeIfNeeded();
+    });
+  }
+
+  Future<void> _showDeprecationNoticeIfNeeded() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastAcknowledged = prefs.getInt('deprecation_last_acknowledged');
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final oneWeek = Duration(days: 7).inMilliseconds;
+
+    if (lastAcknowledged != null && now - lastAcknowledged < oneWeek) {
+      return;
+    }
+
+    if (!mounted) return;
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text('Deprecation Notice'),
+        content: SingleChildScrollView(
+          child: Text(
+            'YWallet is no longer actively developed besides security fixes and protocol updates.\n\n'
+            'Your coins remain safe, but no new features will be added.\n\n'
+            'The new wallet is Zkool (https://github.com/hhanh00/zkool2), '
+            'a Zcash-only wallet with enhanced features built from experience with YWallet.',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true) {
+      await prefs.setInt('deprecation_last_acknowledged', now);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       aaSequence.settingsSeqno;
