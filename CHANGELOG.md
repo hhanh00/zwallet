@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.3](https://github.com/hhanh00/zwallet/compare/v1.14.2...v1.14.3) (2026-05-24)
+
+
+### Bug Fixes
+
+* add deprecation notice alert ([c0e2aeb](https://github.com/hhanh00/zwallet/commit/c0e2aebc4930c6d06759b6e428b4ad18ba9136da))
+* make deprecation notice appear after splash screen ([d349845](https://github.com/hhanh00/zwallet/commit/d349845b0f23b4ce3d51d39dd3ac17c488cdaa47))
+
 ## [1.14.2](https://github.com/hhanh00/zwallet/compare/v1.14.1...v1.14.2) (2026-01-23)
 
 
