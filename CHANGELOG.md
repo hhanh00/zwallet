@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/hhanh00/zwallet/compare/v1.14.3...v1.15.0) (2026-06-03)
+
+
+### Features
+
+* NU6.2 support — runtime circuit version selection ([f350251](https://github.com/hhanh00/zwallet/commit/f35025149bbd399a76bc3e792b1b254df8e09e2b))
+
 ## [1.14.3](https://github.com/hhanh00/zwallet/compare/v1.14.2...v1.14.3) (2026-05-24)
 
 
