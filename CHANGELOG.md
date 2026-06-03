@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.1](https://github.com/hhanh00/zwallet/compare/v1.15.0...v1.15.1) (2026-06-03)
+
+
+### Bug Fixes
+
+* update orchard to rev 9862176 (has new_for_version) for CI build ([7f2c976](https://github.com/hhanh00/zwallet/commit/7f2c976934d7b0ecf0ec8615c6d17e9397e9c9c7))
+
 ## [1.15.0](https://github.com/hhanh00/zwallet/compare/v1.14.3...v1.15.0) (2026-06-03)
 
 
