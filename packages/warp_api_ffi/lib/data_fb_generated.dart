@@ -6420,4 +6420,3 @@ class SwapVecObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
-}
