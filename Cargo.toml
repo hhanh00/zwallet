@@ -23,7 +23,7 @@ zcash_note_encryption = "0.2"
 #zcash_note_encryption = { git = "https://github.com/hhanh00/librustzcash.git", rev = "f349526f" }
 
 # Android 32-bit fix
-halo2_gadgets  = { git = "https://github.com/zcash/halo2.git", rev = "642924d614305d882cc122739c59144109f4bd3f" }
-halo2_proofs = { git = "https://github.com/zcash/halo2.git", rev = "642924d614305d882cc122739c59144109f4bd3f" }
-orchard = {git = "https://github.com/hhanh00/orchard.git", rev="dff7dee"}
+halo2_gadgets  = { git = "https://github.com/zcash/halo2.git", rev = "d751768afe0d2105b349dd93f73fde7f2eade088" }
+halo2_proofs = { git = "https://github.com/zcash/halo2.git", rev = "d751768afe0d2105b349dd93f73fde7f2eade088" }
+orchard = {git = "https://github.com/hhanh00/orchard.git", rev="9862176"}
 #orchard = {path = "orchard"}
