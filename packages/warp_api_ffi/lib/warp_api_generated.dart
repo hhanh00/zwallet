@@ -2175,5 +2175,3 @@ const int Swap_VT_TO_AMOUNT = 20;
 const int Swap_VT_TO_ADDRESS = 22;
 
 const int Swap_VT_TO_IMAGE = 24;
-
-const int VoteNote_VT_SELECTED = 10;

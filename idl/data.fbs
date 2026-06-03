@@ -303,13 +303,3 @@ table SwapVec {
   values:[Swap];
 }
 
-table VoteNote {
-  id:uint32;
-  height:uint32;
-  value:uint64;
-  selected:bool;
-}
-
-table VoteNoteVec {
-  notes: [VoteNote];
-}

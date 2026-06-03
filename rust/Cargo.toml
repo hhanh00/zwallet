@@ -22,8 +22,6 @@ tokio = "1.34.0"
 rand_core = "0.6.4"
 orchard = "0.3.0"
 
-zcash-vote = { path = "../native/zcash-vote" }
-
 [features]
 dart_ffi = []
 

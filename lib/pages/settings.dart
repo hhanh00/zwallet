@@ -237,7 +237,6 @@ class _GeneralState extends State<GeneralTab>
     await prefs.remove("tutorial:delegate");
     await prefs.remove("tutorial:overview");
     await prefs.remove("tutorial:select");
-    await prefs.remove("tutorial:vote");
   }
 
   @override

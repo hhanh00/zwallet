@@ -829,31 +829,4 @@ class SPt extends S {
 
   @override
   String get retry => 'Repetir';
-
-  @override
-  String get vote => 'Votações';
-
-  @override
-  String get registrationHeight => 'Altura de Registro';
-
-  @override
-  String get snapshotHeight => 'Altura do snapshot';
-
-  @override
-  String get status => 'Estado';
-
-  @override
-  String get voteURL => 'URL de votação';
-
-  @override
-  String get selectNoteVote => 'Selecionar Notas para Votar com';
-
-  @override
-  String get pickCandidate => 'Escolher Candidato';
-
-  @override
-  String get voteFailed => 'Votação falhou';
-
-  @override
-  String get voteSubmitted => 'Voto Enviado';
 }

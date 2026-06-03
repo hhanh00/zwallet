@@ -1704,60 +1704,6 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
-
-  /// No description provided for @vote.
-  ///
-  /// In en, this message translates to:
-  /// **'Vote'**
-  String get vote;
-
-  /// No description provided for @registrationHeight.
-  ///
-  /// In en, this message translates to:
-  /// **'Registration Height'**
-  String get registrationHeight;
-
-  /// No description provided for @snapshotHeight.
-  ///
-  /// In en, this message translates to:
-  /// **'Snapshot Height'**
-  String get snapshotHeight;
-
-  /// No description provided for @status.
-  ///
-  /// In en, this message translates to:
-  /// **'Status'**
-  String get status;
-
-  /// No description provided for @voteURL.
-  ///
-  /// In en, this message translates to:
-  /// **'Vote URL'**
-  String get voteURL;
-
-  /// No description provided for @selectNoteVote.
-  ///
-  /// In en, this message translates to:
-  /// **'Select Notes to Vote with'**
-  String get selectNoteVote;
-
-  /// No description provided for @pickCandidate.
-  ///
-  /// In en, this message translates to:
-  /// **'Pick Candidate'**
-  String get pickCandidate;
-
-  /// No description provided for @voteFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Vote Failed'**
-  String get voteFailed;
-
-  /// No description provided for @voteSubmitted.
-  ///
-  /// In en, this message translates to:
-  /// **'Vote Submitted'**
-  String get voteSubmitted;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

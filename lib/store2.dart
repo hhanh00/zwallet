@@ -459,29 +459,3 @@ class SwapResponse with _$SwapResponse {
       _$SwapResponseFromJson(json);
 }
 
-@freezed
-class Election with _$Election {
-  const factory Election({
-    required int id,
-    required String name,
-    required int start_height,
-    required int end_height,
-    required int close_height,
-    required String submit_url,
-    required String question,
-    required List<String> candidates,
-    required String status,
-  }) = _Election;
-
-  factory Election.fromJson(Map<String, dynamic> json) =>
-      _$ElectionFromJson(json);
-}
-
-@freezed
-class Vote with _$Vote {
-  const factory Vote({
-    required Election election,
-    required List<VoteNoteT> notes,
-    int? candidate,
-  }) = _Vote;
-}
