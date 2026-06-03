@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.2](https://github.com/hhanh00/zwallet/compare/v1.15.1...v1.15.2) (2026-06-03)
+
+
+### Bug Fixes
+
+* update zcash-sync submodule and Cargo.lock deps (halo2 0.5 alignment) ([e2b7bdc](https://github.com/hhanh00/zwallet/commit/e2b7bdc37a43fd089d79a6bc80c69039d9b5d452))
+
 ## [1.15.1](https://github.com/hhanh00/zwallet/compare/v1.15.0...v1.15.1) (2026-06-03)
 
 
