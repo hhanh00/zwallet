@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.3](https://github.com/hhanh00/zwallet/compare/v1.15.2...v1.15.3) (2026-06-04)
+
+
+### Bug Fixes
+
+* update zcash-sync submodule (fix NU6.2 circuit version detection) ([4cabaad](https://github.com/hhanh00/zwallet/commit/4cabaad2d6b49f2208415633222b18ebd246588f))
+
 ## [1.15.2](https://github.com/hhanh00/zwallet/compare/v1.15.1...v1.15.2) (2026-06-03)
 
 
