@@ -1,3 +1,8 @@
+# YWALLET DOES NO LONGER SUPPORT ZCASH SINCE THE IRONWOOD UPDATE
+
+- `Ycash` remains supported.
+- For `Zcash`, please migrate to ZKOOL
+
 # DEPRECATION NOTICE
 
 **YWallet is not going to receive further updates** besides
